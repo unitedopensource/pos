@@ -1,0 +1,536 @@
+<template>
+  <div class="popupMask center dark" @click.self="init.resolve">
+    <div class="terminal window" v-show="!component">
+      <header class="title">
+        <span>{{text('TERM_REPORT')}}</span>
+        <i class="fa fa-times" @click="init.resolve"></i>
+      </header>
+      <div class="inner">
+        <section class="dataList">
+          <header>
+            <span class="active" @click="setFilter('station',$event)">{{text('STATION_RECORDS')}}</span>
+            <span @click="setFilter('all',$event)">{{text('ALL_RECORDS')}}</span>
+            <!--<i class="fa fa-sort-amount-desc"></i>-->
+          </header>
+          <ul class="content">
+            <li v-for="info in transaction" :class="{settled:info.status === 3}">
+              <i class="fa fa-exclamation-triangle chargeBack" v-if="(info.status === 1 || info.status === 2) && info.account.entry !== 'Chip'" :title="text('TIP_CHARGE_BACK')"></i>
+              <i :class="getIcon(info.status)" class="status"></i>
+              <span class="num">#{{info.trace.trans}}</span>
+              <span class="type">{{info.transType}}</span>
+              <span class="order">{{text(info.order.type)}} #{{info.order.number}}</span>
+              <span class="card">
+                <i :class="cardType(info.account.type)"></i>
+                ...{{info.account.number}}
+              </span>
+              <span class="auth">{{info.host.auth}}</span>
+              <div class="amount">
+                <span>${{(parseFloat(info.amount.approve) + parseFloat(info.amount.tip)).toFixed(2)}}</span>
+                <span v-show="parseFloat(info.amount.tip) !== 0" class="tip">(${{info.amount.tip}})</span>
+              </div>
+              <div class="action">
+                <span @click="adjustTip(info)" class="adjust">{{text('ADJUST_TIP')}}</span>
+                <span @click="voidSale(info)" class="void">{{text('VOID')}}</span>
+                <i class="fa fa-print" @click="print(info)"></i>
+              </div>
+            </li>
+          </ul>
+        </section>
+      </div>
+      <footer>
+        <span class="lastBatch">()</span>
+        <div class="pagination">
+        </div>
+        <div>
+          <button class="btn" @click="batch" :disabled="!device">{{text('BATCH')}}</button>
+          <div class="btn" @click="init.resolve">{{text('EXIT')}}</div>
+        </div>
+      </footer>
+    </div>
+    <div :is="component" :init="componentData" :exit="exitComponent"></div>
+  </div>
+</template>
+
+<script>
+import { mapGetters } from 'vuex'
+import moment from 'moment'
+import Inputter from '../payment/inputter'
+import dialoger from '../common/dialoger'
+import Printer from '../../print'
+export default {
+  props: ['init'],
+  created() {
+    this.$socket.emit("[TERM] GET_ALL_TRANSACTION", this.today);
+    this.initTerminal();
+  },
+  data() {
+    return {
+      component: null,
+      componentData: null,
+      today: today(),
+      date: today(),
+      allTransaction: [],
+      filter: 'station',
+      terminal: null,
+      device: null,
+      page: 0
+    }
+  },
+  methods: {
+    initTerminal() {
+      let terminal = this.station.terminal;
+      let file = terminal.model;
+      this.msg = this.text('TERM_INIT', terminal.model);
+      this.terminal = require('../payment/parser/' + file);
+      this.terminal.initial(terminal.address, terminal.port).then(response => {
+        return response.text()
+      }).then(device => {
+        this.device = this.terminal.check(device);
+        this.device.code !== '000000' && this.noBatch();
+      })
+    },
+    refund(record) {
+
+    },
+    voidSale(record) {
+      this.$dialog({
+        title: "TERM_VOID_SALE",
+        msg: this.text("TIP_TERM_VOID_SALE", record.trace.trans),
+        buttons: [{
+          text: 'CANCEL',
+          fn: 'reject'
+        }, {
+          text: 'CONFIRM',
+          fn: 'resolve,false'
+        }, {
+          text: 'CONFIRM&PRINT',
+          fn: 'resolve,true'
+        }]
+      }).then(print => {
+        let invoice = record.order.number;
+        let trans = record.trace.trans;
+        this.terminal.voidSale(invoice, trans)
+          .then(response => {
+            return response.text();
+          }).then(response => {
+            let transaction = this.terminal.explainTransaction(response);
+            record = Object.assign(record, transaction, {
+              status: 0
+            });
+            this.$socket.emit("[TERM] UPDATE_TRANSACTION", record);
+            print && Printer.init(this.configuration).setJob('creditCard').print(transaction);
+            let ticket = record.order.number;
+            let index = this.history.findIndex(invoice => invoice.number === ticket);
+            let order = Object.assign({}, this.history[index]);
+                order.settled = false;
+                order.payment.log = [];
+            delete order.payment.paidCash;
+            delete order.payment.paidCredit;
+            delete order.payment.paidGift;
+            this.$socket.emit("ORDER_MODIFIED", order);
+          });
+        this.$exitComponent();
+      }).catch(() => {
+        this.$exitComponent();
+      })
+    },
+    adjustTip(record) {
+      new Promise((resolve, reject) => {
+        let title = "ADJUST_TIP";
+        this.componentData = { title, resolve, reject };
+        this.component = "Inputter";
+      }).then(value => {
+        this.$exitComponent();
+        value = isNumber(value) ? value : 0;
+        let total = parseFloat(record.amount.approve) + value;
+        this.$dialog({
+          title: 'TERM_CONFIRM_ADJUST',
+          msg: this.text('TIP_TERM_ADJUST_TIP', value.toFixed(2), total.toFixed(2)),
+          buttons: [{
+            text: 'CANCEL',
+            fn: 'reject'
+          }, {
+            text: 'CONFIRM',
+            fn: 'resolve'
+          }]
+        }).then(() => {
+          let amount = Math.round(value * 100);
+          let invoice = record.order.number;
+          let trans = record.trace.trans;
+          this.terminal.adjust(invoice, trans, amount)
+            .then(response => {
+              return response.text();
+            }).then(response => {
+              record.status = 2;
+              record.amount.tip = (value).toFixed(2);
+              this.$exitComponent();
+              this.$socket.emit("[TERM] UPDATE_TRANSACTION", record);
+            });
+        }).catch(() => {
+          this.$exitComponent();
+        })
+      }).catch(() => {
+        this.$exitComponent();
+      })
+    },
+    checksum() {
+      let summary = {
+        visa: 0,
+        visaSum: 0,
+        master: 0,
+        masterSum: 0,
+        discover: 0,
+        discoverSum: 0,
+        amex: 0,
+        amexSum: 0,
+        other: 0,
+        otherSum: 0,
+        sale: 0,
+        saleSum: 0,
+        tip: 0,
+        tipSum: 0,
+        // voidVisa:0,
+        // voidVisaSum:0,
+        // voidMaster:0,
+        // voidMasterSum:0,
+        // voidDiscover:0,
+        // voidDiscoverSum:0,
+        // voidAmex:0,
+        // voidAmexSum:0,
+        // voidOther:0,
+        // voidOtherSum:0,
+        voided: 0,
+        voidedSum: 0,
+      };
+      let content = this.transaction.filter(each => {
+        if (each.status === 0) {
+          summary.voided++;
+          summary.voidedSum += parseFloat(each.amount.approve);
+        } else {
+          summary.sale++;
+          summary.saleSum += parseFloat(each.amount.approve) + parseFloat(each.amount.tip);
+
+          if (parseFloat(each.amount.tip) > 0) {
+            summary.tip++;
+            summary.tipSum += parseFloat(each.amount.tip);
+          }
+        }
+
+        switch (each.account.type) {
+          case "Visa":
+            if (each.status === 1 || each.status === 2) {
+              summary.visa++;
+              summary.visaSum += parseFloat(each.amount.approve) + parseFloat(each.amount.tip)
+            }
+            break;
+          case "MasterCard":
+            if (each.status === 1 || each.status === 2) {
+              summary.master++;
+              summary.masterSum += parseFloat(each.amount.approve) + parseFloat(each.amount.tip)
+            }
+            break;
+          case "Discover":
+            if (each.status === 1 || each.status === 2) {
+              summary.discover++;
+              summary.discoverSum += parseFloat(each.amount.approve) + parseFloat(each.amount.tip)
+            }
+            break;
+          case "American Express":
+            if (each.status === 1 || each.status === 2) {
+              summary.amex++;
+              summary.amexSum += parseFloat(each.amount.approve) + parseFloat(each.amount.tip)
+            }
+            break;
+          default:
+            if (each.status === 1 || each.status === 2) {
+              summary.other++;
+              summary.otherSum += parseFloat(each.amount.approve) + parseFloat(each.amount.tip)
+            }
+        }
+        return each.status !== 0;
+      }).map(each => {
+        return {
+          trans: "#" + each.trace.trans,
+          transType: each.transType,
+          card: each.account.number,
+          total: (parseFloat(each.amount.approve) + parseFloat(each.amount.tip)).toFixed(2),
+          tip: parseFloat(each.amount.tip),
+          time: moment(each.trace.time, 'YYYYMMDDHHmmss').format('HH:mm'),
+          orderType: this.text(each.order.type),
+          ticket: "#" + each.order.number
+        }
+      });
+      Printer.init(this.configuration).setJob("checksum").print({ content, summary });
+    },
+    batch() {
+      this.checksum();
+      this.$dialog({
+        title: "TERM_BATCH_CLOSE",
+        msg: "TIP_TERM_BATCH_CLOSE",
+        buttons: [{
+          text: "CANCEL",
+          fn: 'reject'
+        }, {
+          text: 'BATCH',
+          fn: 'resolve'
+        }]
+      }).then(() => {
+        this.terminal.batch().then(response => {
+          return response.text();
+        }).then(response => {
+          let result = this.terminal.explainBatch(response);
+          if (result.code === '000000') {
+            let sn = this.station.terminal.sn;
+            for (let i = 0; i < this.transaction.length; i++) {
+              if(this.transaction[i].addition.SN === sn ){
+                this.transaction[i].status = 3;
+                this.$socket.emit("[TERM] BATCH_TRANS_CLOSE", this.transaction);
+              } 
+            }
+            Printer.init(this.configuration).setJob("batch").print(result);
+            this.$socket.emit('[TERM] SAVE_BATCH_RESULT',result);
+            this.$exitComponent();
+          } else {
+            this.$dialog({
+              type: 'warning',
+              title: result.msg,
+              msg: this.text('ERROR_CODE', result.code)
+            }).then(() => {
+              this.$exitComponent();
+            })
+          }
+        })
+      }).catch(() => {
+        this.$exitComponent();
+      })
+    },
+    noBatch() {
+      this.$dialog({
+        type: 'warning',
+        title: 'TERM_NA',
+        msg: 'TERM_BATCH_DISABLE'
+      }).then(() => {
+        this.device = null;
+        this.$exitComponent();
+      })
+    },
+    setFilter(type, e) {
+      this.filter = type;
+      document.querySelector(".dataList span.active").classList.remove("active");
+      e.currentTarget.classList.add("active");
+    },
+    cardType(card) {
+      switch (card) {
+        case "Visa":
+          return "fa fa-cc-visa";
+        case "MasterCard":
+          return "fa fa-cc-mastercard";
+        case "American Express":
+          return "fa fa-cc-amex";
+        case "Discover":
+          return "fa fa-cc-discover";
+        default:
+          return "fa fa-credit-card-alt"
+      }
+    },
+    getIcon(status) {
+      switch (status) {
+        case 1:
+          return "fa fa-circle-o";
+        case 2:
+          //tiped 
+          return "fa fa-circle";
+        case 3:
+          //settled
+          return "fa fa-check-circle";
+        case 4:
+          //insufficient 
+          return "fa fa-info-circle";
+        case 0:
+          //void
+          return "fa fa-times-circle";
+        default:
+          //other
+          return "fa fa-question-circle"
+      }
+    },
+    print(receipt) {
+      Printer.init(this.configuration).setJob('reprint creditCard').print(receipt);
+    },
+    exitComponent() {
+      this.componentData = null;
+      this.component = null;
+    }
+  },
+  computed: {
+    transaction() {
+      let min = this.page * 20;
+      let max = min + 20;
+      switch (this.filter) {
+        case "all":
+          return this.allTransaction.slice(min, max);
+        case "station":
+          let sn = this.station.terminal.sn;
+          return this.allTransaction.filter(trans => trans.addition.SN === sn).slice(min, max);
+      }
+    },
+    ...mapGetters(['station', 'configuration', 'language', 'history'])
+  },
+  sockets: {
+    TERM_TRANS_RESULT(transaction) {
+      this.allTransaction = transaction;
+    }
+  },
+  components: {
+    dialoger, Inputter
+  }
+}
+</script>
+
+<style scoped>
+.terminal {
+  width: 850px;
+  background: #E0E2E5;
+}
+
+.lastBatch {
+  font-size: 16px;
+  color: #E3F2FD;
+  border-bottom: 1px dotted #90CAF9;
+}
+
+.content li {
+  border-bottom: 1px solid #ddd;
+  padding: 10px 10px 10px 15px;
+  display: flex;
+  position: relative;
+}
+
+.status {
+  width: 40px;
+  text-align: center;
+}
+
+.content li:nth-child(2n) {
+  background: #F5F5F5;
+}
+
+.pagination {
+  flex: 1;
+}
+
+.btn {
+  margin: 5px;
+  padding: 0 25px;
+}
+
+.num {
+  width: 35px;
+}
+
+.auth {
+  width: 60px;
+  padding: 0 2px;
+  text-align: center;
+  background: #9e9e9e;
+  border-radius: 2px;
+  color: #F5F5F5;
+  margin: 0 5px;
+}
+
+.order {
+  margin: 0 15px;
+  width: 100px;
+  text-align: center;
+}
+
+.type {
+  width: 70px;
+  text-align: center;
+}
+
+.card {
+  width: 80px;
+  margin: 0 20px;
+}
+
+.amount {
+  flex: 1;
+  padding-left: 30px;
+  display: flex;
+  align-items: center;
+}
+
+.amount span {
+  text-align: center;
+}
+
+.tip {
+  font-size: 12px;
+  margin-left: 5px;
+  color: #607D8B;
+}
+
+.fa-cc-visa {
+  color: #1f7dc7;
+}
+
+.fa-cc-mastercard {
+  color: #F44336;
+}
+
+.action span {
+  margin: 0 5px;
+  padding: 5px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.adjust {
+  background: #FF9800;
+  color: #fff;
+}
+
+.void {
+  background: #FF5722;
+  color: antiquewhite;
+}
+
+.fa-circle-o,
+.fa-circle,
+.fa-check-circle {
+  color: var(--green);
+}
+
+.fa-info-circle {
+  color: var(--orange);
+}
+
+.fa-times-circle {
+  color: var(--red);
+}
+
+.fa-question-circle {
+  color: var(--gray);
+}
+
+.fa-print {
+  display: inline;
+  padding: 11px;
+  color: var(--gray);
+}
+
+.chargeBack {
+  color: var(--yellow);
+  position: absolute;
+  left: 7px;
+}
+
+.settled {
+  color: #9E9E9E
+}
+
+.settled .action {
+  display: none;
+}
+</style>

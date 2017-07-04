@@ -1,0 +1,312 @@
+<template>
+    <div class="layout">
+        <draggable v-model="categories" @sort="sortCategory" :options="{animation:300,group:'category',ghostClass:'cateGhost'}">
+            <transition-group tag="section" class="category">
+                <div v-for="(category,index) in categories" @click="setCategory(index)" @contextmenu="editCategory(category,index)" :key="index">{{category[language]}}</div>
+            </transition-group>
+            </section>
+        </draggable>
+        <div>
+            <div v-for="(group,gIndex) in items" :key="gIndex">
+                <draggable :list="group" @sort="sortItem" :options="{animation:300,group:group.category,ghostClass:'itemGhost',draggable:'.draggable'}">
+                    <transition-group tag="section" class="items" :name="'drag'">
+                        <div v-for="(item,index) in group" @contextmenu="editItem(item,gIndex,index)" :class="{draggable:item.clickable,disable:!item.clickable}" :key="index">{{item[language]}}</div>
+                    </transition-group>
+                </draggable>
+            </div>
+        </div>
+        <aside>
+            <div>
+                <div class="btn" @click="applyItemSort" v-if="isItemSort">{{text('APPLY')}}</div>
+                <div class="btn" @click="applyCategorySort" v-if="isCategorySort">{{text('APPLY')}}</div>
+            </div>
+        </aside>
+        <div :is="component" :init="componentData"></div>
+    </div>
+</template>
+
+<script>
+import { mapGetters, mapActions } from 'vuex'
+import dialoger from '../../common/dialoger'
+import draggable from 'vuedraggable'
+import Preset from '../../../preset'
+import itemEditor from './itemEditor'
+import categoryEditor from './categoryEditor'
+export default {
+    components: { draggable, dialoger, itemEditor, categoryEditor },
+    created() {
+        this.categories = JSON.parse(JSON.stringify(this.menu));
+        this.items = JSON.parse(JSON.stringify(this.categories[0].item))
+    },
+    mounted() {
+        window.addEventListener("keydown", this.input, false);
+    },
+    data() {
+        return {
+            component: null,
+            componentData: null,
+            categories: null,
+            items: null,
+            categoryIndex: 0,
+            isCategorySort: false,
+            isItemSort: false,
+            pointIndex: 0
+        }
+    },
+    methods: {
+        setCategory(index) {
+            this.pointIndex = null;
+            this.categoryIndex = index;
+            this.items = this.categories[index].item.slice();
+        },
+        editCategory(category, index) {
+            new Promise((resolve, reject) => {
+                this.componentData = { resolve, reject, category };
+                this.component = "categoryEditor";
+            }).then(result => {
+                console.log(result);
+                result.item = [];
+                this.$socket.emit("[CMS] MODIFY_CATEGORY", {
+                    category: result,
+                    index
+                });
+                this.$exitComponent();
+            }).catch(() => {
+                this.$exitComponent();
+            })
+        },
+        editItem(item, sub, idx) {
+            if (!item.clickable) {
+                item = this.copyLastItem(sub, idx);
+            } else {
+                item.prices = Object.assign({
+                    DEFAULT: item.price,
+                    WALK_IN: [],
+                    PICK_UP: [],
+                    DELIVERY: [],
+                    DINE_IN: [],
+                    BAR: []
+                }, item.prices)
+            }
+            new Promise((resolve, reject) => {
+                let categories = this.categories[this.categoryIndex].contain.map(category => ({ label: category, value: category }))
+                this.componentData = { resolve, reject, item, categories };
+                this.component = "itemEditor";
+            }).then(result => {
+                this.$socket.emit("[CMS] MODIFY_ITEM", {
+                    item: result.item,
+                    grp: this.categoryIndex,
+                    sub, idx
+                });
+                this.$exitComponent();
+            }).catch(item => {
+                this.$exitComponent();
+                item && this.$dialog({
+                    title: 'DEL_ITEM_CONFIRM',
+                    msg: this.text('DEL_ITEM_TIP', item[this.language]),
+                    buttons: [{ text: 'CANCEL', fn: 'reject' }, { text: 'CONFIRM', fn: 'resolve' }]
+                }).then(() => {
+                    let id = item._id;
+                    let grp = this.categoryIndex;
+                    this.$socket.emit("[CMS] REMOVE_ITEM", { id, grp, sub, idx });
+                    this.$exitComponent();
+                }).catch(() => {
+                    this.$exitComponent();
+                })
+            })
+        },
+        copyLastItem(sub, idx) {
+            let item;
+            let last = this.items[sub][idx - 1];
+            if (last && last.clickable) {
+                item = JSON.parse(JSON.stringify(last));
+                item = Object.assign(item, {
+                    _id: undefined,
+                    menuID: "",
+                    zhCN: "",
+                    usEN: "",
+                    num: this.items[sub].filter(item => item.clickable).length,
+                    prices: Object.assign({
+                        DEFAULT: item.price,
+                        WALK_IN: [],
+                        PICK_UP: [],
+                        DELIVERY: [],
+                        DINE_IN: [],
+                        BAR: []
+                    }, item.prices)
+                });
+            } else {
+                let defaultTax = Object.keys(this.tax.class)[0];
+                for (var name in this.tax.class) {
+                    if (this.tax.class.hasOwnProperty(name)) {
+                        if (this.tax.class[name].default)
+                            defaultTax = name;
+                    }
+                }
+                item = Preset.item(defaultTax)
+            }
+            return item;
+        },
+        sortCategory() {
+            this.isCategorySort = true;
+        },
+        sortItem() {
+            this.pointIndex = null;
+            for (let i = 0; i < this.items.length; i++) {
+                let items = this.items[i];
+                for (let x = 0; x < items.length; x++) {
+                    if (items[x].hasOwnProperty('num')) {
+                        this.items[i][x].num = x
+                    } else {
+                        break;
+                    }
+                }
+            }
+            this.isItemSort = true;
+        },
+        applyCategorySort() {
+
+        },
+        applyItemSort() {
+            let index = this.categoryIndex;
+            let items = this.items;
+            this.replaceMenuItem({ index, items })
+            items = [].concat.apply([], this.items);
+            let update = items.map(item => {
+                if (item._id) {
+                    return {
+                        _id: item._id,
+                        num: item.num
+                    }
+                }
+            }).filter(item => item);
+            this.$socket.emit("[CMS] RESORT_ITEM", update);
+            this.isItemSort = false;
+        },
+        input(e) {
+            let max = document.querySelectorAll('.items div').length;
+            if (isNaN(this.pointIndex)) {
+                this.pointIndex = 0;
+                return;
+            }
+            switch (e.code) {
+                case "ArrowUp":
+                    e.preventDefault();
+                    if (this.component === 'itemEditor') return;
+                    this.pointIndex - 3 >= 0 && (this.pointIndex = this.pointIndex - 3);
+                    break;
+                case "ArrowRight":
+                    if (this.component === 'itemEditor') return;
+                    e.preventDefault();
+                    this.pointIndex < max && this.pointIndex++;
+                    break;
+                case "ArrowDown":
+                    e.preventDefault();
+                    if (this.component === 'itemEditor') {
+                        // let event = document.createEvent('KeyboardEvent');
+                        // event.initKeyboardEvent("keydown", true, true, null, false, false, false, 9, 9);
+                        // document.activeElement.dispatchEvent(event)
+                        return;
+                    };
+                    this.pointIndex + 3 < max && (this.pointIndex = this.pointIndex + 3);
+                    break;
+                case "ArrowLeft":
+                    if (this.component === 'itemEditor') return;
+                    e.preventDefault();
+                    this.pointIndex !== 0 && this.pointIndex--;
+                    break;
+                case "Escape":
+                    e.preventDefault();
+                    if (this.component === 'itemEditor') {
+                        let target = document.getElementById("cancelEdit");
+                        target && target.dispatchEvent(new CustomEvent('click'));
+                    } else if (isNumber(this.pointIndex)) {
+                        this.pointIndex = null;
+                    }
+                    break;
+                case "Enter":
+                    e.preventDefault();
+                    if (this.component === 'itemEditor') {
+                        let target = document.getElementById("confirmEdit");
+                        target && target.dispatchEvent(new CustomEvent('click'));
+                    } else if (isNumber(this.pointIndex)) {
+                        let target = document.querySelector(".items .active");
+                        target && target.dispatchEvent(new CustomEvent('contextmenu'));
+                    }
+                    break;
+                case "Space":
+                    break;
+            }
+        },
+        ...mapActions(['replaceMenuItem'])
+    },
+    beforeDestroy() {
+        window.removeEventListener("keydown", this.input, false);
+    },
+    sockets: {
+        ITEM_UPDATED() {
+            this.$nextTick(() => {
+                this.categories = JSON.parse(JSON.stringify(this.menu));
+                this.items = JSON.parse(JSON.stringify(this.categories[this.categoryIndex].item));
+            })
+            this.$exitComponent();
+        },
+        CATEGORY_UPDATE() {
+            this.$nextTick(() => {
+                this.categories = JSON.parse(JSON.stringify(this.menu));
+                this.items = JSON.parse(JSON.stringify(this.categories[this.categoryIndex].item));
+            })
+        }
+    },
+    watch: {
+        pointIndex(n) {
+            let dom = document.querySelector(".items .active");
+            dom && dom.classList.remove("active");
+            if (isNumber(n)) {
+                dom = document.querySelectorAll('.items div')[n];
+                dom && dom.classList.add("active");
+            }
+
+        }
+    },
+    computed: {
+        ...mapGetters(['menu', 'language', 'tax'])
+    }
+}
+</script>
+
+<style scoped>
+.layout {
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    overflow-y: auto;
+}
+
+.category {
+    width: 285px;
+    flex: none;
+}
+
+.items {
+    width: 410px;
+    flex: none;
+}
+
+.cateGhost {
+    background: rgba(33, 150, 243, 0.5);
+    border: 1px dashed #607D8B;
+}
+
+.itemGhost {
+    background: #607D8B;
+    border: 1px dashed #212121;
+}
+
+.items .active {
+    background: #E1F5FE;
+    border: 1px solid transparent;
+    transform: scale(1.1);
+    box-shadow: 0 2px 12px -1px rgba(0, 0, 0, 0.6);
+}
+</style>
