@@ -90,8 +90,6 @@ export default {
             return this.applied.indexOf(tag) === -1 ? "" : "yes";
         },
         getPolyline() {
-            // let api = this.store.mapAPI;
-            // let zipCode = this.store.zipCode;
             let { mapAPI, zipCode } = this.store;
             this.origin = `${this.store.address.split(' ').join('+')},${this.store.city.split(' ').join('+')}+${this.store.state}+${zipCode}`;
             this.destination = this.$options.filters.formatAddress(this.customer.address).split(' ').join('+');
@@ -125,15 +123,16 @@ export default {
 section.info {
     background: #fff;
     margin: 15px auto 0;
-    width: 600px;
+    width: 620px;
     box-shadow: var(--shadow);
 }
 
 img {
+    border: 10px solid #fff;
     width: 600px;
-    margin: 25px auto;
+    margin: 15px auto;
     display: block;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 2px 2px rgba(0, 0, 0, .2), inset 0 1px 0 rgba(255, 255, 255, .3);
 }
 
 .phone {
@@ -200,7 +199,7 @@ img {
 }
 
 .tag {
-    padding: 3px 8px;
+    padding: 3px 10px 5px;
     background: #CFD8DC;
     border: 1px solid #B0BEC5;
     color: #9E9E9E;
@@ -214,5 +213,6 @@ img {
     border: 1px solid #cea62e;
     color: #fff;
     opacity: 1;
+    text-shadow: 0 1px 1px #333;
 }
 </style>

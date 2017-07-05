@@ -22,10 +22,15 @@
                 <figcaption>{{text('ONLINE_ORDER')}}</figcaption>
                 <span class="intro">{{text('SETTING.ONLINE.TIP')}}</span>
             </figure>
-            <figure>
+            <figure @click="go('Setting.print')">
                 <i class="fa fa-2x fa-print"></i>
                 <figcaption>{{text('PRINT')}}</figcaption>
                 <span class="intro">{{text('SETTING.PRINT.TIP')}}</span>
+            </figure>
+            <figure>
+                <i class="fa fa-2x fa-users"></i>
+                <figcaption>{{text('OP')}}</figcaption>
+                <span class="intro">{{text('SETTING.USERS.TIP')}}</span>
             </figure>
             <figure @click="go('Setting.database')">
                 <i class="fa fa-2x fa-database"></i>
@@ -44,8 +49,8 @@
             </figure>
             <figure>
                 <i class="fa fa-2x fa-refresh"></i>
-                <figcaption>{{text('UPDATE')}}</figcaption>
-                <span class="intro">{{text('SETTING.UPDATE.TIP')}}</span>
+                <figcaption>{{text('SYSTEM')}}</figcaption>
+                <span class="intro">{{text('SETTING.SYSTEM.TIP')}}</span>
             </figure>
             <figure @click="go('Dashboard')">
                 <i class="fa fa-2x fa-external-link"></i>

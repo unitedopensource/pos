@@ -206,7 +206,8 @@ export default {
           this.$dialog({
             type: "question",
             title: "CLOCK_IN_CONFIRM",
-            msg: this.text("TIP_CLOCK_IN", moment(this.time).format("hh:mm:ss a"))
+            msg: this.text("TIP_CLOCK_IN", moment(this.time).format("hh:mm:ss a")),
+            buttons:[{text:'CANCEL',fn:'reject'},{text:'CONFIRM',fn:'resolve'}]
           }).then(() => {
             this.setOp({
               clockIn: this.time,
@@ -368,7 +369,7 @@ export default {
   position: absolute;
   top: -35px;
   left: 0;
-  z-index: 1;
+  z-index: 99;
   font-size: 1.25em;
 }
 

@@ -55,11 +55,11 @@
                                     <div class="item">
                                         <div>
                                             <label>{{text('ZH_CN')}}</label>
-                                            <input type="text" v-model="side.zhCN" maxlength="5">
+                                            <input type="text" v-model="side.zhCN">
                                         </div>
                                         <div>
                                             <label>{{text('US_EN')}}</label>
-                                            <input type="text" v-model="side.usEN" maxlength="10">
+                                            <input type="text" v-model="side.usEN">
                                         </div>
                                         <div>
                                             <label>{{text('PRICE_EXTRA')}}</label>
@@ -69,6 +69,9 @@
                                             <label>{{text('PRICE')}}</label>
                                             <input type="text" v-model.number="side.price">
                                         </div>
+                                    </div>
+                                    <div class="ctrl">
+                                        <checkbox v-model="side.sub" label="SUBITEM"></checkbox>
                                     </div>
                                     <i class="fa fa-trash remove" @click="removeOption(index)"></i>
                                 </div>
@@ -123,14 +126,9 @@
                 <aside class="edit">
                     <textarea v-model="code" id="code"></textarea>
                     <!--<div class="status" :class="{expaned:errorLog.length > 1}">
-                        <i class="fa fa-circle" v-show="errorLog.length === 1"></i>
-                        <div v-for="log in errorLog" class="log" :class="{passed:errorLog.length === 1}">{{log}}</div>
-                    </div>-->
-                </aside>
-                <aside class="intro">
-                    <footer>
-                        <button class="btn" @click="compile" :disabled="checking || errorLog.length > 1">{{text('CONFIRM')}}</button>
-                    </footer>
+                                    <i class="fa fa-circle" v-show="errorLog.length === 1"></i>
+                                    <div v-for="log in errorLog" class="log" :class="{passed:errorLog.length === 1}">{{log}}</div>
+                                </div>-->
                 </aside>
             </div>
         </div>
@@ -150,7 +148,6 @@ export default {
     props: ['init'],
     components: { smartInput, smartSwitch, smartOption, draggable, checkbox },
     created() {
-        window.addEventListener("keydown", this.acceleartor, false);
         this.taxOption = Object.keys(this.tax.class).map(key => ({
             value: key,
             label: this.tax.class[key].alies + " - " + this.tax.class[key].rate + " %"
@@ -195,8 +192,7 @@ export default {
                 animation: 300,
                 ghostClass: 'ghost'
             },
-            errorText: "",
-            errorLog: ['Code passed']
+            errorText: ""
         }
     },
     methods: {
@@ -207,18 +203,18 @@ export default {
             this.code = JSON.stringify(this.item, null, 4);
             this.coding = true;
         },
-        verifyJSON: debounce(function (code) {
-            try {
-                jsonlint.parse(code);
-                this.errorLog = ['Code passed'];
-                this.errorLine = null;
-            } catch (e) {
-                this.errorLog = String(e).split('\n');
-                this.errorLine = this.errorLog[0].split(" ").pop().slice(0, -1);
-                this.highlight();
-            }
-            this.checking = false;
-        }, 3000),
+        // verifyJSON: debounce(function (code) {
+        //     try {
+        //         jsonlint.parse(code);
+        //         this.errorLog = ['Code passed'];
+        //         this.errorLine = null;
+        //     } catch (e) {
+        //         this.errorLog = String(e).split('\n');
+        //         this.errorLine = this.errorLog[0].split(" ").pop().slice(0, -1);
+        //         this.highlight();
+        //     }
+        //     this.checking = false;
+        // }, 3000),
         highlight() {
             let dom = document.getElementById('code');
             let value = dom.value.split("\n");
@@ -262,7 +258,6 @@ export default {
             this.extraPrice = !this.extraPrice;
         },
         hateCoding() {
-            this.coding = false;
             this.item = JSON.parse(this.code);
             this.$nextTick(() => {
                 Object.keys(this.item.printer).forEach(name => {
@@ -270,6 +265,7 @@ export default {
                     dom && dom.classList.add('selected');
                 })
             })
+            this.coding = false;
         },
         confirm(revive) {
             let pass = document.querySelectorAll('i.invalid');
@@ -280,7 +276,6 @@ export default {
                         this.item.prices.DEFAULT = this.item.price :
                         this.item.prices[type].length === 0 ? delete this.item.prices[type] :
                             this.item.prices[type] = String(this.item.prices[type]).split(",").map(parseFloat);
-
                 })
                 this.item.option = this.item.option.map((item, index) => {
                     if (!isNumber(item.price)) delete item.price;
@@ -288,7 +283,6 @@ export default {
                     if (!item.price && !item.extra && !isNumber(this.item.price[index])) item.extra = 0;
                     return item
                 }).filter((item, index) => (item.zhCN && item.usEN));
-                console.log(this.item)
                 this.init.resolve({
                     item: this.item,
                     revive
@@ -304,21 +298,12 @@ export default {
         compile() {
 
         },
-        acceleartor(key) {
-            key.ctrlKey && key.code === 'Enter' && this.confirm(true);
-        },
         del() {
             this.init.reject(this.item)
         },
         exit() {
             this.init.reject(false);
         }
-    },
-    watch: {
-        // code(n) {
-        //     this.checking = true;
-        //     this.verifyJSON(n);
-        // }
     },
     computed: {
         addButton() {
@@ -328,9 +313,6 @@ export default {
             return true
         },
         ...mapGetters(['configuration', 'tax'])
-    },
-    beforeDestroy() {
-        window.removeEventListener("keydown", this.acceleartor, false);
     }
 }
 </script>
@@ -343,8 +325,7 @@ export default {
 
 textarea {
     outline: none;
-    flex: 20;
-    width: 500px;
+    flex: 1;
     border: none;
     background: #2C2F43;
     color: #f9f9f9;
@@ -371,7 +352,7 @@ textarea {
 }
 
 aside.edit {
-    flex: 5;
+    flex: 1;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -434,7 +415,6 @@ article.option {
 .side {
     background: #fff;
     margin: 5px 0;
-    padding: 0 15px 0 0;
     display: flex;
     position: relative;
     box-shadow: var(--shadow);
@@ -627,5 +607,9 @@ div.add {
     padding: 10px;
     flex: 1;
     background: #F5F5F5;
+}
+
+.ctrl {
+    display: flex;
 }
 </style>

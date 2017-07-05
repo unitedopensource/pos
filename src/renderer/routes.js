@@ -105,6 +105,10 @@ export default [{
         component: require('./components/setting/menu/template')
       }]
     }, {
+      path: 'table',
+      name: 'Setting.table',
+      component: require('./components/setting/table/index')
+    }, {
       path: 'print',
       name: 'Setting.print',
       component: require('./components/setting/print/index')
