@@ -28,9 +28,12 @@ export default {
       componentData: null
     }
   },
+  created() {
+    this.station && this.station.pole.enable && this.welcome()
+  },
   mounted() {
     this.$socket.emit("INQUIRY_TICKET_NUMBER");
-    CLODOP2015_7028.webskt.onclose = function (e) { };
+    CLODOP.webskt.onclose = function (e) { };
     !this.station ?
       this.activateStation() :
       this.store.timeCard && this.checkClockIn();
@@ -130,6 +133,11 @@ export default {
           }
         })
       })
+    },
+    welcome() {
+      if(!poleDisplay) return;
+      poleDisplay.write("\f");
+      poleDisplay.write(line(this.station.pole.top, this.station.pole.btm));
     },
     checkClockIn() {
       if (this.op.wage.includes("H") && !this.op.clockIn)

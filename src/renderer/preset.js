@@ -16,7 +16,7 @@ var Preset = function () {
       },
       scale: {
         enable: false,
-        port: 'COM2'
+        port: 'COM1'
       },
       print: {},
       timeout: 0,

@@ -310,6 +310,8 @@
               'STATION_RECORDS': '本站',
               'STATION.TERM.TIP':'配置信用卡刷卡器',
               'STATION.POLEDISPLAY.TIP':'配置价格显示器',
+              'STATION.POLEDISPLAY.FIRSTLINE':'第一行',
+              'STATION.POLEDISPLAY.SECONDLINE':'第二行',
               'SHUTDOWN': '关机',
               'STORE':'店面',
               'SETTING.HEAD.TITLE':'UnitedPOS 设置',

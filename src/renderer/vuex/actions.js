@@ -51,6 +51,11 @@ export const removeMenuItem = ({
 }, data) => {
   commit(types.REMOVE_MENU_ITEM, data)
 }
+export const updateRequestCategory = ({
+  commit
+},data) =>{
+  commit(types.UPDATE_REQUEST_CATEGORY,data)
+}
 export const removeRequestItem = ({
   commit
 }, id) => {
@@ -233,10 +238,10 @@ export const updateOrder = ({
   commit(types.LAST_UPDATE_ORDER, data.time);
   commit(types.UPDATE_ORDER, data.order);
 }
-export const updateCategory = ({
+export const updateMenuCategory = ({
   commit
 }, data) => {
-  commit(types.UPDATE_CATEGORY, data);
+  commit(types.UPDATE_MENU_CATEGORY, data);
 }
 export const setUpdate = ({
   commit

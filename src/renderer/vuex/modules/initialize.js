@@ -231,47 +231,9 @@ const mutations = {
     }
     state.config.layout.table.splice();
   },
-  [types.UPDATE_CATEGORY](state, data) {
+  [types.UPDATE_MENU_CATEGORY](state, data) {
     let { category, items, index } = data;
-    let group = [];
-    items.forEach(item => {
-      !group.hasOwnProperty(item.category) && (group[item.category] = []);
-      group[item.category].push(item);
-    })
-    let contain = Object.keys(group).map(key => group[key]);
-    contain.forEach(items => {
-      items = items.map(item => {
-        item.clickable = true;
-        return item
-      }).sort((c, n) => {
-        return (c.num > n.num) ? 1 : ((n.num > c.num) ? -1 : 0);
-      });
-
-      let length = 6 - items.length % 3;
-      length === 6 && (length = 3);
-      for (let i = 0; i < length; i++) {
-        items.push({
-          zhCN: "",
-          usEN: "",
-          clickable: false
-        })
-      }
-      return items;
-    });
-    let length = [].concat.apply([], contain).length;
-    let page = Math.ceil(length / 33);
-    length = 33 * page - length;
-    let last = contain.length - 1;
-    for (let i = 0; i < length; i++) {
-      contain[last].push({
-        zhCN: "",
-        usEN: "",
-        clickable: false
-      })
-    }
-    category.item = contain;
-    category.contain = Object.keys(group);
-    console.log(category);
+    category.item = flatten(items, 33, true);
     state.config.layout.menu.splice(index, 1, category);
   },
   [types.LAST_UPDATE_TABLE](state, time) {
@@ -315,6 +277,11 @@ const mutations = {
   [types.REPLACE_MENU_ITEM](state, replace) {
     state.config.layout.menu[replace.index]['item'] = replace.items;
   },
+  [types.UPDATE_REQUEST_CATEGORY](state, data) {
+    let { category, items, index } = data;
+    category.item = flatten(items, 33, false);
+    state.initialize.config.layout.request.splice(index, 1, category);
+  },
   [types.REMOVE_REQUEST_ITEM](state, id) {
     //let request = state.initialize.config.layout.request;
   }
@@ -323,4 +290,36 @@ const mutations = {
 export default {
   state,
   mutations
+}
+
+function flatten(items, pageSize = 33, multiPage = false) {
+  let group = [];
+  items.forEach(item => {
+    !group.hasOwnProperty(item.category) && (group[item.category] = []);
+    group[item.category].push(item);
+  });
+
+  items = Object.keys(group).map(key => group[key]);
+  items.forEach(items => {
+    items = items.map(item => {
+      item.clickable = true;
+      return item
+    }).sort((c, n) => {
+      return (c.num > n.num) ? 1 : ((n.num > c.num) ? -1 : 0);
+    });
+  });
+
+  let length = [].concat.apply([], items).length;
+  let page = multiPage ? Math.ceil(length / pageSize) : 1;
+  length = pageSize * page - length;
+  let last = items.length - 1;
+  for (let i = 0; i < length; i++) {
+    items[last] && items[last].push({
+      zhCN: "",
+      usEN: "",
+      clickable: false
+    })
+  }
+
+  return items;
 }

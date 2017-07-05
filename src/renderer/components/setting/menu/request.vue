@@ -50,8 +50,10 @@ export default {
             }).then(result => {
                 result.item = [];
                 console.log(result);
+                this.$socket.emit("[CMS] UPDATE_REQUEST_CATEGORY", { category: result, index });
                 this.$exitComponent();
-            }).catch(() => {
+            }).catch(del => {
+                del && this.removeCategory(index);
                 this.$exitComponent();
             })
         },
@@ -85,11 +87,22 @@ export default {
                 console.log(result);
                 this.$exitComponent();
             }).catch(del => {
-                del && this.$socket.emit("[CMS] REMOVE_REQUEST_ITEM",{id:item._id})
+                del && this.$socket.emit("[CMS] REMOVE_REQUEST_ITEM", { id: item._id })
                 this.$exitComponent();
             })
         },
-        ...mapActions(['update'])
+        removeCategory(index) {
+            let category = {
+                zhCN: "",
+                usEN: "",
+                num: 99,
+                contain: [""],
+                item: []
+            }
+            //this.updateRequestCategory({ category, index });
+            this.$socket.emit("[CMS] UPDATE_REQUEST_CATEGORY", { category, index });
+        }
+        //...mapActions(['updateRequestCategory'])
     },
     computed: {
         ...mapGetters(['request', 'language', 'actions'])

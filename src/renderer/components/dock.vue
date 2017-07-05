@@ -12,11 +12,12 @@
       <i class="fa fa-user"></i>{{op.name}}</span>
     <span class="corner" v-if="$route.name !== 'Dashboard'">{{time | moment('hh:mm a')}}</span>
     <span class="corner right" v-else>
-      <i class="fa fa-phone-square" :class="{oow:!application.callerId}"></i>
-      <i class="fa fa-globe oow"></i>
-      <i class="fa fa-credit-card oow"></i>
+      <i class="fa fa-phone-square" :class="{NA:!application.callerId}"></i>
+      <i class="fa fa-globe NA"></i>
+      <i class="fa fa-credit-card NA"></i>
+      <!--<i class="fa fa-desktop" :class="{NA:!station.pole.enable}"></i>-->
       <i class="fa fa-print spooler" :data-queue="spooler.length" v-show="spooler.length" @click="openSpooler"></i>
-      <i class="fa fa-sitemap" :class="{oow:!application.database}"></i>
+      <i class="fa fa-sitemap" :class="{NA:!application.database}"></i>
     </span>
     <div :is="component" :init="componentData" @exit="exitComponent" @print="printConfirm" @trigger="componentEvent"></div>
   </div>
@@ -255,10 +256,11 @@ export default {
     ...mapActions(['setTicket',
       'updateMenuItem',
       'removeMenuItem',
+      'updateRequestCategory',
       'removeRequestItem',
       'setApplication',
       'updateTable',
-      'updateCategory',
+      'updateMenuCategory',
       'setUpdate',
       'setCustomer',
       'insertOrder',
@@ -307,11 +309,14 @@ export default {
       this.componentData = info;
       this.component = "modal";
     },
+    REQUEST_CATEGORY_UPDATE(data){
+      this.updateRequestCategory(data);
+    },
     REQUEST_ITEM_REMOVE(data){
       this.removeRequestItem(data.id);
     },
-    CATEGORY_UPDATE(data) {
-      this.updateCategory(data);
+    MENU_CATEGORY_UPDATE(data) {
+      this.updateMenuCategory(data);
     },
     TIMECARD_REPORT(data) {
       Printer.init(this.configuration).setJob("timeCard report").print(data);
@@ -384,8 +389,8 @@ export default {
 }
 
 span.corner {
-  padding: 8px 10px 4px;
-  width: 125px;
+  padding: 8px 4px 4px;
+  width: 135px;
   text-align: center;
   float: right;
 }
@@ -451,7 +456,7 @@ span.orderType {
   margin-right: 0;
 }
 
-.oow {
+.NA {
   color: #F4511E;
 }
 

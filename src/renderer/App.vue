@@ -15,27 +15,6 @@ export default {
     }
   },
   mounted() {
-    // let scale = new serialport('COM1',{
-    //     baudRate: 9600,
-    //     dataBits: 7,
-    //     stopBits: 1,
-    //     parser:serialport.parsers.raw,
-    //     autoOpen:false
-    // });
-    //
-    // scale.open(err=>{
-    //   if(err){
-    //     console.log(err)
-    //   }else{
-    //     console.log("SCALE PORT OPEN")
-    //     scale.write(String.fromCharCode(57))
-    //   }
-    // });
-    //
-    // scale.on('data',console.log);
-    //
-    // window.scale = scale;
-
     let port = new serialport('COM3', {
       autoOpen: false,
       parser: serialport.parsers.raw
@@ -81,9 +60,17 @@ export default {
           break;
       }
     });
-    // window.caller = function(tel){
-    //   store.commit("RINGING",{name:"text",number:tel,time:+new Date})
-    // } 
+    let poleDisplay = new serialport('COM4', { autoOpen: false });
+    poleDisplay.open(function (err) {
+      if (err) {
+        window.poleDisplay = null;
+        return console.log('Display Pole Not Install');
+      } else {
+        poleDisplay.write('\f');
+        poleDisplay.write(line("United POS", "[888] 299-0524"));
+        window.poleDisplay = poleDisplay;
+      }
+    });
   }
 }
 </script>

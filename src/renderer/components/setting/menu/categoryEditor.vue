@@ -35,7 +35,7 @@ export default {
     created() {
         this.$socket.emit("INQURY_CATEGORIES");
         this.category = Object.assign({}, this.init.category);
-        this.contain = this.category.contain;
+        this.contain = this.category.contain.filter(category=>category);
     },
     data() {
         return {

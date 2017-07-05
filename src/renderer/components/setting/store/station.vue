@@ -28,6 +28,8 @@
             <article>
                 <smart-switch v-model="workStation.pole.enable" label="ENABLE"></smart-switch>
                 <smart-option v-model="workStation.pole.port" label="PORT" :options="ports"></smart-option>
+                <smart-input v-model="workStation.pole.top" label="STATION.POLEDISPLAY.FIRSTLINE" :disable="!workStation.pole.enable"></smart-input>
+                <smart-input v-model="workStation.pole.btm" label="STATION.POLEDISPLAY.SECONDLINE" :disable="!workStation.pole.enable"></smart-input>
             </article>
         </section>
         <section class="card">
@@ -74,7 +76,7 @@ export default {
             },
             scale: {
                 enable: false,
-                port: 'COM2'
+                port: 'COM1'
             }
         }, this.station);
     },

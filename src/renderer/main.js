@@ -129,3 +129,18 @@ window.today = function () {
   d = new Date(d);
   return `${d.getFullYear()}-${("0" + (d.getMonth() + 1)).slice(-2)}-${("0" + d.getDate()).slice(-2)}`;
 }
+window.line = function (line1, line2) {
+  function f(data) {
+    if (typeof data === 'sting') {
+      let i = Math.floor(Math.abs(20 - data.length) / 2);
+      return (' '.repeat(i) + data + ' '.repeat(i + 10)).slice(0, 20);
+    } else {
+      let string = data[0];
+      let amount = "$ " + data[1];
+      let i = 20 - (string + amount).length;
+      i < 0 && (i = 0);
+      return (string + ' '.repeat(i) + amount).slice(0, 20);
+    }
+  }
+  return f(line1) + f(line2);
+}

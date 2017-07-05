@@ -379,7 +379,7 @@ export default {
                     this.calculator(n) : this.order.payment || this.calculator(n);
             }, deep: true
         },
-        'ticket.type'(){
+        'ticket.type'() {
             this.calculator(this.cart)
         }
     },
@@ -686,7 +686,7 @@ i.flip {
 
 .list i {
     display: none;
-    padding-right:25px;
+    padding-right: 25px;
 }
 
 .order.showCategory .list {

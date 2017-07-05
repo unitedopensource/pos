@@ -11,8 +11,9 @@
 export default {
     props: ['value', 'label', 'tip', 'options'],
     created() {
-        this.data = typeof this.options === 'object' ? this.options :
-            Object.keys(this.options).map(option => ({ label: option, value: option }));
+        this.data = this.options.map(option => {
+            return typeof option === 'string' ? { label: option, value: option } : option;
+        });
     },
     data() {
         return {
