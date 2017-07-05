@@ -12,11 +12,17 @@ var Preset = function () {
       },
       pole: {
         enable: false,
-        port: 'COM4'
+        port: 'COM4',
+        top: "",
+        btm: ""
       },
       scale: {
         enable: false,
         port: 'COM1'
+      },
+      callid: {
+        enable: false,
+        port: 'COM3'
       },
       print: {},
       timeout: 0,

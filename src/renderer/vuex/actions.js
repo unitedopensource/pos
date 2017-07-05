@@ -53,8 +53,8 @@ export const removeMenuItem = ({
 }
 export const updateRequestCategory = ({
   commit
-},data) =>{
-  commit(types.UPDATE_REQUEST_CATEGORY,data)
+}, data) => {
+  commit(types.UPDATE_REQUEST_CATEGORY, data)
 }
 export const removeRequestItem = ({
   commit
@@ -86,11 +86,6 @@ export const delPin = ({
 }) => {
   commit(types.DEL_PIN)
 }
-// export const opLogin = ({
-//   commit
-// }, op) => {
-//   commit(types.OP_LOGIN, op)
-// }
 export const setOp = ({
   commit
 }, op) => {
@@ -274,28 +269,23 @@ export const setViewOrder = ({
 }, order) => {
   commit(types.SET_VIEW_ORDER, JSON.parse(JSON.stringify(order)));
 }
-export const insertCallHistory = ({
+export const setDevice = ({
   commit
 }, data) => {
-  commit(types.INSERT_CALL_HISTORY, data)
+  commit(types.SET_DEVICE, data)
 }
 export const removePayment = ({
   commit
 }) => {
   commit(types.REMOVE_PAYMENT)
 }
-// export const cmsStore = ({
-//   commit
-// }, change) => {
-//   commit(types.CMS_STORE, change)
-// }
-// export const cmsTable = ({
-//   commit
-// }, setting) => {
-//   commit(types.CMS_TABLE, setting);
-// }
 export const replaceMenuItem = ({
   commit
 }, change) => {
   commit(types.REPLACE_MENU_ITEM, change)
+}
+export const phoneRing = ({
+  commit
+}, data) => {
+  commit(types.PHONE_RING, data);
 }

@@ -40,6 +40,13 @@
             </article>
         </section>
         <section class="card">
+            <header>{{text('CALLER_ID')}}</header>
+            <article>
+                <smart-switch v-model="workStation.callid.enable" label="ENABLE"></smart-switch>
+                <smart-option v-model="workStation.callid.port" label="PORT" :options="ports"></smart-option>
+            </article>
+        </section>
+        <section class="card">
             <header>{{text('SECURITY')}}</header>
             <article>
                 <smart-range v-model="workStation.timeout" label="TIMEOUT" min="0" max="600" step="30"></smart-range>
@@ -77,6 +84,10 @@ export default {
             scale: {
                 enable: false,
                 port: 'COM1'
+            },
+            callid: {
+                enable: false,
+                port: 'COM3'
             }
         }, this.station);
     },
@@ -96,7 +107,6 @@ export default {
                 this.componentData = { resolve, reject, ui };
                 this.component = "editor";
             }).then(result => {
-                console.log(result)
                 this.workStation.interface.splice(index, 1, result);
                 this.$exitComponent();
             }).catch(() => {

@@ -8,7 +8,8 @@ export const history = state => state.initialize.orders
 export const update = state => state.initialize.update
 export const spooler = state => state.initialize.spooler
 export const ring = state => state.initialize.ring
-export const callHistory = state => state.initialize.callHistory
+export const device = state => state.initialize.device
+//export const callHistory = state => state.initialize.callHistory
 export const reservation = state => state.initialize.reservation
 export const station = state => state.initialize.station
 export const ticket = state => state.initialize.ticket

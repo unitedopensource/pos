@@ -72,9 +72,9 @@ export default {
                 //this.$toast()
                 return;
             }
-            this.poleDisplay(item);
+            this.poleDisplay(item.usEN.slice(0,20),["Price:",(item.price[0]).toFixed(2)]);
+            
             item = Object.assign({}, item);
-
             (item.hasOwnProperty("prices") && item.prices[this.ticket.type]) && (item.price = item.prices[this.ticket.type])
             this.configuration.store.table.seatOrder && (item.sort = this.sort);
             this.setSides(this.fillOption(item.option));
@@ -225,9 +225,8 @@ export default {
             this.payment.due = this.payment.hasOwnProperty('due') ?
                 this.payment.due :
                 this.payment.total + this.payment.tip + this.payment.gratuity - this.payment.discount;
-                
-                poleDisplay.write("\f");
-                poleDisplay.write(line("TOTAL DUE:",["",parseFloat(this.payment.due).toFixed(2)]));
+
+            this.poleDisplay("TOTAL DUE:", ["", parseFloat(this.payment.due).toFixed(2)])
 
             new Promise((resolve, reject) => {
                 this.componentData = {
@@ -266,10 +265,10 @@ export default {
         search() {
 
         },
-        poleDisplay(item) {
-            if (!this.station.pole.enable) return;
+        poleDisplay(line1, line2) {
+            if (!this.device.poleDisplay) return;
             poleDisplay.write('\f');
-            poleDisplay.write(line(item.usEN.slice(0,20), ["Amount",item.price[0]]));
+            poleDisplay.write(line(line1, line2));
         },
         marker() {
             if (this.isEmptyOrder) return;
@@ -473,7 +472,7 @@ export default {
             }
             return this.items
         },
-        ...mapGetters(['configuration', 'application', 'order', 'op', 'customer', 'currentTable', 'menu', 'sides', 'item', 'ticket', 'station', 'language', 'isEmptyOrder'])
+        ...mapGetters(['configuration', 'application', 'order', 'op', 'customer', 'currentTable', 'menu', 'sides', 'item', 'ticket', 'station', 'language', 'isEmptyOrder', 'device'])
     },
     components: {
         functionGrid, itemMarker, orderList, modify, course, split, payment, request, dialoger, guests, builder,

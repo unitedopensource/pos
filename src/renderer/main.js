@@ -144,3 +144,4 @@ window.line = function (line1, line2) {
   }
   return f(line1) + f(line2);
 }
+

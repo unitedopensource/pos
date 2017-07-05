@@ -29,7 +29,7 @@ export default {
     }
   },
   created() {
-    this.station && this.station.pole.enable && this.welcome()
+    this.device.poleDisplay && this.welcome();
   },
   mounted() {
     this.$socket.emit("INQUIRY_TICKET_NUMBER");
@@ -135,7 +135,6 @@ export default {
       })
     },
     welcome() {
-      if(!poleDisplay) return;
       poleDisplay.write("\f");
       poleDisplay.write(line(this.station.pole.top, this.station.pole.btm));
     },
@@ -151,7 +150,7 @@ export default {
     ...mapActions(['regStation', 'setTicket', 'resetDashboard', 'setCustomer', 'setApplication'])
   },
   computed: {
-    ...mapGetters(['store', 'station', 'time', 'op', 'ring', 'callHistory'])
+    ...mapGetters(['store', 'station', 'time', 'op', 'ring', 'callHistory','device'])
   },
   components: {
     dialoger

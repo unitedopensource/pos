@@ -12,10 +12,10 @@
       <i class="fa fa-user"></i>{{op.name}}</span>
     <span class="corner" v-if="$route.name !== 'Dashboard'">{{time | moment('hh:mm a')}}</span>
     <span class="corner right" v-else>
-      <i class="fa fa-phone-square" :class="{NA:!application.callerId}"></i>
+      <i class="fa fa-phone-square" :class="{NA:!device.callid}"></i>
       <i class="fa fa-globe NA"></i>
-      <i class="fa fa-credit-card NA"></i>
-      <!--<i class="fa fa-desktop" :class="{NA:!station.pole.enable}"></i>-->
+      <i class="fa fa-credit-card" :class="{NA:!device.terminal}"></i>
+      <i class="fa fa-desktop" :class="{NA:!device.poleDisplay}"></i>
       <i class="fa fa-print spooler" :data-queue="spooler.length" v-show="spooler.length" @click="openSpooler"></i>
       <i class="fa fa-sitemap" :class="{NA:!application.database}"></i>
     </span>
@@ -73,7 +73,8 @@ export default {
       'history',
       'language',
       'order',
-      'ring'])
+      'ring',
+      'device'])
   },
   methods: {
     openPanel() {

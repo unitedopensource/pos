@@ -5,6 +5,12 @@ const state = {
   station: null,
   application: {},
   reservation: [],
+  device: {
+    callid: false,
+    scale: false,
+    poleDisplay: false,
+    terminal: false
+  },
   spooler: [],
   orders: [],
   templates: [],
@@ -37,6 +43,9 @@ const mutations = {
   [types.SET_TICKET](state, data) {
     state.ticket = Object.assign({}, state.ticket, data)
   },
+  [types.SET_DEVICE](state, data) {
+    state.device = Object.assign({}, state.device, data)
+  },
   [types.SET_APPLICATION](state, data) {
     state.application = Object.assign({}, state.application, data)
   },
@@ -46,6 +55,7 @@ const mutations = {
   [types.REG_STATION](state, mac) {
     if (typeof mac === 'object') {
       state.station = mac;
+      state.config.store.station[mac.alies] = mac;
     } else {
       let stations = state.config.store.station;
       for (var name in stations) {
@@ -266,13 +276,8 @@ const mutations = {
   [types.REMOVE_SPOOLER](state, index) {
     state.spooler.splice(index, 1)
   },
-  [types.RINGING](state, data) {
+  [types.PHONE_RING](state, data) {
     state.ring = data
-  },
-  [types.INSERT_CALL_HISTORY](state, data) {
-    data.callTime = +new Date();
-    state.callHistory.unshift(data);
-    state.callHistory = state.callHistory.slice(0, 5);
   },
   [types.REPLACE_MENU_ITEM](state, replace) {
     state.config.layout.menu[replace.index]['item'] = replace.items;
