@@ -2,24 +2,49 @@
     <div class="popupMask center dark" @click.self="init.reject(false)">
         <div class="editor">
             <header>{{text('EDITOR.HEADER.REQUEST')}}</header>
-            <div class="inner">
+            <div class="inner" v-if="init.type === 'category'">
                 <div class="input">
-                    <label>{{text('ALIES')}}</label>
-                    <input v-model="tax.alies">
+                    <label>{{text('ZH_CN')}}</label>
+                    <input v-model="request.zhCN">
                 </div>
                 <div class="input">
-                    <label>{{text('TAX_RATE')}}</label>
-                    <input v-model.number="tax.rate">
+                    <label>{{text('ZH_CN')}}</label>
+                    <input v-model="request.usEN">
                 </div>
-                <div class="option">
-                    <checkbox v-model="tax.apply.WALK_IN" label="WALK_IN"></checkbox>
-                    <checkbox v-model="tax.apply.PICK_UP" label="PICK_UP"></checkbox>
-                    <checkbox v-model="tax.apply.DELIVERY" label="DELIVERY"></checkbox>
-                    <checkbox v-model="tax.apply.DINE_IN" label="DINE_IN"></checkbox>
-                    <checkbox v-model="tax.apply.BAR" label="BAR"></checkbox>
+                <div class="input">
+                    <label>{{text('CONTAIN')}}</label>
+                    <input v-model="request.contain">
+                </div>
+            </div>
+            <div class="inner" v-else-if="init.type === 'action'">
+                <div class="input">
+                    <label>{{text('ZH_CN')}}</label>
+                    <input v-model="request.zhCN">
+                </div>
+                <div class="input">
+                    <label>{{text('US_EN')}}</label>
+                    <input v-model="request.usEN">
                 </div>
                 <div class="default">
-                    <checkbox label="SET_DEFAULT" v-model="tax.default"></checkbox>
+                    <checkbox v-model="request.prefix" label="PREFIX_VERB"></checkbox>
+                </div>
+            </div>
+            <div class="inner" v-else-if="init.type === 'item'">
+                <div class="input">
+                    <label>{{text('ZH_CN')}}</label>
+                    <input v-model="request.zhCN">
+                </div>
+                <div class="input">
+                    <label>{{text('US_EN')}}</label>
+                    <input v-model="request.usEN">
+                </div>
+                <div class="input">
+                    <label>{{text('CATEGORY')}}</label>
+                    <input v-model="request.category">
+                </div>
+                <div class="input">
+                    <label>{{text('PRICE')}}</label>
+                    <input v-model.number="request.price">
                 </div>
             </div>
             <footer>
@@ -39,12 +64,11 @@ export default {
     components: { checkbox },
     props: ['init'],
     created() {
-        console.log(this.init.tax);
-        this.tax = Object.assign({}, this.init.tax);
+        this.request = JSON.parse(JSON.stringify(this.init.data));
     },
     data() {
         return {
-            tax: null
+            request: null
         }
     },
     methods: {
@@ -52,21 +76,10 @@ export default {
             this.init.reject(true);
         },
         confirm() {
-            this.init.resolve(this.tax)
+            this.init.resolve(this.request)
         }
     }
 }
 </script>
 
-<style scoped>
-.option {
-    text-indent: 10px;
-}
-
-.default {
-    margin-top: 10px;
-    border-top: 1px dashed #eee;
-    padding-top: 15px;
-}
-
-</style>
+<style></style>

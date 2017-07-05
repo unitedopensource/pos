@@ -175,12 +175,11 @@ const mutations = {
         }
         category.item.push(temp);
       }
-      let length = [].concat.apply([], category.item).length;
-      let page = Math.ceil(length / 33);
-      length = 33 * page - length;
+      let length = 33 - [].concat.apply([], category.item).length;
+      //let page = Math.ceil(length / 33);
       let index = category.item.length - 1;
       for (let i = 0; i < length; i++) {
-        category.item[index].push({
+        category.item[index] && category.item[index].push({
           zhCN: "",
           usEN: "",
           clickable: false
@@ -313,14 +312,11 @@ const mutations = {
     state.callHistory.unshift(data);
     state.callHistory = state.callHistory.slice(0, 5);
   },
-  // [types.CMS_STORE](state,change){
-  //   state.config.store[change.key] = change.value
-  // },
-  // [types.CMS_TABLE](state,setting){
-  //   state.config.store.table = setting
-  // },
   [types.REPLACE_MENU_ITEM](state, replace) {
     state.config.layout.menu[replace.index]['item'] = replace.items;
+  },
+  [types.REMOVE_REQUEST_ITEM](state, id) {
+    //let request = state.initialize.config.layout.request;
   }
 }
 

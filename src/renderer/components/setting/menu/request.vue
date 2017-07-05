@@ -1,7 +1,7 @@
 <template>
     <div class="layout">
         <div class="category">
-            <div v-for="(category,index) in request" @click="getItems(category)" @contextmenu="editCategory(category)" :key="index">{{category[language]}}</div>
+            <div v-for="(category,index) in request" @click="getItems(category,index)" @contextmenu="editCategory(category,index)" :key="index">{{category[language]}}</div>
         </div>
         <div class="prefix">
             <div v-for="(action,index) in actions" @contextmenu="editAction(action,index)" :key="index">{{action[language]}}</div>
@@ -24,33 +24,72 @@ export default {
     created() {
         this.items = [].concat.apply([], this.request[0].item);
     },
-    // mounted() {
-    //     window.addEventListener("keydown", this.input, false);
-    // },
     data() {
         return {
             items: [],
             component: null,
             componentData: null,
-            pointIndex: 0
+            categoryIndex: 0
         }
     },
     methods: {
-        getItems(category) {
+        getItems(category, index) {
+            this.categoryIndex = index;
             this.items = [].concat.apply([], category.item);
         },
-        editCategory(category) {
+        editCategory(category, index) {
             console.log(category)
+            new Promise((resolve, reject) => {
+                this.componentData = {
+                    resolve, reject,
+                    data: category,
+                    title: 'EDITOR.HEADER.REQUEST',
+                    type: 'category'
+                }
+                this.component = "requestEditor"
+            }).then(result => {
+                result.item = [];
+                console.log(result);
+                this.$exitComponent();
+            }).catch(() => {
+                this.$exitComponent();
+            })
         },
-        editAction(action) {
+        editAction(action, index) {
             console.log(action)
+            new Promise((resolve, reject) => {
+                this.componentData = {
+                    resolve, reject,
+                    data: action,
+                    title: 'EDITOR.HEADER.ACTION',
+                    type: 'action'
+                }
+                this.component = "requestEditor"
+            }).then(result => {
+                console.log(result);
+                this.$exitComponent();
+            }).catch(() => {
+                this.$exitComponent();
+            })
         },
-        editItem(item){
-
-        }
-        // input(){
-
-        // }
+        editItem(item, index) {
+            new Promise((resolve, reject) => {
+                this.componentData = {
+                    resolve, reject,
+                    data: item,
+                    title: 'EDITOR.HEADER.ITEM',
+                    type: 'item'
+                }
+                this.component = "requestEditor"
+            }).then(result => {
+                console.log(result);
+                this.$exitComponent();
+            }).catch(del => {
+                del && this.$socket.emit("[CMS] REMOVE_REQUEST_ITEM",{id:item._id})
+                this.$exitComponent();
+            })
+        },
+        ...mapActions(['update'])
     },
     computed: {
         ...mapGetters(['request', 'language', 'actions'])

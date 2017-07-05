@@ -12,11 +12,17 @@
                     <input v-model.number="tax.rate">
                 </div>
                 <div class="option">
-                    <checkbox v-model="tax.apply.WALK_IN" label="WALK_IN"></checkbox>
-                    <checkbox v-model="tax.apply.PICK_UP" label="PICK_UP"></checkbox>
-                    <checkbox v-model="tax.apply.DELIVERY" label="DELIVERY"></checkbox>
-                    <checkbox v-model="tax.apply.DINE_IN" label="DINE_IN"></checkbox>
-                    <checkbox v-model="tax.apply.BAR" label="BAR"></checkbox>
+                    <div class="tip">
+                        <h3>{{text('APPLY')}}</h3>
+                        <span>{{text('EDITOR.TAX.TIP')}}</span>
+                    </div>
+                    <div>
+                        <checkbox v-model="tax.apply.WALK_IN" label="WALK_IN"></checkbox>
+                        <checkbox v-model="tax.apply.PICK_UP" label="PICK_UP"></checkbox>
+                        <checkbox v-model="tax.apply.DELIVERY" label="DELIVERY"></checkbox>
+                        <checkbox v-model="tax.apply.DINE_IN" label="DINE_IN"></checkbox>
+                        <checkbox v-model="tax.apply.BAR" label="BAR"></checkbox>
+                    </div>
                 </div>
                 <div class="default">
                     <checkbox label="SET_DEFAULT" v-model="tax.default"></checkbox>
@@ -60,13 +66,21 @@ export default {
 
 <style scoped>
 .option {
-    text-indent: 10px;
+    display: flex;
+    align-items: center;
 }
 
-.default {
-    margin-top: 10px;
-    border-top: 1px dashed #eee;
-    padding-top: 15px;
+.tip {
+    width: 113px;
 }
 
+h3 {
+    font-weight: normal;
+}
+
+.tip span {
+    font-size: 13px;
+    font-style: italic;
+    color: gray;
+}
 </style>

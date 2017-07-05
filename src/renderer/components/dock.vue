@@ -254,6 +254,7 @@ export default {
     ...mapActions(['setTicket',
       'updateMenuItem',
       'removeMenuItem',
+      'removeRequestItem',
       'setApplication',
       'updateTable',
       'updateCategory',
@@ -304,6 +305,9 @@ export default {
       this.insertCallHistory(info);
       this.componentData = info;
       this.component = "modal";
+    },
+    REQUEST_ITEM_REMOVE(data){
+      this.removeRequestItem(data.id);
     },
     CATEGORY_UPDATE(data) {
       this.updateCategory(data);

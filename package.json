@@ -20,12 +20,7 @@
   "build": {
     "productName": "UnitedPOS",
     "appId": "unitedpos.software.pos.beta",
-    "category": "public.app-category.business",
     "copyright": "Copyright © 2017 United POS Inc.",
-    "repository": {
-      "type": "git",
-      "url": "git+https://github.com/UnitedPOS/unitedpos.git"
-    },
     "directories": {
       "output": "build"
     },

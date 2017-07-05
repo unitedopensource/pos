@@ -51,6 +51,11 @@ export const removeMenuItem = ({
 }, data) => {
   commit(types.REMOVE_MENU_ITEM, data)
 }
+export const removeRequestItem = ({
+  commit
+}, id) => {
+  commit(types.REMOVE_REQUEST_ITEM, id)
+}
 export const setMenu = ({
   commit
 }, menu) => {
