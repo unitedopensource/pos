@@ -130,8 +130,8 @@ window.today = function () {
   return `${d.getFullYear()}-${("0" + (d.getMonth() + 1)).slice(-2)}-${("0" + d.getDate()).slice(-2)}`;
 }
 window.line = function (line1, line2) {
-  function f(data) {
-    if (typeof data === 'sting') {
+  let f = function (data) {
+    if (typeof data === 'string') {
       let i = Math.floor(Math.abs(20 - data.length) / 2);
       return (' '.repeat(i) + data + ' '.repeat(i + 10)).slice(0, 20);
     } else {
