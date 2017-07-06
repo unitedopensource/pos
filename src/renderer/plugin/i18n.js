@@ -234,6 +234,7 @@
               'PYMT_F': '付款失败',
               'PRT_ITEM_OR': '改变菜项名字',
               'PRIORITY': '优先值',
+              'PRINTER':'打印机',
               'PRINT': '打印',
               'PRINT_PRIMARY':'打印中文',
               'PRINT_SECONDARY':'打印英文',
