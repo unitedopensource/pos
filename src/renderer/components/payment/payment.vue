@@ -363,19 +363,20 @@ export default {
                 this.setInputAnchor("paid");
             } else {
                 Printer.openCashDrawer();
+                this.poleDisplay(["Paid CASH",this.paid],["Change Due:",change]);
                 this.$dialog({
-                    title:this.text("CHANGE",change),
+                    title: this.text("CHANGE", change),
                     msg: this.text("CUST_PAID", this.paid),
                     buttons: [{
                         text: "CONFIRM",
                         fn: 'reject'
-                    },{
+                    }, {
                         text: 'PRINT_RECEIPT',
                         fn: 'resolve'
                     }]
                 }).then(() => {
                     this.payment.settled = true;
-                    this.summarize({ print:true });
+                    this.summarize({ print: true });
                 }).catch(() => {
                     this.summarize({ print: false });
                 })
@@ -410,6 +411,7 @@ export default {
                 this.$socket.emit("[TERM] SAVE_TRANSACTION", transaction);
                 Printer.init(this.configuration).setJob("creditCard").print(transaction);
                 if (parseFloat(this.payment.due) === 0) {
+                    this.poleDisplay("Paid Credit Card","Thank You");
                     this.payment.settled = true;
                     this.summarize({ print: true, transaction });
                 }
@@ -434,7 +436,7 @@ export default {
         },
         chargeGift() {
             if (parseFloat(this.paid) >= this.creditCard.balance) {
-
+                this.poleDisplay("Paid Gift Card","Thank You");
                 let activity = {
                     date: today(),
                     time: +new Date,
@@ -607,7 +609,11 @@ export default {
             }).catch(() => {
                 this.$exitComponent();
             })
-
+        },
+        poleDisplay(line1, line2) {
+            if (!this.device.poleDisplay) return;
+            poleDisplay.write('\f');
+            poleDisplay.write(line(line1, line2));
         },
         generateQuickInput(amount) {
             let preset = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 100, 120, 140, 150, 200, 300, 350, 400, 450, 500, 600, 700, 800, 900];
@@ -669,7 +675,7 @@ export default {
                 balance: balance > 0 ? balance.toFixed(2) : "0.00"
             }
         },
-        ...mapGetters(['op', 'configuration', 'ticket', 'customer'])
+        ...mapGetters(['op', 'configuration', 'ticket', 'customer', 'device'])
     },
     watch: {
         'giftCard.number'(n) {

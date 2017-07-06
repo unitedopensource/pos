@@ -23,15 +23,8 @@ const dialog = {
         };
         args.hasOwnProperty('buttons') ?
           args.buttons.forEach(button => {
-            let fn;
-            if (button.fn.includes(",")) {
-              let data = button.fn.split(",");
-              fn = "this.init." + data[0] + "(" + data[1] + ")";
-            } else {
-              fn = button.fn === 'resolve' ? resolve : reject
-            }
             this.componentData.buttons.push({
-              text: button.text, fn
+              text: button.text, fn: button.fn === 'resolve' ? resolve : reject
             })
           }) :
           this.componentData.buttons.push({
