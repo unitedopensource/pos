@@ -1,7 +1,7 @@
 <template>
     <div class="popupMask center dark" @click.self="init.reject(false)">
         <div class="editor">
-            <header>{{text('EDITOR.HEADER.REQUEST')}}</header>
+            <header>{{text(init.title)}}</header>
             <div class="inner" v-if="init.type === 'category'">
                 <div class="input">
                     <label>{{text('ZH_CN')}}</label>

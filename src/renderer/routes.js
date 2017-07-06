@@ -113,16 +113,16 @@ export default [{
       name: 'Setting.print',
       component: require('./components/setting/print/index')
     }, {
+      path:'operator',
+      name:'Setting.operator',
+      component:require('./components/setting/operator/index')
+    },{
       path: 'database',
       component: require('./components/setting/database/nav'),
       children: [{
         path: '/',
         name: 'Setting.database',
         component: require('./components/setting/database/index')
-      }, {
-        path: 'Operator',
-        name: 'Setting.operator',
-        component: require('./components/setting/database/operator')
       }, {
         path: 'Client',
         name: 'Setting.client',

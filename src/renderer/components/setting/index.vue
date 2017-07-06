@@ -17,7 +17,7 @@
                 <figcaption>{{text('SEAT')}}</figcaption>
                 <span class="intro">{{text('SETTING.SEAT.TIP')}}</span>
             </figure>
-            <figure>
+            <figure @click="go('Setting.online')">
                 <i class="fa fa-2x fa-globe"></i>
                 <figcaption>{{text('ONLINE_ORDER')}}</figcaption>
                 <span class="intro">{{text('SETTING.ONLINE.TIP')}}</span>
@@ -27,7 +27,7 @@
                 <figcaption>{{text('PRINT')}}</figcaption>
                 <span class="intro">{{text('SETTING.PRINT.TIP')}}</span>
             </figure>
-            <figure>
+            <figure @click="go('Setting.operator')">
                 <i class="fa fa-2x fa-users"></i>
                 <figcaption>{{text('OP')}}</figcaption>
                 <span class="intro">{{text('SETTING.USERS.TIP')}}</span>

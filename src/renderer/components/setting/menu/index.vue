@@ -298,6 +298,18 @@ export default {
     border: 1px dashed #607D8B;
 }
 
+aside {
+    width: 164px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+aside .btn {
+    width: 152px;
+    margin: 5px;
+}
+
 .itemGhost {
     background: #607D8B;
     border: 1px dashed #212121;
