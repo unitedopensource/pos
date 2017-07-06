@@ -28,7 +28,7 @@ const dialog = {
               let data = button.fn.split(",");
               fn = "this.init." + data[0] + "(" + data[1] + ")";
             } else {
-              fn = eval(button.fn)
+              fn = button.fn === 'resolve' ? resolve : reject
             }
             this.componentData.buttons.push({
               text: button.text, fn
