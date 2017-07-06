@@ -21,7 +21,7 @@ const splashURL = process.env.NODE_ENV === 'development' ?
   `http://localhost:9080/splash.html`
   : `file://${__dirname}/splash.html`;
 
-  console.log(`file://${__dirname}/splash.html`)
+console.log(`file://${__dirname}/splash.html`)
 
 function createWindow() {
   /**
@@ -37,6 +37,7 @@ function createWindow() {
     show: false
   })
   mainWindow.loadURL(winURL)
+  //mainWindow.webContents.openDevTools()
 
   splashWindow = new BrowserWindow({
     width: 460,
@@ -99,10 +100,15 @@ ipcMain.on("Initialized", () => {
   mainWindow.center();
 });
 
+ipcMain.on("Relaunch", () => {
+  app.relaunch({ args: process.argv.slice(1).concat(['--relaunch']) })
+  app.exit(0)
+});
+
 ipcMain.on("SHUTDOWN", () => {
   const exec = require('child_process').exec;
   exec('shutdown -s -f -t 0');
-})
+});
 
 /**
  * Auto Updater

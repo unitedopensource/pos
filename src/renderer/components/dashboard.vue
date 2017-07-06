@@ -16,6 +16,7 @@
 </template>
 
 <script>
+import { ipcRenderer } from 'electron'
 import { mapActions, mapGetters } from 'vuex'
 import moment from 'moment'
 import Preset from '../preset'
@@ -28,15 +29,15 @@ export default {
       componentData: null
     }
   },
-  created() {
-    this.device.poleDisplay && this.welcome();
-  },
   mounted() {
     this.$socket.emit("INQUIRY_TICKET_NUMBER");
     CLODOP.webskt.onclose = function (e) { };
-    !this.station ?
-      this.activateStation() :
+    if (!this.station) {
+      this.activateStation();
+    } else {
+      this.device.poleDisplay && this.welcome();
       this.store.timeCard && this.checkClockIn();
+    }
   },
   methods: {
     go(grid) {
@@ -107,7 +108,7 @@ export default {
           text: this.text('ACTIVATION'),
           fn: 'resolve'
         }]
-      }).then(resolve => {
+      }).then(() => {
         MAC.getMac((err, mac) => {
           if (err) {
             this.$dialog({
@@ -128,6 +129,8 @@ export default {
             let station = Preset.station(alies, mac);
             _stations[alies] = station;
             this.$socket.emit("[CONFIG] UPDATE_STATION", _stations);
+
+            //ipcRenderer.send("Relaunch");
             this.regStation(station)
             this.$exitComponent();
           }
@@ -150,7 +153,7 @@ export default {
     ...mapActions(['regStation', 'setTicket', 'resetDashboard', 'setCustomer', 'setApplication'])
   },
   computed: {
-    ...mapGetters(['store', 'station', 'time', 'op', 'ring', 'callHistory','device'])
+    ...mapGetters(['store', 'station', 'time', 'op', 'ring', 'callHistory', 'device'])
   },
   components: {
     dialoger
