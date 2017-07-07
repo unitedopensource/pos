@@ -41,7 +41,7 @@ export default {
     created() {
         this.items = [].concat.apply([], this.menu[0].item);
         this.setSides(this.fillOption([]));
-        this.ticket.type === 'DINE_IN' && this.configuration.store.table.seatOrder && (this.sort = 1);
+        this.ticket.type === 'DINE_IN' && this.config.store.table.seatOrder && (this.sort = 1);
     },
     mounted() {
         document.querySelector(".category div").classList.add("active");
@@ -76,7 +76,7 @@ export default {
 
             item = Object.assign({}, item);
             (item.hasOwnProperty("prices") && item.prices[this.ticket.type]) && (item.price = item.prices[this.ticket.type])
-            this.configuration.store.table.seatOrder && (item.sort = this.sort);
+            this.config.store.table.seatOrder && (item.sort = this.sort);
             this.setSides(this.fillOption(item.option));
             this.addToOrder(item);
             this.recordAction();
@@ -299,7 +299,7 @@ export default {
                 print
             });
             if (print) {
-                Printer.init(this.configuration).setJob("receipt").print(order);
+                Printer.init(this.config).setJob("receipt").print(order);
                 order.content = order.content.map(item => {
                     item.print = true;
                     item.pending = false;
@@ -328,7 +328,7 @@ export default {
                 print
             });
             if (print) {
-                Printer.init(this.configuration).setJob("receipt").print(order);
+                Printer.init(this.config).setJob("receipt").print(order);
                 order.content = order.content.map(item => {
                     item.print = true;
                     item.pending = false;
@@ -378,7 +378,7 @@ export default {
             let language = this.application.language === "usEN" ? "zhCN" : "usEN";
             moment.locale(language === 'usEN' ? 'en' : 'zh-cn');
             this.$setLanguage(language);
-            this.setApplication({ language });
+            this.setApp({ language });
         },
         switchGuest() {
             let guest = this.currentTable.current.guest;
@@ -400,9 +400,7 @@ export default {
             })
         },
         recordAction() {
-            this.setApplication({
-                opLastAction: new Date
-            });
+            this.setApp({ opLastAction: new Date });
         },
         exitComponent() {
             this.componentData = null;
@@ -449,7 +447,7 @@ export default {
             this.recordAction();
             this.$router.push({ path: "/main" });
         },
-        ...mapActions(['setApplication',
+        ...mapActions(['setApp',
             'lessQty',
             'moreQty',
             'addToOrder',
@@ -472,7 +470,7 @@ export default {
             }
             return this.items
         },
-        ...mapGetters(['configuration', 'application', 'order', 'op', 'customer', 'currentTable', 'menu', 'sides', 'item', 'ticket', 'station', 'language', 'isEmptyOrder', 'device'])
+        ...mapGetters(['config', 'application', 'order', 'op', 'customer', 'currentTable', 'menu', 'sides', 'item', 'ticket', 'station', 'language', 'isEmptyOrder', 'device'])
     },
     components: {
         functionGrid, itemMarker, orderList, modify, course, split, payment, request, dialoger, guests, builder,

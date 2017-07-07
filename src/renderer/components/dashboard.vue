@@ -41,11 +41,8 @@ export default {
   },
   methods: {
     go(grid) {
-      this.setApplication({
-        opLastAction: new Date
-      });
+      this.setApp({ opLastAction: new Date });
       if (!grid.enable) return;
-
       let route = grid.route;
       switch (route) {
         case "sale":
@@ -69,12 +66,7 @@ export default {
           if (this.store.table.layout) {
             this.$router.push({ path: '/main/table' });
           } else {
-            this.$dialog({
-              title: this.text("DINE_IN_DISABLED"),
-              msg: this.text("TIP_DINE_IN_ENABLE")
-            }).then(() => {
-              this.$exitComponent();
-            })
+            this.$dialog({ title: "DINE_IN_DISABLED", msg: "TIP_DINE_IN_ENABLE" }).then(() => { this.$exitComponent() })
           }
           break;
         case "history":
@@ -101,27 +93,11 @@ export default {
     },
     activateStation() {
       this.$dialog({
-        type: "warning",
-        title: this.text('STA_UNREG'),
-        msg: this.text('TIP_REG_STA'),
-        buttons: [{
-          text: this.text('ACTIVATION'),
-          fn: 'resolve'
-        }]
+        type: "warning", title: 'STA_UNREG', msg: 'TIP_REG_STA', buttons: [{ text: 'ACTIVATION', fn: 'resolve' }]
       }).then(() => {
         MAC.getMac((err, mac) => {
           if (err) {
-            this.$dialog({
-              type: "error",
-              title: this.text('STA_REG_F'),
-              msg: this.text('TIP_REASON', err),
-              buttons: [{
-                text: this.text('CANCEL'),
-                fn: 'resolve'
-              }]
-            }).then(() => {
-              this.$exitComponent();
-            });
+            this.$dialog({ type: "error", title: 'STA_REG_F', msg: this.text('TIP_REASON', err), buttons: [{ text: 'CANCEL', fn: 'resolve' }] }).then(() => { this.$exitComponent() });
           } else {
             let _stations = Object.assign({}, this.store.station);
             let length = Object.keys(_stations).length + 1;
@@ -131,7 +107,7 @@ export default {
             this.$socket.emit("[CONFIG] UPDATE_STATION", _stations);
 
             //ipcRenderer.send("Relaunch");
-            this.regStation(station)
+            this.setStation(station)
             this.$exitComponent();
           }
         })
@@ -142,15 +118,9 @@ export default {
       poleDisplay.write(line(this.station.pole.top, this.station.pole.btm));
     },
     checkClockIn() {
-      if (this.op.wage.includes("H") && !this.op.clockIn)
-        this.$dialog({
-          title: this.text("CLOCK_IN_REQ"),
-          msg: this.text("TIP_CLOCK_IN_REQ")
-        }).then(() => {
-          this.$exitComponent();
-        })
+      this.op.wage.includes("H") && !this.op.clockIn && this.$dialog({ title: "CLOCK_IN_REQ", msg: "TIP_CLOCK_IN_REQ" }).then(() => { this.$exitComponent() })
     },
-    ...mapActions(['regStation', 'setTicket', 'resetDashboard', 'setCustomer', 'setApplication'])
+    ...mapActions(['setStation', 'setTicket', 'resetDashboard', 'setCustomer', 'setApp'])
   },
   computed: {
     ...mapGetters(['store', 'station', 'time', 'op', 'ring', 'callHistory', 'device'])

@@ -9,32 +9,37 @@ export const startTick = ({
     let d = new Date(a.setHours(a.getHours() - 4));
     let date = d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2);
     commit(types.START_TICK, { time, date });
-  }, 1000)
+  }, 100000)
 }
 export const setConfig = ({
   commit
-}, config) => {
-  commit(types.SET_CONFIGURATION, config)
+}, data) => {
+  commit(types.SET_CONFIG, data)
 }
-export const setApplication = ({
+export const setApp = ({
   commit
 }, data) => {
-  commit(types.SET_APPLICATION, data)
+  commit(types.SET_APP, data)
 }
 export const setReservation = ({
   commit
 }, list) => {
   commit(types.SET_RESERVATION, list)
 }
-export const regTemplates = ({
+export const setTemplates = ({
   commit
 }, templates) => {
-  commit(types.REG_TEMPLATES, templates)
+  commit(types.SET_TEMPLATES, templates)
 }
-export const regStation = ({
+export const setLastSync = ({
   commit
-}, mac) => {
-  commit(types.REG_STATION, mac)
+}, data) => {
+  commit(types.SET_LASTSYNC, data)
+}
+export const setStation = ({
+  commit
+}, data) => {
+  commit(types.SET_STATION, data)
 }
 export const setCategory = ({
   commit
@@ -119,7 +124,7 @@ export const resetAll = ({
   commit(types.RESET_DASHBOARD);
   commit(types.SET_TICKET, { type: "" });
   commit(types.RESET_TABLE);
-  commit(types.SET_APPLICATION, { mode: 'create' });
+  commit(types.SET_APP, { mode: 'create' });
 }
 export const resetMenu = ({
   commit
@@ -134,7 +139,7 @@ export const setSides = ({
 export const delayPrint = ({
   commit
 }, order) => {
-  commit(types.PUSH_SPOOLER, order)
+  commit(types.ADD_SPOOLER, order)
 }
 export const removeSpooler = ({
   commit
@@ -217,37 +222,39 @@ export const setPriceForChoiceSet = ({
 export const updateTable = ({
   commit
 }, data) => {
-  commit(types.LAST_UPDATE_TABLE, data.time);
-  commit(types.UPDATE_TABLE, data.table);
+  let { table, time } = data;
+  commit(types.SET_LASTSYNC, {
+    table: time
+  });
+  commit(types.UPDATE_TABLE, table);
 }
 export const insertOrder = ({
   commit
 }, data) => {
-  commit(types.SET_TICKET, { number: data.ticket });
-  commit(types.LAST_UPDATE_ORDER, data.time);
-  commit(types.INSERT_ORDER, data.order);
+  let { ticket, time, order } = data;
+  commit(types.SET_TICKET, { number: ticket });
+  commit(types.SET_LASTSYNC, { order: time });
+  commit(types.INSERT_ORDER, order);
 }
 export const updateOrder = ({
   commit
 }, data) => {
-  commit(types.LAST_UPDATE_ORDER, data.time);
-  commit(types.UPDATE_ORDER, data.order);
+  let { time, order } = data;
+  commit(types.SET_LASTSYNC, { order: time });
+  commit(types.UPDATE_ORDER, order);
 }
 export const updateMenuCategory = ({
   commit
 }, data) => {
   commit(types.UPDATE_MENU_CATEGORY, data);
 }
-export const setUpdate = ({
-  commit
-}, time) => {
-  commit(types.UPDATE_LAST_TIME, time)
-}
-export const setTodayOrderHistory = ({
+
+export const setTodayOrder = ({
   commit
 }, data) => {
-  commit(types.LAST_UPDATE_ORDER, data.time);
-  commit(types.SET_TODAY_ORDER_HISTORY, data.orders);
+  let { time, orders } = data;
+  commit(types.SET_TODAYORDER, orders);
+  commit(types.SET_LASTSYNC, { order: time });
 }
 export const setCurrentTable = ({
   commit

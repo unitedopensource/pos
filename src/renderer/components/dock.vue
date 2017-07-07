@@ -17,7 +17,7 @@
       <i class="fa fa-credit-card" :class="{NA:!device.terminal}"></i>
       <i class="fa fa-desktop" :class="{NA:!device.poleDisplay}"></i>
       <i class="fa fa-print spooler" :data-queue="spooler.length" v-show="spooler.length" @click="openSpooler"></i>
-      <i class="fa fa-sitemap" :class="{NA:!application.database}"></i>
+      <i class="fa fa-sitemap" :class="{NA:!app.database}"></i>
     </span>
     <div :is="component" :init="componentData" @exit="exitComponent" @print="printConfirm" @trigger="componentEvent"></div>
   </div>
@@ -39,8 +39,8 @@ export default {
     setTimeout(() => {
       document.querySelector(".dock").classList.add("slideDown");
     }, 300);
-    this.$store.watch((state) => state.initialize.time, (n) => {
-      this.application.autoLogout && this.opTimeout();
+    this.$store.watch((state) => state.initial.time, (n) => {
+      this.app.autoLogout && this.opTimeout();
       this.spooler.length !== 0 && (n > this.spooler[0].delay) && this.printFromSpooler(0);
     })
   },
@@ -54,12 +54,11 @@ export default {
     type() {
       if (this.currentTable) {
         let guest = this.currentTable.current.guest > 0 ? " - " + this.currentTable.current.guest : "";
-        return this.text(this.ticket.type, this.application.language) + " - " + this.text('SEAT') + " " + this.currentTable.name + guest;
-      } else {
-        return this.text(this.ticket.type, this.application.language);
+        return this.text(this.ticket.type, this.app.language) + " - " + this.text('SEAT') + " " + this.currentTable.name + guest;
       }
+      return this.text(this.ticket.type, this.app.language);
     },
-    ...mapGetters(['application',
+    ...mapGetters(['app',
       'configuration',
       'currentTable',
       'history',
@@ -131,30 +130,21 @@ export default {
       }
     },
     opTimeout(current) {
-      let lapse = (current - this.application.opLastAction) / 1000;
+      let lapse = (current - this.app.opLastAction) / 1000;
       if (lapse > this.station.timeout) {
-        this.setApplication({
-          autoLogout: false
-        });
+        this.setApp({ autoLogout: false });
         this.$dialog({
-          title: this.text('AUTO_LOGOUT'),
-          msg: this.text('TIP_AUTO_LOGOUT', this.station.timeout),
+          title: 'AUTO_LOGOUT', msg: this.text('TIP_AUTO_LOGOUT', this.station.timeout),
           timeout: {
             fn: 'resolve',
             duration: 10000
           },
-          buttons: [{
-            text: this.text('EXTEND'),
-            fn: 'reject'
-          }]
+          buttons: [{ text: 'EXTEND', fn: 'reject' }]
         }).then(() => {
           this.resetAll();
           this.$router.push({ path: '/Login' });
         }).catch(() => {
-          this.setApplication({
-            opLastAction: new Date,
-            autoLogout: true
-          });
+          this.setApp({ opLastAction: new Date, autoLogout: true });
           this.$exitComponent();
         })
       }
@@ -220,11 +210,7 @@ export default {
             msg: this.text("TIP_CLOCK_IN", moment(this.time).format("hh:mm:ss a")),
             buttons: [{ text: 'CANCEL', fn: 'reject' }, { text: 'CONFIRM', fn: 'resolve' }]
           }).then(() => {
-            this.setOp({
-              clockIn: this.time,
-              timeCard: ObjectId()
-            })
-            console.log(this.op)
+            this.setOp({ clockIn: this.time, timeCard: ObjectId() })
             this.$socket.emit("[TIMECARD] CLOCK_IN", this.op)
             this.$exitComponent();
           }).catch(() => {
@@ -269,7 +255,7 @@ export default {
       'removeMenuItem',
       'updateRequestCategory',
       'removeRequestItem',
-      'setApplication',
+      'setApp',
       'updateTable',
       'updateMenuCategory',
       'setUpdate',
@@ -285,10 +271,10 @@ export default {
   },
   sockets: {
     connect() {
-      this.setApplication({ database: true });
+      this.setApp({ database: true });
     },
     TICKET_NUMBER(number) {
-      this.application.mode !== 'edit' && this.setTicket({ number });
+      this.app.mode !== 'edit' && this.setTicket({ number });
     },
     UPDATE_CUSTOMER(customer) {
       console.log(customer);
@@ -363,7 +349,7 @@ export default {
       this.removeMenuItem(data);
     },
     disconnect() {
-      this.setApplication({ database: false });
+      this.setApp({ database: false });
     }
   },
   watch: {

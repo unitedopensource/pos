@@ -72,7 +72,7 @@ export default {
     shutdown() {
       Electron.ipcRenderer.send("SHUTDOWN");
     },
-    ...mapActions(['setPin', 'delPin', 'setOp', 'setApplication'])
+    ...mapActions(['setPin', 'delPin', 'setOp', 'setApp'])
   },
   beforeDestroy() {
     window.removeEventListener("keydown", this.input, false);
@@ -84,13 +84,8 @@ export default {
         let language = result.op[0].language || "usEN";
         moment.locale(language === 'usEN' ? 'en' : 'zh-cn');
         this.$setLanguage(language);
-        this.setApplication({ language });
-        if (this.station && this.station.timeout) {
-          this.setApplication({
-            autoLogout: true,
-            opLastAction: new Date
-          })
-        }
+        this.setApp({ language });
+        this.station && this.station.timeout && this.setApp({ autoLogout: true, opLastAction: new Date });
         this.setOp(result.op[0]);
         this.setPin();
         this.$router.push({ path: '/main' });

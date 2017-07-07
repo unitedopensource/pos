@@ -18,7 +18,7 @@ export default {
     document.documentElement.lang = language;
     moment.locale(language === 'usEN' ? 'en' : 'zh-cn');
     this.$setLanguage(language);
-    this.setApplication({
+    this.setApp({
       date: moment().subtract('4', 'hours').format("YYYY-MM-DD"),
       language,
       printer: true,
@@ -44,13 +44,13 @@ export default {
       this.setRequest(data.request);
       Electron.ipcRenderer.send("Loading", "Setting environment...");
       this.setTable(data.table);
+      this.setTemplates(data.template);
       this.setReservation(data.reservation);
-      this.regTemplates(data.template);
-      this.setTodayOrderHistory({
+      this.setTodayOrder({
         orders: data.orders,
         time: data.update.order
       });
-      this.setUpdate(data.update);
+      this.setLastSync(data.update);
       MAC.getMac((err, mac) => {
         if (err) {
           Electron.ipcRenderer.send("Loading", "An unknown network issue occurred...");
@@ -59,7 +59,7 @@ export default {
             this.$router.push('Login');
           }, 5000)
         } else {
-          this.regStation(mac);
+          this.setStation(mac);
           this.initDevices();
           Electron.ipcRenderer.send("Initialized");
           this.$router.push('Login');
@@ -69,7 +69,6 @@ export default {
   },
   methods: {
     initDevices() {
-      console.log(this.station);
       if (this.station) {
         this.station.callid.enable && this.initCallerId(this.station.callid.port);
         this.station.pole.enable && this.initPoleDisplay(this.station.pole.port);
@@ -92,7 +91,7 @@ export default {
           number = number.split("=")[1].replace(/\D/g, '').replace(/\+?1?(\d{3})\D?\D?(\d{3})\D?(\d{4})/, "$1$2$3");
           let time = +new Date();
           this.phoneRing({ name, number, time });
-        } else if(raw.length === 3) {
+        } else if (raw.length === 3) {
           let type = raw[1].replace(/[^a-zA-Z ]/g, "");
           switch (type) {
             case "RING":
@@ -127,19 +126,19 @@ export default {
 
     },
     ...mapActions([
-      'setConfig',
-      'regStation',
-      'setDevice',
-      'phoneRing',
+      'setApp',
       'setMenu',
       'setTable',
-      'setRequest',
-      'setApplication',
-      'setReservation',
-      'regTemplates',
+      'phoneRing',
       'startTick',
-      'setUpdate',
-      'setTodayOrderHistory'])
+      'setConfig',
+      'setDevice',
+      'setRequest',
+      'setStation',
+      'setLastSync',
+      'setTemplates',
+      'setTodayOrder',
+      'setReservation'])
   },
   computed: {
     ...mapGetters(['station'])
