@@ -193,12 +193,12 @@ Printer.prototype.printReceipt = function (raw) {
       item.choiceSet.forEach(set => {
         setCN += `<p class="list choiceSet zhCN">
                       <span class="qty">${set.qty === 1 ? " " : set.qty}</span>
-                      <span class="CNSet">${set.zhCN} ${set.price > 0 ? ' ($' + set.price.toFixed(2) + ')' : ""}</span>
+                      <span class="CNSet">${set.zhCN} ${set.price > 0 ? ' ($' + parseFloat(set.price).toFixed(2) + ')' : ""}</span>
                     </p>`;
         setEN += `<p class="list choiceSet usEN">
                       <span class="qty">${set.qty === 1 ? " " : set.qty}</span>
                       <span class="itemWrap">${set.usEN}</span>
-                      <span class="price">${set.price > 0 ? set.price.toFixed(2) : ""}</span>
+                      <span class="price">${set.price > 0 ? parseFloat(set.price).toFixed(2) : ""}</span>
                     </p>`;
       });
       let name = (item[printer] && item[printer].hasOwnProperty("zhCN")) ? item[printer].zhCN : item.zhCN;

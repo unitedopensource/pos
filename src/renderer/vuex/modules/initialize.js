@@ -279,6 +279,9 @@ const mutations = {
   [types.PHONE_RING](state, data) {
     state.ring = data
   },
+  [types.INSERT_CALL_HISTORY](state,data){
+    state.callHistory.push(data)
+  },
   [types.REPLACE_MENU_ITEM](state, replace) {
     state.config.layout.menu[replace.index]['item'] = replace.items;
   },

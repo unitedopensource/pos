@@ -287,5 +287,10 @@ export const replaceMenuItem = ({
 export const phoneRing = ({
   commit
 }, data) => {
-  commit(types.PHONE_RING, data);
+  commit(types.PHONE_RING, data)
+}
+export const insertCallHistory = ({
+  commit
+}, data) => {
+  commit(types.INSERT_CALL_HISTORY, data)
 }

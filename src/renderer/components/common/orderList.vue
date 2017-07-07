@@ -325,7 +325,7 @@ export default {
                 subtotal += price;
 
                 for (let x = 0; x < choiceLength; x++) {
-                    subtotal += item.choiceSet[x].price;
+                    subtotal += parseFloat(item.choiceSet[x].price);
                 }
                 let taxClass = this.tax.class[item.taxClass];
                 if (!this.order.taxFree) tax += taxClass.apply[orderType] ? (taxClass.rate / 100 * price) : tax;

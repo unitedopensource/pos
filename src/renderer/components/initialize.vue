@@ -91,8 +91,8 @@ export default {
           let number = raw.find(arr => arr.indexOf("NMBR=") !== -1);
           number = number.split("=")[1].replace(/\D/g, '').replace(/\+?1?(\d{3})\D?\D?(\d{3})\D?(\d{4})/, "$1$2$3");
           let time = +new Date();
-          store.commit("RINGING", { name, number, time });
-        } else {
+          this.phoneRing({ name, number, time });
+        } else if(raw.length === 3) {
           let type = raw[1].replace(/[^a-zA-Z ]/g, "");
           switch (type) {
             case "RING":
