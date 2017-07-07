@@ -94,24 +94,33 @@ export default {
           this.$dialog({
             type: "question",
             title: 'CONFIRM_ORD_TYP_SW',
-            msg: this.text('ORD_TYP_SW', this.text(this.ticket.type), this.text(type)),
-            buttons: [{
-              text: this.text('CANCEL'),
-              fn: 'reject'
-            }, {
-              text: this.text('CONFIRM'),
-              fn: 'resolve'
-            }]
+            msg: this.text('ORD_TYP_SW', this.text(this.ticket.type), this.text(type))
           }).then(() => {
+            if (this.ticket.type === 'DINE_INE') {
+              this.setTableInfo({
+                guest: 0,
+                server: "",
+                time: "",
+                status: 1,
+                current: {
+                  guest: 0,
+                  server: "",
+                  time: "",
+                  invoice: [],
+                  group: "",
+                  color: ""
+                }
+              });
+              this.$socket.emit("TABLE_MODIFIED", this.currentTable);
+            }
             this.setTicket({ type });
             let content = this.order.content.map(item => {
               item.price = (item.hasOwnProperty("prices") && item.prices[type]) ? item.prices[type] : item.prices.DEFAULT || item.price
               return item;
             })
             this.setOrder({ content });
-            //console.log(this.order)
-            (type === 'DELIVERY' && (!this.customer.address || !this.customer.phone)) &&
-              this.$router.push({ name: 'Information' });
+            if (type === 'DELIVERY' && (!this.customer.address || !this.customer.phone)) this.$router.push({ name: 'Information' });
+            if (type === 'DINE_IN') this.$router.push({ name: 'Table' });
             this.$exitComponent();
           }).catch(() => {
             this.$exitComponent();
@@ -209,7 +218,7 @@ export default {
             type: "question",
             title: "CLOCK_IN_CONFIRM",
             msg: this.text("TIP_CLOCK_IN", moment(this.time).format("hh:mm:ss a")),
-            buttons:[{text:'CANCEL',fn:'reject'},{text:'CONFIRM',fn:'resolve'}]
+            buttons: [{ text: 'CANCEL', fn: 'reject' }, { text: 'CONFIRM', fn: 'resolve' }]
           }).then(() => {
             this.setOp({
               clockIn: this.time,
@@ -255,6 +264,7 @@ export default {
       this.$exitComponent();
     },
     ...mapActions(['setTicket',
+      'setTableInfo',
       'updateMenuItem',
       'removeMenuItem',
       'updateRequestCategory',
@@ -310,10 +320,10 @@ export default {
       this.componentData = info;
       this.component = "modal";
     },
-    REQUEST_CATEGORY_UPDATE(data){
+    REQUEST_CATEGORY_UPDATE(data) {
       this.updateRequestCategory(data);
     },
-    REQUEST_ITEM_REMOVE(data){
+    REQUEST_ITEM_REMOVE(data) {
       this.removeRequestItem(data.id);
     },
     MENU_CATEGORY_UPDATE(data) {

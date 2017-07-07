@@ -72,8 +72,8 @@ export default {
                 //this.$toast()
                 return;
             }
-            this.poleDisplay(item.usEN.slice(0,20),["Price:",(item.price[0]).toFixed(2)]);
-            
+            this.poleDisplay(item.usEN.slice(0, 20), ["Price:", (item.price[0]).toFixed(2)]);
+
             item = Object.assign({}, item);
             (item.hasOwnProperty("prices") && item.prices[this.ticket.type]) && (item.price = item.prices[this.ticket.type])
             this.configuration.store.table.seatOrder && (item.sort = this.sort);

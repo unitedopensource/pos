@@ -18,6 +18,7 @@ Vue.use(dialog)
 Vue.use(i18n)
 
 Vue.config.debug = true
+window.moment = moment
 
 const ip = Ip.address().split(".").splice(0, 3).join(".") + ".";
 let findHost = new Promise((resolve, reject) => {

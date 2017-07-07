@@ -205,16 +205,26 @@ export default {
         };
         this.component = "payment";
       }).then(result => {
-        console.log("trigger", result);
-          this.payment = result.payment;
-          this.setTableInfo({ status: 4 });
-          this.$socket.emit("TABLE_MODIFIED", this.currentTable);
-          let _order = JSON.parse(JSON.stringify(this.order));
-          _order.payment = result.payment;
-          _order.settled = true;
-          this.$socket.emit("ORDER_MODIFIED", _order);
-          _order.type = "PAYMENT";
-          Printer.init(this.configuration).setJob("receipt").print(_order);
+        this.payment = result.payment;
+
+        this.store.table.autoClean ? this.setTableInfo({
+          status: 1,
+          current: {
+            color: "",
+            group: "",
+            guest: 0,
+            invoice: [],
+            server: "",
+            time: ""
+          }
+        }) : this.setTableInfo({ status: 4 });
+        this.$socket.emit("TABLE_MODIFIED", this.currentTable);
+        let _order = JSON.parse(JSON.stringify(this.order));
+        _order.payment = result.payment;
+        _order.settled = true;
+        this.$socket.emit("ORDER_MODIFIED", _order);
+        _order.type = "PAYMENT";
+        Printer.init(this.configuration).setJob("receipt").print(_order);
 
         this.$exitComponent();
       }).catch(() => {

@@ -19,8 +19,8 @@
                 </fieldset>
             </div>
             <footer>
-                <button class="btn" @click="exit" id="cancelEdit">{{text('CANCEL')}}</button>
-                <button class="btn" @click="confirm" id="confirmEdit">{{text('CONFIRM')}}</button>
+                <div class="btn" @click="exit" id="cancelEdit">{{text('CANCEL')}}</div>
+                <div class="btn" @click="confirm" id="confirmEdit">{{text('CONFIRM')}}</div>
             </footer>
         </div>
     </div>

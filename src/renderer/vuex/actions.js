@@ -4,8 +4,8 @@ export const startTick = ({
   commit
 }) => {
   setInterval(() => {
+    let time = +new Date;
     let a = new Date();
-    let time = +a;
     let d = new Date(a.setHours(a.getHours() - 4));
     let date = d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2);
     commit(types.START_TICK, { time, date });

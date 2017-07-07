@@ -155,15 +155,15 @@
                 <div class="payment">
                     <p>
                         <span class="text">Subtotal:</span>
-                        <span class="value">$18.58</span>
+                        <span class="value">18.58</span>
                     </p>
                     <p>
                         <span class="text">Tax:</span>
-                        <span class="value">$1.63</span>
+                        <span class="value">1.63</span>
                     </p>
                     <p class="bold">
                         <span class="text">TOTAL:</span>
-                        <span class="value">$20.21</span>
+                        <span class="value">20.21</span>
                     </p>
                 </div>
                 <div class="footer">
@@ -259,7 +259,7 @@ fieldset {
     border: 1px solid #ccc;
     background: #fff;
     border-radius: 2px;
-    margin: 5px;
+    margin: 3px 5px;
     padding: 5px 0;
 }
 
@@ -289,7 +289,7 @@ section.setting {
 }
 
 .wrap {
-    height: 578px;
+    height: 575px;
 }
 
 .preview {
@@ -304,7 +304,7 @@ section.setting {
 .receipt {
     background: #fff;
     width: 290px;
-    padding: 35px 0 15px;
+    padding: 45px 15px 20px;
     box-shadow: 0px 0 25px rgba(0, 0, 0, .62);
 }
 

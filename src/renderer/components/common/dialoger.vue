@@ -5,7 +5,7 @@
       <h3>{{text(init.title)}}</h3>
       <h5>{{text(init.msg)}}</h5>
       <footer>
-        <button class="btn" v-for="button in init.buttons" @click="trigger(button)">{{text(button.text)}}</button>
+        <div class="btn" v-for="button in init.buttons" @click="trigger(button)">{{text(button.text)}}</div>
       </footer>
     </div>
   </div>

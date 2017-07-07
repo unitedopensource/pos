@@ -27,10 +27,7 @@ const dialog = {
               text: button.text, fn: button.fn === 'resolve' ? resolve : reject
             })
           }) :
-          this.componentData.buttons.push({
-            text: this.text('CONFIRM'),
-            fn: resolve
-          })
+          this.componentData.buttons = [{ text: 'CANCEL', fn: reject }, { text: 'CONFIRM', fn: resolve }]
         this.component = "dialoger";
       });
       return dialog;

@@ -193,6 +193,7 @@ export default {
         },
         cancelOrder() {
             this.resetDashboard();
+            this.resetAll();
             this.setApplication({
                 opLastAction: new Date
             });
@@ -218,7 +219,7 @@ export default {
         search() {
 
         },
-        ...mapActions(['toggleKeyboard', 'resetDashboard', 'setApplication', 'setCustomer'])
+        ...mapActions(['toggleKeyboard', 'resetDashboard', 'setApplication', 'setCustomer','resetAll'])
     },
     beforeDestroy() {
         let dom = document.querySelector("main.window");
