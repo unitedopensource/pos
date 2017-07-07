@@ -43,6 +43,7 @@ label {
     padding: 7px 0;
     font-size: 1em;
     flex: 6;
+    font-family: 'Yuanti-SC'
 }
 
 i {

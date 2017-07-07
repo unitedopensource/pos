@@ -279,7 +279,7 @@ const mutations = {
   [types.PHONE_RING](state, data) {
     state.ring = data
   },
-  [types.INSERT_CALL_HISTORY](state,data){
+  [types.INSERT_CALL_HISTORY](state, data) {
     state.callHistory.push(data)
   },
   [types.REPLACE_MENU_ITEM](state, replace) {
@@ -302,20 +302,20 @@ export default {
 
 function flatten(items, pageSize = 33, multiPage = false) {
   let group = [];
-  items.forEach(item => {
-    !group.hasOwnProperty(item.category) && (group[item.category] = []);
-    group[item.category].push(item);
-  });
-
-  items = Object.keys(group).map(key => group[key]);
-  items.forEach(items => {
-    items = items.map(item => {
-      item.clickable = true;
-      return item
-    }).sort((c, n) => {
-      return (c.num > n.num) ? 1 : ((n.num > c.num) ? -1 : 0);
+    items.forEach(item => {
+      !group.hasOwnProperty(item.category) && (group[item.category] = []);
+      group[item.category].push(item);
     });
-  });
+
+    items = Object.keys(group).map(key => group[key]);
+    items.forEach(items => {
+      items = items.map(item => {
+        item.clickable = true;
+        return item
+      }).sort((c, n) => {
+        return (c.num > n.num) ? 1 : ((n.num > c.num) ? -1 : 0);
+      });
+    });
 
   let length = [].concat.apply([], items).length;
   let page = multiPage ? Math.ceil(length / pageSize) : 1;

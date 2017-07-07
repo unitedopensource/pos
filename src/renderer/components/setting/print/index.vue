@@ -40,8 +40,8 @@
                             <checkbox v-model="profile.control.sortItem" label="SORT_ITEM"></checkbox>
                             <checkbox v-model="profile.control.duplicate" label="PRINT_DUPLICATE"></checkbox>
                             <checkbox v-model="profile.control.printStore" label="PRINT_STORE" @input="toggleStore"></checkbox>
-                            <checkbox v-model="profile.control.printType" label="PRINT_ORDER_TYPE"></checkbox>
-                            <checkbox v-model="profile.control.printCustomer" label="PRINT_CUST_INFO"></checkbox>
+                            <checkbox v-model="profile.control.printType" label="PRINT_ORDER_TYPE" @input="toggleType"></checkbox>
+                            <checkbox v-model="profile.control.printCustomer" label="PRINT_CUST_INFO" @input="toggleCustomer"></checkbox>
                             <checkbox v-model="profile.control.printActionTime" label="PRINT_PRINTTIME"></checkbox>
                             <checkbox v-model="profile.control.enlargeDetail" label="PRINT_ENLARGE_CUST_INFO"></checkbox>
                             <checkbox v-model="profile.control.printPrice" label="PRINT_PRICE"></checkbox>
@@ -68,7 +68,7 @@
                         <h5>{{store.city}} {{store.state}} {{store.zipCode}}</h5>
                         <h5>{{store.contact}}</h5>
                     </div>
-                    <div class="type">
+                    <div class="type" :class="{hide:!receipt.type}">
                         <p class="zhCN">{{text('DELIVERY')}}</p>
                         <p class="usEN">DELIVERY</p>
                     </div>
@@ -85,10 +85,10 @@
                             </span>
                         </p>
                     </div>
-                    <div class="customer">
+                    <div class="customer" :class="{hide:!receipt.customer}">
                         <p>
                             <span class="text">Tel:</span>
-                            <span class="value">888.888.8888</span>
+                            <span class="value">888.299.0524</span>
                         </p>
                         <p>
                             <span class="text">Addr:</span>
@@ -223,11 +223,32 @@ export default {
         },
         toggleStore(bool) {
             this.receipt.store = bool
+        },
+        toggleType(bool){
+            this.receipt.type = bool;
+        },
+        toggleCustomer(bool){
+            this.receipt.customer = bool;
+        },
+        togglePrice(bool){
+            this.receipt.price = bool;
         }
     },
     watch: {
         device(profile) {
             this.profile = this.printers[profile];
+            let {control} = this.profile;
+            Object.assign(this.receipt,{
+                zhCN:control.printPrimary,
+                usEN:control.printSecondary,
+                store:control.printStore,
+                type:control.printType,
+                customer:control.printCustomer,
+                price:control.printPrice,
+                payment:control.printPayment,
+                tip:control.printSuggestion,
+                coupon:control.printCoupon
+            })
         }
     },
     computed: {
@@ -421,7 +442,6 @@ p.mark {
 .payment .bold {
     font-weight: bolder;
     font-size: 1.25em;
-    margin-right: 5px;
 }
 
 .footer {
