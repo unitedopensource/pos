@@ -5,11 +5,12 @@
 
 html {
   overflow: hidden;
-}
-
-:lang(zhCN) {
   font-family: "Yuanti-SC", "Microsoft YaHei";
 }
+
+/*:lang(zhCN) {
+  font-family: "Yuanti-SC", "Microsoft YaHei";
+}*/
 
 ul {
   list-style-type: none;

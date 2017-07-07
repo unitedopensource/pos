@@ -244,9 +244,9 @@ Printer.prototype.printReceipt = function (raw) {
       for (let category in sorted) {
         if (sorted.hasOwnProperty(category)) {
           content += `<div class="category">
-                                  <span class="zhCN">${categoryMap[category]}</span>
-                                  <span class="usEN">${category}</span>
-                                </div>`;
+                        <span class="zhCN">${categoryMap[category]}</span>
+                        <span class="usEN">${category}</span>
+                      </div>`;
           content += sorted[category].map(mockup).join("").toString();
         }
       }

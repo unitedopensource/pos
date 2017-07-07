@@ -7,7 +7,7 @@ const state = {
 
 const mutations = {
   [types.SET_PIN](state, password) {
-    password ?
+    isNumber(password) ?
       state.password.push(password) :
       state.password = [];
 

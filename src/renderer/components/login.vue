@@ -17,7 +17,7 @@
           <div @click="setPin(2)">2</div>
           <div @click="setPin(3)">3</div>
           <div @click="setPin()">X</div>
-          <div @click.ctrl="setPin('@')" @click="setPin(0)">0</div>
+          <div @click="setPin(0)">0</div>
           <div @click="login">√</div>
         </section>
       </div>

@@ -31,15 +31,15 @@
                     <fieldset class="section">
                         <legend>{{text('SETTING.PRINT.CONTROL')}}</legend>
                         <div class="selection">
-                            <checkbox v-model="profile.control.printPrimary" label="PRINT_PRIMARY"></checkbox>
+                            <checkbox v-model="profile.control.printPrimary" label="PRINT_PRIMARY" @input="togglePrimary"></checkbox>
                             <smart-option v-model="profile.control.primaryFont" label="FONT" :options="fonts"></smart-option>
                             <smart-range v-model="profile.control.primaryFontSize" label="FONT_SIZE" min="10" max="40" step="1"></smart-range>
-                            <checkbox v-model="profile.control.printSecondary" label="PRINT_SECONDARY"></checkbox>
+                            <checkbox v-model="profile.control.printSecondary" label="PRINT_SECONDARY" @input="toggleSecondary"></checkbox>
                             <smart-option v-model="profile.control.secondaryFont" label="FONT" :options="fonts"></smart-option>
                             <smart-range v-model="profile.control.secondaryFontSize" label="FONT_SIZE" min="10" max="40" step="1"></smart-range>
                             <checkbox v-model="profile.control.sortItem" label="SORT_ITEM"></checkbox>
                             <checkbox v-model="profile.control.duplicate" label="PRINT_DUPLICATE"></checkbox>
-                            <checkbox v-model="profile.control.printStore" label="PRINT_STORE"></checkbox>
+                            <checkbox v-model="profile.control.printStore" label="PRINT_STORE" @input="toggleStore"></checkbox>
                             <checkbox v-model="profile.control.printType" label="PRINT_ORDER_TYPE"></checkbox>
                             <checkbox v-model="profile.control.printCustomer" label="PRINT_CUST_INFO"></checkbox>
                             <checkbox v-model="profile.control.printActionTime" label="PRINT_PRINTTIME"></checkbox>
@@ -47,8 +47,8 @@
                             <checkbox v-model="profile.control.printPrice" label="PRINT_PRICE"></checkbox>
                             <checkbox v-model="profile.control.printPayment" label="PRINT_PAYMENT"></checkbox>
                             <checkbox v-model="profile.control.printSuggestion" label="PRINT_TIP_SUGG"></checkbox>
-                            <checkbox v-model="profile.control.printCoupon" label="PRINT_COUPON"></checkbox>
                             <checkbox v-model="profile.control.buzzer" label="BUZZER"></checkbox>
+                            <checkbox v-model="profile.control.printCoupon" label="PRINT_COUPON"></checkbox>
                         </div>
                     </fieldset>
                 </div>
@@ -60,12 +60,115 @@
             </footer>
         </section>
         <section class="preview">
-            <div class="receipt">
+            <div class="receipt" :class="{hidePrimary:!receipt.zhCN,hideSecondary:!receipt.usEN}">
                 <header>
-    
+                    <div class="store" :class="{hide:!receipt.store}">
+                        <h3>{{store.name}}</h3>
+                        <h5>{{store.address}}</h5>
+                        <h5>{{store.city}} {{store.state}} {{store.zipCode}}</h5>
+                        <h5>{{store.contact}}</h5>
+                    </div>
+                    <div class="type">
+                        <p class="zhCN">{{text('DELIVERY')}}</p>
+                        <p class="usEN">DELIVERY</p>
+                    </div>
+                    <div class="time">
+                        <span>Date: {{date}}</span>
+                        <span>Time: {{time}}</span>
+                        <div class="number">{{ticket.number}}</div>
+                    </div>
+                    <div class="server">
+                        <p>
+                            <span class="wrap">
+                                <span class="text">Cashier:</span>
+                                <span class="value">{{op.name}}</span>
+                            </span>
+                        </p>
+                    </div>
+                    <div class="customer">
+                        <p>
+                            <span class="text">Tel:</span>
+                            <span class="value">888.888.8888</span>
+                        </p>
+                        <p>
+                            <span class="text">Addr:</span>
+                            <span class="value">50 Allen St</span>
+                        </p>
+                        <p>
+                            <span class="text">City:</span>
+                            <span class="value">New York</span>
+                        </p>
+                        <p>
+                            <span class="text">Name:</span>
+                            <span class="value">United POS Inc.</span>
+                        </p>
+                    </div>
                 </header>
-                <div></div>
-                <footer></footer>
+                <section class="body">
+                    <p class="list zhCN">
+                        <span class="qty">2</span>
+                        <span class="itemWrap">
+                            <span class="item">芥兰鸡
+                                <span class="mark"></span>
+                            </span>
+                            <span class="side">[ 小 ]
+                                <span class="mark"></span>
+                            </span>
+                        </span>
+                    </p>
+                    <p class="list usEN">
+                        <span class="qty">2</span>
+                        <span class="itemWrap">
+                            <span class="item">Chicken Broccoli
+                                <span class="mark"></span>
+                            </span>
+                            <span class="side">[ Pt. ]
+                                <span class="mark"></span>
+                            </span>
+                        </span>
+                        <span class="price">12.59</span>
+                    </p>
+                    <p class="list mark zhCN">
+                        <span class="qty"></span>
+                        <span class="itemWrap">
+                            <span class="item">炸鸡翅
+                                <span class="mark">SPK</span>
+                            </span>
+                            <span class="side">[ 薯条 ]
+                                <span class="mark">K</span>
+                            </span>
+                        </span>
+                    </p>
+                    <p class="list mark usEN">
+                        <span class="qty"></span>
+                        <span class="itemWrap">
+                            <span class="item">Fried Chicken Wing
+                                <span class="mark">SPK</span>
+                            </span>
+                            <span class="side">[ F.F. ]
+                                <span class="mark">K</span>
+                            </span>
+                        </span>
+                        <span class="price">5.99</span>
+                    </p>
+                </section>
+                <div class="payment">
+                    <p>
+                        <span class="text">Subtotal:</span>
+                        <span class="value">$18.58</span>
+                    </p>
+                    <p>
+                        <span class="text">Tax:</span>
+                        <span class="value">$1.63</span>
+                    </p>
+                    <p class="bold">
+                        <span class="text">TOTAL:</span>
+                        <span class="value">$20.21</span>
+                    </p>
+                </div>
+                <div class="footer">
+                    Thank You Very Much
+                </div>
             </div>
         </section>
     </div>
@@ -76,11 +179,13 @@ import { mapGetters, mapActions } from 'vuex'
 import smartOption from '../common/smartOption'
 import smartRange from '../common/smartRange'
 import checkbox from '../common/checkbox'
+import moment from 'moment'
 export default {
     components: { smartOption, smartRange, checkbox },
     created() {
         this.printers = Object.assign({}, this.configuration.printer);
-        this.devices = Object.keys(this.printers) || [];
+        this.devices = Object.keys(this.printers) || [""];
+        //this.devices.unshift("");
     },
     data() {
         return {
@@ -90,12 +195,34 @@ export default {
             profile: undefined,
             presets: ["cashier", "kitchen", "bar", "payment", "runner"],
             preset: "",
-            fonts: ["Agency FB", "Noto Sans SC Light", "Tensentype RuiHeiJ-W2", "Trebuchet MS", "Yuanti SC", "QingYuan"]
+            fonts: ["Agency FB", "Noto Sans SC Light", "Tensentype RuiHeiJ-W2", "Trebuchet MS", "Yuanti SC", "QingYuan"],
+            date: moment().format('MM-DD-YYYY'),
+            time: moment().locale('en').format('hh:mm a'),
+            receipt: {
+                zhCN: true,
+                usEN: true,
+                store: true,
+                type: true,
+                customer: true,
+                price: true,
+                payment: true,
+                tip: true,
+                coupon: true
+            }
         }
     },
     methods: {
         back() {
             this.$router.push({ name: 'Setting.index' })
+        },
+        togglePrimary(bool) {
+            this.receipt.zhCN = bool;
+        },
+        toggleSecondary(bool) {
+            this.receipt.usEN = bool;
+        },
+        toggleStore(bool) {
+            this.receipt.store = bool
         }
     },
     watch: {
@@ -104,7 +231,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(['configuration', 'store'])
+        ...mapGetters(['configuration', 'store', 'ticket', 'op'])
     }
 }
 </script>
@@ -122,15 +249,10 @@ export default {
 }
 
 .input {
-    justify-content: center;
     align-items: center;
     margin: 7px;
     background: #fff;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
-}
-
-.input label {
-    width: 75px;
 }
 
 fieldset {
@@ -166,10 +288,6 @@ section.setting {
     width: 100px;
 }
 
-.input label {
-    width: 100px;
-}
-
 .wrap {
     height: 578px;
 }
@@ -185,9 +303,9 @@ section.setting {
 
 .receipt {
     background: #fff;
-    width: 350px;
-    height: 600px;
-    box-shadow: -5px 0 30px rgba(0, 0, 0, .62);
+    width: 290px;
+    padding: 35px 0 15px;
+    box-shadow: 0px 0 25px rgba(0, 0, 0, .62);
 }
 
 footer {
@@ -197,5 +315,131 @@ footer {
 .btn {
     margin: 0 5px;
     flex: 1;
+}
+
+.receipt header {
+    text-align: center;
+    font-family: 'Agency FB';
+}
+
+.receipt h3 {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.receipt h5 {
+    font-size: 16px;
+    font-weight: lighter;
+}
+
+.receipt .type {
+    margin: 12px;
+}
+
+.receipt .time {
+    display: flex;
+    justify-content: center;
+    border-bottom: 1px solid #9E9E9E;
+    position: relative;
+}
+
+.receipt .time span {
+    margin: 0 10px;
+}
+
+.receipt .time .number {
+    position: absolute;
+    right: 10px;
+    bottom: 12px;
+    font-size: 2em;
+    font-weight: bold;
+}
+
+.server p {
+    text-align: left;
+    padding: 0 10px;
+    border-bottom: 1px solid gray;
+}
+
+.receipt .customer {
+    text-align: left;
+    padding: 2px 10px;
+    border-bottom: 1px solid gray;
+}
+
+.receipt .customer .text {
+    display: inline-block;
+    width: 40px;
+}
+
+p.list {
+    display: flex;
+}
+
+p.list .qty {
+    width: 35px;
+    text-align: center;
+}
+
+section.body {
+    padding: 10px 10px 15px 0;
+}
+
+p.mark {
+    margin-top: 10px;
+}
+
+.itemWrap .mark {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -11px;
+    text-align: center;
+    font-size: 12px;
+}
+
+.itemWrap>span {
+    position: relative;
+}
+
+.price {
+    flex: 1;
+    text-align: right;
+}
+
+.payment {
+    font-family: 'Agency FB';
+    text-align: right;
+    padding: 0 10px;
+}
+
+.payment .value {
+    display: inline-block;
+    width: 40px;
+}
+
+.payment .bold {
+    font-weight: bolder;
+    font-size: 1.25em;
+    margin-right: 5px;
+}
+
+.footer {
+    text-align: center;
+    border-top: 1px solid gray;
+    margin-top: 10px;
+    padding-top: 5px;
+}
+
+.hidePrimary .zhCN {
+    display: none;
+}
+
+.hideSecondary .usEN {
+    display: none;
+}
+
+.hide {
+    display: none;
 }
 </style>
