@@ -375,7 +375,7 @@ export default {
             return order;
         },
         switchLanguage() {
-            let language = this.application.language === "usEN" ? "zhCN" : "usEN";
+            let language = this.app.language === "usEN" ? "zhCN" : "usEN";
             moment.locale(language === 'usEN' ? 'en' : 'zh-cn');
             this.$setLanguage(language);
             this.setApp({ language });
@@ -409,17 +409,7 @@ export default {
         exitConfirm() {
             this.isEmptyOrder ?
                 this.exit() :
-                this.$dialog({
-                    title: 'EXIT_CFM',
-                    msg: 'TIP_EXIT_CFM',
-                    buttons: [{
-                        text: 'CANCEL',
-                        fn: 'reject'
-                    }, {
-                        text: 'CONFIRM',
-                        fn: 'resolve'
-                    }]
-                }).then(() => {
+                this.$dialog({ title: 'EXIT_CFM', msg: 'TIP_EXIT_CFM' }).then(() => {
                     this.exit();
                 }).catch(() => {
                     this.$exitComponent();
@@ -470,7 +460,7 @@ export default {
             }
             return this.items
         },
-        ...mapGetters(['config', 'application', 'order', 'op', 'customer', 'currentTable', 'menu', 'sides', 'item', 'ticket', 'station', 'language', 'isEmptyOrder', 'device'])
+        ...mapGetters(['op', 'app', 'config', 'order', 'menu', 'sides', 'item', 'ticket', 'customer', 'currentTable', 'station', 'language', 'isEmptyOrder', 'device'])
     },
     components: {
         functionGrid, itemMarker, orderList, modify, course, split, payment, request, dialoger, guests, builder,

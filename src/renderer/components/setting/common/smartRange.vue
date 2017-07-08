@@ -29,7 +29,7 @@ label{
     width: 130px;
     text-align: right;
     color: #666;
-    font-size: 1.25em;
+    font-size: 1.05em;
     padding: 8px 20px 8px 0;
 }
 

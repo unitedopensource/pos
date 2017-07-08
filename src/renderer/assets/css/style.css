@@ -96,11 +96,11 @@ i.warning::before {
 
 .popupMask {
   width: 100%;
-  height: 733px;
+  height: 738px;
   background: transparent;
   position: fixed;
   z-index: 3;
-  top: 35px;
+  top: 30px;
   left: 0;
 }
 
@@ -240,7 +240,7 @@ section.card {
 .card .input {
   border-bottom: 1px solid #ccc;
   display: flex;
-  font-size: 1.25em;
+  font-size: 1.05em;
   align-items: center;
 }
 
@@ -553,7 +553,7 @@ section.dataList {
 .menu {
   display: flex;
   flex-wrap: nowrap;
-  margin-top: 70px;
+  margin-top: 62px;
   height: 100%;
   width: 100%;
   background: url(../image/grid.png) #fcfcfc;
@@ -651,7 +651,7 @@ section.cart {
 }
 
 .function {
-  padding: 2px 0 0 3px;
+  padding: 3px 0 0 3px;
 }
 
 section.route {
@@ -695,7 +695,7 @@ section.route .content {
     flex: 1;
     display: flex;
     flex-direction: column;
-    height: 733px;
+    height: 738px;
 }
 
 section.route .content .inner {

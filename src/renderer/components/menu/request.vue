@@ -152,12 +152,12 @@ div.prefix div {
 }
 
 .prefix div {
-  border: 1px solid #A1887F;
-  background: rgba(66, 58, 55, 0.3);
+  border: 1px solid #607D8B;
+  background: #B0BEC5;
 }
 
 .prefix div.acting {
-  background: #FFB74D;
+  background: #009688;
   color: #fff;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
@@ -204,7 +204,7 @@ div.shortCut div {
   margin: 1px;
   vertical-align: top;
   font-size: 1.15em;
-  border: 1px solid gray;
+  border: 1px solid #9E9E9E;
   background: rgba(206, 206, 206, 0.66);
   justify-content: center;
   align-items: center;

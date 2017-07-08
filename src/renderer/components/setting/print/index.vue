@@ -55,8 +55,7 @@
             </div>
             <footer>
                 <div class="btn" @click="back">{{text('BACK')}}</div>
-                <div class="btn">{{text('CREATE')}}</div>
-                <div class="btn">{{text('DELETE')}}</div>
+                <div class="btn f1">{{text('SAVE')}}</div>
             </footer>
         </section>
         <section class="preview">
@@ -105,7 +104,7 @@
                     </div>
                 </header>
                 <section class="body">
-                    <p class="list zhCN">
+                    <p class="list" :style="style.zhCN">
                         <span class="qty">2</span>
                         <span class="itemWrap">
                             <span class="item">芥兰鸡
@@ -116,7 +115,7 @@
                             </span>
                         </span>
                     </p>
-                    <p class="list usEN">
+                    <p class="list" :style="style.usEN">
                         <span class="qty">2</span>
                         <span class="itemWrap">
                             <span class="item">Chicken Broccoli
@@ -128,7 +127,7 @@
                         </span>
                         <span class="price">12.59</span>
                     </p>
-                    <p class="list mark zhCN">
+                    <p class="list mark" :style="style.zhCN">
                         <span class="qty"></span>
                         <span class="itemWrap">
                             <span class="item">炸鸡翅
@@ -139,7 +138,7 @@
                             </span>
                         </span>
                     </p>
-                    <p class="list mark usEN">
+                    <p class="list mark" :style="style.usEN">
                         <span class="qty"></span>
                         <span class="itemWrap">
                             <span class="item">Fried Chicken Wing
@@ -208,6 +207,11 @@ export default {
                 payment: true,
                 tip: true,
                 coupon: true
+            },
+            style: {
+                zhCN: null,
+                usEN: null,
+                info: null
             }
         }
     },
@@ -224,32 +228,55 @@ export default {
         toggleStore(bool) {
             this.receipt.store = bool
         },
-        toggleType(bool){
+        toggleType(bool) {
             this.receipt.type = bool;
         },
-        toggleCustomer(bool){
+        toggleCustomer(bool) {
             this.receipt.customer = bool;
         },
-        togglePrice(bool){
+        togglePrice(bool) {
             this.receipt.price = bool;
         }
     },
     watch: {
         device(profile) {
             this.profile = this.printers[profile];
-            let {control} = this.profile;
-            Object.assign(this.receipt,{
-                zhCN:control.printPrimary,
-                usEN:control.printSecondary,
-                store:control.printStore,
-                type:control.printType,
-                customer:control.printCustomer,
-                price:control.printPrice,
-                payment:control.printPayment,
-                tip:control.printSuggestion,
-                coupon:control.printCoupon
+            let { control } = this.profile;
+            Object.assign(this.receipt, {
+                zhCN: control.printPrimary,
+                usEN: control.printSecondary,
+                store: control.printStore,
+                type: control.printType,
+                customer: control.printCustomer,
+                price: control.printPrice,
+                payment: control.printPayment,
+                tip: control.printSuggestion,
+                coupon: control.printCoupon
             })
+        },
+        profile: {
+            handler(n) {
+                if (n.hasOwnProperty('control')) {
+                    let { primaryFont, primaryFontSize, secondaryFont, secondaryFontSize, enlargeDetail } = n.control;
+                    console.log(primaryFont, secondaryFont)
+                    this.style = {
+                        zhCN: {
+                            "font-family": primaryFont,
+                            "font-size": primaryFontSize + "px"
+                        },
+                        usEN: {
+                            "font-family": secondaryFont,
+                            "font-size": secondaryFontSize + "px"
+                        },
+                        info: {
+                            "font-family": "Tensentype RuiHeiJ-W2",
+                            "font-size": "1.25em"
+                        }
+                    }
+                }
+            }, deep: true
         }
+
     },
     computed: {
         ...mapGetters(['config', 'store', 'ticket', 'op'])
@@ -335,7 +362,6 @@ footer {
 
 .btn {
     margin: 0 5px;
-    flex: 1;
 }
 
 .receipt header {

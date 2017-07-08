@@ -185,7 +185,7 @@ export default {
             let offset = doms[this.overflowIndex].offsetHeight;
             let currentClickTime = +new Date();
             if (direction === "up") {
-                if ((currentClickTime - this.lastClickTime) < 250) {
+                if ((currentClickTime - this.lastClickTime) < 230) {
                     this.scrollAllTheWay(direction, doms);
                     return;
                 }
@@ -203,14 +203,14 @@ export default {
                 for (let i = 0; i < inView; i++) {
                     height += doms[i].offsetHeight;
                 }
-                this.offset = 325 - height;
+                this.offset = 329 - height;
                 this.overflowIndex++;
                 if (doms.length < (this.overflowIndex + 1)) {
                     this.overflowIndex--;
                     this.offset = 288 - height;
                     clearTimeout(this.timeout);
                     this.timeout = setTimeout(() => {
-                        this.offset = 325 - height;
+                        this.offset = 329 - height;
                     }, 300)
                 }
             }
@@ -225,7 +225,7 @@ export default {
                 let height = 0;
                 for (let i = 0; i < doms.length; i++) {
                     height += doms[i].offsetHeight;
-                    if (height > 325) {
+                    if (height > 329) {
                         this.overflowIndex = i;
                         break;
                     }
@@ -236,14 +236,14 @@ export default {
                 for (let i = 0; i < inView; i++) {
                     height += doms[i].offsetHeight;
                 }
-                this.offset = 325 - height;
+                this.offset = 329 - height;
                 this.overflowIndex++;
                 if (doms.length < (this.overflowIndex + 1)) {
                     this.overflowIndex--;
                     this.offset = 288 - height;
                     clearTimeout(this.timeout);
                     this.timeout = setTimeout(() => {
-                        this.offset = 325 - height;
+                        this.offset = 329 - height;
                     }, 300)
                 }
             }
@@ -346,7 +346,7 @@ export default {
                 doms.forEach(dom => {
                     height += dom.offsetHeight;
                 });
-                height = 325 - height;
+                height = 329 - height;
                 this.overflow = height < 0;
                 this.overflowIndex = this.overflow ? length - 1 : null;
                 this.offset = this.overflow ? height : 0;
@@ -455,7 +455,7 @@ header i {
 }
 
 .order {
-    height: 325px;
+    height: 329px;
     background: hsla(0, 9%, 66%, .15);
     overflow: hidden;
 }

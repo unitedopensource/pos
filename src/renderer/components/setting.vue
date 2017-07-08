@@ -12,7 +12,7 @@ export default {}
 .setting {
     background: url(../assets/image/grid.png) #fcfcfc;
     width: 100%;
-    height: 733px;
-    padding-top: 35px;
+    height: 738px;
+    padding-top: 30px;
 }
 </style>

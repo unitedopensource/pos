@@ -107,8 +107,14 @@ figure {
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
+figure:active {
+    background: #f6f6f6;
+    color: #666;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.45);
+}
+
 figure i {
-    color:#1E88E5;
+    color: #1E88E5;
 }
 
 figcaption {

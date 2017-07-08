@@ -194,7 +194,7 @@ export default {
 
 <style scoped>
 .filter {
-  padding: 11px 10px;
+  padding: 13px 10px;
   cursor: pointer;
   text-align: center;
   color: #FAFAFA;

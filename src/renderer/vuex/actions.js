@@ -11,30 +11,17 @@ export const startTick = ({
     commit(types.START_TICK, { time, date });
   }, 100000)
 }
-export const setConfig = ({
-  commit
-}, data) => {
-  commit(types.SET_CONFIG, data)
-}
+
+/* @ Setter */
 export const setApp = ({
   commit
 }, data) => {
   commit(types.SET_APP, data)
 }
-export const setReservation = ({
-  commit
-}, list) => {
-  commit(types.SET_RESERVATION, list)
-}
-export const setTemplates = ({
-  commit
-}, templates) => {
-  commit(types.SET_TEMPLATES, templates)
-}
-export const setLastSync = ({
+export const setConfig = ({
   commit
 }, data) => {
-  commit(types.SET_LASTSYNC, data)
+  commit(types.SET_CONFIG, data)
 }
 export const setStation = ({
   commit
@@ -45,6 +32,123 @@ export const setCategory = ({
   commit
 }, category) => {
   commit(types.SET_CATEGORY, category)
+}
+export const setTemplates = ({
+  commit
+}, templates) => {
+  commit(types.SET_TEMPLATES, templates)
+}
+export const setReservation = ({
+  commit
+}, list) => {
+  commit(types.SET_RESERVATION, list)
+}
+export const setLastSync = ({
+  commit
+}, data) => {
+  commit(types.SET_LASTSYNC, data)
+}
+export const setMenu = ({
+  commit
+}, menu) => {
+  commit(types.SET_MENU, menu)
+}
+export const setTable = ({
+  commit
+}, tables) => {
+  commit(types.SET_TABLE, tables)
+}
+export const setRequest = ({
+  commit
+}, request) => {
+  commit(types.SET_REQUEST, request);
+}
+export const setOp = ({
+  commit
+}, op) => {
+  commit(types.SET_OP, op)
+}
+export const setTicket = ({
+  commit
+}, data) => {
+  commit(types.SET_TICKET, data);
+}
+export const setCustomer = ({
+  commit
+}, data) => {
+  commit(types.SET_CUSTOMER, data)
+}
+export const setPin = ({
+  commit
+}, pin) => {
+  commit(types.SET_PIN, pin)
+}
+export const setOrder = ({
+  commit
+}, data) => {
+  commit(types.SET_ORDER, data)
+}
+export const setSides = ({
+  commit
+}, sides) => {
+  commit(types.SET_SIDES, sides)
+}
+export const setTableInfo = ({
+  commit
+}, info) => {
+  commit(types.SET_TABLE_INFO, info)
+}
+export const setViewOrder = ({
+  commit
+}, order) => {
+  commit(types.SET_VIEW_ORDER, JSON.parse(JSON.stringify(order)));
+}
+export const setDevice = ({
+  commit
+}, data) => {
+  commit(types.SET_DEVICE, data)
+}
+export const phoneRing = ({
+  commit
+}, data) => {
+  commit(types.PHONE_RING, data)
+}
+export const insertCallHistory = ({
+  commit
+}, data) => {
+  commit(types.INSERT_CALL_HISTORY, data)
+}
+
+
+export const toggleKeyboard = ({
+  commit
+}, bool) => {
+  commit(types.TOGGLE_KEYBOARD, bool)
+}
+export const resetDashboard = ({
+  commit
+}) => {
+  commit(types.RESET_DASHBOARD);
+  commit(types.SET_TICKET, { type: "" });
+}
+export const resetTable = ({
+  commit
+}) => {
+  commit(types.RESET_TABLE)
+}
+export const resetMenu = ({
+  commit
+}) => {
+  commit(types.RESET_MENU)
+}
+export const resetAll = ({
+  commit
+}) => {
+  commit(types.RESET_MENU);
+  commit(types.RESET_DASHBOARD);
+  commit(types.SET_TICKET, { type: "" });
+  commit(types.RESET_TABLE);
+  commit(types.SET_APP, { mode: 'create' });
 }
 export const updateMenuItem = ({
   commit
@@ -66,76 +170,13 @@ export const removeRequestItem = ({
 }, id) => {
   commit(types.REMOVE_REQUEST_ITEM, id)
 }
-export const setMenu = ({
-  commit
-}, menu) => {
-  commit(types.SET_MENU, menu)
-}
-export const setTable = ({
-  commit
-}, tables) => {
-  commit(types.SET_TABLE, tables)
-}
-export const setRequest = ({
-  commit
-}, request) => {
-  commit(types.SET_REQUEST, request);
-}
-export const setPin = ({
-  commit
-}, pin) => {
-  commit(types.SET_PIN, pin)
-}
+
 export const delPin = ({
   commit
 }) => {
   commit(types.DEL_PIN)
 }
-export const setOp = ({
-  commit
-}, op) => {
-  commit(types.SET_OP, op)
-}
-export const setTicket = ({
-  commit
-}, data) => {
-  commit(types.SET_TICKET, data);
-}
-export const setCustomer = ({
-  commit
-}, data) => {
-  commit(types.SET_CUSTOMER, data)
-}
-export const toggleKeyboard = ({
-  commit
-}, bool) => {
-  commit(types.TOGGLE_KEYBOARD, bool)
-}
-export const resetDashboard = ({
-  commit
-}) => {
-  commit(types.RESET_DASHBOARD);
-  commit(types.SET_TICKET, { type: "" });
-}
-export const resetAll = ({
-  commit
-}) => {
-  commit(types.RESET_MENU);
-  commit(types.RESET_DASHBOARD);
-  commit(types.SET_TICKET, { type: "" });
-  commit(types.RESET_TABLE);
-  commit(types.SET_APP, { mode: 'create' });
-}
-export const resetMenu = ({
-  commit
-}) => {
-  commit(types.RESET_MENU)
-}
-export const setSides = ({
-  commit
-}, sides) => {
-  commit(types.SET_SIDES, sides)
-}
+
 export const delayPrint = ({
   commit
 }, order) => {
@@ -146,11 +187,7 @@ export const removeSpooler = ({
 }, index) => {
   commit(types.REMOVE_SPOOLER, index)
 }
-export const setOrder = ({
-  commit
-}, data) => {
-  commit(types.SET_ORDER, data)
-}
+
 export const addToOrder = ({
   commit
 }, item) => {
@@ -261,26 +298,8 @@ export const setCurrentTable = ({
 }, table) => {
   commit(types.CURRENT_TABLE, table)
 }
-export const resetTable = ({
-  commit
-}) => {
-  commit(types.RESET_TABLE)
-}
-export const setTableInfo = ({
-  commit
-}, info) => {
-  commit(types.SET_TABLE_INFO, info)
-}
-export const setViewOrder = ({
-  commit
-}, order) => {
-  commit(types.SET_VIEW_ORDER, JSON.parse(JSON.stringify(order)));
-}
-export const setDevice = ({
-  commit
-}, data) => {
-  commit(types.SET_DEVICE, data)
-}
+
+
 export const removePayment = ({
   commit
 }) => {
@@ -290,14 +309,4 @@ export const replaceMenuItem = ({
   commit
 }, change) => {
   commit(types.REPLACE_MENU_ITEM, change)
-}
-export const phoneRing = ({
-  commit
-}, data) => {
-  commit(types.PHONE_RING, data)
-}
-export const insertCallHistory = ({
-  commit
-}, data) => {
-  commit(types.INSERT_CALL_HISTORY, data)
 }

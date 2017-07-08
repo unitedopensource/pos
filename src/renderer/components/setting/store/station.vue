@@ -49,7 +49,14 @@
         <section class="card">
             <header>{{text('SECURITY')}}</header>
             <article>
-                <smart-range v-model="workStation.timeout" label="TIMEOUT" min="0" max="600" step="30"></smart-range>
+                <smart-range v-model="workStation.timeout" label="AUTO_LOGOUT" min="0" max="600" step="30"></smart-range>
+            </article>
+        </section>
+        <section class="card">
+            <header>{{text('PRINTER')}}</header>
+            <article>
+                <smart-switch v-model="workStation.print.redirect" label="PRINT_REDIRECT"></smart-switch>
+                <smart-option v-model="workStation.print.receipt" label="RECEIPT_PRINTER" :options="printers"></smart-option>
             </article>
         </section>
         <section class="card">
@@ -90,6 +97,7 @@ export default {
                 port: 'COM3'
             }
         }, this.station);
+        this.printers = Object.keys(this.config.printer);
     },
     data() {
         return {
@@ -98,7 +106,8 @@ export default {
             componentData: null,
             workStation: null,
             devices: ['S80', 'S300'],
-            ports: ['COM1', 'COM2', 'COM3', 'COM4', 'COM5', 'COM6', 'COM7', 'COM8', 'COM9']
+            ports: ['COM1', 'COM2', 'COM3', 'COM4', 'COM5', 'COM6', 'COM7', 'COM8', 'COM9'],
+            printers:[]
         }
     },
     methods: {
@@ -137,7 +146,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(['store', 'station'])
+        ...mapGetters(['config','store', 'station'])
     }
 
 }

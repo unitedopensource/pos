@@ -2,12 +2,14 @@
   <div class="dock">
     <span class="orderNumber">{{ticket.number}}</span>
     <span class="orderType" v-show="ticket.type" @click="toggleSwitcher">{{type}}</span>
-    <div class="customer" v-if="$route.name ==='Menu'" @dblclick="modifyInfo">
-      <span class="phone" v-show="customer.phone">{{customer.phone | tel}}</span>
-      <span class="address" v-show="customer.address">{{customer.address}}</span>
-      <span class="name" v-show="customer.name">{{customer.name}}</span>
+    <div class="extra">
+      <div class="customer" v-if="$route.name ==='Menu'" @dblclick="modifyInfo">
+        <span class="phone" v-show="customer.phone">{{customer.phone | tel}}</span>
+        <span class="address" v-show="customer.address">{{customer.address}}</span>
+        <span class="name" v-show="customer.name">{{customer.name}}</span>
+      </div>
+      <div v-if="$route.name ==='History'" class="date">{{time | moment('YYYY-MM-DD')}}</div>
     </div>
-    <span v-if="$route.name ==='History'" class="date">{{time | moment('YYYY-MM-DD')}}</span>
     <span class="op" @click="openPanel">
       <i class="fa fa-user"></i>{{op.name}}</span>
     <span class="corner" v-if="$route.name !== 'Dashboard'">{{time | moment('hh:mm a')}}</span>
@@ -365,7 +367,8 @@ export default {
 <style scoped>
 .dock {
   width: 100%;
-  height: 35px;
+  height: 30px;
+  line-height: 30px;
   background: #607D8B;
   box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.25), inset 0px 1px 0px rgba(255, 255, 255, 0.3);
   position: absolute;
@@ -373,6 +376,8 @@ export default {
   left: 0;
   z-index: 99;
   font-size: 1.25em;
+  display: flex;
+  align-items: center;
 }
 
 .dock>span {
@@ -385,72 +390,74 @@ export default {
   transition: transform 0.22s ease-out;
 }
 
-span.corner {
-  padding: 8px 4px 4px;
-  width: 135px;
+span.orderNumber {
+  width: 80px;
   text-align: center;
-  float: right;
+}
+
+span.orderType {
+  width: 140px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.1);
+  border-left: 1px solid #7994a0;
+  border-right: 1px solid #7994a0;
+  display: inline-block;
+}
+
+.extra {
+  flex: 1;
+  display: flex;
+}
+
+.customer {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  color: #fff;
+  font-family: 'Agency FB';
+}
+
+.customer span {
+  padding: 0 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border-left: 1px solid #7994a0;
+  border-right: 1px solid #7994a0;
+  margin: 0 5px;
+}
+
+.date {
+  color: #fff;
+  font-style: italic;
+  padding: 0 20px;
+  flex: 1;
+  font-size: 1.3em;
+  text-shadow: 0 1px 3px #333;
+}
+
+span.op {
+  background: rgba(255, 255, 255, 0.1);
+  border-left: 1px solid #7994a0;
+  border-right: 1px solid #7994a0;
+  width: 150px;
+  text-align: center;
+}
+
+span.corner {
+  padding: 3px 10px 0;
+  text-align: center;
 }
 
 .corner.right {
   text-align: right;
 }
 
-span.op {
-  position: absolute;
-  right: 144px;
-  top: 0px;
-  padding: 7px 20px 5px;
-  background: rgba(255, 255, 255, 0.1);
-}
-
 span.op i {
   margin-right: 10px;
-}
-
-span.orderNumber {
-  padding: 8px 20px 5px;
-  width: 20px;
-  text-align: center;
-  display: inline-block;
 }
 
 span.table {
   display: inline-block;
   margin-left: 10px;
-}
-
-span.orderType {
-  padding: 8px 20px 5px;
-  min-width: 80px;
-  text-align: center;
-  background: rgba(255, 255, 255, 0.1);
-  display: inline-block;
-}
-
-.customer {
-  display: inline-block;
-  position: absolute;
-  width: 455px;
-  right: 285px;
-  top: 3px;
-  padding-top: 3px;
-  font-size: 0.8em;
-}
-
-.customer span {
-  padding: 3px 5px 2px;
-  display: inline-block;
-  border-radius: 4px;
-  max-width: 200px;
-  overflow: hidden;
-  white-space: nowrap;
-  background: rgba(255, 255, 255, 0.7);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-}
-
-.customer span.name {
-  margin-right: 0;
 }
 
 .NA {

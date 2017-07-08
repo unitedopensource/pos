@@ -183,9 +183,9 @@ export default {
 }
 
 header {
-    margin-top: 35px;
+    margin-top: 30px;
     display: flex;
-    height: 58px;
+    height: 63px;
     background: #234c75;
     border-bottom: 1px solid #3F51B5;
 }
@@ -197,7 +197,7 @@ article {
 }
 
 .logo {
-    margin: 5px 22px;
+    margin: 7px 22px;
 }
 
 .summary {

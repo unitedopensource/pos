@@ -466,9 +466,9 @@ export default {
 .dineIn {
   display: flex;
   flex-direction: row;
-  height: 772px;
+  height: 771px;
   width: 1024px;
-  padding-top: 74px;
+  padding-top: 63px;
   background: url(../assets/image/table.png) #ebeff1;
 }
 
