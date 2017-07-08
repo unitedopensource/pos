@@ -55,8 +55,8 @@
         <section class="card">
             <header>{{text('PRINTER')}}</header>
             <article>
-                <smart-switch v-model="workStation.print.redirect" label="PRINT_REDIRECT"></smart-switch>
-                <smart-option v-model="workStation.print.receipt" label="RECEIPT_PRINTER" :options="printers"></smart-option>
+                <smart-switch v-model="workStation.printRedirect" label="PRINT_REDIRECT"></smart-switch>
+                <redirector :options="printers" @update="update" :init="workStation.print"></redirector>
             </article>
         </section>
         <section class="card">
@@ -79,9 +79,10 @@ import smartInput from '../common/smartInput'
 import smartRange from '../common/smartRange'
 import smartSwitch from '../common/smartSwitch'
 import smartOption from '../common/smartOption'
+import redirector from '../common/redirector'
 import editor from './uiEditor'
 export default {
-    components: { smartInput, smartRange, smartSwitch, smartOption, editor },
+    components: { smartInput, smartRange, smartSwitch, smartOption, redirector, editor },
     created() {
         this.workStation = Object.assign({}, {
             pole: {
@@ -107,7 +108,7 @@ export default {
             workStation: null,
             devices: ['S80', 'S300'],
             ports: ['COM1', 'COM2', 'COM3', 'COM4', 'COM5', 'COM6', 'COM7', 'COM8', 'COM9'],
-            printers:[]
+            printers: []
         }
     },
     methods: {
@@ -121,7 +122,10 @@ export default {
             }).catch(() => {
                 this.$exitComponent();
             })
-        }
+        },
+        update(data){
+            this.workStation.print = data;
+        },
     },
     watch: {
         workStation: {
@@ -146,7 +150,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(['config','store', 'station'])
+        ...mapGetters(['config', 'store', 'station'])
     }
 
 }

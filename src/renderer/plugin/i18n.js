@@ -238,6 +238,7 @@
               'PRINTER': '打印机',
               'PRINT': '打印',
               'PRINT_REDIRECT':'重定向',
+              'PRINT_REDIRECT_TO':'重定向至',
               'PRINT_PRIMARY': '打印中文',
               'PRINT_SECONDARY': '打印英文',
               'PRINT_STORE': '餐馆信息',

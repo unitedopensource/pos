@@ -58,12 +58,13 @@ const mutations = {
         state.app = Object.assign({}, state.app, data)
     },
     [types.SET_STATION](state, mac) {
+        console.log(mac)
         if (typeof mac === 'object') {
-            state.station = mac;
+            state.config.station = mac;
         } else {
             let stations = state.config.store.station;
             for (var name in stations) {
-                stations[name].mac === mac && (state.station = stations[name])
+                stations[name].mac === mac && (state.config.station = stations[name])
             }
         }
     },

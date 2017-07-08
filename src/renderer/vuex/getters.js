@@ -5,13 +5,13 @@ export const device = state => state.initial.device
 export const config = state => state.initial.config
 export const ticket = state => state.initial.ticket
 export const history = state => state.initial.orders
-export const station = state => state.initial.station
 export const update = state => state.initial.lastSync
 export const spooler = state => state.initial.spooler
 export const store = state => state.initial.config.store
 export const templates = state => state.initial.templates
 export const tax = state => state.initial.config.store.tax
 export const language = state => state.initial.app.language
+export const station = state => state.initial.config.station
 export const reservation = state => state.initial.reservation
 
 //export const callHistory = state => state.initial.callHistory

@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 export default {
     data() {
         return {
@@ -47,16 +47,25 @@ export default {
             this.send = true;
             this.$socket.emit("[CMS] CONFIG_STORE", this.store);
             this.setConfig({ store: this.store })
-            setTimeout(() => {
-                this.cancel();
-            }, 1500);
+            this.updateStation(this.store);
+            setTimeout(() => { this.cancel() }, 1000);
+        },
+        updateStation(store) {
+            let { station } = store;
+            let { mac } = this.station;
+            for (var name in station) {
+                station[name].mac === mac && this.setStation(station[name])
+            }
         },
         cancel() {
             this.store = null;
             this.change = false;
             this.send = false;
         },
-        ...mapActions(['setConfig'])
+        ...mapActions(['setConfig', 'setStation'])
+    },
+    computed: {
+        ...mapGetters(['station'])
     }
 }
 </script>

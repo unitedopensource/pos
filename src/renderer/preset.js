@@ -25,6 +25,7 @@ var Preset = function () {
         port: 'COM3'
       },
       print: {},
+      printRedirect:false,
       timeout: 0,
       receiveOnlineOrder: false,
       interface: [{

@@ -61,6 +61,7 @@ Printer.prototype.buzzer = function () {
 Printer.prototype.printReceipt = function (raw) {
 
   let printers = this.config.printer;
+  let redirect = this.config.station.printRedirect;
 
   for (let name in printers) {
     if (printers.hasOwnProperty(name)) {
@@ -80,6 +81,7 @@ Printer.prototype.printReceipt = function (raw) {
 
         this.printer.PRINT_INIT(this.job);
         this.printer.ADD_PRINT_HTM(0, 0, "100%", "100%", html);
+        redirect && (name = this.config.station.print[name] || name);
         this.printer.SET_PRINTER_INDEX(name);
         printers[name].buzzer && this.buzzer();
         this.printer.PRINT();
