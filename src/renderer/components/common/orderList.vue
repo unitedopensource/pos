@@ -113,6 +113,7 @@ import { mapGetters, mapActions } from 'vuex'
 import Printer from '../../print'
 import config from './config'
 export default {
+    components: { config },
     props: ['layout', 'group', 'display', 'sort'],
     created() {
         !this.order.payment ? this.calculator(this.cart) : this.payment = this.order.payment;
@@ -275,7 +276,7 @@ export default {
             let remain = items.filter(item => !item.print).length;
             try {
                 _order.content = this.spooler;
-                Printer.init(this.configuration).setJob("receipt").print(_order);
+                Printer.init(this.config).setJob("receipt").print(_order);
                 _order.content = items;
                 if (remain === 0) _order.print = true;
                 this.$socket.emit("ORDER_MODIFIED", _order);
@@ -362,7 +363,7 @@ export default {
                 this.order.content.filter(item => item.sort === this.sort) :
                 this.order.content
         },
-        ...mapGetters(['configuration', 'store', 'language', 'ticket', 'tax', 'order', 'item', 'isEmptyOrder'])
+        ...mapGetters(['config', 'store', 'tax', 'order', 'item', 'ticket', 'language', 'isEmptyOrder'])
     },
     filters: {
         mark(text) {
@@ -375,16 +376,12 @@ export default {
         },
         'cart': {
             handler(n) {
-                !this.display ?
-                    this.calculator(n) : this.order.payment || this.calculator(n);
+                !this.display ? this.calculator(n) : this.order.payment || this.calculator(n);
             }, deep: true
         },
         'ticket.type'() {
             this.calculator(this.cart)
         }
-    },
-    components: {
-        config
     }
 }
 </script>

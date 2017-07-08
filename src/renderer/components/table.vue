@@ -243,14 +243,7 @@ export default {
     startSwitchTable() {
       this.$dialog({
         title: 'TABLE_CFM_SWITCH',
-        msg: 'TIP_SELECT_TABLE',
-        buttons: [{
-          text: 'CANCEL',
-          fn: 'reject'
-        }, {
-          text: 'CONFIRM',
-          fn: 'resolve'
-        }]
+        msg: 'TIP_SELECT_TABLE'
       }).then(resolve => {
         this.pendingSwitch = true;
         this.$exitComponent();
@@ -263,14 +256,7 @@ export default {
       let origin = this.currentTable;
       this.$dialog({
         title: 'TABLE_SWITCH',
-        msg: this.text('TIP_SWITCH_CFM', origin.name, table.name),
-        buttons: [{
-          text: "CANCEL",
-          fn: 'reject'
-        }, {
-          text: "CONFIRM",
-          fn: 'resolve'
-        }]
+        msg: this.text('TIP_SWITCH_CFM', origin.name, table.name)
       }).then(() => {
         table.current = origin.current;
         table.status = origin.status;
@@ -353,13 +339,13 @@ export default {
       if (this.order.print) {
         this.$dialog({
           type: "question",
-          title: this.text("PRT_PRE_PAYT"),
+          title: "PRT_PRE_PAYT",
           msg: this.text('TIP_PRE_PAYT', this.order.table),
           buttons: [{
-            text: this.text('CANCEL'),
+            text: 'CANCEL',
             fn: "reject"
           }, {
-            text: this.text("PRINT"),
+            text: "PRINT",
             fn: "resolve"
           }]
         }).then(() => {
@@ -378,7 +364,6 @@ export default {
       } else {
         let remain = this.order.content.filter(item => !item.print).length;
         this.$dialog({
-          type: "alert",
           title: this.text('PRT_PRE_PAYT_NA'),
           msg: this.text('TIP_REMAIN_ITEM', remain)
         }).then(() => {
@@ -389,14 +374,13 @@ export default {
     clearTable() {
       if (this.currentTable.status === 4) {
         this.$dialog({
-          type: "alert",
-          title: this.text("TABLE_CLEAR"),
+          title: "TABLE_CLEAR",
           msg: this.text("TIP_TABLE_CLEAR", this.currentTable.name),
           buttons: [{
-            text: this.text('CANCEL'),
+            text: 'CANCEL',
             fn: 'reject'
           }, {
-            text: this.text('CLEAR'),
+            text: 'CLEAR',
             fn: 'resolve'
           }]
         }).then(() => {
