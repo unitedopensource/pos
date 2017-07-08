@@ -1,10 +1,10 @@
 <template>
-  <div class="popupMask center dark" @click.self="exit">
+  <div class="popupMask center dark" @click.self="init.reject">
     <div class="modify window">
       <header class="title">
         <span>{{text("MODIFY")}}</span>
         <span>{{init[language]}}</span>
-        <i class="fa fa-times" @click="exit"></i>
+        <i class="fa fa-times" @click="init.reject"></i>
       </header>
       <section class="display">
         <div class="column target" @click="setPointer('single',$event)">
@@ -169,12 +169,6 @@ export default {
       this.init.qty = ~~this.init.qty;
       this.init.discount = parseFloat(this.init.discount);
       this.init.resolve(this.init);
-    },
-    redo(){
-      this.init.reject("reload");
-    },
-    exit(){
-      this.init.reject();
     }
   },
   computed:{

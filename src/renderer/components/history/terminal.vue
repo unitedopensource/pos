@@ -82,9 +82,7 @@ export default {
       let file = terminal.model;
       this.msg = this.text('TERM_INIT', terminal.model);
       this.terminal = require('../payment/parser/' + file);
-      this.terminal.initial(terminal.address, terminal.port).then(response => {
-        return response.text()
-      }).then(device => {
+      this.terminal.initial(terminal.address, terminal.port).then(response => response.text()).then(device => {
         this.device = this.terminal.check(device);
         this.device.code !== '000000' && this.noBatch();
       })
@@ -100,11 +98,8 @@ export default {
           text: 'CANCEL',
           fn: 'reject'
         }, {
-          text: 'CONFIRM',
-          fn: 'resolve,false'
-        }, {
           text: 'CONFIRM&PRINT',
-          fn: 'resolve,true'
+          fn: 'resolve'
         }]
       }).then(print => {
         let invoice = record.order.number;
@@ -114,16 +109,14 @@ export default {
             return response.text();
           }).then(response => {
             let transaction = this.terminal.explainTransaction(response);
-            record = Object.assign(record, transaction, {
-              status: 0
-            });
+            record = Object.assign(record, transaction, { status: 0 });
             this.$socket.emit("[TERM] UPDATE_TRANSACTION", record);
-            print && Printer.init(this.configuration).setJob('creditCard').print(transaction);
+            Printer.init(this.config).setJob('creditCard').print(transaction);
             let ticket = record.order.number;
             let index = this.history.findIndex(invoice => invoice.number === ticket);
             let order = Object.assign({}, this.history[index]);
-                order.settled = false;
-                order.payment.log = [];
+            order.settled = false;
+            order.payment.log = [];
             delete order.payment.paidCash;
             delete order.payment.paidCredit;
             delete order.payment.paidGift;
@@ -145,22 +138,12 @@ export default {
         let total = parseFloat(record.amount.approve) + value;
         this.$dialog({
           title: 'TERM_CONFIRM_ADJUST',
-          msg: this.text('TIP_TERM_ADJUST_TIP', value.toFixed(2), total.toFixed(2)),
-          buttons: [{
-            text: 'CANCEL',
-            fn: 'reject'
-          }, {
-            text: 'CONFIRM',
-            fn: 'resolve'
-          }]
+          msg: this.text('TIP_TERM_ADJUST_TIP', value.toFixed(2), total.toFixed(2))
         }).then(() => {
           let amount = Math.round(value * 100);
           let invoice = record.order.number;
           let trans = record.trace.trans;
-          this.terminal.adjust(invoice, trans, amount)
-            .then(response => {
-              return response.text();
-            }).then(response => {
+          this.terminal.adjust(invoice, trans, amount).then(response => response.text()).then(response => {
               record.status = 2;
               record.amount.tip = (value).toFixed(2);
               this.$exitComponent();
@@ -260,7 +243,7 @@ export default {
           ticket: "#" + each.order.number
         }
       });
-      Printer.init(this.configuration).setJob("checksum").print({ content, summary });
+      Printer.init(this.config).setJob("checksum").print({ content, summary });
     },
     batch() {
       this.checksum();
@@ -282,13 +265,13 @@ export default {
           if (result.code === '000000') {
             let sn = this.station.terminal.sn;
             for (let i = 0; i < this.transaction.length; i++) {
-              if(this.transaction[i].addition.SN === sn ){
+              if (this.transaction[i].addition.SN === sn) {
                 this.transaction[i].status = 3;
                 this.$socket.emit("[TERM] BATCH_TRANS_CLOSE", this.transaction);
-              } 
+              }
             }
-            Printer.init(this.configuration).setJob("batch").print(result);
-            this.$socket.emit('[TERM] SAVE_BATCH_RESULT',result);
+            Printer.init(this.config).setJob("batch").print(result);
+            this.$socket.emit('[TERM] SAVE_BATCH_RESULT', result);
             this.$exitComponent();
           } else {
             this.$dialog({
@@ -355,7 +338,7 @@ export default {
       }
     },
     print(receipt) {
-      Printer.init(this.configuration).setJob('reprint creditCard').print(receipt);
+      Printer.init(this.config).setJob('reprint creditCard').print(receipt);
     },
     exitComponent() {
       this.componentData = null;
@@ -374,7 +357,7 @@ export default {
           return this.allTransaction.filter(trans => trans.addition.SN === sn).slice(min, max);
       }
     },
-    ...mapGetters(['station', 'configuration', 'language', 'history'])
+    ...mapGetters(['config', 'language', 'history', 'station'])
   },
   sockets: {
     TERM_TRANS_RESULT(transaction) {

@@ -105,7 +105,7 @@ export default {
             tax = tax;
             return { tip, gratuity, discount, delivery, subtotal, total, tax, log }
         },
-        ...mapGetters(['language', 'tax', 'ticket', 'store'])
+        ...mapGetters(['tax', 'ticket', 'store', 'language'])
     },
     watch: {
         queue(n) {

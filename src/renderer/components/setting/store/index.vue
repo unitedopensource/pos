@@ -68,7 +68,7 @@ import smartSwitch from '../common/smartSwitch'
 export default {
     components: { smartInput, smartSwitch },
     created() {
-        this.store = Object.assign({}, this.configuration.store)
+        this.store = Object.assign({}, this.config.store)
     },
     data() {
         return {
@@ -77,7 +77,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(['configuration'])
+        ...mapGetters(['config'])
     },
     watch: {
         store: {
@@ -85,8 +85,8 @@ export default {
                 let keys = Object.keys(n);
                 this.change = keys.some(key => {
                     return typeof n[key] === 'string' ?
-                        n[key] !== this.configuration.store[key] :
-                        JSON.stringify(n[key]) !== JSON.stringify(this.configuration.store[key]);
+                        n[key] !== this.config.store[key] :
+                        JSON.stringify(n[key]) !== JSON.stringify(this.config.store[key]);
                 })
                 this.change ? this.$emit("change", n) : this.$emit("unchange");
             }, deep: true

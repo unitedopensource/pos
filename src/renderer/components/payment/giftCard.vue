@@ -3,7 +3,7 @@
         <i class="fa" :class="[icon]"></i>
         <h3>{{msg}}</h3>
         <footer>
-            <button class="btn" @click="exit">{{text('CANCEL')}}</button>
+            <button class="btn" @click="init.reject">{{text('CANCEL')}}</button>
         </footer>
     </div>
 </template>
@@ -16,7 +16,7 @@ export default {
             timeout: null,
             card: "",
             icon: "info",
-            msg: this.text("GC_SWIPE")
+            msg: "GC_SWIPE"
         }
     },
     mounted() {
@@ -48,9 +48,6 @@ export default {
                 this.msg = this.text("READ_TRACK_FAILED");
                 this.card = "";
             }
-        },
-        exit() {
-            this.init.reject()
         }
     },
     beforeDestroy() {

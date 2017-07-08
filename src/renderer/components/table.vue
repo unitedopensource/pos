@@ -108,9 +108,7 @@ export default {
       this.sectionView = section.item;
     },
     selectTable(table, e) {
-      this.setApplication({
-        opLastAction: new Date
-      });
+      this.setApp({ opLastAction: new Date });
       if (!table._id) return;
       if (this.pendingSwitch) {
         table.status === 1 ?
@@ -224,7 +222,7 @@ export default {
         _order.settled = true;
         this.$socket.emit("ORDER_MODIFIED", _order);
         _order.type = "PAYMENT";
-        Printer.init(this.configuration).setJob("receipt").print(_order);
+        Printer.init(this.config).setJob("receipt").print(_order);
 
         this.$exitComponent();
       }).catch(() => {
@@ -368,7 +366,7 @@ export default {
           let order = JSON.parse(JSON.stringify(this.order));
           order.type = "PRE_PAYMENT";
           order.cashier = this.op.name;
-          Printer.init(this.configuration).setJob("receipt").print(order);
+          Printer.init(this.config).setJob("receipt").print(order);
           this.setTableInfo({
             status: 3
           });
@@ -442,10 +440,10 @@ export default {
       this.resetAll();
       this.$router.push({ path: "/main" });
     },
-    ...mapActions(['resetAll', 'resetMenu', 'setOrder', 'setCurrentTable', 'setTableInfo', 'setViewOrder', 'setTicket', 'setApplication'])
+    ...mapActions(['setApp', 'resetAll', 'resetMenu', 'setOrder', 'setCurrentTable', 'setTableInfo', 'setViewOrder', 'setTicket'])
   },
   computed: {
-    ...mapGetters(['configuration', 'store', 'tables', 'order', 'op', 'language', 'currentTable', 'history'])
+    ...mapGetters(['config', 'store', 'tables', 'order', 'op', 'language', 'currentTable', 'history'])
   },
   watch: {
     order(n) {

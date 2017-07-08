@@ -409,7 +409,7 @@ export default {
                     cashier: this.op.name
                 }
                 this.$socket.emit("[TERM] SAVE_TRANSACTION", transaction);
-                Printer.init(this.configuration).setJob("creditCard").print(transaction);
+                Printer.init(this.config).setJob("creditCard").print(transaction);
                 if (parseFloat(this.payment.due) === 0) {
                     this.poleDisplay("Paid Credit Card","Thank You");
                     this.payment.settled = true;
@@ -535,7 +535,7 @@ export default {
                 };
                 this.giftCard.reload = value.toFixed(2);
                 this.giftCard.balance = (this.giftCard.balance + value).toFixed(2);
-                Printer.init(this.configuration).setJob("reload").print(this.giftCard);
+                Printer.init(this.config).setJob("reload").print(this.giftCard);
                 this.$socket.emit("[GIFTCARD] CARD_ADD_VALUE", {
                     _id: this.giftCard._id,
                     value, activity
@@ -579,7 +579,7 @@ export default {
                         value, activity
                     });
                     this.giftCard.balance = 0;
-                    Printer.init(this.configuration).setJob("cashout").print(this.giftCard);
+                    Printer.init(this.config).setJob("cashout").print(this.giftCard);
                     this.$exitComponent();
                 })
             }).catch(() => {
@@ -588,7 +588,7 @@ export default {
         },
         printBalance() {
             if (this.giftCard.number.length !== 16) return;
-            Printer.init(this.configuration).setJob("balance").print(this.giftCard);
+            Printer.init(this.config).setJob("balance").print(this.giftCard);
         },
         activateGiftCard(number) {
             new Promise((resolve, reject) => {
@@ -604,7 +604,7 @@ export default {
                 }
                 this.giftCard = card;
                 this.$socket.emit("[GIFTCARD] CARD_ACTIVATION", card);
-                Printer.init(this.configuration).setJob("activation").print(card);
+                Printer.init(this.config).setJob("activation").print(card);
                 this.$exitComponent();
             }).catch(() => {
                 this.$exitComponent();
@@ -675,7 +675,7 @@ export default {
                 balance: balance > 0 ? balance.toFixed(2) : "0.00"
             }
         },
-        ...mapGetters(['op', 'configuration', 'ticket', 'customer', 'device'])
+        ...mapGetters(['op', 'config', 'ticket', 'customer', 'device'])
     },
     watch: {
         'giftCard.number'(n) {

@@ -15,8 +15,8 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import requestEditor from './requestEditor'
 import dialoger from '../../common/dialoger'
+import requestEditor from './requestEditor'
 import draggable from 'vuedraggable'
 import Preset from '../../../preset'
 export default {

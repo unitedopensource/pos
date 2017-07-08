@@ -183,7 +183,7 @@ import moment from 'moment'
 export default {
     components: { smartOption, smartRange, checkbox },
     created() {
-        this.printers = Object.assign({}, this.configuration.printer);
+        this.printers = Object.assign({}, this.config.printer);
         this.devices = Object.keys(this.printers) || [""];
         //this.devices.unshift("");
     },
@@ -252,7 +252,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(['configuration', 'store', 'ticket', 'op'])
+        ...mapGetters(['config', 'store', 'ticket', 'op'])
     }
 }
 </script>

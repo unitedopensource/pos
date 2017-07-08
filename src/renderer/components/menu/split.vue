@@ -152,7 +152,7 @@ export default {
       })
       order.content = content;
       order.payment = this.$children[i].payment;
-      Printer.init(this.configuration).setJob('receipt').print(order)
+      Printer.init(this.config).setJob('receipt').print(order)
     },
     cancel() {
       this.init.reject();
@@ -181,7 +181,7 @@ export default {
     remain() {
       return this.order.filter(item => item.sort === 0).length
     },
-    ...mapGetters(['ticket', 'store', 'op', 'configuration'])
+    ...mapGetters(['ticket', 'store', 'op', 'config'])
   },
   components: {
     splitList

@@ -114,7 +114,7 @@ export default{
   methods:{
     trigger(fn,params){
       this.$emit('trigger',fn,params);
-      if(fn === 'switchLanguage')this.$forceUpdate();
+      fn === 'switchLanguage' && this.$forceUpdate();
     }
   }
 }

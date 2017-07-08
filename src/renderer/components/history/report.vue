@@ -121,7 +121,7 @@ export default {
     getReport(data) {
       let summary = this.calculator(data);
       let date = this.date;
-      Printer.init(this.configuration).setJob("report").print({ date, summary });
+      Printer.init(this.config).setJob("report").print({ date, summary });
       this.init.resolve();
     },
     generateCSV() {
@@ -390,7 +390,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['configuration','language'])
+    ...mapGetters(['config','language'])
   },
   sockets: {
     REPORT_RESULTS(data) {

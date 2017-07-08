@@ -12,7 +12,9 @@
         <i class="fa fa-2x fa-clock-o"></i>
         <div class="f1">
           <h3>{{text('CLOCK_OUT')}}</h3>
-          <h5>{{time | moment('HH:mm:ss')}}<span class="pass">{{op.clockIn | fromNow(true)}}</span></h5>
+          <h5>{{time | moment('HH:mm:ss')}}
+            <span class="pass">{{op.clockIn | fromNow(true)}}</span>
+          </h5>
         </div>
       </div>
       <div class="list">
@@ -57,34 +59,34 @@ export default {
       this.$emit("exit")
     },
     clockIn() {
-      this.$emit("trigger",{
-        name:"clockIn"
+      this.$emit("trigger", {
+        name: "clockIn"
       })
     },
     clockOut() {
-      this.$emit("trigger",{
-        name:"clockOut"
+      this.$emit("trigger", {
+        name: "clockOut"
       })
     },
     station() {
 
     },
-    giftCard(){
-      
+    giftCard() {
+
     },
     language() {
-      let language = this.application.language === "usEN" ? "zhCN" : "usEN";
+      let language = this.app.language === "usEN" ? "zhCN" : "usEN";
       this.$setLanguage(language);
-      this.setApplication({ language });
+      this.setApp({ language });
       moment.locale(language === 'usEN' ? 'en' : 'zh-cn');
     },
     logout() {
       this.$router.push({ path: '/Login' });
     },
-    ...mapActions(['setApplication'])
+    ...mapActions(['setApp'])
   },
   computed: {
-    ...mapGetters(['op', 'station', 'application','time'])
+    ...mapGetters(['op', 'app', 'time', 'station'])
   }
 }
 </script>
@@ -110,7 +112,8 @@ export default {
   padding: 10px;
   align-items: center;
 }
-.list:active{
+
+.list:active {
   background: #eee;
 }
 
@@ -130,9 +133,10 @@ h5 {
   color: #757575;
   font-size: 14px;
 }
-h5 .pass{
-  color:#009688;
-  float:right;
+
+h5 .pass {
+  color: #009688;
+  float: right;
   font-size: 14px;
 }
 </style>

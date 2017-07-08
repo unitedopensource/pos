@@ -36,8 +36,8 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import smartInput from '../common/smartInput'
 import smartSwitch from '../common/smartSwitch'
+import smartInput from '../common/smartInput'
 import checkbox from '../common/checkbox'
 import editor from './templateEditor'
 export default {

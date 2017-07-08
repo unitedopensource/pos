@@ -37,9 +37,9 @@ import moment from 'moment'
 export default {
   data() {
     return {
+      reset: false,
       component: null,
       componentData: null,
-      reset: false
     }
   },
   mounted() {

@@ -194,14 +194,12 @@ export default {
         cancelOrder() {
             this.resetDashboard();
             this.resetAll();
-            this.setApplication({
-                opLastAction: new Date
-            });
+            this.setApp({ opLastAction: new Date });
             this.$router.push({ path: '/main' });
         },
         createOrder() {
             //set mode to create
-            this.setApplication({ mode: 'create' });
+            this.setApp({ mode: 'create' });
             if (this.ticket.type === 'DELIVERY' && this.customer.phone.length !== 10) return;
 
             this.$socket.emit("[UPDATE] CUSTOMER", this.customer);
@@ -219,7 +217,7 @@ export default {
         search() {
 
         },
-        ...mapActions(['toggleKeyboard', 'resetDashboard', 'setApplication', 'setCustomer','resetAll'])
+        ...mapActions(['toggleKeyboard', 'resetDashboard', 'setApp', 'setCustomer','resetAll'])
     },
     beforeDestroy() {
         let dom = document.querySelector("main.window");

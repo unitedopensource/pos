@@ -123,7 +123,7 @@ export default {
                 type: this.order.type,
                 number: this.order.number
             });
-            this.setApplication({
+            this.setApp({
                 mode: 'edit'
             });
             this.$router.push({ path: '/main/menu' });
@@ -265,7 +265,7 @@ export default {
                 _order.settled = true;
                 this.$socket.emit("ORDER_MODIFIED", _order);
                 _order.type = "PAYMENT";
-                Printer.init(this.configuration).setJob("receipt").print(_order);
+                Printer.init(this.config).setJob("receipt").print(_order);
                 this.$exitComponent();
             }).catch(() => {
                 if (!this.order.settled) {
@@ -277,7 +277,7 @@ export default {
         },
         print() {
             let order = Object.assign({}, this.order);
-            Printer.init(this.configuration).setJob("receipt").print(order);
+            Printer.init(this.config).setJob("receipt").print(order);
             order.content = order.content.map(item => {
                 item.print = true;
                 item.pending = false;
@@ -321,10 +321,10 @@ export default {
             this.resetMenu();
             this.$router.push({ path: "/main" });
         },
-        ...mapActions(['setTicket', 'resetMenu', 'removePayment', 'setApplication'])
+        ...mapActions(['setTicket', 'resetMenu', 'removePayment', 'setApp'])
     },
     computed: {
-        ...mapGetters(['op', 'order', 'isEmptyOrder', 'station', 'configuration'])
+        ...mapGetters(['op', 'order', 'isEmptyOrder', 'station', 'config'])
     },
     components: {
         Calendar, Dialoger, Terminal, Payment, Reason, Report

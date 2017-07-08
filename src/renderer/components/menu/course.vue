@@ -34,7 +34,7 @@
               <div class="value">{{hour}}</div>
             </div>
             <div class="time" @click="target = 'minute'" :class="{active:target === 'minute'}">
-              <h3>{{text('MIUNTE')}}</h3>
+              <h3>{{text('MINUTE')}}</h3>
               <div class="value">{{minute}}</div>
             </div>
           </header>
@@ -84,7 +84,7 @@ export default {
           contain: []
         },
         {
-          name: 'APPERTIZER',
+          name: 'APPETIZER',
           delay: null,
           contain: []
         },
