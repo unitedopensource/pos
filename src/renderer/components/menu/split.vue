@@ -1,9 +1,9 @@
 <template>
   <div class="popupMask center dark" @click.self="init.reject">
-    <div class="window">
+    <div class="window" v-show="!component">
       <header class="title">
         <span>{{text('ORDER_SPLIT')}}</span>
-        <i class="fa fa-times" @click="init.reject"></i>
+        <i class="fa fa-times" @click="cancel"></i>
       </header>
       <section>
         <split-list :order="order" @queue="setQueue" v-show="remain !==0"></split-list>
@@ -24,11 +24,11 @@
           <div class="btn" @click="printAll">{{text('PRINT_ALL')}}</div>
           <div class="btn" @click="evenly">{{text('EVEN_SPLIT')}}</div>
         </div>
-        <div class="btn" @click="cancel">{{text('CANCEL')}}</div>
         <div class="btn" @click="sort(1)">{{text('SORT')}}</div>
         <div class="btn" @click="save">{{text('SAVE')}}</div>
       </footer>
     </div>
+    <div :is="component" :init="componentData"></div>
   </div>
 </template>
 
@@ -36,7 +36,10 @@
 import { mapGetters } from 'vuex'
 import splitList from './splitList'
 import Printer from '../../print'
+import payment from '../payment/payment'
+import dialoger from '../common/dialoger'
 export default {
+  components: { splitList, payment, dialoger },
   props: ['init'],
   created() {
     this.order = this.flatten(this.init.order.content);
@@ -44,12 +47,15 @@ export default {
   },
   data() {
     return {
-      order: [],
-      split: 0,
       page: 0,
+      split: 0,
+      order: [],
+      lock: false,
       origin: null,
+      component: null,
+      componentData: null,
       transferItems: [],
-      lock: false
+      splitPayment: {}
     }
   },
   methods: {
@@ -133,15 +139,15 @@ export default {
     },
     printInvoice(index) {
       this.print(index);
-      this.order.forEach(item=>item.print = true);
+      this.order.forEach(item => item.print = true);
     },
     printAll() {
       this.sort(1);
       for (let i = 1; i < this.split + 1; i++) {
         this.print(i);
       }
-      this.order.forEach(item=>item.print = true);
-      this.init.resolve(this.order)
+      this.order.forEach(item => item.print = true);
+      this.gatherPayments() && this.init.resolve(this.order)
     },
     print(i) {
       let content = this.order.filter(item => item.sort === i);
@@ -151,7 +157,7 @@ export default {
         type: this.ticket.type
       })
       order.content = content;
-      order.payment = this.$children[i].payment;
+      order.payment = this.splitPayment[i] || this.$children[i].payment;
       Printer.init(this.config).setJob('receipt').print(order)
     },
     cancel() {
@@ -159,10 +165,43 @@ export default {
     },
     save() {
       this.sort(1);
-      this.init.resolve(this.order);
+      this.gatherPayments() && this.init.resolve(this.order);
     },
     settle(order) {
       let { split, payment } = order;
+      this.poleDisplay("TOTAL DUE:", ["", parseFloat(payment.due).toFixed(2)]);
+      new Promise((resolve, reject) => {
+        this.componentData = { payment, resolve, reject };
+        this.component = "payment";
+      }).then(result => {
+        this.$exitComponent();
+        this.splitPayment[split] = result.payment;
+        this.$bus.emit("SPLIT_PAID", split);
+        result.print && this.print(split);
+      }).catch(() => {
+        delete payment.due;
+        payment.log = [];
+        this.$exitComponent();
+      })
+    },
+    gatherPayments() {
+      // let paid = Object.keys(this.splitPayment).length;
+      // if(this.split )
+      // let payment = {};
+      // for(let key in this.splitPayment){
+      //   if(this.splitPayment.hasOwnProperty(key)){
+          
+      //   }
+      // }
+      this.order = Object.assign({},this.order,{
+        splitPayment:this.splitPayment
+      });
+      return true
+    },
+    poleDisplay(line1, line2) {
+      if (!this.device.poleDisplay) return;
+      poleDisplay.write('\f');
+      poleDisplay.write(line(line1, line2));
     },
     confirm(e) {
       this.sort(1);
@@ -181,10 +220,7 @@ export default {
     remain() {
       return this.order.filter(item => item.sort === 0).length
     },
-    ...mapGetters(['ticket', 'store', 'op', 'config'])
-  },
-  components: {
-    splitList
+    ...mapGetters(['op', 'config', 'store', 'device', 'ticket'])
   }
 }
 </script>

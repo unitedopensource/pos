@@ -64,7 +64,7 @@
                         </div>
                         <div class="data" @click="setInputAnchor('evenPay',$event)">
                             <span class="text">{{text('SEPARATE')}}
-                                <span class="people">(${{(payment.due / evenPay) | decimal}} / {{evenPay}})</span>
+                                <span class="people">${{(payment.due / evenPay) | decimal}}</span>
                             </span>
                             <span class="value">{{evenPay}}</span>
                         </div>
@@ -169,9 +169,7 @@ export default {
         this.quickInput = this.generateQuickInput(this.payment.due);
     },
     mounted() {
-        this.payment.type ?
-            this.setPaymentType(this.payment.type) :
-            this.setPaymentType('CASH');
+        this.setPaymentType(this.payment.type || 'CASH')
     },
     data() {
         return {
@@ -226,7 +224,7 @@ export default {
                 document.querySelector('.display .data').classList.add('anchor')
             });
             this.setInputAnchor("paid");
-            this.payment.type = type;
+            this.payment = Object.assign({}, this.payment, { type });
             this.reset = true;
         },
         setInputAnchor(target, e) {
@@ -306,13 +304,14 @@ export default {
                 let value = (this.paid * 100).round(2).toString().slice(0, -1);
                 this.paid = (value / 100).toFixed(2);
             } else {
-                this.evenPay = this.evenPay.slice(0, -1)
+                let value = String(this.evenPay).slice(0, -1);
+                this.evenPay = value || 1;
+                value || (this.reset = true);
             }
         },
         clearCash() {
-            this.pointer === 'paid' ?
-                this.paid = "0.00" :
-                this.evenPay = 1;
+            this.pointer === 'paid' ? this.paid = "0.00" : this.evenPay = 1;
+            this.reset = true;
         },
         delCredit() {
             let p = this.pointer;
@@ -363,7 +362,7 @@ export default {
                 this.setInputAnchor("paid");
             } else {
                 Printer.openCashDrawer();
-                this.poleDisplay(["Paid CASH",this.paid],["Change Due:",change]);
+                this.poleDisplay(["Paid CASH", this.paid], ["Change Due:", change]);
                 this.$dialog({
                     title: this.text("CHANGE", change),
                     msg: this.text("CUST_PAID", this.paid),
@@ -411,7 +410,7 @@ export default {
                 this.$socket.emit("[TERM] SAVE_TRANSACTION", transaction);
                 Printer.init(this.config).setJob("creditCard").print(transaction);
                 if (parseFloat(this.payment.due) === 0) {
-                    this.poleDisplay("Paid Credit Card","Thank You");
+                    this.poleDisplay("Paid Credit Card", "Thank You");
                     this.payment.settled = true;
                     this.summarize({ print: true, transaction });
                 }
@@ -436,7 +435,7 @@ export default {
         },
         chargeGift() {
             if (parseFloat(this.paid) >= this.creditCard.balance) {
-                this.poleDisplay("Paid Gift Card","Thank You");
+                this.poleDisplay("Paid Gift Card", "Thank You");
                 let activity = {
                     date: today(),
                     time: +new Date,
@@ -619,7 +618,7 @@ export default {
             let preset = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 100, 120, 140, 150, 200, 300, 350, 400, 450, 500, 600, 700, 800, 900];
             let array = [];
             let round = Math.ceil(amount);
-            array.push(amount);
+            array.push(amount.round(2));
             amount === round ?
                 array.push((round + 1)) : array.push(round);
             let index = preset.findIndex(i => i > round);
@@ -912,7 +911,11 @@ span.people {
     display: inline-block;
     font-family: 'Microsoft YaHei';
     font-size: 14px;
-    color: #4CAF50;
+    color: #fff;
+    padding: 2px 8px;
+    background: #4CAF50;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px #607D8B;
 }
 
 .option {

@@ -56,8 +56,8 @@
         </div>
       </div>
       <footer>
-        <button class="btn" @click="init.reject">{{text('CANCEL')}}</button>
-        <button class="btn" @click="confirm">{{text('CONFIRM')}}</button>
+        <div class="btn" @click="init.reject">{{text('CANCEL')}}</div>
+        <div class="btn" @click="confirm">{{text('CONFIRM')}}</div>
       </footer>
     </div>
     <div :is="component" :init="componentData"></div>
@@ -160,7 +160,7 @@ export default {
   width: 605px;
 }
 
-footer button.btn {
+.btn {
   margin: 5px 10px;
   flex: 1;
 }

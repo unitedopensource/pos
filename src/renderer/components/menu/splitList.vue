@@ -1,7 +1,7 @@
 <template>
     <div class="split" :class="'ticket_'+split">
         <header v-if="split">#{{split}}</header>
-        <div class="inner">
+        <div class="inner" :class="{paid}">
             <div v-for="(item,index) in instance" :key="index" @click.stop="pick(item.unique)" :data-key="item.unique">
                 <span class="itemWrap">
                     <span class="item">{{item[language]}}
@@ -17,7 +17,7 @@
         </div>
         <div class="summary">
             <div class="total">
-                <span class="text">Total:</span>
+                <span class="text">{{text('TOTAL')}}:</span>
                 <span>${{payment.total | decimal}}
                     <span class="tax">({{payment.tax | decimal}})</span>
                 </span>
@@ -29,8 +29,7 @@
         </div>
         <div class="done" v-show="done">
             <div class="btn print" @click="print">{{text('PRINT')}}</div>
-            <div class="btn pay" @click="pay">{{text('PAYMENT')}}</div>
-            <div class="btn" @click="adjust">{{text('ADJUST')}}</div>
+            <div class="btn pay" @click="pay" v-show="!paid">{{text('PAYMENT')}}</div>
         </div>
     </div>
 </template>
@@ -39,17 +38,20 @@
 import { mapGetters } from 'vuex'
 import checkbox from '../setting/common/checkbox'
 export default {
+    components: { checkbox },
     props: ['order', 'split', 'done'],
     data() {
         return {
             queue: [],
+            paid: false,
             isTax: true,
             isDiscount: true,
             isChargeDelivery: true
         }
     },
     created() {
-        this.$bus.on("SPLIT_ORDER", this.reset)
+        this.$bus.on("SPLIT_ORDER", this.reset);
+        this.$bus.on("SPLIT_PAID", this.check);
         this.isChargeDelivery = this.ticket.type === 'DELIVERY';
     },
     methods: {
@@ -60,14 +62,15 @@ export default {
         reset() {
             this.queue = [];
         },
+        check(split) {
+            this.split === split && (this.paid = true);
+        },
         print() {
             this.$emit("print", this.split);
             document.querySelector(".btn.print").classList.add("active")
         },
-        adjust() {
-
-        },
         pay() {
+            if (this.paid) return;
             let due = this.payment.total + this.payment.tip + this.payment.gratuity - this.payment.discount;
             this.$emit("pay", {
                 split: this.split,
@@ -117,10 +120,7 @@ export default {
             doms.forEach(dom => {
                 this.queue.includes(dom.dataset.key) && dom && dom.classList.add("active");
             });
-            this.$emit("queue", {
-                origin: this.split,
-                items: n
-            })
+            this.$emit("queue", { origin: this.split, items: n })
         }
     },
     filters: {
@@ -128,11 +128,9 @@ export default {
             return text.join(" ")
         }
     },
-    components: {
-        checkbox
-    },
     beforeDestroy() {
-        this.$bus.off("SPLIT_ORDER", this.reset)
+        this.$bus.off("SPLIT_ORDER", this.reset);
+        this.$bus.off("SPLIT_PAID", this.check);
     }
 }
 </script>
@@ -154,6 +152,7 @@ export default {
     flex: 1;
     max-height: 506px;
     overflow: hidden;
+    position: relative;
 }
 
 .inner>div {
@@ -243,5 +242,16 @@ header {
 .btn.active {
     background: linear-gradient(#ddd, #f5f5f5);
     color: #666;
+}
+
+.paid::after {
+    content: ' ';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 100px;
+    height: 100px;
+    background: url(../../assets/image/paid.png) no-repeat;
+    background-size: cover;
 }
 </style>

@@ -36,7 +36,7 @@ export default {
                     text: 'CANCEL',
                     fn: 'reject'
                 }, {
-                    text: 'CONTINUTE',
+                    text: 'CONTINUE',
                     fn: 'resolve'
                 }]
             })

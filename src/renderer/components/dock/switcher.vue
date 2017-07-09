@@ -32,13 +32,13 @@ export default{
   .wrap{
     position: absolute;
     top: 0px;
-    left: 65px;
+    left: 45px;
     border: 2px solid #607d8b;
-    box-shadow: var(--shadow);
+    box-shadow: 0 3px 4px rgba(0,0,0,0.5);
   }
   .type{
     background: #fff;
-    padding: 21px 10px 22px 15px;
+    padding: 18px 10px 18px 15px;
     color: #555;
     width: 191px;
     text-shadow: none;
@@ -55,7 +55,7 @@ export default{
   .require {
     background: #FF5722;
     color: #fcfcfc;
-    padding: 3px 5px;
+    padding: 0px 5px;
     border-radius: 4px;
     float: right;
     font-size: 0.7em;
