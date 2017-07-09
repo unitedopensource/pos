@@ -99,12 +99,12 @@ export default {
           if (err) {
             this.$dialog({ type: "error", title: 'STA_REG_F', msg: this.text('TIP_REASON', err), buttons: [{ text: 'CANCEL', fn: 'resolve' }] }).then(() => { this.$exitComponent() });
           } else {
-            let _stations = Object.assign({}, this.store.station);
-            let length = Object.keys(_stations).length + 1;
+            let stations = Object.assign({}, this.store.station);
+            let length = Object.keys(stations).length + 1;
             let alies = 'pc' + length;
             let station = Preset.station(alies, mac);
-            _stations[alies] = station;
-            this.$socket.emit("[CONFIG] UPDATE_STATION", _stations);
+            stations[alies] = station;
+            this.$socket.emit("[CONFIG] UPDATE_STATION", stations);
 
             //ipcRenderer.send("Relaunch");
             this.setStation(station)

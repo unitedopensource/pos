@@ -266,7 +266,7 @@ section.ticket {
     top: -5px;
     left: -5px;
     content: attr(data-number);
-    width: 35px;
+    min-width: 37px;
     height: 30px;
     text-align: center;
     line-height: 30px;

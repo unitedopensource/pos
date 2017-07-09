@@ -132,6 +132,7 @@ h5 {
   font-weight: normal;
   color: #757575;
   font-size: 14px;
+  line-height: 12px;
 }
 
 h5 .pass {

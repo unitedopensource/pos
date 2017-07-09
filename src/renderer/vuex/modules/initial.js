@@ -58,7 +58,6 @@ const mutations = {
         state.app = Object.assign({}, state.app, data)
     },
     [types.SET_STATION](state, mac) {
-        console.log(mac)
         if (typeof mac === 'object') {
             state.config.station = mac;
         } else {
@@ -92,7 +91,7 @@ const mutations = {
         state.lastSync = Object.assign({}, state.lastSync, data)
     },
     [types.SET_TODAYORDER](state, data) {
-        state.orders = data;
+        state.orders = data.sort((a, b) => (Number(b.number) - Number(a.number)));
     },
     [types.ADD_SPOOLER](state, data) {
         state.spooler.push(data);
@@ -156,14 +155,17 @@ export default {
 
 function flatten(layout, data, page) {
     let group = {};
-    data.map(item => { group.hasOwnProperty(item.category) ? group[item.category].push(item) : group[item.category] = [] });
+    data.map(item => {
+        !group.hasOwnProperty(item.category) && (group[item.category] = []);
+        group[item.category].push(item);
+    });
     layout.forEach(layer => {
         layer.contain.forEach(item => {
-            let items = group[item] || [""];
+            let items = group[item] || [];
             let align = 6 - items.length % 3;
             align === 6 && (align = 3);
             Array(align).fill().forEach(_ => { items.push({ zhCN: "", usEN: "", clickable: false, category: "NA" }) })
-            layer.item.push(group[item]);
+            layer.item.push(group[item] || items);
         });
         let length = [].concat.apply([], layer.item).length;
         let last = Math.max(0, layer.item.length - 1);

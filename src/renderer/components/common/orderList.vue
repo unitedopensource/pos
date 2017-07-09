@@ -376,7 +376,8 @@ export default {
         },
         'cart': {
             handler(n) {
-                !this.display ? this.calculator(n) : this.order.payment || this.calculator(n);
+                console.log(this.order.payment)
+                !this.display ? this.calculator(n) : this.payment = this.order.payment || this.calculator(n);
             }, deep: true
         },
         'ticket.type'() {
