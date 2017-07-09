@@ -113,10 +113,11 @@ export default {
         isSettledOrder() {
             this.$dialog({
                 title: "ORDER_SETTLED",
-                msg: "TIP_ORDER_SETTLED"
-            }).then(resolve => {
+                msg: "TIP_ORDER_SETTLED",
+                buttons: [{ text: 'CONFIRM', fn: 'resolve' }]
+            }).then(() => {
                 this.$exitComponent();
-            });
+            })
         },
         editOrder() {
             this.setTicket({
@@ -198,10 +199,7 @@ export default {
                 this.$dialog({
                     title: "PAYMENT_REMOVED",
                     msg: this.text("ORDER_PAYMENT_REMOVED", this.order.number),
-                    buttons: [{
-                        text: 'CONFIRM',
-                        fn: 'resolve'
-                    }]
+                    buttons: [{ text: 'CONFIRM', fn: 'resolve' }]
                 }).then(() => {
                     this.editOrder();
                 });
@@ -214,14 +212,7 @@ export default {
             this.$dialog({
                 type: "question",
                 title: this.text('RECOVER_ORDER_CONFIRM', this.order.number),
-                msg: this.text('RECOVER_ORDER_CONFIRM_TIP', this.order.void.by, this.text(this.order.void.note)),
-                buttons: [{
-                    text: "CANCEL",
-                    fn: "reject"
-                }, {
-                    text: "CONFIRM",
-                    fn: "resolve"
-                }]
+                msg: this.text('RECOVER_ORDER_CONFIRM_TIP', this.order.void.by, this.text(this.order.void.note))
             }).then(() => {
                 let order = JSON.parse(JSON.stringify(this.order));
                 order.status = 1;
@@ -294,12 +285,7 @@ export default {
                     this.$exitComponent();
                 });
             } else {
-                this.$dialog({
-                    title: 'UNABLE_ACCESS',
-                    msg: 'STA_TERM_NA'
-                }).then(() => {
-                    this.$exitComponent();
-                })
+                this.$dialog({ title: 'UNABLE_ACCESS', msg: 'STA_TERM_NA' }).then(() => { this.$exitComponent() })
             }
         },
         report() {
@@ -321,10 +307,10 @@ export default {
             this.resetMenu();
             this.$router.push({ path: "/main" });
         },
-        ...mapActions(['setTicket', 'resetMenu', 'removePayment', 'setApp'])
+        ...mapActions(['setApp', 'setTicket', 'resetMenu', 'removePayment'])
     },
     computed: {
-        ...mapGetters(['op', 'order', 'isEmptyOrder', 'station', 'config'])
+        ...mapGetters(['op', 'order', 'config', 'station', 'isEmptyOrder'])
     },
     components: {
         Calendar, Dialoger, Terminal, Payment, Reason, Report
