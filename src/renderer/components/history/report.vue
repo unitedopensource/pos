@@ -50,8 +50,12 @@
               </div>
             </div>
           </article>
-          <div>
-            <checkbox v-model="sentEmail" label="SENT_RPT_VIA_EMAIL" v-show="false"></checkbox>
+          <div v-show="detail === 'detail'">
+            <fieldset>
+              <legend>{{text('OPTION')}}</legend>
+              <checkbox v-model="sentEmail" label="SENT_RPT_VIA_EMAIL"></checkbox>
+              <checkbox v-model="countItem" label="REPORT_COUNT_ITEM"></checkbox>
+            </fieldset>
           </div>
         </section>
       </div>
@@ -74,6 +78,7 @@ export default {
   data() {
     return {
       sentEmail: false,
+      countItem: false,
       ranger: "today",
       detail: "simple",
       range: [],
@@ -240,16 +245,16 @@ export default {
           voidedSum += invoice.payment.total;
         }
 
-        if(this.detail === 'detail'){
-          invoice.content.forEach(item=>{
-            if(!counter.hasOwnProperty(item.usEN)){
+        if (this.detail === 'detail') {
+          invoice.content.forEach(item => {
+            if (!counter.hasOwnProperty(item.usEN)) {
               //create new counter
               counter[item.usEN] = {
-                text:item[this.language],
-                count:1,
-                amount:item.single * item.qty
+                text: item[this.language],
+                count: 1,
+                amount: item.single * item.qty
               }
-            }else{
+            } else {
               counter[item.usEN].count++;
               counter[item.usEN].amount += item.single * item.qty;
             }
@@ -369,7 +374,7 @@ export default {
                 gratuity: totalGratuity
               }
             ],
-            top:Object.values(counter).sort((a,b)=>a.count > b.count ? -1 : 1).slice(0,10)
+            top: Object.values(counter).sort((a, b) => a.count > b.count ? -1 : 1).slice(0, 10)
           };
         case "full":
           return {
@@ -390,7 +395,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['config','language'])
+    ...mapGetters(['config', 'language'])
   },
   sockets: {
     REPORT_RESULTS(data) {
@@ -409,18 +414,23 @@ export default {
   position: relative;
 }
 
-.report .inner .btn {
+.inner .btn {
   width: 80%;
   margin: 10px auto;
 }
 
-.report .inner {
+.inner {
   text-align: center;
-  height: 300px;
+  padding: 10px 0;
 }
 
-article.row {
+.row {
   padding: 10px;
+}
+
+.row h3 {
+  margin-bottom: 10px;
+  color: #263238;
 }
 
 .wrap {
@@ -439,6 +449,19 @@ article.row {
 
 input[type="radio"] {
   display: none;
+}
+
+fieldset {
+  margin: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: #fff;
+  text-align: left;
+  padding: 10px;
+}
+
+legend {
+  font-weight: bold;
 }
 
 .btn {

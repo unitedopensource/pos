@@ -8,7 +8,7 @@
         <span class="address" v-show="customer.address">{{customer.address}}</span>
         <span class="name" v-show="customer.name">{{customer.name}}</span>
       </div>
-      <div v-if="$route.name ==='History'" class="date">{{time | moment('YYYY-MM-DD')}}</div>
+      <!--<div v-if="$route.name ==='History'" class="date">{{time | moment('YYYY-MM-DD')}}</div>-->
     </div>
     <span class="op" @click="openPanel">
       <i class="fa fa-user"></i>{{op.name}}</span>
@@ -425,14 +425,14 @@ span.orderType {
   margin: 0 5px;
 }
 
-.date {
+/*.date {
   color: #fff;
   font-style: italic;
   padding: 0 20px;
   flex: 1;
   font-size: 1.3em;
   text-shadow: 0 1px 3px #333;
-}
+}*/
 
 span.op {
   background: rgba(255, 255, 255, 0.1);

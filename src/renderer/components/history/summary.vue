@@ -35,13 +35,14 @@
       </div>
       <div class="value">$ {{summary.unsettleSum}}</div>
     </div>
+    <div class="date">{{date}}</div>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 export default {
-  props: ['data'],
+  props: ['data', 'date'],
   created() {
     this.isDisplay = this.op.view && this.op.view.includes("summary");
   },
@@ -211,5 +212,16 @@ export default {
 
 .summary.hide .value {
   visibility: hidden;
+}
+
+.date {
+  position: absolute;
+  right: 0;
+  font-size: 3em;
+  font-style: italic;
+  padding: 0px 37px;
+  font-family: fantasy;
+  color: #F5F5F5;
+  text-shadow: 0 1px 3px #000;
 }
 </style>

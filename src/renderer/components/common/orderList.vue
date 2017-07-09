@@ -376,7 +376,6 @@ export default {
         },
         'cart': {
             handler(n) {
-                console.log(this.order.payment)
                 !this.display ? this.calculator(n) : this.payment = this.order.payment || this.calculator(n);
             }, deep: true
         },

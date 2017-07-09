@@ -59,9 +59,10 @@ import Report from './report'
 import Search from './search'
 import Printer from '../../print'
 export default {
-    props: ['today', 'calendarDate'],
+    props: ['date'],
     data() {
         return {
+            today:today(),
             component: null,
             componentData: null
         }
@@ -73,7 +74,7 @@ export default {
                 this.$denyAccess();
                 return;
             };
-            if (this.calendarDate || (this.calendarDate && this.calendarDate !== this.today)) {
+            if (this.date !== this.today) {
                 this.$dialog({ title: 'UNAVOIDABLE_PREVS_ORDER', msg: 'UNAVOIDABLE_PREVS_ORDER_TIP' }).then(() => {
                     this.$exitComponent();
                 })

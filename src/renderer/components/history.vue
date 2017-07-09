@@ -5,10 +5,10 @@
                 <div class="tradeMark" @click.ctrl="maintenance"></div>
                 <span>U</span>
             </div>
-            <order-summary :data="prevsHistory.length ? prevsHistory : history" @filter="setFilter"></order-summary>
+            <order-summary :data="prevsHistory.length ? prevsHistory : history" :date="calendarDate || today" @filter="setFilter"></order-summary>
         </header>
         <article>
-            <function-grid :today="today" :calendarDate="calendarDate" @update="setCalendar"></function-grid>
+            <function-grid :date="calendarDate || today" @update="setCalendar"></function-grid>
             <section class="tickets">
                 <div class="inner">
                     <div v-for="(ticket,index) in orders" class="invoice" @click="getInvoice(ticket)" :data-number="ticket.number" :key="index" :class="{void:ticket.status === 0,settled:ticket.settled}">
