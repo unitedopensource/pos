@@ -74,11 +74,7 @@ export default {
                 return;
             };
             if (this.calendarDate || (this.calendarDate && this.calendarDate !== this.today)) {
-                this.$dialog({
-                    type: "alert",
-                    title: 'UNVOIDABLE_PREVS_ORDER',
-                    msg: 'UNVOIDABLE_PREVS_ORDER_TIP'
-                }).then(() => {
+                this.$dialog({ title: 'UNAVOIDABLE_PREVS_ORDER', msg: 'UNAVOIDABLE_PREVS_ORDER_TIP' }).then(() => {
                     this.$exitComponent();
                 })
                 return;
@@ -183,15 +179,7 @@ export default {
             this.$dialog({
                 type: "warning",
                 title: 'PAYMENT_REMOVE',
-                msg: this.text('PAYMENT_REMOVE_CONFIRM', this.text(this.order.payment.type)),
-                buttons: [{
-                    text: 'CANCEL',
-                    fn: 'reject'
-                }, {
-                    text: 'CONFIRM',
-                    fn: 'resolve',
-                    prevent: true
-                }]
+                msg: this.text('PAYMENT_REMOVE_CONFIRM', this.text(this.order.payment.type))
             }).then(() => {
                 this.removePayment();
                 this.$socket.emit("ORDER_MODIFIED", this.order)
