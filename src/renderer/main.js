@@ -22,8 +22,13 @@ window.moment = moment
 
 const ip = Ip.address().split(".").splice(0, 3).join(".") + ".";
 let findHost = new Promise((resolve, reject) => {
-  let start = 0,
-    end = 255;
+  const args = require('electron').remote.process.argv.slice(1);
+  let host = args.indexOf("-host");
+  if(host !== -1){
+    resolve(args[++host]);
+    return;
+  }
+  let start = 0, end = 255;
   while (start <= end) {
     let target = ip + start;
     (function (target) {
