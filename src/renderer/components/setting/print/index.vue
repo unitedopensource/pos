@@ -59,7 +59,7 @@
             </footer>
         </section>
         <section class="preview">
-            <div class="receipt" :class="{hidePrimary:!receipt.zhCN,hideSecondary:!receipt.usEN}">
+            <div class="receipt">
                 <header>
                     <div class="store" :class="{hide:!receipt.store}">
                         <h3>{{store.name}}</h3>
@@ -68,8 +68,8 @@
                         <h5>{{store.contact}}</h5>
                     </div>
                     <div class="type" :class="{hide:!receipt.type}">
-                        <p class="zhCN">{{text('DELIVERY')}}</p>
-                        <p class="usEN">DELIVERY</p>
+                        <p class="zhCN" :style="style.zhCN">{{text('DELIVERY')}}</p>
+                        <p class="usEN" :style="style.usEN">DELIVERY</p>
                     </div>
                     <div class="time">
                         <span>Date: {{date}}</span>
@@ -257,16 +257,18 @@ export default {
         profile: {
             handler(n) {
                 if (n.hasOwnProperty('control')) {
-                    let { primaryFont, primaryFontSize, secondaryFont, secondaryFontSize, enlargeDetail } = n.control;
+                    let { printPrimary, primaryFont, primaryFontSize, printSecondary, secondaryFont, secondaryFontSize, enlargeDetail } = n.control;
                     console.log(primaryFont, secondaryFont)
                     this.style = {
                         zhCN: {
                             "font-family": primaryFont,
-                            "font-size": primaryFontSize + "px"
+                            "font-size": primaryFontSize + "px",
+                            "display": printPrimary ? "flex" : "none"
                         },
                         usEN: {
                             "font-family": secondaryFont,
-                            "font-size": secondaryFontSize + "px"
+                            "font-size": secondaryFontSize + "px",
+                            "display": printSecondary ? "flex" : "none"
                         },
                         info: {
                             "font-family": "Tensentype RuiHeiJ-W2",
@@ -383,6 +385,11 @@ footer {
     margin: 12px;
 }
 
+.receipt .type p {
+    justify-content: center;
+    align-content: center;
+}
+
 .receipt .time {
     display: flex;
     justify-content: center;
@@ -477,15 +484,4 @@ p.mark {
     padding-top: 5px;
 }
 
-.hidePrimary .zhCN {
-    display: none;
-}
-
-.hideSecondary .usEN {
-    display: none;
-}
-
-.hide {
-    display: none;
-}
 </style>

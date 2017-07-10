@@ -361,7 +361,7 @@ export default {
                 this.quickInput = this.generateQuickInput(this.payment.due);
                 this.setInputAnchor("paid");
             } else {
-                Printer.openCashDrawer();
+                Printer.init(this.config).openCashDrawer();
                 this.poleDisplay(["Paid CASH", this.paid], ["Change Due:", change]);
                 this.$dialog({
                     title: this.text("CHANGE", change),
@@ -568,7 +568,7 @@ export default {
                     type: 'CASHOUT',
                     op: this.op.name
                 };
-                Printer.openCashDrawer();
+                Printer.init(this.config).openCashDrawer();
                 this.$dialog({
                     title: this.text('WITHDRAW', money.toFixed(2)),
                     msg: "TIP_WITHDRAW"

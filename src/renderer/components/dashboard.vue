@@ -18,9 +18,10 @@
 <script>
 import { ipcRenderer } from 'electron'
 import { mapActions, mapGetters } from 'vuex'
-import moment from 'moment'
-import Preset from '../preset'
 import MAC from 'getmac'
+import moment from 'moment'
+import Printer from '../print'
+import Preset from '../preset'
 import dialoger from './common/dialoger'
 export default {
   data() {
@@ -82,7 +83,7 @@ export default {
             this.$denyAccess();
             return;
           }
-          CLODOP.SEND_PRINT_RAWDATA(String.fromCharCode(27) + String.fromCharCode(112) + String.fromCharCode(48) + String.fromCharCode(55) + String.fromCharCode(221))
+          Printer.init(this.config).openCashDrawer();
           break;
         case "lock":
           this.resetDashboard();
@@ -123,7 +124,7 @@ export default {
     ...mapActions(['setStation', 'setTicket', 'resetDashboard', 'setCustomer', 'setApp'])
   },
   computed: {
-    ...mapGetters(['store', 'station', 'time', 'op', 'ring', 'callHistory', 'device'])
+    ...mapGetters(['store', 'station', 'time', 'op', 'ring', 'callHistory', 'device','config'])
   },
   components: {
     dialoger

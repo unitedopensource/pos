@@ -60,6 +60,13 @@
             </article>
         </section>
         <section class="card">
+            <header>{{text('CASH_DRAWER')}}</header>
+            <article>
+                <smart-switch v-model="workStation.cashDrawer" label="ENABLE"></smart-switch>
+                <smart-option v-model="workStation.cashDrawerBind" label="BINDING" :options="printers"></smart-option>
+            </article>
+        </section>
+        <section class="card">
             <header>{{text('UI')}}</header>
             <article class="grid">
                 <div v-for="(grid,index) in workStation.interface" :key="index" class="block" @click="edit(grid,index)" :class="{disable:!grid.enable}">
@@ -123,7 +130,7 @@ export default {
                 this.$exitComponent();
             })
         },
-        update(data){
+        update(data) {
             this.workStation.print = data;
         },
     },

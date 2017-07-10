@@ -20,6 +20,15 @@
                 <smart-input v-model.number="table.initialAmount" label="INIT_AMOUNT"></smart-input>
             </article>
         </section>
+        <section class="card">
+            <header>{{text('AUTO_CHARGE')}}
+                <span class="SETTING.AUTOCHARGE.TIP"></span>
+            </header>
+            <article>
+                <smart-switch v-model="table.autoTip" label="ENABLE"></smart-switch>
+                <smart-input v-model.number="table.AutoChargeAbove" label="INIT_AMOUNT"></smart-input>
+            </article>
+        </section>
     </div>
 </template>
 
@@ -46,7 +55,7 @@ export default {
                         n[key] !== this.store.table[key] :
                         JSON.stringify(n[key]) !== JSON.stringify(this.store.table[key]);
                 })
-                this.change ? this.$emit("change", Object.assign({},this.store,{ table:n })) : this.$emit("unchange");
+                this.change ? this.$emit("change", Object.assign({}, this.store, { table: n })) : this.$emit("unchange");
             }, deep: true
         }
     },

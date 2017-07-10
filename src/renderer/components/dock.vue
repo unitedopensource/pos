@@ -250,12 +250,12 @@ export default {
       'updateOrder',
       'updateTable',
       'setTableInfo',
+      'setTodayOrder',
       'removeSpooler',
       'updateMenuItem',
       'removeMenuItem',
       'removeRequestItem',
       'updateMenuCategory',
-      'setTodayOrderHistory',
       'updateRequestCategory',
       'insertCallHistory'])
   },
@@ -273,15 +273,6 @@ export default {
       console.log("update_table");
       this.updateTable(data);
     },
-    INSERT_ORDER(data) {
-      this.insertOrder(data);
-    },
-    UPDATE_ORDER(data) {
-      this.updateOrder(data);
-    },
-    TODAY_ORDER_HISTORY(orders) {
-      this.setTodayOrderHistory(orders);
-    },
     LAST_UPDATE_TIME(update) {
       if (this.update.table !== update.table) {
         console.log("Ask server for new table status.");
@@ -296,15 +287,7 @@ export default {
       this.componentData = info;
       this.component = "modal";
     },
-    REQUEST_CATEGORY_UPDATE(data) {
-      this.updateRequestCategory(data);
-    },
-    REQUEST_ITEM_REMOVE(data) {
-      this.removeRequestItem(data.id);
-    },
-    MENU_CATEGORY_UPDATE(data) {
-      this.updateMenuCategory(data);
-    },
+
     TIMECARD_REPORT(data) {
       Printer.init(this.config).setJob("timeCard report").print(data);
     },
@@ -331,17 +314,15 @@ export default {
           break;
       }
     },
-    MENU_ITEM_UPDATE(data) {
-      console.log(data)
-      this.updateMenuItem(data);
-    },
-    MENU_ITEM_REMOVE(data) {
-      console.log(data);
-      this.removeMenuItem(data);
-    },
-    disconnect() {
-      this.setApp({ database: false });
-    }
+    INSERT_ORDER(data) { this.insertOrder(data) },
+    UPDATE_ORDER(data) { this.updateOrder(data) },
+    TODAY_ORDER_HISTORY(orders) { this.setTodayOrder(orders) },
+    REQUEST_CATEGORY_UPDATE(data) { this.updateRequestCategory(data) },
+    REQUEST_ITEM_REMOVE(data) { this.removeRequestItem(data.id) },
+    MENU_CATEGORY_UPDATE(data) { this.updateMenuCategory(data) },
+    MENU_ITEM_UPDATE(data) { this.updateMenuItem(data) },
+    MENU_ITEM_REMOVE(data) { this.removeMenuItem(data) },
+    disconnect() { this.setApp({ database: false }) }
   },
   watch: {
     ring(n) {
@@ -413,6 +394,12 @@ span.orderType {
   border-right: 1px solid #7994a0;
   margin: 0 5px;
 }
+
+
+
+
+
+
 
 
 

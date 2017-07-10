@@ -26,6 +26,8 @@ var Preset = function () {
       },
       print: {},
       printRedirect:false,
+      cashDrawer:false,
+      cashDrawerBind:"",
       timeout: 0,
       receiveOnlineOrder: false,
       interface: [{

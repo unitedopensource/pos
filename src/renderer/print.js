@@ -53,6 +53,8 @@ Printer.prototype.print = function (data) {
   }
 };
 Printer.prototype.openCashDrawer = function () {
+  let { station } = this.config;
+  station.cashDrawer && CLODOP.SET_PRINTER_INDEX(station.cashDrawerBind);
   CLODOP.SEND_PRINT_RAWDATA(String.fromCharCode(27) + String.fromCharCode(112) + String.fromCharCode(48) + String.fromCharCode(55) + String.fromCharCode(221));
 };
 Printer.prototype.buzzer = function () {
