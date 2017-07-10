@@ -11,7 +11,11 @@
                     <label>{{text('US_EN')}}</label>
                     <input v-model="category.usEN">
                 </div>
-                <fieldset>
+                <div class="input" v-show="manual">
+                    <label>{{text('CONTAIN')}}</label>
+                    <input v-model="contains">
+                </div>
+                <fieldset v-show="!manual">
                     <legend>{{text('CONTAIN')}}</legend>
                     <div class="options">
                         <checkbox :label="name" v-model="contain" v-for="(name,index) in categories" :multiple="true" :key="index"></checkbox>
@@ -19,6 +23,9 @@
                 </fieldset>
             </div>
             <footer>
+                <div class="f1">
+                    <checkbox label="MANUAL_INPUT" v-model="manual"></checkbox>
+                </div>
                 <div class="btn" @click="exit" id="cancelEdit">{{text('CANCEL')}}</div>
                 <div class="btn" @click="confirm" id="confirmEdit">{{text('CONFIRM')}}</div>
             </footer>
@@ -35,13 +42,16 @@ export default {
     created() {
         this.$socket.emit("INQURY_CATEGORIES");
         this.category = Object.assign({}, this.init.category);
-        this.contain = this.category.contain.filter(category=>category);
+        this.contain = this.category.contain.filter(category => category);
+        this.contains = this.contain.join(",");
     },
     data() {
         return {
             categories: [],
             category: null,
-            contain: []
+            contains: "",
+            contain: [],
+            manual: false
         }
     },
     methods: {
@@ -49,9 +59,8 @@ export default {
             this.init.reject();
         },
         confirm() {
-            Object.assign(this.category, {
-                contain: this.contain
-            })
+            let contain = this.manual ? this.contains.split(",") : this.contain;
+            Object.assign(this.category, { contain })
             this.init.resolve(this.category)
         }
     },
@@ -84,5 +93,9 @@ legend {
     margin-left: 10px;
     padding: 0 5px;
     font-size: 20px;
+}
+
+.f1 {
+    padding: 0 15px;
 }
 </style>

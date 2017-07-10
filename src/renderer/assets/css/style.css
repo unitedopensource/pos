@@ -156,6 +156,7 @@ i.warning::before {
 button.btn {
   border: none;
   outline: none;
+  font-family: 'Yuanti-SC';
 }
 
 .btn:active,

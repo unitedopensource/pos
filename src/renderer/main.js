@@ -19,7 +19,7 @@ Vue.use(i18n)
 
 Vue.config.debug = true
 window.moment = moment
-
+window.servers = [];
 const ip = Ip.address().split(".").splice(0, 3).join(".") + ".";
 let findHost = new Promise((resolve, reject) => {
   const args = require('electron').remote.process.argv.slice(1);
@@ -36,15 +36,11 @@ let findHost = new Promise((resolve, reject) => {
         host: target,
         port: 27017
       }, () => {
-        console.log("Host IP", target);
+        servers.push(target);
         resolve(target);
       });
-      setTimeout(() => {
-        scanner.destroy();
-      }, 2000);
-      scanner.on("error", () => {
-        scanner.destroy();
-      });
+      setTimeout(() => { scanner.destroy() }, 2000);
+      scanner.on("error", () => {scanner.destroy()});
     })(target);
     start++;
   }

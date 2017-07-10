@@ -72,7 +72,9 @@ export default {
 
     },
     giftCard() {
-
+      this.$emit("trigger",{
+        name:"giftCard"
+      })
     },
     language() {
       let language = this.app.language === "usEN" ? "zhCN" : "usEN";

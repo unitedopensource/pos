@@ -190,6 +190,7 @@
               'LOUSY_CUST': '麻烦',
               'MANAGER_CODE': '经理密码',
               'MARKER': '标记',
+              'MANUAL_INPUT':'手动输入',
               'MINUTE': '分钟',
               'MORE': '增加',
               'MODIFY': '修改',

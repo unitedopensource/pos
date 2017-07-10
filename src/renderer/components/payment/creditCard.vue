@@ -3,7 +3,7 @@
         <i class="fa" :class="[icon]"></i>
         <h3>{{msg}}</h3>
         <footer>
-            <button class="btn" @click="exit">{{text('CANCEL')}}</button>
+            <div class="btn" @click="exit">{{text('CANCEL')}}</div>
         </footer>
     </div>
 </template>
@@ -132,7 +132,7 @@ footer {
     margin-top: 15px;
 }
 
-footer .btn {
+.btn {
     margin: 10px;
     width: 90%;
 }

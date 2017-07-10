@@ -307,7 +307,7 @@ fieldset {
     border: 1px solid #ccc;
     background: #fff;
     border-radius: 2px;
-    margin: 3px 5px;
+    margin: 5px;
     padding: 5px 0;
 }
 
@@ -337,7 +337,7 @@ section.setting {
 }
 
 .wrap {
-    height: 575px;
+    height: 579px;
 }
 
 .preview {

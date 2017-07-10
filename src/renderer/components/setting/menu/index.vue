@@ -60,6 +60,7 @@ export default {
             this.items = this.categories[index].item.slice();
         },
         editCategory(category, index) {
+            console.log(category);
             new Promise((resolve, reject) => {
                 this.componentData = { resolve, reject, category };
                 this.component = "categoryEditor";

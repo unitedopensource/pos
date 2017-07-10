@@ -126,9 +126,9 @@
                 <aside class="edit">
                     <textarea v-model="code" id="code"></textarea>
                     <!--<div class="status" :class="{expaned:errorLog.length > 1}">
-                                    <i class="fa fa-circle" v-show="errorLog.length === 1"></i>
-                                    <div v-for="log in errorLog" class="log" :class="{passed:errorLog.length === 1}">{{log}}</div>
-                                </div>-->
+                                        <i class="fa fa-circle" v-show="errorLog.length === 1"></i>
+                                        <div v-for="log in errorLog" class="log" :class="{passed:errorLog.length === 1}">{{log}}</div>
+                                    </div>-->
                 </aside>
             </div>
         </div>
@@ -165,7 +165,7 @@ export default {
             option.overWrite = option.overWrite || false;
         })
         this.item = item;
-        this.printers = Object.keys(this.configuration.printer);
+        this.printers = Object.keys(this.config.printer);
         document.querySelectorAll(".itemEditor input")[2].focus();
         if (Array.isArray(this.item.printer)) {
             this.item.printer = {};
@@ -312,7 +312,7 @@ export default {
             }
             return true
         },
-        ...mapGetters(['configuration', 'tax'])
+        ...mapGetters(['tax', 'config'])
     }
 }
 </script>

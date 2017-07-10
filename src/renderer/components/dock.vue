@@ -32,11 +32,12 @@ import Printer from '../print'
 import maintenance from './dock/maintenance'
 import dialoger from './common/dialoger'
 import switcher from './dock/switcher'
+import giftCard from './dock/giftCard'
 import opPanel from './dock/opPanel'
 import spooler from './dock/spooler'
 import modal from './dock/modal'
 export default {
-  components: { maintenance, modal, switcher, dialoger, opPanel, spooler },
+  components: { maintenance, modal, switcher, dialoger, opPanel, spooler, giftCard },
   mounted() {
     setTimeout(() => {
       document.querySelector(".dock").classList.add("slideDown");
@@ -60,22 +61,7 @@ export default {
       }
       return this.text(this.ticket.type, this.app.language);
     },
-    ...mapGetters(['app',
-      'configuration',
-      'currentTable',
-      'history',
-      'station',
-      'spooler',
-      'op',
-      'time',
-      'ticket',
-      'update',
-      'customer',
-      'history',
-      'language',
-      'order',
-      'ring',
-      'device'])
+    ...mapGetters(['op', 'app', 'time', 'ring', 'order', 'config', 'ticket', 'update', 'device', 'history', 'station', 'spooler', 'customer', 'language', 'currentTable'])
   },
   methods: {
     openPanel() {
@@ -179,7 +165,7 @@ export default {
       this.spooler[i].content.forEach(item => {
         items.push(item.unique)
       });
-      Printer.init(this.configuration).setJob("receipt").print(this.spooler[0]);
+      Printer.init(this.config).setJob("receipt").print(this.spooler[0]);
       this.removeSpooler(i);
       let index = this.history.findIndex(order => order._id === _id);
       let order = Object.assign({}, this.history[index]);
@@ -226,22 +212,23 @@ export default {
           this.$dialog({
             type: "question",
             title: "CLOCK_OUT_CONFIRM",
-            msg: this.text("TIP_CLOCK_OUT", moment(this.op.clockIn).format("hh:mm:ss a"), (h + " " + m)),
-            buttons: [{
-              text: "CANCEL",
-              fn: 'reject'
-            }, {
-              text: "CONFIRM",
-              fn: 'resolve'
-            }]
+            msg: this.text("TIP_CLOCK_OUT", moment(this.op.clockIn).format("hh:mm:ss a"), (h + " " + m))
           }).then(() => {
             this.$socket.emit("[TIMECARD] CLOCK_OUT", this.op)
-            this.setOp({
-              clockIn: null,
-              timeCard: null
-            });
+            this.setOp({ clockIn: null, timeCard: null });
             this.$exitComponent();
             this.$router.push({ path: '/main/lock' });
+          }).catch(() => {
+            this.$exitComponent();
+          })
+          break;
+        case "giftCard":
+          new Promise((resolve, reject) => {
+            this.componentData = { resolve, reject };
+            this.component = "giftCard"
+          }).then(() => {
+
+            this.$exitComponent();
           }).catch(() => {
             this.$exitComponent();
           })
@@ -251,24 +238,25 @@ export default {
     exitComponent() {
       this.$exitComponent();
     },
-    ...mapActions(['setTicket',
-      'setTableInfo',
-      'updateMenuItem',
-      'removeMenuItem',
-      'updateRequestCategory',
-      'removeRequestItem',
+    ...mapActions([
+      'setOp',
       'setApp',
-      'updateTable',
-      'updateMenuCategory',
+      'setOrder',
+      'resetAll',
+      'setTicket',
       'setUpdate',
       'setCustomer',
       'insertOrder',
       'updateOrder',
-      'setTodayOrderHistory',
-      'resetAll',
-      'setOp',
-      'setOrder',
+      'updateTable',
+      'setTableInfo',
       'removeSpooler',
+      'updateMenuItem',
+      'removeMenuItem',
+      'removeRequestItem',
+      'updateMenuCategory',
+      'setTodayOrderHistory',
+      'updateRequestCategory',
       'insertCallHistory'])
   },
   sockets: {
@@ -318,7 +306,7 @@ export default {
       this.updateMenuCategory(data);
     },
     TIMECARD_REPORT(data) {
-      Printer.init(this.configuration).setJob("timeCard report").print(data);
+      Printer.init(this.config).setJob("timeCard report").print(data);
     },
     GOOGLE_ADDRESS_DISTANCE(res) {
       if (res.statusCode === 200) {
@@ -344,6 +332,7 @@ export default {
       }
     },
     MENU_ITEM_UPDATE(data) {
+      console.log(data)
       this.updateMenuItem(data);
     },
     MENU_ITEM_REMOVE(data) {
@@ -424,6 +413,12 @@ span.orderType {
   border-right: 1px solid #7994a0;
   margin: 0 5px;
 }
+
+
+
+
+
+
 
 /*.date {
   color: #fff;

@@ -115,7 +115,7 @@ export default {
 
 .name,
 .rate {
-    width: 90px;
+    width: 140px;
     padding:0 15px;
 }
 

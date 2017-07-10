@@ -29,10 +29,9 @@ const state = {
 const mutations = {
     [types.START_TICK](state, tick) {
         state.time = tick.time;
-
         if (tick.date !== state.app.date) {
             state.app.date = tick.date;
-            sate.orders = [];
+            state.orders = [];
             state.ticket = {
                 number: "01",
                 type: ""
@@ -131,8 +130,17 @@ const mutations = {
         }
         state.config.layout.table.splice();
     },
-    [types.UPDATE_MENU_CATEGORY](state, data) { },
-    [types.UPDATE_MENU_ITEM](state, data) { },
+    [types.UPDATE_MENU_CATEGORY](state, data) {
+        let { category, items, index } = data;
+        category = flatten(category, items)[0];
+        console.log(category);
+        state.config.layout.menu.splice(index, 1, category);
+    },
+    [types.UPDATE_MENU_ITEM](state, data) {
+        let { item, grp, sub, idx } = data;
+        item.clickable = true;
+        state.config.layout.menu[grp]['item'][sub].splice(idx, 1, item);
+    },
     [types.REPLACE_MENU_ITEM](state, data) {
         let { index, items } = data;
         state.config.layout.menu[index].item = items;
@@ -155,10 +163,12 @@ export default {
 
 function flatten(layout, data, page) {
     let group = {};
+    data = data || [];
     data.map(item => {
         !group.hasOwnProperty(item.category) && (group[item.category] = []);
         group[item.category].push(item);
     });
+    !Array.isArray(layout) && (layout = [layout]);
     layout.forEach(layer => {
         layer.contain.forEach(item => {
             let items = group[item] || [];
