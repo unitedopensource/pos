@@ -68,18 +68,46 @@ export default {
             this.recordAction();
         },
         pick(item) {
+            if (this.isOpenFood(item)) return;
             if (!item.clickable) {
                 //this.$toast()
                 return;
             }
-            this.poleDisplay(item.usEN.slice(0, 20), ["Price:", (item.price[0]).toFixed(2)]);
-
             item = Object.assign({}, item);
+            this.poleDisplay(item.usEN.slice(0, 20), ["Price:", (item.price[0]).toFixed(2)]);
             (item.hasOwnProperty("prices") && item.prices[this.ticket.type]) && (item.price = item.prices[this.ticket.type])
             this.config.store.table.seatOrder && (item.sort = this.sort);
             this.setSides(this.fillOption(item.option));
             this.addToOrder(item);
             this.recordAction();
+        },
+        isOpenFood(item) {
+            if (isNumber(item.price[0])) { return false };
+
+            let modified = new Promise((resolve, reject) => {
+                this.componentData = {
+                    name: item[this.language],
+                    qty: 1,
+                    single: 0,
+                    total: "0.00",
+                    discount: "0.00",
+                    total: "0.00",
+                    resolve, reject
+                };
+                this.component = "modify";
+            }).then(resolve => {
+                delete resolve.resolve;
+                delete resolve.reject;
+                item = Object.assign({},item,{
+                    single:resolve.single,
+                    total:resolve.total,
+                    price:[resolve.single],
+                    prices:{}
+                });
+                this.pick(item);
+                this.$exitComponent();
+            }).catch(() => { this.$exitComponent() })
+            return true
         },
         setOption(side, index) {
             side.template ?
@@ -141,11 +169,7 @@ export default {
                 let item = Object.assign(this.item, resolve);
                 this.alterItem(item);
                 this.$exitComponent();
-            }).catch(exit => {
-                exit === "reload" ?
-                    this.modify() :
-                    this.$exitComponent();
-            })
+            }).catch(() => { this.$exitComponent() })
         },
         course() {
             if (this.isEmptyOrder) return;
