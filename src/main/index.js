@@ -37,7 +37,7 @@ function createWindow() {
     show: false
   })
   mainWindow.loadURL(winURL)
-  //mainWindow.webContents.openDevTools()
+  process.argv.slice(1).some(arg=>arg.includes("debug")) && mainWindow.webContents.openDevTools()
 
   splashWindow = new BrowserWindow({
     width: 460,
