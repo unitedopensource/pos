@@ -93,8 +93,7 @@ ipcMain.on("Loading", (e, txt) => {
 });
 
 ipcMain.on("Initialized", () => {
-  //window.setFullScreen(true);
-  //splashWindow.hide();
+  process.argv.slice(1).some(arg=>arg.includes("fullscreen")) && window.setFullScreen(true);
   splashWindow.close();
   mainWindow.show();
   mainWindow.center();
