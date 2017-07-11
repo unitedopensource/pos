@@ -4,7 +4,6 @@ const state = {
     app: {},
     ring: null,
     config: {},
-    station: null,
     time: +new Date,
     device: {
         callid: false,
@@ -56,15 +55,19 @@ const mutations = {
     [types.SET_APP](state, data) {
         state.app = Object.assign({}, state.app, data)
     },
-    [types.SET_STATION](state, mac) {
-        if (typeof mac === 'object') {
-            state.config.station = mac;
-        } else {
-            let stations = state.config.store.station;
-            for (var name in stations) {
-                stations[name].mac === mac && (state.config.station = stations[name])
-            }
+    [types.FIND_STATION](state, mac) {
+        let stations = state.config.store.station;
+        for (var name in stations) {
+            stations.hasOwnProperty(name) && stations[name].mac === mac &&
+                (state.config = Object.assign({}, state.config, { station: stations[name] }))
         }
+    },
+    [types.SET_STATION](state, station) {
+        console.log("receive station", station)
+        state.config = Object.assign({}, state.config, { station })
+    },
+    [types.SET_STATIONS](state,data){
+        state.config.store.station = data;
     },
     [types.SET_MENU](state, data) {
         state.config.layout.menu = flatten(state.config.layout.menu, data, true);

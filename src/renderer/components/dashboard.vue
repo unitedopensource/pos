@@ -109,6 +109,7 @@ export default {
 
             //ipcRenderer.send("Relaunch");
             this.setStation(station)
+            this.setStations(stations)
             this.$exitComponent();
           }
         })
@@ -121,10 +122,10 @@ export default {
     checkClockIn() {
       this.op.wage.includes("H") && !this.op.clockIn && this.$dialog({ title: "CLOCK_IN_REQ", msg: "TIP_CLOCK_IN_REQ" }).then(() => { this.$exitComponent() })
     },
-    ...mapActions(['setStation', 'setTicket', 'resetDashboard', 'setCustomer', 'setApp'])
+    ...mapActions(['setApp', 'setTicket', 'setCustomer', 'setStation', 'setStations', 'resetDashboard'])
   },
   computed: {
-    ...mapGetters(['store', 'station', 'time', 'op', 'ring', 'callHistory', 'device','config'])
+    ...mapGetters(['store', 'station', 'time', 'op', 'ring', 'callHistory', 'device', 'config'])
   },
   components: {
     dialoger

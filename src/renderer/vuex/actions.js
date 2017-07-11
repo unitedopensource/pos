@@ -9,7 +9,7 @@ export const startTick = ({
     let d = new Date(a.setHours(a.getHours() - 4));
     let date = d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2);
     commit(types.START_TICK, { time, date });
-  }, 1000)
+  }, 100000)
 }
 
 /* @ Setter */
@@ -27,6 +27,16 @@ export const setStation = ({
   commit
 }, data) => {
   commit(types.SET_STATION, data)
+}
+export const setStations = ({
+  commit
+}, data) => {
+  commit(types.SET_STATIONS, data)
+}
+export const findStation = ({
+  commit
+}, mac) => {
+  commit(types.FIND_STATION, mac)
 }
 export const setCategory = ({
   commit

@@ -59,7 +59,7 @@ export default {
             this.$router.push('Login');
           }, 5000)
         } else {
-          this.setStation(mac);
+          this.findStation(mac);
           this.initDevices();
           Electron.ipcRenderer.send("Initialized");
           this.$router.push('Login');
@@ -134,7 +134,7 @@ export default {
       'setConfig',
       'setDevice',
       'setRequest',
-      'setStation',
+      'findStation',
       'setLastSync',
       'setTemplates',
       'setTodayOrder',
