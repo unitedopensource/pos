@@ -55,7 +55,7 @@
             </div>
             <footer>
                 <div class="btn" @click="back">{{text('BACK')}}</div>
-                <div class="btn f1">{{text('SAVE')}}</div>
+                <div class="btn f1" @click="save">{{text('SAVE')}}</div>
             </footer>
         </section>
         <section class="preview">
@@ -87,11 +87,11 @@
                     <div class="customer" :class="{hide:!receipt.customer}">
                         <p>
                             <span class="text">Tel:</span>
-                            <span class="value">888.299.0524</span>
+                            <span class="value" :style="style.info">888.299.0524</span>
                         </p>
                         <p>
                             <span class="text">Addr:</span>
-                            <span class="value">50 Allen St</span>
+                            <span class="value" :style="style.info">50 Allen St</span>
                         </p>
                         <p>
                             <span class="text">City:</span>
@@ -182,9 +182,8 @@ import moment from 'moment'
 export default {
     components: { smartOption, smartRange, checkbox },
     created() {
-        this.printers = Object.assign({}, this.config.printer);
+        this.printers = JSON.parse(JSON.stringify(this.config.printer));
         this.devices = Object.keys(this.printers) || [""];
-        //this.devices.unshift("");
     },
     data() {
         return {
@@ -236,7 +235,13 @@ export default {
         },
         togglePrice(bool) {
             this.receipt.price = bool;
-        }
+        },
+        save() {
+            if (!this.device) return;
+            this.$socket.emit("[CMS] UPDATE_PRINTER", { [this.device]: this.profile });
+            this.setPrinter({ [this.device]: this.profile });
+        },
+        ...mapActions(['setPrinter'])
     },
     watch: {
         device(profile) {
@@ -258,7 +263,6 @@ export default {
             handler(n) {
                 if (n.hasOwnProperty('control')) {
                     let { printPrimary, primaryFont, primaryFontSize, printSecondary, secondaryFont, secondaryFontSize, enlargeDetail } = n.control;
-                    console.log(primaryFont, secondaryFont)
                     this.style = {
                         zhCN: {
                             "font-family": primaryFont,
@@ -271,8 +275,8 @@ export default {
                             "display": printSecondary ? "flex" : "none"
                         },
                         info: {
-                            "font-family": "Tensentype RuiHeiJ-W2",
-                            "font-size": "1.25em"
+                            "font-family": enlargeDetail ? "Tensentype RuiHeiJ-W2" : "Agency FB",
+                            "font-size": enlargeDetail ? "1.25em" : "1em"
                         }
                     }
                 }
@@ -281,7 +285,7 @@ export default {
 
     },
     computed: {
-        ...mapGetters(['config', 'store', 'ticket', 'op'])
+        ...mapGetters(['op', 'config', 'store', 'ticket'])
     }
 }
 </script>
@@ -484,4 +488,7 @@ p.mark {
     padding-top: 5px;
 }
 
+.hide {
+    display: none;
+}
 </style>

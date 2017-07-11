@@ -313,3 +313,8 @@ export const replaceMenuItem = ({
 }, change) => {
   commit(types.REPLACE_MENU_ITEM, change)
 }
+export const setPrinter = ({
+  commit
+}, data) => {
+  commit(types.SET_PRINTER, data)
+}

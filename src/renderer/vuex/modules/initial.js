@@ -162,6 +162,9 @@ const mutations = {
     [types.NEW_PHONE_CALL](state,data){
         state.callLog.unshift(data);
         state.callLog = state.callLog.slice(0,10);
+    },
+    [types.SET_PRINTER](state,data){
+        state.config.printer = Object.assign({},state.config.printer,data);
     }
 }
 

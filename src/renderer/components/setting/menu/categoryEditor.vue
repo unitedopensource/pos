@@ -24,7 +24,7 @@
             </div>
             <footer>
                 <div class="f1">
-                    <checkbox label="MANUAL_INPUT" v-model="manual"></checkbox>
+                    <checkbox label="MANUAL_INPUT" v-model="manual" @input="trigger"></checkbox>
                 </div>
                 <div class="btn" @click="exit" id="cancelEdit">{{text('CANCEL')}}</div>
                 <div class="btn" @click="confirm" id="confirmEdit">{{text('CONFIRM')}}</div>
@@ -43,7 +43,6 @@ export default {
         this.$socket.emit("INQURY_CATEGORIES");
         this.category = Object.assign({}, this.init.category);
         this.contain = this.category.contain.filter(category => category);
-        this.contains = this.contain.join(",");
     },
     data() {
         return {
@@ -57,6 +56,9 @@ export default {
     methods: {
         exit() {
             this.init.reject();
+        },
+        trigger() {
+            this.contains = this.contain.join(",");
         },
         confirm() {
             let contain = this.manual ? this.contains.split(",") : this.contain;

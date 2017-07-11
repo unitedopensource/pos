@@ -27,6 +27,8 @@
               'ARRANGE': '安排',
               'ASSIGN_WAITER': '指派服务员',
               'ASSIGN': '指派',
+              'AUTO_CHARGE':'自动收费',
+              'AUTO_CHARGE_ABOVE':'',
               'AUTO_CLEAN_TABLE': '自动清空座位',
               'BAR': '酒吧',
               'BACK': '返回',

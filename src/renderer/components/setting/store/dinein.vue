@@ -17,7 +17,7 @@
             </header>
             <article>
                 <smart-switch v-model="table.stuffBank" label="ENABLE"></smart-switch>
-                <smart-input v-model.number="table.initialAmount" label="INIT_AMOUNT"></smart-input>
+                <smart-input v-model.number="table.initialAmount" label="INIT_AMOUNT" :disable="!table.stuffBank"></smart-input>
             </article>
         </section>
         <section class="card">
@@ -26,7 +26,7 @@
             </header>
             <article>
                 <smart-switch v-model="table.autoTip" label="ENABLE"></smart-switch>
-                <smart-input v-model.number="table.AutoChargeAbove" label="INIT_AMOUNT"></smart-input>
+                <smart-input v-model.number="table.AutoChargeAbove" label="AUTO_CHARGE_ABOVE" :disable="!table.autoTip"></smart-input>
             </article>
         </section>
     </div>
