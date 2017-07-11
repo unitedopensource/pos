@@ -123,13 +123,6 @@ export const phoneRing = ({
 }, data) => {
   commit(types.PHONE_RING, data)
 }
-export const insertCallHistory = ({
-  commit
-}, data) => {
-  commit(types.INSERT_CALL_HISTORY, data)
-}
-
-
 export const toggleKeyboard = ({
   commit
 }, bool) => {
@@ -270,9 +263,7 @@ export const updateTable = ({
   commit
 }, data) => {
   let { table, time } = data;
-  commit(types.SET_LASTSYNC, {
-    table: time
-  });
+  commit(types.SET_LASTSYNC, { table: time });
   commit(types.UPDATE_TABLE, table);
 }
 export const insertOrder = ({
@@ -295,7 +286,6 @@ export const updateMenuCategory = ({
 }, data) => {
   commit(types.UPDATE_MENU_CATEGORY, data);
 }
-
 export const setTodayOrder = ({
   commit
 }, data) => {
@@ -308,8 +298,11 @@ export const setCurrentTable = ({
 }, table) => {
   commit(types.CURRENT_TABLE, table)
 }
-
-
+export const newPhoneCall = ({
+  commit
+}, data) => {
+  commit(types.NEW_PHONE_CALL, data)
+}
 export const removePayment = ({
   commit
 }) => {

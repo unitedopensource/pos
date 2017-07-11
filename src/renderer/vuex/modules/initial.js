@@ -22,7 +22,8 @@ const state = {
     lastSync: {
         table: +new Date,
         order: +new Date
-    }
+    },
+    callLog:[]
 }
 
 const mutations = {
@@ -157,6 +158,10 @@ const mutations = {
         let { id, grp, sub, idx } = data;
         state.config.layout.menu[grp]['item'][sub].splice(idx, 1);
         state.config.layout.menu[grp]['item'][sub].push({ zhCN: "", usEN: "", clickable: false, category: "NA" })
+    },
+    [types.NEW_PHONE_CALL](state,data){
+        state.callLog.unshift(data);
+        state.callLog = state.callLog.slice(0,10);
     }
 }
 

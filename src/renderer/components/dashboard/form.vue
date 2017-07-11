@@ -38,6 +38,7 @@ export default {
         setInput(field) {
             this.target = field.target;
             this.caret = field.caret;
+            field.target === 'phone' && this.getLastCall();
             this.toggleKeyboard(true);
             this.resetAutoComplete();
         },
@@ -118,6 +119,9 @@ export default {
                     break;
             }
             return keyword
+        },
+        getLastCall(){
+            this.customer.phone.length === 0 && this.autoComplete("@")
         },
         autoComplete(keyword) {
             keyword = keyword ? keyword : this.customer[this.target];

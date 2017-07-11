@@ -249,6 +249,7 @@ export default {
       'insertOrder',
       'updateOrder',
       'updateTable',
+      'newPhoneCall',
       'setTableInfo',
       'setTodayOrder',
       'removeSpooler',
@@ -256,8 +257,7 @@ export default {
       'removeMenuItem',
       'removeRequestItem',
       'updateMenuCategory',
-      'updateRequestCategory',
-      'insertCallHistory'])
+      'updateRequestCategory'])
   },
   sockets: {
     connect() {
@@ -283,7 +283,7 @@ export default {
       }
     },
     CUSTOMER_ENQUIRE_RESULT(info) {
-      this.insertCallHistory(info);
+      this.newPhoneCall(info);
       this.componentData = info;
       this.component = "modal";
     },

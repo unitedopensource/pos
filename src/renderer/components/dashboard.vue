@@ -60,7 +60,7 @@ export default {
           break;
         case "delivery":
           this.setTicket({ type: 'DELIVERY' });
-          this.ring && this.setCustomer(this.callHistory[0]);
+          this.ring && this.setCustomer(this.callLog[0]);
           this.$router.push({ path: '/main/info' });
           break;
         case "table":
@@ -125,7 +125,7 @@ export default {
     ...mapActions(['setApp', 'setTicket', 'setCustomer', 'setStation', 'setStations', 'resetDashboard'])
   },
   computed: {
-    ...mapGetters(['store', 'station', 'time', 'op', 'ring', 'callHistory', 'device', 'config'])
+    ...mapGetters(['store', 'station', 'time', 'op', 'ring', 'callLog', 'device', 'config'])
   },
   components: {
     dialoger
