@@ -682,7 +682,7 @@ export default {
         }
     },
     components: {
-        Dialoger, Inputter, Discount, Tips, CreditCard, GiftCard
+        Dialoger, Inputter, Discount, CreditCard, GiftCard, Tips
     },
     sockets: {
         GIFT_CARD_RESULT(card) {

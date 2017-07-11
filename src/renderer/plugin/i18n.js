@@ -23,6 +23,7 @@
               'ALIES': '别名',
               'APPLY': '应用',
               'AREA': '区域',
+              'AUTH_CODE':'授权码',
               'ALL_INVOICE': '全部订单',
               'ARRANGE': '安排',
               'ASSIGN_WAITER': '指派服务员',

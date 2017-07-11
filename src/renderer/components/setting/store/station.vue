@@ -19,6 +19,7 @@
                 <smart-option v-model="workStation.terminal.model" :options="devices" label="MODEL"></smart-option>
                 <smart-input v-model="workStation.terminal.address" reg="^[0-9. ]{3,}$" label="ADDRESS"></smart-input>
                 <smart-input v-model="workStation.terminal.port" reg="^[a-zA-Z0-9_. ]{2,10}$" label="PORT"></smart-input>
+                <smart-input v-model="workStation.terminal.authCode" label="AUTH_CODE" v-if="workStation.terminal.model === 'NX2200'"></smart-input>
             </article>
         </section>
         <section class="card">
