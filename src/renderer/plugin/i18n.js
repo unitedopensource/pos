@@ -6,9 +6,11 @@
         text(text, ...d) {
           let dict = {
             zhCN: {
+              'ACTIVITY':'活动',
               'ACCOUNT': '账号',
               'ACTION': '操作',
               'ACTIVATION': '激活',
+              'ACCESS':'开启',
               'ADJUST': '调整',
               'ADD_VALUE': '充值',
               'ADD_SIDE': '添加附菜',
@@ -52,7 +54,7 @@
               'CONTAIN': '包含',
               'CAL_DIST': '计算距离',
               'CALL_LOG': '来电记录',
-              'CASH_DRAWER':'钱箱',
+              'CASHDRAWER':'钱箱',
               'CUST_INFO': '客人信息',
               'CATEGORY': '类别',
               'CATEGORY_CN': '类别(中)',
@@ -302,6 +304,7 @@
               'RESERVATION': '预约',
               'RPT_CC_RCPT_TIP': `#${d[0]} 订单已经用信用卡付过款($${d[1]})，需要重新打印收据吗？`,
               'RESTAURANT': '餐馆',
+              'PERMISSION':'权限',
               'RSA_KEY':'RSA 私钥',
               'ROLE': '角色',
               'SALES': '销售',
@@ -371,8 +374,9 @@
               'SETTING.PRINT.DOUBLE': '双份打印',
               'SETTING.AUTOCHARGE.TIP':'设置自动收取小费',
               'SETTING.ONLINE.TIP':'配置网络点餐服务器',
-              'STATISTIC': '数据',
+              'STATISTIC': '数额',
               'SENT_RPT_VIA_EMAIL': '发送报表至邮箱',
+              'SUMMARY':'总计',
               'TIP': '小费',
               'TAX': '税',
               'TOTAL': '总数',
@@ -463,6 +467,8 @@
               'OP_LIST': '用户列表',
               'OP': '用户',
               'OPTION':'选项',
+              'OPERATOR.PERMISSION.TIP':'设置用户权限',
+              'OPERATOR.TIMECARD.TIP':'员工打卡记录',
               'UNVOID_ORDER_CONFIRM': '您确定要恢复已经被取消的订单吗？',
               'UNAVOIDABLE_PREVS_ORDER': '无法修改此订单',
               'UNAVOIDABLE_PREVS_ORDER_TIP': '您无法修改除今天以外的订单',
@@ -475,6 +481,7 @@
               'VOID_ORDER_PD_TIP': '您没有删除订单的权限，请联系经理来执行此操作',
               'VOID_REASON': '订单取消原因',
               'VOID': '作废',
+              'VIEW':'查看',
               'VIEW_LIST': '列表',
               'UI': '界面',
               'SYSTEM': '系统',
@@ -851,7 +858,7 @@
               'PRT_BALANCE': 'Print Bal.'
             }
           }
-          return dict[Vue.language][text] || text;
+          return dict[Vue.language][text.toUpperCase()] || text;
         }
       }
     });

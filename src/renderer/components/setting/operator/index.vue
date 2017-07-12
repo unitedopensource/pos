@@ -1,20 +1,237 @@
 <template>
     <div class="container">
-        
-        <span @click="back">Back</span>
+        <aside>
+            <div class="back" @click="back">
+                <i class="fa fa-chevron-left"></i>{{text('BACK')}}</div>
+            <div v-for="(operator,index) in operators" :key="index" class="op" @click="getProfile(operator,$event)">
+                <h3>{{operator.name}}</h3>
+                <span class="role">{{operator.role}}</span>
+            </div>
+            <div class="add" @click="add">
+                <i class="fa fa-plus"></i>
+            </div>
+        </aside>
+        <main class="form">
+            <div class="content" v-if="!op">
+                index
+            </div>
+            <div v-else class="content">
+                <section class="card">
+                    <header>{{text('CONFIG')}}
+                        <span class="tip"></span>
+                    </header>
+                    <article>
+                        <smart-input v-model="op.name" label="NAME"></smart-input>
+                        <smart-option v-model="op.role" label="ROLE" :options="roles"></smart-option>
+                        <smart-input v-model.number="op.pin" label="PASSWORD"></smart-input>
+                        <smart-option v-model="op.language" label="LANGUAGE" :options="languages"></smart-option>
+                    </article>
+                </section>
+                <section class="card list">
+                    <header>{{text('PERMISSION')}}
+                        <span class="tip">{{text('OPERATOR.PERMISSION.TIP')}}</span>
+                    </header>
+                    <div class="header">
+                        <span class="name">{{text('ALIES')}}</span>
+                        <span class="f1">{{text('APPLY')}}</span>
+                    </div>
+                    <article>
+                        <div class="datalist">
+                            <span class="name">{{text('ACCESS')}}</span>
+                            <span class="f1">
+                                <checkbox v-model="op.access" label="setting" :multiple="true"></checkbox>
+                                <checkbox v-model="op.access" label="cashdrawer" :multiple="true"></checkbox>
+                                <checkbox v-model="op.access" label="report" :multiple="true"></checkbox>
+                            </span>
+                        </div>
+                        <div class="datalist">
+                            <span class="name">{{text('MODIFY')}}</span>
+                            <span class="f1">
+                                <checkbox v-model="op.modify" label="price" :multiple="true"></checkbox>
+                                <checkbox v-model="op.modify" label="order" :multiple="true"></checkbox>
+                                <checkbox v-model="op.modify" label="driver" :multiple="true"></checkbox>
+                                <checkbox v-model="op.modify" label="transaction" :multiple="true"></checkbox>
+                                <checkbox v-model="op.modify" label="discount" :multiple="true"></checkbox>
+                            </span>
+                        </div>
+                        <div class="datalist">
+                            <span class="name">{{text('VIEW')}}</span>
+                            <span class="f1">
+                                <checkbox v-model="op.view" label="summary" :multiple="true"></checkbox>
+                            </span>
+                        </div>
+                    </article>
+                </section>
+                <section class="card list">
+                    <header>{{text('ACTIVITY')}}
+                        <span class="tip">{{text('OPERATOR.TIMECARD.TIP')}}</span>
+                    </header>
+                    <div class="header">
+                        <span class="name">{{text('ALIES')}}</span>
+                        <span class="f1">{{text('APPLY')}}</span>
+                    </div>
+                    <article>
+                        <div class="datalist">
+    
+                        </div>
+                    </article>
+                </section>
+            </div>
+            <footer class="update" v-if="change">
+                <i class="fa fa-info-circle"></i>
+                <span>{{txt}}</span>
+                <span v-show="!send">
+                    <span @click="save" class="save">{{text('SAVE')}}</span>
+                    <span @click="cancel" class="cancel">{{text('CANCEL')}}</span>
+                </span>
+            </footer>
+        </main>
     </div>
 </template>
 
 <script>
-export default{
-    methods:{
-        back(){
-            this.$router.push({name:"Setting.index"})
+import smartOption from '../common/smartOption'
+import smartInput from '../common/smartInput'
+import checkbox from '../common/checkbox'
+export default {
+    components: { checkbox, smartInput, smartOption },
+    created() {
+        this.$socket.emit("INQUIRY_ALL_OPS");
+    },
+    data() {
+        return {
+            operators: [],
+            roles: ['Manager', 'Cashier', 'Waitstaff', 'Bartender'],
+            languages: [{ label: "PRIMARY", value: "zhCN" }, { label: "SECONDARY", value: "usEN" }],
+            compare: null,
+            change: false,
+            send: false,
+            txt: "",
+            op: null
+        }
+    },
+    methods: {
+        getProfile(profile, e) {
+            let dom = document.querySelector(".active");
+            dom && dom.classList.remove("active");
+            e.currentTarget.classList.add("active");
+            this.op = profile;
+            this.compare = JSON.stringify(profile);
+        },
+        back() {
+            this.$router.push({ name: "Setting.index" })
+        },
+        trigger() {
+            this.txt = this.text("TIP_SAVE_CONFIG");
+            this.change = true;
+            this.send = false;
+        },
+        save() {
+            this.send = true;
+            this.txt = this.text('SETTING_UPDATED');
+            this.$socket.emit("[CMS] UPDATE_USER", this.op);
+            setTimeout(() => { this.cancel() }, 1000);
+        },
+        cancel() {
+            this.change = false;
+            this.send = false;
+        },
+        add() {
+            this.operators.push({
+                name: 'New Operator',
+                role: 'Waitstaff',
+                pin: '',
+                language: 'PRIMARY',
+                access: [],
+                modify: [],
+                assign: [],
+                view: []
+            });
+        }
+    },
+    watch: {
+        'op': {
+            handler(n) {
+                JSON.stringify(n) !== this.compare ? this.trigger() : this.cancel();
+            }, deep: true
+        }
+    },
+    sockets: {
+        OP_LIST(data) {
+            this.operators = data;
         }
     }
 }
 </script>
 
 <style scoped>
+.back {
+    padding: 25px 10px;
+    font-weight: bold;
+    cursor: pointer;
+    background: #009688;
+    color: #fff;
+    text-shadow: 0 1px 1px #000;
+}
 
+aside {
+    height: 100%;
+    background: #fff;
+    width: 200px;
+}
+
+.form {
+    flex: 1;
+    height: 738px;
+    display: flex;
+    flex-direction: column;
+}
+
+.op {
+    display: flex;
+    flex-direction: column;
+    text-indent: 1em;
+    border-bottom: 1px solid #eee;
+    padding: 5px;
+    color: #888;
+    cursor: pointer;
+    border-left: 2px solid transparent;
+}
+
+.op.active {
+    border-left: 2px solid #2196F3;
+    background: #F5F5F5;
+    color: #333;
+}
+
+.add {
+    text-align: center;
+    padding: 15px 0;
+    border: 2px dashed #E0E0E0;
+    color: #BDBDBD;
+    background: #ffffff;
+    cursor: pointer;
+}
+
+.role {
+    font-style: italic;
+}
+
+.list .header {
+    padding: 10px 0;
+    background: #4D6D83;
+    color: #fff;
+    display: flex;
+    border-bottom: 1px solid #455A64;
+}
+
+.name {
+    width: 150px;
+    padding: 0 10px;
+}
+
+.content {
+    overflow: auto;
+    flex: 1;
+}
 </style>

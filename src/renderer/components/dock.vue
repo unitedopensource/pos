@@ -395,27 +395,6 @@ span.orderType {
   margin: 0 5px;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-/*.date {
-  color: #fff;
-  font-style: italic;
-  padding: 0 20px;
-  flex: 1;
-  font-size: 1.3em;
-  text-shadow: 0 1px 3px #333;
-}*/
-
 span.op {
   background: rgba(255, 255, 255, 0.1);
   border-left: 1px solid #7994a0;
@@ -425,7 +404,7 @@ span.op {
 }
 
 span.corner {
-  padding: 3px 10px 0;
+  padding: 0 10px;
   text-align: center;
 }
 

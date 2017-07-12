@@ -660,9 +660,7 @@ section.route {
 }
 
 nav.route {
-    margin: 5px;
     background: #fff;
-    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.4);
     padding: 0px 0px 10px 0;
     width: 150px;
 }
@@ -710,24 +708,24 @@ section.route .content .inner {
     font-weight: bold;
 }
 
-section.route footer.update {
+footer.update {
     background: #445359;
     color: #F7F9F8;
     padding: 20px 55px 20px 45px;
 }
 
-section.route footer.update i {
+footer.update i {
     color: #fdd333;
     margin-right: 5px;
 }
 
-section.route span.save {
+footer.update span.save {
     float: right;
     color: #fdd333;
     cursor: pointer;
 }
 
-section.route span.cancel {
+footer.update span.cancel {
     float: right;
     cursor: pointer;
     margin: 0 15px;

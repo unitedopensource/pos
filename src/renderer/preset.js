@@ -7,7 +7,7 @@ var Preset = function () {
         enable: false,
         model: "",
         address: "",
-        authCode:"",
+        authCode: "",
         port: "",
         sn: ""
       },
@@ -26,9 +26,9 @@ var Preset = function () {
         port: 'COM3'
       },
       print: {},
-      printRedirect:false,
-      cashDrawer:false,
-      cashDrawerBind:"",
+      printRedirect: false,
+      cashDrawer: false,
+      cashDrawerBind: "",
       timeout: 0,
       receiveOnlineOrder: false,
       interface: [{
