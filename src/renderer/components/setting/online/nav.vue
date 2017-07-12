@@ -1,15 +1,71 @@
 <template>
-    <div>
-        
-    </div>
+    <section class="route">
+        <nav class="route">
+            <header @click="back">
+                <i class="fa fa-chevron-left"></i>{{text('BACK')}}</header>
+            <router-link :to="{name:'Setting.online.config'}" tag="div" append>{{text('CONFIG')}}</router-link>
+            <router-link :to="{name:'Setting.online.menu'}" tag="div" append>{{text('MENU')}}</router-link>
+        </nav>
+        <div class="content">
+            <router-view @change="onChange" @unchange="change = false" class="inner"></router-view>
+            <footer class="update" v-if="change">
+                <i class="fa fa-info-circle"></i>
+                <span>{{txt}}</span>
+                <span v-show="!send">
+                    <span @click="update" class="save">{{text('SAVE')}}</span>
+                    <span @click="cancel" class="cancel">{{text('CANCEL')}}</span>
+                </span>
+            </footer>
+        </div>
+    </section>
 </template>
 
 <script>
-export default{
-
+import { mapGetters, mapActions } from 'vuex'
+export default {
+    data() {
+        return {
+            change: false,
+            send: false,
+            store: null
+        }
+    },
+    methods: {
+        back() {
+            this.$router.push({ name: 'Setting.index' })
+        },
+        onChange(store) {
+            this.txt = this.text("TIP_SAVE_CONFIG");
+            this.change = true;
+            this.store = store;
+            this.send = false;
+        },
+        update() {
+            this.txt = this.text('SETTING_UPDATED');
+            this.send = true;
+            this.$socket.emit("[CMS] CONFIG_STORE", this.store);
+            this.setConfig({ store: this.store })
+            this.updateStation(this.store);
+            setTimeout(() => { this.cancel() }, 1000);
+        },
+        updateStation(store) {
+            let { station } = store;
+            let { mac } = this.station;
+            for (var name in station) {
+                station[name].mac === mac && this.setStation(station[name])
+            }
+        },
+        cancel() {
+            this.store = null;
+            this.change = false;
+            this.send = false;
+        },
+        ...mapActions(['setConfig', 'setStation'])
+    },
+    computed: {
+        ...mapGetters(['station'])
+    }
 }
 </script>
 
-<style>
-    
-</style>
+<style></style>

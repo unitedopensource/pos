@@ -100,8 +100,8 @@ export default {
 .tm:before {
     content: ' ';
     position: absolute;
-    left: 0px;
-    top: 5px;
+    left: 10px;
+    top: 6px;
     width: 0;
     height: 0;
     border-top: 10px solid orange;
@@ -153,7 +153,7 @@ input {
     background: linear-gradient(to bottom, #d3d3d3 0%, #d9d9d9 38%, #e5e5e5 82%, #e7e7e7 100%);
     display: block;
     padding: 10px;
-    color: #999;
+    color: #757575;
     font-size: 1em;
     font-weight: bold;
     text-shadow: 1px 1px 1px #fff;

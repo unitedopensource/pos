@@ -169,6 +169,11 @@
                     Thank You Very Much
                 </div>
             </div>
+            <aside class="action">
+                <i class="fa fa-plus"></i>
+                <i class="fa fa-trash"></i>
+                <i class="fa fa-print"></i>
+            </aside>
         </section>
     </div>
 </template>
@@ -353,6 +358,7 @@ section.setting {
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
 }
 
 .receipt {
@@ -490,5 +496,34 @@ p.mark {
 
 .hide {
     display: none;
+}
+
+aside.action {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+    opacity: 0;
+    transition: opacity 0.22s ease;
+}
+
+.action i {
+    width: 45px;
+    height: 45px;
+    line-height: 45px;
+    text-align: center;
+    display: block;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .2), 0 1px 1px 0 rgba(0, 0, 0, .14), 0 2px 1px -1px rgba(0, 0, 0, .12);
+    border-radius: 50%;
+    background: #f2f4f6;
+    color: #5f5d5d;
+    margin-bottom: 15px;
+    cursor: pointer;
+}
+
+section.preview:hover .action {
+    opacity: 1;
 }
 </style>

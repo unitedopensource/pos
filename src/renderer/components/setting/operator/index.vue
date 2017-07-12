@@ -1,5 +1,6 @@
 <template>
-    <div>
+    <div class="container">
+        
         <span @click="back">Back</span>
     </div>
 </template>
@@ -14,6 +15,6 @@ export default{
 }
 </script>
 
-<style>
+<style scoped>
 
 </style>

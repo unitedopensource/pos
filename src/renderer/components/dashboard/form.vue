@@ -31,7 +31,8 @@ export default {
         return {
             predict: null,
             target: 'phone',
-            caret: 0
+            caret: 0,
+            query: false
         }
     },
     methods: {
@@ -120,7 +121,7 @@ export default {
             }
             return keyword
         },
-        getLastCall(){
+        getLastCall() {
             this.customer.phone.length === 0 && this.autoComplete("@")
         },
         autoComplete(keyword) {
@@ -170,7 +171,7 @@ export default {
                 dom.classList.add("active");
                 dom.focus();
                 this.target = target;
-                this.caret =  this.customer[target].length;
+                this.caret = this.customer[target].length;
                 dom.setSelectionRange(this.caret, this.caret);
             })
         },
@@ -184,14 +185,12 @@ export default {
         },
         highlight(list) {
             let p = this.customer.address.replace(/ +/g, ' ').trim().split(" ").slice(1).join(" ").length;
-            let next = list.map(address => (address.street[p] && address.street[p]))
-                .filter((v, i, s) => s.indexOf(v) === i);
+            let next = list.map(address => (address.street[p] && address.street[p])).filter((v, i, s) => s.indexOf(v) === i);
             let doms = document.querySelectorAll("span.next");
-            doms.forEach(dom => {
-                dom.classList.remove("next");
-            });
+            doms.forEach(dom => { dom.classList.remove("next") });
 
             next.forEach(key => {
+                key = key.toUpperCase();
                 document.getElementById(key) && document.getElementById(key).classList.add("next");
             })
         },
@@ -211,24 +210,26 @@ export default {
         },
         clearInput() {
             this.customer[this.target] = "";
-            this.target === 'address' &&
-                this.setCustomer({
-                    distance: "",
-                    duration: "",
-                    city: ""
-                })
+            this.target === 'address' && this.setCustomer({ distance: "", duration: "", city: "" });
+            this.query = false;
         },
         search() {
-
+            if (!this.customer.address) return;
+            if (this.query) return;
+            this.calculateDistance({
+                address: this.customer.address,
+                city: this.customer.city || this.store.city
+            });
+            this.query = true;
         },
-        ...mapActions(['toggleKeyboard', 'resetDashboard', 'setApp', 'setCustomer','resetAll'])
+        ...mapActions(['toggleKeyboard', 'resetDashboard', 'setApp', 'setCustomer', 'resetAll'])
     },
     beforeDestroy() {
         let dom = document.querySelector("main.window");
         dom && dom.classList.remove("moveUp");
     },
     computed: {
-        ...mapGetters(['store', 'customer','ticket'])
+        ...mapGetters(['store', 'customer', 'ticket'])
     },
     components: {
         keyboard, dataInput

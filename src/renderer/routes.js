@@ -109,14 +109,30 @@ export default [{
       name: 'Setting.table',
       component: require('./components/setting/table/index')
     }, {
+      path: 'online',
+      component: require('./components/setting/online/nav'),
+      children: [{
+        path: '/',
+        name: 'Setting.online',
+        component: require('./components/setting/online/index')
+      },{
+        path:'server',
+        name:'Setting.online.config',
+        component:require('./components/setting/online/config')
+      },{
+        path:'menu',
+        name:'Setting.online.menu',
+        component:require('./components/setting/online/menu')
+      }]
+    }, {
       path: 'print',
       name: 'Setting.print',
       component: require('./components/setting/print/index')
     }, {
-      path:'operator',
-      name:'Setting.operator',
-      component:require('./components/setting/operator/index')
-    },{
+      path: 'operator',
+      name: 'Setting.operator',
+      component: require('./components/setting/operator/index')
+    }, {
       path: 'database',
       component: require('./components/setting/database/nav'),
       children: [{

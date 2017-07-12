@@ -48,7 +48,8 @@ export default {
             let file = terminal.model;
             this.msg = this.text('TERM_INIT', terminal.model);
             this.terminal = require('./parser/' + file);
-            this.terminal.initial(terminal.address, terminal.port)
+            console.log(this.terminal)
+            this.terminal.initial(terminal.address, terminal.port, terminal.authCode)
                 .then(response => {
                     return response.text()
                 }).then(device => {
@@ -56,20 +57,17 @@ export default {
                     if (this.device.code !== "000000") {
                         this.icon = "warning";
                         this.msg = this.text("TERM_INIT_F", this.device.model || terminal.model);
-                        setTimeout(() => {
-                            this.init.reject(null);
-                        }, 1500);
+                        setTimeout(() => { this.init.reject(null) }, 1500);
                         return;
                     }
                     clearTimeout(this.timeout);
                     setTimeout(() => {
                         this.msg = (this.init.card.number && this.init.card.date) ?
-                            this.text('TERM_COMM', this.device.model || terminal.model) : this.text("TERM_MANUAL", this.device.model || terminal.model);
+                            this.text('TERM_COMM', this.device.model || terminal.model) :
+                            this.text("TERM_MANUAL", this.device.model || terminal.model);
                     }, 2000)
                     this.transacting = true;
-                    this.terminal.charge(this.init.card).then(response => {
-                        return response.text();
-                    }).then(data => {
+                    this.terminal.charge(this.init.card).then(response => response.text()).then(data => {
                         let result = this.terminal.explainTransaction(data);
                         if (result.code === "000000") {
                             this.init.resolve(result);
@@ -81,13 +79,9 @@ export default {
                 });
             this.timeout = setTimeout(() => {
                 this.init.reject({
-                    type: "warning",
-                    title: "TERM_TIMEOUT",
+                    type: "warning", title: "TERM_TIMEOUT",
                     msg: this.text("TIP_TERM_TIMEOUT", terminal.address),
-                    buttons: [{
-                        text: 'CONFIRM',
-                        fn: 'reject'
-                    }]
+                    buttons: [{ text: 'CONFIRM', fn: 'reject' }]
                 });
             }, 6000)
         },
@@ -96,12 +90,8 @@ export default {
                 this.msg = this.text('TERM_ABORT');
                 this.terminal.abort();
                 this.transacting = false;
-                setTimeout(() => {
-                    this.init.reject(null);
-                }, 800);
-            } else {
-                this.init.reject(null);
-            }
+                setTimeout(() => { this.init.reject(null) }, 800);
+            } else { this.init.reject(null) }
         }
     },
     computed: {

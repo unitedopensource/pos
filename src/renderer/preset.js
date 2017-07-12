@@ -105,10 +105,10 @@ var Preset = function () {
       "control": {
         "printPrimary": true,
         "primaryFont": "晴圆",
-        "primaryFontSize": "19px",
+        "primaryFontSize": "19",
         "printSecondary": true,
         "secondaryFont": "Agency FB",
-        "secondaryFontSize": "16px",
+        "secondaryFontSize": "16",
         "sortItem": true,
         "duplicate": true,
         "printStore": true,

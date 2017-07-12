@@ -1,20 +1,20 @@
 const Exadigm = function () {
-    let url = "";
-    this.initial = function (ip, port) {
-        url = `http://${ip}:${port}?`;
-        
-        return fetch(command);
+    let url = null;
+    let auth = null;
+    this.initial = function (ip, port, authCode) {
+        url = `http://${ip}:${port}`;
+        auth = authCode;
+        return fetch(url);
     };
     this.check = function (device) {
-        let data = device.split(String.fromCharCode(28));
-        return {
-            code: data[3],
-            msg: data[4],
-            sn: data[5],
-            model: data[6],
-            mac: data[8]
-        }
+        return { code: "000000", model: "NX2200" }
     };
+    this.charge = function (card) {
+        console.log(card);
+    };
+    this.explainTransaction = function (data) {
+
+    }
 };
 
-export default Exadigm
+module.exports = new Exadigm();
