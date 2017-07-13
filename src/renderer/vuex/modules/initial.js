@@ -139,6 +139,9 @@ const mutations = {
         category = flatten(category, items)[0];
         state.config.layout.menu.splice(index, 1, category);
     },
+    [types.RESORT_MENU_CATEGORY](state,data){
+        state.config.layout.menu = data;
+    },
     [types.UPDATE_MENU_ITEM](state, data) {
         let { item, grp, sub, idx } = data;
         item.clickable = true;

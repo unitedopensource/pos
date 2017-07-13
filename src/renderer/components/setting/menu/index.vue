@@ -164,7 +164,12 @@ export default {
             this.isItemSort = true;
         },
         applyCategorySort() {
-
+            let category = this.categories.map((category, index) => {
+                category.num = index;
+                return category;
+            })
+            this.$socket.emit("[CMS] RESORT_CATEGORY", category);
+            this.isCategorySort = false;
         },
         applyItemSort() {
             let index = this.categoryIndex;

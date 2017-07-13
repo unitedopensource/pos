@@ -8,7 +8,6 @@
         <span class="address" v-show="customer.address">{{customer.address}}</span>
         <span class="name" v-show="customer.name">{{customer.name}}</span>
       </div>
-      <!--<div v-if="$route.name ==='History'" class="date">{{time | moment('YYYY-MM-DD')}}</div>-->
     </div>
     <span class="op" @click="openPanel">
       <i class="fa fa-user"></i>{{op.name}}</span>
@@ -257,6 +256,7 @@ export default {
       'removeMenuItem',
       'removeRequestItem',
       'updateMenuCategory',
+      'resortMenuCategory',
       'updateRequestCategory'])
   },
   sockets: {
@@ -321,6 +321,7 @@ export default {
     REQUEST_ITEM_UPDATE(data){ this.updateRequestItem(data) },
     REQUEST_ITEM_REMOVE(data) { this.removeRequestItem(data.id) },
     MENU_CATEGORY_UPDATE(data) { this.updateMenuCategory(data) },
+    MENU_CATEGORY_RESORT(data) { this.resortMenuCategory(data) },
     MENU_ITEM_UPDATE(data) { this.updateMenuItem(data) },
     MENU_ITEM_REMOVE(data) { this.removeMenuItem(data) },
     disconnect() { this.setApp({ database: false }) }

@@ -455,6 +455,7 @@ i.remove {
 
 .item input[type="text"] {
     width: 170px;
+    border:1px solid #9E9E9E;
 }
 
 .side:hover i.remove {
