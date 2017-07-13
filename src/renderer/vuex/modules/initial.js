@@ -23,7 +23,7 @@ const state = {
         table: +new Date,
         order: +new Date
     },
-    callLog:[]
+    callLog: []
 }
 
 const mutations = {
@@ -67,7 +67,7 @@ const mutations = {
         console.log("receive station", station)
         state.config = Object.assign({}, state.config, { station })
     },
-    [types.SET_STATIONS](state,data){
+    [types.SET_STATIONS](state, data) {
         state.config.store.station = data;
     },
     [types.SET_MENU](state, data) {
@@ -137,7 +137,6 @@ const mutations = {
     [types.UPDATE_MENU_CATEGORY](state, data) {
         let { category, items, index } = data;
         category = flatten(category, items)[0];
-        console.log(category);
         state.config.layout.menu.splice(index, 1, category);
     },
     [types.UPDATE_MENU_ITEM](state, data) {
@@ -150,21 +149,21 @@ const mutations = {
         state.config.layout.menu[index].item = items;
     },
     [types.UPDATE_REQUEST_CATEGORY](state, data) {
-        let { categroy, items, index } = data;
-        category.item = flatten(category, items, false);
-        state.config.layout.request.splice(index, i, category);
+        let { category, items, index } = data;
+        category = flatten(category, items, false)[0];
+        state.config.layout.request.splice(index, 1, category);
     },
     [types.REMOVE_MENU_ITEM](state, data) {
         let { id, grp, sub, idx } = data;
         state.config.layout.menu[grp]['item'][sub].splice(idx, 1);
         state.config.layout.menu[grp]['item'][sub].push({ zhCN: "", usEN: "", clickable: false, category: "NA" })
     },
-    [types.NEW_PHONE_CALL](state,data){
+    [types.NEW_PHONE_CALL](state, data) {
         state.callLog.unshift(data);
-        state.callLog = state.callLog.slice(0,10);
+        state.callLog = state.callLog.slice(0, 10);
     },
-    [types.SET_PRINTER](state,data){
-        state.config.printer = Object.assign({},state.config.printer,data);
+    [types.SET_PRINTER](state, data) {
+        state.config.printer = Object.assign({}, state.config.printer, data);
     }
 }
 

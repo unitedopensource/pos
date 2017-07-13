@@ -49,7 +49,7 @@ export default {
                 this.component = "requestEditor"
             }).then(result => {
                 result.item = [];
-                console.log(result);
+                !Array.isArray(result.contain) && (result.contain = result.contain.split(","));
                 this.$socket.emit("[CMS] UPDATE_REQUEST_CATEGORY", { category: result, index });
                 this.$exitComponent();
             }).catch(del => {
@@ -106,6 +106,14 @@ export default {
     },
     computed: {
         ...mapGetters(['request', 'language', 'actions'])
+    },
+    sockets: {
+        REQUEST_UPDATED() {
+            this.$nextTick(() => {
+                this.items = [].concat.apply([], this.request[this.categoryIndex].item);
+            })
+
+        }
     }
 }
 </script>

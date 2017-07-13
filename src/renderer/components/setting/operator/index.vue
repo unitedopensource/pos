@@ -3,7 +3,7 @@
         <aside>
             <div class="back" @click="back">
                 <i class="fa fa-chevron-left"></i>{{text('BACK')}}</div>
-            <div v-for="(operator,index) in operators" :key="index" class="op" @click="getProfile(operator,$event)">
+            <div v-for="(operator,index) in operators" :key="index" class="op" @click="getProfile(operator,index,$event)">
                 <h3>{{operator.name}}</h3>
                 <span class="role">{{operator.role}}</span>
             </div>
@@ -86,36 +86,42 @@
                 </span>
             </footer>
         </main>
+        <div :is="component" :init="componentData"></div>
     </div>
 </template>
 
 <script>
+import dialoger from '../../common/dialoger'
 import smartOption from '../common/smartOption'
 import smartInput from '../common/smartInput'
 import checkbox from '../common/checkbox'
 export default {
-    components: { checkbox, smartInput, smartOption },
+    components: { dialoger, checkbox, smartInput, smartOption },
     created() {
         this.$socket.emit("INQUIRY_ALL_OPS");
     },
     data() {
         return {
             operators: [],
+            component: null,
+            componentData: null,
             roles: ['Manager', 'Cashier', 'Waitstaff', 'Bartender'],
             languages: [{ label: "PRIMARY", value: "zhCN" }, { label: "SECONDARY", value: "usEN" }],
             compare: null,
             change: false,
             send: false,
+            index: null,
             txt: "",
             op: null
         }
     },
     methods: {
-        getProfile(profile, e) {
+        getProfile(profile, index, e) {
             let dom = document.querySelector(".active");
             dom && dom.classList.remove("active");
             e.currentTarget.classList.add("active");
             this.op = profile;
+            this.index = index;
             this.compare = JSON.stringify(profile);
         },
         back() {
@@ -127,10 +133,23 @@ export default {
             this.send = false;
         },
         save() {
+            if (this.checkUniquePin()) {
+                this.$dialog({ title: 'SAVE_FAILED', msg: 'SETTING.OPERATOR.PIN_DUPLICATE', buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$exitComponent() });
+                return;
+            }
             this.send = true;
             this.txt = this.text('SETTING_UPDATED');
             this.$socket.emit("[CMS] UPDATE_USER", this.op);
             setTimeout(() => { this.cancel() }, 1000);
+        },
+        checkUniquePin() {
+            let pin = this.op.pin;
+            if (!pin) {
+                this.$dialog({ title: 'SAVE_FAILED', msg: 'SETTING.OPERATOR.NO_PIN', buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$exitComponent() });
+                return true
+            };
+            let operators = this.operators.filter((op, index) => (index !== this.index && op.pin)).map(op => op.pin);
+            return operators.includes(pin)
         },
         cancel() {
             this.change = false;

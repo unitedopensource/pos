@@ -106,7 +106,6 @@ export default {
             let station = Preset.station(alies, mac);
             stations[alies] = station;
             this.$socket.emit("[CONFIG] UPDATE_STATION", stations);
-
             //ipcRenderer.send("Relaunch");
             this.setStation(station)
             this.setStations(stations)
