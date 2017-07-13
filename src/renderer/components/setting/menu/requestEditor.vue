@@ -67,6 +67,7 @@ export default {
     props: ['init'],
     created() {
         this.request = JSON.parse(JSON.stringify(this.init.data));
+        console.log(this.request)
     },
     data() {
         return {
@@ -75,7 +76,7 @@ export default {
     },
     methods: {
         del() {
-            this.init.reject(true);
+            this.init.reject(true)
         },
         confirm() {
             this.init.resolve(this.request)

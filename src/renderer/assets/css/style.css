@@ -699,7 +699,7 @@ section.route .content {
 
 section.route .content .inner {
     flex: 1;
-    overflow: auto;
+    overflow-y: scroll;
 }
 
 .router-link-exact-active {

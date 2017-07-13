@@ -347,7 +347,7 @@
               'SELECT_QTY': `请选择 ${d[0]} 个`,
               'SECTION': '区域',
               'STARTER': '起始',
-              'STATION_RECORDS': '本站',
+              'STATION_RECORDS': '当前工作站',
               'STATION.TERM.TIP': '配置信用卡刷卡器',
               'STATION.POLEDISPLAY.TIP': '配置价格显示器',
               'STATION.POLEDISPLAY.FIRSTLINE': '第一行',

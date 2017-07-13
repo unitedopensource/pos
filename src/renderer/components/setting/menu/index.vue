@@ -184,7 +184,7 @@ export default {
                     }
                 }
             }).filter(item => item);
-            this.$socket.emit("[CMS] RESORT_ITEM", update);
+            this.$socket.emit("[CMS] RESORT_MENU_ITEM", update);
             this.isItemSort = false;
         },
         input(e) {
@@ -206,12 +206,7 @@ export default {
                     break;
                 case "ArrowDown":
                     e.preventDefault();
-                    if (this.component === 'itemEditor') {
-                        // let event = document.createEvent('KeyboardEvent');
-                        // event.initKeyboardEvent("keydown", true, true, null, false, false, false, 9, 9);
-                        // document.activeElement.dispatchEvent(event)
-                        return;
-                    };
+                    if (this.component === 'itemEditor') return;
                     this.pointIndex + 3 < max && (this.pointIndex = this.pointIndex + 3);
                     break;
                 case "ArrowLeft":
@@ -303,14 +298,14 @@ export default {
 }
 
 aside {
-    width: 164px;
+    width: 180px;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
 }
 
 aside .btn {
-    width: 152px;
+    width: 168px;
     margin: 5px;
 }
 

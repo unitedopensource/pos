@@ -139,7 +139,7 @@ const mutations = {
         category = flatten(category, items)[0];
         state.config.layout.menu.splice(index, 1, category);
     },
-    [types.RESORT_MENU_CATEGORY](state,data){
+    [types.RESORT_MENU_CATEGORY](state, data) {
         state.config.layout.menu = data;
     },
     [types.UPDATE_MENU_ITEM](state, data) {
@@ -151,17 +151,26 @@ const mutations = {
         let { index, items } = data;
         state.config.layout.menu[index].item = items;
     },
+    [types.REPLACE_REQUEST_ITEM](state,data){
+        let { index, items } = data;
+        state.config.layout.request[index].item = items;
+    },
     [types.UPDATE_REQUEST_CATEGORY](state, data) {
         let { category, items, index } = data;
         category = flatten(category, items, false)[0];
         state.config.layout.request.splice(index, 1, category);
     },
     [types.UPDATE_REQUEST_ITEM](state, data) {
-        let { item, group, index } = data;
-        //state.config.layout.request[group].item.
+        let { item, grp, sub, index } = data;
+        state.config.layout.request[grp]['item'][sub].splice(index, 1, item)
+    },
+    [types.REMOVE_REQUEST_ITEM](state, data) {
+        let { grp, sub, index } = data;
+        state.config.layout.request[grp]['item'][sub].splice(index,1);
+        state.config.layout.request[grp]['item'][sub].push({ zhCN: "", usEN: "", clickable: false, category: "NA" })
     },
     [types.REMOVE_MENU_ITEM](state, data) {
-        let { id, grp, sub, idx } = data;
+        let { grp, sub, idx } = data;
         state.config.layout.menu[grp]['item'][sub].splice(idx, 1);
         state.config.layout.menu[grp]['item'][sub].push({ zhCN: "", usEN: "", clickable: false, category: "NA" })
     },
@@ -197,7 +206,7 @@ function flatten(layout, data, page) {
         let length = [].concat.apply([], layer.item).length;
         let last = Math.max(0, layer.item.length - 1);
         page = page ? Math.ceil(length / 33) : 1;
-        length = Math.max(0, 33 * page - length);
+        length = Math.max(0, (33 * page - length));
         for (let i = 0; i < length; i++) {
             layer.item[last] && layer.item[last].push({ zhCN: "", usEN: "", clickable: false })
         }

@@ -178,13 +178,11 @@ export const removeRequestItem = ({
 }, id) => {
   commit(types.REMOVE_REQUEST_ITEM, id)
 }
-
 export const delPin = ({
   commit
 }) => {
   commit(types.DEL_PIN)
 }
-
 export const delayPrint = ({
   commit
 }, order) => {
@@ -195,7 +193,6 @@ export const removeSpooler = ({
 }, index) => {
   commit(types.REMOVE_SPOOLER, index)
 }
-
 export const addToOrder = ({
   commit
 }, item) => {
@@ -327,4 +324,9 @@ export const resortMenuCategory = ({
   commit
 }, data) => {
   commit(types.RESORT_MENU_CATEGORY, data)
+}
+export const replaceRequestItem = ({
+  commit
+},data)=>{
+  commit(types.REPLACE_REQUEST_ITEM,data)
 }
