@@ -318,6 +318,7 @@ export default {
     UPDATE_ORDER(data) { this.updateOrder(data) },
     TODAY_ORDER_HISTORY(orders) { this.setTodayOrder(orders) },
     REQUEST_CATEGORY_UPDATE(data) { this.updateRequestCategory(data) },
+    REQUEST_ITEM_UPDATE(data){ this.updateRequestItem(data) },
     REQUEST_ITEM_REMOVE(data) { this.removeRequestItem(data.id) },
     MENU_CATEGORY_UPDATE(data) { this.updateMenuCategory(data) },
     MENU_ITEM_UPDATE(data) { this.updateMenuItem(data) },

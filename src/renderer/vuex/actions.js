@@ -168,6 +168,11 @@ export const updateRequestCategory = ({
 }, data) => {
   commit(types.UPDATE_REQUEST_CATEGORY, data)
 }
+export const updateRequestItem = ({
+  commit
+}, data) => {
+  commit(types.UPDATE_REQUEST_ITEM, data)
+}
 export const removeRequestItem = ({
   commit
 }, id) => {

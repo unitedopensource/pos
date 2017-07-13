@@ -40,7 +40,9 @@
                 </div>
                 <div class="input">
                     <label>{{text('CATEGORY')}}</label>
-                    <input v-model="request.category">
+                    <select v-model="request.category">
+                        <option v-for="category in init.category">{{category}}</option>
+                    </select>
                 </div>
                 <div class="input">
                     <label>{{text('PRICE')}}</label>

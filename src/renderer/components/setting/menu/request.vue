@@ -79,15 +79,17 @@ export default {
                 this.componentData = {
                     resolve, reject,
                     data: item,
+                    category: this.request[this.categoryIndex].contain,
                     title: 'EDITOR.HEADER.ITEM',
                     type: 'item'
                 }
                 this.component = "requestEditor"
             }).then(result => {
                 console.log(result);
+                this.$socket.emit("[CMS] UPDATE_REQUEST_ITEM", { item: result, group: categoryIndex, index });
                 this.$exitComponent();
             }).catch(del => {
-                del && this.$socket.emit("[CMS] REMOVE_REQUEST_ITEM", { id: item._id })
+                del && this.$socket.emit("[CMS] REMOVE_REQUEST_ITEM", { id: item._id });
                 this.$exitComponent();
             })
         },

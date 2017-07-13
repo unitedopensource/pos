@@ -153,6 +153,10 @@ const mutations = {
         category = flatten(category, items, false)[0];
         state.config.layout.request.splice(index, 1, category);
     },
+    [types.UPDATE_REQUEST_ITEM](state, data) {
+        let { item, group, index } = data;
+        //state.config.layout.request[group].item.
+    },
     [types.REMOVE_MENU_ITEM](state, data) {
         let { id, grp, sub, idx } = data;
         state.config.layout.menu[grp]['item'][sub].splice(idx, 1);
