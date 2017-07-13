@@ -72,6 +72,12 @@
                                     </div>
                                     <div class="ctrl">
                                         <checkbox v-model="side.sub" label="SUBITEM"></checkbox>
+                                        <div class="template">
+                                            <label>{{text('TEMPLATE')}}</label>
+                                            <select v-model="side.template">
+                                                <option v-for="name in templateOption">{{name}}</option>
+                                            </select>
+                                        </div>
                                     </div>
                                     <i class="fa fa-trash remove" @click="removeOption(index)"></i>
                                 </div>
@@ -126,9 +132,9 @@
                 <aside class="edit">
                     <textarea v-model="code" id="code"></textarea>
                     <!--<div class="status" :class="{expaned:errorLog.length > 1}">
-                                        <i class="fa fa-circle" v-show="errorLog.length === 1"></i>
-                                        <div v-for="log in errorLog" class="log" :class="{passed:errorLog.length === 1}">{{log}}</div>
-                                    </div>-->
+                                                        <i class="fa fa-circle" v-show="errorLog.length === 1"></i>
+                                                        <div v-for="log in errorLog" class="log" :class="{passed:errorLog.length === 1}">{{log}}</div>
+                                                    </div>-->
                 </aside>
             </div>
         </div>
@@ -138,7 +144,6 @@
 <script>
 import { mapGetters } from 'vuex'
 import draggable from 'vuedraggable'
-import jsonlint from 'jsonlint'
 import debounce from 'lodash.debounce'
 import smartInput from '../common/smartInput'
 import smartSwitch from '../common/smartSwitch'
@@ -152,6 +157,7 @@ export default {
             value: key,
             label: this.tax.class[key].alies + " - " + this.tax.class[key].rate + " %"
         }));
+        this.templateOption = this.templates.map(template => template.template)
     },
     mounted() {
         let item = Object.assign({}, this.init.item);
@@ -186,6 +192,7 @@ export default {
             checking: false,
             errorLine: null,
             extraPrice: false,
+            templateOption: [],
             taxOption: [],
             printers: [],
             dragtions: {
@@ -203,18 +210,6 @@ export default {
             this.code = JSON.stringify(this.item, null, 4);
             this.coding = true;
         },
-        // verifyJSON: debounce(function (code) {
-        //     try {
-        //         jsonlint.parse(code);
-        //         this.errorLog = ['Code passed'];
-        //         this.errorLine = null;
-        //     } catch (e) {
-        //         this.errorLog = String(e).split('\n');
-        //         this.errorLine = this.errorLog[0].split(" ").pop().slice(0, -1);
-        //         this.highlight();
-        //     }
-        //     this.checking = false;
-        // }, 3000),
         highlight() {
             let dom = document.getElementById('code');
             let value = dom.value.split("\n");
@@ -280,6 +275,7 @@ export default {
                 this.item.option = this.item.option.map((item, index) => {
                     if (!isNumber(item.price)) delete item.price;
                     if (!isNumber(item.extra)) delete item.extra;
+                    if (item.template) delete item.template;
                     if (!item.price && !item.extra && !isNumber(this.item.price[index])) item.extra = 0;
                     return item
                 }).filter((item, index) => (item.zhCN && item.usEN));
@@ -295,9 +291,6 @@ export default {
                 dom.parentElement.children[1].focus();
             }
         },
-        compile() {
-
-        },
         del() {
             this.init.reject(this.item)
         },
@@ -312,7 +305,7 @@ export default {
             }
             return true
         },
-        ...mapGetters(['tax', 'config'])
+        ...mapGetters(['tax', 'config', 'templates'])
     }
 }
 </script>
@@ -455,7 +448,7 @@ i.remove {
 
 .item input[type="text"] {
     width: 170px;
-    border:1px solid #9E9E9E;
+    border: 1px solid #9E9E9E;
 }
 
 .side:hover i.remove {
@@ -612,5 +605,10 @@ div.add {
 
 .ctrl {
     display: flex;
+}
+
+.template {
+    margin: 8px 0;
+    font-size: 1.1em;
 }
 </style>

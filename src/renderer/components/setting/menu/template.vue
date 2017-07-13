@@ -60,10 +60,11 @@ export default {
                 this.component = "editor";
             }).then(result => {
                 this.builder.splice(index, 1, result);
-                //update
+                this.setTemplates(this.buider);
+                this.$socket.emit("[CMS] UPDATE_TEMPLATE", result);
                 this.$exitComponent();
             }).catch(del => {
-                del && this.builder.splice(index, 1) && (this.change = true);
+                del && this.builder.splice(index, 1) && this.$socket.emit("[CMS] DELETE_TEMPLATE", { _id: template._id });
                 this.$exitComponent();
             })
         },
@@ -72,31 +73,14 @@ export default {
             this.builder.push({
                 template: name,
                 contain: [{
-                    name:"sample",
-                    addition:0,
-                    startAt:0,
-                    contain:[{
-                        zhCN:"",
-                        usEN:"",
-                        price:0
-                    }]
+                    name: "New",
+                    addition: 0,
+                    startAt: 0,
+                    contain: []
                 }]
             })
-        }
-    },
-    watch: {
-        builder: {
-            handler(n) {
-                // let keys = Object.keys(n);
-                // this.change = keys.some(key => {
-                //     return typeof n[key] === 'string' ?
-                //         n[key] !== this.store.tax[key] :
-                //         JSON.stringify(n[key]) !== JSON.stringify(this.store.tax[key]);
-                // })
-                // this.change ?
-                //     this.$emit("change", Object.assign({}, this.store, { tax: n })) : this.$emit("unchange");
-            }, deep: true
-        }
+        },
+        ...mapActions(['setTemplates'])
     },
     computed: {
         ...mapGetters(['templates'])
@@ -116,7 +100,7 @@ export default {
 .name,
 .rate {
     width: 140px;
-    padding:0 15px;
+    padding: 0 15px;
 }
 
 .action {
