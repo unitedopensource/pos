@@ -43,6 +43,7 @@ import editor from './templateEditor'
 export default {
     components: { smartInput, smartSwitch, checkbox, editor },
     created() {
+        console.log(this.templates)
         this.builder = JSON.parse(JSON.stringify(this.templates))
     },
     data() {
@@ -58,13 +59,14 @@ export default {
             new Promise((resolve, reject) => {
                 this.componentData = { resolve, reject, template };
                 this.component = "editor";
-            }).then(result => {
+            }).then((result) => {
                 this.builder.splice(index, 1, result);
-                this.setTemplates(this.buider);
+                this.setTemplates(this.builder);
                 this.$socket.emit("[CMS] UPDATE_TEMPLATE", result);
                 this.$exitComponent();
-            }).catch(del => {
+            }).catch((del) => {
                 del && this.builder.splice(index, 1) && this.$socket.emit("[CMS] DELETE_TEMPLATE", { _id: template._id });
+                this.setTemplates(this.builder);
                 this.$exitComponent();
             })
         },

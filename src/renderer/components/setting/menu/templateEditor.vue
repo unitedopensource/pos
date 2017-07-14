@@ -20,26 +20,31 @@
                     </div>
                 </aside>
                 <div class="container">
-                    <div class="config">
-                        <div>
-                            <label>{{text('NAME')}}</label>
-                            <input v-model="container.name">
-                            <label>{{text('EDITOR.TEMPLATE.MAX')}}</label>
-                            <input v-model.number="container.max">
+                    <div v-if="container">
+                        <div class="config">
+                            <div>
+                                <label>{{text('NAME')}}</label>
+                                <input v-model="container.name">
+                                <label>{{text('EDITOR.TEMPLATE.MAX')}}</label>
+                                <input v-model.number="container.max">
+                            </div>
+                            <div>
+                                <label>{{text('EDITOR.TEMPLATE.STARTAT')}}</label>
+                                <input v-model.number="container.startAt">
+                                <label>{{text('EDITOR.TEMPLATE.ADDITION')}}</label>
+                                <input v-model.number="container.addition">
+                            </div>
                         </div>
-                        <div>
-                            <label>{{text('EDITOR.TEMPLATE.STARTAT')}}</label>
-                            <input v-model.number="container.startAt">
-                            <label>{{text('EDITOR.TEMPLATE.ADDITION')}}</label>
-                            <input v-model.number="container.addition">
-                        </div>
+                        <ul class="item">
+                            <li v-for="(item,index) in container.contain" @click="editItem(item,index)" :key="index">{{item[language]}}</li>
+                            <li class="addItem" @click="addItem">
+                                <i class="fa fa-plus"></i>
+                            </li>
+                        </ul>
                     </div>
-                    <ul class="item">
-                        <li v-for="(item,index) in container.contain" @click="editItem(item,index)" :key="index">{{item[language]}}</li>
-                        <li class="addItem" @click="addItem">
-                            <i class="fa fa-plus"></i>
-                        </li>
-                    </ul>
+                    <div v-else>
+    
+                    </div>
                 </div>
             </div>
             <footer>
@@ -69,7 +74,7 @@ export default {
     data() {
         return {
             template: null,
-            container: {},
+            container: null,
             component: null,
             componentData: null,
             index: 0
@@ -82,12 +87,7 @@ export default {
             dom && dom.classList.remove("active");
             dom = document.querySelectorAll(".group");
             dom[index] && dom[index].classList.add("active");
-            this.container = Object.assign({}, {
-                name: "",
-                max: 0,
-                startAt: 0,
-                addition: "0.00"
-            }, this.template.contain[index])
+            this.container = this.template.contain[index]
         },
         addGroup() {
             this.template.contain.push({
@@ -98,7 +98,7 @@ export default {
             })
         },
         delGroup(index) {
-            this.template.contain.splice(index,1);
+            this.template.contain.splice(index, 1);
         },
         addItem() {
             new Promise((resolve, reject) => {
@@ -107,14 +107,12 @@ export default {
                 this.component = "editor";
             }).then((item) => {
                 this.template.contain[this.index].contain.push(item);
-                console.log(this.template)
                 this.$exitComponent();
             }).catch(() => {
                 this.$exitComponent();
             })
         },
         editItem(item, index) {
-            console.log(item)
             new Promise((resolve, reject) => {
                 let title = "EDIT_ITEM";
                 this.componentData = { resolve, reject, title, item };
@@ -179,6 +177,7 @@ aside {
 
 .group {
     padding: 5px 10px;
+    height: 40px;
     cursor: pointer;
     color: #9E9E9E;
     position: relative;

@@ -63,7 +63,7 @@ export default {
             new Promise((resolve, reject) => {
                 this.componentData = { resolve, reject, category };
                 this.component = "categoryEditor";
-            }).then(result => {
+            }).then((result) => {
                 result.item = [];
                 this.$socket.emit("[CMS] MODIFY_CATEGORY", {
                     category: result,
@@ -91,14 +91,14 @@ export default {
                 let categories = this.categories[this.categoryIndex].contain.map(category => ({ label: category, value: category }))
                 this.componentData = { resolve, reject, item, categories };
                 this.component = "itemEditor";
-            }).then(result => {
+            }).then((result) => {
                 this.$socket.emit("[CMS] MODIFY_ITEM", {
                     item: result.item,
                     grp: this.categoryIndex,
                     sub, idx
                 });
                 this.$exitComponent();
-            }).catch(item => {
+            }).catch((item) => {
                 this.$exitComponent();
                 item && this.$dialog({
                     title: 'DEL_ITEM_CONFIRM',
