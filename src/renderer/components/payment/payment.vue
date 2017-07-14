@@ -434,16 +434,33 @@ export default {
             })
         },
         chargeGift() {
-            if (parseFloat(this.paid) >= this.creditCard.balance) {
+            if (parseFloat(this.paid) === 0) return;
+            if (this.giftCard.balance > this.paid) {
                 this.poleDisplay("Paid Gift Card", "Thank You");
+                this.payment.due = (parseFloat(this.payment.due) - parseFloat(this.paid)).round(2);
+                this.payment.due = this.payment.due <= 0 ? 0 : this.payment.due;
+                let balance = this.giftCard.balance - this.paid;
+                this.payment.log.push({
+                    type: "GIFT",
+                    paid: this.paid,
+                    change: 0,
+                    balance: balance.toFixed(2)
+                });
                 let activity = {
                     date: today(),
                     time: +new Date,
-                    amount: value,
-                    balance: value,
+                    amount: this.paid,
+                    balance,
                     type: 'DEBET',
                     op: this.op.name
                 };
+                this.$socket.emit("[GIFTCARD] CARD_ACTIVITY", {
+                    _id: this.giftCard._id,
+                    value: balance,
+                    activity
+                });
+                this.payment.settled = true;
+                this.summarize({ print: true });
             }
         },
         setQuickInput(value) {
@@ -551,14 +568,7 @@ export default {
             this.$dialog({
                 type: "question",
                 title: "CASH_OUT",
-                msg: this.text("TIP_CASH_OUT", this.giftCard.balance.toFixed(2)),
-                buttons: [{
-                    text: "CANCEL",
-                    fn: 'reject'
-                }, {
-                    text: "CONFIRM",
-                    fn: 'resolve'
-                }]
+                msg: this.text("TIP_CASH_OUT", this.giftCard.balance.toFixed(2))
             }).then(() => {
                 let money = this.giftCard.balance;
                 let value = 0;

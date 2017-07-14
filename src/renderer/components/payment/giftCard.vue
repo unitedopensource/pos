@@ -16,7 +16,7 @@ export default {
             timeout: null,
             card: "",
             icon: "info",
-            msg: "GC_SWIPE"
+            msg: this.text("GC_SWIPE")
         }
     },
     mounted() {
