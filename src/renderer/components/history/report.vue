@@ -156,7 +156,7 @@ export default {
         hibachi = 0, hibachiSum = 0, hibachiTip = 0, hibachiGratuity = 0,
         settle = 0, settleSum = 0, unsettle = 0, unsettleSum = 0,
         voided = 0, voidedSum = 0,
-        cash = 0, credit = 0, gift = 0,
+        cash = 0, credit = 0, gift = 0, discount = 0, discountSum = 0,
         corrupted = 0,
         counter = {},
         driver = {},
@@ -168,7 +168,12 @@ export default {
         if (data[i].status === 1) {
           if (invoice.payment) {
             total++;
-            totalSum += invoice.payment.total;
+            totalSum += (invoice.payment.total - invoice.payment.discount);
+            if (invoice.payment.discount > 0) {
+              discount++;
+              discountSum += invoice.payment.discount;
+            }
+
           } else {
             corrupted++;
             continue;
@@ -177,19 +182,19 @@ export default {
           switch (invoice.type) {
             case "WALK_IN":
               walkin++;
-              walkinSum += invoice.payment.total;
+              walkinSum += (invoice.payment.total - invoice.payment.discount);
               walkinTip += invoice.payment.tip;
               walkinGratuity += invoice.payment.gratuity;
               break;
             case "PICK_UP":
               pickup++;
-              pickupSum += invoice.payment.total;
+              pickupSum += (invoice.payment.total - invoice.payment.discount);
               pickupTip += invoice.payment.tip;
               pickupGratuity += invoice.payment.gratuity;
               break;
             case "DELIVERY":
               delivery++;
-              deliverySum += invoice.payment.total;
+              deliverySum += (invoice.payment.total - invoice.payment.discount);
               deliveryTip += invoice.payment.tip;
               deliveryGratuity += invoice.payment.gratuity;
               if (!invoice.deliveryFree && invoice.payment.delivery) {
@@ -201,7 +206,7 @@ export default {
                 if (driver.hasOwnProperty(invoice.driver)) {
                   let name = invoice.driver;
                   driver[name].count++;
-                  driver[name].total += invoice.payment.total;
+                  driver[name].total += (invoice.payment.total - invoice.payment.discount);
                   driver[name].discount += (invoice.payment.discount ? invoice.payment.discount : 0);
                   driver[name].tip += (invoice.payment.tip ? invoice.payment.tip : 0);
                   driver[name].gratuity += (invoice.payment.gratuity ? invoice.payment.grauity : 0);
@@ -220,13 +225,13 @@ export default {
               break;
             case "DINE_IN":
               dinein++;
-              dineinSum += invoice.payment.total;
+              dineinSum += (invoice.payment.total - invoice.payment.discount);
               dineinTip += invoice.payment.tip;
               dineinGratuity += invoice.payment.gratuity;
               break;
             case "BAR":
               bar++;
-              barSum += invoice.payment.total;
+              barSum += (invoice.payment.total - invoice.payment.discount);
               barTip += invoice.payment.tip;
               barGratuity += invoice.payment.gratuity;
           }
@@ -323,7 +328,15 @@ export default {
                 amount: dineinSum,
                 tip: dineinTip,
                 gratuity: dineinGratuity
-              }, {
+              },
+              {
+                text: this.text('DISCOUNT'),
+                count: discount,
+                amount: discountSum,
+                tip: 0,
+                gratuity: 0
+              },
+              {
                 text: this.text('TOTAL'),
                 count: total,
                 amount: totalSum,

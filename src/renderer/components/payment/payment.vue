@@ -485,6 +485,7 @@ export default {
                 //delivery fee ?
                 this.payment.due = this.payment.total + resolve.tip + resolve.gratuity - this.payment.discount;
                 this.quickInput = this.generateQuickInput(this.payment.due);
+                this.poleDisplay(["Tip Adjust:", parseFloat(resolve.tip).toFixed(2)], ["Total:", parseFloat(this.payment.due).toFixed(2)]);
                 this.$exitComponent();
             }).catch(() => {
                 this.$exitComponent();
@@ -500,6 +501,7 @@ export default {
                 this.payment.due = this.payment.total + this.payment.tip + this.payment.gratuity - this.payment.discount;
                 this.paid = this.payment.due;
                 this.quickInput = this.generateQuickInput(this.payment.due);
+                this.poleDisplay(["Discount:", "-" + parseFloat(resolve.discount).toFixed(2)], ["Total:", parseFloat(this.payment.due).toFixed(2)]);
                 this.$exitComponent();
             }).catch(() => {
                 this.$exitComponent();

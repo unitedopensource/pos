@@ -359,6 +359,7 @@ Printer.prototype.printReceipt = function (raw) {
        <p class="bold"><span class="text">CHANGE:</span><span class="value">${(payment.paidCash - payment.total).toFixed(2)}</span></p>` : "";
     let credit = (payment.hasOwnProperty('paidCredit') && parseFloat(payment.paidCredit) !== 0) ? `<p class="bold"><span class="text">CREDIT:</span><span class="value">${payment.paidCredit}</span></p>` : "";
     let gift = (payment.hasOwnProperty('paidGift') && parseFloat(payment.paidGift) != 0) ? `<p class="bold"><span class="text">GIFT:</span><span class="value">${payment.paidGift}</span></p>` : "";
+    let discount = parseFloat(payment.discount) !== 0 ? `<p class="bold"><span class="text">Discount:</span><span class="value">-${payment.discount}</span></p>`:'';
     let paid = (cash + credit + gift) || "";
     return `<footer>
                <section class="other">
@@ -366,7 +367,8 @@ Printer.prototype.printReceipt = function (raw) {
                  <div class="payment">
                    <p><span class="text">Subtotal:</span><span class="value">${payment.subtotal.toFixed(2)}</span></p>
                    <p><span class="text">Tax:</span><span class="value">${payment.tax.toFixed(2)}</span></p>
-                   <p class="bold"><span class="text">TOTAL:</span><span class="value">${payment.total.toFixed(2)}</span></p>
+                   ${discount}
+                   <p class="bold"><span class="text">TOTAL:</span><span class="value">${(payment.total - payment.discount).toFixed(2)}</span></p>
                    ${paid}
                  </div>
                </section>

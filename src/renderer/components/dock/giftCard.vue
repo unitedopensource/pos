@@ -25,6 +25,9 @@
                         </form>
                         <div class="watermark">POS</div>
                     </div>
+                    <div class="function">
+
+                    </div>
                 </section>
                 <section class="list"></section>
             </div>
