@@ -39,8 +39,8 @@
             </figure>
             <figure>
                 <i class="fa fa-2x fa-list-alt"></i>
-                <figcaption>{{text('LANGUAGE')}}</figcaption>
-                <span class="intro">{{text('SETTING.LANGUAGE.TIP')}}</span>
+                <figcaption>{{text('THIRD_PARTY')}}</figcaption>
+                <span class="intro">{{text('SETTING.THIRDPARTY.TIP')}}</span>
             </figure>
             <figure>
                 <i class="fa fa-2x fa-money"></i>

@@ -12,8 +12,8 @@
                         <smart-input v-model="item.menuID" reg="^[a-zA-Z0-9_. ]{0,3}$" label="MENU_ID"></smart-input>
                         <smart-option v-model="item.category" label="CATEGORY" :options="init.categories"></smart-option>
                         <smart-input v-model.trim="item.categoryCN" reg="^.{0,10}$" label="CATEGORY_CN"></smart-input>
-                        <smart-input v-model="item.zhCN" reg="^.{0,15}$" label="ZH_CN"></smart-input>
                         <smart-input v-model="item.usEN" reg="^.{0,25}$" label="US_EN"></smart-input>
+                        <smart-input v-model="item.zhCN" reg="^.{0,15}$" label="ZH_CN"></smart-input>
                         <smart-input v-model="item.price" reg="^[0-9.,]{3,}$" label="PRICE" :more="true" @toggle="extraPrice = !extraPrice"></smart-input>
                         <div class="extraPrice" v-if="extraPrice">
                             <div>
@@ -131,10 +131,6 @@
             <div class="inner">
                 <aside class="edit">
                     <textarea v-model="code" id="code"></textarea>
-                    <!--<div class="status" :class="{expaned:errorLog.length > 1}">
-                                                        <i class="fa fa-circle" v-show="errorLog.length === 1"></i>
-                                                        <div v-for="log in errorLog" class="log" :class="{passed:errorLog.length === 1}">{{log}}</div>
-                                                    </div>-->
                 </aside>
             </div>
         </div>
@@ -275,7 +271,7 @@ export default {
                 this.item.option = this.item.option.map((item, index) => {
                     if (!isNumber(item.price)) delete item.price;
                     if (!isNumber(item.extra)) delete item.extra;
-                    if (item.template) delete item.template;
+                    if (!item.template) delete item.template;
                     if (!item.price && !item.extra && !isNumber(this.item.price[index])) item.extra = 0;
                     return item
                 }).filter((item, index) => (item.zhCN && item.usEN));

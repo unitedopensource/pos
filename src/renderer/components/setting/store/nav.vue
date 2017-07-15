@@ -4,8 +4,8 @@
             <header @click="back">
                 <i class="fa fa-chevron-left"></i>{{text('BACK')}}</header>
             <router-link :to="{name:'Setting.store'}" tag="div" append>{{text('BASIC_INFO')}}</router-link>
-            <router-link :to="{name:'Setting.tax'}" tag="div" append>{{text('TAX_RATE')}}</router-link>
             <router-link :to="{name:'Setting.station'}" tag="div" append>{{text('STATION')}}</router-link>
+            <router-link :to="{name:'Setting.tax'}" tag="div" append>{{text('TAX_RATE')}}</router-link>
             <router-link :to="{name:'Setting.dinein'}" tag="div" append>{{text('DINE_IN')}}</router-link>
         </nav>
         <div class="content">

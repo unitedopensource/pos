@@ -39,7 +39,9 @@ import split from './menu/split'
 
 export default {
     created() {
-        this.flatten(this.menu[0].item);
+        //this.menuInstance = Object.assign({},this.menu);
+        this.menuInstance = JSON.parse(JSON.stringify(this.menu));
+        this.flatten(this.menuInstance[0].item);
         this.setSides(this.fillOption([]));
         this.ticket.type === 'DINE_IN' && this.config.store.table.seatOrder && (this.sort = 1);
     },
@@ -48,6 +50,7 @@ export default {
     },
     data() {
         return {
+            menuInstance:null,
             componentData: null,
             component: null,
             payment: null,
@@ -62,7 +65,7 @@ export default {
         },
         flatten(items) {
             console.time("clone");
-            items = [].concat.apply([], JSON.parse(JSON.stringify(items)));
+            items = [].concat.apply([],items);
             if (this.customer._id && this.customer.extra.favorite) {
                 let favorite = this.customer.extra.favorite;
                 items.forEach(item => {
@@ -74,7 +77,7 @@ export default {
             this.items = items;
         },
         setCategory(i, e) {
-            this.flatten(this.menu[i].item);
+            this.flatten(this.menuInstance[i].item);
             document.querySelector(".category .active").classList.remove("active");
             e.currentTarget.classList.add("active");
             this.itemPage = 0;
@@ -400,10 +403,10 @@ export default {
                 order.source = "POS";
                 order.modify = 0;
                 order.status = 1;
-                order.time = String(+new Date);
+                order.time = +new Date;
                 order.date = moment().subtract(4, 'hours').format("YYYY-MM-DD");
             } else {
-                order.lastEdit = String(+new Date());
+                order.lastEdit = +new Date;
                 order.editor = this.op.name;
                 order.payment = this.payment;
                 order.modify++;

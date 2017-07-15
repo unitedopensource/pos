@@ -91,30 +91,30 @@ export default {
     getDateRange() {
       switch (this.ranger) {
         case "today":
-          this.from = moment().startOf('day').hours(4).format('x');
-          this.to = moment().startOf('day').add(1, 'days').hours(3).minutes(59).seconds(59).format('x');
+          this.from = Number(moment().startOf('day').hours(4).format('x'));
+          this.to = Number(moment().startOf('day').add(1, 'days').hours(3).minutes(59).seconds(59).format('x'));
           this.date = moment().format('YYYY/MM/DD');
           break;
         case "week":
-          this.from = moment().startOf('week').hours(4).format('x');
-          this.to = moment().endOf('week').add(1, 'days').hours(3).minutes(59).seconds(59).format('x');
+          this.from = Number(moment().startOf('week').hours(4).format('x'));
+          this.to = Number(moment().endOf('week').add(1, 'days').hours(3).minutes(59).seconds(59).format('x'));
           this.date = moment().startOf('week').format('YYYY/MM/DD') + " - " + moment().endOf('week').format("YYYY/MM/DD");
           break;
         case "month":
-          this.from = moment().startOf('month').hours(4).format('x');
-          this.to = moment().endOf('month').add(1, 'days').hours(3).minutes(59).seconds(59).format('x');
+          this.from = Number(moment().startOf('month').hours(4).format('x'));
+          this.to = Number(moment().endOf('month').add(1, 'days').hours(3).minutes(59).seconds(59).format('x'));
           this.date = moment().startOf('month').format('YYYY/MM/DD') + " - " + moment().endOf('month').format("YYYY/MM/DD");
           break;
         case "last":
-          this.from = moment().subtract(1, 'M').startOf('month').hours(4).format('x');
-          this.to = moment().subtract(1, 'M').endOf('month').add(1, 'days').hours(3).minutes(59).seconds(59).format('x');
+          this.from = Number(moment().subtract(1, 'M').startOf('month').hours(4).format('x'));
+          this.to = Number(moment().subtract(1, 'M').endOf('month').add(1, 'days').hours(3).minutes(59).seconds(59).format('x'));
           this.date = moment().subtract(1, 'M').startOf('month').format('YYYY/MM/DD') + " - " + moment().subtract(1, 'M').endOf('month').format("YYYY/MM/DD");
           break;
         case "custom":
           break;
         default:
-          this.from = moment().startOf('day').hours(4).format('x');
-          this.to = moment().startOf('day').add(1, 'days').hours(3).minutes(59).seconds(59).format('x');
+          this.from = Number(moment().startOf('day').hours(4).format('x'));
+          this.to = Number(moment().startOf('day').add(1, 'days').hours(3).minutes(59).seconds(59).format('x'));
           this.date = moment().format('YYYY/MM/DD');
       }
     },
