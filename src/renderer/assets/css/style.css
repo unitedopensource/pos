@@ -601,7 +601,17 @@ section.items {
   font-size: 1.05em;
   will-change: background;
 }
-
+.items .like{
+  position: relative;
+}
+.like:after {
+  content: '\f004';
+  font-family: fontAwesome;
+  right: 3px;
+  bottom: 3px;
+  position: absolute;
+  color: #F44336;
+}
 div.pageButton {
   width: 109.6px;
   background: blanchedalmond;

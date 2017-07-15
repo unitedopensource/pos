@@ -4,7 +4,7 @@
             <div v-for="(category,index) in menu" @click="setCategory(index,$event)" :key="index">{{category[language]}}</div>
         </section>
         <section class="items">
-            <div v-for="(item,index) in page" @click="pick(item)" :class="{disable:!item.clickable}" :key="index">{{item[language]}}</div>
+            <div v-for="(item,index) in page" @click="pick(item)" :class="{disable:!item.clickable,like:item.like}" :key="index">{{item[language]}}</div>
             <div @click="itemPage = 0" v-if="items.length >= 34" class="pageButton">{{text("FIRST_PAGE")}}</div>
             <div @click="itemPage = 1" v-if="items.length >= 34" class="pageButton">{{text("SECOND_PAGE")}}</div>
             <div @click="itemPage = 2" v-if="items.length >= 34" class="pageButton">{{text("THIRD_PAGE")}}</div>
@@ -39,7 +39,7 @@ import split from './menu/split'
 
 export default {
     created() {
-        this.items = [].concat.apply([], this.menu[0].item);
+        this.flatten(this.menu[0].item);
         this.setSides(this.fillOption([]));
         this.ticket.type === 'DINE_IN' && this.config.store.table.seatOrder && (this.sort = 1);
     },
@@ -60,8 +60,21 @@ export default {
         fn(name, params) {
             this[name](params);
         },
+        flatten(items) {
+            console.time("clone");
+            items = [].concat.apply([], JSON.parse(JSON.stringify(items)));
+            if (this.customer._id && this.customer.extra.favorite) {
+                let favorite = this.customer.extra.favorite;
+                items.forEach(item => {
+                    favorite.includes(item._id) && (item.like = true);
+                    return item
+                });
+            }
+            console.timeEnd("clone");
+            this.items = items;
+        },
         setCategory(i, e) {
-            this.items = [].concat.apply([], this.menu[i].item);
+            this.flatten(this.menu[i].item);
             document.querySelector(".category .active").classList.remove("active");
             e.currentTarget.classList.add("active");
             this.itemPage = 0;
@@ -98,11 +111,11 @@ export default {
             }).then(resolve => {
                 delete resolve.resolve;
                 delete resolve.reject;
-                item = Object.assign({},item,{
-                    single:resolve.single,
-                    total:resolve.total,
-                    price:[resolve.single],
-                    prices:{}
+                item = Object.assign({}, item, {
+                    single: resolve.single,
+                    total: resolve.total,
+                    price: [resolve.single],
+                    prices: {}
                 });
                 this.pick(item);
                 this.$exitComponent();
