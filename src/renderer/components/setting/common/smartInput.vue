@@ -1,7 +1,7 @@
 <template>
     <div class="input">
         <label :for="id">{{text(label)}}</label>
-        <input :id="id" :value="value" type="text" @change="$emit('input', $event.target.value)" :disabled="disable">
+        <input :id="id" :value="value" type="text" @input="$emit('input', $event.target.value)" :disabled="disable">
         <i class="fa fa-level-down" v-if="more" @click="trigger"></i>
     </div>
 </template>
@@ -42,7 +42,7 @@ label {
     border: none;
     padding: 7px 0;
     font-size: 1em;
-    flex: 6;
+    flex: 1;
     font-family: 'Yuanti-SC'
 }
 

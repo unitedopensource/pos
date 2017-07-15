@@ -39,7 +39,6 @@ import split from './menu/split'
 
 export default {
     created() {
-        //this.menuInstance = Object.assign({},this.menu);
         this.menuInstance = JSON.parse(JSON.stringify(this.menu));
         this.flatten(this.menuInstance[0].item);
         this.setSides(this.fillOption([]));

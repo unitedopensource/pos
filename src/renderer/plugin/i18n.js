@@ -18,6 +18,7 @@
               'ADJUST_TIP': '调整小费',
               'ASIAN': '亚洲人',
               'AUTO_LOGOUT': '自动登出',
+              'AUTO_COMPLETE':'自动完成',
               'ALL_RECORDS': '所有记录',
               'ANY_QTY': '任意选择',
               'APPETIZER': '头台',

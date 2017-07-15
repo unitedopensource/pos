@@ -225,7 +225,7 @@ export default {
                     break;
                 case "Enter":
                     e.preventDefault();
-                    if (this.component === 'itemEditor') {
+                    if (this.component === 'itemEditor' && document.activeElement.id !== 'autoComplete') {
                         let target = document.getElementById("confirmEdit");
                         target && target.dispatchEvent(new CustomEvent('click'));
                     } else if (isNumber(this.pointIndex)) {

@@ -12,7 +12,7 @@
                         <smart-input v-model="item.menuID" reg="^[a-zA-Z0-9_. ]{0,3}$" label="MENU_ID"></smart-input>
                         <smart-option v-model="item.category" label="CATEGORY" :options="init.categories"></smart-option>
                         <smart-input v-model.trim="item.categoryCN" reg="^.{0,10}$" label="CATEGORY_CN"></smart-input>
-                        <smart-input v-model="item.usEN" reg="^.{0,25}$" label="US_EN"></smart-input>
+                        <instant-input v-model="item.usEN" label="US_EN" @fill="fill"></instant-input>
                         <smart-input v-model="item.zhCN" reg="^.{0,15}$" label="ZH_CN"></smart-input>
                         <smart-input v-model="item.price" reg="^[0-9.,]{3,}$" label="PRICE" :more="true" @toggle="extraPrice = !extraPrice"></smart-input>
                         <div class="extraPrice" v-if="extraPrice">
@@ -144,10 +144,11 @@ import debounce from 'lodash.debounce'
 import smartInput from '../common/smartInput'
 import smartSwitch from '../common/smartSwitch'
 import smartOption from '../common/smartOption'
+import instantInput from '../common/instantInput'
 import checkbox from '../common/checkbox'
 export default {
     props: ['init'],
-    components: { smartInput, smartSwitch, smartOption, draggable, checkbox },
+    components: { smartInput, smartSwitch, smartOption, draggable, checkbox, instantInput },
     created() {
         this.taxOption = Object.keys(this.tax.class).map(key => ({
             value: key,
@@ -201,6 +202,9 @@ export default {
     methods: {
         set(key, value) {
             this.item[key] = value;
+        },
+        fill(data) {
+            this.item = Object.assign({}, this.item, data)
         },
         viewCode() {
             this.code = JSON.stringify(this.item, null, 4);
