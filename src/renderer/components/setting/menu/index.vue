@@ -225,9 +225,15 @@ export default {
                     break;
                 case "Enter":
                     e.preventDefault();
-                    if (this.component === 'itemEditor' && document.activeElement.id !== 'autoComplete') {
-                        let target = document.getElementById("confirmEdit");
-                        target && target.dispatchEvent(new CustomEvent('click'));
+                    if (this.component === 'itemEditor') {
+                        if (document.activeElement.id === 'autoComplete') {
+                            let target = document.querySelectorAll("input")[4];
+                            target.focus();
+                            target.select();
+                        } else {
+                            let target = document.getElementById("confirmEdit");
+                            target && target.dispatchEvent(new CustomEvent('click'));
+                        }
                     } else if (isNumber(this.pointIndex)) {
                         let target = document.querySelector(".items .active");
                         target && target.dispatchEvent(new CustomEvent('contextmenu'));

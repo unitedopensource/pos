@@ -146,7 +146,6 @@ var Dictionary = function (key) {
     let prefix = '';
     key = key.toUpperCase();
     let result = abbreviation[key];
-    console.log(key)
     if (key && key.includes('L.') || key.includes('C.')) {
         prefix = key.slice(0, 2);
         key = key.substring(2);

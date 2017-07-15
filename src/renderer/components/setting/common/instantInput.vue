@@ -40,13 +40,6 @@ export default {
         fill() {
             if (this.items.length === 0) return;
             this.items[this.index] && this.$emit("fill", this.items[this.index]);
-            this.$nextTick(() => {
-                let target = document.querySelectorAll("input")[4];
-                target.focus();
-                target.select();
-                console.log("active",target)
-            })
-
         },
         up() {
             this.index = this.index > 0 ? this.index - 1 : 0;
