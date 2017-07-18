@@ -223,6 +223,15 @@ export default {
                         this.pointIndex = null;
                     }
                     break;
+                case "Tab":
+                    if (this.component !== 'itemEditor') {
+                        e.preventDefault();
+                        e.shiftKey ?
+                            (this.pointIndex !== 0 && this.pointIndex--) :
+                            (this.pointIndex < max && this.pointIndex++);
+                    }
+                    break;
+                case "NumpadEnter":
                 case "Enter":
                     e.preventDefault();
                     if (this.component === 'itemEditor') {
@@ -321,9 +330,10 @@ aside .btn {
 }
 
 .items .active {
-    background: #E1F5FE;
+    background: #F44336;
+    color: #fff;
     border: 1px solid transparent;
     transform: scale(1.1);
-    box-shadow: 0 2px 12px -1px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
 }
 </style>

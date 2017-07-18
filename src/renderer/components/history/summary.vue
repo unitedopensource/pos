@@ -35,6 +35,10 @@
       </div>
       <div class="value">$ {{summary.unsettleSum}}</div>
     </div>
+    <div class="filter" @click="setFilter('UNSETTLE',$event)">
+      <div class="text">{{text('BY_DRIVER')}}</div>
+      <div class="value">1</div>
+    </div>
     <div class="date">{{date}}</div>
   </div>
 </template>
@@ -82,7 +86,7 @@ export default {
           if (invoice.payment) {
             total++;
             totalSum += (invoice.payment.total - invoice.payment.discount);
-            discountSum +=invoice.payment.discount;
+            discountSum += invoice.payment.discount;
           } else {
             corrupted++;
             continue;

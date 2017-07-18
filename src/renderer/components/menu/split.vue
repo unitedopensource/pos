@@ -20,7 +20,7 @@
       </section>
       <footer>
         <div class="f1">
-          <div class="btn confirm" @click="confirm($event)">{{text('CONFIRM')}}</div>
+          <div class="btn confirm" @click="confirm($event)">{{text('PAYMENT')}}</div>
           <div class="btn" @click="printAll">{{text('PRINT_ALL')}}</div>
           <div class="btn" @click="evenly">{{text('EVEN_SPLIT')}}</div>
         </div>

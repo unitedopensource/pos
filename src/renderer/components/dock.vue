@@ -324,9 +324,7 @@ export default {
   },
   watch: {
     ring(n) {
-      n ?
-        this.$socket.emit('INQUIRY_CUSTOMER_INFO', String(n.number)) :
-        this.$exitComponent();
+      n ? this.$socket.emit('INQUIRY_CUSTOMER_INFO', String(n.number)) : this.$exitComponent();
     }
   }
 }
@@ -404,6 +402,7 @@ span.op {
 span.corner {
   padding: 0 10px;
   text-align: center;
+  min-width: 115px;
 }
 
 .corner.right {

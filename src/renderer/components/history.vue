@@ -30,9 +30,7 @@
             </section>
             <section class="ticket">
                 <order-list layout="display" :display="true"></order-list>
-                <div class="payment">
-    
-                </div>
+                <div class="driver btn" v-if="order.type ==='DELIVERY'">{{text('SET_DRIVER')}}</div>
             </section>
         </article>
     </div>
