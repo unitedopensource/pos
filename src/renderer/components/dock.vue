@@ -32,11 +32,12 @@ import maintenance from './dock/maintenance'
 import dialoger from './common/dialoger'
 import switcher from './dock/switcher'
 import giftCard from './giftCard/index'
+import terminal from './history/terminal'
 import opPanel from './dock/opPanel'
 import spooler from './dock/spooler'
 import caller from './dock/caller'
 export default {
-  components: { maintenance, caller, switcher, dialoger, opPanel, spooler, giftCard },
+  components: { maintenance, caller, switcher, dialoger, opPanel, spooler, giftCard, terminal },
   mounted() {
     setTimeout(() => {
       document.querySelector(".dock").classList.add("slideDown");
@@ -76,10 +77,9 @@ export default {
         new Promise((resolve, reject) => {
           this.componentData = { lack, type, resolve, reject };
           this.component = "switcher";
-        }).then(type => {
+        }).then((type) => {
           this.$dialog({
-            type: "question",
-            title: 'CONFIRM_ORD_TYP_SW',
+            type: "question", title: 'CONFIRM_ORD_TYP_SW',
             msg: this.text('ORD_TYP_SW', this.text(this.ticket.type), this.text(type))
           }).then(() => {
             if (this.ticket.type === 'DINE_INE') {
@@ -122,10 +122,7 @@ export default {
         this.setApp({ autoLogout: false });
         this.$dialog({
           title: 'AUTO_LOGOUT', msg: this.text('TIP_AUTO_LOGOUT', this.station.timeout),
-          timeout: {
-            fn: 'resolve',
-            duration: 10000
-          },
+          timeout: { fn: 'resolve', duration: 10000 },
           buttons: [{ text: 'EXTEND', fn: 'reject' }]
         }).then(() => {
           this.resetAll();
@@ -141,16 +138,9 @@ export default {
       let schedule = moment(time).format("hh:mm");
       let toNow = moment(time).toNow(true);
       this.$dialog({
-        type: "question",
-        title: this.text("PRT_CFM"),
+        type: "question", title: "PRT_CFM",
         msg: this.text("TIP_PRT_SPOOLER", schedule, toNow),
-        buttons: [{
-          text: this.text("CANCEL"),
-          fn: 'reject'
-        }, {
-          text: this.text("PRINT"),
-          fn: 'resolve'
-        }]
+        buttons: [{ text: "CANCEL", fn: 'reject' }, { text: "PRINT", fn: 'resolve' }]
       }).then(() => {
         this.printFromSpooler(i);
         this.$exitComponent();
@@ -161,9 +151,7 @@ export default {
     printFromSpooler(i) {
       let _id = this.spooler[i]._id;
       let items = [];
-      this.spooler[i].content.forEach(item => {
-        items.push(item.unique)
-      });
+      this.spooler[i].content.forEach(item => { items.push(item.unique) });
       Printer.init(this.config).setJob("receipt").print(this.spooler[0]);
       this.removeSpooler(i);
       let index = this.history.findIndex(order => order._id === _id);
@@ -226,11 +214,18 @@ export default {
             this.componentData = { resolve, reject };
             this.component = "giftCard"
           }).then(() => {
-
             this.$exitComponent();
           }).catch(() => {
             this.$exitComponent();
           })
+          break;
+        case "station":
+          break;
+        case "creditCard":
+          new Promise((resolve, reject) => {
+            this.componentData = { resolve, reject };
+            this.component = "terminal"
+          }).then(() => { this.$exitComponent() }).catch(() => { this.$exitComponent() })
           break;
       }
     },

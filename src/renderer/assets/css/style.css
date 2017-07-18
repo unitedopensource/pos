@@ -285,7 +285,7 @@ input[type="text"]:disabled {
 }
 
 .window .title {
-  padding: 24px 27px;
+  padding: 14px 27px;
   color: #fff;
   font-size: 1.25em;
   background: #2599F2;
@@ -302,7 +302,7 @@ input[type="text"]:disabled {
   position: absolute;
   right: 0;
   top: 0;
-  padding: 25px;
+  padding: 16px;
 }
 
 .window footer {

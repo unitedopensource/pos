@@ -42,7 +42,7 @@ export default {
 .caller {
     width: 290px;
     position: fixed;
-    top: 50px;
+    top: 65px;
     left: 100px;
     background: #fff;
     color: #555;
@@ -80,9 +80,12 @@ header {
     }
 }
 
-.scale-enter-active,
-.scale-leave-active {
+.pop-enter-active {
     animation: pop .3s ease;
+}
+
+.pop-leave-active {
+    animation: pop .3s ease reverse;
 }
 
 .time {
@@ -121,6 +124,10 @@ header {
     background: #f1f1f1;
     padding: 0 5px;
     font-size: 16px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    line-height: initial;
 }
 
 .tag {
@@ -128,7 +135,8 @@ header {
     background: #FF9800;
     color: #fff;
     text-shadow: 0 1px 1px #333;
-    padding: 2px 5px;
+    padding: 5px;
+    margin: 2px;
     border-radius: 4px;
 }
 
@@ -138,11 +146,4 @@ header {
     width: 60px;
     text-align: center;
 }
-
-
-
-/* .scale-enter,
-.scale-leave-active {
-    opacity: 0;
-} */
 </style>

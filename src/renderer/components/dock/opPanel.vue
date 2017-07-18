@@ -24,7 +24,7 @@
           <h5></h5>
         </div>
       </div>
-      <div class="list">
+      <div class="list" @click="creditCard">
         <i class="fa fa-2x fa-credit-card"></i>
         <div>
           <h3>{{text('CREDIT_CARD')}}</h3>
@@ -76,11 +76,18 @@ export default {
       })
     },
     station() {
-
+      this.$emit("trigger"),{
+        name: "station"
+      }
     },
     giftCard() {
       this.$emit("trigger", {
         name: "giftCard"
+      })
+    },
+    creditCard(){
+      this.$emit("trigger", {
+        name: "creditCard"
       })
     },
     language() {

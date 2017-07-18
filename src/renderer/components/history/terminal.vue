@@ -144,11 +144,11 @@ export default {
           let invoice = record.order.number;
           let trans = record.trace.trans;
           this.terminal.adjust(invoice, trans, amount).then(response => response.text()).then(response => {
-              record.status = 2;
-              record.amount.tip = (value).toFixed(2);
-              this.$exitComponent();
-              this.$socket.emit("[TERM] UPDATE_TRANSACTION", record);
-            });
+            record.status = 2;
+            record.amount.tip = (value).toFixed(2);
+            this.$exitComponent();
+            this.$socket.emit("[TERM] UPDATE_TRANSACTION", record);
+          });
         }).catch(() => {
           this.$exitComponent();
         })
@@ -250,13 +250,7 @@ export default {
       this.$dialog({
         title: "TERM_BATCH_CLOSE",
         msg: "TIP_TERM_BATCH_CLOSE",
-        buttons: [{
-          text: "CANCEL",
-          fn: 'reject'
-        }, {
-          text: 'BATCH',
-          fn: 'resolve'
-        }]
+        buttons: [{ text: "CANCEL", fn: 'reject' }, { text: 'BATCH', fn: 'resolve' }]
       }).then(() => {
         this.terminal.batch().then(response => {
           return response.text();
@@ -278,14 +272,10 @@ export default {
               type: 'warning',
               title: result.msg,
               msg: this.text('ERROR_CODE', result.code)
-            }).then(() => {
-              this.$exitComponent();
-            })
+            }).then(() => { this.$exitComponent() })
           }
         })
-      }).catch(() => {
-        this.$exitComponent();
-      })
+      }).catch(() => { this.$exitComponent() })
     },
     noBatch() {
       this.$dialog({
@@ -374,6 +364,7 @@ export default {
 .terminal {
   width: 850px;
   background: #E0E2E5;
+  font-size:initial;
 }
 
 .lastBatch {

@@ -4,8 +4,7 @@
             <data-input label="PHONE" v-model="customer.phone" :autoComplete="predict.phone" @focus="setInput" @fill="autoFill"></data-input>
             <data-input label="EXTENSION" v-model="customer.extension" :autoComplete="predict.extension" @focus="setInput"></data-input>
             <data-input label="NAME" v-model="customer.name" :autoComplete="predict.name" @focus="setInput"></data-input>
-            <data-input label="ADDRESS" v-model="customer.address" :autoComplete="predict.address" :distance="customer.distance" :duration="customer.duration" @focus="setInput" class="address" @fill="autoAddress">
-            </data-input>
+            <data-input label="ADDRESS" v-model="customer.address" :autoComplete="predict.address" :distance="customer.distance" :duration="customer.duration" @focus="setInput" class="address" @fill="autoAddress"></data-input>
             <data-input label="CITY" v-model="customer.city" :autoComplete="predict.city" @focus="setInput"></data-input>
             <data-input label="NOTE" v-model="customer.note" @focus="setInput" class="note"></data-input>
         </form>
