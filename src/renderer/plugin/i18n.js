@@ -179,6 +179,7 @@
               'HISTORY': '历史记录',
               'HOST_CONNECTED': '伺服器连接成功...',
               'ICON': '图标',
+              'INCOMING_CALL':'来电',
               'IMPOLITE': '没礼貌',
               'INIT_AMOUNT': '初始金额',
               'ITEM_PENDING': `${d[0]}个在队列中`,

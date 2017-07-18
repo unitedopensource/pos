@@ -61,7 +61,7 @@
             </article>
         </section>
         <section class="card">
-            <header>{{text('CASH_DRAWER')}}</header>
+            <header>{{text('CASHDRAWER')}}</header>
             <article>
                 <smart-switch v-model="workStation.cashDrawer" label="ENABLE"></smart-switch>
                 <smart-option v-model="workStation.cashDrawerBind" label="BINDING" :options="printers"></smart-option>

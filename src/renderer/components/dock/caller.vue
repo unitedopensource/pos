@@ -1,0 +1,148 @@
+<template>
+    <transition name="pop">
+        <div class="caller" v-show="this.$route.name === 'Dashboard'" @click="go">
+            <header>
+                <span class="f1">{{text('INCOMING_CALL')}}</span>
+                <span class="time">{{init.extra.lastDate | fromNow}}</span>
+            </header>
+            <div class="wrap">
+                <i class="fa fa-3x fa-phone icon"></i>
+                <div class="info">
+                    <div class="phone">{{init.phone | tel}}</div>
+                    <div class="address">
+                        <span>{{init.address}}</span>
+                        <span>{{init.city}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="tags" v-if="init.extra.tag.length !== 0">
+                <span class="tag" v-for="(tag,index) in init.extra.tag" :key="index">{{text(tag)}}</span>
+            </div>
+        </div>
+    </transition>
+</template>
+
+<script>
+import { mapActions } from 'vuex'
+export default {
+    props: ['init'],
+    methods: {
+        go() {
+            this.setCustomer(this.init);
+            this.setTicket({ type: 'DELIVERY' });
+            this.$router.push({ name: 'Information' });
+            this.$emit("exit")
+        },
+        ...mapActions(['setCustomer', 'setTicket'])
+    }
+}
+</script>
+
+<style scoped>
+.caller {
+    width: 290px;
+    position: fixed;
+    top: 50px;
+    left: 100px;
+    background: #fff;
+    color: #555;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+header {
+    background: #29B6F6;
+    color: aliceblue;
+    font-size: 18px;
+    padding: 0 10px;
+    display: flex;
+    text-shadow: 0 1px 1px #555;
+}
+
+.wrap {
+    position: relative;
+    padding: 3px 10px;
+    display: flex;
+}
+
+
+@keyframes pop {
+    0% {
+        transform: scale(0);
+        opacity: 0
+    }
+    70% {
+        transform: scale(1.1);
+        opacity: 1
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1
+    }
+}
+
+.scale-enter-active,
+.scale-leave-active {
+    animation: pop .3s ease;
+}
+
+.time {
+    font-weight: lighter;
+    font-size: 14px;
+}
+
+.phone {
+    font-family: "Agency FB";
+    font-weight: bold;
+    font-size: 24px;
+    line-height: 22px;
+    color: #3c3c3c;
+    margin: 2px 0;
+}
+
+.address {
+    font-size: 16px;
+    display: flex;
+    flex-direction: column;
+}
+
+.address span {
+    height: 16px;
+    line-height: 16px;
+    color: #757575;
+    font-size: 15px;
+}
+
+.info {
+    flex: 1;
+    margin-left: 10px;
+}
+
+.tags {
+    background: #f1f1f1;
+    padding: 0 5px;
+    font-size: 16px;
+}
+
+.tag {
+    font-size: 14px;
+    background: #FF9800;
+    color: #fff;
+    text-shadow: 0 1px 1px #333;
+    padding: 2px 5px;
+    border-radius: 4px;
+}
+
+.icon {
+    color: #009688;
+    text-shadow: 0 1px 1px #333;
+    width: 60px;
+    text-align: center;
+}
+
+
+
+/* .scale-enter,
+.scale-leave-active {
+    opacity: 0;
+} */
+</style>

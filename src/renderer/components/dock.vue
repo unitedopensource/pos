@@ -34,9 +34,9 @@ import switcher from './dock/switcher'
 import giftCard from './giftCard/index'
 import opPanel from './dock/opPanel'
 import spooler from './dock/spooler'
-import modal from './dock/modal'
+import caller from './dock/caller'
 export default {
-  components: { maintenance, modal, switcher, dialoger, opPanel, spooler, giftCard },
+  components: { maintenance, caller, switcher, dialoger, opPanel, spooler, giftCard },
   mounted() {
     setTimeout(() => {
       document.querySelector(".dock").classList.add("slideDown");
@@ -286,7 +286,7 @@ export default {
     CUSTOMER_ENQUIRE_RESULT(info) {
       this.newPhoneCall(info);
       this.componentData = info;
-      this.component = "modal";
+      this.component = "caller";
     },
 
     TIMECARD_REPORT(data) {

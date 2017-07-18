@@ -50,8 +50,16 @@ var Dictionary = function (key) {
         BMF: [{ zhCN: "牛米粉", usEN: "Beef Mei Fun" }],
         HSMF: [{ zhCN: "本楼米粉", usEN: "House Special Mei Fun" }],
 
+        VHF: [{ zhCN: "菜河粉", usEN: "Vegetable Ho Fun" }],
+        CHF: [{ zhCN: "鸡河粉", usEN: "Chicken Ho Fun" }],
+        PHF: [{ zhCN: "叉烧河粉", usEN: "Pork Ho Fun" }],
+        SHF: [{ zhCN: "虾河粉", usEN: "Shrimp Ho Fun" }, { zhCN: "海鲜河粉", usEN: "Seafood Ho Fun" }],
+        BHF: [{ zhCN: "牛河粉", usEN: "Beef Ho Fun" }],
+        HSHF: [{ zhCN: "本楼河粉", usEN: "House Special Ho Fun" }],
+
         FR: [{ zhCN: "炒饭", usEN: "Fried Rice" }],
         BR: [{ zhCN: "黑饭", usEN: "Brown Rice" }],
+        WR: [{ zhCN: "白饭", usEN: "White Rice" }],
         VFR: [{ zhCN: "菜炒饭", usEN: "Veg Fried Rice" }],
         CFR: [{ zhCN: "鸡炒饭", usEN: "Chicken Fried Rice" }],
         PFR: [{ zhCN: "叉烧饭", usEN: "Pork Fried Rice" }, { zhCN: "净炒饭", usEN: "Plain Fried Roll" }],
@@ -71,7 +79,7 @@ var Dictionary = function (key) {
         BGS: [{ zhCN: "鱼香牛", usEN: "Beef w.Garlic Sauce", spicy: true }],
         BHS: [{ zhCN: "湖南牛", usEN: "Beef w.Hunan Style", spicy: true }],
         HSB: [{ zhCN: "干烧牛", usEN: "Hot & Spicy Beef", spicy: true }],
-        MB: [{ zhCN: "蒙古牛", usEN: "Mongolian Beef" }],
+        MB: [{ zhCN: "蒙古牛", usEN: "Beef w.Mongolian Style" }],
 
         PB: [{ zhCN: "芥兰叉烧", usEN: "Pork Broccoli" }],
         PMV: [{ zhCN: "杂菜叉烧", usEN: "Pork w.Mixed Vege." }],
