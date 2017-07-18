@@ -96,7 +96,7 @@ i {
 }
 
 footer {
-  background: #f9f9f9;
+  background: #f5f5f5;
   display: flex;
   position: absolute;
   bottom: 0;
@@ -119,5 +119,6 @@ h5 {
   margin-top: 5px;
   font-size: 13.3px;
   text-shadow: none;
+  font-weight: normal;
 }
 </style>

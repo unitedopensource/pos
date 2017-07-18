@@ -17,18 +17,25 @@
           </h5>
         </div>
       </div>
-      <div class="list">
-        <i class="fa fa-2x fa-desktop"></i>
-        <div>
-          <h3>{{text('STATION')}}</h3>
-          <h5>Change Station Setting</h5>
-        </div>
-      </div>
       <div class="list" @click="giftCard">
         <i class="fa fa-2x fa-credit-card-alt"></i>
         <div>
           <h3>{{text('GIFT_CARD')}}</h3>
           <h5></h5>
+        </div>
+      </div>
+      <div class="list">
+        <i class="fa fa-2x fa-credit-card"></i>
+        <div>
+          <h3>{{text('CREDIT_CARD')}}</h3>
+          <h5></h5>
+        </div>
+      </div>
+      <div class="list">
+        <i class="fa fa-2x fa-desktop"></i>
+        <div>
+          <h3>{{text('STATION')}}</h3>
+          <h5>Change Station Setting</h5>
         </div>
       </div>
       <div class="list" @click="language">
@@ -72,8 +79,8 @@ export default {
 
     },
     giftCard() {
-      this.$emit("trigger",{
-        name:"giftCard"
+      this.$emit("trigger", {
+        name: "giftCard"
       })
     },
     language() {

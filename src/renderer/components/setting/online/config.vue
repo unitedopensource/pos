@@ -22,9 +22,9 @@
         <section class="card">
             <header>{{text('SETTING')}}</header>
             <article>
-                <smart-switch v-model="online.acceptCreditCard" label="CREDICARD"></smart-switch>
-                <smart-switch v-model="online.acceptDelivery" label="DELIVERY"></smart-switch>
-                <smart-input v-model="online.deliveryFee" label="DELIVERY_FEE" reg="^\d+\s[A-z]+\s[A-z]+"></smart-input>
+                <smart-switch v-model="online.acceptCreditCard" label="ACCEPT_CREDIT_CARD"></smart-switch>
+                <smart-switch v-model="online.acceptDelivery" label="ACCEPT_DELIVERY"></smart-switch>
+                <smart-input v-model="online.deliveryFee" label="DELIVERY_FEE" :disable="!online.acceptDelivery"></smart-input>
                 <smart-input v-model="online.minCashReq" label="MIN_CASH_REQ" reg="^[a-zA-Z0-9_. ]{5,30}$"></smart-input>
                 <smart-input v-model="online.minCreditReq" label="MIN_CREDIT_REQ" reg="^\d+\s[A-z]+\s[A-z]+"></smart-input>
                 <smart-input v-model="online.maxDeliverMile" label="MAX_DELIVERY_RANGE" reg="^[a-zA-Z0-9_. ]{5,30}$"></smart-input>

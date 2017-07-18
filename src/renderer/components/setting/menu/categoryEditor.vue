@@ -88,7 +88,8 @@ export default {
 }
 
 fieldset {
-    border: 1px solid #eee;
+    border: 1px solid #E0E0E0;
+    background: #fff;
 }
 
 legend {

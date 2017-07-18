@@ -56,7 +56,8 @@
         </div>
       </div>
       <footer>
-        <div class="btn" @click="init.reject">{{text('CANCEL')}}</div>
+        <div class="btn" @click="init.reject(true)">{{text('CHANGE_DATE')}}</div>
+        <div class="btn" @click="init.reject(false)">{{text('CANCEL')}}</div>
         <div class="btn" @click="confirm">{{text('CONFIRM')}}</div>
       </footer>
     </div>

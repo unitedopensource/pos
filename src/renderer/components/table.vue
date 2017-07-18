@@ -126,7 +126,7 @@ export default {
             new Promise((resolve, reject) => {
               this.componentData = { table, resolve, reject };
               this.component = "setup";
-            }).then(guest => {
+            }).then((guest) => {
               this.seated(guest);
             }).catch(() => {
               this.setCurrentTable(null);
@@ -143,9 +143,7 @@ export default {
             dom && dom.classList.remove("active");
             e.currentTarget.classList.add("active");
 
-            let invoice = this.history.filter(order => {
-              return order._id === table.current.invoice[0];
-            });
+            let invoice = this.history.filter(order => order._id === table.current.invoice[0]);
             invoice.length && this.setViewOrder(JSON.parse(JSON.stringify(invoice[0])));
           } else {
             this.resetMenu();
@@ -166,11 +164,9 @@ export default {
         title: "FORCE_CLEAR",
         msg: this.text("TIP_FORCE_CLEAR_TABLE", table.current.server, table.name),
         buttons: [{
-          text: 'CANCEL',
-          fn: 'reject'
+          text: 'CANCEL', fn: 'reject'
         }, {
-          text: 'CLEAR',
-          fn: 'resolve'
+          text: 'CLEAR', fn: 'resolve'
         }]
       }).then(() => {
         let _table = Object.assign({}, table, {
@@ -244,10 +240,10 @@ export default {
       this.$dialog({
         title: 'TABLE_CFM_SWITCH',
         msg: 'TIP_SELECT_TABLE'
-      }).then(resolve => {
+      }).then((resolve) => {
         this.pendingSwitch = true;
         this.$exitComponent();
-      }).catch(reject => {
+      }).catch((reject) => {
         this.pendingSwitch = false;
         this.$exitComponent();
       })
@@ -285,19 +281,13 @@ export default {
       })
     },
     switchTableFail() {
-      this.$dialog({
-        title: 'TABLE_SWITCH_F',
-        msg: 'TIP_TABLE_MUST_EMPTY'
-      }).then(() => {
-        this.$exitComponent();
-      })
+      this.$dialog({ title: 'TABLE_SWITCH_F', msg: 'TIP_TABLE_MUST_EMPTY' }).then(() => { this.$exitComponent() })
     },
     getReservation() {
       new Promise((resolve, reject) => {
         this.componentData = { resolve, reject };
         this.component = "reservation";
       }).then(resolve => {
-
         this.$exitComponent();
       }).catch(() => {
         this.$exitComponent();
@@ -341,13 +331,7 @@ export default {
           type: "question",
           title: "PRT_PRE_PAYT",
           msg: this.text('TIP_PRE_PAYT', this.order.table),
-          buttons: [{
-            text: 'CANCEL',
-            fn: "reject"
-          }, {
-            text: "PRINT",
-            fn: "resolve"
-          }]
+          buttons: [{ text: 'CANCEL', fn: "reject" }, { text: "PRINT", fn: "resolve" }]
         }).then(() => {
           let order = JSON.parse(JSON.stringify(this.order));
           order.type = "PRE_PAYMENT";
@@ -364,11 +348,8 @@ export default {
       } else {
         let remain = this.order.content.filter(item => !item.print).length;
         this.$dialog({
-          title: this.text('PRT_PRE_PAYT_NA'),
-          msg: this.text('TIP_REMAIN_ITEM', remain)
-        }).then(() => {
-          this.$exitComponent();
-        })
+          title: 'PRT_PRE_PAYT_NA', msg: this.text('TIP_REMAIN_ITEM', remain)
+        }).then(() => { this.$exitComponent() })
       }
     },
     clearTable() {
@@ -376,13 +357,7 @@ export default {
         this.$dialog({
           title: "TABLE_CLEAR",
           msg: this.text("TIP_TABLE_CLEAR", this.currentTable.name),
-          buttons: [{
-            text: 'CANCEL',
-            fn: 'reject'
-          }, {
-            text: 'CLEAR',
-            fn: 'resolve'
-          }]
+          buttons: [{ text: 'CANCEL', fn: 'reject' }, { text: 'CLEAR', fn: 'resolve' }]
         }).then(() => {
           let _table = JSON.parse(JSON.stringify(this.currentTable));
           _table = Object.assign(_table, {
@@ -404,21 +379,17 @@ export default {
         })
       } else {
         this.$dialog({
-          type: "info",
-          title: this.text('TABLE_CLEAR_F'),
-          msg: this.text('TIP_TABLE_CLEAR_F', this.currentTable.name)
-        }).then(() => {
-          this.$exitComponent();
-        })
+          type: "info", title: 'TABLE_CLEAR_F',
+          msg: this.text('TIP_TABLE_CLEAR_F', this.currentTable.name),
+          buttons: [{ text: 'CONFIRM', fn: 'resolve' }]
+        }).then(() => { this.$exitComponent() })
       }
     },
     setPayment(payment) {
       this.payment = payment;
     },
     setDialog(data) {
-      this.$dialog(data).then(() => {
-        this.$exitComponent();
-      })
+      this.$dialog(data).then(() => { this.$exitComponent() })
     },
     exit() {
       this.resetAll();

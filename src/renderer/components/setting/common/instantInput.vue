@@ -116,9 +116,15 @@ p {
 
 ul {
     border-top: 1px solid #ddd;
+    color: #757575;
+}
+
+h5 {
+    font-weight: normal;
 }
 
 li.ac.active {
     background: #eee;
+    color: #0c0c0c;
 }
 </style>

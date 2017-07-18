@@ -62,7 +62,7 @@ export default {
     props: ['date'],
     data() {
         return {
-            today:today(),
+            today: today(),
             component: null,
             componentData: null
         }
@@ -216,7 +216,7 @@ export default {
             new Promise((resolve, reject) => {
                 this.componentData = { resolve, reject };
                 this.component = "Calendar";
-            }).then(date => {
+            }).then((date) => {
                 this.$emit("update", date);
                 this.$socket.emit('INQUIRY_HISTORY_ORDER_LIST', date);
                 this.$exitComponent();
@@ -239,7 +239,7 @@ export default {
                     payment, resolve, reject
                 };
                 this.component = "Payment";
-            }).then(result => {
+            }).then((result) => {
                 let _order = JSON.parse(JSON.stringify(this.order));
                 _order.payment = result.payment;
                 _order.settled = true;
@@ -272,9 +272,9 @@ export default {
                     this.component = "Terminal";
                 }).then(() => {
                     this.$exitComponent();
-                });
+                })
             } else {
-                this.$dialog({ title: 'UNABLE_ACCESS', msg: 'STA_TERM_NA' }).then(() => { this.$exitComponent() })
+                this.$dialog({ title: 'UNABLE_ACCESS', msg: 'STA_TERM_NA',buttons:[{text:'CONFIRM',fn:'resolve'}] }).then(() => { this.$exitComponent() });
             }
         },
         report() {
@@ -285,7 +285,7 @@ export default {
             new Promise((resolve, reject) => {
                 this.componentData = { resolve, reject };
                 this.component = "Report";
-            }).then(resolve => {
+            }).then(() => {
                 this.$exitComponent();
             }).catch(() => {
                 this.$exitComponent();

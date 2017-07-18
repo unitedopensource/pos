@@ -36,18 +36,6 @@ div {
   flex: 2;
 }
 
-.f3 {
-  flex: 3;
-}
-
-.f4 {
-  flex: 4
-}
-
-.f5 {
-  flex: 5
-}
-
 i {
   --gray: #607D8B;
   --deepBlue: #1f7dc7;
@@ -473,7 +461,7 @@ section.dataList {
 }
 
 .editor {
-  background: #fff;
+  background: #fafafa;
   box-shadow: 0px 25px 35px 0px rgba(0, 0, 0, 0.35);
   display: flex;
   flex-direction: column;
@@ -493,13 +481,18 @@ section.dataList {
 }
 
 .editor .input {
-  margin-bottom: 10px;
-  font-size: 1.25em;
+  margin-bottom: 5px;
   display: flex;
+  background: #fff;
+  box-shadow: var(--shadow);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .editor .input label {
   width: 80px;
+  padding: 0 10px;
 }
 
 .editor .inner {
@@ -508,9 +501,9 @@ section.dataList {
 
 .editor .input input {
   border: none;
-  border-bottom: 1px solid #BDBDBD;
   flex: 1;
   font-size: 1.25em;
+  padding: 5px;
 }
 
 .editor footer {
