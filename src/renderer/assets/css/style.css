@@ -137,10 +137,6 @@ i.warning::before {
   margin-bottom: 5px;
 }
 
-.btn .text {
-  font-family: 'Microsoft YaHei';
-}
-
 button.btn {
   border: none;
   outline: none;

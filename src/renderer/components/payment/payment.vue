@@ -79,7 +79,7 @@
                     <div class="display">
                         <div class="data" @click="setInputAnchor('paid',$event)">
                             <span class="text">{{text('PAYMENT')}}</span>
-                            <span class="value">{{paid}}</span>
+                            <span class="value">{{paid | decimal}}</span>
                         </div>
                         <div class="data" @click="setInputAnchor('number',$event)">
                             <span class="text">{{text('CC_NUMBER')}}</span>
