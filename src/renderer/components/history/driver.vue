@@ -2,7 +2,7 @@
   <div class="popupMask center dark" @click.self="init.reject">
     <div class="driver window">
       <header class="title">
-        <span>{{text('SET_DRIVER')}}</span>
+        <span>#{{init.ticket}} {{text('SET_DRIVER')}}</span>
         <i class="fa fa-close" @click="init.reject"></i>
       </header>
       <div class="inner">
@@ -20,7 +20,6 @@
 export default {
   props: ['init'],
   mounted(){
-    console.log(this.init.driver)
     this.init.driver && document.querySelector('.'+this.init.driver).classList.add("active");
   },
   data() {

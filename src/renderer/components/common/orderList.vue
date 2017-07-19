@@ -316,7 +316,8 @@ export default {
         setDriver() {
             new Promise((resolve, reject) => {
                 let driver = this.order.driver || null;
-                this.componentData = { resolve, reject, driver };
+                let ticket = this.order.number;
+                this.componentData = { resolve, reject, driver, ticket };
                 this.component = "driver"
             }).then((driver) => {
                 this.setOrder({ driver });
@@ -336,6 +337,7 @@ export default {
             for (let i = 0; i < length; i++) {
                 let item = n[i];
                 let price = parseFloat(item.single) * item.qty;
+                item.discount && (price -= item.discount);
                 let choiceLength = item.choiceSet.length;
                 subtotal += price;
 

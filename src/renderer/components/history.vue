@@ -61,14 +61,16 @@ export default {
             summary: {},
             page: 0,
             view: "",
-            filter: ""
+            filter: "",
+            driver: null
         }
     },
     methods: {
         getInvoice(invoice) {
             this.setViewOrder(invoice);
         },
-        setFilter(type) {
+        setFilter(type, id) {
+            this.driver = null;
             switch (type) {
                 case "WALK_IN":
                 case "PICK_UP":
@@ -79,6 +81,10 @@ export default {
                     break;
                 case "UNSETTLE":
                     this.filter = 'UNSETTLE';
+                    break;
+                case "DRIVER":
+                    this.filter = 'DRIVER';
+                    this.driver = id;
                     break;
                 default:
                     this.filter = type;
@@ -111,6 +117,10 @@ export default {
                     return this.prevsHistory.length ?
                         this.prevsHistory.filter(invoice => !invoice.settled).slice(min, max) :
                         this.history.filter(invoice => !invoice.settled).slice(min, max);
+                case "DRIVER":
+                    return this.prevsHistory.length ?
+                        this.prevsHistory.filter(invoice => this.driver ? invoice.driver === this.driver : invoice.type === 'DELIVERY').slice(min, max) :
+                        this.history.filter(invoice => this.driver ? invoice.driver === this.driver : invoice.type === 'DELIVERY').slice(min, max);
                 default:
                     return this.prevsHistory.length ?
                         this.prevsHistory.slice(min, max) :

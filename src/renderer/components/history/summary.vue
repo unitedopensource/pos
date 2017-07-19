@@ -35,13 +35,13 @@
       </div>
       <div class="value">$ {{summary.unsettleSum}}</div>
     </div>
-    <div class="filter dropdown" @click="setFilter('DRIVER',$event)">
-      <div class="text">{{text('BY_DRIVER')}}</div>
-      <div class="value">{{Object.keys(summary.driver).length}}</div>
-      <div class="drivers">
-        <div class="driver" v-for="(value,key,index) in summary.driver" :key="index">
+    <div class="filter dropdown" @click="setFilter('DRIVER',$event)" v-show="Object.keys(summary.driver).length !== 0">
+      <div class="text">{{text('BY_DRIVER')}}<span v-if="driver">{{driver}} ({{summary.driver[driver].count}})</span></div>
+      <div class="value">{{driver ? '$ '+summary.driver[driver].total.toFixed(2) : Object.keys(summary.driver).length}}</div>
+      <div class="drivers" v-show="!driver">
+        <div class="driver" v-for="(value,key,index) in summary.driver" :key="index" @click.stop="setDriver(key)">
           <span>Driver #{{key}}</span>
-          <span>$ {{value.total}}</span>
+          <span class="price">$ {{value.total.toFixed(2)}}</span>
         </div>
       </div>
     </div>
@@ -58,17 +58,22 @@ export default {
   },
   methods: {
     setFilter(type, e) {
+      this.driver = null;
       document.querySelector('.filter.active').classList.remove("active");
       e.currentTarget.classList.add("active");
       let dom = document.querySelector(".invoice.active");
       dom && dom.classList.add("active");
-      
       this.$emit("filter", type);
+    },
+    setDriver(id) {
+      this.driver = id;
+      this.$emit("filter", "DRIVER", id)
     }
   },
   data() {
     return {
-      isDisplay: false
+      isDisplay: false,
+      driver: null
     }
   },
   computed: {
@@ -226,8 +231,9 @@ export default {
 .dropdown {
   position: relative;
 }
-.dropdown.active .drivers{
-  display:block;
+
+.dropdown.active .drivers {
+  display: block;
 }
 
 .dropdown.active::after {
@@ -260,13 +266,14 @@ export default {
 }
 
 .drivers {
-  display: none;
   position: absolute;
+  display: none;
+  z-index: 2;
   top: 75px;
   left: 0;
   width: 100%;
   background: #fff;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
 }
 
 .driver {
@@ -274,5 +281,10 @@ export default {
   border-bottom: 1px solid #eee;
   display: flex;
   flex-direction: column;
+}
+
+.price {
+  font-weight: lighter;
+  color: gray;
 }
 </style>
