@@ -105,15 +105,18 @@
                 </div>
             </div>
         </div>
+        <div class="driver btn" v-if="order.type ==='DELIVERY'" @click="setDriver">{{text('SET_DRIVER')}}</div>
         <div :is="component" :init="componentData" @trigger="update"></div>
     </div>
 </template>
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import driver from '../history/driver'
 import Printer from '../../print'
 import config from './config'
+
 export default {
-    components: { config },
+    components: { config, driver },
     props: ['layout', 'group', 'display', 'sort'],
     created() {
         !this.order.payment ? this.calculator(this.cart) : this.payment = this.order.payment;
@@ -296,9 +299,7 @@ export default {
                     title: 'ITEM_SEND',
                     msg: this.text('TIP_PRINT_RESULT', sendItem) + ", " + txt
                 });
-                this.spooler.forEach(item => {
-                    item.print = true;
-                })
+                this.spooler.forEach(item => { item.print = true })
                 this.spooler = [];
             }
         },
@@ -311,6 +312,19 @@ export default {
         update(config) {
             this.setOrder(config);
             this.calculator(this.cart);
+        },
+        setDriver() {
+            new Promise((resolve, reject) => {
+                let driver = this.order.driver || null;
+                this.componentData = { resolve, reject, driver };
+                this.component = "driver"
+            }).then((driver) => {
+                this.setOrder({ driver });
+                this.$socket.emit("ORDER_MODIFIED", this.order);
+                this.$exitComponent();
+            }).catch(() => {
+                this.$exitComponent();
+            })
         },
         calculator(n) {
             let subtotal = 0;
@@ -702,5 +716,12 @@ i.flip {
     padding: 0 2px;
     -webkit-font-smoothing: antialiased;
     font-weight: lighter;
+}
+
+.driver {
+    width: 275px;
+    margin: 5px;
+    height: 40px;
+    font-size: initial;
 }
 </style>

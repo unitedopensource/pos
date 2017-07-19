@@ -30,7 +30,6 @@
             </section>
             <section class="ticket">
                 <order-list layout="display" :display="true"></order-list>
-                <div class="driver btn" v-if="order.type ==='DELIVERY'">{{text('SET_DRIVER')}}</div>
             </section>
         </article>
     </div>
@@ -195,7 +194,7 @@ article {
 }
 
 .logo {
-    margin: 7px 22px;
+    margin: 7px 20px;
 }
 
 .summary {

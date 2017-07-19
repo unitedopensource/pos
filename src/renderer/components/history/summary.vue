@@ -35,9 +35,15 @@
       </div>
       <div class="value">$ {{summary.unsettleSum}}</div>
     </div>
-    <div class="filter" @click="setFilter('UNSETTLE',$event)">
+    <div class="filter dropdown" @click="setFilter('DRIVER',$event)">
       <div class="text">{{text('BY_DRIVER')}}</div>
-      <div class="value">1</div>
+      <div class="value">{{Object.keys(summary.driver).length}}</div>
+      <div class="drivers">
+        <div class="driver" v-for="(value,key,index) in summary.driver" :key="index">
+          <span>Driver #{{key}}</span>
+          <span>$ {{value.total}}</span>
+        </div>
+      </div>
     </div>
     <div class="date">{{date}}</div>
   </div>
@@ -56,6 +62,7 @@ export default {
       e.currentTarget.classList.add("active");
       let dom = document.querySelector(".invoice.active");
       dom && dom.classList.add("active");
+      
       this.$emit("filter", type);
     }
   },
@@ -115,7 +122,7 @@ export default {
                 if (driver.hasOwnProperty(invoice.driver)) {
                   let name = invoice.driver;
                   driver[name].count++;
-                  driver[name].total += invoice.payment.total;
+                  driver[name].total += (invoice.payment.total - invoice.payment.discount);
                   driver[name].discount += (invoice.payment.discount ? invoice.payment.discount : 0);
                   driver[name].tip += (invoice.payment.tip ? invoice.payment.tip : 0);
                   driver[name].gratuity += (invoice.payment.gratuity ? invoice.payment.grauity : 0);
@@ -204,6 +211,7 @@ export default {
   cursor: pointer;
   text-align: center;
   color: #FAFAFA;
+  min-width: 70px;
   transition: background 0.22s linear;
 }
 
@@ -213,6 +221,27 @@ export default {
   border-bottom: 2px solid #FF9800;
   color: #263238;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.dropdown {
+  position: relative;
+}
+.dropdown.active .drivers{
+  display:block;
+}
+
+.dropdown.active::after {
+  content: ' ';
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  right: 0;
+  margin: auto;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 10px 10px 0 10px;
+  border-color: #FF9800 transparent transparent transparent;
 }
 
 .summary.hide .value {
@@ -228,5 +257,22 @@ export default {
   font-family: fantasy;
   color: #F5F5F5;
   text-shadow: 0 1px 3px #000;
+}
+
+.drivers {
+  display: none;
+  position: absolute;
+  top: 75px;
+  left: 0;
+  width: 100%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.driver {
+  padding: 5px 0;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  flex-direction: column;
 }
 </style>
