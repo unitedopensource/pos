@@ -15,7 +15,7 @@
                     </div>
                 </div>
             </div>
-            <div class="tags" v-if="init.extra.tag.length !== 0">
+            <div class="tags">
                 <span class="tag" v-for="(tag,index) in init.extra.tag" :key="index">{{text(tag)}}</span>
             </div>
         </div>

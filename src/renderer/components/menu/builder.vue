@@ -84,7 +84,6 @@ export default {
       let max = this.content.max;
       let length = this.selected.length;
       let options = [];
-      console.log(this.selected);
       (max > 0 ) && this.selected.splice(0, max);
       this.selected.forEach(index => {
         let item = Object.assign({},this.content.contain[index]);

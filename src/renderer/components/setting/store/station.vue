@@ -45,6 +45,7 @@
             <article>
                 <smart-switch v-model="workStation.callid.enable" label="ENABLE"></smart-switch>
                 <smart-option v-model="workStation.callid.port" label="PORT" :options="ports"></smart-option>
+                <smart-option v-model="workStation.callid.command" :options="commands" label="COMMAND"></smart-option>
             </article>
         </section>
         <section class="card">
@@ -116,6 +117,7 @@ export default {
             workStation: null,
             devices: ['S80', 'S300','NX2200'],
             ports: ['COM1', 'COM2', 'COM3', 'COM4', 'COM5', 'COM6', 'COM7', 'COM8', 'COM9'],
+            commands:['AT#CID=1','AT+VCID=1','AT%CCID=1'],
             printers: []
         }
     },

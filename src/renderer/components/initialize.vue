@@ -81,13 +81,14 @@ export default {
         autoOpen: false,
         parser: serialport.parsers.raw
       });
-      telephone.open(err => { err ? this.setDevice({ callid: false }) : telephone.write('AT#CID=1' + String.fromCharCode(13)) });
-      telephone.on('data', data => {
+      window.telephone = telephone;
+      telephone.open(err => { err ? this.setDevice({ callid: false }) : telephone.write(this.station.callid.command + String.fromCharCode(13)) });
+      telephone.on('data', (data) => {
         let raw = data.toString().split('\n');
-        if (raw.length === 9) {
-          let name = raw.find(arr => arr.indexOf("NAME=") !== -1);
+        if (raw.length === 9 || raw.length === 6) {
+          let name = raw.find(arr => arr.indexOf("NAME") !== -1);
           name = name.split("=")[1];
-          let number = raw.find(arr => arr.indexOf("NMBR=") !== -1);
+          let number = raw.find(arr => arr.indexOf("NMBR") !== -1);
           number = number.split("=")[1].replace(/\D/g, '').replace(/\+?1?(\d{3})\D?\D?(\d{3})\D?(\d{4})/, "$1$2$3");
           let time = +new Date();
           this.phoneRing({ name, number, time });
