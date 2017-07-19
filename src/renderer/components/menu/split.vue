@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import splitList from './splitList'
 import Printer from '../../print'
 import payment from '../payment/payment'
@@ -185,17 +185,32 @@ export default {
       })
     },
     gatherPayments() {
-      // let paid = Object.keys(this.splitPayment).length;
-      // if(this.split )
-      // let payment = {};
-      // for(let key in this.splitPayment){
-      //   if(this.splitPayment.hasOwnProperty(key)){
-          
-      //   }
-      // }
-      this.order = Object.assign({},this.order,{
-        splitPayment:this.splitPayment
+      this.setOrder({ splitPayment: this.splitPayment });
+      let payment = {
+        tip: 0,
+        gratuity: 0,
+        discount: 0,
+        delivery: 0,
+        subtotal: 0,
+        tax: 0,
+        total: 0,
+        due: 0,
+        log: []
+      };
+      this.splitPayment.forEach(trans => {
+        payment.tip += trans.tip;
+        payment.gratuity += trans.gratuity;
+        payment.discount += trans.discount;
+        payment.delivery += trans.delivery;
+        payment.subtotal += trans.subtotal;
+        payment.total += trans.total;
+        payment.due += trans.due;
+        payment.paid += trans.paid;
+        trans.log.map(log => {
+          payment.log.push(log)
+        })
       });
+      this.setOrder({ payment });
       return true
     },
     poleDisplay(line1, line2) {
@@ -209,7 +224,8 @@ export default {
         e.currentTarget.classList.remove("active") :
         e.currentTarget.classList.add("active");
       this.lock = !this.lock;
-    }
+    },
+    ...mapActions(['setOrder'])
   },
   computed: {
     offset() {

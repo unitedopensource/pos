@@ -9,11 +9,11 @@
                 </div>
                 <div class="input">
                     <label>{{text('US_EN')}}</label>
-                    <input v-model="item.usEN">
+                    <input v-model="item.usEN" @keydown.enter="done">
                 </div>
                 <div class="input">
                     <label>{{text('PRICE')}}</label>
-                    <input v-model="item.price">
+                    <input v-model="item.price" @keydown.enter="done">
                 </div>
             </div>
             <footer>
@@ -43,6 +43,8 @@ export default {
             this.init.reject(true)
         },
         done() {
+            !isNumber(this.item.price) && (this.item.price = 0);
+            !this.item.hasOwnProperty("key") && (this.item.key = Math.random().toString(36).substring(3,7));
             this.init.resolve(this.item)
         }
     }

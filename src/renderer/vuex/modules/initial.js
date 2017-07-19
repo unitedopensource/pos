@@ -200,7 +200,7 @@ function flatten(layout, data, page) {
             let items = group[item] || [];
             let align = 6 - items.length % 3;
             align === 6 && (align = 3);
-            Array(align).fill().forEach(_ => { items.push({ zhCN: "", usEN: "", clickable: false, category: "NA" }) })
+            Array(align).fill().forEach(_ => { items.push({ zhCN: "", usEN: "", clickable: false, category: "NA" }) });
             layer.item.push(group[item] || items);
         });
         let length = [].concat.apply([], layer.item).length;

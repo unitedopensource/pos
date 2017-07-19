@@ -73,6 +73,7 @@ export default {
         add() {
             let name = "template" + (this.builder.length + 1);
             this.builder.push({
+                _id:ObjectId(),
                 template: name,
                 contain: [{
                     name: "New",

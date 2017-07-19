@@ -68,8 +68,7 @@ export default {
             if (this.customer._id && this.customer.extra.favorite) {
                 let favorite = this.customer.extra.favorite;
                 items.forEach(item => {
-                    favorite.includes(item._id) && (item.like = true);
-                    return item
+                    item.like = favorite.includes(item._id);
                 });
             }
             console.timeEnd("clone");
@@ -273,7 +272,7 @@ export default {
                     resolve, reject
                 };
                 this.component = "payment";
-            }).then(result => {
+            }).then((result) => {
                 this.$exitComponent();
                 this.payment = result.payment;
                 this.setOrder({ settled: true });
@@ -290,7 +289,7 @@ export default {
             new Promise((resolve, reject) => {
                 this.componentData = { resolve, reject, order };
                 this.component = "split";
-            }).then(content => {
+            }).then((content) => {
                 this.$exitComponent();
                 this.setOrder({
                     content,
@@ -315,10 +314,10 @@ export default {
             new Promise((resolve, reject) => {
                 this.componentData = { item, resolve, reject };
                 this.component = 'itemMarker';
-            }).then(resolve => {
+            }).then((resolve) => {
                 this.alterItem(resolve);
                 this.$exitComponent();
-            }).catch(reject => {
+            }).catch((reject) => {
                 this.$exitComponent();
             })
         },

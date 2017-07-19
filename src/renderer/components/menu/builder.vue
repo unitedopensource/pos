@@ -7,7 +7,7 @@
       </header>
       <div class="inner">
         <div class="indicator">
-          <div class="step" v-for="(step,index) in template.contain" @click="jumpStep(index)">
+          <div class="step" v-for="(step,index) in template.contain" @click="jumpStep(index)" :key="index">
             <span class="name">{{step.name}}</span>
             <span></span>
           </div>
@@ -19,7 +19,7 @@
                 <span class="limit">{{maxItem}}</span>
               </legend>
               <div class="wrap">
-                <label v-for="(item,index) in content.contain">
+                <label v-for="(item,index) in content.contain" :key="index">
                   <input type="checkbox" :id="'option'+index" :value="index" v-model="selected" @change="onChange">
                   <label class="item" :for="'option'+index">{{item[language]}}</label>
                   <span class="price" v-show="item.price">{{item.price | decimal}}</span>
@@ -72,9 +72,9 @@ export default {
       this.option[target].map((item, index) => {
         for (let i = 0; i < this.content.contain.length; i++) {
           let obj = this.content.contain[i];
-          if (JSON.stringify(item) === JSON.stringify(obj)) {
-            this.selected.push(i);
-            break;
+          if(item.key === obj.key){
+           this.selected.push(i);
+           break; 
           }
         }
       })
@@ -84,7 +84,8 @@ export default {
       let max = this.content.max;
       let length = this.selected.length;
       let options = [];
-      (max && length > max) && this.selected.splice(0, 1);
+      console.log(this.selected);
+      (max > 0 ) && this.selected.splice(0, max);
       this.selected.forEach(index => {
         let item = Object.assign({},this.content.contain[index]);
         options.push(item);

@@ -153,15 +153,17 @@ var Dictionary = function (key) {
 
     let prefix = '';
     key = key.toUpperCase();
-    let result = abbreviation[key];
     if (key && key.includes('L.') || key.includes('C.')) {
         prefix = key.slice(0, 2);
         key = key.substring(2);
-        result.forEach(item => {
-            item.usEN = prefix + item.usEN;
-            item.zhCN = prefix + item.zhCN;
-        })
     }
+    let result = abbreviation[key] || [];
+
+    result.forEach(item => {
+        item.usEN = prefix + item.usEN;
+        item.zhCN = prefix + item.zhCN;
+    })
+
     return result || [];
 };
 
