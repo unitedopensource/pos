@@ -37,6 +37,7 @@
         </section>
       </div>
       <footer>
+        <button class="btn" @click="batch" :disabled="!device">{{text('BATCH')}}</button>
         <div class="pagination">
           <div class="page" @click="page = page > 0 ? page - 1 : 0">
             <i class="fa fa-angle-left"></i>
@@ -47,7 +48,6 @@
           </div>
         </div>
         <div>
-          <button class="btn" @click="batch" :disabled="!device">{{text('BATCH')}}</button>
           <div class="btn" @click="init.resolve">{{text('EXIT')}}</div>
         </div>
       </footer>
@@ -75,7 +75,7 @@ export default {
       today: today(),
       date: today(),
       allTransaction: [],
-      filter: 'station',
+      filter: 'all',
       terminal: null,
       device: null,
       page: 0
@@ -274,7 +274,7 @@ export default {
       })
     },
     missTerminal() {
-      this.$dialog({ type: 'warning', title: 'TERM_NA', msg: 'STA_TERM_NA', buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(()=>{
+      this.$dialog({ type: 'warning', title: 'TERM_NA', msg: 'STA_TERM_NA', buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => {
         this.init.resolve();
       })
     },
@@ -370,9 +370,10 @@ export default {
 
 .content li {
   border-bottom: 1px solid #ddd;
-  padding: 10px 10px 10px 15px;
   display: flex;
   position: relative;
+  align-items: center;
+  padding: 10px 5px;
 }
 
 .status {
@@ -389,10 +390,11 @@ export default {
   display: flex;
   align-items: center;
   padding: 0 10px;
+  justify-content: center;
 }
 
 .pagination .page {
-  margin: 5px 5px 10px;
+  margin: 5px;
   width: 20px;
   text-align: center;
   cursor: pointer;

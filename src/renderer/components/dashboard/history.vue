@@ -4,9 +4,14 @@
         <section class="inner">
             <div class="invoice" v-for="(ticket,index) in history" :key="index">
                 <i :class="status(ticket.status)"></i>
-                <span>{{ticket.number}}</span>
-                <span>{{text(ticket.type)}}</span>
-                
+                <span class="ticket">#{{ticket.number}}</span>
+                <span class="type">{{text(ticket.type)}}</span>
+                <span class="time">{{ticket.time | moment('MM/DD/YY HH:mm')}}</span>
+    
+                <div class="f1">
+                    <span class="void" v-if="ticket.status === 0">{{text(ticket.void.note)}} ({{ticket.void.by}})</span>
+                </div>
+                <span class="price">$ {{ticket.payment.total}}</span>
             </div>
         </section>
     </div>
@@ -22,12 +27,11 @@ export default {
         return {
             history: [],
             page: 0
-            
         }
     },
-    methods:{
-        status(code){
-            switch(code){
+    methods: {
+        status(code) {
+            switch (code) {
                 case 0:
                     return "fa fa-times-circle-o";
                 case 1:
@@ -50,7 +54,42 @@ export default {
 </script>
 
 <style scoped>
-.inner{
+.inner {
     height: 500px;
+}
+
+.invoice {
+    padding: 10px;
+    display: flex;
+}
+
+.invoice:nth-child(odd) {
+    background: #fff;
+}
+
+.invoice:nth-child(even) {
+    background: #ECEFF1;
+}
+
+.invoice i {
+    width: 25px;
+    text-align: center;
+}
+
+.ticket {
+    width: 40px;
+}
+
+.type {
+    min-width: 50px;
+}
+
+.price {
+    padding: 0 10px;
+    text-align: right;
+}
+
+.f1 {
+    padding: 0 15px;
 }
 </style>
