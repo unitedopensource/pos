@@ -145,7 +145,9 @@ export default {
       console.log('data:attachment/csv,' + csvFile);
     },
     calculator(data) {
-      if (data.length === 0) return;
+      console.log(data)
+      let { order, giftCard } = data;
+      if (order.length === 0) return;
 
       let total = 0, totalSum = 0, totalTip = 0, totalGratuity = 0,
         walkin = 0, walkinSum = 0, walkinTip = 0, walkinGratuity = 0,
@@ -161,11 +163,11 @@ export default {
         counter = {},
         driver = {},
 
-        length = data.length;
+        length = order.length;
 
       for (let i = 0; i < length; i++) {
-        let invoice = data[i];
-        if (data[i].status === 1) {
+        let invoice = order[i];
+        if (order[i].status === 1) {
           if (invoice.payment) {
             total++;
             totalSum += (invoice.payment.total - invoice.payment.discount);
@@ -346,6 +348,7 @@ export default {
             ]
           };
         case "detail":
+          let giftSummary = this.calculateGiftCard(giftCard);
           return {
             summary: [
               {
@@ -387,6 +390,17 @@ export default {
                 gratuity: totalGratuity
               }
             ],
+            giftCard:[
+              {
+                text:this.text('GIFT_CARD_SALES'),
+                count:giftSummary.count,
+                amount:giftSummary.creditAmount
+              },{
+                text:this.text("GIFT_CARD_DEBET"),
+                count:giftSummary.debetCount,
+                amount:-giftSummary.debetAmount
+              }
+            ],
             top: Object.values(counter).sort((a, b) => a.count > b.count ? -1 : 1).slice(0, 10)
           };
         case "full":
@@ -404,7 +418,32 @@ export default {
         voided, voidedSum,
         cash, credit, gift,
         driver, corrupted
+      }
+    },
+    calculateGiftCard(data) {
+      let date = today();
+      let giftCard = {
+        count: 0,
+        creditAmount: 0,
+        debetCount:0,
+        debetAmount: 0
       };
+      let datas = [].concat.apply([], data.map(gc => gc.activity))
+        .filter(trans => trans.date === date)
+        .forEach(trans => {
+          switch (trans.type) {
+            case "ACTIVATION":
+              giftCard.count++;
+              giftCard.creditAmount += parseFloat(trans.amount);
+              break;
+            case "DEBET":
+            case "CASHOUT":
+              giftCard.debetCount++;
+              giftCard.debetAmount += parseFloat(trans.amount);
+              break;
+          }
+        });
+      return giftCard;
     }
   },
   computed: {
@@ -412,6 +451,7 @@ export default {
   },
   sockets: {
     REPORT_RESULTS(data) {
+      console.log(data);
       this.getReport(data);
     }
   },

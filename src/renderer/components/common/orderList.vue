@@ -105,7 +105,7 @@
                 </div>
             </div>
         </div>
-        <div class="driver btn" v-if="order.type ==='DELIVERY'" @click="setDriver">{{text('SET_DRIVER')}}</div>
+        <div class="driver btn" v-if="order.type ==='DELIVERY' && $route.name ==='History'" @click="setDriver">{{text('SET_DRIVER')}}</div>
         <div :is="component" :init="componentData" @trigger="update"></div>
     </div>
 </template>

@@ -84,7 +84,7 @@ export default {
       let max = this.content.max;
       let length = this.selected.length;
       let options = [];
-      (max > 0 ) && this.selected.splice(0, max);
+      (max > 0 ) && (this.selected = this.selected.slice(0, max));
       this.selected.forEach(index => {
         let item = Object.assign({},this.content.contain[index]);
         options.push(item);
@@ -92,7 +92,6 @@ export default {
       if(this.content.hasOwnProperty('addition') && isNumber(this.content.addition)){
         let p = this.content.startAt - 1;
         options = options.map((item,index)=>{
-          console.log(item.price)
           index >= p && (item.price = parseFloat(item.price) + parseFloat(this.content.addition));
           return item
         })

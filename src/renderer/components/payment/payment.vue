@@ -581,10 +581,7 @@ export default {
                     op: this.op.name
                 };
                 Printer.init(this.config).openCashDrawer();
-                this.$dialog({
-                    title: this.text('WITHDRAW', money.toFixed(2)),
-                    msg: "TIP_WITHDRAW"
-                }).then(() => {
+                this.$dialog({ title: this.text('WITHDRAW', money.toFixed(2)), msg: "TIP_WITHDRAW" }).then(() => {
                     this.$socket.emit("[GIFTCARD] CARD_ADJUST_VALUE", {
                         _id: this.giftCard._id,
                         value, activity
@@ -606,7 +603,7 @@ export default {
                 let title = "INIT_AMOUNT";
                 this.componentData = { title, resolve, reject };
                 this.component = "Inputter";
-            }).then(initialAmount => {
+            }).then((initialAmount) => {
                 let card = Preset.giftCard(number, initialAmount, this.op.name);
                 if (this.customer._id) {
                     card = Object.assign(card, {

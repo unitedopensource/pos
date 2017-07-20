@@ -81,7 +81,7 @@ export default {
         autoOpen: false,
         parser: serialport.parsers.raw
       });
-      window.telephone = telephone;
+      //window.telephone = telephone;
       telephone.open(err => { err ? this.setDevice({ callid: false }) : telephone.write(this.station.callid.command + String.fromCharCode(13)) });
       telephone.on('data', (data) => {
         let raw = data.toString().split('\n');

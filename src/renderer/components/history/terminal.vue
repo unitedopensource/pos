@@ -66,7 +66,7 @@ export default {
   props: ['init'],
   created() {
     this.$socket.emit("[TERM] GET_ALL_TRANSACTION", this.today);
-    this.initTerminal();
+    this.station.terminal.enable ? this.initTerminal() : this.missTerminal();
   },
   data() {
     return {
@@ -87,7 +87,7 @@ export default {
       let file = terminal.model;
       this.msg = this.text('TERM_INIT', terminal.model);
       this.terminal = require('../payment/parser/' + file);
-      this.terminal.initial(terminal.address, terminal.port).then(response => response.text()).then(device => {
+      this.terminal.initial(terminal.address, terminal.port).then(response => response.text()).then((device) => {
         this.device = this.terminal.check(device);
         this.device.code !== '000000' && this.noBatch();
       })
@@ -99,20 +99,12 @@ export default {
       this.$dialog({
         title: "TERM_VOID_SALE",
         msg: this.text("TIP_TERM_VOID_SALE", record.trace.trans),
-        buttons: [{
-          text: 'CANCEL',
-          fn: 'reject'
-        }, {
-          text: 'CONFIRM&PRINT',
-          fn: 'resolve'
-        }]
-      }).then(print => {
+        buttons: [{ text: 'CANCEL', fn: 'reject' }, { text: 'CONFIRM&PRINT', fn: 'resolve' }]
+      }).then((print) => {
         let invoice = record.order.number;
         let trans = record.trace.trans;
         this.terminal.voidSale(invoice, trans)
-          .then(response => {
-            return response.text();
-          }).then(response => {
+          .then((response) => response.text()).then((response) => {
             let transaction = this.terminal.explainTransaction(response);
             record = Object.assign(record, transaction, { status: 0 });
             this.$socket.emit("[TERM] UPDATE_TRANSACTION", record);
@@ -128,27 +120,22 @@ export default {
             this.$socket.emit("ORDER_MODIFIED", order);
           });
         this.$exitComponent();
-      }).catch(() => {
-        this.$exitComponent();
-      })
+      }).catch(() => { this.$exitComponent() })
     },
     adjustTip(record) {
       new Promise((resolve, reject) => {
         let title = "ADJUST_TIP";
         this.componentData = { title, resolve, reject };
         this.component = "Inputter";
-      }).then(value => {
+      }).then((value) => {
         this.$exitComponent();
         value = isNumber(value) ? value : 0;
         let total = parseFloat(record.amount.approve) + value;
-        this.$dialog({
-          title: 'TERM_CONFIRM_ADJUST',
-          msg: this.text('TIP_TERM_ADJUST_TIP', value.toFixed(2), total.toFixed(2))
-        }).then(() => {
+        this.$dialog({ title: 'TERM_CONFIRM_ADJUST', msg: this.text('TIP_TERM_ADJUST_TIP', value.toFixed(2), total.toFixed(2)) }).then(() => {
           let amount = Math.round(value * 100);
           let invoice = record.order.number;
           let trans = record.trace.trans;
-          this.terminal.adjust(invoice, trans, amount).then(response => response.text()).then(response => {
+          this.terminal.adjust(invoice, trans, amount).then(response => response.text()).then((response) => {
             record.status = 2;
             record.amount.tip = (value).toFixed(2);
             this.$exitComponent();
@@ -253,8 +240,7 @@ export default {
     batch() {
       this.checksum();
       this.$dialog({
-        title: "TERM_BATCH_CLOSE",
-        msg: "TIP_TERM_BATCH_CLOSE",
+        title: "TERM_BATCH_CLOSE", msg: "TIP_TERM_BATCH_CLOSE",
         buttons: [{ text: "CANCEL", fn: 'reject' }, { text: 'BATCH', fn: 'resolve' }]
       }).then(() => {
         this.terminal.batch().then(response => {
@@ -274,8 +260,7 @@ export default {
             this.$exitComponent();
           } else {
             this.$dialog({
-              type: 'warning',
-              title: result.msg,
+              type: 'warning', title: result.msg,
               msg: this.text('ERROR_CODE', result.code)
             }).then(() => { this.$exitComponent() })
           }
@@ -283,13 +268,14 @@ export default {
       }).catch(() => { this.$exitComponent() })
     },
     noBatch() {
-      this.$dialog({
-        type: 'warning',
-        title: 'TERM_NA',
-        msg: 'TERM_BATCH_DISABLE'
-      }).then(() => {
+      this.$dialog({ type: 'warning', title: 'TERM_NA', msg: 'TERM_BATCH_DISABLE' }).then(() => {
         this.device = null;
         this.$exitComponent();
+      })
+    },
+    missTerminal() {
+      this.$dialog({ type: 'warning', title: 'TERM_NA', msg: 'STA_TERM_NA', buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(()=>{
+        this.init.resolve();
       })
     },
     setFilter(type, e) {
@@ -402,7 +388,7 @@ export default {
   flex: 1;
   display: flex;
   align-items: center;
-  padding:0 10px;
+  padding: 0 10px;
 }
 
 .pagination .page {

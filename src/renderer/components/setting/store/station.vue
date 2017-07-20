@@ -93,20 +93,7 @@ import editor from './uiEditor'
 export default {
     components: { smartInput, smartRange, smartSwitch, smartOption, redirector, editor },
     created() {
-        this.workStation = Object.assign({}, {
-            pole: {
-                enable: false,
-                port: 'COM4'
-            },
-            scale: {
-                enable: false,
-                port: 'COM1'
-            },
-            callid: {
-                enable: false,
-                port: 'COM3'
-            }
-        }, this.station);
+        this.workStation = JSON.parse(JSON.stringify(this.station));
         this.printers = Object.keys(this.config.printer);
     },
     data() {
@@ -115,9 +102,9 @@ export default {
             component: null,
             componentData: null,
             workStation: null,
-            devices: ['S80', 'S300','NX2200'],
+            devices: ['S80', 'S300', 'NX2200'],
             ports: ['COM1', 'COM2', 'COM3', 'COM4', 'COM5', 'COM6', 'COM7', 'COM8', 'COM9'],
-            commands:['AT#CID=1','AT+VCID=1','AT%CCID=1'],
+            commands: ['AT#CID=1', 'AT+VCID=1', 'AT%CCID=1'],
             printers: []
         }
     },

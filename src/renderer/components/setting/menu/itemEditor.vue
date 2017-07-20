@@ -154,7 +154,8 @@ export default {
             value: key,
             label: this.tax.class[key].alies + " - " + this.tax.class[key].rate + " %"
         }));
-        this.templateOption = this.templates.map(template => template.template)
+        this.templateOption = this.templates.map(template => template.template);
+        this.templateOption.unshift("");
     },
     mounted() {
         let item = Object.assign({}, this.init.item);
