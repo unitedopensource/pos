@@ -10,10 +10,9 @@
           <header>
             <span class="active" @click="setFilter('station',$event)">{{text('STATION_RECORDS')}}</span>
             <span @click="setFilter('all',$event)">{{text('ALL_RECORDS')}}</span>
-            <!--<i class="fa fa-sort-amount-desc"></i>-->
           </header>
           <ul class="content">
-            <li v-for="info in transaction" :class="{settled:info.status === 3}">
+            <li v-for="(info,index) in transaction" :class="{settled:info.status === 3}" :key="index">
               <i class="fa fa-exclamation-triangle chargeBack" v-if="(info.status === 1 || info.status === 2) && info.account.entry !== 'Chip'" :title="text('TIP_CHARGE_BACK')"></i>
               <i :class="getIcon(info.status)" class="status"></i>
               <span class="num">#{{info.trace.trans}}</span>
@@ -38,8 +37,14 @@
         </section>
       </div>
       <footer>
-        <span class="lastBatch">()</span>
         <div class="pagination">
+          <div class="page" @click="page = page > 0 ? page - 1 : 0">
+            <i class="fa fa-angle-left"></i>
+          </div>
+          <div class="page" v-for="i in totalPage" @click="page = (i-1)" :key="i" :class="{active:page === (i-1)}">{{i}}</div>
+          <div class="page" @click="page = page === (totalPage-1) ? page : page + 1">
+            <i class="fa fa-angle-right"></i>
+          </div>
         </div>
         <div>
           <button class="btn" @click="batch" :disabled="!device">{{text('BATCH')}}</button>
@@ -337,8 +342,8 @@ export default {
   },
   computed: {
     transaction() {
-      let min = this.page * 20;
-      let max = min + 20;
+      let min = this.page * 13;
+      let max = min + 13;
       switch (this.filter) {
         case "all":
           return this.allTransaction.slice(min, max);
@@ -346,6 +351,10 @@ export default {
           let sn = this.station.terminal.sn;
           return this.allTransaction.filter(trans => trans.addition.SN === sn).slice(min, max);
       }
+    },
+    totalPage() {
+      let length = this.allTransaction.length;
+      return Math.ceil(length / 13)
     },
     ...mapGetters(['config', 'language', 'history', 'station'])
   },
@@ -364,7 +373,7 @@ export default {
 .terminal {
   width: 850px;
   background: #E0E2E5;
-  font-size:initial;
+  font-size: initial;
 }
 
 .lastBatch {
@@ -391,6 +400,29 @@ export default {
 
 .pagination {
   flex: 1;
+  display: flex;
+  align-items: center;
+  padding:0 10px;
+}
+
+.pagination .page {
+  margin: 5px 5px 10px;
+  width: 20px;
+  text-align: center;
+  cursor: pointer;
+  padding: 10px 10px;
+  border-radius: 4px;
+  text-shadow: 0 1px 1px #fff;
+  background: linear-gradient(#fefefe, #cfd0d3);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .7);
+}
+
+.page.active {
+  font-weight: bold;
+  background: #676767;
+  color: #fff;
+  text-shadow: 0 1px 1px #000;
+  box-shadow: rgba(0, 0, 0, 0.75) 0 0 0 0 inset;
 }
 
 .btn {
