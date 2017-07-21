@@ -32,7 +32,6 @@ export default {
   },
   mounted() {
     this.$socket.emit("INQUIRY_TICKET_NUMBER");
-    CLODOP.webskt.onclose = function (e) { };
     if (!this.station) {
       this.activateStation();
     } else {
@@ -64,11 +63,9 @@ export default {
           this.$router.push({ path: '/main/info' });
           break;
         case "table":
-          if (this.store.table.layout) {
-            this.$router.push({ path: '/main/table' });
-          } else {
-            this.$dialog({ title: "DINE_IN_DISABLED", msg: "TIP_DINE_IN_ENABLE" }).then(() => { this.$exitComponent() })
-          }
+          this.store.table.layout ?
+            this.$router.push({ path: '/main/table' }) :
+            this.$dialog({ title: "DINE_IN_DISABLED", msg: "TIP_DINE_IN_ENABLE" }).then(() => { this.$exitComponent() });
           break;
         case "history":
           this.$router.push({ path: '/main/history' });
@@ -79,11 +76,9 @@ export default {
             this.$denyAccess();
           break;
         case "cashDrawer":
-          if (!this.approval(this.op.access, "cashdrawer")) {
+          this.approval(this.op.access, "cashdrawer") ?
+            Printer.init(this.config).openCashDrawer() :
             this.$denyAccess();
-            return;
-          }
-          Printer.init(this.config).openCashDrawer();
           break;
         case "lock":
           this.resetDashboard();

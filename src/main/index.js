@@ -68,24 +68,22 @@ let singleInstance = app.makeSingleInstance((command, working) => {
   }
 });
 
-singleInstance && app.quit();
+singleInstance && app.quit(0);
 
 app.on('ready', createWindow)
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
-    app.quit()
+    app.quit(0)
   }
 })
 
 app.on('activate', () => {
-  if (mainWindow === null) {
-    createWindow()
-  }
+  mainWindow === null && createWindow() 
 })
 
 ipcMain.on("Exit", () => {
-  app.quit()
+  app.quit(0)
 });
 
 ipcMain.on("Loading", (e, txt) => {
@@ -99,12 +97,16 @@ ipcMain.on("Initialized", () => {
   mainWindow.center();
 });
 
+ipcMain.on("Exit",()=>{
+  app.quit(0)
+})
+
 ipcMain.on("Relaunch", () => {
-  app.relaunch({ args: process.argv.slice(1).concat(['--relaunch']) })
+  app.relaunch({ args: process.argv.slice(1).concat(['--relaunch']) });
   app.exit(0)
 });
 
-ipcMain.on("SHUTDOWN", () => {
+ipcMain.on("Shutdown", () => {
   const exec = require('child_process').exec;
   exec('shutdown -s -f -t 0');
 });

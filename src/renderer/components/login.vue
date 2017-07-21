@@ -21,9 +21,27 @@
           <div @click="login">√</div>
         </section>
       </div>
-      <div @click="shutdown" class="shutdown">
-        <i class="fa fa fa-times-circle"></i>
-        {{text('SHUTDOWN')}}
+      <div class="ctrl">
+        <input type="checkbox" v-model="toggleMenu" id="menu">
+        <label for="menu">
+          <i class="fa fa-bars"></i>
+        </label>
+        <transition name="menu">
+          <ul v-show="toggleMenu">
+            <li @click="shutdown">
+              <i class="fa fa-desktop"></i>
+              <span>{{text('SHUTDOWN')}}</span>
+            </li>
+            <li @click="restart">
+              <i class="fa fa-retweet"></i>
+              <span>{{text('RESTART_APP')}}</span>
+            </li>
+            <li @click="exit">
+              <i class="fa fa-window-close-o"></i>
+              <span>{{text('EXIT')}}</span>
+            </li>
+          </ul>
+        </transition>
       </div>
     </div>
   </transition>
@@ -40,6 +58,7 @@ export default {
       reset: false,
       component: null,
       componentData: null,
+      toggleMenu: false,
     }
   },
   mounted() {
@@ -70,7 +89,13 @@ export default {
       }
     }, 500),
     shutdown() {
-      Electron.ipcRenderer.send("SHUTDOWN");
+      Electron.ipcRenderer.send("Shutdown");
+    },
+    restart() {
+      Electron.ipcRenderer.send("Relaunch");
+    },
+    exit() {
+      Electron.ipcRenderer.send("Exit");
     },
     ...mapActions(['setPin', 'delPin', 'setOp', 'setApp'])
   },
@@ -80,7 +105,7 @@ export default {
   sockets: {
     LOGIN_AUTH(result) {
       if (result.auth) {
-        document.querySelector(".shutdown").classList.add("hide");
+        document.querySelector(".ctrl").classList.add("hide");
         let language = result.op[0].language || "usEN";
         moment.locale(language === 'usEN' ? 'en' : 'zh-cn');
         this.$setLanguage(language);
@@ -116,6 +141,19 @@ export default {
 .fade-enter,
 .fade-leave {
   opacity: 0;
+}
+
+.menu-enter-active,
+.menu-leave-active {
+  opacity: 1;
+  transform: translate3d(0,0,0);
+  transition: all .3s ease;
+}
+
+.menu-enter,
+.menu-leave {
+  opacity: 0;
+  transform: translate3d(0,-3px,0);
 }
 
 .login {
@@ -163,20 +201,66 @@ section div:nth-child(3n+3) {
   margin-right: 0;
 }
 
-.shutdown {
+.ctrl {
   position: fixed;
   bottom: 35px;
-  right: 35px;
+  right: 55px;
   text-align: center;
+  width: 60px;
+}
+
+.ctrl label {
   background: #fff;
   color: #274a5a;
-  padding: 10px 15px;
-  border-radius: 24px;
+  padding: 10px 20px;
+  border-radius: 10px;
   cursor: pointer;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.75);
 }
 
-.shutdown.hide {
+.ctrl.hide {
   display: none;
+}
+
+.ctrl input {
+  display: none;
+}
+
+.ctrl ul {
+  position: absolute;
+  bottom: 42px;
+  left: -34px;
+  background: #fff;
+  padding: 0px 10px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+  border-radius: 6px;
+}
+
+.ctrl ul:after {
+  content: ' ';
+  position: absolute;
+  left: 52px;
+  bottom: -9px;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 10px 10px 0 10px;
+  border-color: #fff transparent transparent transparent;
+}
+
+.ctrl li {
+  display: flex;
+  min-width: 100px;
+  padding: 15px 0;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+}
+
+.ctrl li:last-child {
+  border: none;
+}
+
+.ctrl li i {
+  width: 30px;
 }
 </style>
