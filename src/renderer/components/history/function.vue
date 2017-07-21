@@ -53,11 +53,11 @@ import { mapGetters, mapActions } from 'vuex'
 import Terminal from './terminal'
 import Dialoger from '../common/dialoger'
 import Payment from '../payment/payment'
-import Reason from './reason'
+import Report from '../report/report'
 import Calendar from './calendar'
-import Report from './report'
-import Search from './search'
 import Printer from '../../print'
+import Reason from './reason'
+import Search from './search'
 export default {
     props: ['date'],
     data() {

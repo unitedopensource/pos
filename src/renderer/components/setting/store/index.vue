@@ -55,7 +55,7 @@
                 <span class="tip"></span>
             </header>
             <article>
-                <smart-input v-model="store.timeZone" label="AREA"></smart-input>
+                <smart-option v-model="store.timeZone" :options="timezones" label="AREA"></smart-option>
             </article>
         </section>
     </div>
@@ -65,15 +65,17 @@
 import { mapGetters, mapActions } from 'vuex'
 import smartInput from '../common/smartInput'
 import smartSwitch from '../common/smartSwitch'
+import smartOption from '../common/smartOption'
 export default {
-    components: { smartInput, smartSwitch },
+    components: { smartInput, smartSwitch,smartOption },
     created() {
         this.store = Object.assign({}, this.config.store)
     },
     data() {
         return {
             store: null,
-            change: false
+            change: false,
+            timezones:['America/New_York','America/Chicago','America/Denver','America/Phoenix','America/Los_Angeles','America/Anchorage','America/Adak','Pacific/Honolulu']
         }
     },
     computed: {

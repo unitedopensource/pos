@@ -1,0 +1,340 @@
+<template>
+    <div class="window">
+        <header class="title">{{text('CALENDAR')}}</header>
+        <header class="tab">
+            <div>
+                <input type="radio" v-model="tab" id="calendar" value="calendar">
+                <label for="calendar">
+                    <i class="fa fa-2x fa-calendar"></i>
+                </label>
+            </div>
+            <div>
+                <input type="radio" v-model="tab" id="timer" value="timer">
+                <label for="timer">
+                    <i class="fa fa-2x fa-clock-o"></i>
+                </label>
+            </div>
+        </header>
+        <main>
+            <div v-if="tab ==='calendar'" class="calendar">
+                <div class="selector">
+                    <i class="fa fa-chevron-left" @click="prev"></i>
+                    <span>{{calendarDay | moment('YYYY-MM-DD')}}</span>
+                    <i class="fa fa-chevron-right" @click="next"></i>
+                </div>
+                <header>
+                    <span>{{text('MON')}}</span>
+                    <span>{{text('TUE')}}</span>
+                    <span>{{text('WEN')}}</span>
+                    <span>{{text('THU')}}</span>
+                    <span>{{text('FRI')}}</span>
+                    <span>{{text('SAT')}}</span>
+                    <span>{{text('SUN')}}</span>
+                </header>
+                <div class="dayWrap">
+                    <div class="day" v-for="(calendar,index) in days" :class="{current:calendar.current,selected:selected.includes(calendar.date)}" :data-day="calendar.day" :key="index" @click="setDay(calendar.date)">{{calendar.day}}</div>
+                </div>
+            </div>
+            <div v-else class="timer">
+                <div class="time">
+                    <div class="picker">
+                        <h5>{{text('FROM')}}</h5>
+                        <div class="inner">
+                            <div v-for="(n,i) in clock" :key="i">
+                                <input type="radio" v-model="from" :id="'from'+i" :value="n">
+                                <label :for="'from'+i">{{n}}</label>
+                            </div>
+                            <div @click="fromPeriod = !fromPeriod">
+                                <label v-show="fromPeriod" class="am">AM</label>
+                                <label v-show="!fromPeriod" class="pm">PM</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="picker">
+                        <h5>{{text('TO')}}</h5>
+                        <div class="inner">
+                            <div v-for="(n,i) in clock" :key="i">
+                                <input type="radio" v-model="to" :id="'to'+i" :value="n">
+                                <label :for="'to'+i">{{n}}</label>
+                            </div>
+                            <div @click="toPeriod = !toPeriod">
+                                <label v-show="toPeriod" class="am">AM</label>
+                                <label v-show="!toPeriod" class="pm">PM</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="option">
+                    <checkbox v-model="allDay" label="ALL_DAY" @change="toggleTime"></checkbox>
+                </div>
+            </div>
+        </main>
+        <footer>
+            <div class="btn f1" @click="init.reject">{{text('CANCEL')}}</div>
+            <div class="btn f1" @click="confirm">{{text('CONFIRM')}}</div>
+        </footer>
+    </div>
+</template>
+
+<script>
+import moment from 'moment'
+import checkbox from '../setting/common/checkbox'
+export default {
+    props: ['init'],
+    components: { checkbox },
+    data() {
+        return {
+            date: null,
+            days: [],
+            to: null,
+            from: null,
+            toPeriod: false,
+            fromPeriod: true,
+            allDay: true,
+            tab: 'calendar',
+            today: +new Date,
+            calendarDay: +new Date,
+            selected: [],
+            clock: [12, 1, 2, 3, 4, 5, 7, 8, 9, 10, 11]
+        }
+    },
+    created() {
+        this.generateCalendar();
+    },
+    methods: {
+        setDay(date) {
+            let index = this.selected.indexOf(date);
+            index === -1 ? this.selected.push(date) : this.selected.splice(index, 1);
+        },
+        prev() {
+            this.calendarDay = +moment(this.calendarDay).subtract(1, 'M').format('x');
+            this.generateCalendar();
+        },
+        next() {
+            this.calendarDay = +moment(this.calendarDay).add(1, 'M').format('x');
+            this.generateCalendar();
+        },
+        toggleTime() {
+        },
+        generateCalendar() {
+            let time = this.calendarDay;
+            let isCurrentMonth = moment(this.today).format("YYYY-MM-DD") === moment(time).format('YYYY-MM-DD');
+            let days = moment(time).daysInMonth();
+            let start = +moment(time).startOf('month').format('d');
+            start = start === 0 ? 6 : start - 1;
+            let lastMonthDay = +moment(time).subtract(1, 'M').endOf('month').format('D') - start;
+            let calendar = [];
+            let date = moment(time).subtract(1, 'M').format('YYYY-MM-');
+            for (let i = 1; i <= start; i++) {
+                calendar.push({
+                    current: false,
+                    day: lastMonthDay + i,
+                    date: date + ("0" + (lastMonthDay + i)).slice(-2)
+                })
+            }
+            date = moment(time).format('YYYY-MM-');
+            for (let i = 0; i < days; i++) {
+                calendar.push({
+                    current: true,
+                    day: i + 1,
+                    date: date + ("0" + (i + 1)).slice(-2)
+                });
+            }
+            date = moment(time).add(1, 'M').format('YYYY-MM-');
+            for (let i = 1; calendar.length < 42; i++) {
+                calendar.push({
+                    current: false,
+                    day: i,
+                    date: date + ("0" + i).slice(-2)
+                })
+            }
+            this.days = calendar;
+
+            this.$nextTick(() => {
+                let dom = document.querySelector('.currentMonth');
+                dom && dom.classList.remove('currentMonth');
+                dom = document.querySelector('.day.today');
+                dom && dom.classList.remove('today');
+                if (isCurrentMonth) {
+                    document.querySelector('.dayWrap').classList.add("currentMonth");
+                    let today = moment().format('D') - 1;
+                    today = document.querySelectorAll('[data-day]')[(start + today)];
+                    today.classList.add("today");
+                }
+            })
+        },
+        confirm() {
+            this.checkTime() && this.ini.resolve(this.date);
+        },
+        checkTime() {
+
+        }
+    }
+}
+</script>
+
+<style scoped>
+.window {
+    width: 500px;
+    background: #fff;
+    display: flex;
+    flex-direction: column
+}
+
+header.tab {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.tab>div {
+    flex: 1;
+}
+
+.tab input {
+    display: none;
+}
+
+main {
+    flex: 1;
+    background: #FAFAFA;
+}
+
+.tab label {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
+    color: #E0E0E0;
+    border-bottom: 2px solid #FAFAFA;
+    cursor: pointer;
+}
+
+.tab input:checked+label {
+    border-bottom: 2px solid #2196F3;
+    background: #fff;
+}
+
+.tab input:checked+label i {
+    color: #42A5F5;
+}
+
+.calendar header {
+    display: flex;
+    border-bottom: 1px solid #ddd;
+    background: #fff;
+}
+
+.calendar header span {
+    flex: 1;
+    text-align: center;
+    padding: 5px 0;
+}
+
+.dayWrap {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.day {
+    width: 71.4px;
+    text-align: center;
+    padding: 19.7px 0;
+    color: lightgray;
+    font-weight: lighter;
+}
+
+.current.day {
+    color: #333;
+    background: #EEEEEE;
+    font-weight: bold;
+}
+
+div.current.today {
+    color: #009688;
+}
+
+.selector {
+    display: flex;
+    justify-content: center;
+    background: #607D8B;
+    color: #fff;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+}
+
+.selector i {
+    flex: 1;
+    text-align: center;
+    cursor: pointer;
+    padding: 12px;
+}
+
+div.day.current.selected {
+    background: #009688;
+    color: #fff;
+}
+
+.time {
+    margin: 10px auto;
+    display: flex;
+}
+
+.time input {
+    display: none;
+}
+
+.time .picker {
+    flex: 1;
+    padding: 0 10px;
+}
+
+.time h5 {
+    text-align: center;
+    margin-bottom: 10px;
+    color: #FF5722;
+}
+
+.timer .option {
+    border: 1px dashed #ddd;
+    padding: 10px 15px 5px;
+    width: 200px;
+    text-align: center;
+    margin: 10px auto;
+}
+
+.time label {
+    width: 25px;
+    display: block;
+    padding: 23px;
+    background: #fff;
+    margin: 2px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.picker .inner {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.picker .inner div {
+    text-align: center;
+}
+
+.picker input:checked+label {
+    background: #009688;
+    color: #fff;
+}
+
+label.am {
+    background: #FF9800;
+    color: #fff;
+}
+
+label.pm {
+    background: #FF5722;
+    color: #fff;
+}
+</style>
