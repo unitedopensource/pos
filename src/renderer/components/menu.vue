@@ -334,8 +334,6 @@ export default {
                     return item;
                 });
             }
-            console.log(this.payment);
-
             if (order._id) {
                 this.$socket.emit("ORDER_MODIFIED", order)
             } else {

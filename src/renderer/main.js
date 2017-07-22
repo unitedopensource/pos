@@ -138,7 +138,7 @@ window.line = function (line1, line2) {
       return (' '.repeat(i) + data + ' '.repeat(i + 10)).slice(0, 20);
     } else {
       let string = data[0];
-      let amount = "$ " + data[1];
+      let amount = isNumber(data[1]) ? data[1] > 0 ? '$ ' + data[1] : '-$ ' + data[1] : data[1];
       let i = 20 - (string + amount).length;
       i < 0 && (i = 0);
       return (string + ' '.repeat(i) + amount).slice(0, 20);

@@ -63,9 +63,6 @@
 import {mapGetters} from 'vuex'
 export default {
   props:['init'],
-  created(){
-    console.log(this.init)
-  },
   data(){
     return{
       target:"single",

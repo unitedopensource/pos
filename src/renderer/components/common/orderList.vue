@@ -356,8 +356,6 @@ export default {
 
             total = subtotal + tax + this.payment.tip + this.payment.gratuity + this.payment.delivery;
             let due = total - this.payment.discount;
-            console.log(due)
-
             this.payment.subtotal = subtotal;
             this.payment.tax = tax.round(2);
             this.payment.total = total.round(2);
