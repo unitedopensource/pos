@@ -97,8 +97,8 @@ export default {
             tab: 'calendar',
             today: +new Date,
             calendarDay: +new Date,
-            component:null,
-            componentData:null,
+            component: null,
+            componentData: null,
             selected: [],
             clock: [12, 1, 2, 3, 4, 5, 7, 8, 9, 10, 11]
         }
@@ -184,7 +184,7 @@ export default {
                 to = this.range.to + " 03:59:59 am"
             }
             from = +moment(from, "YYYY-MM-DD hh:mm:ss a");
-            to = +moment(to, "YYYY-MM-DD hh:mm:ss a");
+            to = (this.selected.length === 1 && this.from && this.to) ? +moment(to, "YYYY-MM-DD hh:mm:ss").add(1, 'days') : +moment(to, "YYYY-MM-DD hh:mm:ss a");
             this.date = { from, to };
             return from < to;
         }

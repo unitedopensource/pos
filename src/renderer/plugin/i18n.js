@@ -189,6 +189,7 @@
               'HISTORY': '历史记录',
               'HOST_CONNECTED': '伺服器连接成功...',
               'INVALID_DATE':'时间日期错误',
+              'INVALID_DATE_TIP':'请检查您输入的时间，后者不可比前者早',
               'ICON': '图标',
               'INCOMING_CALL': '来电',
               'IMPOLITE': '没礼貌',
