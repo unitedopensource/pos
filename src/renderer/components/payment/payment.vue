@@ -166,7 +166,8 @@ export default {
     props: ['init'],
     created() {
         this.payment = JSON.parse(JSON.stringify(this.init.payment));
-        this.payment.balance = Math.max(0, this.payment.due - this.payment.paid);
+        this.payment.balance = Math.max(0, (this.payment.due - this.payment.paid));
+        console.log(this.payment)
         this.generateQuickInput(this.payment.balance);
     },
     mounted() {
@@ -291,7 +292,7 @@ export default {
                         let number = this.giftCard.number.replace(/[^0-9]/g, '').slice(0, 16).replace(/(.{4})(.{4})(.{4})(.{4})/g, '$1 $2 $3 $4');
                         this.giftCard.number = number;
                     } else {
-                        let value = (this.paid * 100).toFixed(0).toString() + num;
+                        let value = (this.paid * 100).toFixed(0) + num;
                         this.reset ?
                             this.paid = (num / 100).toFixed(2) :
                             this.paid = (value / 100).toFixed(2);
@@ -303,7 +304,7 @@ export default {
         },
         delCash() {
             if (this.pointer === "paid") {
-                let value = (this.paid * 100).round(2).toString().slice(0, -1);
+                let value = (this.paid * 100).toFixed(2).slice(0, -1);
                 this.paid = (value / 100).toFixed(2);
             } else {
                 let value = String(this.evenPay).slice(0, -1);
@@ -357,7 +358,7 @@ export default {
                 paid: this.paid,
                 change, balance
             });
-            if (this.payment.due !== 0) {
+            if (parseFloat(this.payment.balance) > 0) {
                 this.paid = "0.00";
                 this.reset = true;
                 this.generateQuickInput(this.payment.due);
@@ -367,14 +368,8 @@ export default {
                 this.poleDisplay(["Paid CASH", this.paid], ["Change Due:", change]);
                 this.$dialog({
                     title: this.text("CHANGE", change),
-                    msg: this.text("CUST_PAID", this.paid),
-                    buttons: [{
-                        text: "CONFIRM",
-                        fn: 'reject'
-                    }, {
-                        text: 'PRINT_RECEIPT',
-                        fn: 'resolve'
-                    }]
+                    msg: this.text("CUST_PAID", this.paid.toFixed(2)),
+                    buttons: [{ text: "CONFIRM", fn: 'reject' }, { text: 'PRINT_RECEIPT', fn: 'resolve' }]
                 }).then(() => {
                     this.payment.settled = true;
                     this.summarize({ print: true });
@@ -395,7 +390,7 @@ export default {
                 this.component = "CreditCard"
             }).then((transaction) => {
                 this.$exitComponent();
-                this.payment.balance = (parseFloat(this.payment.due) - parseFloat(transaction.amount.approve)).round(2);
+                this.payment.balance = (parseFloat(this.payment.due) - parseFloat(transaction.amount.approve)).toFixed(2);
                 this.payment.balance = Math.max(0, this.payment.balance);
                 this.payment.log.push({
                     type: "CREDIT",
@@ -412,7 +407,7 @@ export default {
                 }
                 this.$socket.emit("[TERM] SAVE_TRANSACTION", transaction);
                 Printer.init(this.config).setJob("creditCard").print(transaction);
-                if (parseFloat(this.payment.due) === 0) {
+                if (parseFloat(this.payment.balance) === 0) {
                     this.poleDisplay("Paid Credit Card", "Thank You");
                     this.payment.settled = true;
                     this.summarize({ print: true, transaction });
@@ -436,7 +431,7 @@ export default {
             if (parseFloat(this.paid) === 0) return;
             if (this.giftCard.balance > this.paid) {
                 this.poleDisplay("PAID by Gift Card", "Thank You");
-                let balance = Math.max(0, (this.payment.due - this.paid)).round(2);
+                let balance = Math.max(0, (this.payment.due - this.paid)).toFixed(2);
                 this.payment.log.push({
                     type: "GIFT",
                     paid: this.paid,
@@ -579,8 +574,7 @@ export default {
         cashOut() {
             if (parseFloat(this.giftCard.balance) === 0) return;
             this.$dialog({
-                type: "question",
-                title: "CASH_OUT",
+                type: "question", title: "CASH_OUT",
                 msg: this.text("TIP_CASH_OUT", this.giftCard.balance.toFixed(2))
             }).then(() => {
                 let money = this.giftCard.balance;
@@ -595,10 +589,7 @@ export default {
                 };
                 Printer.init(this.config).openCashDrawer();
                 this.$dialog({ title: this.text('WITHDRAW', money.toFixed(2)), msg: "TIP_WITHDRAW" }).then(() => {
-                    this.$socket.emit("[GIFTCARD] CARD_ADJUST_VALUE", {
-                        _id: this.giftCard._id,
-                        value, activity
-                    });
+                    this.$socket.emit("[GIFTCARD] CARD_ADJUST_VALUE", { _id: this.giftCard._id, value, activity });
                     this.giftCard.balance = 0;
                     Printer.init(this.config).setJob("cashout").print(this.giftCard);
                     this.$exitComponent();
@@ -636,8 +627,7 @@ export default {
             let array = [];
             let round = Math.ceil(amount);
             array.push(amount.round(2));
-            amount === round ?
-                array.push((round + 1)) : array.push(round);
+            amount === round ? array.push((round + 1)) : array.push(round);
             let index = preset.findIndex(i => i > round);
             array.push(preset.slice(index, index + 6));
             this.quickInput = [].concat.apply([], array);

@@ -38,7 +38,7 @@
             <div v-else class="timer">
                 <div class="time">
                     <div class="picker">
-                        <h5>{{text('FROM')}}</h5>
+                        <h5>{{text('FROM')}} ({{range.from}})</h5>
                         <div class="inner">
                             <div v-for="(n,i) in clock" :key="i">
                                 <input type="radio" v-model="from" :id="'from'+i" :value="n">
@@ -51,7 +51,7 @@
                         </div>
                     </div>
                     <div class="picker">
-                        <h5>{{text('TO')}}</h5>
+                        <h5>{{text('TO')}} ({{range.to}})</h5>
                         <div class="inner">
                             <div v-for="(n,i) in clock" :key="i">
                                 <input type="radio" v-model="to" :id="'to'+i" :value="n">
@@ -63,6 +63,7 @@
                             </div>
                         </div>
                     </div>
+                    <div class="mask" v-show="allDay"></div>
                 </div>
                 <div class="option">
                     <checkbox v-model="allDay" label="ALL_DAY" @change="toggleTime"></checkbox>
@@ -73,15 +74,17 @@
             <div class="btn f1" @click="init.reject">{{text('CANCEL')}}</div>
             <div class="btn f1" @click="confirm">{{text('CONFIRM')}}</div>
         </footer>
+        <div :is="component" :init="componentData"></div>
     </div>
 </template>
 
 <script>
 import moment from 'moment'
 import checkbox from '../setting/common/checkbox'
+import dialoger from '../common/dialoger'
 export default {
     props: ['init'],
-    components: { checkbox },
+    components: { checkbox, dialoger },
     data() {
         return {
             date: null,
@@ -94,6 +97,8 @@ export default {
             tab: 'calendar',
             today: +new Date,
             calendarDay: +new Date,
+            component:null,
+            componentData:null,
             selected: [],
             clock: [12, 1, 2, 3, 4, 5, 7, 8, 9, 10, 11]
         }
@@ -105,9 +110,6 @@ export default {
         setDay(date) {
             let index = this.selected.indexOf(date);
             index === -1 ? this.selected.push(date) : this.selected.splice(index, 1);
-            if(this.selected.length > 2){
-                
-            }
         },
         prev() {
             this.calendarDay = +moment(this.calendarDay).subtract(1, 'M').format('x');
@@ -167,10 +169,33 @@ export default {
             })
         },
         confirm() {
-            this.checkTime() && this.ini.resolve(this.date);
+            this.checkTime() ? this.init.resolve(this.date) : this.invalidDate();
+        },
+        invalidDate() {
+            this.$dialog({ type: "error", title: "INVALID_DATE", msg: "INVALID_DATE_TIP", buttons: [{ text: "CONFIRM", fn: "resolve" }] }).then(() => { this.$exitComponent() })
         },
         checkTime() {
-
+            let from, to;
+            if (!this.allDay) {
+                from = this.range.from + " " + String(this.from) + ":00:00 " + (this.fromPeriod ? "am" : "pm");
+                to = this.range.to + " " + String(this.to) + ":00:00 " + (this.toPeriod ? "am" : "pm");
+            } else {
+                from = this.range.from + " 04:00:00 am";
+                to = this.range.to + " 03:59:59 am"
+            }
+            from = +moment(from, "YYYY-MM-DD hh:mm:ss a");
+            to = +moment(to, "YYYY-MM-DD hh:mm:ss a");
+            this.date = { from, to };
+            return from < to;
+        }
+    },
+    computed: {
+        range() {
+            let temp = this.selected.sort((a, b) => new Date(a) > new Date(b));
+            return {
+                from: temp[0] || today(),
+                to: temp[temp.length - 1] || today(1)
+            }
         }
     }
 }
@@ -274,7 +299,7 @@ div.current.today {
     padding: 12px;
 }
 
-div.day.current.selected {
+div.day.selected {
     background: #009688;
     color: #fff;
 }
@@ -282,6 +307,7 @@ div.day.current.selected {
 .time {
     margin: 10px auto;
     display: flex;
+    position: relative;
 }
 
 .time input {
@@ -339,5 +365,13 @@ label.am {
 label.pm {
     background: #FF5722;
     color: #fff;
+}
+
+.mask {
+    width: 500px;
+    position: absolute;
+    height: 297px;
+    background: rgba(255, 255, 255, 0.5);
+    cursor: not-allowed;
 }
 </style>

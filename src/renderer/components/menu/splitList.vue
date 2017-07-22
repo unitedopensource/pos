@@ -86,7 +86,7 @@ export default {
                 this.order.filter(item => item.sort === 0);
         },
         payment() {
-            let tip = 0, gratuity = 0, discount = 0, delivery = 0, subtotal = 0, tax = 0, total = 0, log = [];
+            let tip = 0, gratuity = 0, discount = 0, delivery = 0, subtotal = 0, tax = 0, total = 0, paid = 0, log = [];
             this.instance.forEach(item => {
                 let price = parseFloat(item.single) * item.qty;
                 let choiceLength = item.choiceSet.length;
@@ -106,7 +106,7 @@ export default {
 
             total = subtotal + tax + delivery;
             tax = tax;
-            return { tip, gratuity, discount, delivery, subtotal, total, tax, log }
+            return { tip, gratuity, discount, delivery, subtotal, total, tax, paid, log }
         },
         ...mapGetters(['tax', 'ticket', 'store', 'language'])
     },

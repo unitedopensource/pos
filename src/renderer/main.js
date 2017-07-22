@@ -125,9 +125,9 @@ Number.prototype.round = function (places) {
 };
 window.ObjectId = (m = Math, d = Date, h = 16, s = s => m.floor(s).toString(h)) => s(d.now() / 1000) + ' '.repeat(h).replace(/./g, () => s(m.random() * h));
 window.isNumber = (n => (/^-?[\d.]+(?:e-?\d+)?$/.test(n)));
-window.today = function () {
+window.today = function (offset = 0) {
   let d = new Date();
-  d = d.setHours(d.getHours() - 4);
+  d = d.setHours(d.getHours() - 4 + (offset * 24));
   d = new Date(d);
   return `${d.getFullYear()}-${("0" + (d.getMonth() + 1)).slice(-2)}-${("0" + d.getDate()).slice(-2)}`;
 }

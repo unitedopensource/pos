@@ -9,7 +9,7 @@
                 <section class="option">
                     <div class="for">
                         <span>{{text('REPORT_RANGE')}}</span>
-                        <span class="choice"></span>
+                        <span class="choice" v-if="Object.keys(reportRange).length !== 0">{{reportRange.from | moment('YYYY-MM-DD HH:mm')}} ~ {{reportRange.to | moment('YYYY-MM-DD HH:mm')}}</span>
                     </div>
                     <div class="rangeWrap">
                         <div>
@@ -85,6 +85,7 @@ export default {
             waitStaff: false,
             countItem: false,
             emailReport: false,
+            reportRange: {},
             component: null,
             componentData: null
         }
@@ -97,14 +98,14 @@ export default {
             new Promise((resolve, reject) => {
                 this.componentData = { resolve, reject };
                 this.component = "calendar";
-            }).then((resolve)=>{
-                console.log(resolve);
+            }).then((date) => {
+                this.reportRange = date;
                 this.$exitComponent();
-            }).catch(()=>{
+            }).catch(() => {
                 this.range = "today";
                 this.$exitComponent();
             })
-            
+
         },
         prepare(data) {
 
@@ -189,5 +190,9 @@ h5 {
 .rangeWrap input:checked+label {
     background: #2196F3;
     color: #fff;
+}
+
+.choice {
+    color: #FF5722;
 }
 </style>
