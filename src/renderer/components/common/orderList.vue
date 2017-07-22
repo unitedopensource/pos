@@ -101,7 +101,7 @@
                 </div>
                 <div>
                     <span class="text">{{text("TOTAL")}}:</span>
-                    <span class="value">{{payment.total | decimal}}</span>
+                    <span class="value">{{(payment.total - payment.discount) | decimal}}</span>
                 </div>
             </div>
         </div>
@@ -118,22 +118,25 @@ import config from './config'
 export default {
     components: { config, driver },
     props: ['layout', 'group', 'display', 'sort'],
-    created() {
-        !this.order.payment ? this.calculator(this.cart) : this.payment = this.order.payment;
-        this.$emit("update", this.payment);
+    mounted() {
+        this.$nextTick(() => {
+            this.display ? this.payment = this.order.payment : this.calculator(this.cart);
+            this.$emit("update", this.payment);
+        })
     },
     data() {
         return {
             payment: {
-                delivery: 0,
-                tip: 0,
-                gratuity: 0,
-                discount: 0,
-                tax: 0,
                 subtotal: 0,
+                tax: 0,
                 total: 0,
-                type: "",
-                paid: "0.00",
+                due: 0,
+                balance: 0,
+                paid: 0,
+                gratuity: 0,
+                tip: 0,
+                discount: 0,
+                delivery:0,
                 log: []
             },
             offset: 0,
@@ -351,10 +354,14 @@ export default {
                 (this.ticket.type === 'DELIVERY' && this.store.delivery && !this.order.deliveryFree) ?
                     this.store.deliveryCharge : 0;
 
-            total = subtotal + tax + this.payment.tip + this.payment.delivery - this.payment.discount;
+            total = subtotal + tax + this.payment.tip + this.payment.gratuity + this.payment.delivery;
+            let due = total - this.payment.discount;
+            console.log(due)
+
             this.payment.subtotal = subtotal;
             this.payment.tax = tax.round(2);
             this.payment.total = total.round(2);
+            this.payment.due = due.round(2);
             this.$emit("update", this.payment);
             this.$nextTick(() => {
                 let height = 0;

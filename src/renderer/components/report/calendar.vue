@@ -1,6 +1,6 @@
 <template>
     <div class="window">
-        <header class="title">{{text('CALENDAR')}}</header>
+        <header class="title">{{text('SET_DATE')}}</header>
         <header class="tab">
             <div>
                 <input type="radio" v-model="tab" id="calendar" value="calendar">
@@ -105,6 +105,9 @@ export default {
         setDay(date) {
             let index = this.selected.indexOf(date);
             index === -1 ? this.selected.push(date) : this.selected.splice(index, 1);
+            if(this.selected.length > 2){
+                
+            }
         },
         prev() {
             this.calendarDay = +moment(this.calendarDay).subtract(1, 'M').format('x');

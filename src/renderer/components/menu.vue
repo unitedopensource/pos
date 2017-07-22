@@ -49,7 +49,7 @@ export default {
     },
     data() {
         return {
-            menuInstance:null,
+            menuInstance: null,
             componentData: null,
             component: null,
             payment: null,
@@ -64,7 +64,7 @@ export default {
         },
         flatten(items) {
             console.time("clone");
-            items = [].concat.apply([],items);
+            items = [].concat.apply([], items);
             if (this.customer._id && this.customer.extra.favorite) {
                 let favorite = this.customer.extra.favorite;
                 items.forEach(item => {
@@ -260,17 +260,9 @@ export default {
         },
         settle() {
             if (this.isEmptyOrder) return;
-            this.payment.due = this.payment.hasOwnProperty('due') ?
-                this.payment.due :
-                this.payment.total + this.payment.tip + this.payment.gratuity - this.payment.discount;
-
-            this.poleDisplay("TOTAL DUE:", ["", parseFloat(this.payment.due).toFixed(2)])
-
+            let payment = JSON.parse(JSON.stringify(this.payment));
             new Promise((resolve, reject) => {
-                this.componentData = {
-                    payment: this.payment,
-                    resolve, reject
-                };
+                this.componentData = { payment: this.payment, resolve, reject };
                 this.component = "payment";
             }).then((result) => {
                 this.$exitComponent();
@@ -278,8 +270,6 @@ export default {
                 this.setOrder({ settled: true });
                 this.save(result.print, result.payment);
             }).catch(() => {
-                delete this.payment.due;
-                this.payment.log = [];
                 this.$exitComponent();
             });
         },

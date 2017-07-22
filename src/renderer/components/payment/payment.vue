@@ -13,7 +13,7 @@
                 <div class="totalDue">
                     <span class="text">{{text('BALANCE_DUE')}}:</span>
                     <div class="inner">
-                        <span class="due">{{payment.due | decimal}}</span>
+                        <span class="due">{{payment.balance | decimal}}</span>
                         <div class="addition" v-show="payment.discount !== 0">
                             <span class="text">{{text('DISCOUNT')}}</span>
                             <span class="value">-{{payment.discount | decimal}}</span>
@@ -142,7 +142,7 @@
                     </aside>
                 </section>
                 <section class="quickInput">
-                    <div class="numKey" v-for="num in quickInput" @click="setQuickInput(num)">{{num}}</div>
+                    <div class="numKey" v-for="(num,i) in quickInput" @click="setQuickInput(num)" :key="i">{{num}}</div>
                 </section>
             </article>
         </div>
@@ -165,11 +165,13 @@ import Tips from './tips'
 export default {
     props: ['init'],
     created() {
-        this.payment = Object.assign({}, this.init.payment);
+        this.payment = JSON.parse(JSON.stringify(this.init.payment));
         this.quickInput = this.generateQuickInput(this.payment.due);
+        this.payment.balance = Math.max(0, this.payment.due - this.payment.paid);
     },
     mounted() {
-        this.setPaymentType(this.payment.type || 'CASH')
+        this.setPaymentType(this.payment.type || 'CASH');
+        this.poleDisplay("TOTAL DUE:", ["", parseFloat(this.payment.due).toFixed(2)])
     },
     data() {
         return {
@@ -345,10 +347,10 @@ export default {
         },
         chargeCash() {
             if (parseFloat(this.paid) === 0) return;
-            let change = (this.paid - this.payment.due) > 0 ? (this.paid - this.payment.due).toFixed(2) : "0.00";
-            let balance = (this.payment.due - this.paid) > 0 ? (this.payment.due - this.paid).toFixed(2) : "0.00";
-            this.payment.due = (this.payment.due - this.paid).round(2);
-            this.payment.due = this.payment.due <= 0 ? 0 : this.payment.due;
+
+            let change = Math.max(0, (this.paid - this.payment.due)).toFixed(2);
+            let balance = Math.max(0, (this.payment.due - this.paid)).toFixed(2);
+            this.payment.balance = balance;
             this.payment.paid = this.paid;
             this.payment.log.push({
                 type: "CASH",
@@ -384,21 +386,22 @@ export default {
         chargeCredit() {
             if (parseFloat(this.paid) === 0) return;
             if (this.paid > this.payment.due) this.paid = this.payment.due;
+
             let card = Object.assign({}, this.creditCard, {
                 amount: this.paid
             });
             new Promise((resolve, reject) => {
                 this.componentData = { card, resolve, reject };
                 this.component = "CreditCard"
-            }).then(transaction => {
+            }).then((transaction) => {
                 this.$exitComponent();
-                this.payment.due = (parseFloat(this.payment.due) - parseFloat(transaction.amount.approve)).round(2);
-                this.payment.due = this.payment.due <= 0 ? 0 : this.payment.due;
+                this.payment.balance = (parseFloat(this.payment.due) - parseFloat(transaction.amount.approve)).round(2);
+                this.payment.balance = Math.max(0, this.payment.balance);
                 this.payment.log.push({
                     type: "CREDIT",
                     paid: transaction.amount.approve,
-                    change: this.due.change,
-                    balance: this.payment.due,
+                    change: "0.00",
+                    balance: this.payment.balance,
                     id: transaction.unique,
                     number: transaction.account.number
                 })
@@ -425,21 +428,15 @@ export default {
                     })
                     this.summarize({ print: true, payment });
                 }).catch(error => {
-                    (error && error.title) ?
-                        this.$dialog(error).then(() => {
-                            this.$exitComponent();
-                        }).catch(() => { this.$exitComponent() }) :
-                        this.$exitComponent();
+                    (error && error.title) ? this.$dialog(error).then(() => { this.$exitComponent() }).catch(() => { this.$exitComponent() }) : this.$exitComponent();
                 })
             })
         },
         chargeGift() {
             if (parseFloat(this.paid) === 0) return;
             if (this.giftCard.balance > this.paid) {
-                this.poleDisplay("Paid Gift Card", "Thank You");
-                this.payment.due = (parseFloat(this.payment.due) - parseFloat(this.paid)).round(2);
-                this.payment.due = this.payment.due <= 0 ? 0 : this.payment.due;
-                let balance = this.giftCard.balance - this.paid;
+                this.poleDisplay("PAID by Gift Card", "Thank You");
+                let balance = Math.max(0, (this.payment.due - this.paid)).round(2);
                 this.payment.log.push({
                     type: "GIFT",
                     paid: this.paid,
@@ -454,13 +451,38 @@ export default {
                     type: 'DEBET',
                     op: this.op.name
                 };
+                let remain = this.giftCard.balance - this.paid;
                 this.$socket.emit("[GIFTCARD] CARD_ACTIVITY", {
                     _id: this.giftCard._id,
-                    value: balance,
+                    value: remain,
                     activity
                 });
                 this.payment.settled = true;
                 this.summarize({ print: true });
+            } else {
+                //insufficient fund
+                let balance = (Math.abs(this.giftCard.balance - this.paid)).toFixed(2);
+                this.poleDisplay("Gift Card NSF", ["Due:", balance]);
+                this.payment.log.push({
+                    type: "GIFT",
+                    paid: this.paid,
+                    change: 0,
+                    balance
+                });
+                let activity = {
+                    date: today(),
+                    time: +new Date,
+                    amount: this.paid,
+                    balance,
+                    type: 'DEBET',
+                    op: this.op.name
+                };
+                let remain = Math.max(0, (this.giftCard.balance - this.paid));
+                this.$socket.emit("[GIFTCARD] CARD_ACTIVITY", {
+                    _id: this.giftCard._id,
+                    value: remain,
+                    activity
+                });
             }
         },
         setQuickInput(value) {
@@ -499,7 +521,6 @@ export default {
             }).then(resolve => {
                 this.payment.tip = resolve.tip;
                 this.payment.gratuity = resolve.gratuity;
-                //delivery fee ?
                 this.payment.due = this.payment.total + resolve.tip + resolve.gratuity - this.payment.discount;
                 this.quickInput = this.generateQuickInput(this.payment.due);
                 this.poleDisplay(["Tip Adjust:", parseFloat(resolve.tip).toFixed(2)], ["Total:", parseFloat(this.payment.due).toFixed(2)]);
@@ -596,6 +617,7 @@ export default {
         },
         printBalance() {
             if (this.giftCard.number.length !== 16) return;
+            this.poleDisplay("Gift Card Balance:", ["", this.giftCard.balance.toFixed(2)])
             Printer.init(this.config).setJob("balance").print(this.giftCard);
         },
         activateGiftCard(number) {

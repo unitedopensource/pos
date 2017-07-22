@@ -230,28 +230,18 @@ export default {
                 this.isSettledOrder();
                 return;
             }
-            let payment = this.order.payment;
-            payment.due = payment.hasOwnProperty('due') ?
-                payment.due :
-                payment.total + payment.tip + payment.gratuity - payment.discount;
             new Promise((resolve, reject) => {
-                this.componentData = {
-                    payment, resolve, reject
-                };
+                this.componentData = { payment: this.order.payment, resolve, reject };
                 this.component = "Payment";
             }).then((result) => {
-                let _order = JSON.parse(JSON.stringify(this.order));
-                _order.payment = result.payment;
-                _order.settled = true;
-                this.$socket.emit("ORDER_MODIFIED", _order);
-                _order.type = "PAYMENT";
-                Printer.init(this.config).setJob("receipt").print(_order);
+                let order = JSON.parse(JSON.stringify(this.order));
+                order.payment = result.payment;
+                order.settled = true;
+                this.$socket.emit("ORDER_MODIFIED", order);
+                order.type = "PAYMENT";
+                Printer.init(this.config).setJob("receipt").print(order);
                 this.$exitComponent();
             }).catch(() => {
-                if (!this.order.settled) {
-                    delete this.order.payment.due;
-                    this.order.payment.log = [];
-                }
                 this.$exitComponent();
             });
         },
@@ -274,7 +264,7 @@ export default {
                     this.$exitComponent();
                 })
             } else {
-                this.$dialog({ title: 'UNABLE_ACCESS', msg: 'STA_TERM_NA',buttons:[{text:'CONFIRM',fn:'resolve'}] }).then(() => { this.$exitComponent() });
+                this.$dialog({ title: 'UNABLE_ACCESS', msg: 'STA_TERM_NA', buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$exitComponent() });
             }
         },
         report() {

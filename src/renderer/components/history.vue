@@ -15,7 +15,7 @@
                         <span class="type">{{text(ticket.type)}}</span>
                         <span class="address">{{ticket.customer.address}}</span>
                         <span class="phone">{{ticket.customer.phone | dot}}</span>
-                        <span class="total">$ {{ticket.payment && ticket.payment.total}}</span>
+                        <span class="total">$ {{(ticket.payment.total - ticket.payment.discount) | decimal}}</span>
                     </div>
                 </div>
                 <div class="pagination" v-if="totalPage > 1">
@@ -68,6 +68,7 @@ export default {
     methods: {
         getInvoice(invoice) {
             this.setViewOrder(invoice);
+            console.log(invoice)
         },
         setFilter(type, id) {
             this.driver = null;

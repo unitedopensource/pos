@@ -78,6 +78,9 @@ import split from './menu/split'
 import payment from './payment/payment'
 import setup from './table/setup'
 export default {
+  components: {
+    setup, split, dialoger, reservation, payment, orderList
+  },
   mounted() {
     this.$socket.emit("INQUIRY_UPDATE_TIME");
 
@@ -160,14 +163,9 @@ export default {
       e.currentTarget.classList.add("active");
 
       this.$dialog({
-        type: "alert",
-        title: "FORCE_CLEAR",
+        type: "alert", title: "FORCE_CLEAR",
         msg: this.text("TIP_FORCE_CLEAR_TABLE", table.current.server, table.name),
-        buttons: [{
-          text: 'CANCEL', fn: 'reject'
-        }, {
-          text: 'CLEAR', fn: 'resolve'
-        }]
+        buttons: [{ text: 'CANCEL', fn: 'reject' }, { text: 'CLEAR', fn: 'resolve' }]
       }).then(() => {
         let _table = Object.assign({}, table, {
           status: 1,
@@ -189,18 +187,11 @@ export default {
     },
     settle() {
       if (this.order.content.length === 0) return;
-      this.payment.due = this.payment.hasOwnProperty('due') ?
-        this.payment.due :
-        this.payment.total + this.payment.tip + this.payment.gratuity - this.payment.discount;
       new Promise((resolve, reject) => {
-        this.componentData = {
-          payment: this.payment,
-          resolve, reject
-        };
+        this.componentData = { payment: this.payment, resolve, reject };
         this.component = "payment";
       }).then(result => {
         this.payment = result.payment;
-
         this.store.table.autoClean ? this.setTableInfo({
           status: 1,
           current: {
@@ -212,35 +203,26 @@ export default {
             time: ""
           }
         }) : this.setTableInfo({ status: 4 });
+
         this.$socket.emit("TABLE_MODIFIED", this.currentTable);
-        let _order = JSON.parse(JSON.stringify(this.order));
-        _order.payment = result.payment;
-        _order.settled = true;
-        this.$socket.emit("ORDER_MODIFIED", _order);
-        _order.type = "PAYMENT";
-        Printer.init(this.config).setJob("receipt").print(_order);
+        let order = JSON.parse(JSON.stringify(this.order));
+        order.payment = result.payment;
+        order.settled = true;
+        this.$socket.emit("ORDER_MODIFIED", order);
+        order.type = "PAYMENT";
+        Printer.init(this.config).setJob("receipt").print(order);
 
         this.$exitComponent();
       }).catch(() => {
-        if (!this.order.settled) {
-          delete this.payment.due;
-          this.payment.log = [];
-        }
         this.$exitComponent();
       });
     },
     editOrder() {
-      this.setTicket({
-        type: "DINE_IN",
-        number: this.order.number
-      });
+      this.setTicket({ type: "DINE_IN", number: this.order.number });
       this.$router.push({ path: '/main/menu' });
     },
     startSwitchTable() {
-      this.$dialog({
-        title: 'TABLE_CFM_SWITCH',
-        msg: 'TIP_SELECT_TABLE'
-      }).then((resolve) => {
+      this.$dialog({ title: 'TABLE_CFM_SWITCH', msg: 'TIP_SELECT_TABLE' }).then((resolve) => {
         this.pendingSwitch = true;
         this.$exitComponent();
       }).catch((reject) => {
@@ -250,15 +232,10 @@ export default {
     },
     switchTable(table) {
       let origin = this.currentTable;
-      this.$dialog({
-        title: 'TABLE_SWITCH',
-        msg: this.text('TIP_SWITCH_CFM', origin.name, table.name)
-      }).then(() => {
+      this.$dialog({ title: 'TABLE_SWITCH', msg: this.text('TIP_SWITCH_CFM', origin.name, table.name) }).then(() => {
         table.current = origin.current;
         table.status = origin.status;
-        let invoice = this.history.filter(order => {
-          return order._id === origin.current.invoice[0];
-        })[0];
+        let invoice = this.history.filter(order => order._id === origin.current.invoice[0])[0];
         invoice.table = table.name;
         invoice.tableId = table._id;
         this.$socket.emit("ORDER_MODIFIED", invoice);
@@ -273,7 +250,6 @@ export default {
         };
         origin.status = 1;
         this.$socket.emit("TABLE_MODIFIED", origin);
-        console.log(table, origin)
         this.pendingSwitch = false;
         this.$exitComponent();
       }).catch(() => {
@@ -287,11 +263,7 @@ export default {
       new Promise((resolve, reject) => {
         this.componentData = { resolve, reject };
         this.component = "reservation";
-      }).then(resolve => {
-        this.$exitComponent();
-      }).catch(() => {
-        this.$exitComponent();
-      })
+      }).then(resolve => { this.$exitComponent() }).catch(() => { this.$exitComponent() })
     },
     split() {
       if (!this.order) return;
@@ -301,11 +273,7 @@ export default {
           order: JSON.parse(JSON.stringify(this.order))
         };
         this.component = "split";
-      }).then(result => {
-        this.$exitComponent();
-      }).catch(() => {
-        this.$exitComponent();
-      })
+      }).then(result => { this.$exitComponent() }).catch(() => { this.$exitComponent() })
     },
     seated(guest) {
       this.setTicket({ type: "DINE_IN" });
@@ -328,39 +296,30 @@ export default {
       if (this.order.content.length === 0) return;
       if (this.order.print) {
         this.$dialog({
-          type: "question",
-          title: "PRT_PRE_PAYT",
-          msg: this.text('TIP_PRE_PAYT', this.order.table),
+          type: "question", title: "PRT_PRE_PAYT", msg: this.text('TIP_PRE_PAYT', this.order.table),
           buttons: [{ text: 'CANCEL', fn: "reject" }, { text: "PRINT", fn: "resolve" }]
         }).then(() => {
           let order = JSON.parse(JSON.stringify(this.order));
           order.type = "PRE_PAYMENT";
           order.cashier = this.op.name;
           Printer.init(this.config).setJob("receipt").print(order);
-          this.setTableInfo({
-            status: 3
-          });
+          this.setTableInfo({ status: 3 });
           this.$socket.emit("TABLE_MODIFIED", this.currentTable);
           this.$exitComponent();
-        }).catch(() => {
-          this.$exitComponent();
-        })
+        }).catch(() => { this.$exitComponent() })
       } else {
         let remain = this.order.content.filter(item => !item.print).length;
-        this.$dialog({
-          title: 'PRT_PRE_PAYT_NA', msg: this.text('TIP_REMAIN_ITEM', remain)
-        }).then(() => { this.$exitComponent() })
+        this.$dialog({ title: 'PRT_PRE_PAYT_NA', msg: this.text('TIP_REMAIN_ITEM', remain) }).then(() => { this.$exitComponent() })
       }
     },
     clearTable() {
       if (this.currentTable.status === 4) {
         this.$dialog({
-          title: "TABLE_CLEAR",
-          msg: this.text("TIP_TABLE_CLEAR", this.currentTable.name),
+          title: "TABLE_CLEAR", msg: this.text("TIP_TABLE_CLEAR", this.currentTable.name),
           buttons: [{ text: 'CANCEL', fn: 'reject' }, { text: 'CLEAR', fn: 'resolve' }]
         }).then(() => {
-          let _table = JSON.parse(JSON.stringify(this.currentTable));
-          _table = Object.assign(_table, {
+          let table = JSON.parse(JSON.stringify(this.currentTable));
+          table = Object.assign(_table, {
             status: 1,
             current: {
               color: "",
@@ -371,17 +330,13 @@ export default {
               time: ""
             }
           });
-          this.$socket.emit("TABLE_MODIFIED", _table);
+          this.$socket.emit("TABLE_MODIFIED", table);
           this.resetMenu();
           this.$exitComponent();
-        }).catch(() => {
-          this.$exitComponent();
-        })
+        }).catch(() => { this.$exitComponent() })
       } else {
         this.$dialog({
-          type: "info", title: 'TABLE_CLEAR_F',
-          msg: this.text('TIP_TABLE_CLEAR_F', this.currentTable.name),
-          buttons: [{ text: 'CONFIRM', fn: 'resolve' }]
+          type: "info", title: 'TABLE_CLEAR_F', msg: this.text('TIP_TABLE_CLEAR_F', this.currentTable.name), buttons: [{ text: 'CONFIRM', fn: 'resolve' }]
         }).then(() => { this.$exitComponent() })
       }
     },
@@ -398,7 +353,7 @@ export default {
     ...mapActions(['setApp', 'resetAll', 'resetMenu', 'setOrder', 'setCurrentTable', 'setTableInfo', 'setViewOrder', 'setTicket'])
   },
   computed: {
-    ...mapGetters(['config', 'store', 'tables', 'order', 'op', 'language', 'currentTable', 'history'])
+    ...mapGetters(['op', 'config', 'store', 'history', 'tables', 'order', 'language', 'currentTable'])
   },
   watch: {
     order(n) {
@@ -426,9 +381,6 @@ export default {
         this.offset = this.overflow ? height : 0;
       })
     }
-  },
-  components: {
-    setup, dialoger, reservation, payment, orderList, split
   }
 }
 </script>

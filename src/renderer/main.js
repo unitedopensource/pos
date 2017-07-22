@@ -24,7 +24,7 @@ const ip = Ip.address().split(".").splice(0, 3).join(".") + ".";
 let findHost = new Promise((resolve, reject) => {
   const args = require('electron').remote.process.argv.slice(1);
   let host = args.indexOf("-host");
-  if(host !== -1){
+  if (host !== -1) {
     resolve(args[++host]);
     return;
   }
@@ -40,7 +40,7 @@ let findHost = new Promise((resolve, reject) => {
         resolve(target);
       });
       setTimeout(() => { scanner.destroy() }, 2000);
-      scanner.on("error", () => {scanner.destroy()});
+      scanner.on("error", () => { scanner.destroy() });
     })(target);
     start++;
   }
@@ -147,3 +147,6 @@ window.line = function (line1, line2) {
   return f(line1) + f(line2);
 }
 
+window.onerror = function (msg, url, line, col, error) {
+  console.log(msg + '\n' + url + '\n' + line + '\n' + col + '\n' + error)
+}

@@ -237,6 +237,8 @@ const mutations = {
     delete state.order.payment.paidCash;
     delete state.order.payment.paidCredit;
     delete state.order.payment.paidGift;
+    delete state.order.payment.due;
+    state.order.payment.settled = false;
     state.order.settled = false;
     state.order.payment.log = [];
   }
