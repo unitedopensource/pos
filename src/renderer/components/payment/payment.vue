@@ -164,10 +164,12 @@ import Tips from './tips'
 
 export default {
     props: ['init'],
+    components: {
+        Dialoger, Inputter, Discount, CreditCard, GiftCard, Tips
+    },
     created() {
         this.payment = JSON.parse(JSON.stringify(this.init.payment));
         this.payment.balance = Math.max(0, (this.payment.due - this.payment.paid));
-        console.log(this.payment)
         this.generateQuickInput(this.payment.balance);
     },
     mounted() {
@@ -486,6 +488,7 @@ export default {
         roundUp() {
             let rounded = Math.ceil(this.payment.due);
             this.payment.due = rounded;
+            this.payment.balance = rounded;
             this.paid = "0.00";
             this.generateQuickInput(rounded);
         },
@@ -688,12 +691,9 @@ export default {
             n && n.replace(/[^0-9]/g, '').length === 16 && this.$socket.emit("[GIFTCARD] QUERY_CARD", n.replace(/[^0-9]/g, ''));
         }
     },
-    components: {
-        Dialoger, Inputter, Discount, CreditCard, GiftCard, Tips
-    },
     sockets: {
         GIFT_CARD_RESULT(card) {
-            console.log(card);
+            //console.log(card);
             this.giftCard = card;
             this.$exitComponent();
         },
@@ -701,13 +701,7 @@ export default {
             this.$dialog({
                 title: "GC_ACTIVATION",
                 msg: this.text("GC_CARD_NUMBER", number.replace(/(.{4})(.{4})(.{4})(.{4})/g, '$1 $2 $3 $4')),
-                buttons: [{
-                    text: "CANCEL",
-                    fn: "reject"
-                }, {
-                    text: "ACTIVATION",
-                    fn: "resolve"
-                }]
+                buttons: [{ text: "CANCEL", fn: "reject" }, { text: "ACTIVATION", fn: "resolve" }]
             }).then(resolve => {
                 this.activateGiftCard(number);
             }).catch(() => {

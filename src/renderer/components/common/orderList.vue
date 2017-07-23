@@ -120,7 +120,9 @@ export default {
     props: ['layout', 'group', 'display', 'sort'],
     mounted() {
         this.$nextTick(() => {
-            this.display ? this.payment = this.order.payment : this.calculator(this.cart);
+            this.display ? this.order.content.length !== 0 ?
+                this.payment = this.order.payment :
+                this.calculator(this.cart) : this.calculator(this.cart);
             this.$emit("update", this.payment);
         })
     },
@@ -136,7 +138,7 @@ export default {
                 gratuity: 0,
                 tip: 0,
                 discount: 0,
-                delivery:0,
+                delivery: 0,
                 log: []
             },
             offset: 0,

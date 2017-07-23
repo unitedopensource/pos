@@ -12,7 +12,7 @@
                 <figcaption>{{text('MENU')}}</figcaption>
                 <span class="intro">{{text('SETTING.MENU.TIP')}}</span>
             </figure>
-            <figure>
+            <figure @click="go('Setting.table')">
                 <i class="fa fa-2x fa-cutlery"></i>
                 <figcaption>{{text('SEAT')}}</figcaption>
                 <span class="intro">{{text('SETTING.SEAT.TIP')}}</span>
