@@ -66,7 +66,7 @@
                     <div class="mask" v-show="allDay"></div>
                 </div>
                 <div class="option">
-                    <checkbox v-model="allDay" label="ALL_DAY" @change="toggleTime"></checkbox>
+                    <checkbox v-model="allDay" label="ALL_DAY"></checkbox>
                 </div>
             </div>
         </main>
@@ -91,12 +91,13 @@ export default {
             days: [],
             to: null,
             from: null,
+            range: {},
             toPeriod: false,
             fromPeriod: true,
             allDay: true,
             tab: 'calendar',
-            today: +new Date,
-            calendarDay: +new Date,
+            today: +moment().subtract(4, 'hours').startOf('day'),
+            calendarDay: +moment().subtract(4, 'hours').startOf('day'),
             component: null,
             componentData: null,
             selected: [],
@@ -105,11 +106,13 @@ export default {
     },
     created() {
         this.generateCalendar();
+        this.getRange();
     },
     methods: {
         setDay(date) {
             let index = this.selected.indexOf(date);
             index === -1 ? this.selected.push(date) : this.selected.splice(index, 1);
+            this.getRange();
         },
         prev() {
             this.calendarDay = +moment(this.calendarDay).subtract(1, 'M').format('x');
@@ -118,8 +121,6 @@ export default {
         next() {
             this.calendarDay = +moment(this.calendarDay).add(1, 'M').format('x');
             this.generateCalendar();
-        },
-        toggleTime() {
         },
         generateCalendar() {
             let time = this.calendarDay;
@@ -181,16 +182,14 @@ export default {
                 to = +moment(this.range.to, "YYYY-MM-DD").hours(this.toPeriod ? this.to : this.to + 12);
             } else {
                 from = +moment(this.range.from, "YYYY-MM-DD").hours(4);
-                to = +moment(this.range.to, "YYYY-MM-DD").hours(3).minutes(59).seconds(59);
+                to = +moment(this.range.to, "YYYY-MM-DD").add(1, 'days').hours(3).minutes(59).seconds(59)
             }
             this.date = { from, to };
             return from < to;
-        }
-    },
-    computed: {
-        range() {
+        },
+        getRange() {
             let temp = this.selected.sort((a, b) => new Date(a) > new Date(b));
-            return {
+            this.range = {
                 from: temp[0] || today(),
                 to: temp[temp.length - 1] || today(1)
             }

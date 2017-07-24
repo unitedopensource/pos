@@ -68,7 +68,6 @@ export default {
     methods: {
         getInvoice(invoice) {
             this.setViewOrder(invoice);
-            console.log(invoice)
         },
         setFilter(type, id) {
             this.driver = null;

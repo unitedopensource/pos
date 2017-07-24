@@ -230,6 +230,7 @@ export default {
                 this.isSettledOrder();
                 return;
             }
+            console.log(this.order.payment)
             new Promise((resolve, reject) => {
                 this.componentData = { payment: this.order.payment, resolve, reject };
                 this.component = "Payment";

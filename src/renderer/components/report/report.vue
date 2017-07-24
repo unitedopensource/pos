@@ -111,20 +111,20 @@ export default {
             let from, to;
             switch (type) {
                 case 'today':
-                    from = +moment().hours(4).minutes(0).seconds(0).milliseconds(0);
-                    to = +moment().hours(3).minutes(59).seconds(59).milliseconds(0).add('1', 'days');
+                    from = +moment().subtract(4,'hours').hours(4).minutes(0).seconds(0).milliseconds(0);
+                    to = +moment().subtract(4,'hours').hours(3).minutes(59).seconds(59).milliseconds(0).add('1', 'days');
                     break;
                 case 'week':
-                    from = +moment().startOf('week').hours(4);
-                    to = +moment().endOf('week').add('1', 'days').hours(3).minutes(59).seconds(59).milliseconds(0);
+                    from = +moment().subtract(4,'hours').startOf('week').hours(4);
+                    to = +moment().subtract(4,'hours').endOf('week').add('1', 'days').hours(3).minutes(59).seconds(59).milliseconds(0);
                     break;
                 case 'month':
-                    from = +moment().startOf('month').hours(4);
-                    to = +moment().endOf('month').add('1', 'days').hours(3).minutes(59).seconds(59).milliseconds(0);
+                    from = +moment().subtract(4,'hours').startOf('month').hours(4);
+                    to = +moment().subtract(4,'hours').endOf('month').add('1', 'days').hours(3).minutes(59).seconds(59).milliseconds(0);
                     break;
                 case 'last':
-                    from = +moment().subtract(1, 'months').startOf('month').hours(4);
-                    to = +moment().subtract(1, 'months').endOf('month').add('1', 'days').hours(3).minutes(59).seconds(59).milliseconds(0);
+                    from = +moment().subtract(4,'hours').subtract(1, 'months').startOf('month').hours(4);
+                    to = +moment().subtract(4,'hours').subtract(1, 'months').endOf('month').add('1', 'days').hours(3).minutes(59).seconds(59).milliseconds(0);
                     break;
             }
             this.reportRange = { from, to }
