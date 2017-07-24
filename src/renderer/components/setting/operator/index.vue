@@ -68,12 +68,20 @@
                         <span class="tip">{{text('OPERATOR.TIMECARD.TIP')}}</span>
                     </header>
                     <div class="header">
-                        <span class="name">{{text('ALIES')}}</span>
-                        <span class="f1">{{text('APPLY')}}</span>
+                        <span class="approve">{{text('REVIEW')}}</span>
+                        <span class="time">{{text('CLOCK_IN')}}</span>
+                        <span class="time">{{text('CLOCK_OUT')}}</span>
+                        <span class="calc">{{text('WORK_HOUR')}}</span>
                     </div>
                     <article>
-                        <div class="datalist">
-    
+                        <div class="datalist" v-for="(log,index) in activities" :key="index">
+                            <span class="approve">{{log.valid}}</span>
+                            <span class="time">{{log.clockIn | moment('M/D/YY HH:mm:ss')}}</span>
+                            <span class="time">{{log.clockOut | moment('M/D/YY HH:mm:ss')}}</span>
+                            <span class="calc">{{workHour(log.clockIn,log.clockOut)}}</span>
+                        </div>
+                        <div class="more" @click="more">
+                            <i class="fa fa-plus"></i>
                         </div>
                     </article>
                 </section>
@@ -106,6 +114,7 @@ export default {
             operators: [],
             component: null,
             componentData: null,
+            activities: [],
             roles: ['Admin', 'Manager', 'Cashier', 'Waitstaff', 'Bartender'],
             languages: [{ label: "PRIMARY", value: "zhCN" }, { label: "SECONDARY", value: "usEN" }],
             compare: null,
@@ -121,9 +130,11 @@ export default {
             let dom = document.querySelector(".active");
             dom && dom.classList.remove("active");
             e.currentTarget.classList.add("active");
+            this.activities = [];
             this.op = profile;
             this.index = index;
             this.compare = JSON.stringify(profile);
+            this.$socket.emit("INQUIRY_OP_ACTIVITY", { id: this.op._id, index: 0 });
         },
         back() {
             this.$router.push({ name: "Setting.index" })
@@ -133,9 +144,12 @@ export default {
             this.change = true;
             this.send = false;
         },
+        more() {
+            this.$socket.emit("INQUIRY_OP_ACTIVITY", { id: this.op._id, index: this.activities.length });
+        },
         remove(op, index) {
-            if(this.operators.length === 1){
-                this.$dialog({title:'OP_DELETE_FAILED',msg:"TIP_DELETE_FAILED",buttons:[{title:'CONFIRM',fn:'resolve'}]}).then(()=>{this.$exitComponent()});
+            if (this.operators.length === 1) {
+                this.$dialog({ title: 'OP_DELETE_FAILED', msg: "TIP_DELETE_FAILED", buttons: [{ title: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$exitComponent() });
                 return;
             }
             this.$dialog({ title: "OP_DELETE_CONFIRM", msg: "TIP_OP_DELETE" }).then(() => {
@@ -182,6 +196,11 @@ export default {
                 assign: [],
                 view: []
             });
+        },
+        workHour(clockIn, clockOut) {
+            if (!clockOut) return;
+            let diff = clockOut - clockIn;
+            return `${("0" + Math.floor(diff / 36e5)).slice(-2) + "  Hr."} ${("0" + Math.floor(diff / 6e4 % 60)).slice(-2) + "  Min."}`
         }
     },
     watch: {
@@ -194,6 +213,9 @@ export default {
     sockets: {
         OP_LIST(data) {
             this.operators = data;
+        },
+        OP_ACTIVITY(data) {
+            this.activities.push(...data);
         }
     }
 }
@@ -240,12 +262,12 @@ aside {
     top: 0;
     padding: 17px;
     text-indent: 0;
-    color:red;
+    color: red;
     display: none;
 }
 
-.active.op i{
-    display:block;
+.active.op i {
+    display: block;
 }
 
 .op.active {
@@ -283,5 +305,22 @@ aside {
 .content {
     overflow: auto;
     flex: 1;
+}
+
+.time {
+    width: 130px;
+    padding: 0 10px;
+}
+
+.approve {
+    width: 100px;
+    text-align: center;
+}
+
+.more {
+    text-align: center;
+    padding: 10px;
+    border: 2px dashed #eee;
+    color: #ddd;
 }
 </style>

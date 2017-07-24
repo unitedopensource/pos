@@ -97,4 +97,8 @@ section.section {
     justify-content: center;
     align-items: center;
 }
+
+.icon {
+    font-size: 4.5em;
+}
 </style>

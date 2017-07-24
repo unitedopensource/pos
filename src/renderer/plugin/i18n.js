@@ -538,6 +538,7 @@
               'UNPAID_INVOICE': '未付订单',
               'US_EN': '英文',
               'QTY': '数量',
+              'WORK_HOUR':'工作时间',
               'WALK_IN': '外等',
               'WALK_IN_INVOICE': '外等订单',
               'WEN': '周三',
