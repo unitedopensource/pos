@@ -1,5 +1,5 @@
 <template>
-  <div class="popupMask center dark" @click.self="init.reject">
+  <div class="popupMask center dark" @click.self="init.reject(false)">
     <div class="driver window">
       <header class="title">
         <span>#{{init.ticket}} {{text('SET_DRIVER')}}</span>
@@ -9,6 +9,9 @@
         <div v-for="(letter,index) in letters" :key="letter" @click="setDriver(letter,$event)" :class="letter">{{letter}}</div>
       </div>
       <footer>
+        <div class="f1">
+          <div class="btn" @click="clear">{{text("CLEAR")}}</div>
+        </div>
         <div class="btn">{{text('SET_TIP')}}</div>
         <div class="btn" @click="confirm">{{text("CONFIRM")}}</div>
       </footer>
@@ -19,13 +22,16 @@
 <script>
 export default {
   props: ['init'],
-  mounted(){
-    this.init.driver && document.querySelector('.'+this.init.driver).classList.add("active");
+  mounted() {
+    if (this.init.driver) {
+      document.querySelector('.' + this.init.driver).classList.add("active");
+      this.letter = this.init.driver;
+    }
   },
   data() {
     return {
       letters: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'],
-      letter:null
+      letter: null
     }
   },
   methods: {
@@ -35,7 +41,10 @@ export default {
       e.currentTarget.classList.add("active");
       this.letter = letter;
     },
-    confirm(){
+    clear() {
+      this.init.reject(true);
+    },
+    confirm() {
       this.init.resolve(this.letter);
     }
   }
@@ -67,8 +76,8 @@ export default {
   border: 1px solid #ddd;
 }
 
-div.active{
+div.active {
   background: #009688;
-    color: #f5f5f5;
+  color: #f5f5f5;
 }
 </style>

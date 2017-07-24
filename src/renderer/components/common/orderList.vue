@@ -325,10 +325,14 @@ export default {
                 this.componentData = { resolve, reject, driver, ticket };
                 this.component = "driver"
             }).then((driver) => {
-                this.setOrder({ driver });
-                this.$socket.emit("ORDER_MODIFIED", this.order);
+                if (driver) {
+                    this.setOrder({ driver });
+                    this.$socket.emit("ORDER_MODIFIED", this.order);
+                }
                 this.$exitComponent();
-            }).catch(() => {
+            }).catch((remove) => {
+                remove && delete this.order.driver;
+                this.$socket.emit("ORDER_MODIFIED", this.order);
                 this.$exitComponent();
             })
         },

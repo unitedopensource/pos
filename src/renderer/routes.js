@@ -106,8 +106,12 @@ export default [{
       }]
     }, {
       path: 'table',
-      name: 'Setting.table',
-      component: require('./components/setting/table/index')
+      component: require('./components/setting/table/nav'),
+      children: [{
+        path: '/',
+        name: 'Setting.table',
+        component: require('./components/setting/table/index')
+      }]
     }, {
       path: 'online',
       component: require('./components/setting/online/nav'),
@@ -115,14 +119,14 @@ export default [{
         path: '/',
         name: 'Setting.online',
         component: require('./components/setting/online/index')
-      },{
-        path:'server',
-        name:'Setting.online.config',
-        component:require('./components/setting/online/config')
-      },{
-        path:'menu',
-        name:'Setting.online.menu',
-        component:require('./components/setting/online/menu')
+      }, {
+        path: 'server',
+        name: 'Setting.online.config',
+        component: require('./components/setting/online/config')
+      }, {
+        path: 'menu',
+        name: 'Setting.online.menu',
+        component: require('./components/setting/online/menu')
       }]
     }, {
       path: 'print',

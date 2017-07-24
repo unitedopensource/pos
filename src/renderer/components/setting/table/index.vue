@@ -1,11 +1,11 @@
 <template>
     <div class="layout">
-        <draggable v-model="sections" @sort="sortSection" :options="dragSection">
+        <draggable v-model="sections" @sort="sortSection" :options="{animation: 300,group: 'section',ghostClass: 'sectionGhost',draggable:'.draggable'}">
             <transition-group tag="section" class="section">
-                <div class="btn" v-for="(section,index) in sections" @click="viewSection(section)" :key="index">{{section[language]}}</div>
+                <div class="btn draggable" v-for="(section,index) in sections" @click="viewSection(section)" @contextmenu="editSection(section,index)" :key="index">{{section[language]}}</div>
             </transition-group>
         </draggable>
-        <draggable v-model="tabs" @sort="sortTable" :options="dragTable">
+        <draggable v-model="tabs" @sort="sortTable" :options="{animation: 300,group: 'table',ghostClass: 'tableGhost'}" class="f1">
             <transition-group tag="section" class="tables">
                 <div class="table" v-for="(table,index) in tabs" @contextmenu="editTable(table)" :key="index">
                     <span :class="[table.shape]" class="icon"></span>
@@ -20,31 +20,22 @@
 <script>
 import { mapGetters } from 'vuex'
 import draggable from 'vuedraggable'
+import dialoger from '../../common/dialoger'
 export default {
     components: {
-        draggable
+        draggable, dialoger
     },
     data() {
         return {
-            currentSection: 0,
-            sections: [],
             tabs: [],
+            sections: [],
+            currentSection: 0,
             component: null,
-            componentData: null,
-            dragSection: {
-                animation: 300,
-                group: 'section',
-                ghostClass: 'sectionGhost'
-            },
-            dragTable: {
-                animation: 300,
-                group: 'table',
-                ghostClass: 'tableGhost'
-            }
+            componentData: null
         }
     },
-    mounted() {
-        this.sections = JSON.parse(JSON.stringify(this.tabs));
+    created() {
+        this.sections = JSON.parse(JSON.stringify(this.tables));
         this.tabs = JSON.parse(JSON.stringify(this.sections[0].item));
     },
     methods: {
@@ -52,8 +43,10 @@ export default {
             this.currentSection = index;
             this.tabs = section.item;
         },
-        editTable(table) {
-            console.log(table);
+        editSection(section, index) {
+
+        },
+        editTable() {
             new Promise((resolve, reject) => {
                 this.componentData = { table, resolve, reject }
                 this.component = "tableEditor";
@@ -65,71 +58,43 @@ export default {
             })
         },
         sortSection() {
-
+            console.log(this.sections)
         },
         sortTable() {
-            let tabs = this.tabs.map((table, index) => {
-                return {
-                    _id: table._id,
-                    grid: index
-                }
-            }).filter(table => table._id);
-            console.log(tabs)
+            console.log(this.tabs)
         }
     },
     computed: {
         ...mapGetters(['tables', 'language'])
     }
 }
+
 </script>
 
 <style scoped>
 .layout {
     display: flex;
-    flex-direction: row;
 }
 
-.section {
+section.section {
+    margin: 5px;
+}
+
+.tables {
     display: flex;
-    flex-direction: column;
-    background: #ECEFF1;
-    padding: 0 2px;
-    margin-top: 1px;
-    height: 100%;
-}
-
-.section .btn {
-    margin: 3px;
-    width: 100px;
-}
-
-section.tables {
-    width: 616px;
-    display: flex;
-    flex-direction: row;
     flex-wrap: wrap;
+    padding: 2px 2px 2px 0;
 }
 
 .table {
+    display: inline-flex;
+    flex-direction: column;
+    width: 87.5px;
+    height: 96px;
+    background: linear-gradient(135deg, rgb(245, 247, 250) 0%, rgb(195, 207, 226) 110%);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    margin: 4px;
     justify-content: center;
     align-items: center;
-    height: 90px;
-    display: flex;
-    flex-direction: column;
-    width: 87px;
-}
-
-.table .icon {
-    font-size: 4em;
-}
-
-.sectionGhost {
-    opacity: 0.5;
-}
-
-.tableGhost {
-    opacity: 0.5;
-    background: #03A9F4;
-    color: #FAFAFA;
 }
 </style>

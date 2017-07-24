@@ -396,7 +396,7 @@ export default {
 }
 
 .tableWrap {
-  padding: 3px;
+  padding: 3px 0;
   display: inline-flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -412,21 +412,23 @@ section.blueprint {
 .tableSection {
   display: flex;
   flex-direction: column;
-  padding: 3px;
 }
 
 .tableSection .btn {
   text-align: center;
+  margin: 5px;
 }
 
 .table {
-  height: 90px;
-  width: 88px;
+  height: 83.5px;
+  width: 83px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-right: 1px;
-  margin-bottom: 1px;
+  background: #fff;
+  background: linear-gradient(135deg, rgb(245, 247, 250) 0%, rgb(195, 207, 226) 110%);
+  margin: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .icon {
@@ -434,8 +436,7 @@ section.blueprint {
 }
 
 .table span.icon {
-  margin-top: -5px;
-  font-size: 5em;
+  font-size: 4.5em;
 }
 
 .table .icon.occupy {
@@ -445,8 +446,8 @@ section.blueprint {
 .table .name {
   margin-top: -5px;
   padding: 0 10px;
-  background: rgba(0, 0, 0, 0.15);
-  color: #fcfcfc;
+  color: #607D8B;
+  font-weight: bold;
 }
 
 .dineIn section.cart {

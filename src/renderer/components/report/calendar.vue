@@ -233,6 +233,7 @@ main {
     color: #E0E0E0;
     border-bottom: 2px solid #FAFAFA;
     cursor: pointer;
+    transition:all 0.3s ease;
 }
 
 .tab input:checked+label {

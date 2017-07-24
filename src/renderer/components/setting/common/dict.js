@@ -1,7 +1,7 @@
 var Dictionary = function (key) {
     let abbreviation = {
         ER: [{ zhCN: "春卷", usEN: "Egg Roll" }],
-        SR: [{ zhCN: "虾卷", usEN: "Shrimp Roll" }, { zhCN: "上海卷", usEN: "Spring Roll" }, { zhCN: "排骨", usEN: "B.B.Q. Spare Ribs" }, { zhCN: "无排骨", usEN: "Boneless Spare Ribs" }],
+        SR: [{ zhCN: "虾卷", usEN: "Shrimp Roll" }, { zhCN: "上海卷", usEN: "Spring Roll" }],
         CSR: [{ zhCN: "牛卷", usEN: "Cheese Steak Roll" }],
         FW: [{ zhCN: "炸云吞", usEN: "Fried Wonton" }],
         CR: [{ zhCN: "蟹角", usEN: "Crab Rangoon" }],
@@ -12,15 +12,21 @@ var Dictionary = function (key) {
         SOS: [{ zhCN: "虾串", usEN: "Shrimp On Stick" }],
         FD: [{ zhCN: "炸包", usEN: "Fried Donut" }],
         SRT: [{ zhCN: "排骨尾", usEN: "Spare Rib tips" }],
+        ST: [{ zhCN: "虾吐司", usEN: "Shrimp Toast" }, { zhCN: "海鲜三样", usEN: "Seafood Triple Delight" }],
+        BSR: [{ zhCN: "排骨", usEN: "B.B.Q. Spare Ribs" }, { zhCN: "无排骨", usEN: "Boneless Spare Ribs" }],
+        BYGM: [{ zhCN: "牛丫干面", usEN: "Beef Yat Gaw Mein" }],
+        SYGM: [{ zhCN: "虾丫干面", ueEN: "Shrp Yat Gaw Mein" }],
+        VYGM: [{ zhCN: "菜丫干面", usEN: "Veg Yat Gaw Mein" }],
 
-        WTS: [{ zhCN: "云吞汤", usEN: "Wonton Soup" }],
+        WS: [{ zhCN: "云吞汤", usEN: "Wonton Soup" }],
         EDS: [{ zhCN: "蛋花汤", usEN: "Egg Drop Soup" }],
-        WTEDS: [{ zhCN: "云吞蛋花汤", usEN: "Wonton Egg Drop Soup" }],
+        WEDS: [{ zhCN: "云吞蛋花汤", usEN: "Wonton Egg Drop Soup" }],
         VS: [{ zhCN: "杂菜汤", usEN: "Mixed Veg. Soup" }],
         CNS: [{ zhCN: "鸡面汤", usEN: "Chicken Noodle Soup" }],
         CRS: [{ zhCN: "鸡饭汤", usEN: "Chicken Rice Soup" }],
         SS: [{ zhCN: "海鲜汤", usEN: "Seafood Soup" }],
-        HSS: [{ zhCN: "本楼汤", usEN: "House Special Soup" }],
+        BCVS: [{ zhCN: "豆腐菜汤", usEN: "Bean Curd Veg. Soup" }],
+        HSS: [{ zhCN: "酸辣汤", usEN: "Hot & Sour Soup" }, { zhCN: "本楼汤", usEN: "House Special Soup" }],
 
         VCM: [{ zhCN: "菜炒面", usEN: "Veg. Chow Mein" }],
         CCM: [{ zhCN: "鸡炒面", usEN: "Chicken Chow Mein" }],
@@ -67,13 +73,15 @@ var Dictionary = function (key) {
         LFR: [{ zhCN: "龙虾炒饭", usEN: "Lobster Fried Rice" }],
         HSFR: [{ zhCN: "本楼炒饭", usEN: "House Special Fried Rice" }],
         CMFR: [{ zhCN: "蟹肉炒饭", usEN: "Crab Meat Fried Rice" }],
-        HFM: [{ zhCN: "肉炒饭", usEN: "Ham Fried Rice" }],
+        HFM: [{ zhCN: "火腿炒饭", usEN: "Ham Fried Rice" }],
+        YCFR:[{ zhCN: "扬州炒饭", usEN: "Young Chow Fried Rice" }],
 
         PSO: [{ zhCN: "青椒牛", usEN: "Pepper Steak w.Onion" }],
         BMV: [{ zhCN: "杂菜牛", usEN: "Beef w.Mixed Veg." }],
         BM: [{ zhCN: "蘑菇牛", usEN: "Beef w.Mushroom" }],
         BSP: [{ zhCN: "雪豆牛", usEN: "Beef w.Snow Peas" }],
         BB: [{ zhCN: "芥兰牛", usEN: "Beef Broccoli" }],
+        BOS:[{ zhCN: "蚝油牛", usEN: "Beef w.Oyster Sauce" }],
         BCS: [{ zhCN: "咖喱牛", usEN: "Beef w.Curry Sauce", spicy: true }],
         BSS: [{ zhCN: "四川牛", usEN: "Beef w.Szechuan Style", spicy: true }],
         BGS: [{ zhCN: "鱼香牛", usEN: "Beef w.Garlic Sauce", spicy: true }],
@@ -112,10 +120,12 @@ var Dictionary = function (key) {
         SCN: [{ zhCN: "腰果虾", usEN: "Shrimp w.Cashew Nuts" }],
 
         TD: [{ zhCN: "炒三样", usEN: "Triple Delight" }],
-        ST: [{ zhCN: "海鲜三样", usEN: "Seafood Triple Delight" }],
         HTD: [{ zhCN: "湖南三样", usEN: "Hunan Triple Delight" }],
 
         SMV: [{ zhCN: "炒杂菜", usEN: "Sauteed Mixed Vegs." }, { zhCN: "水煮杂菜", usEN: "Steamed Mixed Veg." }],
+        SCMV:[{ zhCN: "水煮杂菜鸡", usEN: "Steamed Chk Mixed Veg." }],
+        SSMV:[{ zhCN: "水煮杂菜虾", usEN: "Steamed Shrp Mixed Veg." }],
+        GTT:[{ zhCN: "左宗豆腐", usEN: "General Taso's Tofo" }],
         SCB: [{ zhCN: "水煮芥兰鸡", usEN: "Steamed Chicken Broccoli" }],
         SSB: [{ zhCN: "水煮芥兰虾", usEN: "Steamed Shrimp Broccoli" }],
 
@@ -145,8 +155,8 @@ var Dictionary = function (key) {
         BW: [{ zhCN: "辣翅", usEN: "Bufflo Wings", spicy: true }],
         HW: [{ zhCN: "蜜翅", usEN: "Honey Wings" }],
         CN: [{ zhCN: "鸡粒", usEN: "Chicken Nuggets" }],
-        JS: [{ zhCN: "炸大虾", usEN: "Jumbo Shrimp" }],
-        FF: [{ zhCN: "薯条", usEN: "French Fries" }],
+        FJS: [{ zhCN: "炸大虾", usEN: "Fried Jumbo Shrimp" }],
+        FF: [{ zhCN: "薯条", usEN: "French Fries" },{ zhCN: "炸鱼", usEN: "Fried Fish" }],
         FSB: [{ zhCN: "炸虾篮", usEN: "Fried Shrp Basket" }],
         FCS: [{ zhCN: "炸蟹条", usEN: "French Crab Stick" }]
     }

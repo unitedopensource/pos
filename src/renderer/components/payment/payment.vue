@@ -434,7 +434,7 @@ export default {
                     type: "GIFT",
                     paid: this.paid,
                     change: 0,
-                    balance: balance.toFixed(2)
+                    balance
                 });
                 let activity = {
                     date: today(),

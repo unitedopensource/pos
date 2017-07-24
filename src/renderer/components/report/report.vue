@@ -111,20 +111,20 @@ export default {
             let from, to;
             switch (type) {
                 case 'today':
-                    from = +moment().subtract(4,'hours').hours(4).minutes(0).seconds(0).milliseconds(0);
-                    to = +moment().subtract(4,'hours').hours(3).minutes(59).seconds(59).milliseconds(0).add('1', 'days');
+                    from = +moment().subtract(4, 'hours').hours(4).minutes(0).seconds(0).milliseconds(0);
+                    to = +moment().subtract(4, 'hours').hours(3).minutes(59).seconds(59).milliseconds(0).add('1', 'days');
                     break;
                 case 'week':
-                    from = +moment().subtract(4,'hours').startOf('week').hours(4);
-                    to = +moment().subtract(4,'hours').endOf('week').add('1', 'days').hours(3).minutes(59).seconds(59).milliseconds(0);
+                    from = +moment().subtract(4, 'hours').startOf('week').hours(4);
+                    to = +moment().subtract(4, 'hours').endOf('week').add('1', 'days').hours(3).minutes(59).seconds(59).milliseconds(0);
                     break;
                 case 'month':
-                    from = +moment().subtract(4,'hours').startOf('month').hours(4);
-                    to = +moment().subtract(4,'hours').endOf('month').add('1', 'days').hours(3).minutes(59).seconds(59).milliseconds(0);
+                    from = +moment().subtract(4, 'hours').startOf('month').hours(4);
+                    to = +moment().subtract(4, 'hours').endOf('month').add('1', 'days').hours(3).minutes(59).seconds(59).milliseconds(0);
                     break;
                 case 'last':
-                    from = +moment().subtract(4,'hours').subtract(1, 'months').startOf('month').hours(4);
-                    to = +moment().subtract(4,'hours').subtract(1, 'months').endOf('month').add('1', 'days').hours(3).minutes(59).seconds(59).milliseconds(0);
+                    from = +moment().subtract(4, 'hours').subtract(1, 'months').startOf('month').hours(4);
+                    to = +moment().subtract(4, 'hours').subtract(1, 'months').endOf('month').add('1', 'days').hours(3).minutes(59).seconds(59).milliseconds(0);
                     break;
             }
             this.reportRange = { from, to }
@@ -179,22 +179,24 @@ export default {
             })
         },
         handler(datas) {
-            this.report["SUMMARY"] = this.summary ? this.summarize(datas[0]) : null;
-            this.report["CREDIT CARD"] = this.creditCardReport();
-            this.report["GIFT CARD"] = this.giftCard ? this.giftCardReport() : null;
+            this.summarize(datas[0]);
+            this.report["CREDIT CARD"] = this.creditCardReport(datas[1]);
+            this.report["GIFT CARD"] = this.giftCard ? this.giftCardReport(datas[2]) : null;
             this.report["EMPOLYEE"] = this.employee ? this.employeeReport() : null;
             this.report["HOURLY REPORT"] = this.hourly ? this.hourlyReport(datas[0]) : null;
             this.report["MOST ORDER"] = this.countItem ? this.itemCounter(datas[0]) : null;
         },
         employeeReport(data) {
+            console.log(data);
+        },
+        creditCardReport() {
 
         },
-        creditCardReport() { },
         giftCardReport(data) {
             if (!data) data = [];
             let activation = 0, bouns = 0, initialAmount = 0, creditAmount = 0, debetAmount = 0, debet = 0, credit = 0;
             let datas = [].concat.apply([], data.map(gc => gc.activity))
-                .filter(trans => trans.date === date)
+                .filter(trans => (trans.time > this.reportRange.from && trans.time < this.reportRange.to))
                 .forEach(trans => {
                     switch (trans.type) {
                         case "ACTIVATION":
@@ -238,7 +240,10 @@ export default {
                 settle = 0, settleAmount = 0,
                 discount = 0, discountAmount = 0,
                 unsettle = 0, unsettleAmount = 0,
-                voided = 0, voidedAmount = 0;
+                voided = 0, voidedAmount = 0,
+                cash = 0, cashAmount = 0,
+                credit = 0, creditAmount = 0,
+                gift = 0, giftAmount = 0;
 
             data.forEach(ticket => {
                 switch (ticket.type) {
@@ -278,30 +283,64 @@ export default {
                     voided++;
                     voidedAmount += ticket.payment.total;
                 }
-                if (ticket.settle) {
+                if (ticket.settled) {
                     settle++;
                     settleAmount += ticket.payment.due;
+                    switch (ticket.payment.type) {
+                        case "CASH":
+                            cash++;
+                            cashAmount += parseFloat(ticket.payment.paidCash);
+                            break;
+                        case "CREDIT":
+                            credit++;
+                            creditAmount += parseFloat(ticket.payment.paidCredit);
+                            break;
+                        case "GIFT":
+                            gift++;
+                            giftAmount += parseFloat(ticket.payment.paidGift);
+                            break;
+                    }
                 } else {
                     unsettle++;
                     unsettleAmount += ticket.payment.due;
                 }
             })
+            this.report["SUMMARY"] = this.summary ? [{
+                text: this.text('TOTAL'),
+                count: total,
+                amount: totalAmount
+            },
+            {
+                text: this.text('GROSS_SALES'),
+                count: 0,
+                amount: grossAmount
+            },
+            {
+                text: this.text('DISCOUNT'),
+                count: discount,
+                amount: -discountAmount
+            }] : null;
 
-            return this.category ?
+            this.report["DETAIL REPORT"] = this.category ?
                 [{
-                    text: this.text('TOTAL'),
-                    count: total,
-                    amount: totalAmount
+                    text: this.text('CASH'),
+                    count: cash,
+                    amount: cashAmount
                 },
                 {
-                    text: this.text('GROSS_SALES'),
+                    text: this.text('CREDIT_CARD'),
+                    count: credit,
+                    amount: creditAmount
+                },
+                {
+                    text: this.text('GIFT_CARD'),
+                    count: gift,
+                    amount: giftAmount
+                },
+                {
+                    text: "&nbsp;",
                     count: 0,
-                    amount: grossAmount
-                },
-                {
-                    text: this.text('DISCOUNT'),
-                    count: discount,
-                    amount: -discountAmount
+                    amount: ""
                 },
                 {
                     text: this.text('WALK_IN'),
@@ -324,22 +363,20 @@ export default {
                     text: this.text('OTHERS'),
                     count: 0,
                     amount: otherAmount
-                }] :
-                [{
-                    text: this.text('TOTAL'),
-                    count: total,
-                    amount: totalAmount
                 },
                 {
-                    text: this.text('GROSS_SALES'),
+                    text: "&nbsp;",
                     count: 0,
-                    amount: grossAmount
-                },
-                {
-                    text: this.text('DISCOUNT'),
-                    count: discount,
-                    amount: -discountAmount
-                }]
+                    amount: ""
+                }, {
+                    text: this.text("SETTLED"),
+                    count: settle,
+                    amount: settleAmount
+                }, {
+                    text: this.text("UNSETTLE"),
+                    count: unsettle,
+                    amount: unsettleAmount
+                }] : null;
         },
         hourlyReport(data) {
             let hours = {};
