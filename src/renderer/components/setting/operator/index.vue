@@ -6,6 +6,7 @@
             <div v-for="(operator,index) in operators" :key="index" class="op" @click="getProfile(operator,index,$event)">
                 <h3>{{operator.name}}</h3>
                 <span class="role">{{operator.role}}</span>
+                <i class="fa fa-times" @click="remove(operator,index)"></i>
             </div>
             <div class="add" @click="add">
                 <i class="fa fa-plus"></i>
@@ -105,7 +106,7 @@ export default {
             operators: [],
             component: null,
             componentData: null,
-            roles: ['Admin','Manager', 'Cashier', 'Waitstaff', 'Bartender'],
+            roles: ['Admin', 'Manager', 'Cashier', 'Waitstaff', 'Bartender'],
             languages: [{ label: "PRIMARY", value: "zhCN" }, { label: "SECONDARY", value: "usEN" }],
             compare: null,
             change: false,
@@ -131,6 +132,21 @@ export default {
             this.txt = this.text("TIP_SAVE_CONFIG");
             this.change = true;
             this.send = false;
+        },
+        remove(op, index) {
+            if(this.operators.length === 1){
+                this.$dialog({title:'OP_DELETE_FAILED',msg:"TIP_DELETE_FAILED",buttons:[{title:'CONFIRM',fn:'resolve'}]}).then(()=>{this.$exitComponent()});
+                return;
+            }
+            this.$dialog({ title: "OP_DELETE_CONFIRM", msg: "TIP_OP_DELETE" }).then(() => {
+                op._id ?
+                    this.$socket.emit("[CMS] REMOVE_USER", op._id) :
+                    this.operators.splice(index, 1);
+                this.op = null;
+                this.$exitComponent();
+            }).catch(() => {
+                this.$exitComponent();
+            })
         },
         save() {
             if (this.checkUniquePin()) {
@@ -214,7 +230,22 @@ aside {
     padding: 5px;
     color: #888;
     cursor: pointer;
+    position: relative;
     border-left: 2px solid transparent;
+}
+
+.op i {
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 17px;
+    text-indent: 0;
+    color:red;
+    display: none;
+}
+
+.active.op i{
+    display:block;
 }
 
 .op.active {

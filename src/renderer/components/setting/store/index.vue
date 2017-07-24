@@ -41,16 +41,6 @@
                 <smart-switch v-model="store.timeCardReport" label="CLOCK_OUT_REPORT"></smart-switch>
             </article>
         </section>
-        <!-- <section class="card">
-            <header>{{text('CASH_FLOW')}}
-                <span class="tip">{{text('TIP_CASH_IN_OUT')}}</span>
-            </header>
-            <article>
-                <smart-switch v-model="store.cashFlow" label="ENABLE"></smart-switch>
-                <smart-switch v-model="store.cashOutReport" label="CASH_OUT_REPORT"></smart-switch>
-                <smart-input v-model="store.initialCashInflow" label="INIT_AMOUNT" :disable="!store.cashFlow"></smart-input>
-            </article>
-        </section> -->
         <section class="card">
             <header>{{text('E_MAIL')}}
                 <span class="tip">{{text('TIP_FOR_SMS_ALERT')}}</span>
