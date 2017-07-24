@@ -29,8 +29,8 @@
             <article>
                 <smart-switch v-model="workStation.pole.enable" label="ENABLE"></smart-switch>
                 <smart-option v-model="workStation.pole.port" label="PORT" :options="ports"></smart-option>
-                <smart-input v-model="workStation.pole.top" label="STATION.POLEDISPLAY.FIRSTLINE" :disable="!workStation.pole.enable"></smart-input>
-                <smart-input v-model="workStation.pole.btm" label="STATION.POLEDISPLAY.SECONDLINE" :disable="!workStation.pole.enable"></smart-input>
+                <smart-input v-model="workStation.pole.top" label="STATION.POLEDISPLAY.FIRSTLINE" :enable="workStation.pole.enable"></smart-input>
+                <smart-input v-model="workStation.pole.btm" label="STATION.POLEDISPLAY.SECONDLINE" :enable="workStation.pole.enable"></smart-input>
             </article>
         </section>
         <section class="card">
@@ -64,8 +64,11 @@
         <section class="card">
             <header>{{text('CASHDRAWER')}}</header>
             <article>
-                <smart-switch v-model="workStation.cashDrawer" label="ENABLE"></smart-switch>
-                <smart-option v-model="workStation.cashDrawerBind" label="BINDING" :options="printers"></smart-option>
+                <smart-switch v-model="workStation.cashDrawer.enable" label="ENABLE"></smart-switch>
+                <smart-input v-model="workStation.cashDrawer.name" label="ALIES" :disable="!workStation.cashDrawer.enable"></smart-input>
+                <smart-option v-model="workStation.cashDrawer.bind" label="BINDING" :options="printers"></smart-option>
+                <smart-switch v-model="workStation.cashDrawer.cashFlowCtrl" label="CASH_FLOW"></smart-switch>
+                <smart-input v-model="workStation.cashDrawer.initialAmount" label="INIT_AMOUNT" :disable="!workStation.cashDrawer.cashFlowCtrl"></smart-input>
             </article>
         </section>
         <section class="card">

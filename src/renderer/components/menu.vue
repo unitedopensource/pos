@@ -167,6 +167,7 @@ export default {
         },
         modify() {
             if (this.isEmptyOrder) return;
+            if (!this.approval(this.op.modify, "price")) { this.$denyAccess(); return };
             let qty = this.item.qty;
             let single = this.item.single.toFixed(2);
             let total = (single * qty).toFixed(2);

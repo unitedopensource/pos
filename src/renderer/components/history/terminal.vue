@@ -413,11 +413,6 @@ export default {
   box-shadow: rgba(0, 0, 0, 0.75) 0 0 0 0 inset;
 }
 
-.btn {
-  margin: 5px;
-  padding: 0 25px;
-}
-
 .num {
   width: 35px;
 }

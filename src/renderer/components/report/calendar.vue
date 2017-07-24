@@ -177,14 +177,12 @@ export default {
         checkTime() {
             let from, to;
             if (!this.allDay) {
-                from = this.range.from + " " + String(this.from) + ":00:00 " + (this.fromPeriod ? "am" : "pm");
-                to = this.range.to + " " + String(this.to) + ":00:00 " + (this.toPeriod ? "am" : "pm");
+                from = +moment(this.range.from, "YYYY-MM-DD").hours(this.fromPeriod ? this.from : this.from + 12);
+                to = +moment(this.range.to, "YYYY-MM-DD").hours(this.toPeriod ? this.to : this.to + 12);
             } else {
-                from = this.range.from + " 04:00:00 am";
-                to = this.range.to + " 03:59:59 am"
+                from = +moment(this.range.from, "YYYY-MM-DD").hours(4);
+                to = +moment(this.range.to, "YYYY-MM-DD").hours(3).minutes(59).seconds(59);
             }
-            from = +moment(from, "YYYY-MM-DD hh:mm:ss a");
-            to = (this.selected.length === 1 && this.from && this.to) ? +moment(to, "YYYY-MM-DD hh:mm:ss").add(1, 'days') : +moment(to, "YYYY-MM-DD hh:mm:ss a");
             this.date = { from, to };
             return from < to;
         }

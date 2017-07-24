@@ -320,11 +320,9 @@ export default {
         },
         delCredit() {
             let p = this.pointer;
-            if (p !== 'paid') {
-                this.creditCard[p] = this.creditCard[p].slice(0, -1)
-            } else {
-                this.paid = this.paid.slice(0, -1)
-            }
+            p !== 'paid' ?
+                this.creditCard[p] = this.creditCard[p].slice(0, -1) :
+                this.paid = this.paid.slice(0, -1);
         },
         delGift() {
             this.giftCard.number = this.giftCard.number.slice(0, -1);
@@ -367,10 +365,10 @@ export default {
                 this.setInputAnchor("paid");
             } else {
                 Printer.init(this.config).openCashDrawer();
-                this.poleDisplay(["Paid CASH", this.paid], ["Change Due:", change]);
+                this.poleDisplay(["Paid CASH", parseFloat(this.paid).toFixed(2)], ["Change Due:", change]);
                 this.$dialog({
                     title: this.text("CHANGE", change),
-                    msg: this.text("CUST_PAID", this.paid.toFixed(2)),
+                    msg: this.text("CUST_PAID", parseFloat(this.paid).toFixed(2)),
                     buttons: [{ text: "CONFIRM", fn: 'reject' }, { text: 'PRINT_RECEIPT', fn: 'resolve' }]
                 }).then(() => {
                     this.payment.settled = true;
@@ -384,9 +382,7 @@ export default {
             if (parseFloat(this.paid) === 0) return;
             if (this.paid > this.payment.due) this.paid = this.payment.due;
 
-            let card = Object.assign({}, this.creditCard, {
-                amount: this.paid
-            });
+            let card = Object.assign({}, this.creditCard, { amount: this.paid });
             new Promise((resolve, reject) => {
                 this.componentData = { card, resolve, reject };
                 this.component = "CreditCard"
@@ -610,7 +606,7 @@ export default {
                 this.componentData = { title, resolve, reject };
                 this.component = "Inputter";
             }).then((initialAmount) => {
-                let card = Preset.giftCard(number, initialAmount, this.op.name);
+                let card = Preset.giftCard(number, this.op.name, initialAmount, 0);
                 if (this.customer._id) {
                     card = Object.assign(card, { customer: this.customer._id })
                 }

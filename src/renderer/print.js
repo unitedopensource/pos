@@ -54,7 +54,7 @@ Printer.prototype.print = function (data) {
 };
 Printer.prototype.openCashDrawer = function () {
   let { station } = this.config;
-  station.cashDrawer && CLODOP.SET_PRINTER_INDEX(station.cashDrawerBind);
+  station.cashDrawer && CLODOP.SET_PRINTER_INDEX(station.cashDrawer.bind);
   CLODOP.SEND_PRINT_RAWDATA(String.fromCharCode(27) + String.fromCharCode(112) + String.fromCharCode(48) + String.fromCharCode(55) + String.fromCharCode(221));
 };
 Printer.prototype.buzzer = function () {
@@ -359,7 +359,7 @@ Printer.prototype.printReceipt = function (raw) {
        <p class="bold"><span class="text">CHANGE:</span><span class="value">${(payment.paidCash - payment.total).toFixed(2)}</span></p>` : "";
     let credit = (payment.hasOwnProperty('paidCredit') && parseFloat(payment.paidCredit) !== 0) ? `<p class="bold"><span class="text">CREDIT:</span><span class="value">${payment.paidCredit}</span></p>` : "";
     let gift = (payment.hasOwnProperty('paidGift') && parseFloat(payment.paidGift) != 0) ? `<p class="bold"><span class="text">GIFT:</span><span class="value">${payment.paidGift}</span></p>` : "";
-    let discount = parseFloat(payment.discount) !== 0 ? `<p class="bold"><span class="text">Discount:</span><span class="value">-${payment.discount}</span></p>`:'';
+    let discount = parseFloat(payment.discount) !== 0 ? `<p class="bold"><span class="text">Discount:</span><span class="value">-${payment.discount}</span></p>` : '';
     let paid = (cash + credit + gift) || "";
     return `<footer>
                <section class="other">
@@ -577,7 +577,9 @@ Printer.prototype.printGiftCard = function (type, card) {
 };
 Printer.prototype.printReport = function (data) {
   let store = this.config.store;
-  let { date, summary } = data;
+  let { date, report } = data;
+  let from = moment(date.from).format("M/D/YY HH:mm");
+  let to = moment(date.to).format("M/D/YY HH:mm");
   let html = createReport();
   let style = createStyle();
 
@@ -587,39 +589,53 @@ Printer.prototype.printReport = function (data) {
   this.printer.PRINT();
 
   function createReport() {
-    let report = "";
-    for (let section in summary) {
-      if (summary.hasOwnProperty(section)) {
-        let content = summary[section].map(data => {
-          let tip = (data.hasOwnProperty('tip') && parseFloat(data.tip) !== 0 && isNumber(data.tip)) ? `<p class="extra"><span class="text">Tip:</span><span class="value">$${data.tip}</span></p>` : '';
-          let gratuity = (data.hasOwnProperty('gratuity') && parseFloat(data.gratuity) !== 0 && isNumber(data.gratuity)) ? `<p class="extra"><span class="text">Gratuity:</span><span class="value">$${data.gratuity}</span></p>` : '';
-
-          return data.count === 0 ? "" :
-            `<p>
-                <span class="text">${data.text} (${data.count}):</span>
-                <span class="value">$ ${data.amount.toFixed(2)}</span>
-              </p>${tip}${gratuity}`;
-        }).join("").toString();
-        report += `<article><h3>${section}</h3>${content}</article>`;
+    let content = "";
+    for (let key in report) {
+      if (report.hasOwnProperty(key) && report[key]) {
+        let section = "";
+        if (Array.isArray(report[key])) {
+          section += report[key].map(record => {
+            let { text, count, amount } = record;
+            amount = isNumber(amount) ? "$ " + amount.toFixed(2) : amount;
+            count = count > 0 ? count : "";
+            return `<p>
+                  <span class="text">${text}</span>
+                  <span class="amount">${amount}</span>
+                  <span class="count">${count}</span>
+                 </p>`
+          }).join("").toString();
+        } else {
+          for (let value in report[key]) {
+            let { text, count, amount } = report[key][value];
+            amount = isNumber(amount) ? "$ " + amount.toFixed(2) : amount;
+            count = count > 0 ? count : "";
+            section += `<p>
+                         <span class="text">${text}</span>
+                         <span class="amount">${amount}</span>
+                         <span class="count">${count}</span>
+                       </p>`
+          }
+        }
+        section = `<section class="type"><h4>${key}</h4>${section}</section>`;
+        content += section;
       }
     }
-
     return `<section class="header">
-                <div class="store">
-                  <h3>${store.name}</h3>
-                  <h5>${store.address}</h5>
-                  <h5>${store.city} ${store.state} ${store.zipCode}</h5>
-                  <h5>${store.contact}</h5>
-                </div>
-                <div class="type">
-                  <h3>Report</h3>
-                  <h5>${date}</h5>
-                </div>
-            </section>
-            ${report}
-            <footer>
-              <p>Power by United POS</p>
-            </footer>`;
+              <div class="store">
+                <h3>${store.name}</h3>
+                <h5>${store.address}</h5>
+                <h5>${store.city} ${store.state} ${store.zipCode}</h5>
+                <h5>${store.contact}</h5>
+              </div>
+              <div class="type">
+                <h3>Sales Summary Report</h3>
+                <h5>${from} ~ ${to}</h5>
+              </div>
+          </section>
+          ${content}
+          <footer>
+            <p>Power by United POS</p>
+          </footer>`;
   }
   function createStyle() {
     return `<style>
@@ -627,16 +643,14 @@ Printer.prototype.printReport = function (data) {
                 section.header{text-align:center;}
                 .header h3{font-size:1.25em;}
                 .header h5{font-size:16px;font-weight:lighter}
-                div.type{margin:10px;}
+                div.type{margin:10px;border-bottom:1px solid #000;}
                 div.type h3{font-weight:lighter;font-size:1.3em;}
-                div.type h5{margin-top:-5px;font-size:1.25em;}
-                div.time span{display:inline-block;margin:0 10px;font-size:1em;}
-                div.time{border-bottom:1px solid #000;position:relative;}
-                p{margin:0;padding:0;display:flex}
-                .text{flex:1;text-align:left;}
-                .value{flex:1;text-align:right;}
-                article h3{border-bottom:1px solid #000;text-align:center;margin-bottom:15px;text-transform:uppercase;}
-                .extra{margin-left:20px;}
+                div.type h5{margin-top:5px;font-size:1.25em;}
+                p{margin:0;padding:0 5px;display:flex}
+                section.type{margin-bottom:10px;}
+                section h4{text-align:center;border-bottom:1px dashed #000;border-top:1px dashed #000;margin-bottom:10px;}
+                p .amount{flex:1;text-align:right;}
+                p .count{width:35px;text-align:right;}
                 footer p{text-align:center;border-top:1px solid #000;margin-top:15px;display:block;}
             </style>`;
   }

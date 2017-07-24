@@ -27,8 +27,13 @@ var Preset = function () {
       },
       print: {},
       printRedirect: false,
-      cashDrawer: false,
-      cashDrawerBind: "",
+      cashDrawer:{
+        enable:false,
+        name:alies,
+        bind:'',
+        cashFlowCtrl:false,
+        initialAmount:0
+      },
       timeout: 0,
       receiveOnlineOrder: false,
       interface: [{
@@ -163,7 +168,7 @@ var Preset = function () {
       distance: ""
     }
   };
-  this.giftCard = function (number, amount, seller) {
+  this.giftCard = function (number, seller, amount, bouns) {
     return {
       _id: ObjectId(),
       number,
@@ -177,6 +182,7 @@ var Preset = function () {
           time: +new Date,
           amount: amount,
           balance: amount,
+          bouns: bouns || 0,
           type: 'ACTIVATION',
           op: seller
         }

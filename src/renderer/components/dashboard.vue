@@ -76,9 +76,9 @@ export default {
             this.$denyAccess();
           break;
         case "cashDrawer":
-          this.approval(this.op.access, "cashdrawer") ?
-            Printer.init(this.config).openCashDrawer() :
-            this.$denyAccess();
+          this.station.cashDrawer.enable ?
+            this.cashDrawerAvailable() :
+            this.missCashDrawer();
           break;
         case "lock":
           this.resetDashboard();
@@ -86,6 +86,15 @@ export default {
           break;
         default:
       }
+    },
+    cashDrawerAvailable(operation) {
+      this.approval(this.op.access, "cashdrawer") ? this.cashFlowCtrl() : this.$denyAccess();
+    },
+    missCashDrawer() {
+      this.$dialog({ title: "CASH_DRAWER_NA", msg: "TIP_CASH_DRAWER_NA", buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$exitComponent() });
+    },
+    cashFlowCtrl() {
+      this.station.cashDrawer.cashFlowCtrl ? this.cashInflow() : Printer.init(this.config).openCashDrawer();
     },
     activateStation() {
       this.$dialog({
@@ -114,12 +123,21 @@ export default {
       poleDisplay.write(line(this.station.pole.top, this.station.pole.btm));
     },
     checkClockIn() {
-      this.op.wage.includes("H") && !this.op.clockIn && this.$dialog({ title: "CLOCK_IN_REQ", msg: "TIP_CLOCK_IN_REQ" }).then(() => { this.$exitComponent() })
+      this.op.wage.includes("H") && !this.op.clockIn && this.reqClockIn();
+    },
+    reqClockIn() {
+      this.$dialog({ title: "CLOCK_IN_REQ", msg: "TIP_CLOCK_IN_REQ" }).then(() => { this.$exitComponent() })
+    },
+    askCashIn() {
+      this.$dialog({ title: "CASH_IN_REQ", msg: "TIP_CASH_IN_REQ" }).then(() => { this.cashInflow() }).catch(() => { this.$exitComponent() })
+    },
+    cashInflow() {
+      
     },
     ...mapActions(['setApp', 'setTicket', 'setCustomer', 'setStation', 'setStations', 'resetDashboard'])
   },
   computed: {
-    ...mapGetters(['store', 'station', 'time', 'op', 'ring', 'callLog', 'device', 'config'])
+    ...mapGetters(['op', 'ring', 'callLog', 'device', 'config', 'store', 'station', 'time'])
   },
   components: {
     dialoger

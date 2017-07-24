@@ -103,6 +103,7 @@ const Pax = function () {
           },
           addition,
           unique: Math.random().toString(36).substring(3, 8),
+          time: +new Date,
           status: 1
         };
       case "100001":
@@ -243,7 +244,7 @@ const Pax = function () {
           msg: 'BATCH_DUP_TRANS'
         }
       case "100023":
-        return{
+        return {
           code,
           msg: 'BATH_NO_FOUND'
         }
