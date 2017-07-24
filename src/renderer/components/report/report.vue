@@ -104,7 +104,7 @@ export default {
                     date: this.reportRange,
                     report: this.report
                 })
-                //this.init.resolve();
+                this.init.resolve();
             })
         },
         getRange(type) {
