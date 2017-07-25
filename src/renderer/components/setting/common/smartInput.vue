@@ -9,7 +9,7 @@
 <script>
 export default {
     props: {
-        value: [String, Number],
+        value: [String, Number, Array],
         label: String,
         tip: String,
         reg: String,

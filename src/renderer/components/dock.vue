@@ -253,6 +253,7 @@ export default {
       'removeRequestItem',
       'updateMenuCategory',
       'resortMenuCategory',
+      'updateTableSection',
       'updateRequestCategory'])
   },
   sockets: {
@@ -320,6 +321,8 @@ export default {
     MENU_CATEGORY_RESORT(data) { this.resortMenuCategory(data) },
     MENU_ITEM_UPDATE(data) { this.updateMenuItem(data) },
     MENU_ITEM_REMOVE(data) { this.removeMenuItem(data) },
+    UPDATE_TABLE_SECTION(data) { this.updateTableSection(data) },
+    UPDATE_TABLE_INFO(data){ this.updateTableInfo(data)},
     disconnect() { this.setApp({ database: false }) }
   },
   watch: {

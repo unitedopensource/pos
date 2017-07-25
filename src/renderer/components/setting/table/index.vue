@@ -43,8 +43,6 @@ export default {
             componentData: null,
             isSectionSort: false,
             isTableSort: false,
-            sectionSorted: null,
-            tableSorted: null
         }
     },
     created() {
@@ -69,6 +67,7 @@ export default {
                 this.componentData = { section, resolve, reject };
                 this.component = "sectionEditor";
             }).then((result) => {
+                console.log(result)
                 this.sections.splice(index, 1, result);
                 this.$socket.emit("[CMS] EDIT_TABLE_SECTION", { section: result, index });
                 this.$exitComponent();
@@ -84,20 +83,20 @@ export default {
         },
         editTable(table, index) {
             table.zone = this.sections[this.currentSection].zone;
-            new Promise((resolve,reject)=>{
-                 this.componentData = { table, resolve, reject, index }
-                 this.component = "tableEditor";
-            }).then((table)=>{
+            new Promise((resolve, reject) => {
+                this.componentData = { table, resolve, reject, index }
+                this.component = "tableEditor";
+            }).then((table) => {
                 this.tabs.splice(index, 1, table);
                 this.$socket.emit("[CMS] TABLE_MODIFY", { table, index, section: this.currentSection });
                 this.$exitComponent();
-            }).catch((remove)=>{
+            }).catch((remove) => {
                 remove ? this.$dialog({ title: "TABLE_REMOVE", msg: "TIP_TABLE_REMOVE" }).then(() => {
                     this.removeTable(table, index);
                     this.$exitComponent();
-                }).catch(()=>{
+                }).catch(() => {
                     this.$exitComponent();
-                }): this.$exitComponent();
+                }) : this.$exitComponent();
             });
         },
         sortSection() {
@@ -106,10 +105,6 @@ export default {
         },
         sortTable() {
             this.isTableSort = true;
-            this.tableSorted = this.tabs.filter(table => table._id).map((table, index) => {
-                table.grid = index;
-                return table;
-            });
         },
         applySectionSort() {
             this.$socket.emit("[CMS] TABLE_SECTION_SORT", this.sectionSorted);
@@ -117,7 +112,15 @@ export default {
             this.sectionSorted = null;
         },
         applyTableSort() {
-            this.$socket.emit("[CMS] TABLE_SORT", this.tableSorted);
+            let table = this.tabs.map((table, index) => {
+                table.grid = index;
+                return {
+                    _id: table._id,
+                    grid: table.grid
+                };
+            }).filter(table => table._id);
+            this.$socket.emit("[CMS] TABLE_SORT", table);
+            this.setTableSort({ tables: this.tabs, index: this.currentSection });
             this.isTableSort = false;
             this.tableSorted = null;
         },
@@ -126,10 +129,19 @@ export default {
             this.$socket.emit("[CMS] REMOVE_TABLE_SECTION", index);
         },
         removeTable(table, index) {
-            if (table._id) {
-
-            }
-        }
+            table._id && this.$socket.emit("[CMS] REMOVE_TABLE",table._id);
+            console.log(table);
+            this.tabs.splice(index,1,{
+                current:{},
+                feature:{},
+                grid:index,
+                name:"",
+                shape:"",
+                status:1,
+                zone:""
+            })
+        },
+        ...mapActions(['setTableSort'])
     },
     computed: {
         ...mapGetters(['tables', 'language'])

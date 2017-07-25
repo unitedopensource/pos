@@ -150,7 +150,7 @@ const mutations = {
         let { index, items } = data;
         state.config.layout.menu[index].item = items;
     },
-    [types.REPLACE_REQUEST_ITEM](state,data){
+    [types.REPLACE_REQUEST_ITEM](state, data) {
         let { index, items } = data;
         state.config.layout.request[index].item = items;
     },
@@ -165,7 +165,7 @@ const mutations = {
     },
     [types.REMOVE_REQUEST_ITEM](state, data) {
         let { grp, sub, index } = data;
-        state.config.layout.request[grp]['item'][sub].splice(index,1);
+        state.config.layout.request[grp]['item'][sub].splice(index, 1);
         state.config.layout.request[grp]['item'][sub].push({ zhCN: "", usEN: "", clickable: false, category: "NA" })
     },
     [types.REMOVE_MENU_ITEM](state, data) {
@@ -179,6 +179,17 @@ const mutations = {
     },
     [types.SET_PRINTER](state, data) {
         state.config.printer = Object.assign({}, state.config.printer, data);
+    },
+    [types.UPDATE_TABLE_SECTION](state, data) {
+        let { section, index } = data;
+        state.config.layout.table.splice(index, 1, section);
+    },
+    [types.SET_TABLE_SORT](state, data) {
+        let { tables, index } = data;
+        state.config.layout.table[index].item = tables;
+    },
+    [types.UPDATE_TABLE_INFO](state,data){
+        let { table, index, section } = data;
     }
 }
 

@@ -146,7 +146,3 @@ window.line = function (line1, line2) {
   }
   return f(line1) + f(line2);
 }
-
-// window.onerror = function (msg, url, line, col, error) {
-//   console.log(msg + '\n' + url + '\n' + line + '\n' + col + '\n' + error)
-// }

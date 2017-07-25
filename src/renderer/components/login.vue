@@ -80,7 +80,7 @@ export default {
     },
     login() {
       this.reset = true;
-      this.$socket.emit("INQUIRY_LOGIN", ~~this.password.join(''));
+      this.$socket.emit("INQUIRY_LOGIN", this.password.join(''));
     },
     autoLogin: _debounce(function () {
       if (this.$route.name === 'Login') {

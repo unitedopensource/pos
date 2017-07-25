@@ -73,6 +73,7 @@ export default {
         this.station.callid.enable && this.initCallerId(this.station.callid.port);
         this.station.pole.enable && this.initPoleDisplay(this.station.pole.port);
         this.station.scale.enable && this.initWeightSacle(this.station.scale.port);
+        this.station.terminal.enable && this.setDevice({ terminal: true });
       }
     },
     initCallerId(port) {

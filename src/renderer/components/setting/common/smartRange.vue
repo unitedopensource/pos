@@ -1,7 +1,7 @@
 <template>
     <div class="range">
         <label :for="id">{{text(label)}}</label>
-        <input :id="id" :value="value" type="range" @change="$emit('input',$event.target.value)" :min="min" :max="max" :step="step">
+        <input :id="id" :value="value" type="range" @input="$emit('input',$event.target.value)" :min="min" :max="max" :step="step">
         <span>{{value}}</span>
     </div>
 </template>

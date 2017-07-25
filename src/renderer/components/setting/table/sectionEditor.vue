@@ -31,7 +31,6 @@ export default {
     props: ['init'],
     created() {
         this.section = JSON.parse(JSON.stringify(this.init.section));
-        this.section.item = [];
     },
     data() {
         return {
@@ -40,7 +39,6 @@ export default {
     },
     methods: {
         confirm() {
-            console.log(this.section)
             this.init.resolve(this.section);
         }
     }

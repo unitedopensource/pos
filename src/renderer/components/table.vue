@@ -106,11 +106,10 @@ export default {
   },
   methods: {
     switchView(section) {
-      // let dom = document.querySelector(".table.active");
-      // dom && dom.classList.remove("active");
       this.sectionView = section.item;
     },
     selectTable(table, e) {
+      console.log(table)
       this.setApp({ opLastAction: new Date });
       if (!table._id) return;
       if (this.pendingSwitch) {
@@ -142,10 +141,6 @@ export default {
         case 4:
           if (table.current.invoice.length) {
             this.setCurrentTable(table);
-            // let dom = document.querySelector(".table.active");
-            // dom && dom.classList.remove("active");
-            // e.currentTarget.classList.add("active");
-
             let invoice = this.history.filter(order => order._id === table.current.invoice[0]);
             invoice.length && this.setViewOrder(JSON.parse(JSON.stringify(invoice[0])));
           } else {
@@ -153,14 +148,22 @@ export default {
           }
           break;
         default:
+          this.setCurrentTable(table);
+          this.store.table.guestCount ?
+            new Promise((resolve, reject) => {
+              this.componentData = { table, resolve, reject };
+              this.component = "setup";
+            }).then((guest) => {
+              this.seated(guest);
+            }).catch(() => {
+              this.setCurrentTable(null);
+              this.$exitComponent();
+            }) :
+            this.seated(0);
       }
     },
     forceSelectTable(table, e) {
       if (this.op.role !== 'Manager') return;
-
-      // let dom = document.querySelector(".table.active");
-      // dom && dom.classList.remove("active");
-      // e.currentTarget.classList.add("active");
 
       this.$dialog({
         type: "alert", title: "FORCE_CLEAR",

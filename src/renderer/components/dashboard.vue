@@ -23,7 +23,11 @@ import moment from 'moment'
 import Printer from '../print'
 import Preset from '../preset'
 import dialoger from './common/dialoger'
+import counter from './common/counter'
 export default {
+  components: {
+    dialoger, counter
+  },
   data() {
     return {
       component: null,
@@ -128,19 +132,68 @@ export default {
     reqClockIn() {
       this.$dialog({ title: "CLOCK_IN_REQ", msg: "TIP_CLOCK_IN_REQ" }).then(() => { this.$exitComponent() })
     },
-    askCashIn() {
-      this.$dialog({ title: "CASH_IN_REQ", msg: "TIP_CASH_IN_REQ" }).then(() => { this.cashInflow() }).catch(() => { this.$exitComponent() })
-    },
     cashInflow() {
-      
+      this.$socket.emit("[CASHFLOW] CHECK", today());
+    },
+    askCashIn() {
+      this.$dialog({ title: "CASH_IN_REQ", msg: "TIP_CASH_IN_REQ" }).then(() => {
+        this.countCash();
+      }).catch(() => { this.$exitComponent() });
+    },
+    countCash(total) {
+      isNumber(total) ?
+        this.$dialog({
+          title: 'CASH_IN_CONFIRM', msg: this.text('CASH_IN_AMOUNT', parseFloat(total).toFixed(2)),
+          buttons: [{ text: 'CANCEL', fn: 'reject' }, { text: 'CONFIRM', fn: 'resolve' }]
+        })
+          .then(() => { this.cashin(total) })
+          .catch(() => { this.countCash() }) :
+        new Promise((resolve, reject) => {
+          this.componentData = { resolve, reject };
+          this.component = "counter";
+        }).then((total) => { this.countCash(total) }).catch(() => { this.$exitComponent() });
+    },
+    cashin(amount) {
+      let record = {
+        date: today(),
+        operator: this.op.name,
+        begin: parseFloat(amount),
+        beginTime: +new Date,
+        end: null,
+        endTime: null,
+        activity: [{
+          type: "START",
+          inflow: parseFloat(amount),
+          outflow: 0,
+          time: +new Date,
+          operator: this.op.name
+        }]
+      }
+      this.$socket.emit("[CASHFLOW] CASH_IN_INITIAL", record);
+      Printer.init(this.config).setJob("cashin report").print(amount);
+      Printer.init(this.config).openCashDrawer();
+      this.$exitComponent();
+    },
+    recordCashDrawerAction() {
+      Printer.init(this.config).openCashDrawer();
+      let log = {
+        type: "OPEN",
+        inflow: 0,
+        outflow: 0,
+        time: +new Date,
+        operator: this.op.name
+      }
+      this.$socket.emit("[CASHFLOW] NEW_ACTIVITY", log);
     },
     ...mapActions(['setApp', 'setTicket', 'setCustomer', 'setStation', 'setStations', 'resetDashboard'])
   },
   computed: {
     ...mapGetters(['op', 'ring', 'callLog', 'device', 'config', 'store', 'station', 'time'])
   },
-  components: {
-    dialoger
+  sockets: {
+    CASHFLOW_RESULT(boolean) {
+      boolean ? this.recordCashDrawerAction() : this.askCashIn();
+    }
   }
 }
 </script>

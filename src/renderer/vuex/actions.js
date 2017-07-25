@@ -330,3 +330,18 @@ export const replaceRequestItem = ({
 },data)=>{
   commit(types.REPLACE_REQUEST_ITEM,data)
 }
+export const updateTableSection = ({
+  commit
+},data) =>{
+  commit(types.UPDATE_TABLE_SECTION,data)
+}
+export const setTableSort = ({
+  commit
+},data) =>{
+  commit(types.SET_TABLE_SORT,data)
+}
+export const updateTableInfo = ({
+  commit
+},data) =>{
+  commit(types.UPDATE_TABLE_INFO,data);
+}

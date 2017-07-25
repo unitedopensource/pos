@@ -19,7 +19,7 @@
                 <smart-option v-model="workStation.terminal.model" :options="devices" label="MODEL"></smart-option>
                 <smart-input v-model="workStation.terminal.address" reg="^[0-9. ]{3,}$" label="ADDRESS"></smart-input>
                 <smart-input v-model="workStation.terminal.port" reg="^[a-zA-Z0-9_. ]{2,10}$" label="PORT"></smart-input>
-                <smart-input v-model="workStation.terminal.authCode" label="AUTH_CODE" v-if="workStation.terminal.model === 'NX2200'"></smart-input>
+                <smart-input v-model="workStation.terminal.sn" label="AUTH_CODE"></smart-input>
             </article>
         </section>
         <section class="card">
@@ -29,8 +29,8 @@
             <article>
                 <smart-switch v-model="workStation.pole.enable" label="ENABLE"></smart-switch>
                 <smart-option v-model="workStation.pole.port" label="PORT" :options="ports"></smart-option>
-                <smart-input v-model="workStation.pole.top" label="STATION.POLEDISPLAY.FIRSTLINE" :enable="workStation.pole.enable"></smart-input>
-                <smart-input v-model="workStation.pole.btm" label="STATION.POLEDISPLAY.SECONDLINE" :enable="workStation.pole.enable"></smart-input>
+                <smart-input v-model="workStation.pole.top" label="STATION.POLEDISPLAY.FIRSTLINE" :disable="!workStation.pole.enable"></smart-input>
+                <smart-input v-model="workStation.pole.btm" label="STATION.POLEDISPLAY.SECONDLINE" :disable="!workStation.pole.enable"></smart-input>
             </article>
         </section>
         <section class="card">

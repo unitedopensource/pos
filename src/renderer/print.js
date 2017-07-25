@@ -50,6 +50,10 @@ Printer.prototype.print = function (data) {
     case "timeCard report":
       this.printTimeCardReport(data);
       break;
+    case "cashin report":
+      break;
+    case "cashout report":
+      break;
   }
 };
 Printer.prototype.openCashDrawer = function () {
@@ -634,7 +638,7 @@ Printer.prototype.printReport = function (data) {
           </section>
           ${content}
           <footer>
-            <p>Power by United POS</p>
+            <p>Powered by United POS</p>
           </footer>`;
   }
   function createStyle() {
@@ -710,7 +714,8 @@ Printer.prototype.printChecksum = function (data) {
               ${summary}
             </section>
             <footer>
-
+              <p>END OF BATCH REPORT</p>
+              <p>Powered By United POS</p>
             </footer>`;
   let style = `<style> 
                 *{margin:0;padding:0;font-family:'Agency FB';}
@@ -823,7 +828,7 @@ Printer.prototype.printTimeCardReport = function (data) {
               <span class="diff">${("0" + Math.floor(total / 36e5)).slice(-2) + "  Hr."} ${("0" + Math.floor(total / 6e4 % 60)).slice(-2) + "  Min."}</span>
             </div>
             <footer>
-              <p>Power by United POS</p>
+              <p>Powered by United POS</p>
             </footer>`;
   let style = `<style>*{margin:0;padding:0;font-family:'Agency FB';}
                 section.header{text-align:center;}

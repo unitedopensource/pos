@@ -117,6 +117,8 @@ export default {
             delete order.payment.paidCash;
             delete order.payment.paidCredit;
             delete order.payment.paidGift;
+            delete order.payment.due;
+            delete state.order.payment.type;
             this.$socket.emit("ORDER_MODIFIED", order);
           });
         this.$exitComponent();
@@ -243,9 +245,7 @@ export default {
         title: "TERM_BATCH_CLOSE", msg: "TIP_TERM_BATCH_CLOSE",
         buttons: [{ text: "CANCEL", fn: 'reject' }, { text: 'BATCH', fn: 'resolve' }]
       }).then(() => {
-        this.terminal.batch().then(response => {
-          return response.text();
-        }).then(response => {
+        this.terminal.batch().then(response => response.text()).then(response => {
           let result = this.terminal.explainBatch(response);
           if (result.code === '000000') {
             let sn = this.station.terminal.sn;
@@ -259,10 +259,7 @@ export default {
             this.$socket.emit('[TERM] SAVE_BATCH_RESULT', result);
             this.$exitComponent();
           } else {
-            this.$dialog({
-              type: 'warning', title: result.msg,
-              msg: this.text('ERROR_CODE', result.code)
-            }).then(() => { this.$exitComponent() })
+            this.$dialog({ type: 'warning', title: result.msg, msg: this.text('ERROR_CODE', result.code) }).then(() => { this.$exitComponent() })
           }
         })
       }).catch(() => { this.$exitComponent() })
@@ -274,9 +271,7 @@ export default {
       })
     },
     missTerminal() {
-      this.$dialog({ type: 'warning', title: 'TERM_NA', msg: 'STA_TERM_NA', buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => {
-        this.init.resolve();
-      })
+      this.$dialog({ type: 'warning', title: 'TERM_NA', msg: 'STA_TERM_NA', buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.init.resolve() })
     },
     setFilter(type, e) {
       this.filter = type;
