@@ -266,7 +266,7 @@ export const updateTable = ({
 }, data) => {
   let { table, time } = data;
   commit(types.SET_LASTSYNC, { table: time });
-  commit(types.UPDATE_TABLE, table);
+  commit(types.UPDATE_TABLE_STATUS, table);
 }
 export const insertOrder = ({
   commit

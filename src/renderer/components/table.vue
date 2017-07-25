@@ -88,7 +88,8 @@ export default {
       let index = this.tables.findIndex(section => section.zone === this.currentTable.zone);
       this.sectionView = this.tables[index].item;
       this.$nextTick(() => {
-        document.querySelectorAll('.table')[this.currentTable.grid].classList.add("active");
+        let target = document.querySelectorAll(".table")[this.currentTable.grid];
+            target && target.dispatchEvent(new CustomEvent('click'));
       })
     } else {
       this.sectionView = this.tables[0].item;
@@ -109,7 +110,6 @@ export default {
       this.sectionView = section.item;
     },
     selectTable(table, e) {
-      console.log(table)
       this.setApp({ opLastAction: new Date });
       if (!table._id) return;
       if (this.pendingSwitch) {
@@ -148,18 +148,6 @@ export default {
           }
           break;
         default:
-          this.setCurrentTable(table);
-          this.store.table.guestCount ?
-            new Promise((resolve, reject) => {
-              this.componentData = { table, resolve, reject };
-              this.component = "setup";
-            }).then((guest) => {
-              this.seated(guest);
-            }).catch(() => {
-              this.setCurrentTable(null);
-              this.$exitComponent();
-            }) :
-            this.seated(0);
       }
     },
     forceSelectTable(table, e) {
@@ -322,7 +310,7 @@ export default {
           buttons: [{ text: 'CANCEL', fn: 'reject' }, { text: 'CLEAR', fn: 'resolve' }]
         }).then(() => {
           let table = JSON.parse(JSON.stringify(this.currentTable));
-          table = Object.assign(_table, {
+          table = Object.assign(table, {
             status: 1,
             current: {
               color: "",

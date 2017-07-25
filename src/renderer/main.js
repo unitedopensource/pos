@@ -23,6 +23,10 @@ window.servers = [];
 const ip = Ip.address().split(".").splice(0, 3).join(".") + ".";
 let findHost = new Promise((resolve, reject) => {
   const args = require('electron').remote.process.argv.slice(1);
+  if (args.includes("-server")) {
+    resolve("127.0.0.1");
+    return;
+  }
   let host = args.indexOf("-host");
   if (host !== -1) {
     resolve(args[++host]);

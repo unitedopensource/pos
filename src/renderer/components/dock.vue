@@ -266,8 +266,7 @@ export default {
     UPDATE_CUSTOMER(customer) {
       console.log(customer);
     },
-    UPDATE_TABLE(data) {
-      console.log("update_table");
+    UPDATE_TABLE_STATUS(data) {
       this.updateTable(data);
     },
     LAST_UPDATE_TIME(update) {

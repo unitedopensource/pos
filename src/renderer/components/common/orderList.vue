@@ -120,9 +120,7 @@ export default {
     props: ['layout', 'group', 'display', 'sort'],
     mounted() {
         this.$nextTick(() => {
-            this.display ? this.order.content.length !== 0 ?
-                this.payment = this.order.payment :
-                this.calculator(this.cart) : this.calculator(this.cart);
+            this.display ? this.order.hasOwnProperty("payment") ? this.payment = this.payment : this.calculator(this.cart) : this.calculator(this.cart);
             this.$emit("update", this.payment);
         })
     },
@@ -337,6 +335,7 @@ export default {
             })
         },
         calculator(n) {
+            if (n.length === 0) return;
             let subtotal = 0;
             let tax = 0;
             let total = 0;

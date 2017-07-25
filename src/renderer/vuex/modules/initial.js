@@ -116,7 +116,7 @@ const mutations = {
             }
         }
     },
-    [types.UPDATE_TABLE](state, table) {
+    [types.UPDATE_TABLE_STATUS](state, table) {
         let zone = table.zone;
         let tables = state.config.layout.table;
         for (let i = 0; i < tables.length; i++) {
