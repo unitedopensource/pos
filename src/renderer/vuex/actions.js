@@ -345,3 +345,8 @@ export const updateTableInfo = ({
 },data) =>{
   commit(types.UPDATE_TABLE_INFO,data);
 }
+export const removeTable = ({
+  commit
+},data) =>{
+  commit(types.REMOVE_TABLE,data)
+}

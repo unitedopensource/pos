@@ -6,7 +6,7 @@ var Dictionary = function (key) {
         FW: [{ zhCN: "炸云吞", usEN: "Fried Wonton" }],
         CR: [{ zhCN: "蟹角", usEN: "Crab Rangoon" }],
         DP: [{ zhCN: "水饺", usEN: "Dumpling" }],
-        PU: [{ zhCN: "宝宝盘", usEN: "Egg Roll" }],
+        PU: [{ zhCN: "宝宝盘", usEN: "Pupu Platter" }],
         COS: [{ zhCN: "鸡串", usEN: "Chicken On Stick" }],
         BOS: [{ zhCN: "牛串", usEN: "Beef On Stick" }],
         SOS: [{ zhCN: "虾串", usEN: "Shrimp On Stick" }],

@@ -188,8 +188,12 @@ const mutations = {
         let { tables, index } = data;
         state.config.layout.table[index].item = tables;
     },
-    [types.UPDATE_TABLE_INFO](state,data){
+    [types.UPDATE_TABLE_INFO](state, data) {
         let { table, index, section } = data;
+    },
+    [types.REMOVE_TABLE](state, data) {
+        let { section, index } = data;
+        state.config.layout.table[section].item.splice(index, 1)
     }
 }
 

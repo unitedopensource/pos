@@ -92,7 +92,7 @@ export default {
                 this.$exitComponent();
             }).catch((remove) => {
                 remove ? this.$dialog({ title: "TABLE_REMOVE", msg: "TIP_TABLE_REMOVE" }).then(() => {
-                    this.removeTable(table, index);
+                    this.removeTab(table, index);
                     this.$exitComponent();
                 }).catch(() => {
                     this.$exitComponent();
@@ -128,20 +128,20 @@ export default {
             this.sections.splice(index, 1);
             this.$socket.emit("[CMS] REMOVE_TABLE_SECTION", index);
         },
-        removeTable(table, index) {
-            table._id && this.$socket.emit("[CMS] REMOVE_TABLE",table._id);
-            console.log(table);
-            this.tabs.splice(index,1,{
-                current:{},
-                feature:{},
-                grid:index,
-                name:"",
-                shape:"",
-                status:1,
-                zone:""
-            })
+        removeTab(table, index) {
+            table._id && this.$socket.emit("[CMS] REMOVE_TABLE", table._id);
+            this.tabs.splice(index, 1, {
+                current: {},
+                feature: {},
+                grid: index,
+                name: "",
+                shape: "",
+                status: 1,
+                zone: ""
+            });
+            this.removeTable({ section: this.currentSection, index })
         },
-        ...mapActions(['setTableSort'])
+        ...mapActions(['setTableSort','removeTable'])
     },
     computed: {
         ...mapGetters(['tables', 'language'])
