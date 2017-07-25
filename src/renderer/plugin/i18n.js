@@ -418,6 +418,7 @@
               'STATISTIC': '数额',
               'SENT_RPT_VIA_EMAIL': '发送报表至邮箱',
               'SUMMARY': '总计',
+              'TABLE':'座位',
               'TIP_CASH_DRAWER_NA':'需要先为此工作站配置一个钱机',
               'TIP_CASH_IN_OUT': '统计收银员现金流',
               'TO': '到',
@@ -435,6 +436,7 @@
               'THU': '周四',
               'TITLE': '标题',
               'TRANSACTION': '交易',
+              'SHAPE':'图标',
               'SUBTITLE': '子标题',
               'SUBITEM': '子菜项',
               'ROUTE': '路由',
@@ -547,7 +549,8 @@
               'WAIT_QUEUE': '等待队列',
               'WEIGHT_SCALE': '磅秤',
               'ZIP_CODE': '邮区',
-              'ZH_CN': '中文'
+              'ZH_CN': '中文',
+              'ZONE':'区号'
             },
             usEN: {
               'ACTIVITY': 'Activities',

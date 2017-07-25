@@ -2,7 +2,7 @@
   <div class="dineIn">
     <section class="blueprint">
       <div class="tableSection">
-        <div class="section btn" v-for="section in tables" @click="switchView(section)">{{section[language]}}</div>
+        <div class="section btn" v-for="(section,index) in tables" @click="switchView(section)" :key="index">{{section[language]}}</div>
         <div class="section bottom">
           <div class="section btn" @click="getReservation">
             <i class="fa fa-user-o"></i>
@@ -106,8 +106,8 @@ export default {
   },
   methods: {
     switchView(section) {
-      let dom = document.querySelector(".table.active");
-      dom && dom.classList.remove("active");
+      // let dom = document.querySelector(".table.active");
+      // dom && dom.classList.remove("active");
       this.sectionView = section.item;
     },
     selectTable(table, e) {
@@ -142,9 +142,9 @@ export default {
         case 4:
           if (table.current.invoice.length) {
             this.setCurrentTable(table);
-            let dom = document.querySelector(".table.active");
-            dom && dom.classList.remove("active");
-            e.currentTarget.classList.add("active");
+            // let dom = document.querySelector(".table.active");
+            // dom && dom.classList.remove("active");
+            // e.currentTarget.classList.add("active");
 
             let invoice = this.history.filter(order => order._id === table.current.invoice[0]);
             invoice.length && this.setViewOrder(JSON.parse(JSON.stringify(invoice[0])));
@@ -158,9 +158,9 @@ export default {
     forceSelectTable(table, e) {
       if (this.op.role !== 'Manager') return;
 
-      let dom = document.querySelector(".table.active");
-      dom && dom.classList.remove("active");
-      e.currentTarget.classList.add("active");
+      // let dom = document.querySelector(".table.active");
+      // dom && dom.classList.remove("active");
+      // e.currentTarget.classList.add("active");
 
       this.$dialog({
         type: "alert", title: "FORCE_CLEAR",
@@ -467,7 +467,7 @@ span.server {
   font-size: 1.25em;
 }
 
-.table.active {
+.table:hover {
   background: rgba(245, 245, 245, 0.5);
 }
 

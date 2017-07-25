@@ -100,10 +100,8 @@ export default {
         confirm() {
             Promise.all([this.fetchData(), this.fetchCreditCard(), this.fetchGiftCard()]).then(datas => {
                 this.handler(datas);
-                Printer.init(this.config).setJob("report").print({
-                    date: this.reportRange,
-                    report: this.report
-                })
+                console.log(this.report)
+                Printer.init(this.config).setJob("report").print({ date: this.reportRange, report: this.report });
                 this.init.resolve();
             })
         },
@@ -289,15 +287,15 @@ export default {
                     switch (ticket.payment.type) {
                         case "CASH":
                             cash++;
-                            cashAmount += parseFloat(ticket.payment.paidCash);
+                            cashAmount += ticket.payment.due;
                             break;
                         case "CREDIT":
                             credit++;
-                            creditAmount += parseFloat(ticket.payment.paidCredit);
+                            creditAmount += ticket.payment.due;
                             break;
                         case "GIFT":
                             gift++;
-                            giftAmount += parseFloat(ticket.payment.paidGift);
+                            giftAmount += ticket.payment.due;
                             break;
                     }
                 } else {

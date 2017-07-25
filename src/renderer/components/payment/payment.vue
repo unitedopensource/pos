@@ -415,7 +415,6 @@ export default {
                 this.$exitComponent();
                 this.$dialog(reject).then(() => {
                     let payment = Object.assign(this.payment, {
-                        due: 0,
                         paid: this.payment.due,
                         paidCredit: this.payment.due
                     })

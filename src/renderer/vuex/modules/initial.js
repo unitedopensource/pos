@@ -64,7 +64,6 @@ const mutations = {
         }
     },
     [types.SET_STATION](state, station) {
-        console.log("receive station", station)
         state.config = Object.assign({}, state.config, { station })
     },
     [types.SET_STATIONS](state, data) {
