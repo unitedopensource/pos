@@ -249,6 +249,7 @@ export default {
       'removeSpooler',
       'updateMenuItem',
       'removeMenuItem',
+      'updateTableInfo',
       'updateRequestItem',
       'removeRequestItem',
       'updateMenuCategory',
