@@ -5,10 +5,22 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import store from './vuex/store'
-import serialport from 'serialport'
 export default {
-  store
+  store,
+  computed: {
+    ...mapGetters(['op'])
+  },
+  watch: {
+    op(n) {
+      if (n) {
+        this.op.role === 'Admin' ?
+          document.getElementById("app").classList.add("admin") :
+          document.getElementById("app").classList.remove("admin");
+      }
+    }
+  }
 }
 </script>
 

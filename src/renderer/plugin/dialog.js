@@ -3,7 +3,7 @@ const dialog = {
     Vue.mixin({
       methods: {
         approval(credential, permit) {
-          return credential.includes(permit);
+          return this.op.role === 'Admin' ? true :credential.includes(permit);
         }
       }
     });

@@ -16,6 +16,8 @@
                             <checkbox v-model="profile.print.PRE_PAYMENT" label="PRE_PAYMENT"></checkbox>
                             <checkbox v-model="profile.print.PAYMENT" label="PAYMENT"></checkbox>
                             <checkbox v-model="profile.print.REPORT" label="REPORT"></checkbox>
+                            <checkbox v-model="profile.print.SALES" label="SALES"></checkbox>
+                            <checkbox v-model="profile.print.SALES" label="BUFFET"></checkbox>
                         </div>
                     </fieldset>
                     <fieldset class="section">
@@ -304,7 +306,6 @@ export default {
 .section .selection {
     display: flex;
     flex-wrap: wrap;
-    width: 300px;
 }
 
 .input {
@@ -328,15 +329,15 @@ legend {
 
 section.setting {
     background: rgba(238, 238, 238, 0.57);
-    width: 312px;
+    width: 350px;
 }
 
 .selection .input {
-    width: 285px;
+    width: 325px;
 }
 
 .range {
-    width: 300px;
+    width: 339px;
     font-size: 13px;
     border-bottom: 1px dashed #ccc;
     padding-bottom: 5px;

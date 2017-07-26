@@ -7,11 +7,9 @@ const state = {
 
 const mutations = {
   [types.SET_PIN](state, password) {
-    isNumber(password) ?
-      state.password.push(password) :
-      state.password = [];
-
-    //state.password.length === 8 && state.password.pop();
+    typeof password === 'undefined' ?
+      state.password = [] :
+      state.password.push(password)
   },
   [types.DEL_PIN](state) {
     state.password.pop()

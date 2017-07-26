@@ -26,6 +26,8 @@
                         <smart-option v-model="op.role" label="ROLE" :options="roles"></smart-option>
                         <smart-input v-model="op.pin" label="PASSWORD" type="password"></smart-input>
                         <smart-option v-model="op.language" label="LANGUAGE" :options="languages"></smart-option>
+                        <smart-switch v-model="op.timeCard" label="TIMECARD"></smart-switch>
+                        <smart-input v-model="op.employeeCard" label="EMPLOYEE_CARD" type="password"></smart-input>
                     </article>
                 </section>
                 <section class="card list">
@@ -102,10 +104,11 @@
 <script>
 import dialoger from '../../common/dialoger'
 import smartOption from '../common/smartOption'
+import smartSwitch from '../common/smartSwitch'
 import smartInput from '../common/smartInput'
 import checkbox from '../common/checkbox'
 export default {
-    components: { dialoger, checkbox, smartInput, smartOption },
+    components: { dialoger, checkbox, smartInput, smartOption, smartSwitch },
     created() {
         this.$socket.emit("INQUIRY_ALL_OPS");
     },

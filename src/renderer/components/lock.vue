@@ -47,12 +47,12 @@ export default {
           this.delPin();
           break;
         default:
-          /^\d+$/.test(e.key) && this.setPin(e.key);
+          /^[a-z,A-z,0-9]$/.test(e.key) && this.setPin(e.key);
       }
     },
     login() {
       this.reset = true;
-      this.$socket.emit("INQUIRY_LOGIN", ~~this.password.join(''));
+      this.$socket.emit("INQUIRY_LOGIN", this.password.join(''));
     },
     autoLogin: _debounce(function () {
       if (this.$route.name === 'Lock') {
@@ -71,11 +71,11 @@ export default {
   sockets: {
     LOGIN_AUTH(result) {
       if (result.auth) {
-        let language = result.op[0].language || "usEN";
+        let language = result.op.language || "usEN";
         moment.locale(language === 'usEN' ? 'en' : 'zh-cn');
         this.$setLanguage(language);
         this.setApp({ language });
-        this.setOp(result.op[0]);
+        this.setOp(result.op);
         this.setPin();
         this.$router.push({ path: '/main' });
       } else {

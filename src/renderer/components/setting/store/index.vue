@@ -37,7 +37,7 @@
                 <span class="tip"></span>
             </header>
             <article>
-                <smart-switch v-model="store.timeCard" label="TIME_CARD"></smart-switch>
+                <smart-switch v-model="store.timeCard" label="TIMECARD"></smart-switch>
                 <smart-switch v-model="store.timeCardReport" label="CLOCK_OUT_REPORT"></smart-switch>
             </article>
         </section>

@@ -1,12 +1,13 @@
 <template>
     <div class="input">
         <label :for="id">{{text(label)}}</label>
-        <input :id="id" :value="value" :type="type" @input="$emit('input', $event.target.value)" :disabled="disable">
+        <input :id="id" :value="value" :type="type" @input="$emit('input', $event.target.value)" :disabled="disable && !admin">
         <i class="fa fa-level-down" v-if="more" @click="trigger"></i>
     </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
     props: {
         value: [String, Number, Array],
@@ -28,16 +29,21 @@ export default {
     },
     created() {
         this.id = Math.random().toString(36).substr(2, 5);
+        this.op.role === 'Admin' && (this.admin = true);
     },
     data() {
         return {
-            id: null
+            id: null,
+            admin: false
         }
     },
     methods: {
         trigger() {
             this.$emit("toggle")
         }
+    },
+    computed: {
+        ...mapGetters(['op'])
     }
 }
 </script>

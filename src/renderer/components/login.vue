@@ -75,7 +75,7 @@ export default {
           this.delPin();
           break;
         default:
-          /^\d+$/.test(e.key) && this.setPin(e.key);
+          /^[a-z,A-z,0-9]$/.test(e.key) && this.setPin(e.key);
       }
     },
     login() {
@@ -106,11 +106,11 @@ export default {
     LOGIN_AUTH(result) {
       if (result.auth) {
         document.querySelector(".ctrl").classList.add("hide");
-        let language = result.op[0].language || "usEN";
+        let language = result.op.language || "usEN";
         moment.locale(language === 'usEN' ? 'en' : 'zh-cn');
         this.$setLanguage(language);
         this.setApp({ language });
-        this.setOp(result.op[0]);
+        this.setOp(result.op);
         this.setPin();
         this.$router.push({ path: '/main' });
       } else {

@@ -171,8 +171,8 @@ section.section {
 .table {
     display: inline-flex;
     flex-direction: column;
-    width: 87.5px;
-    height: 96px;
+    width: 101.5px;
+    height: 83px;
     background: linear-gradient(135deg, rgb(245, 247, 250) 0%, rgb(195, 207, 226) 110%);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
     margin: 4px;
@@ -181,7 +181,7 @@ section.section {
 }
 
 .icon {
-    font-size: 4.5em;
+    font-size: 4em;
 }
 
 .tableGhost {

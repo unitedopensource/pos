@@ -83,11 +83,8 @@ export default {
             this.recordAction();
         },
         pick(item) {
+            if (!item.clickable) return;
             if (this.isOpenFood(item)) return;
-            if (!item.clickable) {
-                //this.$toast()
-                return;
-            }
             item = Object.assign({}, item);
             this.poleDisplay(item.usEN.slice(0, 20), ["Price:", (item.price[0]).toFixed(2)]);
             (item.hasOwnProperty("prices") && item.prices[this.ticket.type]) && (item.price = item.prices[this.ticket.type])

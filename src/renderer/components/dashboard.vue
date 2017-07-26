@@ -41,7 +41,7 @@ export default {
     } else {
       this.device.poleDisplay && this.welcome();
       this.store.timeCard && this.checkClockIn();
-      this.station.timeout && this.setApp({ autoLock: true, opLastAction: new Date });
+      ~~this.station.timeout !== 0 ? this.setApp({ autoLock: true, opLastAction: new Date }) : this.setApp({ autoLock: false });
     }
   },
   methods: {
@@ -50,8 +50,12 @@ export default {
       if (!grid.enable) return;
       let route = grid.route;
       switch (route) {
+        case "buffet":
+          this.setTicket({ type: 'BUFFET' });
+          this.$router.push({ path: '/main/menu' });
+          break;
         case "sale":
-          this.setTicket({ type: 'PAYMENT' });
+          this.setTicket({ type: 'SALES' });
           this.$router.push({ path: '/main/menu' });
           break;
         case "order":
@@ -128,7 +132,7 @@ export default {
       poleDisplay.write(line(this.station.pole.top, this.station.pole.btm));
     },
     checkClockIn() {
-      this.op.wage.includes("H") && !this.op.clockIn && this.reqClockIn();
+      this.op.timecard && !this.op.clockIn && this.reqClockIn();
     },
     reqClockIn() {
       this.$dialog({ title: "CLOCK_IN_REQ", msg: "TIP_CLOCK_IN_REQ" }).then(() => { this.$exitComponent() })
@@ -137,22 +141,23 @@ export default {
       this.$socket.emit("[CASHFLOW] CHECK", today());
     },
     askCashIn() {
-      this.$dialog({ title: "CASH_IN_REQ", msg: "TIP_CASH_IN_REQ" }).then(() => {
-        this.countCash();
-      }).catch(() => { this.$exitComponent() });
+      this.$dialog({ title: "CASH_IN_REQ", msg: "TIP_CASH_IN_REQ" }).then(() => { this.countCash() }).catch(() => { this.$exitComponent() });
     },
     countCash(total) {
-      isNumber(total) ?
+      if (isNumber(total)) {
+        Printer.init(this.config).openCashDrawer();
         this.$dialog({
           title: 'CASH_IN_CONFIRM', msg: this.text('CASH_IN_AMOUNT', parseFloat(total).toFixed(2)),
           buttons: [{ text: 'CANCEL', fn: 'reject' }, { text: 'CONFIRM', fn: 'resolve' }]
         })
           .then(() => { this.cashin(total) })
-          .catch(() => { this.countCash() }) :
+          .catch(() => { this.countCash() })
+      } else {
         new Promise((resolve, reject) => {
           this.componentData = { resolve, reject };
           this.component = "counter";
         }).then((total) => { this.countCash(total) }).catch(() => { this.$exitComponent() });
+      }
     },
     cashin(amount) {
       let record = {

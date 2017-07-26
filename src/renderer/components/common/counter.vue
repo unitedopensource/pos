@@ -3,6 +3,7 @@
         <div class="window">
             <header class="title">
                 <span>{{text('CASH_IN_COUNT')}}</span>
+                <span class="cash">$ {{amount.toFixed(2)}}</span>
             </header>
             <div class="inner">
                 <div class="bill">
@@ -89,9 +90,7 @@ export default {
             this[this.pointer] = this.value;
         },
         confirm() {
-            let amount = 0;
-            amount += this.hundred * 100 + this.fifty * 50 + this.twenty * 20 + this.ten * 10 + this.five * 5 + this.one * 1 + this.quarter * 0.25 + this.dime * 0.1 + this.nickel * 0.05 + this.penny * 0.01;
-            this.init.resolve(amount);
+            this.init.resolve(this.amount);
         }
     },
     watch: {
@@ -100,7 +99,14 @@ export default {
             dom && dom.classList.remove("active");
             dom = document.querySelector(`.${n}`);
             dom && dom.classList.add("active");
+            this.value = this[n];
         }
+    },
+    computed: {
+        amount() {
+            return this.hundred * 100 + this.fifty * 50 + this.twenty * 20 + this.ten * 10 + this.five * 5 + this.one * 1 + this.quarter * 0.25 + this.dime * 0.1 + this.nickel * 0.05 + this.penny * 0.01;
+        }
+
     }
 }
 </script>
@@ -131,12 +137,18 @@ export default {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 
-.bill .active {
+.bill .active,
+.coin .active {
     background: #009688;
     color: #fff;
 }
 
 .range {
     margin: 15px 0;
+}
+
+.cash {
+    font-size: 16px;
+    color: #FAFAFA;
 }
 </style>
