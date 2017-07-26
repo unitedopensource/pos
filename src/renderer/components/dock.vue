@@ -42,10 +42,6 @@ export default {
     setTimeout(() => {
       document.querySelector(".dock").classList.add("slideDown");
     }, 300);
-    this.$store.watch((state) => state.initial.time, (n) => {
-      this.app.autoLogout && this.opTimeout();
-      this.spooler.length !== 0 && (n > this.spooler[0].delay) && this.printFromSpooler(0);
-    })
   },
   data() {
     return {
@@ -62,6 +58,15 @@ export default {
       return this.text(this.ticket.type, this.app.language);
     },
     ...mapGetters(['op', 'app', 'time', 'ring', 'order', 'config', 'ticket', 'update', 'device', 'history', 'station', 'spooler', 'customer', 'language', 'currentTable'])
+  },
+  watch: {
+    ring(n) {
+      n ? this.$socket.emit('INQUIRY_CUSTOMER_INFO', String(n.number)) : this.$exitComponent();
+    },
+    time(n) { 
+      this.app.autoLock && this.sectionTimeout(n);
+      this.spooler.length !== 0 && (n > this.spooler[0].delay) && this.printFromSpooler(0);
+    }
   },
   methods: {
     openPanel() {
@@ -116,7 +121,7 @@ export default {
         })
       }
     },
-    opTimeout(current) {
+    sectionTimeout(current) {
       let lapse = (current - this.app.opLastAction) / 1000;
       if (lapse > this.station.timeout) {
         this.setApp({ autoLogout: false });
@@ -284,7 +289,6 @@ export default {
       this.componentData = info;
       this.component = "caller";
     },
-
     TIMECARD_REPORT(data) {
       Printer.init(this.config).setJob("timeCard report").print(data);
     },
@@ -322,13 +326,8 @@ export default {
     MENU_ITEM_UPDATE(data) { this.updateMenuItem(data) },
     MENU_ITEM_REMOVE(data) { this.removeMenuItem(data) },
     UPDATE_TABLE_SECTION(data) { this.updateTableSection(data) },
-    UPDATE_TABLE_INFO(data){ this.updateTableInfo(data)},
+    UPDATE_TABLE_INFO(data) { this.updateTableInfo(data) },
     disconnect() { this.setApp({ database: false }) }
-  },
-  watch: {
-    ring(n) {
-      n ? this.$socket.emit('INQUIRY_CUSTOMER_INFO', String(n.number)) : this.$exitComponent();
-    }
   }
 }
 </script>

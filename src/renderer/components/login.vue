@@ -110,7 +110,7 @@ export default {
         moment.locale(language === 'usEN' ? 'en' : 'zh-cn');
         this.$setLanguage(language);
         this.setApp({ language });
-        this.station && this.station.timeout && this.setApp({ autoLogout: true, opLastAction: new Date });
+        this.station && this.station.timeout && this.setApp({ autoLock: true, opLastAction: new Date });
         this.setOp(result.op[0]);
         this.setPin();
         this.$router.push({ path: '/main' });

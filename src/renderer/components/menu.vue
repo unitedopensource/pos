@@ -22,22 +22,23 @@
  
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import moment from 'moment'
-import Printer from '../print'
 import functionGrid from './menu/function'
 import orderList from './common/orderList'
 import dialoger from './common/dialoger'
 import payment from './payment/payment'
 import itemMarker from './menu/marker'
+import template from './menu/template'
 import request from './menu/request'
-import builder from './menu/builder'
 import search from './menu/search'
 import modify from './menu/modify'
 import guests from './menu/guests'
 import course from './menu/course'
 import split from './menu/split'
+import Printer from '../print'
+import moment from 'moment'
 
 export default {
+    components: { functionGrid, itemMarker, orderList, modify, course, split, payment, request, dialoger, guests, template },
     created() {
         this.menuInstance = JSON.parse(JSON.stringify(this.menu));
         this.flatten(this.menuInstance[0].item);
@@ -125,14 +126,14 @@ export default {
         },
         setOption(side, index) {
             side.template ?
-                this.callBuilder(side, index) :
+                this.callTemplate(side, index) :
                 this.alterItemOption({ side, index });
         },
-        callBuilder(side, index) {
+        callTemplate(side, index) {
             new Promise((resolve, reject) => {
                 this.componentData = { side, resolve, reject };
-                this.component = "builder";
-            }).then(option => {
+                this.component = "template";
+            }).then((option) => {
                 this.emptyChoiceSet();
                 this.alterItemOption({ side, index, disableAutoAdd: true });
                 for (let key in option) {
@@ -149,7 +150,7 @@ export default {
                     })
                 }
                 this.$exitComponent();
-            }).catch(bool => {
+            }).catch((bool) => {
                 bool && this.alterItemOption({ side, index, disableAutoAdd: true });
                 this.$exitComponent()
             });
@@ -488,9 +489,6 @@ export default {
             return this.items
         },
         ...mapGetters(['op', 'app', 'config', 'order', 'menu', 'sides', 'item', 'ticket', 'customer', 'currentTable', 'station', 'language', 'isEmptyOrder', 'device'])
-    },
-    components: {
-        functionGrid, itemMarker, orderList, modify, course, split, payment, request, dialoger, guests, builder,
     }
 }
 </script>
