@@ -41,6 +41,7 @@ export default {
     } else {
       this.device.poleDisplay && this.welcome();
       this.store.timeCard && this.checkClockIn();
+      this.station.timeout && this.setApp({ autoLock: true, opLastAction: new Date });
     }
   },
   methods: {

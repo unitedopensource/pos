@@ -27,7 +27,7 @@ import orderList from './common/orderList'
 import dialoger from './common/dialoger'
 import payment from './payment/payment'
 import itemMarker from './menu/marker'
-import template from './menu/template'
+import builder from './menu/builder'
 import request from './menu/request'
 import search from './menu/search'
 import modify from './menu/modify'
@@ -38,7 +38,7 @@ import Printer from '../print'
 import moment from 'moment'
 
 export default {
-    components: { functionGrid, itemMarker, orderList, modify, course, split, payment, request, dialoger, guests, template },
+    components: { functionGrid, itemMarker, orderList, modify, course, split, payment, request, dialoger, guests, builder },
     created() {
         this.menuInstance = JSON.parse(JSON.stringify(this.menu));
         this.flatten(this.menuInstance[0].item);
@@ -132,7 +132,7 @@ export default {
         callTemplate(side, index) {
             new Promise((resolve, reject) => {
                 this.componentData = { side, resolve, reject };
-                this.component = "template";
+                this.component = "builder";
             }).then((option) => {
                 this.emptyChoiceSet();
                 this.alterItemOption({ side, index, disableAutoAdd: true });
@@ -445,20 +445,7 @@ export default {
         },
         exit() {
             if (this.currentTable && this.currentTable.current.invoice.length === 0) {
-                this.setTableInfo({
-                    guest: 0,
-                    server: "",
-                    time: "",
-                    status: 1,
-                    current: {
-                        guest: 0,
-                        server: "",
-                        time: "",
-                        invoice: [],
-                        group: "",
-                        color: ""
-                    }
-                });
+                this.resetCurrentTable();
                 this.$socket.emit("TABLE_MODIFIED", this.currentTable);
             }
             this.resetAll();
@@ -468,15 +455,16 @@ export default {
         ...mapActions(['setApp',
             'lessQty',
             'moreQty',
-            'addToOrder',
-            'alterItem',
-            'alterItemOption',
-            'setSides',
-            'setChoiceSet',
-            'emptyChoiceSet',
-            'setTableInfo',
             'setOrder',
+            'setSides',
+            'alterItem',
+            'addToOrder',
             'delayPrint',
+            'setChoiceSet',
+            'setTableInfo',
+            'emptyChoiceSet',
+            'resetCurrentTable',
+            'alterItemOption',
             'resetAll'])
     },
     computed: {

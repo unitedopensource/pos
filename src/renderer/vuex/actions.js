@@ -108,6 +108,11 @@ export const setTableInfo = ({
 }, info) => {
   commit(types.SET_TABLE_INFO, info)
 }
+export const resetCurrentTable = ({
+  commit
+})=>{
+  commit(types.RESET_CURRENT_TABLE)
+}
 export const setViewOrder = ({
   commit
 }, order) => {

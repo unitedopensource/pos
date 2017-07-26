@@ -24,7 +24,7 @@
                     <article>
                         <smart-input v-model="op.name" label="NAME"></smart-input>
                         <smart-option v-model="op.role" label="ROLE" :options="roles"></smart-option>
-                        <smart-input v-model.number="op.pin" label="PASSWORD" type="password"></smart-input>
+                        <smart-input v-model="op.pin" label="PASSWORD" type="password"></smart-input>
                         <smart-option v-model="op.language" label="LANGUAGE" :options="languages"></smart-option>
                     </article>
                 </section>
@@ -115,7 +115,7 @@ export default {
             component: null,
             componentData: null,
             activities: [],
-            roles: ['Admin', 'Manager', 'Cashier', 'Waitstaff', 'Bartender'],
+            roles: ['Manager', 'Cashier', 'Waitstaff', 'Bartender'],
             languages: [{ label: "PRIMARY", value: "zhCN" }, { label: "SECONDARY", value: "usEN" }],
             compare: null,
             change: false,

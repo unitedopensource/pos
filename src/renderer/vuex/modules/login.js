@@ -11,7 +11,7 @@ const mutations = {
       state.password.push(password) :
       state.password = [];
 
-    state.password.length === 8 && state.password.pop();
+    //state.password.length === 8 && state.password.pop();
   },
   [types.DEL_PIN](state) {
     state.password.pop()

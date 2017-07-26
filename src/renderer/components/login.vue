@@ -110,7 +110,6 @@ export default {
         moment.locale(language === 'usEN' ? 'en' : 'zh-cn');
         this.$setLanguage(language);
         this.setApp({ language });
-        this.station && this.station.timeout && this.setApp({ autoLock: true, opLastAction: new Date });
         this.setOp(result.op[0]);
         this.setPin();
         this.$router.push({ path: '/main' });
@@ -146,14 +145,14 @@ export default {
 .menu-enter-active,
 .menu-leave-active {
   opacity: 1;
-  transform: translate3d(0,0,0);
+  transform: translate3d(0, 0, 0);
   transition: all .3s ease;
 }
 
 .menu-enter,
 .menu-leave {
   opacity: 0;
-  transform: translate3d(0,-3px,0);
+  transform: translate3d(0, -3px, 0);
 }
 
 .login {
@@ -170,20 +169,23 @@ export default {
   text-align: center;
   color: #fff;
   width: 275px;
-  height: 32px;
-  padding: 5px 0;
+  height: 40px;
+  overflow: hidden;
   margin: auto;
+  display: flex;
+  justify-content: center;
+  flex-shrink: 0;
+  flex-wrap: wrap;
   box-shadow: inset 0px 0px 6px rgba(105, 81, 81, 0.285);
 }
 
 .input span {
-  display: inline-block;
   width: 30px;
   height: 30px;
   border-radius: 50%;
   background: #fff;
   box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3);
-  margin-right: 5px;
+  margin: 5px;
 }
 
 h2 {

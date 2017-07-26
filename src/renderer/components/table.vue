@@ -342,7 +342,7 @@ export default {
       this.resetAll();
       this.$router.push({ path: "/main" });
     },
-    ...mapActions(['setApp', 'resetAll', 'resetMenu', 'setOrder', 'setCurrentTable', 'setTableInfo', 'setViewOrder', 'setTicket'])
+    ...mapActions(['setApp', 'resetAll', 'resetMenu', 'setOrder', 'setTicket', 'setTableInfo', 'setViewOrder', 'setCurrentTable'])
   },
   computed: {
     ...mapGetters(['op', 'config', 'store', 'history', 'tables', 'order', 'language', 'currentTable'])

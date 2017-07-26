@@ -45,6 +45,7 @@ export default {
   },
   data() {
     return {
+      temp:null,
       component: null,
       componentData: null
     }
@@ -64,8 +65,11 @@ export default {
       n ? this.$socket.emit('INQUIRY_CUSTOMER_INFO', String(n.number)) : this.$exitComponent();
     },
     time(n) { 
-      this.app.autoLock && this.sectionTimeout(n);
+      this.app.autoLock && this.$route.name !== "Lock" && this.sectionTimeout(n);
       this.spooler.length !== 0 && (n > this.spooler[0].delay) && this.printFromSpooler(0);
+    },
+    "$route.name"(n,o){
+      console.log(n)
     }
   },
   methods: {
@@ -88,20 +92,7 @@ export default {
             msg: this.text('ORD_TYP_SW', this.text(this.ticket.type), this.text(type))
           }).then(() => {
             if (this.ticket.type === 'DINE_INE') {
-              this.setTableInfo({
-                guest: 0,
-                server: "",
-                time: "",
-                status: 1,
-                current: {
-                  guest: 0,
-                  server: "",
-                  time: "",
-                  invoice: [],
-                  group: "",
-                  color: ""
-                }
-              });
+              this.resetCurrentTable();
               this.$socket.emit("TABLE_MODIFIED", this.currentTable);
             }
             this.setTicket({ type });
@@ -124,16 +115,17 @@ export default {
     sectionTimeout(current) {
       let lapse = (current - this.app.opLastAction) / 1000;
       if (lapse > this.station.timeout) {
-        this.setApp({ autoLogout: false });
+        this.setApp({ autoLock: false });
         this.$dialog({
           title: 'AUTO_LOGOUT', msg: this.text('TIP_AUTO_LOGOUT', this.station.timeout),
           timeout: { fn: 'resolve', duration: 10000 },
           buttons: [{ text: 'EXTEND', fn: 'reject' }]
         }).then(() => {
+          this.$exitComponent();
           this.resetAll();
-          this.$router.push({ path: '/Login' });
+          this.$router.push({ path: '/main/lock' });
         }).catch(() => {
-          this.setApp({ opLastAction: new Date, autoLogout: true });
+          this.setApp({ opLastAction: new Date, autoLock: true });
           this.$exitComponent();
         })
       }
@@ -255,6 +247,7 @@ export default {
       'updateMenuItem',
       'removeMenuItem',
       'updateTableInfo',
+      'resetCurrentTable',
       'updateRequestItem',
       'removeRequestItem',
       'updateMenuCategory',
