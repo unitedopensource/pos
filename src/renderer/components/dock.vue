@@ -45,7 +45,7 @@ export default {
   },
   data() {
     return {
-      temp:null,
+      temp: null,
       component: null,
       componentData: null
     }
@@ -64,11 +64,11 @@ export default {
     ring(n) {
       n ? this.$socket.emit('INQUIRY_CUSTOMER_INFO', String(n.number)) : this.$exitComponent();
     },
-    time(n) { 
+    time(n) {
       this.app.autoLock && this.$route.name !== "Lock" && this.sectionTimeout(n);
       this.spooler.length !== 0 && (n > this.spooler[0].delay) && this.printFromSpooler(0);
     },
-    "$route.name"(n,o){
+    "$route.name"(n, o) {
       console.log(n)
     }
   },
@@ -217,6 +217,14 @@ export default {
           })
           break;
         case "station":
+          break;
+        case "cashOut":
+          let cashDrawer = this.store.stuffBank ? this.op.name : this.station.cashDrawer.name;
+          this.$dialog({ title: "CASH_OUT_REQ", msg: this.text("TIP_CASH_OUT_REQ", cashDrawer) }).then(() => {
+            //cash out perform here
+          }).catch(() => {
+            this.$router.push({ path: '/Login' })
+          })
           break;
         case "creditCard":
           new Promise((resolve, reject) => {

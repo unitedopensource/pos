@@ -4,7 +4,15 @@ const Exadigm = function () {
     this.initial = function (ip, port, authCode) {
         url = `http://${ip}:${port}`;
         auth = authCode;
-        return fetch(url);
+        return new Promise((resolve) => {
+            resolve({
+                text() {
+                    return {
+                        code: "000000", model: "NX2200"
+                    }
+                }
+            })
+        });
     };
     this.check = function (device) {
         return { code: "000000", model: "NX2200" }

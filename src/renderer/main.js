@@ -124,9 +124,12 @@ Array.prototype.getLastInsertIndex = function (array) {
 Array.prototype.permit = function (privilege) {
   return this.includes(privilege);
 }
-Number.prototype.round = function (places) {
-  return +(Math.round(this + "e+" + places) + "e-" + places);
-};
+// Number.prototype.round = function (places) {
+//   return +(Math.round(this + "e+" + places) + "e-" + places);
+// };
+String.prototype.toFixed = function(places){
+  return isNumber(this) ? parseFloat(this).toFixed(places) : "0.00";
+}
 window.ObjectId = (m = Math, d = Date, h = 16, s = s => m.floor(s).toString(h)) => s(d.now() / 1000) + ' '.repeat(h).replace(/./g, () => s(m.random() * h));
 window.isNumber = (n => (/^-?[\d.]+(?:e-?\d+)?$/.test(n)));
 window.today = function (offset = 0) {

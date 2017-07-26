@@ -51,6 +51,7 @@ Printer.prototype.print = function (data) {
       this.printTimeCardReport(data);
       break;
     case "cashin report":
+      this.printCashInReport(data);
       break;
     case "cashout report":
       break;
@@ -783,7 +784,6 @@ Printer.prototype.printBatchReport = function (data) {
   this.printer.PRINT();
 }
 Printer.prototype.printTimeCardReport = function (data) {
-  console.log(data);
   let store = this.config.store;
   let date = moment().format("MM/DD/YYYY");
   let time = moment().format("hh:mm:ss");
@@ -850,6 +850,63 @@ Printer.prototype.printTimeCardReport = function (data) {
   this.printer.SET_PRINTER_INDEX(this.findPrinterFor('REPORT'));
   this.printer.PRINT();
 }
+Printer.prototype.printCashInReport = function (data) {
+  let store = this.config.store;
+  let date = moment().format("MM/DD/YYYY");
+  let time = moment().format("hh:mm:ss");
+
+  let html = `<section class="header">
+                <div class="store">
+                  <h3>${store.name}</h3>
+                  <h5>${store.address}</h5>
+                  <h5>${store.city} ${store.state} ${store.zipCode}</h5>
+                  <h5>${store.contact}</h5>
+                </div>
+                <div class="type">
+                  <h3>Cash In</h3>
+                  <h5>Record</h5>
+                </div>
+                <div class="time">
+                  <span>Date: ${date}</span>
+                  <span>Time: ${time}</span>
+                </div>
+            </section>
+            <div class="log">
+                <span class="qty">OPEN</span>
+                <div class="record">
+                  <span>${data.operator}</span>
+                  <span>${moment(data.beginTime).format("HH:mm:ss")}</span>
+                </div>
+                <span class="diff">$${data.begin.toFixed(2)}</span>
+              </div>
+            <div class="log last">
+              <div class="for">Cash Drawer: ${data.cashDrawer}</div>
+            </div>
+            <footer>
+              <p>Powered by United POS</p>
+            </footer>`;
+  let style = `<style>*{margin:0;padding:0;font-family:'Agency FB';}
+                section.header{text-align:center;}
+                .header h3{font-size:1.25em;}
+                .header h5{font-size:16px;font-weight:lighter}
+                div.type{margin:10px;}
+                div.type h3{font-weight:lighter;font-size:1.3em;}
+                div.type h5{margin-top:-5px;font-size:1.25em;}
+                .qty{width:40px;padding:0 10px;}
+                div.time span{display:inline-block;margin:0 10px;font-size:1em;}
+                div.time{border-bottom:1px solid #000;position:relative;}
+                div.log{display:flex;justify-content:center;align-items:center;border-bottom:1px dashed #000;margin:5px 0;padding-bottom: 5px;}
+                .log .record{flex:1;display:flex;flex-direction:column;}
+                .for{text-align:center;font-weight:bold;}
+                .log.last{border-bottom:none;}
+                .diff{width:75px;text-align:right;}
+                footer{border-top:1px solid #000;text-align:center;}</style>`;
+  this.printer.PRINT_INIT(this.job);
+  this.printer.ADD_PRINT_HTM(0, 0, "100%", "100%", html + style);
+  this.printer.SET_PRINTER_INDEX(this.findPrinterFor('REPORT'));
+  this.printer.PRINT();
+}
+
 Printer.prototype.findPrinterFor = function (type) {
   let printers = this.config.store.printer;
   let printer = [];

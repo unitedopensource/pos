@@ -54,7 +54,7 @@ import { mapGetters } from 'vuex'
 export default {
   props: ['data', 'date'],
   created() {
-    this.isDisplay = this.op.view && this.op.view.includes("summary");
+    this.isDisplay = (this.op.view && this.op.view.includes("summary") || this.op.role === 'Admin');
   },
   methods: {
     setFilter(type, e) {

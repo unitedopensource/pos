@@ -7,7 +7,6 @@ var Preset = function () {
         enable: false,
         model: "",
         address: "",
-        authCode: "",
         port: "",
         sn: ""
       },

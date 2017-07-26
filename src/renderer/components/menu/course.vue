@@ -330,4 +330,8 @@ span.delay {
   float: right;
   padding-right: 25px;
 }
+
+.f4{
+  flex:4;
+}
 </style>

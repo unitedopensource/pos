@@ -49,7 +49,7 @@
         <i class="fa fa-2x fa-sign-out"></i>
         <div>
           <h3>{{text('LOGOUT')}}</h3>
-          <h5>Complete Sign Out</h5>
+          <h5>Cash Out & Sign Out</h5>
         </div>
       </div>
     </div>
@@ -76,7 +76,7 @@ export default {
       })
     },
     station() {
-      this.$emit("trigger"),{
+      this.$emit("trigger"), {
         name: "station"
       }
     },
@@ -85,9 +85,14 @@ export default {
         name: "giftCard"
       })
     },
-    creditCard(){
+    creditCard() {
       this.$emit("trigger", {
         name: "creditCard"
+      })
+    },
+    askCashOut(){
+      this.$emit("trigger",{
+        name:"cashOut"
       })
     },
     language() {
@@ -97,12 +102,25 @@ export default {
       moment.locale(language === 'usEN' ? 'en' : 'zh-cn');
     },
     logout() {
-      this.$router.push({ path: '/Login' });
+      this.checkCashOut().then(() => {
+        this.$router.push({ path: '/Login' });
+      }).catch(()=>{
+        this.askCashOut();
+      });
+    },
+    checkCashOut() {
+      let cashDrawer = this.store.stuffBank ? this.op.name : this.station.cashDrawer.name;
+      this.$socket.emit("[CASHFLOW] CHECK", { date: today(), cashDrawer, close: false });
+      return new Promise((resolve,reject)=>{
+        this.$options.sockets["CASHFLOW_RESULT"] = (boolean) =>{
+          boolean ? reject(): resolve();
+        }
+      })
     },
     ...mapActions(['setApp'])
   },
   computed: {
-    ...mapGetters(['op', 'app', 'time', 'station'])
+    ...mapGetters(['op', 'app', 'time', 'station', 'store'])
   }
 }
 </script>

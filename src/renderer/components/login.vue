@@ -95,7 +95,15 @@ export default {
       Electron.ipcRenderer.send("Relaunch");
     },
     exit() {
+      //add flow control on next patch
+      //Promise.all([this.checkTerminal(),this.checkSettlement()]).then()
       Electron.ipcRenderer.send("Exit");
+    },
+    checkTerminal(){
+
+    },
+    checkSettlement(){
+      
     },
     ...mapActions(['setPin', 'delPin', 'setOp', 'setApp'])
   },

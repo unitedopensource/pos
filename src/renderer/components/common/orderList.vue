@@ -133,6 +133,7 @@ export default {
                 due: 0,
                 balance: 0,
                 paid: 0,
+                change:0,
                 gratuity: 0,
                 tip: 0,
                 discount: 0,
@@ -362,9 +363,9 @@ export default {
             total = subtotal + tax + this.payment.tip + this.payment.gratuity + this.payment.delivery;
             let due = total - this.payment.discount;
             this.payment.subtotal = subtotal;
-            this.payment.tax = tax.round(2);
-            this.payment.total = total.round(2);
-            this.payment.due = due.round(2);
+            this.payment.tax = tax.toFixed(2);
+            this.payment.total = total.toFixed(2);
+            this.payment.due = due.toFixed(2);
             this.$emit("update", this.payment);
             this.$nextTick(() => {
                 let height = 0;

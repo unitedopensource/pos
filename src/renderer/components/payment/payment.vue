@@ -225,9 +225,7 @@ export default {
                     break;
             }
 
-            this.$nextTick(() => {
-                document.querySelector('.display .data').classList.add('anchor')
-            });
+            this.$nextTick(() => { document.querySelector('.display .data').classList.add('anchor') });
             this.setInputAnchor("paid");
             this.payment = Object.assign({}, this.payment, { type });
             this.reset = true;
@@ -306,7 +304,7 @@ export default {
         },
         delCash() {
             if (this.pointer === "paid") {
-                let value = (this.paid * 100).toFixed(2).slice(0, -1);
+                let value = (this.paid * 100).toFixed(0).slice(0, -1);
                 this.paid = (value / 100).toFixed(2);
             } else {
                 let value = String(this.evenPay).slice(0, -1);
@@ -322,10 +320,14 @@ export default {
             let p = this.pointer;
             p !== 'paid' ?
                 this.creditCard[p] = this.creditCard[p].slice(0, -1) :
-                this.paid = this.paid.slice(0, -1);
+                this.paid = (this.paid * 100).toFixed(0).slice(0, -1) / 100;
+
         },
         delGift() {
-            this.giftCard.number = this.giftCard.number.slice(0, -1);
+            let p = this.pointer;
+            p !== 'paid' ?
+                this.giftCard.number = this.giftCard.number.slice(0, -1) :
+                this.paid = (this.paid * 100).toFixed(0).slice(0, -1) / 100;
         },
         clearCredit() {
             switch (this.pointer) {
@@ -348,35 +350,34 @@ export default {
         },
         chargeCash() {
             if (parseFloat(this.paid) === 0) return;
-
-            let change = Math.max(0, (this.paid - this.payment.due)).toFixed(2);
-            let balance = Math.max(0, (this.payment.due - this.paid)).toFixed(2);
-            this.payment.balance = balance;
-            this.payment.paid = this.paid;
+            this.payment.paid += parseFloat(this.paid);
+            let change = this.payment.change = Math.max(0, (this.paid - this.payment.due)).toFixed(2);
+            let balance = this.payment.balance = Math.max(0, (this.payment.due - this.payment.paid)).toFixed(2);
+            
             this.payment.log.push({
                 type: "CASH",
                 paid: this.paid,
                 change, balance
             });
             if (parseFloat(this.payment.balance) > 0) {
-                this.paid = "0.00";
-                this.reset = true;
-                this.generateQuickInput(this.payment.due);
-                this.setInputAnchor("paid");
-            } else {
-                Printer.init(this.config).openCashDrawer();
-                this.poleDisplay(["Paid CASH", parseFloat(this.paid).toFixed(2)], ["Change Due:", change]);
-                this.$dialog({
-                    title: this.text("CHANGE", change),
-                    msg: this.text("CUST_PAID", parseFloat(this.paid).toFixed(2)),
-                    buttons: [{ text: "CONFIRM", fn: 'reject' }, { text: 'PRINT_RECEIPT', fn: 'resolve' }]
-                }).then(() => {
-                    this.payment.settled = true;
-                    this.summarize({ print: true });
-                }).catch(() => {
-                    this.summarize({ print: false });
+                this.changeDue(this.paid, change, balance).then(() => {
+                    this.$exitComponent();
+                    this.paid = "0.00";
+                    this.reset = true;
+                    this.generateQuickInput(this.payment.balance);
+                    this.setInputAnchor("paid");
                 })
+            } else {
+                this.payment.settled = true;
+                this.changeDue(this.paid, change, balance).then(() => { this.summarize({ print: true }) }).catch(() => { this.summarize({ print: false }) })
             }
+        },
+        changeDue(paid, change, balance) {
+            !this.store.stuffBank && this.recordCashDrawerAction(paid, change);
+            this.poleDisplay(["Paid CASH", parseFloat(this.paid).toFixed(2)], ["Change Due:", change]);
+            return balance > 0 ?
+                new Promise((resolve) => { resolve() }) :
+                this.$dialog({ title: this.text("CHANGE", change), msg: this.text("CUST_PAID", parseFloat(this.paid).toFixed(2)), buttons: [{ text: "CONFIRM", fn: 'reject' }, { text: 'PRINT_RECEIPT', fn: 'resolve' }] })
         },
         chargeCredit() {
             if (parseFloat(this.paid) === 0) return;
@@ -624,7 +625,7 @@ export default {
             let preset = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 100, 120, 140, 150, 200, 300, 350, 400, 450, 500, 600, 700, 800, 900];
             let array = [];
             let round = Math.ceil(amount);
-            array.push(amount.round(2));
+            array.push(amount.toFixed(2));
             amount === round ? array.push((round + 1)) : array.push(round);
             let index = preset.findIndex(i => i > round);
             array.push(preset.slice(index, index + 6));
@@ -651,6 +652,19 @@ export default {
             if (paidGift) payment.paidGift = paidGift.toFixed(2);
             data.payment = payment;
             this.init.resolve(data);
+        },
+        recordCashDrawerAction(inflow, outflow) {
+            Printer.init(this.config).openCashDrawer();
+            let cashDrawer = this.store.stuffBank ? this.op.name : this.station.cashDrawer.name;
+            let activity = {
+                type: "CASHFLOW",
+                inflow,
+                outflow,
+                time: +new Date,
+                ticket: this.ticket.number,
+                operator: this.op.name
+            }
+            this.$socket.emit("[CASHFLOW] NEW_ACTIVITY", { cashDrawer, activity });
         }
     },
     filters: {
@@ -679,7 +693,7 @@ export default {
                 balance: balance > 0 ? balance.toFixed(2) : "0.00"
             }
         },
-        ...mapGetters(['op', 'config', 'ticket', 'customer', 'device'])
+        ...mapGetters(['op', 'config', 'ticket', 'store', 'customer', 'device', 'station'])
     },
     watch: {
         'giftCard.number'(n) {

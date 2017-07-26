@@ -103,7 +103,9 @@ export default {
       this.$dialog({ title: "CASH_DRAWER_NA", msg: "TIP_CASH_DRAWER_NA", buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$exitComponent() });
     },
     cashFlowCtrl() {
-      this.station.cashDrawer.cashFlowCtrl ? this.cashInflow() : Printer.init(this.config).openCashDrawer();
+      this.store.stuffBank ?
+        this.cashInflow(this.op.name) : 
+        this.station.cashDrawer.cashFlowCtrl ? this.cashInflow(this.station.cashDrawer.name) : Printer.init(this.config).openCashDrawer();
     },
     activateStation() {
       this.$dialog({
@@ -137,11 +139,11 @@ export default {
     reqClockIn() {
       this.$dialog({ title: "CLOCK_IN_REQ", msg: "TIP_CLOCK_IN_REQ" }).then(() => { this.$exitComponent() })
     },
-    cashInflow() {
-      this.$socket.emit("[CASHFLOW] CHECK", today());
+    cashInflow(cashDrawer) {
+      this.$socket.emit("[CASHFLOW] CHECK", { date: today(), cashDrawer, close: false });
     },
     askCashIn() {
-      this.$dialog({ title: "CASH_IN_REQ", msg: "TIP_CASH_IN_REQ" }).then(() => { this.countCash() }).catch(() => { this.$exitComponent() });
+      this.$dialog({ title: "CASH_IN_REQ", msg: "TIP_CASH_IN_REQ" }).then(() => { this.countCash(this.station.cashDrawer.initialAmount) }).catch(() => { this.$exitComponent() });
     },
     countCash(total) {
       if (isNumber(total)) {
@@ -162,34 +164,39 @@ export default {
     cashin(amount) {
       let record = {
         date: today(),
+        cashDrawer: this.store.stuffBank ? this.op.name : this.station.cashDrawer.name,
         operator: this.op.name,
         begin: parseFloat(amount),
         beginTime: +new Date,
         end: null,
         endTime: null,
+        close: false,
         activity: [{
           type: "START",
           inflow: parseFloat(amount),
           outflow: 0,
           time: +new Date,
+          ticket: null,
           operator: this.op.name
         }]
       }
       this.$socket.emit("[CASHFLOW] CASH_IN_INITIAL", record);
-      Printer.init(this.config).setJob("cashin report").print(amount);
+      Printer.init(this.config).setJob("cashin report").print(record);
       Printer.init(this.config).openCashDrawer();
       this.$exitComponent();
     },
     recordCashDrawerAction() {
       Printer.init(this.config).openCashDrawer();
-      let log = {
+      let cashDrawer = this.store.stuffBank ? this.op.name : this.station.cashDrawer.name;
+      let activity = {
         type: "OPEN",
         inflow: 0,
         outflow: 0,
         time: +new Date,
+        ticket: null,
         operator: this.op.name
       }
-      this.$socket.emit("[CASHFLOW] NEW_ACTIVITY", log);
+      this.$socket.emit("[CASHFLOW] NEW_ACTIVITY", { cashDrawer, activity });
     },
     ...mapActions(['setApp', 'setTicket', 'setCustomer', 'setStation', 'setStations', 'resetDashboard'])
   },

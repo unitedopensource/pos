@@ -131,7 +131,7 @@ export default {
             let length = this.prevsHistory.length || this.history.length;
             return Math.ceil(length / 30)
         },
-        ...mapGetters(['history', 'order', 'op'])
+        ...mapGetters(['op', 'order', 'history'])
     },
     filters: {
         dot(val) {

@@ -48,7 +48,7 @@ export default {
             let file = terminal.model;
             this.msg = this.text('TERM_INIT', terminal.model);
             this.terminal = require('./parser/' + file);
-            this.terminal.initial(terminal.address, terminal.port, terminal.authCode)
+            this.terminal.initial(terminal.address, terminal.port, terminal.sn)
                 .then(response => response.text()).then((device) => {
                     this.device = this.terminal.check(device);
                     if (this.device.code !== "000000") {
