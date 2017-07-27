@@ -71,6 +71,7 @@ var Dictionary = function (key) {
         PFR: [{ zhCN: "叉烧饭", usEN: "Pork Fried Rice" }, { zhCN: "净炒饭", usEN: "Plain Fried Roll" }],
         SFR: [{ zhCN: "虾炒饭", usEN: "Shrimp Fried Rice" }, { zhCN: "海鲜炒饭", usEN: "Seafood Fried Rice" }],
         LFR: [{ zhCN: "龙虾炒饭", usEN: "Lobster Fried Rice" }],
+        LFR: [{ zhCN: "牛炒饭", usEN: "Beef Fried Rice" }],
         HSFR: [{ zhCN: "本楼炒饭", usEN: "House Special Fried Rice" }],
         CMFR: [{ zhCN: "蟹肉炒饭", usEN: "Crab Meat Fried Rice" }],
         HFM: [{ zhCN: "火腿炒饭", usEN: "Ham Fried Rice" }],
@@ -116,7 +117,7 @@ var Dictionary = function (key) {
 
         SB: [{ zhCN: "芥兰虾", usEN: "Shrimp Broccoli" }, { zhCN: "炒芥兰", usEN: "Sauteed Broccoli" }],
         SM: [{ zhCN: "蘑菇虾", usEN: "Shrimp w.Mushroom" }],
-        SSP: [{ zhCN: "雪豆虾", usEN: "Shrimp w.Snow Peas" }],
+        SSP: [{ zhCN: "雪豆虾", usEN: "Shrimp w.Snow Peas" }, { zhCN: "甜酸肉", usEN: "Sweet & Sour Pork" }],
         SCS: [{ zhCN: "咖喱虾", usEN: "Shrimp w.Curry Sauce" }],
         SLS: [{ zhCN: "虾龙湖", usEN: "Shrimp w.Lobster Sauce" }],
         SHS: [{ zhCN: "湖南虾", usEN: "Shrimp w.Hunan Style" }],
@@ -127,8 +128,9 @@ var Dictionary = function (key) {
 
         TD: [{ zhCN: "炒三样", usEN: "Triple Delight" }],
         HTD: [{ zhCN: "湖南三样", usEN: "Hunan Triple Delight" }],
+        TC: [{ zhCN: "炒三皇", usEN: "Triple Crown" }],
 
-        SMV: [{ zhCN: "炒杂菜", usEN: "Sauteed Mixed Vegs." }, { zhCN: "水煮杂菜", usEN: "Steamed Mixed Veg." }],
+        SMV: [{ zhCN: "炒杂菜", usEN: "Sauteed Mixed Vegs." }, { zhCN: "杂菜虾", usEN: "Shrp w.Mixed Veg." }, { zhCN: "水煮杂菜", usEN: "Steamed Mixed Veg." }],
         SCMV: [{ zhCN: "水煮杂菜鸡", usEN: "Steamed Chk Mixed Veg." }],
         SSMV: [{ zhCN: "水煮杂菜虾", usEN: "Steamed Shrp Mixed Veg." }],
         GTT: [{ zhCN: "左宗豆腐", usEN: "General Taso's Tofo" }],
@@ -141,9 +143,8 @@ var Dictionary = function (key) {
         BEFY: [{ zhCN: "牛蓉蛋", usEN: "Beef Egg Foo Young" }],
         HEFY: [{ zhCN: "本楼蓉蛋", usEN: "House Egg Foo Young" }],
 
-        SSP: [{ zhCN: "甜酸肉", usEN: "Sweet & Sour Pork" }],
         SSC: [{ zhCN: "甜酸鸡", usEN: "Sweet & Sour Chicken" }],
-        SSS: [{ zhCN: "甜酸虾", usEN: "Sweet & Sour Shrimp" }],
+        SSS: [{ zhCN: "甜酸虾", usEN: "Sweet & Sour Shrimp" }, { zhCN: "四川虾", usEN: "Shrp w.Szechuan Style" }],
 
         HF: [{ zhCN: "全家福", usEN: "Happy Family" }],
         DP: [{ zhCN: "龙凤配", usEN: "Dragon & Phoenix" }],

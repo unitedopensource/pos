@@ -164,14 +164,14 @@ export default {
     sockets: {
         PREVS_ORDER_HISTORY(prevs) {
             this.prevsHistory = prevs.orders.sort((a, b) => (Number(b.number) - Number(a.number)));;
-            this.$exitComponent();
+            this.$q();
             if (prevs.orders.length === 0)
                 this.$dialog({
                     title: this.calendarDate + " " + this.text('NO_PREVS_ORDER'),
                     msg: 'NO_PREVS_ORDER_TIP'
                 }).then(confirm => {
                     this.calendarDate = null;
-                    this.$exitComponent();
+                    this.$q();
                 })
         }
     },

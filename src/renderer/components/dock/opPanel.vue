@@ -1,5 +1,5 @@
 <template>
-  <div class="popupMask dark" @click.self="exit">
+  <div class="popupMask dark" @click.self="init.resolve">
     <div class="opPanel">
       <div class="list" @click="clockIn" v-if="!op.clockIn">
         <i class="fa fa-2x fa-clock-o"></i>
@@ -62,9 +62,6 @@ import moment from 'moment'
 export default {
   props: ['init'],
   methods: {
-    exit() {
-      this.$emit("exit")
-    },
     clockIn() {
       this.$emit("trigger", {
         name: "clockIn"
@@ -90,9 +87,9 @@ export default {
         name: "creditCard"
       })
     },
-    askCashOut(){
-      this.$emit("trigger",{
-        name:"cashOut"
+    askCashOut() {
+      this.$emit("trigger", {
+        name: "cashOut"
       })
     },
     language() {
@@ -102,19 +99,13 @@ export default {
       moment.locale(language === 'usEN' ? 'en' : 'zh-cn');
     },
     logout() {
-      this.checkCashOut().then(() => {
-        this.$router.push({ path: '/Login' });
-      }).catch(()=>{
-        this.askCashOut();
-      });
+      this.checkCashOut().then(() => { this.$router.push({ path: '/Login' }) }).catch(() => { this.askCashOut() });
     },
     checkCashOut() {
       let cashDrawer = this.store.stuffBank ? this.op.name : this.station.cashDrawer.name;
       this.$socket.emit("[CASHFLOW] CHECK", { date: today(), cashDrawer, close: false });
-      return new Promise((resolve,reject)=>{
-        this.$options.sockets["CASHFLOW_RESULT"] = (boolean) =>{
-          boolean ? reject(): resolve();
-        }
+      return new Promise((resolve, reject) => {
+        this.$options.sockets["CASHFLOW_RESULT"] = (boolean) => { boolean ? reject() : resolve() }
       })
     },
     ...mapActions(['setApp'])

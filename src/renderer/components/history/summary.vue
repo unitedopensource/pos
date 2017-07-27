@@ -40,7 +40,7 @@
       <div class="value">{{driver ? '$ '+summary.driver[driver].total.toFixed(2) : Object.keys(summary.driver).length}}</div>
       <div class="drivers" v-show="!driver">
         <div class="driver" v-for="(value,key,index) in summary.driver" :key="index" @click.stop="setDriver(key)">
-          <span>Driver #{{key}}</span>
+          <span>{{text('DRIVER')}} #{{key}}</span>
           <span class="price">$ {{value.total.toFixed(2)}}</span>
         </div>
       </div>
@@ -97,7 +97,7 @@ export default {
         if (this.data[i].status === 1) {
           if (invoice.payment) {
             total++;
-            totalSum += (invoice.payment.total - invoice.payment.discount);
+            totalSum += parseFloat(invoice.payment.due);
             discountSum += invoice.payment.discount;
           } else {
             corrupted++;
@@ -107,19 +107,19 @@ export default {
           switch (invoice.type) {
             case "WALK_IN":
               walkin++;
-              walkinSum += (invoice.payment.total - invoice.payment.discount);
+              walkinSum += parseFloat(invoice.payment.due);
               walkinTip += invoice.payment.tip;
               walkinGratuity += invoice.payment.gratuity;
               break;
             case "PICK_UP":
               pickup++;
-              pickupSum += (invoice.payment.total - invoice.payment.discount);
+              pickupSum += parseFloat(invoice.payment.due);
               pickupTip += invoice.payment.tip;
               pickupGratuity += invoice.payment.gratuity;
               break;
             case "DELIVERY":
               delivery++;
-              deliverySum += (invoice.payment.total - invoice.payment.discount);
+              deliverySum += parseFloat(invoice.payment.due);
               deliveryTip += invoice.payment.tip;
               deliveryGratuity += invoice.payment.gratuity;
               deliveryFee += invoice.deliveryFree ? 0 : invoice.payment.delivery;
@@ -127,15 +127,15 @@ export default {
                 if (driver.hasOwnProperty(invoice.driver)) {
                   let name = invoice.driver;
                   driver[name].count++;
-                  driver[name].total += (invoice.payment.total - invoice.payment.discount);
-                  driver[name].discount += (invoice.payment.discount ? invoice.payment.discount : 0);
-                  driver[name].tip += (invoice.payment.tip ? invoice.payment.tip : 0);
-                  driver[name].gratuity += (invoice.payment.gratuity ? invoice.payment.grauity : 0);
+                  driver[name].total += parseFloat(invoice.payment.due);
+                  driver[name].discount += invoice.payment.discount;
+                  driver[name].tip += invoice.payment.tip;
+                  driver[name].gratuity += invoice.payment.grauity;
                   driver[name].charge += (invoice.deliveryFree ? 0 : invoice.payment.delivery ? invoice.payment.delivery : 0);
                 } else {
                   driver[invoice.driver] = {
                     count: 1,
-                    total: invoice.payment.total,
+                    total: parseFloat(invoice.payment.due),
                     discount: invoice.payment.discount ? invoice.payment.discount : 0,
                     tip: invoice.payment.tip ? invoice.payment.tip : 0,
                     gratuity: invoice.payment.gratuity ? invoice.payment.gratuity : 0,
@@ -191,7 +191,6 @@ export default {
       cash = cash.toFixed(2);
       credit = credit.toFixed(2);
       gift = gift.toFixed(2);
-
 
       return {
         total, totalSum, totalTip, totalGratuity,

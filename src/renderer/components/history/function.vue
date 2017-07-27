@@ -75,11 +75,11 @@ export default {
                 return;
             };
             if (this.date !== this.today) {
-                this.$dialog({ title: 'UNAVOIDABLE_PREVS_ORDER', msg: 'UNAVOIDABLE_PREVS_ORDER_TIP', buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$exitComponent() })
+                this.$dialog({ title: 'UNAVOIDABLE_PREVS_ORDER', msg: 'UNAVOIDABLE_PREVS_ORDER_TIP', buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$q() })
                 return;
             };
             if (this.order.status === 0) {
-                this.$dialog({ title: 'CANT_EDIT_VOIDED_ORDER', msg: this.text('CANT_EDIT_VOIDED_ORDER_TIP', this.order.void.by), buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$exitComponent() })
+                this.$dialog({ title: 'CANT_EDIT_VOIDED_ORDER', msg: this.text('CANT_EDIT_VOIDED_ORDER_TIP', this.order.void.by), buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$q() })
                 return;
             };
             if (this.order.settled) {
@@ -101,7 +101,7 @@ export default {
             this.voidOrder();
         },
         isSettledOrder() {
-            this.$dialog({ title: "ORDER_SETTLED", msg: "TIP_ORDER_SETTLED", buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$exitComponent() })
+            this.$dialog({ title: "ORDER_SETTLED", msg: "TIP_ORDER_SETTLED", buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$q() })
         },
         editOrder() {
             this.setTicket({ type: this.order.type, number: this.order.number });
@@ -115,7 +115,7 @@ export default {
                 msg: 'VOID_ORDER_CONFIRM_TIP',
                 buttons: [{ text: 'CANCEL', fn: 'reject' }, { text: 'DEL_ORDER', fn: 'resolve' }]
             }).then(confirm => {
-                this.$exitComponent();
+                this.$q();
                 new Promise(resolve => {
                     this.componentData = { resolve };
                     this.component = "Reason";
@@ -128,9 +128,9 @@ export default {
                         note
                     };
                     this.$socket.emit("ORDER_MODIFIED", order);
-                    this.$exitComponent();
+                    this.$q();
                 })
-            }).catch(() => { this.$exitComponent() })
+            }).catch(() => { this.$q() })
         },
         confirmPaymentRemoval() {
             this.$dialog({
@@ -138,9 +138,9 @@ export default {
                 msg: this.text('REOPEN_SETTLED_ORD_TIP', this.text(this.order.payment.type)),
                 buttons: [{ text: 'REMOVE_PAYMENT', fn: 'resolve' }, { text: 'CANCEL', fn: 'reject' }]
             }).then(() => {
-                this.$exitComponent();
+                this.$q();
                 this.removeOrderPayment();
-            }).catch(() => { this.$exitComponent() })
+            }).catch(() => { this.$q() })
         },
         removeOrderPayment() {
             this.$dialog({
@@ -148,15 +148,11 @@ export default {
                 title: 'PAYMENT_REMOVE',
                 msg: this.text('PAYMENT_REMOVE_CONFIRM', this.text(this.order.payment.type))
             }).then(() => {
+                this.$q();
                 this.removePayment();
                 this.$socket.emit("ORDER_MODIFIED", this.order)
-                this.$exitComponent();
-                this.$dialog({
-                    title: "PAYMENT_REMOVED",
-                    msg: this.text("ORDER_PAYMENT_REMOVED", this.order.number),
-                    buttons: [{ text: 'CONFIRM', fn: 'resolve' }]
-                }).then(() => { this.editOrder() });
-            }).catch(() => { this.$exitComponent() })
+                this.$dialog({ title: "PAYMENT_REMOVED", msg: this.text("ORDER_PAYMENT_REMOVED", this.order.number), buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.editOrder() });
+            }).catch(() => { this.$q() })
         },
         reOpenOrder() {
             if (this.isEmptyOrder) return;
@@ -169,8 +165,8 @@ export default {
                 order.status = 1;
                 delete order.void;
                 this.$socket.emit("ORDER_MODIFIED", order);
-                this.$exitComponent();
-            }).catch(() => { this.$exitComponent() })
+                this.$q();
+            }).catch(() => { this.$q() })
         },
         calendar() {
             new Promise((resolve, reject) => {
@@ -179,8 +175,8 @@ export default {
             }).then((date) => {
                 this.$emit("update", date);
                 this.$socket.emit('INQUIRY_HISTORY_ORDER_LIST', date);
-                this.$exitComponent();
-            }).catch(() => { this.$exitComponent() })
+                this.$q();
+            }).catch(() => { this.$q() })
         },
         settle() {
             if (this.isEmptyOrder) return;
@@ -188,7 +184,6 @@ export default {
                 this.isSettledOrder();
                 return;
             }
-            console.log(this.order.payment)
             new Promise((resolve, reject) => {
                 this.componentData = { payment: this.order.payment, resolve, reject };
                 this.component = "Payment";
@@ -199,8 +194,8 @@ export default {
                 this.$socket.emit("ORDER_MODIFIED", order);
                 order.type = "PAYMENT";
                 Printer.init(this.config).setJob("receipt").print(order);
-                this.$exitComponent();
-            }).catch(() => { this.$exitComponent() });
+                this.$q();
+            }).catch(() => { this.$q() });
         },
         print() {
             let order = Object.assign({}, this.order);
@@ -213,24 +208,12 @@ export default {
             this.$socket.emit("ORDER_MODIFIED", order)
         },
         terminal() {
-            if (this.station.terminal.enable) {
-                new Promise(resolve => {
-                    this.componentData = { resolve };
-                    this.component = "Terminal";
-                }).then(() => { this.$exitComponent() })
-            } else {
-                this.$dialog({ title: 'UNABLE_ACCESS', msg: 'STA_TERM_NA', buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$exitComponent() });
-            }
+            this.station.terminal.enable ?
+                this.$p("Terminal") :
+                this.$dialog({ title: 'UNABLE_ACCESS', msg: 'STA_TERM_NA', buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$q() });
         },
         report() {
-            if (!this.approval(this.op.access, "report")) {
-                this.$denyAccess();
-                return;
-            }
-            new Promise((resolve, reject) => {
-                this.componentData = { resolve, reject };
-                this.component = "Report";
-            }).then(() => { this.$exitComponent() }).catch(() => { this.$exitComponent() })
+            this.approval(this.op.access, "report") ? this.$p("Report") : this.$denyAccess();
         },
         search() { },
         exit() {

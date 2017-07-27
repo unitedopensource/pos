@@ -330,7 +330,8 @@ export default {
                 }
                 this.$exitComponent();
             }).catch((remove) => {
-                remove && delete this.order.driver;
+                console.log(remove);
+                remove && delete this.order.driver; 
                 this.$socket.emit("ORDER_MODIFIED", this.order);
                 this.$exitComponent();
             })
@@ -345,16 +346,17 @@ export default {
 
             for (let i = 0; i < length; i++) {
                 let item = n[i];
-                let price = parseFloat(item.single) * item.qty;
-                item.discount && (price -= item.discount);
+                let amount = parseFloat(item.single) * item.qty;
+                item.discount && (amount -= item.discount);
                 let choiceLength = item.choiceSet.length;
-                subtotal += price;
+                subtotal += amount;
 
                 for (let x = 0; x < choiceLength; x++) {
                     subtotal += parseFloat(item.choiceSet[x].price);
+                    amount += parseFloat(item.choiceSet[x].price);
                 }
                 let taxClass = this.tax.class[item.taxClass];
-                if (!this.order.taxFree) tax += taxClass.apply[orderType] ? (taxClass.rate / 100 * price) : tax;
+                if (!this.order.taxFree) tax += taxClass.apply[orderType] ? (taxClass.rate / 100 * amount) : tax;
             }
             this.payment.delivery =
                 (this.ticket.type === 'DELIVERY' && this.store.delivery && !this.order.deliveryFree) ?

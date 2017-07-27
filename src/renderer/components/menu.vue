@@ -117,8 +117,8 @@ export default {
                     prices: {}
                 });
                 this.pick(item);
-                this.$exitComponent();
-            }).catch(() => { this.$exitComponent() })
+                this.$q();
+            }).catch(() => { this.$q() })
             return true
         },
         setOption(side, index) {
@@ -253,23 +253,21 @@ export default {
                 }).forEach(schedule => {
                     this.delayPrint(schedule);
                 })
-            }).catch(() => {
-                this.$exitComponent();
-            })
+            }).catch(() => { this.$q() })
         },
         settle() {
             if (this.isEmptyOrder) return;
             let payment = JSON.parse(JSON.stringify(this.payment));
             new Promise((resolve, reject) => {
-                this.componentData = { payment: this.payment, resolve, reject };
+                this.componentData = { payment, resolve, reject };
                 this.component = "payment";
             }).then((result) => {
-                this.$exitComponent();
+                this.$q();
                 this.payment = result.payment;
                 this.setOrder({ settled: true });
                 this.save(result.print, result.payment);
             }).catch(() => {
-                this.$exitComponent();
+                this.$q();
             });
         },
         split() {
@@ -279,14 +277,11 @@ export default {
                 this.componentData = { resolve, reject, order };
                 this.component = "split";
             }).then((content) => {
-                this.$exitComponent();
-                this.setOrder({
-                    content,
-                    split: true
-                });
+                this.$q();
+                this.setOrder({ content, split: true });
                 this.save(false);
             }).catch(() => {
-                this.$exitComponent();
+                this.$q();
             })
         },
         search() {
@@ -305,14 +300,12 @@ export default {
                 this.component = 'itemMarker';
             }).then((resolve) => {
                 this.alterItem(resolve);
-                this.$exitComponent();
-            }).catch((reject) => {
-                this.$exitComponent();
-            })
+                this.$q();
+            }).catch((reject) => { this.$q() })
         },
         request() {
             if (this.isEmptyOrder || this.component === "request") {
-                this.$exitComponent();
+                this.$q()
             } else {
                 this.componentData = null;
                 this.component = "request";
@@ -365,10 +358,7 @@ export default {
                 this.$socket.emit("ORDER_MODIFIED", order)
             } else {
                 order._id = ObjectId();
-                this.$socket.emit("DINE_IN_PLACED", {
-                    table: this.currentTable,
-                    order
-                });
+                this.$socket.emit("DINE_IN_PLACED", { table: this.currentTable, order });
             }
             this.$socket.emit("INQUIRY_TICKET_NUMBER");
             this.setOrder(order);
@@ -415,15 +405,12 @@ export default {
                 this.component = "guests";
             }).then(result => {
                 if (result.hasOwnProperty('component')) {
-                    console.log(this.order)
                     this.split();
                 } else {
                     this.sort = ~~result.guest;
-                    this.$exitComponent();
+                    this.$q();
                 }
-            }).catch(() => {
-                this.$exitComponent();
-            })
+            }).catch(() => { this.$q() })
         },
         recordAction() {
             this.setApp({ opLastAction: new Date });
@@ -433,13 +420,7 @@ export default {
             this.component = null;
         },
         exitConfirm() {
-            this.isEmptyOrder ?
-                this.exit() :
-                this.$dialog({ title: 'EXIT_CFM', msg: 'TIP_EXIT_CFM' }).then(() => {
-                    this.exit();
-                }).catch(() => {
-                    this.$exitComponent();
-                })
+            this.isEmptyOrder ? this.exit() : this.$dialog({ title: 'EXIT_CFM', msg: 'TIP_EXIT_CFM' }).then(() => { this.exit() }).catch(() => { this.$p() })
         },
         exit() {
             if (this.currentTable && this.currentTable.current.invoice.length === 0) {

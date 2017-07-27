@@ -3,10 +3,18 @@ const dialog = {
     Vue.mixin({
       methods: {
         approval(credential, permit) {
-          return this.op.role === 'Admin' ? true :credential.includes(permit);
+          return this.op.role === 'Admin' ? true : credential.includes(permit);
         }
       }
     });
+    Vue.prototype.$p = function (component, obj) {
+      let handler = false;
+      let p = new Promise((resolve, reject) => {
+        this.componentData = Object.assign({ resolve, reject }, obj);
+        this.component = component;
+      }).then((result) => { this.$q() }).catch((result) => { this.$q() });
+      return p;
+    }
     Vue.prototype.$dialog = function (args) {
       let dialog = new Promise((resolve, reject) => {
         this.componentData = {
@@ -56,6 +64,10 @@ const dialog = {
       }).catch(() => {
         this.$exitComponent();
       })
+    }
+    Vue.prototype.$q = function () {
+      this.component = null;
+      this.componentData = null;
     }
     Vue.prototype.$exitComponent = function () {
       this.component = null;

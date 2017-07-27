@@ -74,7 +74,7 @@ export default {
         case "table":
           this.store.table.layout ?
             this.$router.push({ path: '/main/table' }) :
-            this.$dialog({ title: "DINE_IN_DISABLED", msg: "TIP_DINE_IN_ENABLE" }).then(() => { this.$exitComponent() });
+            this.$dialog({ title: "DINE_IN_DISABLED", msg: "TIP_DINE_IN_ENABLE" }).then(() => { this.$q() });
           break;
         case "history":
           this.$router.push({ path: '/main/history' });
@@ -100,11 +100,11 @@ export default {
       this.approval(this.op.access, "cashdrawer") ? this.cashFlowCtrl() : this.$denyAccess();
     },
     missCashDrawer() {
-      this.$dialog({ title: "CASH_DRAWER_NA", msg: "TIP_CASH_DRAWER_NA", buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$exitComponent() });
+      this.$dialog({ title: "CASH_DRAWER_NA", msg: "TIP_CASH_DRAWER_NA", buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$q() });
     },
     cashFlowCtrl() {
       this.store.stuffBank ?
-        this.cashInflow(this.op.name) : 
+        this.cashInflow(this.op.name) :
         this.station.cashDrawer.cashFlowCtrl ? this.cashInflow(this.station.cashDrawer.name) : Printer.init(this.config).openCashDrawer();
     },
     activateStation() {
@@ -113,7 +113,7 @@ export default {
       }).then(() => {
         MAC.getMac((err, mac) => {
           if (err) {
-            this.$dialog({ type: "error", title: 'STA_REG_F', msg: this.text('TIP_REASON', err), buttons: [{ text: 'CANCEL', fn: 'resolve' }] }).then(() => { this.$exitComponent() });
+            this.$dialog({ type: "error", title: 'STA_REG_F', msg: this.text('TIP_REASON', err), buttons: [{ text: 'CANCEL', fn: 'resolve' }] }).then(() => { this.$q() });
           } else {
             let stations = Object.assign({}, this.store.station);
             let length = Object.keys(stations).length + 1;
@@ -124,7 +124,7 @@ export default {
             //ipcRenderer.send("Relaunch");
             this.setStation(station)
             this.setStations(stations)
-            this.$exitComponent();
+            this.$q();
           }
         })
       })
@@ -137,28 +137,28 @@ export default {
       this.op.timecard && !this.op.clockIn && this.reqClockIn();
     },
     reqClockIn() {
-      this.$dialog({ title: "CLOCK_IN_REQ", msg: "TIP_CLOCK_IN_REQ" }).then(() => { this.$exitComponent() })
+      this.$dialog({ title: "CLOCK_IN_REQ", msg: "TIP_CLOCK_IN_REQ" }).then(() => { this.$q() })
     },
     cashInflow(cashDrawer) {
-      this.$socket.emit("[CASHFLOW] CHECK", { date: today(), cashDrawer, close: false });
+      new Promise((resolve, reject) => {
+        this.$socket.emit("[CASHFLOW] CHECK", { date: today(), cashDrawer, close: false });
+        this.$options.sockets["CASHFLOW_RESULT"] = (boolean) => { boolean ? resolve() : reject() }
+      }).then(() => { this.recordCashDrawerAction() }).catch(() => { this.askCashIn() })
     },
     askCashIn() {
-      this.$dialog({ title: "CASH_IN_REQ", msg: "TIP_CASH_IN_REQ" }).then(() => { this.countCash(this.station.cashDrawer.initialAmount) }).catch(() => { this.$exitComponent() });
+      this.$dialog({ title: "CASH_IN_REQ", msg: "TIP_CASH_IN_REQ" }).then(() => { this.countCash(this.station.cashDrawer.initialAmount) }).catch(() => { this.$q() });
     },
     countCash(total) {
       if (isNumber(total)) {
         Printer.init(this.config).openCashDrawer();
-        this.$dialog({
-          title: 'CASH_IN_CONFIRM', msg: this.text('CASH_IN_AMOUNT', parseFloat(total).toFixed(2)),
-          buttons: [{ text: 'CANCEL', fn: 'reject' }, { text: 'CONFIRM', fn: 'resolve' }]
-        })
+        this.$dialog({ title: 'CASH_IN_CONFIRM', msg: this.text('CASH_IN_AMOUNT', parseFloat(total).toFixed(2))})
           .then(() => { this.cashin(total) })
           .catch(() => { this.countCash() })
       } else {
         new Promise((resolve, reject) => {
           this.componentData = { resolve, reject };
           this.component = "counter";
-        }).then((total) => { this.countCash(total) }).catch(() => { this.$exitComponent() });
+        }).then((total) => { this.countCash(total) }).catch(() => { this.$q() });
       }
     },
     cashin(amount) {
@@ -166,7 +166,7 @@ export default {
         date: today(),
         cashDrawer: this.store.stuffBank ? this.op.name : this.station.cashDrawer.name,
         operator: this.op.name,
-        begin: parseFloat(amount),
+        begin: amount.toFixed(2),
         beginTime: +new Date,
         end: null,
         endTime: null,
@@ -182,8 +182,7 @@ export default {
       }
       this.$socket.emit("[CASHFLOW] CASH_IN_INITIAL", record);
       Printer.init(this.config).setJob("cashin report").print(record);
-      Printer.init(this.config).openCashDrawer();
-      this.$exitComponent();
+      this.$q();
     },
     recordCashDrawerAction() {
       Printer.init(this.config).openCashDrawer();
@@ -202,11 +201,6 @@ export default {
   },
   computed: {
     ...mapGetters(['op', 'ring', 'callLog', 'device', 'config', 'store', 'station', 'time'])
-  },
-  sockets: {
-    CASHFLOW_RESULT(boolean) {
-      boolean ? this.recordCashDrawerAction() : this.askCashIn();
-    }
   }
 }
 </script>

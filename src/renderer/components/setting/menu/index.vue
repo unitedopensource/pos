@@ -100,18 +100,12 @@ export default {
                 this.$exitComponent();
             }).catch((item) => {
                 this.$exitComponent();
-                item && this.$dialog({
-                    title: 'DEL_ITEM_CONFIRM',
-                    msg: this.text('DEL_ITEM_TIP', item[this.language]),
-                    buttons: [{ text: 'CANCEL', fn: 'reject' }, { text: 'CONFIRM', fn: 'resolve' }]
-                }).then(() => {
+                item && this.$dialog({ title: 'DEL_ITEM_CONFIRM', msg: this.text('DEL_ITEM_TIP', item[this.language]) }).then(() => {
                     let id = item._id;
                     let grp = this.categoryIndex;
                     this.$socket.emit("[CMS] REMOVE_ITEM", { id, grp, sub, idx });
                     this.$exitComponent();
-                }).catch(() => {
-                    this.$exitComponent();
-                })
+                }).catch(() => { this.$exitComponent() })
             })
         },
         copyLastItem(sub, idx) {
@@ -142,7 +136,9 @@ export default {
                             defaultTax = name;
                     }
                 }
-                item = Preset.item(defaultTax)
+                item = Preset.item(defaultTax);
+                item.printer = {};
+                Object.keys(this.config.printer).forEach(name => { item.printer[name] = {} });
             }
             return item;
         },
@@ -284,7 +280,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(['menu', 'language', 'tax'])
+        ...mapGetters(['tax', 'config', 'menu', 'language'])
     }
 }
 </script>

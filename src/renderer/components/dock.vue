@@ -62,7 +62,7 @@ export default {
   },
   watch: {
     ring(n) {
-      n ? this.$socket.emit('INQUIRY_CUSTOMER_INFO', String(n.number)) : this.$exitComponent();
+      n ? this.$socket.emit('INQUIRY_CUSTOMER_INFO', String(n.number)) : this.$q();
     },
     time(n) {
       this.app.autoLock && this.$route.name !== "Lock" && this.sectionTimeout(n);
@@ -80,10 +80,10 @@ export default {
   },
   methods: {
     openPanel() {
-      this.$route.name === 'Dashboard' && (this.component = this.component === "opPanel" ? null : "opPanel");
+      this.$route.name === 'Dashboard' && this.$p("opPanel");
     },
     openSpooler() {
-      this.$route.name === 'Dashboard' && (this.component = this.component === "spooler" ? null : "spooler");
+      this.$route.name === 'Dashboard' && this.$p("spooler");
     },
     toggleSwitcher() {
       if (this.$route.name === 'Menu') {
@@ -102,10 +102,9 @@ export default {
             this.applyPrice(type);
             (type === 'DELIVERY' && (!this.customer.address || !this.customer.phone)) && this.$router.push({ name: 'Information' });
             type === 'DINE_IN' && this.$router.push({ name: 'Table' });
-            this.$exitComponent();
-
-          }).catch(() => { this.$exitComponent() })
-        }).catch(() => { this.$exitComponent() })
+            this.$q()
+          }).catch(() => { this.$q() })
+        }).catch(() => { this.$q() })
       }
     },
     applyPrice(type) {
@@ -124,12 +123,12 @@ export default {
           timeout: { fn: 'resolve', duration: 10000 },
           buttons: [{ text: 'EXTEND', fn: 'reject' }]
         }).then(() => {
-          this.$exitComponent();
+          this.$q();
           this.resetAll();
           this.$router.push({ path: '/main/lock' });
         }).catch(() => {
           this.setApp({ opLastAction: new Date, autoLock: true });
-          this.$exitComponent();
+          this.$q();
         })
       }
     },
@@ -143,9 +142,9 @@ export default {
         buttons: [{ text: "CANCEL", fn: 'reject' }, { text: "PRINT", fn: 'resolve' }]
       }).then(() => {
         this.printFromSpooler(i);
-        this.$exitComponent();
+        this.$q();
       }).catch(() => {
-        this.$exitComponent();
+        this.$q();
       })
     },
     printFromSpooler(i) {
@@ -175,59 +174,80 @@ export default {
     modifyInfo() {
       this.$route.name === 'Menu' && this.$router.push({ name: 'Information' });
     },
+    clockIn() {
+      this.$dialog({ type: "question", title: "CLOCK_IN_CONFIRM", msg: this.text("TIP_CLOCK_IN", moment(this.time).format("hh:mm:ss a")) }).then(() => {
+        this.setOp({ clockIn: this.time, timeCard: ObjectId() })
+        this.$socket.emit("[TIMECARD] CLOCK_IN", this.op)
+        this.$q();
+      }).catch(() => { this.$q() })
+    },
+    clockOut() {
+      let diff = moment().diff(moment(this.op.clockIn));
+      let h = ("0" + Math.floor(diff / 36e5)).slice(-2) + " " + this.text("HOUR");
+      let m = ("0" + Math.floor(diff / 6e4)).slice(-2) + " " + this.text("MINUTE");
+      this.$dialog({ type: "question", title: "CLOCK_OUT_CONFIRM", msg: this.text("TIP_CLOCK_OUT", moment(this.op.clockIn).format("hh:mm:ss a"), (h + " " + m)) }).then(() => {
+        this.$socket.emit("[TIMECARD] CLOCK_OUT", this.op)
+        this.setOp({ clockIn: null, timeCard: null });
+        this.$q();
+        this.$router.push({ path: '/main/lock' });
+      }).catch(() => { this.$q() })
+    },
+    cashingOut(cashDrawer) {
+      this.$socket.emit("[CASHFLOW] SETTLE", cashDrawer);
+      new Promise((resolve) => { this.$options.sockets["CASHFLOW_SETTLE"] = (cashflow) => { resolve(cashflow) } }).then((cashflow) => { this.reconciliation(cashflow) })
+    },
+    reconciliation(cashflow) {
+      this.recordCashDrawerAction();
+      this.$dialog({
+        type: "question", title: this.text("CASH_OUT_SETTLE", cashflow.end), msg: this.text("TIP_CASH_OUT_SETTLE", cashflow.begin),
+        buttons: [{ text: "NOT_MATCH", fn: "reject" }, { text: 'MATCH', fn: 'resolve' }]
+      }).then(() => {
+        Printer.setJob("cashout report").print(cashflow);
+        this.$router.push({ path: '/Login' });
+      }).catch(() => {
+        Printer.setJob("detail cashout report").print(cashflow);
+        this.$router.push({ path: '/Login' });
+      })
+    },
+    recordCashDrawerAction() {
+      Printer.init(this.config).openCashDrawer();
+      let cashDrawer = this.config.store.stuffBank ? this.op.name : this.station.cashDrawer.name;
+      let activity = {
+        type: "END",
+        inflow: 0,
+        outflow: 0,
+        time: +new Date,
+        ticket: null,
+        operator: this.op.name
+      }
+      this.$socket.emit("[CASHFLOW] NEW_ACTIVITY", { cashDrawer, activity });
+    },
     componentEvent(event) {
       this.component = null;
       switch (event.name) {
         case "clockIn":
-          this.$dialog({
-            type: "question", title: "CLOCK_IN_CONFIRM",
-            msg: this.text("TIP_CLOCK_IN", moment(this.time).format("hh:mm:ss a"))
-          }).then(() => {
-            this.setOp({ clockIn: this.time, timeCard: ObjectId() })
-            this.$socket.emit("[TIMECARD] CLOCK_IN", this.op)
-            this.$exitComponent();
-          }).catch(() => { this.$exitComponent() })
+          this.clockIn();
           break;
         case "clockOut":
-          let diff = moment().diff(moment(this.op.clockIn));
-          let h = ("0" + Math.floor(diff / 36e5)).slice(-2) + " " + this.text("HOUR");
-          let m = ("0" + Math.floor(diff / 6e4)).slice(-2) + " " + this.text("MINUTE");
-          this.$dialog({
-            type: "question", title: "CLOCK_OUT_CONFIRM",
-            msg: this.text("TIP_CLOCK_OUT", moment(this.op.clockIn).format("hh:mm:ss a"), (h + " " + m))
-          }).then(() => {
-            this.$socket.emit("[TIMECARD] CLOCK_OUT", this.op)
-            this.setOp({ clockIn: null, timeCard: null });
-            this.$exitComponent();
-            this.$router.push({ path: '/main/lock' });
-          }).catch(() => { this.$exitComponent() })
+          this.clockOut();
           break;
         case "giftCard":
-          new Promise((resolve, reject) => {
-            this.componentData = { resolve, reject };
-            this.component = "giftCard"
-          }).then(() => { this.$exitComponent() }).catch(() => { this.$exitComponent() })
+          this.$p("giftCard");
           break;
         case "station":
           break;
         case "cashOut":
-          let cashDrawer = this.store.stuffBank ? this.op.name : this.station.cashDrawer.name;
-          this.$dialog({ title: "CASH_OUT_REQ", msg: this.text("TIP_CASH_OUT_REQ", cashDrawer) }).then(() => {
-            //cash out perform here
-          }).catch(() => {
-            this.$router.push({ path: '/Login' })
-          })
+          let cashDrawer = this.config.store.stuffBank ? this.op.name : this.station.cashDrawer.name;
+          this.$dialog({ type: "question", title: "CASH_OUT_REQ", msg: this.text("TIP_CASH_OUT_REQ", cashDrawer) })
+            .then(() => { this.cashingOut(cashDrawer) }).catch(() => { this.$router.push({ path: '/Login' }) })
           break;
         case "creditCard":
-          new Promise((resolve, reject) => {
-            this.componentData = { resolve, reject };
-            this.component = "terminal"
-          }).then(() => { this.$exitComponent() }).catch(() => { this.$exitComponent() })
+          this.$p("terminal");
           break;
       }
     },
     exitComponent() {
-      this.$exitComponent();
+      this.$q();
     },
     ...mapActions([
       'setOp',
@@ -263,9 +283,6 @@ export default {
     TICKET_NUMBER(number) {
       this.app.mode !== 'edit' && this.setTicket({ number });
     },
-    // UPDATE_CUSTOMER(customer) {
-    //   console.log(customer);
-    // },
     UPDATE_TABLE_STATUS(data) {
       this.updateTable(data);
     },

@@ -361,7 +361,7 @@ export default {
             });
             if (parseFloat(this.payment.balance) > 0) {
                 this.changeDue(this.paid, change, balance).then(() => {
-                    this.$exitComponent();
+                    this.$q();
                     this.paid = "0.00";
                     this.reset = true;
                     this.generateQuickInput(this.payment.balance);
@@ -388,7 +388,7 @@ export default {
                 this.componentData = { card, resolve, reject };
                 this.component = "CreditCard"
             }).then((transaction) => {
-                this.$exitComponent();
+                this.$q();
                 this.payment.balance = (parseFloat(this.payment.due) - parseFloat(transaction.amount.approve)).toFixed(2);
                 this.payment.balance = Math.max(0, this.payment.balance);
                 this.payment.log.push({
@@ -413,7 +413,7 @@ export default {
                 }
 
             }).catch(reject => {
-                this.$exitComponent();
+                this.$q();
                 this.$dialog(reject).then(() => {
                     let payment = Object.assign(this.payment, {
                         paid: this.payment.due,
@@ -421,7 +421,7 @@ export default {
                     })
                     this.summarize({ print: true, payment });
                 }).catch(error => {
-                    (error && error.title) ? this.$dialog(error).then(() => { this.$exitComponent() }).catch(() => { this.$exitComponent() }) : this.$exitComponent();
+                    (error && error.title) ? this.$dialog(error).then(() => { this.$q() }).catch(() => { this.$q() }) : this.$q();
                 })
             })
         },
@@ -520,8 +520,8 @@ export default {
                 this.paid = this.payment.due;
                 this.generateQuickInput(this.paid);
                 this.poleDisplay(["Tip Adjust:", parseFloat(resolve.tip).toFixed(2)], ["Total:", parseFloat(this.payment.due).toFixed(2)]);
-                this.$exitComponent();
-            }).catch(() => { this.$exitComponent() });
+                this.$q();
+            }).catch(() => { this.$q() });
         },
         setDiscount() {
             let payment = this.payment;
@@ -535,8 +535,8 @@ export default {
                 this.paid = this.payment.due;
                 this.generateQuickInput(this.paid);
                 this.poleDisplay(["Discount:", "-" + parseFloat(resolve.discount).toFixed(2)], ["Total:", parseFloat(this.payment.due).toFixed(2)]);
-                this.$exitComponent();
-            }).catch(() => { this.$exitComponent() })
+                this.$q();
+            }).catch(() => { this.$q() })
         },
         swipeGiftCard() {
             new Promise((resolve, reject) => {
@@ -544,8 +544,8 @@ export default {
                 this.component = "GiftCard";
             }).then(card => {
                 this.giftCard.number = card;
-                this.$exitComponent();
-            }).catch(() => { this.$exitComponent() })
+                this.$q();
+            }).catch(() => { this.$q() })
         },
         addValue() {
             if (this.giftCard.number.length !== 16) return;
@@ -567,8 +567,8 @@ export default {
                 this.giftCard.balance = (this.giftCard.balance + value).toFixed(2);
                 Printer.init(this.config).setJob("reload").print(this.giftCard);
                 this.$socket.emit("[GIFTCARD] CARD_ADD_VALUE", { _id: this.giftCard._id, value, activity });
-                this.$exitComponent();
-            }).catch(() => { this.$exitComponent() })
+                this.$q();
+            }).catch(() => { this.$q() })
         },
         cashOut() {
             if (parseFloat(this.giftCard.balance) === 0) return;
@@ -591,9 +591,9 @@ export default {
                     this.$socket.emit("[GIFTCARD] CARD_ADJUST_VALUE", { _id: this.giftCard._id, value, activity });
                     this.giftCard.balance = 0;
                     Printer.init(this.config).setJob("cashout").print(this.giftCard);
-                    this.$exitComponent();
+                    this.$q();
                 })
-            }).catch(() => { this.$exitComponent() })
+            }).catch(() => { this.$q() })
         },
         printBalance() {
             if (this.giftCard.number.length !== 16) return;
@@ -613,8 +613,8 @@ export default {
                 this.giftCard = card;
                 this.$socket.emit("[GIFTCARD] CARD_ACTIVATION", card);
                 Printer.init(this.config).setJob("activation").print(card);
-                this.$exitComponent();
-            }).catch(() => { this.$exitComponent() })
+                this.$q();
+            }).catch(() => { this.$q() })
         },
         poleDisplay(line1, line2) {
             if (!this.device.poleDisplay) return;
@@ -661,7 +661,7 @@ export default {
                 inflow,
                 outflow,
                 time: +new Date,
-                ticket: this.ticket.number,
+                ticket: this.ticket,
                 operator: this.op.name
             }
             this.$socket.emit("[CASHFLOW] NEW_ACTIVITY", { cashDrawer, activity });
@@ -704,7 +704,7 @@ export default {
         GIFT_CARD_RESULT(card) {
             //console.log(card);
             this.giftCard = card;
-            this.$exitComponent();
+            this.$q();
         },
         GIFT_CARD_NOT_FOUND(number) {
             this.$dialog({
@@ -716,7 +716,7 @@ export default {
             }).catch(() => {
                 this.giftCard.number = "";
                 this.giftCard.balance = "0.00";
-                this.$exitComponent();
+                this.$q();
             })
         }
     }

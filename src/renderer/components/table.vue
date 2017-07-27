@@ -127,7 +127,7 @@ export default {
               this.seated(guest);
             }).catch(() => {
               this.setCurrentTable(null);
-              this.$exitComponent();
+              this.$q();
             }) :
             this.seated(0);
           break;
@@ -165,10 +165,8 @@ export default {
           }
         });
         this.$socket.emit("TABLE_MODIFIED", _table);
-        this.$exitComponent();
-      }).catch(() => {
-        this.$exitComponent();
-      })
+        this.$q();
+      }).catch(() => { this.$q() })
 
     },
     settle() {
@@ -198,10 +196,8 @@ export default {
         order.type = "PAYMENT";
         Printer.init(this.config).setJob("receipt").print(order);
 
-        this.$exitComponent();
-      }).catch(() => {
-        this.$exitComponent();
-      });
+        this.$q();
+      }).catch(() => { this.$q() });
     },
     editOrder() {
       this.setTicket({ type: "DINE_IN", number: this.order.number });
@@ -210,10 +206,10 @@ export default {
     startSwitchTable() {
       this.$dialog({ title: 'TABLE_CFM_SWITCH', msg: 'TIP_SELECT_TABLE' }).then((resolve) => {
         this.pendingSwitch = true;
-        this.$exitComponent();
+        this.$q();
       }).catch((reject) => {
         this.pendingSwitch = false;
-        this.$exitComponent();
+        this.$q();
       })
     },
     switchTable(table) {
@@ -237,19 +233,17 @@ export default {
         origin.status = 1;
         this.$socket.emit("TABLE_MODIFIED", origin);
         this.pendingSwitch = false;
-        this.$exitComponent();
-      }).catch(() => {
-        this.$exitComponent();
-      })
+        this.$q();
+      }).catch(() => { this.$q() })
     },
     switchTableFail() {
-      this.$dialog({ title: 'TABLE_SWITCH_F', msg: 'TIP_TABLE_MUST_EMPTY' }).then(() => { this.$exitComponent() })
+      this.$dialog({ title: 'TABLE_SWITCH_F', msg: 'TIP_TABLE_MUST_EMPTY' }).then(() => { this.$q() })
     },
     getReservation() {
       new Promise((resolve, reject) => {
         this.componentData = { resolve, reject };
         this.component = "reservation";
-      }).then(resolve => { this.$exitComponent() }).catch(() => { this.$exitComponent() })
+      }).then(resolve => { this.$q() }).catch(() => { this.$q() })
     },
     split() {
       if (!this.order) return;
@@ -259,7 +253,7 @@ export default {
           order: JSON.parse(JSON.stringify(this.order))
         };
         this.component = "split";
-      }).then(result => { this.$exitComponent() }).catch(() => { this.$exitComponent() })
+      }).then(result => { this.$q() }).catch(() => { this.$q() })
     },
     seated(guest) {
       this.setTicket({ type: "DINE_IN" });
@@ -291,11 +285,11 @@ export default {
           Printer.init(this.config).setJob("receipt").print(order);
           this.setTableInfo({ status: 3 });
           this.$socket.emit("TABLE_MODIFIED", this.currentTable);
-          this.$exitComponent();
-        }).catch(() => { this.$exitComponent() })
+          this.$q();
+        }).catch(() => { this.$q() })
       } else {
         let remain = this.order.content.filter(item => !item.print).length;
-        this.$dialog({ title: 'PRT_PRE_PAYT_NA', msg: this.text('TIP_REMAIN_ITEM', remain) }).then(() => { this.$exitComponent() })
+        this.$dialog({ title: 'PRT_PRE_PAYT_NA', msg: this.text('TIP_REMAIN_ITEM', remain) }).then(() => { this.$q() })
       }
     },
     clearTable() {
@@ -318,19 +312,19 @@ export default {
           });
           this.$socket.emit("TABLE_MODIFIED", table);
           this.resetMenu();
-          this.$exitComponent();
-        }).catch(() => { this.$exitComponent() })
+          this.$q();
+        }).catch(() => { this.$q() })
       } else {
         this.$dialog({
           type: "info", title: 'TABLE_CLEAR_F', msg: this.text('TIP_TABLE_CLEAR_F', this.currentTable.name), buttons: [{ text: 'CONFIRM', fn: 'resolve' }]
-        }).then(() => { this.$exitComponent() })
+        }).then(() => { this.$q() })
       }
     },
     setPayment(payment) {
       this.payment = payment;
     },
     setDialog(data) {
-      this.$dialog(data).then(() => { this.$exitComponent() })
+      this.$dialog(data).then(() => { this.$q() })
     },
     exit() {
       this.resetAll();

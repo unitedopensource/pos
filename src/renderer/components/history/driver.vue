@@ -1,5 +1,5 @@
 <template>
-  <div class="popupMask center dark" @click.self="init.reject(false)">
+  <div class="popupMask center dark" @click.self="exit()">
     <div class="driver window">
       <header class="title">
         <span>#{{init.ticket}} {{text('SET_DRIVER')}}</span>
@@ -43,6 +43,9 @@ export default {
     },
     clear() {
       this.init.reject(true);
+    },
+    exit(){
+      this.init.reject(false);
     },
     confirm() {
       this.init.resolve(this.letter);

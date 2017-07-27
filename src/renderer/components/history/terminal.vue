@@ -1,5 +1,5 @@
 <template>
-  <div class="popupMask center dark" @click.self="init.resolve">
+  <div class="popupMask center dark">
     <div class="terminal window" v-show="!component">
       <header class="title">
         <span>{{text('TERM_REPORT')}}</span>
