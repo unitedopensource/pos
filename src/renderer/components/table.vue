@@ -84,7 +84,6 @@ export default {
   mounted() {
     this.$socket.emit("INQUIRY_UPDATE_TIME");
     this.currentTable ? this.focusTable() : this.sectionView = this.tables[0].item;
-    console.log("trigger")
   },
   data() {
     return {
@@ -100,11 +99,6 @@ export default {
     focusTable() {
       let index = this.tables.findIndex(section => section.zone === this.currentTable.zone);
       this.sectionView = this.tables[index].item;
-      this.$nextTick(() => {
-        console.log(this.currentTable)
-        let target = document.querySelectorAll(".table")[this.currentTable.grid];
-        target && target.dispatchEvent(new CustomEvent('click'));
-      })
     },
     switchView(section) {
       this.sectionView = section.item;

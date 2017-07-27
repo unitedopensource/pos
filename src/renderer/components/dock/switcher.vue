@@ -23,42 +23,46 @@
 </template>
 
 <script>
-export default{
-  props:['init']
+export default {
+  props: ['init']
 }
 </script>
 
 <style scoped>
-  .wrap{
-    position: absolute;
-    top: 0px;
-    left: 45px;
-    border: 2px solid #607d8b;
-    box-shadow: 0 3px 4px rgba(0,0,0,0.5);
-  }
-  .type{
-    background: #fff;
-    padding: 18px 10px 18px 15px;
-    color: #555;
-    width: 191px;
-    text-shadow: none;
-    border-bottom: 1px solid #ddd;
-  }
-  .type:nth-child(2n) {
-    background: #F5F5F5;
-  }
-  .type i {
-    display: inline-block;
-    width: 20px;
-    text-align: center;
-  }
-  .require {
-    background: #FF5722;
-    color: #fcfcfc;
-    padding: 0px 5px;
-    border-radius: 4px;
-    float: right;
-    font-size: 0.7em;
-    font-weight: lighter;
-  }
+.wrap {
+  position: absolute;
+  top: 0px;
+  left: 45px;
+  border: 2px solid #607d8b;
+  box-shadow: 0 3px 4px rgba(0, 0, 0, 0.5);
+}
+
+.type {
+  background: #fff;
+  padding: 18px 10px 18px 15px;
+  color: #555;
+  width: 191px;
+  text-shadow: none;
+  border-bottom: 1px solid #ddd;
+}
+
+.type:nth-child(2n) {
+  background: #F5F5F5;
+}
+
+.type i {
+  display: inline-block;
+  width: 20px;
+  text-align: center;
+}
+
+.require {
+  background: #FF5722;
+  color: #fcfcfc;
+  padding: 0px 5px;
+  border-radius: 4px;
+  float: right;
+  font-size: 0.7em;
+  font-weight: lighter;
+}
 </style>

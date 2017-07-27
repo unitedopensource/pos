@@ -371,6 +371,7 @@ export default {
                 });
             }
             this.$socket.emit("INQUIRY_TICKET_NUMBER");
+            this.setOrder(order);
             this.$router.push({ name: "Table" });
         },
         setPayment(payment) {

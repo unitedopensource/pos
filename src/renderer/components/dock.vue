@@ -3,7 +3,7 @@
     <span class="orderNumber">{{ticket.number}}</span>
     <span class="orderType" v-show="ticket.type" @click="toggleSwitcher">{{type}}</span>
     <div class="extra">
-      <div class="customer" v-if="$route.name ==='Menu'" @dblclick="modifyInfo">
+      <div class="customer" v-if="$route.name ==='Menu'" @click="modifyInfo">
         <span class="phone" v-show="customer.phone">{{customer.phone | tel}}</span>
         <span class="address" v-show="customer.address">{{customer.address}}</span>
         <span class="name" v-show="customer.name">{{customer.name}}</span>
@@ -27,15 +27,15 @@
 <script>
 import moment from 'moment'
 import { mapGetters, mapActions } from "vuex"
-import Printer from '../print'
 import maintenance from './dock/maintenance'
-import dialoger from './common/dialoger'
-import switcher from './dock/switcher'
-import giftCard from './giftCard/index'
 import terminal from './history/terminal'
-import opPanel from './dock/opPanel'
+import dialoger from './common/dialoger'
+import giftCard from './giftCard/index'
+import switcher from './dock/switcher'
 import spooler from './dock/spooler'
+import opPanel from './dock/opPanel'
 import caller from './dock/caller'
+import Printer from '../print'
 export default {
   components: { maintenance, caller, switcher, dialoger, opPanel, spooler, giftCard, terminal },
   mounted() {
@@ -67,10 +67,16 @@ export default {
     time(n) {
       this.app.autoLock && this.$route.name !== "Lock" && this.sectionTimeout(n);
       this.spooler.length !== 0 && (n > this.spooler[0].delay) && this.printFromSpooler(0);
-    },
-    "$route.name"(n, o) {
-      console.log(n)
     }
+    // "$route.name"(n, o) {
+    //   if (n === 'Table' && o === 'Menu') {
+    //     this.temp = JSON.stringify(this.order)
+    //   }
+    //   if (n === 'Menu' && o === 'Table' && this.temp) {
+    //     this.order = this.setOrder(JSON.parse(this.temp));
+    //     this.temp = null;
+    //   }
+    // }
   },
   methods: {
     openPanel() {
@@ -81,36 +87,33 @@ export default {
     },
     toggleSwitcher() {
       if (this.$route.name === 'Menu') {
-        let type = this.ticket.type;
         let lack = (!this.customer.phone || !this.customer.address);
         new Promise((resolve, reject) => {
-          this.componentData = { lack, type, resolve, reject };
+          this.componentData = { lack, type: this.ticket.type, resolve, reject };
           this.component = "switcher";
         }).then((type) => {
-          this.$dialog({
-            type: "question", title: 'CONFIRM_ORD_TYP_SW',
-            msg: this.text('ORD_TYP_SW', this.text(this.ticket.type), this.text(type))
-          }).then(() => {
+          this.$dialog({ type: "question", title: 'CONFIRM_ORD_TYP_SW', msg: this.text('ORD_TYP_SW', this.text(this.ticket.type), this.text(type)) }).then(() => {
             if (this.ticket.type === 'DINE_INE') {
               this.resetCurrentTable();
               this.$socket.emit("TABLE_MODIFIED", this.currentTable);
+              this.resetTable();
             }
             this.setTicket({ type });
-            let content = this.order.content.map(item => {
-              item.price = (item.hasOwnProperty("prices") && item.prices[type]) ? item.prices[type] : item.prices.DEFAULT || item.price
-              return item;
-            })
-            this.setOrder({ content });
-            if (type === 'DELIVERY' && (!this.customer.address || !this.customer.phone)) this.$router.push({ name: 'Information' });
-            if (type === 'DINE_IN') this.$router.push({ name: 'Table' });
+            this.applyPrice(type);
+            (type === 'DELIVERY' && (!this.customer.address || !this.customer.phone)) && this.$router.push({ name: 'Information' });
+            type === 'DINE_IN' && this.$router.push({ name: 'Table' });
             this.$exitComponent();
-          }).catch(() => {
-            this.$exitComponent();
-          })
-        }).catch(() => {
-          this.$exitComponent();
-        })
+
+          }).catch(() => { this.$exitComponent() })
+        }).catch(() => { this.$exitComponent() })
       }
+    },
+    applyPrice(type) {
+      let content = this.order.content.map(item => {
+        item.price = (item.hasOwnProperty("prices") && item.prices[type]) ? item.prices[type] : item.prices.DEFAULT || item.price
+        return item;
+      })
+      this.setOrder({ content });
     },
     sectionTimeout(current) {
       let lapse = (current - this.app.opLastAction) / 1000;
@@ -177,44 +180,33 @@ export default {
       switch (event.name) {
         case "clockIn":
           this.$dialog({
-            type: "question",
-            title: "CLOCK_IN_CONFIRM",
-            msg: this.text("TIP_CLOCK_IN", moment(this.time).format("hh:mm:ss a")),
-            buttons: [{ text: 'CANCEL', fn: 'reject' }, { text: 'CONFIRM', fn: 'resolve' }]
+            type: "question", title: "CLOCK_IN_CONFIRM",
+            msg: this.text("TIP_CLOCK_IN", moment(this.time).format("hh:mm:ss a"))
           }).then(() => {
             this.setOp({ clockIn: this.time, timeCard: ObjectId() })
             this.$socket.emit("[TIMECARD] CLOCK_IN", this.op)
             this.$exitComponent();
-          }).catch(() => {
-            this.$exitComponent();
-          })
+          }).catch(() => { this.$exitComponent() })
           break;
         case "clockOut":
           let diff = moment().diff(moment(this.op.clockIn));
           let h = ("0" + Math.floor(diff / 36e5)).slice(-2) + " " + this.text("HOUR");
           let m = ("0" + Math.floor(diff / 6e4)).slice(-2) + " " + this.text("MINUTE");
           this.$dialog({
-            type: "question",
-            title: "CLOCK_OUT_CONFIRM",
+            type: "question", title: "CLOCK_OUT_CONFIRM",
             msg: this.text("TIP_CLOCK_OUT", moment(this.op.clockIn).format("hh:mm:ss a"), (h + " " + m))
           }).then(() => {
             this.$socket.emit("[TIMECARD] CLOCK_OUT", this.op)
             this.setOp({ clockIn: null, timeCard: null });
             this.$exitComponent();
             this.$router.push({ path: '/main/lock' });
-          }).catch(() => {
-            this.$exitComponent();
-          })
+          }).catch(() => { this.$exitComponent() })
           break;
         case "giftCard":
           new Promise((resolve, reject) => {
             this.componentData = { resolve, reject };
             this.component = "giftCard"
-          }).then(() => {
-            this.$exitComponent();
-          }).catch(() => {
-            this.$exitComponent();
-          })
+          }).then(() => { this.$exitComponent() }).catch(() => { this.$exitComponent() })
           break;
         case "station":
           break;
@@ -244,6 +236,7 @@ export default {
       'resetAll',
       'setTicket',
       'setUpdate',
+      'resetTable',
       'setCustomer',
       'insertOrder',
       'updateOrder',
@@ -270,20 +263,15 @@ export default {
     TICKET_NUMBER(number) {
       this.app.mode !== 'edit' && this.setTicket({ number });
     },
-    UPDATE_CUSTOMER(customer) {
-      console.log(customer);
-    },
+    // UPDATE_CUSTOMER(customer) {
+    //   console.log(customer);
+    // },
     UPDATE_TABLE_STATUS(data) {
       this.updateTable(data);
     },
     LAST_UPDATE_TIME(update) {
-      if (this.update.table !== update.table) {
-        console.log("Ask server for new table status.");
-        this.$socket.emit("INQUIRY_ALL_TABLES");
-      }
-      if (this.update.order !== update.order) {
-        this.$socket.emit("INQUIRY_TODAY_ORDER_LIST", moment().subtract(4, "hours").format("YYYY-MM-DD"));
-      }
+      this.update.table !== update.table && this.$socket.emit("INQUIRY_ALL_TABLES");
+      this.update.order !== update.order && this.$socket.emit("INQUIRY_TODAY_ORDER_LIST", today());
     },
     CUSTOMER_ENQUIRE_RESULT(info) {
       this.newPhoneCall(info);
@@ -365,12 +353,12 @@ span.orderNumber {
 }
 
 span.orderType {
-  width: 140px;
+  min-width: 140px;
+  padding: 0 10px;
   text-align: center;
   background: rgba(255, 255, 255, 0.1);
   border-left: 1px solid #7994a0;
   border-right: 1px solid #7994a0;
-  display: inline-block;
 }
 
 .extra {
