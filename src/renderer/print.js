@@ -137,6 +137,10 @@ Printer.prototype.printReceipt = function (raw) {
         ticket.zhCN = "账单";
         ticket.usEN = "Receipt"
         break;
+      case "BUFFET":
+        ticket.zhCN = "自助餐";
+        ticket.usEN = "Buffet";
+        break;
       default:
         ticket.zhCN = '\u8054\u5408\u5546\u4E1A\u7535\u8111\u516C\u53F8';
         ticket.usEN = "United POS Demo";
@@ -704,11 +708,7 @@ Printer.prototype.printChecksum = function (data) {
             <section class="data">
               <h3>Summary</h3>
               ${summary}
-            </section>
-            <footer>
-              <p>END OF BATCH REPORT</p>
-              <p>Powered By United POS&reg;</p>
-            </footer>`;
+            </section>`;
   let style = `<style> 
                 *{margin:0;padding:0;font-family:'Agency FB';}
                 section.header{text-align:center;}
@@ -729,7 +729,7 @@ Printer.prototype.printChecksum = function (data) {
                 .f1{flex:1}
                 .f2{flex:2}
                 .f3{flex:3}
-                section.data h3{text-align:center;border-bottom:1px solid #000;}
+                section.data h3{text-align:center;border-bottom:1px dashed #000;}
                 section.data p{display:flex;padding:0 10px;}
                 p .text{flex:1;}
                 footer{margin-top:25px;}
@@ -738,7 +738,6 @@ Printer.prototype.printChecksum = function (data) {
   this.printer.ADD_PRINT_HTM(0, 0, "100%", "100%", html + style);
   this.printer.SET_PRINTER_INDEX(this.findPrinterFor('REPORT'));
   this.printer.PRINT();
-
 }
 Printer.prototype.printBatchReport = function (data) {
   let store = this.config.store;
@@ -760,14 +759,19 @@ Printer.prototype.printBatchReport = function (data) {
                 <p><span class="text">Credit (${data.count.credit})</span><span class="value">$ ${data.amount.credit}</span></p>
                 <p><span class="text">Debit (${data.count.debit})</span><span class="value">$ ${data.amount.debit}</span></p>
               </section>
-            </article>`;
+            </article>
+            <footer>
+              <p>END OF BATCH REPORT</p>
+              <p>Powered By United POS&reg;</p>
+            </footer>`;
   let style = `<style>
             *{margin:0;padding:0;font-family:'Agency FB';}
             article p{display:flex;}
             article .text{flex:2;}
             article .value{flex:4;text-align:right}
             section.data{margin:15px 0;}
-            .data h3{border-bottom:1px solid #000;text-align:center;}`;
+            .data h3{border-bottom:1px dashed #000;text-align:center;}
+            footer{text-align:center;}`;
 
   this.printer.PRINT_INIT(this.job);
   this.printer.ADD_PRINT_HTM(0, 0, "100%", "100%", html + style);

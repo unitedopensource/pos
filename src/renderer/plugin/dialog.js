@@ -12,11 +12,11 @@ const dialog = {
         this.componentData = Object.assign({ resolve, reject }, args);
         this.component = component;
       }).then((result) => {
+        resolveHandler && resolveHandler(result);
         this.$q();
-        resolveHandler && resolveHandler();
       }).catch((result) => {
+        rejectHandler && rejectHandler(result);
         this.$q();
-        rejectHandler && rejectHandler();
       });
     }
     Vue.prototype.$dialog = function (args) {

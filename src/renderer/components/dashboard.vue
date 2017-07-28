@@ -149,7 +149,7 @@ export default {
       this.$dialog({ title: "CASH_IN_REQ", msg: "TIP_CASH_IN_REQ" }).then(() => { this.countCash(this.station.cashDrawer.initialAmount) }).catch(() => { this.$q() });
     },
     countCash(total) {
-      if (isNumber(total)) {
+      if (isNumber(total) && total > 0) {
         Printer.init(this.config).openCashDrawer();
         this.$dialog({ title: 'CASH_IN_CONFIRM', msg: this.text('CASH_IN_AMOUNT', parseFloat(total).toFixed(2))})
           .then(() => { this.cashin(total) })

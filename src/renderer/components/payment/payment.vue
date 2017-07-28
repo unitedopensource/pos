@@ -353,7 +353,7 @@ export default {
             this.payment.paid += parseFloat(this.paid);
             let change = this.payment.change = Math.max(0, (this.paid - this.payment.due)).toFixed(2);
             let balance = this.payment.balance = Math.max(0, (this.payment.due - this.payment.paid)).toFixed(2);
-            
+
             this.payment.log.push({
                 type: "CASH",
                 paid: this.paid,
@@ -515,11 +515,11 @@ export default {
             }).then(resolve => {
                 this.payment.tip = resolve.tip;
                 this.payment.gratuity = resolve.gratuity;
-                this.payment.due = this.payment.total + resolve.tip + resolve.gratuity - this.payment.discount;
+                this.payment.due = parseFloat(this.payment.total) + parseFloat(resolve.tip) + parseFloat(resolve.gratuity) - parseFloat(this.payment.discount);
                 this.payment.balance = this.payment.due;
                 this.paid = this.payment.due;
                 this.generateQuickInput(this.paid);
-                this.poleDisplay(["Tip Adjust:", parseFloat(resolve.tip).toFixed(2)], ["Total:", parseFloat(this.payment.due).toFixed(2)]);
+                this.poleDisplay(["Tip Adjust:", resolve.tip.toFixed(2)], ["Total:", this.payment.due.toFixed(2)]);
                 this.$q();
             }).catch(() => { this.$q() });
         },
@@ -530,11 +530,11 @@ export default {
                 this.component = "Discount";
             }).then(resolve => {
                 this.payment.discount = resolve.discount;
-                this.payment.due = this.payment.total + this.payment.tip + this.payment.gratuity - this.payment.discount;
+                this.payment.due = parseFloat(this.payment.total) + parseFloat(this.payment.tip) + parseFloat(this.payment.gratuity) - parseFloat(this.payment.discount);
                 this.payment.balance = this.payment.due;
                 this.paid = this.payment.due;
                 this.generateQuickInput(this.paid);
-                this.poleDisplay(["Discount:", "-" + parseFloat(resolve.discount).toFixed(2)], ["Total:", parseFloat(this.payment.due).toFixed(2)]);
+                this.poleDisplay(["Discount:", "-" + resolve.discount.toFixed(2)], ["Total:", this.payment.due.toFixed(2)]);
                 this.$q();
             }).catch(() => { this.$q() })
         },
@@ -554,6 +554,7 @@ export default {
                 this.componentData = { title, resolve, reject };
                 this.component = "Inputter";
             }).then(value => {
+                this.recordCashDrawerAction(parseFloat(value), 0);
                 let activity = {
                     date: today(),
                     time: +new Date,
@@ -576,6 +577,7 @@ export default {
                 type: "question", title: "CASH_OUT",
                 msg: this.text("TIP_CASH_OUT", this.giftCard.balance.toFixed(2))
             }).then(() => {
+                this.recordCashDrawerAction(0,parseFloat(this.giftCard.balance));
                 let money = this.giftCard.balance;
                 let value = 0;
                 let activity = {
@@ -606,6 +608,7 @@ export default {
                 this.componentData = { title, resolve, reject };
                 this.component = "Inputter";
             }).then((initialAmount) => {
+                this.recordCashDrawerAction(parseFloat(initialAmount), 0);
                 let card = Preset.giftCard(number, this.op.name, initialAmount, 0);
                 if (this.customer._id) {
                     card = Object.assign(card, { customer: this.customer._id })

@@ -100,7 +100,6 @@ export default {
         confirm() {
             Promise.all([this.fetchData(), this.fetchCreditCard(), this.fetchGiftCard()]).then(datas => {
                 this.handler(datas);
-                //console.log(this.report)
                 Printer.init(this.config).setJob("report").print({ date: this.reportRange, report: this.report });
                 this.init.resolve();
             })
@@ -180,7 +179,8 @@ export default {
             this.summarize(datas[0]);
             this.report["CREDIT CARD"] = this.creditCardReport(datas[1]);
             this.report["GIFT CARD"] = this.giftCard ? this.giftCardReport(datas[2]) : null;
-            this.report["EMPOLYEE"] = this.employee ? this.employeeReport(datas[0]) : null;
+            this.report["EMPOLYEE"] = this.waitStaff ? this.employeeReport(datas[0]) : null;
+            this.report["DRIVER"] = this.driver ? this.driverReport(datas[0]) : null;
             this.report["HOURLY REPORT"] = this.hourly ? this.hourlyReport(datas[0]) : null;
             this.report["MOST ORDER"] = this.countItem ? this.itemCounter(datas[0]) : null;
         },
@@ -189,18 +189,54 @@ export default {
             data.forEach(invoice => {
                 if (invoice.server) {
                     let name = invoice.server;
-                    if (staff.hasOwnProperty("server")) {
+                    if (staff.hasOwnProperty(name)) {
+                        staff[name]["amount"] += parseFloat(invoice.payment.due);
                         staff[name]["tip"] += parseFloat(invoice.payment.tip);
                         staff[name]["gratuity"] += parseFloat(invoice.payment.gratuity);
+                        staff[name]["count"]++;
                     } else {
                         staff[name] = {
-                            tip: 0,
-                            gratuity: 0
+                            text: name,
+                            tip: parseFloat(invoice.payment.tip), 
+                            gratuity: parseFloat(invoice.payment.gratuity),
+                            amount: parseFloat(invoice.payment.due),
+                            count: 1
                         }
                     }
                 }
             });
+            Object.keys(staff).forEach(name => {
+                let server = staff[name];
+                staff[name]["amount"] = `Total:$${server.amount.toFixed(2)}   Tip:$${server.tip.toFixed(2)}  ($${server.gratuity.toFixed(2)})`
+            })
             return staff;
+        },
+        driverReport(data) {
+            let drivers = {};
+            data.forEach(invoice => {
+                if (invoice.driver) {
+                    let name = invoice.driver;
+                    if (drivers.hasOwnProperty(name)) {
+                        drivers[name]["amount"] += parseFloat(invoice.payment.due);
+                        drivers[name]["tip"] += parseFloat(invoice.payment.tip);
+                        drivers[name]["fee"] += parseFloat(invoice.payment.delivery);
+                        drivers[name]["count"]++;
+                    } else {
+                        drivers[name] = {
+                            text: "#" + name,
+                            tip: parseFloat(invoice.payment.tip),
+                            amount: parseFloat(invoice.payment.due),
+                            count: 1,
+                            fee: parseFloat(invoice.payment.delivery)
+                        }
+                    }
+                }
+            });
+            Object.keys(drivers).forEach(name => {
+                let driver = drivers[name];
+                driver.amount = `Total:$${driver.amount.toFixed(2)}   Tip:$${driver.tip.toFixed(2)}  Fee:$${driver.fee.toFixed(2)}`
+            })
+            return drivers;
         },
         creditCardReport() {
 
@@ -259,63 +295,64 @@ export default {
                 gift = 0, giftAmount = 0;
 
             data.forEach(ticket => {
+                let due = parseFloat(ticket.payment.due);
                 switch (ticket.type) {
                     case "WALK_IN":
                         walkin++;
-                        walkinAmount += ticket.payment.due;
+                        walkinAmount += due;
                         break;
                     case "PICK_UP":
                         pickup++;
-                        pickupAmount += ticket.payment.due;
+                        pickupAmount += due;
                         break;
                     case "DELIVERY":
                         delivery++;
-                        deliveryAmount += ticket.payment.due;
+                        deliveryAmount += due;
                         break;
                     case "DINE_IN":
                         dinein++;
-                        dineinAmount += ticket.payment.due;
+                        dineinAmount += due;
                         break;
                     case "BAR":
                         bar++;
-                        barAmount += ticket.payment.due;
+                        barAmount += due;
                         break;
                     default:
                         other++;
-                        otherAmount += ticket.payment.due;
+                        otherAmount += due;
                 }
                 if (ticket.status === 1) {
                     total++;
-                    totalAmount += ticket.payment.total;
-                    grossAmount += ticket.payment.due;
+                    totalAmount += parseFloat(ticket.payment.total);
+                    grossAmount += due;
                     if (ticket.payment.discount > 0) {
                         discount++;
-                        discountAmount += ticket.payment.discount
+                        discountAmount += parseFloat(ticket.payment.discount)
                     }
                 } else {
                     voided++;
-                    voidedAmount += ticket.payment.total;
+                    voidedAmount += parseFloat(ticket.payment.total);
                 }
                 if (ticket.settled) {
                     settle++;
-                    settleAmount += ticket.payment.due;
+                    settleAmount += due;
                     switch (ticket.payment.type) {
                         case "CASH":
                             cash++;
-                            cashAmount += ticket.payment.due;
+                            cashAmount += due;
                             break;
                         case "CREDIT":
                             credit++;
-                            creditAmount += ticket.payment.due;
+                            creditAmount += due;
                             break;
                         case "GIFT":
                             gift++;
-                            giftAmount += ticket.payment.due;
+                            giftAmount += due;
                             break;
                     }
                 } else {
                     unsettle++;
-                    unsettleAmount += ticket.payment.due;
+                    unsettleAmount += due;
                 }
             })
             this.report["SUMMARY"] = this.summary ? [{
@@ -400,11 +437,11 @@ export default {
                     hours[hour] = {
                         text: `${hour}:00`,
                         count: 1,
-                        amount: pay.due || pay.total
+                        amount: parseFloat(pay.due) || parseFloat(pay.total)
                     }
                 } else {
                     hours[hour].count++;
-                    hours[hour].amount += (pay.due || pay.total);
+                    hours[hour].amount += (parseFloat(pay.due) || parseFloat(pay.total));
                 }
             })
             return hours;
