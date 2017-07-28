@@ -100,7 +100,7 @@ export default {
         confirm() {
             Promise.all([this.fetchData(), this.fetchCreditCard(), this.fetchGiftCard()]).then(datas => {
                 this.handler(datas);
-                console.log(this.report)
+                //console.log(this.report)
                 Printer.init(this.config).setJob("report").print({ date: this.reportRange, report: this.report });
                 this.init.resolve();
             })
@@ -133,11 +133,11 @@ export default {
                 this.component = "calendar";
             }).then((date) => {
                 this.reportRange = date;
-                this.$exitComponent();
+                this.$q();
             }).catch(() => {
                 this.range = "today";
                 this.getRange('today');
-                this.$exitComponent();
+                this.$q();
             })
         },
         fetchData() {
@@ -180,12 +180,27 @@ export default {
             this.summarize(datas[0]);
             this.report["CREDIT CARD"] = this.creditCardReport(datas[1]);
             this.report["GIFT CARD"] = this.giftCard ? this.giftCardReport(datas[2]) : null;
-            this.report["EMPOLYEE"] = this.employee ? this.employeeReport() : null;
+            this.report["EMPOLYEE"] = this.employee ? this.employeeReport(datas[0]) : null;
             this.report["HOURLY REPORT"] = this.hourly ? this.hourlyReport(datas[0]) : null;
             this.report["MOST ORDER"] = this.countItem ? this.itemCounter(datas[0]) : null;
         },
         employeeReport(data) {
-            console.log(data);
+            let staff = {};
+            data.forEach(invoice => {
+                if (invoice.server) {
+                    let name = invoice.server;
+                    if (staff.hasOwnProperty("server")) {
+                        staff[name]["tip"] += parseFloat(invoice.payment.tip);
+                        staff[name]["gratuity"] += parseFloat(invoice.payment.gratuity);
+                    } else {
+                        staff[name] = {
+                            tip: 0,
+                            gratuity: 0
+                        }
+                    }
+                }
+            });
+            return staff;
         },
         creditCardReport() {
 

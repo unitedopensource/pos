@@ -7,16 +7,20 @@ const dialog = {
         }
       }
     });
-    Vue.prototype.$p = function (component, obj) {
-      let handler = false;
-      let p = new Promise((resolve, reject) => {
-        this.componentData = Object.assign({ resolve, reject }, obj);
+    Vue.prototype.$p = function (component, args, resolveHandler, rejectHandler) {
+      return new Promise((resolve, reject) => {
+        this.componentData = Object.assign({ resolve, reject }, args);
         this.component = component;
-      }).then((result) => { this.$q() }).catch((result) => { this.$q() });
-      return p;
+      }).then((result) => {
+        this.$q();
+        resolveHandler && resolveHandler();
+      }).catch((result) => {
+        this.$q();
+        rejectHandler && rejectHandler();
+      });
     }
     Vue.prototype.$dialog = function (args) {
-      let dialog = new Promise((resolve, reject) => {
+      return new Promise((resolve, reject) => {
         this.componentData = {
           type: args.type || "alert",
           title: args.title,
@@ -30,40 +34,14 @@ const dialog = {
           resolve, reject
         };
         args.hasOwnProperty('buttons') ?
-          args.buttons.forEach(button => {
-            this.componentData.buttons.push({
-              text: button.text, fn: button.fn === 'resolve' ? resolve : reject
-            })
-          }) :
+          args.buttons.forEach(button => { this.componentData.buttons.push({ text: button.text, fn: button.fn === 'resolve' ? resolve : reject }) }) :
           this.componentData.buttons = [{ text: 'CANCEL', fn: reject }, { text: 'CONFIRM', fn: resolve }]
         this.component = "dialoger";
       });
-      return dialog;
     }
     Vue.prototype.$denyAccess = function (manager) {
-      let buttons = manager ? [{
-        text: this.text('MANAGER_CODE'),
-        fn: 'resolve'
-      }, {
-        text: this.text('CONFIRM'),
-        fn: 'reject'
-      }] : [{
-        text: this.text('CONFIRM'),
-        fn: 'reject'
-      }];
-      this.$dialog({
-        type: 'warning',
-        title: this.text('PD_ACCESS'),
-        msg: this.text('TIP_PD_ACCESS'),
-        timeout: {
-          duration: 10000
-        },
-        buttons
-      }).then(() => {
-        this.$exitComponent();
-      }).catch(() => {
-        this.$exitComponent();
-      })
+      let buttons = manager ? [{ text: 'MANAGER_CODE', fn: 'resolve' }, { text: 'CONFIRM', fn: 'reject' }] : [{ text: 'CONFIRM', fn: 'reject' }];
+      this.$dialog({ type: 'warning', title: 'PD_ACCESS', msg: 'TIP_PD_ACCESS', timeout: { duration: 10000 }, buttons }).then(() => { this.$q() }).catch(() => { this.$q() })
     }
     Vue.prototype.$q = function () {
       this.component = null;

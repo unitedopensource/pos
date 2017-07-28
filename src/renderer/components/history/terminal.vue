@@ -124,28 +124,34 @@ export default {
       }).catch(() => { this.$q() })
     },
     adjustTip(record) {
-      this.approval(this.op.modify,"terminal") ? 
-      new Promise((resolve, reject) => {
-        let title = "ADJUST_TIP";
-        this.componentData = { title, resolve, reject };
-        this.component = "Inputter";
-      }).then((value) => {
-        this.$q();
-        value = isNumber(value) ? value : 0;
-        let total = parseFloat(record.amount.approve) + value;
-        this.$dialog({ title: 'TERM_CONFIRM_ADJUST', msg: this.text('TIP_TERM_ADJUST_TIP', value.toFixed(2), total.toFixed(2)) }).then(() => {
-          let amount = Math.round(value * 100);
-          let invoice = record.order.number;
-          let trans = record.trace.trans;
-          this.terminal.adjust(invoice, trans, amount).then(response => response.text()).then((response) => {
-            record.status = 2;
-            record.amount.tip = (value).toFixed(2);
-            this.$q();
-            this.$socket.emit("[TERM] UPDATE_TRANSACTION", record);
-          });
-        }).catch(() => { this.$q() })
-      }).catch(() => { this.$q() }):
-      this.$denyAccess();
+      this.approval(this.op.modify, "terminal") ?
+        new Promise((resolve, reject) => {
+          let title = "ADJUST_TIP";
+          this.componentData = { title, resolve, reject };
+          this.component = "Inputter";
+        }).then((value) => {
+          this.$q();
+          value = isNumber(value) ? value : 0;
+          let total = parseFloat(record.amount.approve) + value;
+          this.$dialog({ title: 'TERM_CONFIRM_ADJUST', msg: this.text('TIP_TERM_ADJUST_TIP', value.toFixed(2), total.toFixed(2)) }).then(() => {
+            let amount = Math.round(value * 100);
+            let invoice = record.order.number;
+            let trans = record.trace.trans;
+            this.terminal.adjust(invoice, trans, amount).then(response => response.text()).then((response) => {
+              this.$q();
+              record.status = 2;
+              record.amount.tip = value.toFixed(2);
+              this.$socket.emit("[TERM] UPDATE_TRANSACTION", record);
+              this.adjustOrderTip(record.order, value);
+            });
+          }).catch(() => { this.$q() })
+        }).catch(() => { this.$q() }) :
+        this.$denyAccess();
+    },
+    adjustOrderTip(order, tip) {
+      let invoice = this.history.find(ticket => order.number === ticket.number);
+      invoice.payment.tip = parseFloat(tip);
+      this.$socket.emit("ORDER_MODIFIED", invoice);
     },
     checksum() {
       let summary = {
@@ -334,7 +340,7 @@ export default {
       let length = this.allTransaction.length;
       return Math.ceil(length / 13)
     },
-    ...mapGetters(['op','config', 'language', 'history', 'station'])
+    ...mapGetters(['op', 'config', 'language', 'history', 'station'])
   },
   sockets: {
     TERM_TRANS_RESULT(transaction) {
