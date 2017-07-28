@@ -424,6 +424,7 @@ export default {
         },
         exit() {
             if (this.currentTable && this.currentTable.current.invoice.length === 0) {
+                console.log(this.app)
                 this.resetCurrentTable();
                 this.$socket.emit("TABLE_MODIFIED", this.currentTable);
             }

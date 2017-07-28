@@ -171,22 +171,13 @@ export default {
     },
     settle() {
       if (this.order.content.length === 0) return;
+      let payment = JSON.parse(JSON.stringify(this.order.payment))
       new Promise((resolve, reject) => {
-        this.componentData = { payment: this.payment, resolve, reject };
+        this.componentData = { payment, resolve, reject };
         this.component = "payment";
       }).then(result => {
         this.payment = result.payment;
-        this.store.table.autoClean ? this.setTableInfo({
-          status: 1,
-          current: {
-            color: "",
-            group: "",
-            guest: 0,
-            invoice: [],
-            server: "",
-            time: ""
-          }
-        }) : this.setTableInfo({ status: 4 });
+        this.store.table.autoClean ? this.resetCurrentTable() : this.setTableInfo({ status: 4 });
 
         this.$socket.emit("TABLE_MODIFIED", this.currentTable);
         let order = JSON.parse(JSON.stringify(this.order));
@@ -298,26 +289,13 @@ export default {
           title: "TABLE_CLEAR", msg: this.text("TIP_TABLE_CLEAR", this.currentTable.name),
           buttons: [{ text: 'CANCEL', fn: 'reject' }, { text: 'CLEAR', fn: 'resolve' }]
         }).then(() => {
-          let table = JSON.parse(JSON.stringify(this.currentTable));
-          table = Object.assign(table, {
-            status: 1,
-            current: {
-              color: "",
-              group: "",
-              guest: 0,
-              invoice: [],
-              server: "",
-              time: ""
-            }
-          });
-          this.$socket.emit("TABLE_MODIFIED", table);
+          this.resetCurrentTable()
+          this.$socket.emit("TABLE_MODIFIED", this.currentTable);
           this.resetMenu();
           this.$q();
         }).catch(() => { this.$q() })
       } else {
-        this.$dialog({
-          type: "info", title: 'TABLE_CLEAR_F', msg: this.text('TIP_TABLE_CLEAR_F', this.currentTable.name), buttons: [{ text: 'CONFIRM', fn: 'resolve' }]
-        }).then(() => { this.$q() })
+        this.$dialog({ type: "info", title: 'TABLE_CLEAR_F', msg: this.text('TIP_TABLE_CLEAR_F', this.currentTable.name), buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$q() })
       }
     },
     setPayment(payment) {
@@ -330,7 +308,7 @@ export default {
       this.resetAll();
       this.$router.push({ path: "/main" });
     },
-    ...mapActions(['setApp', 'resetAll', 'resetMenu', 'setOrder', 'setTicket', 'setTableInfo', 'setViewOrder', 'setCurrentTable'])
+    ...mapActions(['setApp', 'resetAll', 'resetMenu', 'setOrder', 'setTicket', 'setTableInfo', 'setViewOrder', 'setCurrentTable', 'resetCurrentTable'])
   },
   computed: {
     ...mapGetters(['op', 'config', 'store', 'history', 'tables', 'order', 'language', 'currentTable'])

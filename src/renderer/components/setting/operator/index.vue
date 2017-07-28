@@ -41,27 +41,29 @@
                     <article>
                         <div class="datalist">
                             <span class="name">{{text('ACCESS')}}</span>
-                            <span class="f1">
+                            <div class="f1">
                                 <checkbox v-model="op.access" label="setting" :multiple="true"></checkbox>
                                 <checkbox v-model="op.access" label="cashdrawer" :multiple="true"></checkbox>
                                 <checkbox v-model="op.access" label="report" :multiple="true"></checkbox>
-                            </span>
+                            </div>
                         </div>
                         <div class="datalist">
                             <span class="name">{{text('MODIFY')}}</span>
-                            <span class="f1">
+                            <div class="f1">
                                 <checkbox v-model="op.modify" label="price" :multiple="true"></checkbox>
                                 <checkbox v-model="op.modify" label="order" :multiple="true"></checkbox>
                                 <checkbox v-model="op.modify" label="driver" :multiple="true"></checkbox>
-                                <checkbox v-model="op.modify" label="transaction" :multiple="true"></checkbox>
+                                <checkbox v-model="op.modify" label="terminal" :multiple="true"></checkbox>
                                 <checkbox v-model="op.modify" label="discount" :multiple="true"></checkbox>
-                            </span>
+                            </div>
                         </div>
                         <div class="datalist">
                             <span class="name">{{text('VIEW')}}</span>
-                            <span class="f1">
+                            <div class="f1">
                                 <checkbox v-model="op.view" label="summary" :multiple="true"></checkbox>
-                            </span>
+                                <checkbox v-model="op.view" label="allInvoices" :multiple="true"></checkbox>
+                                <checkbox v-model="op.view" label="allTables" :multiple="true"></checkbox>
+                            </div>
                         </div>
                     </article>
                 </section>
@@ -83,7 +85,8 @@
                             <span class="calc">{{workHour(log.clockIn,log.clockOut)}}</span>
                         </div>
                         <div class="more" @click="more">
-                            <i class="fa fa-plus"></i>
+                            <i class="fa fa-caret-down"></i>
+                            <span>{{text('VIEW_MORE')}}</span>
                         </div>
                     </article>
                 </section>
@@ -325,5 +328,15 @@ aside {
     padding: 10px;
     border: 2px dashed #eee;
     color: #ddd;
+    cursor: pointer;
+}
+
+.f1 {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.datalist .name {
+    text-align: center;
 }
 </style>

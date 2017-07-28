@@ -331,7 +331,7 @@ export default {
                 this.$exitComponent();
             }).catch((remove) => {
                 console.log(remove);
-                remove && delete this.order.driver; 
+                remove && delete this.order.driver;
                 this.$socket.emit("ORDER_MODIFIED", this.order);
                 this.$exitComponent();
             })
@@ -633,7 +633,7 @@ i.flip {
 
 .choiceSet {
     display: flex;
-    font-family: 'Microsoft YaHei';
+    font-size: 16px;
 }
 
 .choiceSet .item {

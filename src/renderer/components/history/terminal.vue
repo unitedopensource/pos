@@ -97,8 +97,7 @@ export default {
     },
     voidSale(record) {
       this.$dialog({
-        title: "TERM_VOID_SALE",
-        msg: this.text("TIP_TERM_VOID_SALE", record.trace.trans),
+        title: "TERM_VOID_SALE", msg: this.text("TIP_TERM_VOID_SALE", record.trace.trans),
         buttons: [{ text: 'CANCEL', fn: 'reject' }, { text: 'CONFIRM&PRINT', fn: 'resolve' }]
       }).then((print) => {
         let invoice = record.order.number;
@@ -121,16 +120,17 @@ export default {
             delete state.order.payment.type;
             this.$socket.emit("ORDER_MODIFIED", order);
           });
-        this.$exitComponent();
-      }).catch(() => { this.$exitComponent() })
+        this.$q();
+      }).catch(() => { this.$q() })
     },
     adjustTip(record) {
+      this.approval(this.op.modify,"terminal") ? 
       new Promise((resolve, reject) => {
         let title = "ADJUST_TIP";
         this.componentData = { title, resolve, reject };
         this.component = "Inputter";
       }).then((value) => {
-        this.$exitComponent();
+        this.$q();
         value = isNumber(value) ? value : 0;
         let total = parseFloat(record.amount.approve) + value;
         this.$dialog({ title: 'TERM_CONFIRM_ADJUST', msg: this.text('TIP_TERM_ADJUST_TIP', value.toFixed(2), total.toFixed(2)) }).then(() => {
@@ -140,15 +140,12 @@ export default {
           this.terminal.adjust(invoice, trans, amount).then(response => response.text()).then((response) => {
             record.status = 2;
             record.amount.tip = (value).toFixed(2);
-            this.$exitComponent();
+            this.$q();
             this.$socket.emit("[TERM] UPDATE_TRANSACTION", record);
           });
-        }).catch(() => {
-          this.$exitComponent();
-        })
-      }).catch(() => {
-        this.$exitComponent();
-      })
+        }).catch(() => { this.$q() })
+      }).catch(() => { this.$q() }):
+      this.$denyAccess();
     },
     checksum() {
       let summary = {
@@ -257,17 +254,17 @@ export default {
             }
             Printer.init(this.config).setJob("batch").print(result);
             this.$socket.emit('[TERM] SAVE_BATCH_RESULT', result);
-            this.$exitComponent();
+            this.$q();
           } else {
-            this.$dialog({ type: 'warning', title: result.msg, msg: this.text('ERROR_CODE', result.code) }).then(() => { this.$exitComponent() })
+            this.$dialog({ type: 'warning', title: result.msg, msg: this.text('ERROR_CODE', result.code) }).then(() => { this.$q() })
           }
         })
-      }).catch(() => { this.$exitComponent() })
+      }).catch(() => { this.$q() })
     },
     noBatch() {
       this.$dialog({ type: 'warning', title: 'TERM_NA', msg: 'TERM_BATCH_DISABLE' }).then(() => {
         this.device = null;
-        this.$exitComponent();
+        this.$q();
       })
     },
     missTerminal() {
@@ -337,7 +334,7 @@ export default {
       let length = this.allTransaction.length;
       return Math.ceil(length / 13)
     },
-    ...mapGetters(['config', 'language', 'history', 'station'])
+    ...mapGetters(['op','config', 'language', 'history', 'station'])
   },
   sockets: {
     TERM_TRANS_RESULT(transaction) {
