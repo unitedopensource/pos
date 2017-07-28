@@ -159,7 +159,7 @@ const mutations = {
           })
         })
       } else {
-        state.choiceSetTarget.price = (--state.choiceSetTarget.qty * state.choiceSetTarget.single).round(2);
+        state.choiceSetTarget.price = (--state.choiceSetTarget.qty * state.choiceSetTarget.single).toFixed(2);
       }
       return;
     } else if (delChoiceSetFirst) {
@@ -167,7 +167,7 @@ const mutations = {
       if (set) {
         set.qty === 1 ?
           state.item.choiceSet.pop() :
-          set.price = (--set.qty * set.single).round(2);
+          set.price = (--set.qty * set.single).toFixed(2);
         return;
       }
     }
@@ -198,7 +198,7 @@ const mutations = {
   [types.MORE_QTY](state) {
     if (state.order.content.length === 0) return;
     if (state.choiceSetTarget && state.choiceSetTarget.qty < 99) {
-      state.choiceSetTarget.price = (++state.choiceSetTarget.qty * state.choiceSetTarget.single).round(2);
+      state.choiceSetTarget.price = (++state.choiceSetTarget.qty * state.choiceSetTarget.single).toFixed(2);
     } else {
       state.item.total = (++state.item.qty * state.item.single).toFixed(2);
       state.order.content.splice();
@@ -222,7 +222,7 @@ const mutations = {
     if (!state.choiceSetTarget) return;
     let single = data.single || data.total;
     let qty = data.qty || 1;
-    let total = (single * qty).round(2);
+    let total = (single * qty).toFixed(2);
     state.choiceSetTarget.qty = qty;
     state.choiceSetTarget.single = single;
     state.choiceSetTarget.price = total;
