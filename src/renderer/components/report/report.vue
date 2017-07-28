@@ -197,7 +197,7 @@ export default {
                     } else {
                         staff[name] = {
                             text: name,
-                            tip: parseFloat(invoice.payment.tip), 
+                            tip: parseFloat(invoice.payment.tip),
                             gratuity: parseFloat(invoice.payment.gratuity),
                             amount: parseFloat(invoice.payment.due),
                             count: 1
@@ -207,7 +207,7 @@ export default {
             });
             Object.keys(staff).forEach(name => {
                 let server = staff[name];
-                staff[name]["amount"] = `Total:$${server.amount.toFixed(2)}   Tip:$${server.tip.toFixed(2)}  ($${server.gratuity.toFixed(2)})`
+                server.amount = [{ Total: server.amount.toFixed(2) }, { Tip: server.tip.toFixed(2) }, { Gratuity: server.tip.toFixed(2) }];
             })
             return staff;
         },
@@ -234,7 +234,7 @@ export default {
             });
             Object.keys(drivers).forEach(name => {
                 let driver = drivers[name];
-                driver.amount = `Total:$${driver.amount.toFixed(2)}   Tip:$${driver.tip.toFixed(2)}  Fee:$${driver.fee.toFixed(2)}`
+                driver.amount = [{ Total: driver.amount.toFixed(2) }, { Tip: driver.tip.toFixed(2) }, { Fee: driver.fee.toFixed(2) }];
             })
             return drivers;
         },

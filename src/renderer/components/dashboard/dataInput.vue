@@ -14,8 +14,10 @@
         <dialog v-if="autoComplete">
             <div class="predict" v-for="data in autoComplete" @click="fill(data)">
                 <div v-if="data.phone" class="column">
-                    <span class="phone">{{data.phone | tel}}</span>
-                    <span class="time">{{data.extra.lastDate | fromNow}}</span>
+                    <div class="top">
+                        <span class="phone">{{data.phone | tel}}</span>
+                        <span class="time">{{data.extra.lastDate | fromNow}}</span>
+                    </div>
                     <span class="address">{{data.address}}</span>
                 </div>
                 <div v-else class="row">
@@ -108,7 +110,7 @@ dialog {
     min-width: 125px;
 }
 
-.predict div {
+.predict>div {
     display: flex;
     position: relative;
     padding-left: 7px;
@@ -126,9 +128,15 @@ dialog {
     padding: 8px 5px;
 }
 
+.top {
+    display: flex;
+    flex-wrap: nowrap;
+}
+
 .time {
-    position: absolute;
-    right: 0;
+    flex:1;
+    text-align: right;
+    white-space: nowrap;
     font-size: 0.8em;
     color: #455A64;
     font-family: 'Microsoft YaHei';

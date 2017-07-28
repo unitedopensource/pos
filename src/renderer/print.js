@@ -596,24 +596,24 @@ Printer.prototype.printReport = function (data) {
         if (Array.isArray(report[key])) {
           section += report[key].map(record => {
             let { text, count, amount } = record;
-            amount = isNumber(amount) ? "$ " + amount.toFixed(2) : amount;
+            amount = isNumber(amount) ? "$ " + amount.toFixed(2) : flatten(amount);
             count = count > 0 ? count : "";
-            return `<p>
-                  <span class="text">${text}</span>
-                  <span class="amount">${amount}</span>
-                  <span class="count">${count}</span>
-                 </p>`
+            return `<div class="data">
+                  <div class="text">${text}</div>
+                  <div class="amount">${amount}</div>
+                  <div class="count">${count}</div>
+                 </div>`
           }).join("").toString();
         } else {
           for (let value in report[key]) {
             let { text, count, amount } = report[key][value];
-            amount = isNumber(amount) ? "$ " + amount.toFixed(2) : amount;
+            amount = isNumber(amount) ? "$ " + amount.toFixed(2) : flatten(amount);
             count = count > 0 ? count : "";
-            section += `<p>
-                         <span class="text">${text}</span>
-                         <span class="amount">${amount}</span>
-                         <span class="count">${count}</span>
-                       </p>`
+            section += `<div class="data">
+                         <div class="text">${text}</div>
+                         <div class="amount">${amount}</div>
+                         <div class="count">${count}</div>
+                       </div>`
           }
         }
         section = `<section class="type"><h4>${key}</h4>${section}</section>`;
@@ -637,6 +637,18 @@ Printer.prototype.printReport = function (data) {
             <p>Powered by United POS&reg;</p>
           </footer>`;
   }
+  function flatten(array) {
+    let html = "";
+    array.forEach(data => {
+      for (let key in data) {
+        html += `<div class="row">
+                  <span class="text">${key}:</span>
+                  <span class="value">$${data[key]}</span>
+                </div>`
+      }
+    })
+    return html;
+  }
   function createStyle() {
     return `<style>
               *{margin:0;padding:0;font-family:'Agency FB';}
@@ -646,11 +658,12 @@ Printer.prototype.printReport = function (data) {
                 div.type{margin:10px;border-bottom:1px solid #000;}
                 div.type h3{font-weight:lighter;font-size:1.3em;}
                 div.type h5{margin-top:5px;font-size:1.25em;}
-                p{margin:0;padding:0 5px;display:flex}
+                .data {margin:0;padding:0 5px;display:flex}
                 section.type{margin-bottom:10px;}
-                section h4{text-align:center;border-bottom:1px dashed #000;border-top:1px dashed #000;margin-bottom:10px;}
-                p .amount{flex:1;text-align:right;}
-                p .count{width:35px;text-align:right;}
+                section h4{text-align:center;border-bottom:1px dashed #000;border-top:1px dashed #000;margin-bottom:10px;letter-spacing:1px;}
+                .data .amount{flex:1;text-align:right;}
+                .data .count{width:35px;text-align:right;}
+                .value{display:inline-block;min-width:50px;}
                 footer p{text-align:center;border-top:1px solid #000;margin-top:15px;display:block;}
             </style>`;
   }
@@ -902,7 +915,6 @@ Printer.prototype.printCashInReport = function (data) {
   this.printer.PRINT();
 }
 Printer.prototype.printCashOutReport = function (data, detail) {
-  console.log(data, detail)
   let store = this.config.store;
   let date = moment().format("MM/DD/YYYY");
   let time = moment().format("hh:mm:ss");

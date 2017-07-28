@@ -61,7 +61,6 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
     created() {
         this.getPolyline();
-        console.log(this.customer)
     },
     mounted() {
         if (this.customer.extra.hasOwnProperty('tag')) {
