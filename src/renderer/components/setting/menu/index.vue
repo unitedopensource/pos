@@ -118,6 +118,7 @@ export default {
                     menuID: "",
                     zhCN: "",
                     usEN: "",
+                    spicy:false,
                     num: this.items[sub].filter(item => item.clickable).length,
                     prices: Object.assign({
                         DEFAULT: item.price,

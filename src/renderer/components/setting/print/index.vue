@@ -17,7 +17,7 @@
                             <checkbox v-model="profile.print.PAYMENT" label="PAYMENT"></checkbox>
                             <checkbox v-model="profile.print.REPORT" label="REPORT"></checkbox>
                             <checkbox v-model="profile.print.SALES" label="SALES"></checkbox>
-                            <checkbox v-model="profile.print.SALES" label="BUFFET"></checkbox>
+                            <checkbox v-model="profile.print.BUFFET" label="BUFFET"></checkbox>
                         </div>
                     </fieldset>
                     <fieldset class="section">

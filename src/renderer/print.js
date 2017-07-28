@@ -107,16 +107,7 @@ Printer.prototype.printReceipt = function (raw) {
     }
   };
   function createHeader(store, data) {
-    let {
-        type,
-      time,
-      number,
-      server,
-      cashier,
-      station,
-      table,
-      customer
-        } = data;
+    let { type, time, number, server, cashier, station, table, customer } = data;
     let ticket = {};
 
     let phone = customer.phone && customer.phone.replace(/^\D?(\d{3})\D?\D?(\d{3})\D?(\d{4})/, "$1.$2.$3");
@@ -235,9 +226,7 @@ Printer.prototype.printReceipt = function (raw) {
 
     let { sortItem, duplicate } = ctrl;
     let list = data.filter(item => item.printer[printer]);
-    !duplicate && (list = list.filter(item => {
-      return !item.print;
-    }));
+    !duplicate && (list = list.filter(item => !item.print));
 
     if (list.length === 0) return null;
     let content = "";
@@ -267,9 +256,7 @@ Printer.prototype.printReceipt = function (raw) {
       content = list.map(mockup).join("").toString();
     }
 
-    return `<section class="body">
-                ${content}
-              </section>`;
+    return `<section class="body">${content}</section>`;
   };
   function createStyle(ctrl) {
     let {

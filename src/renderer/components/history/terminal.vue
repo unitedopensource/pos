@@ -268,7 +268,7 @@ export default {
       }).catch(() => { this.$q() })
     },
     noBatch() {
-      this.$dialog({ type: 'warning', title: 'TERM_NA', msg: 'TERM_BATCH_DISABLE' }).then(() => {
+      this.$dialog({ type: 'warning', title: 'TERM_NA', msg: 'TERM_BATCH_DISABLE',buttons:[{text:'CONFIRM',fn:'resolve'}] }).then(() => {
         this.device = null;
         this.$q();
       })

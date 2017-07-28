@@ -80,7 +80,7 @@ export default {
             document.querySelector(".category .active").classList.remove("active");
             e.currentTarget.classList.add("active");
             this.itemPage = 0;
-            this.recordAction();
+            this.setApp({ opLastAction: new Date });
         },
         pick(item) {
             if (!item.clickable) return;
@@ -91,7 +91,7 @@ export default {
             this.config.store.table.seatOrder && (item.sort = this.sort);
             this.setSides(this.fillOption(item.option));
             this.addToOrder(item);
-            this.recordAction();
+            this.setApp({ opLastAction: new Date });
         },
         isOpenFood(item) {
             if (isNumber(item.price[0])) { return false };
@@ -146,10 +146,10 @@ export default {
                         this.setChoiceSet(content);
                     })
                 }
-                this.$exitComponent();
+                this.$q();
             }).catch((bool) => {
                 bool && this.alterItemOption({ side, index, disableAutoAdd: true });
-                this.$exitComponent()
+                this.$q();
             });
         },
         fillOption(side) {
@@ -181,8 +181,8 @@ export default {
                 delete resolve.reject;
                 let item = Object.assign(this.item, resolve);
                 this.alterItem(item);
-                this.$exitComponent();
-            }).catch(() => { this.$exitComponent() })
+                this.$q();
+            }).catch(() => { this.$q() })
         },
         course() {
             if (this.isEmptyOrder) return;
@@ -332,8 +332,12 @@ export default {
                 order._id = ObjectId();
                 this.$socket.emit("ORDER_PLACED", order);
             }
-            this.resetAll();
-            this.$router.push({ path: "/main" });
+            if (this.ticket.type !== 'BUFFET') {
+                this.resetAll();
+                this.$router.push({ path: "/main" });
+            } else {
+                this.resetSection();
+            }
         },
         done(print) {
             if (this.isEmptyOrder) return;
@@ -412,31 +416,39 @@ export default {
                 }
             }).catch(() => { this.$q() })
         },
-        recordAction() {
-            this.setApp({ opLastAction: new Date });
-        },
         exitComponent() {
             this.componentData = null;
             this.component = null;
         },
         exitConfirm() {
-            this.isEmptyOrder ? this.exit() : this.$dialog({ title: 'EXIT_CFM', msg: 'TIP_EXIT_CFM' }).then(() => { this.exit() }).catch(() => { this.$p() })
+            this.isEmptyOrder ? this.exit() : this.$dialog({ title: 'EXIT_CFM', msg: 'TIP_EXIT_CFM' }).then(() => { this.exit() }).catch(() => { this.$q() })
         },
         exit() {
+            let type = this.ticket.type;
             if (this.currentTable && this.currentTable.current.invoice.length === 0) {
                 console.log(this.app)
                 this.resetCurrentTable();
                 this.$socket.emit("TABLE_MODIFIED", this.currentTable);
             }
             this.resetAll();
-            this.recordAction();
+            this.setApp({ opLastAction: new Date });
             this.$router.push({ path: "/main" });
+        },
+        resetSection() {
+            this.$q();
+            this.resetMenu();
+            this.flatten(this.menuInstance[0].item);
+            this.setSides(this.fillOption([]));
+            document.querySelector(".category .active").classList.remove("active");
+            document.querySelector(".category div").classList.add("active");
+            this.setApp({ opLastAction: new Date });
         },
         ...mapActions(['setApp',
             'lessQty',
             'moreQty',
             'setOrder',
             'setSides',
+            'resetMenu',
             'alterItem',
             'addToOrder',
             'delayPrint',

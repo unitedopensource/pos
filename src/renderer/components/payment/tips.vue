@@ -112,11 +112,11 @@
       },
       enter(){
         let tip = this.tip.includes("%") ?
-        (this.tip.replace(/\D+/,"") / 100 * this.init.payment.due).round(2):
+        (this.tip.replace(/\D+/,"") / 100 * this.init.payment.due).toFixed(2):
         ~~this.tip.replace(/\D+/,"");
 
         let gratuity = this.gratuity.includes("%") ?
-        (this.gratuity.replace(/\D+/,"") / 100 * this.init.payment.due).round(2):
+        (this.gratuity.replace(/\D+/,"") / 100 * this.init.payment.due).toFixed(2):
         ~~this.gratuity.replace(/\D+/,"");
 
         this.init.resolve({tip,gratuity});

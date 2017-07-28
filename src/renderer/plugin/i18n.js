@@ -37,6 +37,7 @@
               'AUTO_CLEAN_TABLE': '自动清空座位',
               'ACCEPT_CREDIT_CARD': '接受信用卡',
               'ACCEPT_DELIVERY': '接受送餐',
+              'BATCH_NO_FOUND':'没有刷卡记录',
               'BUFFET':'自助餐',
               'BAR': '酒吧',
               'BACK': '返回',
