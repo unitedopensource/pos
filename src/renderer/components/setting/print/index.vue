@@ -527,4 +527,8 @@ aside.action {
 section.preview:hover .action {
     opacity: 1;
 }
+
+.selection>div {
+    min-width: 90px;
+}
 </style>

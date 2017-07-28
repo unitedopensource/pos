@@ -47,7 +47,7 @@
                 <figcaption>{{text('SALES')}}</figcaption>
                 <span class="intro">{{text('SETTING.SALES.TIP')}}</span>
             </figure>
-            <figure>
+            <figure v-if="op.role === 'Admin'">
                 <i class="fa fa-2x fa-refresh"></i>
                 <figcaption>{{text('SYSTEM')}}</figcaption>
                 <span class="intro">{{text('SETTING.SYSTEM.TIP')}}</span>
@@ -62,11 +62,15 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
     methods: {
         go(name) {
             this.$router.push({ name })
         }
+    },
+    computed: {
+        ...mapGetters(['op'])
     }
 }
 </script>
