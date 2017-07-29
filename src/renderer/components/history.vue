@@ -1,8 +1,7 @@
 <template>
     <div class="history">
         <header>
-            <div class="logo">
-                <div class="tradeMark" @click.ctrl="maintenance"></div>
+            <div class="logo" @click.ctrl="getConsole">
                 <span>U</span>
             </div>
             <order-summary :data="prevsHistory.length ? prevsHistory : history" :date="calendarDate || today" @filter="setFilter"></order-summary>
@@ -32,6 +31,7 @@
                 <order-list layout="display" :display="true"></order-list>
             </section>
         </article>
+        <div :is="component" :init="componentData" @exit="exitComponent"></div>
     </div>
 </template>
 
@@ -57,6 +57,7 @@ export default {
             today: today(),
             calendarDate: null,
             component: null,
+            componentData:null,
             prevsHistory: [],
             summary: {},
             page: 0,
@@ -96,6 +97,13 @@ export default {
         },
         setCalendar(date) {
             this.calendarDate = date;
+        },
+        getConsole(){
+            console.log("trigger")
+            this.$p("Maintenance");
+        },
+        exitComponent(){
+            this.$q();
         },
         ...mapActions(['setViewOrder'])
     },

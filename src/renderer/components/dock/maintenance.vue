@@ -90,7 +90,6 @@ export default {
       this.code = "";
     },
     exit(){
-      console.log("trigger")
       if(!this.ban)this.$emit("exit");
     }
   }
