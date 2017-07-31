@@ -81,10 +81,12 @@ section.item div {
 }
 
 textarea {
-    width: 480px;
+    width: 450px;
     height: 150px;
     margin: auto;
     display: block;
+    padding: 10px;
+    border: 1px solid #ddd;
 }
 
 input {

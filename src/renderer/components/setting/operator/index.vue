@@ -61,8 +61,8 @@
                             <span class="name">{{text('VIEW')}}</span>
                             <div class="f1">
                                 <checkbox v-model="op.view" label="summary" :multiple="true"></checkbox>
-                                <checkbox v-model="op.view" label="allInvoices" :multiple="true"></checkbox>
-                                <checkbox v-model="op.view" label="allTables" :multiple="true"></checkbox>
+                                <checkbox v-model="op.view" label="invoices" :multiple="true"></checkbox>
+                                <checkbox v-model="op.view" label="tables" :multiple="true"></checkbox>
                             </div>
                         </div>
                     </article>

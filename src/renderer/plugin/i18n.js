@@ -6,8 +6,8 @@
         text(text, ...d) {
           let dict = {
             zhCN: {
-              'allInvoices': '所有订单',
-              'AllTables': '所有座位',
+              'INVOICES': '所有订单',
+              'TABLES': '所有座位',
               'ALL_DAY': '全天',
               'ACTIVITY': '活动',
               'ACCOUNT': '账号',
@@ -457,7 +457,6 @@
               'THU': '周四',
               'TITLE': '标题',
               'TRANSACTION': '交易',
-              'SET_DATE':'Set Date',
               'SHAPE': '图标',
               'SUBTITLE': '子标题',
               'SUBITEM': '子菜项',
@@ -576,8 +575,8 @@
               'ZONE': '区号'
             },
             usEN: {
-              'allInvoices': 'Invoices.',
-              'AllTables': 'Tables',
+              'INVOICES': 'Invoices.',
+              'TABLES': 'Tables',
               'ACTIVITY': 'Activities',
               'ACCOUNT': 'Account',
               'ACTION': 'Action',
@@ -909,6 +908,7 @@
               'PERMISSION': 'Permission',
               'RSA_KEY': 'RSA Private',
               'ROLE': 'Role',
+              'SET_DATE':'Set Date',
               'SALES': 'Sales',
               'SEARCH': 'Search',
               'SPLIT': 'Split',
