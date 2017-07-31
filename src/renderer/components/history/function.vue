@@ -100,7 +100,7 @@ export default {
             };
             this.voidOrder();
         },
-        isSettledOrder() {
+        settledOrder() {
             this.$dialog({ title: "ORDER_SETTLED", msg: "TIP_ORDER_SETTLED", buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$q() })
         },
         editOrder() {
@@ -181,7 +181,7 @@ export default {
         settle() {
             if (this.isEmptyOrder) return;
             if (this.order.settled) {
-                this.isSettledOrder();
+                this.settledOrder();
                 return;
             }
             new Promise((resolve, reject) => {

@@ -55,9 +55,9 @@ export default {
     data() {
         return {
             today: today(),
-            calendarDate: null,
             component: null,
             componentData:null,
+            calendarDate: null,            
             prevsHistory: [],
             summary: {},
             page: 0,
@@ -99,7 +99,6 @@ export default {
             this.calendarDate = date;
         },
         getConsole(){
-            console.log("trigger")
             this.$p("Maintenance");
         },
         exitComponent(){

@@ -171,10 +171,14 @@ export default {
 
     },
     settle() {
-      if (this.order.content.length === 0) return;
+      if (this.isEmptyOrder) return;
+      if (this.order.settled) {
+        this.settledOrder();
+        return;
+      }
       //let payment = JSON.parse(JSON.stringify(this.order.payment))
       new Promise((resolve, reject) => {
-        this.componentData = { order:this.order, resolve, reject };
+        this.componentData = { order: this.order, resolve, reject };
         this.component = "payment";
       }).then(result => {
         this.payment = result.payment;
@@ -190,6 +194,9 @@ export default {
 
         this.$q();
       }).catch(() => { this.$q() });
+    },
+    settledOrder() {
+      this.$dialog({ title: "ORDER_SETTLED", msg: "TIP_ORDER_SETTLED", buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$q() })
     },
     editOrder() {
       this.setTicket({ type: "DINE_IN", number: this.order.number });
@@ -312,7 +319,7 @@ export default {
     ...mapActions(['setApp', 'resetAll', 'resetMenu', 'setOrder', 'setTicket', 'setTableInfo', 'setViewOrder', 'setCurrentTable', 'resetCurrentTable'])
   },
   computed: {
-    ...mapGetters(['op', 'config', 'store', 'history', 'tables', 'order', 'language', 'currentTable'])
+    ...mapGetters(['op', 'config', 'store', 'history', 'tables', 'order', 'language', 'currentTable', 'isEmptyOrder'])
   },
   watch: {
     order(n) {
