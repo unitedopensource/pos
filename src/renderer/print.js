@@ -356,7 +356,7 @@ Printer.prototype.printReceipt = function (raw) {
         .map(trans => `<p><span>${trans.type}</span><span>${trans.paid}</span><span>${trans.balance}</span></p>`).join("").toString() : "";
     let cash = (payment.hasOwnProperty('paidCash') && parseFloat(payment.paidCash) !== 0) ?
       `<p class="bold"><span class="text">CASH:</span><span class="value">${payment.paidCash}</span></p>
-       <p class="bold"><span class="text">CHANGE:</span><span class="value">${(payment.paidCash - payment.due).toFixed(2)}</span></p>` : "";
+       <p class="bold"><span class="text">CHANGE:</span><span class="value">${(Math.max(0,(payment.paidCash - payment.due))).toFixed(2)}</span></p>` : "";
     let credit = (payment.hasOwnProperty('paidCredit') && parseFloat(payment.paidCredit) !== 0) ? `<p class="bold"><span class="text">CREDIT:</span><span class="value">${payment.paidCredit}</span></p>` : "";
     let gift = (payment.hasOwnProperty('paidGift') && parseFloat(payment.paidGift) != 0) ? `<p class="bold"><span class="text">GIFT:</span><span class="value">${payment.paidGift}</span></p>` : "";
     let discount = parseFloat(payment.discount) !== 0 ? `<p class="bold"><span class="text">Discount:</span><span class="value">-${payment.discount}</span></p>` : '';
@@ -368,7 +368,7 @@ Printer.prototype.printReceipt = function (raw) {
                    <p><span class="text">Subtotal:</span><span class="value">${payment.subtotal.toFixed(2)}</span></p>
                    <p><span class="text">Tax:</span><span class="value">${payment.tax.toFixed(2)}</span></p>
                    ${discount}
-                   <p class="bold"><span class="text">TOTAL:</span><span class="value">${(payment.total - payment.discount).toFixed(2)}</span></p>
+                   <p class="bold"><span class="text">TOTAL:</span><span class="value">${payment.due.toFixed(2)}</span></p>
                    ${paid}
                  </div>
                </section>
