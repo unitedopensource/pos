@@ -168,10 +168,7 @@ export default {
         Dialoger, Inputter, Discount, CreditCard, GiftCard, Tips
     },
     created() {
-        this.payment = this.init.hasOwnProperty("order") ?
-            JSON.parse(JSON.stringify(this.init.order.payment)) : JSON.parse(JSON.stringify(this.init.payment));
-        this.payment.balance = Math.max(0, (this.payment.due - this.payment.paid));
-        this.generateQuickInput(this.payment.balance);
+        this.init.order.split ? this.askSplit() : this.initial();
     },
     mounted() {
         this.setPaymentType(this.payment.type || 'CASH');
@@ -199,6 +196,27 @@ export default {
         }
     },
     methods: {
+        initial() {
+            this.payment = this.init.hasOwnProperty("order") ?
+                JSON.parse(JSON.stringify(this.init.order.payment)) : JSON.parse(JSON.stringify(this.init.payment));
+            this.payment.balance = Math.max(0, (this.payment.due - this.payment.paid));
+            this.generateQuickInput(this.payment.balance);
+        },
+        askSplit() {
+            this.$dialog({ type: "question", title: "SPLIT_PAYMENT", msg: "TIP_SPLIT_PAYMENT", buttons: [{ text: 'PAID_IN_FULL', fn: "reject" }, { text: "SPLIT_PAY", fn: "resolve" }] })
+                .then(() => { this.showSplit() }).catch(() => { this.initial(); this.$q() })
+        },
+        showSplit() {
+            new Promise((resolve, reject) => {
+                this.componentData = { resolve, reject };
+                this.component = "splitter";
+            }).then((payment) => {
+                console.log(payment);
+                this.$q();
+            }).catch(() => {
+                this.$q();
+            })
+        },
         setPaymentType(type) {
             let dom = document.querySelector('.type.set');
             let doms = document.querySelectorAll(".typeWrap > div");

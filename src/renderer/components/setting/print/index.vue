@@ -51,7 +51,8 @@
                             <checkbox v-model="profile.control.printPayment" label="PRINT_PAYMENT"></checkbox>
                             <checkbox v-model="profile.control.printSuggestion" label="PRINT_TIP_SUGG"></checkbox>
                             <checkbox v-model="profile.control.buzzer" label="BUZZER"></checkbox>
-                            <checkbox v-model="profile.control.printCoupon" label="PRINT_COUPON"></checkbox>
+                            <!-- <checkbox v-model="profile.control.printCoupon" label="PRINT_COUPON"></checkbox> -->
+                            <checkbox v-model="profile.control.printMenuID" label="PRINT_MENU_ID"></checkbox>
                         </div>
                     </fieldset>
                 </div>

@@ -15,9 +15,13 @@
       </div>
     </div>
     <div class="bottomLeft">
-      <div class="btn" @click="trigger('switchGuest')">
+      <div class="btn" @click="trigger('switchGuest')" v-if="store.table.seatOrder">
         <i class="fa fa-users"></i>
         <span class="text">{{text("SWITCH")}}</span>
+      </div>
+      <div class="btn" @click="trigger('split')" v-else>
+        <i class="fa fa-columns"></i>
+        <span class="text">{{text("SPLIT")}}</span>
       </div>
       <div class="btn" @click="trigger('course')">
         <i class="fa fa-clock-o"></i>
@@ -138,6 +142,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   props: ['layout', 'split'],
   data() {
@@ -150,6 +155,9 @@ export default {
       this.$emit('trigger', fn, params);
       fn === 'switchLanguage' && this.$forceUpdate();
     }
+  },
+  computed: {
+    ...mapGetters(['store'])
   }
 }
 </script>

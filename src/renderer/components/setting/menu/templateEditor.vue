@@ -153,8 +153,9 @@ header .name {
     color: #fff;
     border-bottom: 1px solid #9ec8ca;
     font-size: 1em;
-    width: 100px;
+    width: 150px;
     padding: 0 5px;
+    font-style: italic;
 }
 
 aside {

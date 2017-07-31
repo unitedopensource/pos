@@ -27,6 +27,7 @@ import orderList from './common/orderList'
 import dialoger from './common/dialoger'
 import payment from './payment/payment'
 import itemMarker from './menu/marker'
+import tempItem from './menu/tempItem'
 import builder from './menu/builder'
 import request from './menu/request'
 import search from './menu/search'
@@ -38,7 +39,7 @@ import Printer from '../print'
 import moment from 'moment'
 
 export default {
-    components: { functionGrid, itemMarker, orderList, modify, course, split, payment, request, dialoger, guests, builder },
+    components: { functionGrid, itemMarker, orderList, modify, course, split, payment, request, dialoger, guests, builder, tempItem },
     created() {
         this.menuInstance = JSON.parse(JSON.stringify(this.menu));
         this.flatten(this.menuInstance[0].item);
@@ -84,6 +85,7 @@ export default {
         },
         pick(item) {
             if (!item.clickable) return;
+            if (this.isTempItem(item)) return;
             if (this.isOpenFood(item)) return;
             item = Object.assign({}, item);
             this.poleDisplay(item.usEN.slice(0, 20), ["Price:", (item.price[0]).toFixed(2)]);
@@ -94,7 +96,7 @@ export default {
             this.setApp({ opLastAction: new Date });
         },
         isOpenFood(item) {
-            if (isNumber(item.price[0])) { return false };
+            if (isNumber(item.price[0])) return false;
 
             let modified = new Promise((resolve, reject) => {
                 this.componentData = {
@@ -120,6 +122,11 @@ export default {
                 this.$q();
             }).catch(() => { this.$q() })
             return true
+        },
+        isTempItem(item) {
+            if (!item.temporary) return false;
+            this.$p("tempItem", { item });
+            return true;
         },
         setOption(side, index) {
             side.template ?

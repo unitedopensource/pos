@@ -197,19 +197,18 @@ export default {
         due: 0,
         log: []
       };
-      this.splitPayment.forEach(trans => {
-        payment.tip += trans.tip;
-        payment.gratuity += trans.gratuity;
-        payment.discount += trans.discount;
-        payment.delivery += trans.delivery;
-        payment.subtotal += trans.subtotal;
-        payment.total += trans.total;
-        payment.due += trans.due;
-        payment.paid += trans.paid;
-        trans.log.map(log => {
-          payment.log.push(log)
-        })
-      });
+      Object.keys(this.splitPayment).forEach(trans => {
+        let split = this.splitPayment[trans];
+        payment.tip += parseFloat(split.tip);
+        payment.gratuity += parseFloat(split.gratuity);
+        payment.discount += parseFloat(split.discount);
+        payment.delivery += parseFloat(split.delivery);
+        payment.subtotal += parseFloat(split.subtotal);
+        payment.total += parseFloat(split.total);
+        payment.due += parseFloat(split.due);
+        payment.paid += parseFloat(split.paid);
+        payment.log.push(...split.payment.log);
+      })
       this.setOrder({ payment });
       return true
     },
