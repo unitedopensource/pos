@@ -109,19 +109,20 @@ export default {
             this.$socket.emit("[TERM] UPDATE_TRANSACTION", record);
             Printer.init(this.config).setJob('creditCard').print(transaction);
             let ticket = record.order.number;
-            let index = this.history.findIndex(invoice => invoice.number === ticket);
-            let order = Object.assign({}, this.history[index]);
-            order.settled = false;
-            order.payment.log = [];
-            delete order.payment.paidCash;
-            delete order.payment.paidCredit;
-            delete order.payment.paidGift;
-            delete order.payment.due;
-            delete state.order.payment.type;
-            this.$socket.emit("ORDER_MODIFIED", order);
+            let order = this.history.find(ticket=>ticket.number === record.order.number);
+            this.removePayment(order);
           });
         this.$q();
       }).catch(() => { this.$q() })
+    },
+    removePayment(ticket){
+      ticket.settled = false;
+      ticket.payment.log = [];
+      delete ticket.payment.paidCash;
+      delete ticket.payment.paidCredit;
+      delete ticket.payment.paidGift;
+      ticket.payment.due = parseFloat(ticket.payment.total) - parseFloat(ticket.payment.discount);
+      this.$socket.emit("ORDER_MODIFIED",ticket);
     },
     adjustTip(record) {
       this.approval(this.op.modify, "terminal") ?

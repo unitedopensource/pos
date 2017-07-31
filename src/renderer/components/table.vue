@@ -171,9 +171,9 @@ export default {
     },
     settle() {
       if (this.order.content.length === 0) return;
-      let payment = JSON.parse(JSON.stringify(this.order.payment))
+      //let payment = JSON.parse(JSON.stringify(this.order.payment))
       new Promise((resolve, reject) => {
-        this.componentData = { payment, resolve, reject };
+        this.componentData = { order:this.order, resolve, reject };
         this.component = "payment";
       }).then(result => {
         this.payment = result.payment;

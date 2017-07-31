@@ -24,11 +24,11 @@
             </article>
         </section>
         <section class="card">
-            <header>{{text('GOOGLE_MAP_SERVICE')}}
+            <header>{{text('GOOGLE_MATRIX')}}
                 <span class="tip">{{text('TIP_CALC_DISTANCE')}}</span>
             </header>
             <article>
-                <smart-switch v-model="store.calcDistance" label="CALCULATE"></smart-switch>
+                <smart-switch v-model="store.calcDistance" label="ENABLE"></smart-switch>
                 <smart-input v-model="store.mapAPI" label="API_KEY" :disable="!store.calcDistance"></smart-input>
             </article>
         </section>

@@ -168,7 +168,8 @@ export default {
         Dialoger, Inputter, Discount, CreditCard, GiftCard, Tips
     },
     created() {
-        this.payment = JSON.parse(JSON.stringify(this.init.payment));
+        this.payment = this.init.hasOwnProperty("order") ?
+            JSON.parse(JSON.stringify(this.init.order.payment)) : JSON.parse(JSON.stringify(this.init.payment));
         this.payment.balance = Math.max(0, (this.payment.due - this.payment.paid));
         this.generateQuickInput(this.payment.balance);
     },
@@ -399,11 +400,7 @@ export default {
                     id: transaction.unique,
                     number: transaction.account.number
                 })
-                transaction.order = {
-                    type: this.ticket.type,
-                    number: this.ticket.number,
-                    cashier: this.op.name
-                }
+                transaction.order = this.assignOrder();
                 this.$socket.emit("[TERM] SAVE_TRANSACTION", transaction);
                 Printer.init(this.config).setJob("creditCard").print(transaction);
                 if (parseFloat(this.payment.balance) === 0) {
@@ -424,6 +421,23 @@ export default {
                     (error && error.title) ? this.$dialog(error).then(() => { this.$q() }).catch(() => { this.$q() }) : this.$q();
                 })
             })
+        },
+        assignOrder() {
+            if (this.init.order._id) {
+                let ticket = this.init.order;
+                return {
+                    type: ticket.type,
+                    number: ticket.number,
+                    cashier: ticket.cashier,
+                    server: ticket.server
+                }
+            } else {
+                return {
+                    type: this.ticket.type,
+                    number: this.ticket.number,
+                    cashier: this.op.name
+                }
+            }
         },
         chargeGift() {
             if (parseFloat(this.paid) === 0) return;
@@ -577,7 +591,7 @@ export default {
                 type: "question", title: "CASH_OUT",
                 msg: this.text("TIP_CASH_OUT", this.giftCard.balance.toFixed(2))
             }).then(() => {
-                this.recordCashDrawerAction(0,parseFloat(this.giftCard.balance));
+                this.recordCashDrawerAction(0, parseFloat(this.giftCard.balance));
                 let money = this.giftCard.balance;
                 let value = 0;
                 let activity = {

@@ -2,7 +2,6 @@
     <div class="printer">
         <section class="setting">
             <smart-option label="PRINTER" v-model="device" :options="devices"></smart-option>
-            <smart-option label="PRESET" v-model="preset" :options="presets"></smart-option>
             <div class="wrap">
                 <div class="config" v-if="profile">
                     <fieldset class="section">
@@ -18,6 +17,7 @@
                             <checkbox v-model="profile.print.REPORT" label="REPORT"></checkbox>
                             <checkbox v-model="profile.print.SALES" label="SALES"></checkbox>
                             <checkbox v-model="profile.print.BUFFET" label="BUFFET"></checkbox>
+                            <checkbox v-model="profile.print.CREDITCARD" label="CREDIT_CARD"></checkbox>
                         </div>
                     </fieldset>
                     <fieldset class="section">
@@ -28,6 +28,7 @@
                             <checkbox v-model="profile.double.DELIVERY" label="DELIVERY"></checkbox>
                             <checkbox v-model="profile.double.DINE_IN" label="DINE_IN"></checkbox>
                             <checkbox v-model="profile.double.BAR" label="BAR"></checkbox>
+                            <checkbox v-model="profile.double.BUFFET" label="BUFFET"></checkbox>
                         </div>
                     </fieldset>
                     <fieldset class="section">
@@ -349,7 +350,7 @@ section.setting {
 }
 
 .wrap {
-    height: 579px;
+    height: 622px;
 }
 
 .preview {

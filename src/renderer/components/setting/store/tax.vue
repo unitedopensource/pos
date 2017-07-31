@@ -29,6 +29,7 @@
                         <checkbox v-model="category.apply.DELIVERY" label="DELIVERY"></checkbox>
                         <checkbox v-model="category.apply.DINE_IN" label="DINE_IN"></checkbox>
                         <checkbox v-model="category.apply.BAR" label="BAR"></checkbox>
+                        <checkbox v-model="category.apply.BUFFET" label="BUFFET"></checkbox>
                     </span>
                     <span class="action" @click="edit(category,key)">
                         <span>
@@ -147,5 +148,11 @@ export default {
 
 .datalist.add:active {
     background: #F5F5F5;
+}
+
+.f1 {
+    display: flex;
+    padding: 0 20px;
+    flex-wrap: wrap;
 }
 </style>

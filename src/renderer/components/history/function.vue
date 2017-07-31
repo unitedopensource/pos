@@ -185,7 +185,7 @@ export default {
                 return;
             }
             new Promise((resolve, reject) => {
-                this.componentData = { payment: this.order.payment, resolve, reject };
+                this.componentData = { order: this.order, resolve, reject };
                 this.component = "Payment";
             }).then((result) => {
                 let order = JSON.parse(JSON.stringify(this.order));

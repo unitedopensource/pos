@@ -59,6 +59,7 @@
     "lodash.debounce": "^4.0.8",
     "md5": "^2.2.1",
     "moment": "^2.18.1",
+    "net": "^1.0.2",
     "node-gyp": "^3.6.2",
     "nodemailer": "^4.0.1",
     "serialport": "^4.0.7",
