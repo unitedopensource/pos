@@ -168,7 +168,7 @@ export default {
         Dialoger, Inputter, Discount, CreditCard, GiftCard, Tips
     },
     created() {
-        this.init.order.split ? this.askSplit() : this.initial();
+        (this.init.hasOwnProperty("order") && this.init.order.split) ? this.askSplit() : this.initial();
     },
     mounted() {
         this.setPaymentType(this.payment.type || 'CASH');
@@ -426,7 +426,6 @@ export default {
                     this.payment.settled = true;
                     this.summarize({ print: true, transaction });
                 }
-
             }).catch(reject => {
                 this.$q();
                 this.$dialog(reject).then(() => {
@@ -441,7 +440,7 @@ export default {
             })
         },
         assignOrder() {
-            if (this.init.order._id) {
+            if (this.init.order && this.init.order._id) {
                 let ticket = this.init.order;
                 return {
                     type: ticket.type,

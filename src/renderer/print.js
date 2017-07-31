@@ -424,6 +424,7 @@ Printer.prototype.printCreditCard = function (trans, reprint) {
   let html = createHtml();
   let style = createStyle();
   let printer = this.findPrinterFor('CREDITCARD');
+  if (!printer) return;
   this.printer.PRINT_INIT(this.job);
   this.printer.ADD_PRINT_HTM(0, 0, "100%", "100%", html + style);
   this.printer.SET_PRINTER_INDEX(printer);

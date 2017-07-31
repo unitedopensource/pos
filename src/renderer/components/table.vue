@@ -104,6 +104,7 @@ export default {
       this.sectionView = section.item;
     },
     selectTable(table, e) {
+      console.log(table)
       this.setApp({ opLastAction: new Date });
       if (!table._id) return;
       if (this.pendingSwitch) {

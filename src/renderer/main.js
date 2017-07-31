@@ -23,6 +23,10 @@ window.servers = [];
 const ip = Ip.address().split(".").splice(0, 3).join(".") + ".";
 let findHost = new Promise((resolve, reject) => {
   const args = require('electron').remote.process.argv.slice(1);
+  if (process.env.NODE_ENV === 'development') {
+    resolve("127.0.0.1");
+    return;
+  }
   if (args.includes("-server")) {
     resolve("127.0.0.1");
     return;
@@ -127,7 +131,7 @@ Array.prototype.permit = function (privilege) {
 // Number.prototype.round = function (places) {
 //   return +(Math.round(this + "e+" + places) + "e-" + places);
 // };
-String.prototype.toFixed = function(places){
+String.prototype.toFixed = function (places) {
   return isNumber(this) ? parseFloat(this).toFixed(places) : "0.00";
 }
 window.ObjectId = (m = Math, d = Date, h = 16, s = s => m.floor(s).toString(h)) => s(d.now() / 1000) + ' '.repeat(h).replace(/./g, () => s(m.random() * h));
