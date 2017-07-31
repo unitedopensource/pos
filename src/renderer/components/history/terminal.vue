@@ -262,13 +262,13 @@ export default {
             this.$socket.emit('[TERM] SAVE_BATCH_RESULT', result);
             this.$q();
           } else {
-            this.$dialog({ type: 'warning', title: result.msg, msg: this.text('ERROR_CODE', result.code) }).then(() => { this.$q() })
+            this.$dialog({ type: 'warning', title: result.msg, msg: this.text('ERROR_CODE', result.code), buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$q() })
           }
         })
       }).catch(() => { this.$q() })
     },
     noBatch() {
-      this.$dialog({ type: 'warning', title: 'TERM_NA', msg: 'TERM_BATCH_DISABLE',buttons:[{text:'CONFIRM',fn:'resolve'}] }).then(() => {
+      this.$dialog({ type: 'warning', title: 'TERM_NA', msg: 'TERM_BATCH_DISABLE', buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => {
         this.device = null;
         this.$q();
       })

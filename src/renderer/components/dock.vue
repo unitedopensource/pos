@@ -200,7 +200,7 @@ export default {
       this.recordCashDrawerAction();
       this.$dialog({
         type: "question", title: this.text("CASH_OUT_SETTLE", cashflow.end), msg: this.text("TIP_CASH_OUT_SETTLE", cashflow.begin),
-        buttons: [{ text: "NOT_MATCH", fn: "reject" }, { text: 'MATCH', fn: 'resolve' }]
+        buttons: [{ text: "PRINT_DETAIL", fn: "reject" }, { text: 'PRINT', fn: 'resolve' }]
       }).then(() => {
         Printer.setJob("cashout report").print(cashflow);
         this.$router.push({ path: '/Login' });
