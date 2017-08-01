@@ -28,6 +28,7 @@ import dialoger from './common/dialoger'
 import payment from './payment/payment'
 import itemMarker from './menu/marker'
 import tempItem from './menu/tempItem'
+import scaleItem from './menu/scale'
 import builder from './menu/builder'
 import request from './menu/request'
 import search from './menu/search'
@@ -39,7 +40,7 @@ import Printer from '../print'
 import moment from 'moment'
 
 export default {
-    components: { functionGrid, itemMarker, orderList, modify, course, split, payment, request, dialoger, guests, builder, tempItem },
+    components: { functionGrid, itemMarker, orderList, modify, course, split, payment, request, dialoger, guests, builder, tempItem, scaleItem },
     created() {
         this.menuInstance = JSON.parse(JSON.stringify(this.menu));
         this.flatten(this.menuInstance[0].item);
@@ -86,6 +87,7 @@ export default {
         pick(item) {
             if (!item.clickable) return;
             if (this.isTempItem(item)) return;
+            if (this.isScalable(item)) return;
             if (this.isOpenFood(item)) return;
             item = Object.assign({}, item);
             this.poleDisplay(item.usEN.slice(0, 20), ["Price:", (item.price[0]).toFixed(2)]);
@@ -127,6 +129,11 @@ export default {
             if (!item.temporary) return false;
             this.$p("tempItem", { item });
             return true;
+        },
+        isScalable(item) {
+            if (!item.hasOwnProperty('unitPrice')) return false;
+            this.$p("scaleItem", { item });
+            return true
         },
         setOption(side, index) {
             side.template ?

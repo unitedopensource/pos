@@ -59,7 +59,7 @@ const mutations = {
       sort:item.sort || 0,
       qty:1,
       mark:[[],[]],
-      choiceSet:[],
+      choiceSet:item.choiceSet ? item.choiceSet : [],
       single:parseFloat(item.price[0]),
       total:parseFloat(item.price[0]).toFixed(2),
       side:!item.disableAutoOption ? 

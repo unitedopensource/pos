@@ -5,8 +5,9 @@
                 <span>{{text('CASH_IN_COUNT')}}</span>
                 <span class="cash">$ {{amount.toFixed(2)}}</span>
             </header>
-            <div class="inner">
-                <div class="bill">
+            <section class="inner">
+
+                <!-- <div class="bill">
                     <div @click="pointer ='hundred'" class="hundred">
                         <span class="value">{{hundred}}</span>
                         <span class="text">$ 100</span>
@@ -49,11 +50,8 @@
                         <span class="value">{{penny}}</span>
                         <span class="text">$ 0.01</span>
                     </div>
-                </div>
-                <div class="range">
-                    <smart-range v-model="value" label="QTY" @input="change" :max="50"></smart-range>
-                </div>
-            </div>
+                </div> -->
+            </section>
             <footer>
                 <div class="btn" @click="confirm">{{text('CONFIRM')}}</div>
             </footer>
@@ -62,10 +60,8 @@
 </template>
 
 <script>
-import smartRange from '../setting/common/smartRange'
 export default {
     props: ['init'],
-    components: { smartRange },
     data() {
         return {
             hundred: 0,
@@ -118,37 +114,4 @@ export default {
     width: 500px;
 }
 
-.bill,
-.coin {
-    display: flex;
-    padding: 10px;
-}
-
-.bill>div,
-.coin>div {
-    flex: 1;
-    display: flex;
-    flex-direction: column-reverse;
-    justify-content: center;
-    align-items: center;
-    background: #fff;
-    margin: 2px;
-    height: 70px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
-}
-
-.bill .active,
-.coin .active {
-    background: #009688;
-    color: #fff;
-}
-
-.range {
-    margin: 15px 0;
-}
-
-.cash {
-    font-size: 16px;
-    color: #FAFAFA;
-}
 </style>

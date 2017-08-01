@@ -42,5 +42,6 @@ select {
     padding: 8px 0;
     font-size: 1em;
     color: #9E9E9E;
+    font-family: 'Yuanti-SC';
 }
 </style>

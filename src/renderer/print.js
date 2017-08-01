@@ -336,7 +336,7 @@ Printer.prototype.printReceipt = function (raw) {
               section.tip .value{text-align:right;display:inline-block;width:50%}
               section.welcome{text-align:center;font-weight:lighter;margin-top:10px;}
               footer{font-family:'Agency FB';}
-              .printTime{${printActionTime ? '' : 'display:none;'}}
+              .printTime{${printActionTime ? '' : 'display:none;'}font-weight:bold;text-align:center;}
               .zhCN{font-family:'${primaryFont}';font-size:${primaryFontSize};${printPrimary ? '' : 'display:none;'}}
               .usEN{font-family:'${secondaryFont}';font-size:${secondaryFontSize};${printSecondary ? '' : 'display:none;'}}
           </style>`
@@ -423,8 +423,8 @@ Printer.prototype.printCreditCard = function (trans, reprint) {
   let time = timestamp.format("HH:mm:ss");
   let html = createHtml();
   let style = createStyle();
-  let printer = this.findPrinterFor('PAYMENT');
-  //if (!printer) return;
+  let printer = this.findPrinterFor('CREDITCARD');
+  if (!printer) return;
   this.printer.PRINT_INIT(this.job);
   this.printer.ADD_PRINT_HTM(0, 0, "100%", "100%", html + style);
   this.printer.SET_PRINTER_INDEX(printer);
@@ -998,7 +998,7 @@ Printer.prototype.printCashOutReport = function (data, detail) {
   this.printer.PRINT();
 }
 Printer.prototype.findPrinterFor = function (type) {
-  let printers = this.config.store.printer;
+  let printers = this.config.printer;
   let printer = [];
   for (let i in printers) {
     printers.hasOwnProperty(i) && printer.push(i);

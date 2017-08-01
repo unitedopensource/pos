@@ -72,7 +72,7 @@
                         <span class="tip">{{text('OPERATOR.TIMECARD.TIP')}}</span>
                     </header>
                     <div class="header">
-                        <span class="approve">{{text('REVIEW')}}</span>
+                        <span class="approve">{{text('STATUS')}}</span>
                         <span class="time">{{text('CLOCK_IN')}}</span>
                         <span class="time">{{text('CLOCK_OUT')}}</span>
                         <span class="calc">{{text('WORK_HOUR')}}</span>
@@ -122,7 +122,7 @@ export default {
             componentData: null,
             activities: [],
             roles: ['Manager', 'Cashier', 'Waitstaff', 'Bartender'],
-            languages: [{ label: "PRIMARY", value: "zhCN" }, { label: "SECONDARY", value: "usEN" }],
+            languages: [{ label: this.text("ZH_CN"), value: "zhCN" }, { label:this.text("US_EN"), value: "usEN" }],
             compare: null,
             change: false,
             send: false,
