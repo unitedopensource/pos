@@ -174,14 +174,14 @@ export default {
         this.componentData = { payment, resolve, reject };
         this.component = "payment";
       }).then(result => {
-        this.$exitComponent();
+        this.$q();
         this.splitPayment[split] = result.payment;
         this.$bus.emit("SPLIT_PAID", split);
         result.print && this.print(split);
       }).catch(() => {
         delete payment.due;
         payment.log = [];
-        this.$exitComponent();
+        this.$q();
       })
     },
     gatherPayments() {

@@ -293,10 +293,8 @@ export default {
             }).then((content) => {
                 this.$q();
                 this.setOrder({ content, split: true });
-                this.save(false);
-            }).catch(() => {
-                this.$q();
-            })
+                this.ticket.type === 'DINE_IN' ? this.done(true) : this.save(true);
+            }).catch(() => { this.$q() })
         },
         search() {
 
