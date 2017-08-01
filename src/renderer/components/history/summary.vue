@@ -94,11 +94,12 @@ export default {
 
       for (let i = 0; i < length; i++) {
         let invoice = this.data[i];
+        let due = isNumber(invoice.payment.due) ? parseFloat(invoice.payment.due) : invoice.payment.total - invoice.payment.discount;
         if (this.data[i].status === 1) {
           if (invoice.payment) {
             total++;
-            totalSum += parseFloat(invoice.payment.due);
-            discountSum += invoice.payment.discount;
+            totalSum += due;
+            discountSum += parseFloat(invoice.payment.discount);
           } else {
             corrupted++;
             continue;
@@ -107,39 +108,39 @@ export default {
           switch (invoice.type) {
             case "WALK_IN":
               walkin++;
-              walkinSum += parseFloat(invoice.payment.due);
-              walkinTip += invoice.payment.tip;
-              walkinGratuity += invoice.payment.gratuity;
+              walkinSum += due;
+              walkinTip += parseFloat(invoice.payment.tip);
+              walkinGratuity += parseFloat(invoice.payment.gratuity);
               break;
             case "PICK_UP":
               pickup++;
-              pickupSum += parseFloat(invoice.payment.due);
-              pickupTip += invoice.payment.tip;
-              pickupGratuity += invoice.payment.gratuity;
+              pickupSum += due;
+              pickupTip += parseFloat(invoice.payment.tip);
+              pickupGratuity += parseFloat(invoice.payment.gratuity);
               break;
             case "DELIVERY":
               delivery++;
-              deliverySum += parseFloat(invoice.payment.due);
-              deliveryTip += invoice.payment.tip;
-              deliveryGratuity += invoice.payment.gratuity;
-              deliveryFee += invoice.deliveryFree ? 0 : invoice.payment.delivery;
+              deliverySum += due;
+              deliveryTip += parseFloat(invoice.payment.tip);
+              deliveryGratuity += parseFloat(invoice.payment.gratuity);
+              deliveryFee += invoice.deliveryFree ? 0 : parseFloat(invoice.payment.delivery);
               if (invoice.driver) {
                 if (driver.hasOwnProperty(invoice.driver)) {
                   let name = invoice.driver;
                   driver[name].count++;
-                  driver[name].total += parseFloat(invoice.payment.due);
-                  driver[name].discount += invoice.payment.discount;
-                  driver[name].tip += invoice.payment.tip;
-                  driver[name].gratuity += invoice.payment.grauity;
-                  driver[name].charge += (invoice.deliveryFree ? 0 : invoice.payment.delivery ? invoice.payment.delivery : 0);
+                  driver[name].total += due;
+                  driver[name].discount += parseFloat(invoice.payment.discount);
+                  driver[name].tip += parseFloat(invoice.payment.tip);
+                  driver[name].gratuity += parseFloat(invoice.payment.gratuity);
+                  driver[name].charge += (invoice.deliveryFree ? 0 : parseFloat(invoice.payment.delivery) ? parseFloat(invoice.payment.delivery) : 0);
                 } else {
                   driver[invoice.driver] = {
                     count: 1,
-                    total: parseFloat(invoice.payment.due),
-                    discount: invoice.payment.discount ? invoice.payment.discount : 0,
-                    tip: invoice.payment.tip ? invoice.payment.tip : 0,
-                    gratuity: invoice.payment.gratuity ? invoice.payment.gratuity : 0,
-                    charge: invoice.deliveryFree ? 0 : invoice.payment.delivery ? invoice.payment.delivery : 0
+                    total: due,
+                    discount: invoice.payment.discount ? parseFloat(invoice.payment.discount) : 0,
+                    tip: invoice.payment.tip ? parseFloat(invoice.payment.tip) : 0,
+                    gratuity: invoice.payment.gratuity ? parseFloat(invoice.payment.gratuity) : 0,
+                    charge: invoice.deliveryFree ? 0 : parseFloat(invoice.payment.delivery) ? parseFloat(invoice.payment.delivery) : 0
                   }
                 }
               }
