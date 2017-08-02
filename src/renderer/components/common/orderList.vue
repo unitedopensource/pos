@@ -337,7 +337,24 @@ export default {
             })
         },
         calculator(n) {
-            if (n.length === 0) return;
+            if (n.length === 0) {
+                this.payment = {
+                    subtotal: 0,
+                    tax: 0,
+                    total: 0,
+                    due: 0,
+                    balance: 0,
+                    paid: 0,
+                    change: 0,
+                    gratuity: 0,
+                    tip: 0,
+                    discount: 0,
+                    delivery: 0,
+                    log: []
+                };
+                return;
+            }
+
             let subtotal = 0;
             let tax = 0;
             let total = 0;
@@ -361,13 +378,13 @@ export default {
             this.payment.delivery =
                 (this.ticket.type === 'DELIVERY' && this.store.delivery && !this.order.deliveryFree) ?
                     this.store.deliveryCharge : 0;
-            total = subtotal + tax + this.payment.tip + this.payment.gratuity + this.payment.delivery;
+            total = subtotal + tax + parseFloat(this.payment.tip) + parseFloat(this.payment.gratuity) + this.payment.delivery;
             let due = total - this.payment.discount;
             this.payment.subtotal = subtotal;
             this.payment.tax = tax.toFixed(2);
             this.payment.total = total.toFixed(2);
             this.payment.due = due.toFixed(2);
-            this.$emit("update", this.payment);
+            this.setOrder({ payment: this.payment });
 
             this.$nextTick(() => {
                 let height = 0;
@@ -403,7 +420,7 @@ export default {
         },
         'cart': {
             handler(n) {
-                !this.display ? this.calculator(n) : this.order.hasOwnProperty('payment') ? this.payment = this.order.payment : this.calculator(n);
+                this.calculator(n);
             }, deep: true
         },
         'ticket.type'() {

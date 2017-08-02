@@ -49,7 +49,7 @@ export default [{
   {
     path: 'menu',
     name: 'Menu',
-    component: require('./components/menu')
+    component: require('./components/menu/menu')
   },
   {
     path: 'history',

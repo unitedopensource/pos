@@ -1,15 +1,15 @@
 <template>
   <div class="function" v-if="layout ==='DINE_IN'">
     <div class="top">
-      <div class="btn" @click="trigger('less')">
+      <div class="btn" @click="less">
         <i class="fa fa-minus-square"></i>
         <span class="text">{{text("LESS")}}</span>
       </div>
-      <div class="btn" @click="trigger('moreQty')">
+      <div class="btn" @click="moreQty">
         <i class="fa fa-plus-square"></i>
         <span class="text">{{text("MORE")}}</span>
       </div>
-      <div class="btn" @click="trigger('request')">
+      <div class="btn" @click="request">
         <i class="fa fa-commenting-o"></i>
         <span class="text">{{text("REQUEST")}}</span>
       </div>
@@ -19,48 +19,48 @@
         <i class="fa fa-users"></i>
         <span class="text">{{text("SWITCH")}}</span>
       </div>
-      <div class="btn" @click="trigger('split')" v-else>
+      <div class="btn" @click="split" v-else>
         <i class="fa fa-columns"></i>
         <span class="text">{{text("SPLIT")}}</span>
       </div>
-      <div class="btn" @click="trigger('course')">
+      <div class="btn" @click="course">
         <i class="fa fa-clock-o"></i>
         <span class="text">{{text("TIMER")}}</span>
       </div>
-      <div class="btn" @click="trigger('search')">
+      <div class="btn" @click="search">
         <i class="fa fa-search"></i>
         <span class="text">{{text("SEARCH")}}</span>
       </div>
-      <div class="btn" @click="trigger('done',false)">
+      <div class="btn" @click="done(false)">
         <i class="fa fa-save"></i>
         <span class="text">{{text("HOLD")}}</span>
       </div>
-      <button class="btn" @click="trigger('modify')">
+      <button class="btn" @click="modify">
         <i class="fa fa-calculator"></i>
         <span class="text">{{text("MODIFY")}}</span>
       </button>
-      <div class="btn" @click="trigger('exitConfirm')">
+      <div class="btn" @click="dineinExit">
         <i class="fa fa-times"></i>
         <span class="text">{{text("EXIT")}}</span>
       </div>
     </div>
     <div class="bottomRight">
-      <button class="btn long" @click="trigger('done',true)">
+      <button class="btn long" @click="done(true)">
         <i class="fa fa-print"></i>
         <span class="text">{{text("DONE")}}</span>
       </button>
-      <div class="btn" @click="trigger('switchLanguage')">
+      <div class="btn" @click="switchLanguage">
         <i class="fa fa-language"></i>
         <span class="text">中/EN</span>
       </div>
     </div>
   </div>
   <div class="grid" v-else-if="layout === 'BUFFET'">
-    <div class="btn" @click="trigger('less')">
+    <div class="btn" @click="less">
       <i class="fa fa-minus-square"></i>
       <span class="text">{{text("LESS")}}</span>
     </div>
-    <div class="btn" @click="trigger('moreQty')">
+    <div class="btn" @click="moreQty">
       <i class="fa fa-plus-square"></i>
       <span class="text">{{text("MORE")}}</span>
     </div>
@@ -90,51 +90,51 @@
     </div>
   </div>
   <div class="function" v-else>
-    <div class="btn" @click="trigger('less')">
+    <div class="btn" @click="less">
       <i class="fa fa-minus-square"></i>
       <span class="text">{{text("LESS")}}</span>
     </div>
-    <div class="btn" @click="trigger('moreQty')">
+    <div class="btn" @click="moreQty">
       <i class="fa fa-plus-square"></i>
       <span class="text">{{text("MORE")}}</span>
     </div>
-    <div class="btn" @click="trigger('request')">
+    <div class="btn" @click="request">
       <i class="fa fa-commenting-o"></i>
       <span class="text">{{text("REQUEST")}}</span>
     </div>
-    <div class="btn" @click="trigger('settle')">
+    <div class="btn" @click="settle">
       <i class="fa fa-money"></i>
       <span class="text">{{text("PAYMENT")}}</span>
     </div>
-    <div class="btn" @click="trigger('course')">
+    <div class="btn" @click="course">
       <i class="fa fa-clock-o"></i>
       <span class="text">{{text("TIMER")}}</span>
     </div>
-    <button class="btn" @click="trigger('save',true)">
+    <button class="btn" @click="save(true)">
       <i class="fa fa-print"></i>
       <span class="text">{{text("PRINT")}}</span>
     </button>
-    <div class="btn" @click="trigger('search')">
+    <div class="btn" @click="search">
       <i class="fa fa-search"></i>
       <span class="text">{{text("SEARCH")}}</span>
     </div>
-    <div class="btn" @click="trigger('split')">
+    <div class="btn" @click="split">
       <i class="fa fa-columns"></i>
       <span class="text">{{text("SPLIT")}}</span>
     </div>
-    <div class="btn" @click="trigger('save',false)">
+    <div class="btn" @click="save(false)">
       <i class="fa fa-save"></i>
       <span class="text">{{text("SAVE")}}</span>
     </div>
-    <button class="btn" @click="trigger('modify')">
+    <button class="btn" @click="modify">
       <i class="fa fa-calculator"></i>
       <span class="text">{{text("MODIFY")}}</span>
     </button>
-    <div class="btn" @click="trigger('exitConfirm')">
+    <div class="btn" @click="takeoutExit">
       <i class="fa fa-times"></i>
       <span class="text">{{text("EXIT")}}</span>
     </div>
-    <div class="btn" @click="trigger('switchLanguage')">
+    <div class="btn" @click="switchLanguage">
       <i class="fa fa-language"></i>
       <span class="text">中/EN</span>
     </div>
@@ -142,22 +142,116 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 export default {
-  props: ['layout', 'split'],
+  props: ['layout'],
   data() {
     return {
       isDisplayGuests: false
     }
   },
   methods: {
-    trigger(fn, params) {
-      this.$emit('trigger', fn, params);
-      fn === 'switchLanguage' && this.$forceUpdate();
-    }
+    callComponent(name) {
+      this.$emit("open", name);
+    },
+    less() {
+      //this.component === 'request'
+      this.lessQty();
+    },
+    modify() {
+      if (this.isEmptyTicket) return;
+      if (this.approval(this.op.modify, "price")) {
+        this.$denyAccess();
+        return;
+      }
+      this.callComponent("modify");
+    },
+    course() {
+      if (this.isEmptyTicket) return;
+      this.callComponent("course");
+    },
+    settle() {
+      if (this.isEmptyTicket) return;
+      this.callComponent("settle")
+    },
+    request() {
+      if (this.isEmptyTicket) return;
+      this.callComponent("request");
+    },
+    search() {
+
+    },
+    split() {
+      if (this.isEmptyTicket) return;
+      this.callComponent("split");
+    },
+    save(print) {
+      if (this.isEmptyTicket) return;
+      let order = this.combineOrderInfo({ cashier: this.op.name, print });
+      this.app.mode === 'create' ? this.$emit("[SAVE] INVOICE", order) : this.$emit("[UPDATE] INVOICE", order);
+      this.resetAll();
+      this.$router.push({ path: "/main" });
+    },
+    done(print) {
+      if (this.isEmptyTicket) return;
+      let order = this.combineOrderInfo({ server: this.op.name, print });
+      this.setCurrentTable({ current: { invoice: [order._id] } });
+      this.app.mode === 'create' ? this.$socket.emit("[SAVE] DINE_IN_INVOICE", { table: this.currentTable, order }) : this.$socket.emit("[UPDATE] INVOICE", order);
+      this.$socket.emit("INQUIRY_TICKET_NUMBER");
+      this.$router.push({ name: "Table" });
+      this.setOrder(order);
+    },
+    combineOrderInfo(extra) {
+      let customer = Object.assign({}, this.customer);
+      let print = extra.hasOwnProperty("print") ? extra.print : true;
+      if (this.app.mode === 'create') {
+        delete customer.extra;
+        let order = Object.assign({}, this.order, {
+          customer,
+          type: this.ticket.type,
+          number: this.ticket.number,
+          station: this.station.alies,
+          source: "POS",
+          modify: 0,
+          status: 1,
+          time: +new Date,
+          date: today()
+        });
+      } else {
+        let order = Object.assign({}, this.order, {
+          lastEdit: +new Date,
+          editor: this.op.name,
+          modify: this.order.modify + 1
+        })
+      }
+      print && Array.isArray(order.content) && order.content.forEach(item => {
+        item.print = true;
+        item.pending = false;
+      })
+      return Object.assign({}, order, extra);
+    },
+    takeoutExit() {
+      this.callComponent("takeoutExit");
+    },
+    dineinExit() {
+      this.callComponent("dineinExit");
+    },
+    buffetExit() {
+
+    },
+    switchLanguage() {
+
+    },
+    ...mapActions(['lessQty', 'moreQty', 'resetAll', 'setCurrentTable'])
+
+
+    // trigger(fn, params) {
+    //   this.$emit('trigger', fn, params);
+    //   fn === 'switchLanguage' && this.$forceUpdate();
+    // }
   },
   computed: {
-    ...mapGetters(['store'])
+    ...mapGetters(['op', 'app', 'ticket', 'store', 'customer', 'station', 'isEmptyTicket'])
   }
 }
 </script>

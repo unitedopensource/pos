@@ -157,3 +157,7 @@ window.line = function (line1, line2) {
   }
   return f(line1) + f(line2);
 }
+window.toggleClass = function (target, className) {
+  let dom = target instanceof HTMLElement ? target : document.querySelector(target);
+  dom.className.includes(className) ? dom.classList.remove(className) : dom.classList.add(className)
+}

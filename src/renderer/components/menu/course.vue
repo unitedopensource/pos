@@ -1,5 +1,5 @@
 <template>
-  <div class="popupMask center dark" @click.self="init.reject">
+  <div class="popupMask center dark">
     <div class="course window">
       <header class="title">
         <span>{{text("COURSE_TIME")}}</span>
@@ -71,7 +71,7 @@ import moment from 'moment'
 export default {
   props: ['init'],
   created() {
-    this.list = JSON.parse(JSON.stringify(this.init.list));
+    this.initial();
   },
   data() {
     return {
@@ -107,6 +107,9 @@ export default {
     }
   },
   methods: {
+    initial() {
+      this.list = JSON.parse(JSON.stringify(this.init.order.content));
+    },
     jumpStep(index) {
       let current = this.step;
       let hour = this.hour;
@@ -331,7 +334,7 @@ span.delay {
   padding-right: 25px;
 }
 
-.f4{
-  flex:4;
+.f4 {
+  flex: 4;
 }
 </style>

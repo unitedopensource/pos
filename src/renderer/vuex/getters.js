@@ -28,7 +28,7 @@ export const order = state => state.menu.order
 export const menu = state => state.initial.config.layout.menu
 export const actions = state => state.initial.config.layout.action
 export const request = state => state.initial.config.layout.request
-export const isEmptyOrder = state => state.menu.order.content.length === 0
+export const isEmptyTicket = state => state.menu.order.content.length === 0
 
 //tables
 export const currentTable = state => state.table.currentTable
