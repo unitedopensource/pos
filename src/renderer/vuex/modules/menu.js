@@ -12,6 +12,7 @@ const state = {
 const mutations = {
   [types.RESET_MENU](state) {
     state.order = {
+      _id: ObjectId(),
       content: []
     };
     state.item = null;
@@ -51,22 +52,23 @@ const mutations = {
   },
   [types.ADD_TO_ORDER](state, item) {
     delete item.clickable;
-    Object.assign(item,{
-      unique:Math.random().toString(36).substr(2, 5),
-      print:false,
-      pending:false,
-      void:false,
-      sort:item.sort || 0,
-      qty:1,
-      mark:[[],[]],
-      choiceSet:item.choiceSet ? item.choiceSet : [],
-      single:parseFloat(item.price[0]),
-      total:parseFloat(item.price[0]).toFixed(2),
-      side:!item.disableAutoOption ? 
-            item.option.length ? {
-        zhCN: `[${item.option[0].zhCN}]`,
-        usEN: `[${item.option[0].usEN}]`
-      } : "" : ""});
+    Object.assign(item, {
+      unique: Math.random().toString(36).substr(2, 5),
+      print: false,
+      pending: false,
+      void: false,
+      sort: item.sort || 0,
+      qty: 1,
+      mark: [[], []],
+      choiceSet: item.choiceSet ? item.choiceSet : [],
+      single: parseFloat(item.price[0]),
+      total: item.hasOwnProperty('total') ? item.total : parseFloat(item.price[0]).toFixed(2),
+      side: !item.disableAutoOption ?
+        item.option.length ? {
+          zhCN: `[${item.option[0].zhCN}]`,
+          usEN: `[${item.option[0].usEN}]`
+        } : "" : ""
+    });
 
     if (state.item) {
       let insert = state.order.content.getIndexOf(state.item) + 1;

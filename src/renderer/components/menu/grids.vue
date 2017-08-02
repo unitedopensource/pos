@@ -64,7 +64,7 @@
       <i class="fa fa-plus-square"></i>
       <span class="text">{{text("MORE")}}</span>
     </div>
-    <button class="btn" @click="trigger('modify')">
+    <button class="btn" @click="modify">
       <i class="fa fa-calculator"></i>
       <span class="text">{{text("MODIFY")}}</span>
     </button>
@@ -143,6 +143,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import Printer from '../../print'
 export default {
   props: ['layout'],
   data() {
@@ -155,16 +156,11 @@ export default {
       this.$emit("open", name);
     },
     less() {
-      //this.component === 'request'
       this.lessQty();
     },
     modify() {
       if (this.isEmptyTicket) return;
-      if (this.approval(this.op.modify, "price")) {
-        this.$denyAccess();
-        return;
-      }
-      this.callComponent("modify");
+      this.approval(this.op.modify, "price") ? this.callComponent("modify") : this.$denyAccess();
     },
     course() {
       if (this.isEmptyTicket) return;
@@ -175,7 +171,6 @@ export default {
       this.callComponent("settle")
     },
     request() {
-      if (this.isEmptyTicket) return;
       this.callComponent("request");
     },
     search() {
@@ -188,7 +183,8 @@ export default {
     save(print) {
       if (this.isEmptyTicket) return;
       let order = this.combineOrderInfo({ cashier: this.op.name, print });
-      this.app.mode === 'create' ? this.$emit("[SAVE] INVOICE", order) : this.$emit("[UPDATE] INVOICE", order);
+      this.app.mode === 'create' ? this.$socket.emit("[SAVE] INVOICE", order) : this.$socket.emit("[UPDATE] INVOICE", order);
+      print && Printer.init(this.config).setJob("receipt").print(order);
       this.resetAll();
       this.$router.push({ path: "/main" });
     },
@@ -204,9 +200,10 @@ export default {
     combineOrderInfo(extra) {
       let customer = Object.assign({}, this.customer);
       let print = extra.hasOwnProperty("print") ? extra.print : true;
+      let order = Object.assign({}, this.order);
       if (this.app.mode === 'create') {
         delete customer.extra;
-        let order = Object.assign({}, this.order, {
+        Object.assign(order, {
           customer,
           type: this.ticket.type,
           number: this.ticket.number,
@@ -218,7 +215,7 @@ export default {
           date: today()
         });
       } else {
-        let order = Object.assign({}, this.order, {
+        Object.assign(order, {
           lastEdit: +new Date,
           editor: this.op.name,
           modify: this.order.modify + 1
@@ -240,18 +237,16 @@ export default {
 
     },
     switchLanguage() {
-
+      let language = this.app.language === "usEN" ? "zhCN" : "usEN";
+      this.$setLanguage(language);
+      this.setApp({ language, opLastAction: new Date });
+      moment.locale(language === 'usEN' ? 'en' : 'zh-cn');
+      this.$forceUpdate();
     },
-    ...mapActions(['lessQty', 'moreQty', 'resetAll', 'setCurrentTable'])
-
-
-    // trigger(fn, params) {
-    //   this.$emit('trigger', fn, params);
-    //   fn === 'switchLanguage' && this.$forceUpdate();
-    // }
+    ...mapActions(['setApp', 'lessQty', 'moreQty', 'resetAll', 'setCurrentTable'])
   },
   computed: {
-    ...mapGetters(['op', 'app', 'ticket', 'store', 'customer', 'station', 'isEmptyTicket'])
+    ...mapGetters(['op', 'app', 'config', 'order', 'ticket', 'store', 'customer', 'station', 'isEmptyTicket'])
   }
 }
 </script>

@@ -196,12 +196,11 @@ export default {
         cancelOrder() {
             this.resetDashboard();
             this.resetAll();
-            this.setApp({ opLastAction: new Date });
+            this.setApp({ opLastAction: new Date, mode: "create" });
             this.$router.push({ path: '/main' });
         },
         createOrder() {
             //set mode to create
-            this.setApp({ mode: 'create' });
             if (this.ticket.type === 'DELIVERY' && this.customer.phone.length !== 10) return;
 
             this.$socket.emit("[UPDATE] CUSTOMER", this.customer);

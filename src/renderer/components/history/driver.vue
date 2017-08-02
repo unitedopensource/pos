@@ -3,7 +3,6 @@
     <div class="driver window">
       <header class="title">
         <span>#{{init.ticket}} {{text('SET_DRIVER')}}</span>
-        <i class="fa fa-close" @click="init.reject"></i>
       </header>
       <div class="inner">
         <div v-for="(letter,index) in letters" :key="letter" @click="setDriver(letter,$event)" :class="letter">{{letter}}</div>
@@ -20,6 +19,7 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex'
 export default {
   props: ['init'],
   mounted() {
@@ -42,14 +42,25 @@ export default {
       this.letter = letter;
     },
     clear() {
-      this.init.reject(true);
+      delete this.order.driver;
+      this.letter = null;
+      this.$socket.emit("[UPDATE] INVOICE", this.order);
+      this.init.resolve();
     },
-    exit(){
-      this.init.reject(false);
+    exit() {
+      this.init.reject();
     },
     confirm() {
-      this.init.resolve(this.letter);
-    }
+      if (this.letter) {
+        this.setOrder({ driver: this.letter });
+        this.$socket.emit("[UPDATE] INVOICE", this.order);
+      }
+      this.init.resolve();
+    },
+    ...mapActions(['setOrder'])
+  },
+  computed: {
+    ...mapGetters(['order'])
   }
 }
 </script>

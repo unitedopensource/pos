@@ -201,12 +201,12 @@ Printer.prototype.printReceipt = function (raw) {
       item.choiceSet.forEach(set => {
         setCN += `<p class="list choiceSet zhCN">
                       <span class="qty">${set.qty === 1 ? " " : set.qty}</span>
-                      <span class="CNSet">${set.zhCN} ${set.price > 0 ? ' ($' + parseFloat(set.price).toFixed(2) + ')' : ""}</span>
+                      <span class="CNSet">${set.zhCN} ${parseFloat(set.price) !== 0 ? ' ($' + set.price.toFixed(2) + ')' : ""}</span>
                     </p>`;
         setEN += `<p class="list choiceSet usEN">
                       <span class="qty">${set.qty === 1 ? " " : set.qty}</span>
                       <span class="itemWrap">${set.usEN}</span>
-                      <span class="price">${set.price > 0 ? parseFloat(set.price).toFixed(2) : ""}</span>
+                      <span class="price">${parseFloat(set.price) !== 0 ? set.price.toFixed(2) : ""}</span>
                     </p>`;
       });
       let name = (item[printer] && item[printer].hasOwnProperty("zhCN")) ? item[printer].zhCN : item.zhCN;
@@ -352,8 +352,7 @@ Printer.prototype.printReceipt = function (raw) {
 
     let content = footer ? footer.map(text => "<p>" + text + "</p>").join("").toString() : "";
     let settle = (payment.settled || payment.log) ?
-      payment.log.filter(trans => trans.type !== 'CASH')
-        .map(trans => `<p><span>${trans.type}</span><span>${trans.paid}</span><span>${trans.balance}</span></p>`).join("").toString() : "";
+      payment.log.filter(trans => trans.type !== 'CASH').map(trans => `<p><span>${trans.type}</span><span>${trans.paid}</span><span>${trans.balance}</span></p>`).join("").toString() : "";
     let cash = (payment.hasOwnProperty('paidCash') && parseFloat(payment.paidCash) !== 0) ?
       `<p class="bold"><span class="text">CASH:</span><span class="value">${payment.paidCash}</span></p>
        <p class="bold"><span class="text">CHANGE:</span><span class="value">${(Math.max(0, (payment.paidCash - payment.due))).toFixed(2)}</span></p>` : "";

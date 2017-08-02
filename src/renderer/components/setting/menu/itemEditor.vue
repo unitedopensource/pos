@@ -7,7 +7,10 @@
             </header>
             <div class="inner">
                 <section class="card">
-                    <header>{{text('ITEM_INFO')}}</header>
+                    <header>
+                        <span>{{text('ITEM_INFO')}}</span>
+                        <span class="advance">{{text('EXTRA')}}</span>
+                    </header>
                     <article>
                         <smart-input v-model="item.menuID" reg="^[a-zA-Z0-9_. ]{0,3}$" label="MENU_ID"></smart-input>
                         <smart-option v-model="item.category" label="CATEGORY" :options="init.categories"></smart-option>
@@ -611,5 +614,14 @@ div.add {
 .template {
     margin: 8px 0;
     font-size: 1.1em;
+}
+
+span.advance {
+    font-size: initial;
+    font-weight: initial;
+    color: #607D8B;
+    float: right;
+    border-bottom: 1px dotted #9E9E9E;
+    cursor: pointer;
 }
 </style>

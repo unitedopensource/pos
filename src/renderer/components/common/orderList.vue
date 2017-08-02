@@ -101,7 +101,7 @@
                 </div>
                 <div>
                     <span class="text">{{text("TOTAL")}}:</span>
-                    <span class="value">{{(payment.total - payment.discount) | decimal}}</span>
+                    <span class="value">{{payment.due | decimal}}</span>
                 </div>
             </div>
         </div>
@@ -118,12 +118,6 @@ import config from './config'
 export default {
     components: { config, driver },
     props: ['layout', 'group', 'display', 'sort'],
-    mounted() {
-        this.$nextTick(() => {
-            this.display ? this.order.hasOwnProperty("payment") ? this.payment = this.order.payment : this.calculator(this.cart) : this.calculator(this.cart);
-            this.$emit("update", this.payment);
-        })
-    },
     data() {
         return {
             payment: {
@@ -149,6 +143,9 @@ export default {
             spooler: [],
             lastClickTime: +new Date()
         }
+    },
+    mounted() {
+        this.$route.name === 'Menu' && this.app.mode === 'edit' && (this.payment = this.order.payment);
     },
     methods: {
         setHighlight(item, e) {
@@ -318,23 +315,7 @@ export default {
             this.calculator(this.cart);
         },
         setDriver() {
-            new Promise((resolve, reject) => {
-                let driver = this.order.driver || null;
-                let ticket = this.order.number;
-                this.componentData = { resolve, reject, driver, ticket };
-                this.component = "driver"
-            }).then((driver) => {
-                if (driver) {
-                    this.setOrder({ driver });
-                    this.$socket.emit("ORDER_MODIFIED", this.order);
-                }
-                this.$exitComponent();
-            }).catch((remove) => {
-                console.log(remove);
-                remove && delete this.order.driver;
-                this.$socket.emit("ORDER_MODIFIED", this.order);
-                this.$exitComponent();
-            })
+            this.$p("driver", { driver: this.order.driver, ticket: this.ticket.number })
         },
         calculator(n) {
             if (n.length === 0) {
@@ -407,7 +388,7 @@ export default {
         cart() {
             return this.sort ? this.order.content.filter(item => item.sort === this.sort) : this.order.content
         },
-        ...mapGetters(['config', 'store', 'tax', 'order', 'item', 'ticket', 'language', 'isEmptyOrder'])
+        ...mapGetters(['app', 'config', 'store', 'tax', 'order', 'item', 'ticket', 'language', 'isEmptyOrder'])
     },
     filters: {
         mark(text) {
@@ -415,12 +396,9 @@ export default {
         }
     },
     watch: {
-        order(n) {
-            this.calculator(n.content)
-        },
         'cart': {
             handler(n) {
-                this.calculator(n);
+                this.display ? this.payment = this.order.payment : this.calculator(n);
             }, deep: true
         },
         'ticket.type'() {
@@ -577,9 +555,10 @@ header i {
 
 .list .price {
     width: 50px;
-    text-align: center;
-    padding-right: 5px;
+    text-align: right;
+    padding-right: 15px;
     vertical-align: top;
+    font-size: initial;
 }
 
 .middle {

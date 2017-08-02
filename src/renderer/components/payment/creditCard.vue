@@ -25,22 +25,9 @@ export default {
         }
     },
     created() {
-        if (this.station && this.station.terminal.enable) {
-            this.initTerminal();
-        } else {
-            this.init.reject({
-                type: 'info',
-                title: 'PYMT_F',
-                msg: 'STA_TERM_NA',
-                buttons: [{
-                    text: 'CANCEL',
-                    fn: 'reject'
-                }, {
-                    text: 'CONTINUE',
-                    fn: 'resolve'
-                }]
-            })
-        }
+        this.station.terminal.enable ?
+            this.initTerminal() :
+            this.init.reject({ type: 'info', title: 'PYMT_F', msg: 'STA_TERM_NA', buttons: [{ text: 'CANCEL', fn: 'reject' }, { text: 'CONTINUE', fn: 'resolve' }] })
     },
     methods: {
         initTerminal() {
@@ -87,8 +74,8 @@ export default {
                 this.msg = this.text('TERM_ABORT');
                 this.terminal.abort();
                 this.transacting = false;
-                setTimeout(() => { this.init.reject(null) }, 800);
-            } else { this.init.reject(null) }
+                setTimeout(() => { this.init.reject(false) }, 800);
+            } else { this.init.reject(false) }
         }
     },
     computed: {

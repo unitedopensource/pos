@@ -199,6 +199,7 @@ export default {
       this.$dialog({ title: "ORDER_SETTLED", msg: "TIP_ORDER_SETTLED", buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$q() })
     },
     editOrder() {
+      this.setApp({mode:'edit'});
       this.setTicket({ type: "DINE_IN", number: this.order.number });
       this.$router.push({ path: '/main/menu' });
     },

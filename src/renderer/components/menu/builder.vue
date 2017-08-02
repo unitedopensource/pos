@@ -1,5 +1,5 @@
 <template>
-  <div class="popupMask center dark" @click.self="init.reject(true)">
+  <div class="popupMask center dark" @click.self="setOption">
     <div class="window">
       <header class="title">
         <span>{{text('ITEM_BUILDER')}}</span>
@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 export default {
   props: ['init'],
   created() {
@@ -72,9 +72,9 @@ export default {
       this.option[target].map((item, index) => {
         for (let i = 0; i < this.content.contain.length; i++) {
           let obj = this.content.contain[i];
-          if(item.key === obj.key){
-           this.selected.push(i);
-           break; 
+          if (item.key === obj.key) {
+            this.selected.push(i);
+            break;
           }
         }
       })
@@ -84,23 +84,44 @@ export default {
       let max = this.content.max;
       let length = this.selected.length;
       let options = [];
-      (max > 0 ) && (this.selected = this.selected.slice(0, max));
+      (max > 0) && (this.selected = this.selected.slice(0, max));
       this.selected.forEach(index => {
-        let item = Object.assign({},this.content.contain[index]);
+        let item = Object.assign({}, this.content.contain[index]);
         options.push(item);
       });
-      if(this.content.hasOwnProperty('addition') && isNumber(this.content.addition)){
+      if (this.content.hasOwnProperty('addition') && isNumber(this.content.addition)) {
         let p = this.content.startAt - 1;
-        options = options.map((item,index)=>{
+        options = options.map((item, index) => {
           index >= p && (item.price = parseFloat(item.price) + parseFloat(this.content.addition));
           return item
         })
       }
       this.option[target] = options;
     },
+    setOption() {
+      this.alterItemOption({ side: this.init.side, index: this.init.index, disableAutoAdd: true });
+      this.init.resolve();
+    },
     confirm() {
-      this.init.resolve(this.option);
-    }
+      this.emptyChoiceSet();
+      this.alterItemOption({ side: this.init.side, index: this.init.index, disableAutoAdd: true });
+
+      Object.keys(this.option).forEach(key => {
+        let items = this.option[key];
+        items.forEach(item => {
+          let content = {
+            qty: 1,
+            zhCN: item.zhCN,
+            usEN: item.usEN,
+            single: parseFloat(item.price),
+            price: item.price.toFixed(2)
+          }
+          this.setChoiceSet(content);
+        })
+      })
+      this.init.resolve();
+    },
+    ...mapActions(['setChoiceSet', 'emptyChoiceSet', 'alterItemOption'])
   },
   computed: {
     maxItem() {
@@ -146,7 +167,7 @@ export default {
   flex: 1;
   color: #bdbdbd;
   transition: color 0.3s linear;
-  padding-top:15px;
+  padding-top: 15px;
 }
 
 .step:before {

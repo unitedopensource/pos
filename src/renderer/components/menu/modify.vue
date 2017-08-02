@@ -1,37 +1,38 @@
 <template>
   <div class="popupMask center dark" @click.self="init.reject">
-    <div class="modify window">
+    <div class="window">
       <header class="title">
         <span>{{text("MODIFY")}}</span>
-        <span>{{init[language]}}</span>
-        <i class="fa fa-times" @click="init.reject"></i>
+        <span>{{item[language]}}</span>
+        <span class="price">${{total}}</span>
       </header>
       <section class="display">
         <div class="column target" @click="setPointer('single',$event)">
           <h5>{{text("SINGLE")}}</h5>
           <div>
             <span>$</span>
-            <span class="value">{{init.single}}</span>
+            <span class="value">{{item.single | decimal}}</span>
           </div>
         </div>
         <div class="column" @click="setPointer('qty',$event)">
           <h5>{{text("QTY")}}</h5>
           <div>
-            <span class="value">{{init.qty}}</span>
+            <span class="value">{{item.qty}}</span>
           </div>
         </div>
-        <div class="column" @click="setPointer('discount',$event)">
+        <div class="column discount" @click="setPointer('discount',$event)">
+          <div class="unit">
+            <input type="radio" name="unit" v-model="unit" id="cash" :value="true" @change="switchUnit">
+            <label for="cash">$</label>
+            <span>/</span>
+            <input type="radio" name="unit" v-model="unit" id="pct" :value="false" @change="switchUnit">
+            <label for="pct">%</label>
+          </div>
           <h5>{{text("DISCOUNT")}}</h5>
           <div>
-            <span>$</span>
-            <span class="value">{{init.discount}}</span>
-          </div>
-        </div>
-        <div class="column" @click="setPointer('total',$event)">
-          <h5>{{text("TOTAL")}}</h5>
-          <div>
-            <span>$</span>
-            <span class="value">{{init.total}}</span>
+            <span v-show="unit">$</span>
+            <span class="value">{{discount}}</span>
+            <span v-show="!unit">%</span>
           </div>
         </div>
       </section>
@@ -60,197 +61,259 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 export default {
-  props:['init'],
-  data(){
-    return{
-      target:"single",
-      reset:true
+  props: ['init'],
+  data() {
+    return {
+      target: "single",
+      item: null,
+      reset: true,
+      unit: true,
+      discount: "0.00"
     }
   },
-  methods:{
-    input(num){
-      switch(this.target){
+  created() {
+    this.initial();
+  },
+  methods: {
+    initial() {
+      this.item = JSON.parse(JSON.stringify(this.init.item));
+    },
+    input(num) {
+      switch (this.target) {
         case "single":
-          if(this.init.single > 100) return;
-          if(this.reset){
-            this.init.single = (parseFloat(num) / 100).toFixed(2);
-          }else{
-            let single = Math.round(parseFloat(this.init.single) * 100);
-                single = (single ? single+num : num) / 100;
-                this.init.single = single.toFixed(2);
+          if (this.item.single > 100) return;
+          if (this.reset) {
+            this.item.single = (parseFloat(num) / 100).toFixed(2);
+          } else {
+            let single = Math.round(parseFloat(this.item.single) * 100);
+            single = (single ? single + num : num) / 100;
+            this.item.single = single.toFixed(2);
           }
-          this.init.total = (parseFloat(this.init.single) * parseFloat(this.init.qty) - parseFloat(this.init.discount)).toFixed(2);
           break;
         case "qty":
-          if(this.reset && num === '0' || num === '00')return;
-          if(this.init.qty+num > 99)return;
-          this.init.qty = this.reset ? num: String(this.init.qty) + num;
-          this.init.total = (parseFloat(this.init.single) * parseFloat(this.init.qty) - parseFloat(this.init.discount)).toFixed(2);
+          if (this.reset && num === '0' || num === '00') return;
+          if (this.item.qty + num > 99) return;
+          this.item.qty = this.reset ? num : String(this.item.qty) + num;
           break;
         case "discount":
-          if(this.init.discount > 100)return;
-          if(this.reset){
-            this.init.discount = (parseFloat(num) / 100).toFixed(2);
-          }else{
-            let discount = Math.round(parseFloat(this.init.discount) * 100);
-                discount = (discount ? discount+num : num) / 100;
-                if(parseFloat(this.init.single)*parseFloat(this.init.qty) - discount < 0)return;
-                this.init.discount = discount.toFixed(2);
+          if (this.reset) {
+            this.discount = this.unit ? "0.0" + num : num;
+          } else {
+            if (this.unit) {
+              let discount = Math.round(parseFloat(this.discount) * 100);
+              this.discount = ((discount + num) / 100).toFixed(2);
+            } else {
+              this.discount = Number(String(this.discount) + num);
+            }
           }
-          this.init.total = (parseFloat(this.init.single) * parseFloat(this.init.qty) - parseFloat(this.init.discount)).toFixed(2);
           break;
-        case "total":
-          if(this.init.total > 100)return;
-          if(this.reset){
-            this.init.total = (parseFloat(num) / 100).toFixed(2);
-          }else{
-            let total = Math.round(parseFloat(this.init.total) * 100);
-                total = (total ? total+num : num) / 100;
-                this.init.total = total.toFixed(2);
-          }
-          this.init.single = (parseFloat(this.init.total) / parseFloat(this.init.qty) - parseFloat(this.init.discount)).toFixed(2);
-            break;
-          }
-        this.reset = false;
+      }
+      this.reset = false;
 
     },
-    setPointer(target,e){
+    setPointer(target, e) {
       document.querySelector(".target").classList.remove("target");
       e.currentTarget.classList.add("target");
       this.target = target;
       this.reset = true;
     },
-    del(){
+    del() {
       switch (this.target) {
         case "single":
-          let single = this.init.single.slice(0,-1) / 10;
-              this.init.single = single.toFixed(2);
+          let single = this.item.single.slice(0, -1) / 10;
+          this.item.single = single.toFixed(2);
           break;
         case "qty":
-          this.init.qty = ~~String(this.init.qty).slice(0,-1);
+          this.item.qty = ~~String(this.item.qty).slice(0, -1);
           break;
         case "discount":
-          let discount = this.init.discount.slice(0,-1) / 10;
-              this.init.discount = discount.toFixed(2);
-          break;
-        case "total":
-          let total = this.init.total.slice(0,-1) / 10;
-              this.init.total = total.toFixed(2);
-              this.init.single = (this.init.total / this.init.qty).toFixed(2);
+          this.discount = (this.discount.slice(0, -1) / 10).toFixed(2);
           break;
       }
-      this.init.total = (this.init.single * this.init.qty).toFixed(2);
+      this.item.total = (this.item.single * this.item.qty).toFixed(2);
     },
-    clear(){
-      switch(this.target){
+    clear() {
+      switch (this.target) {
         case "single":
-        this.init.single = "0.00";
-        this.init.total = (this.init.single * this.init.qty - this.init.discount).toFixed(2);
+          this.item.single = "0.00";
           break;
         case "qty":
-        this.init.qty = 1;
-        this.init.total = this.init.single;
+          this.item.qty = 1;
           break;
         case "discount":
-        this.init.discount = "0.00";
-        this.init.total = (this.init.single * this.init.qty).toFixed(2);
-          break;
-        case "total":
-        this.init.total = "0.00";
-        this.init.single = "0.00";
+          this.discount = this.unit ? "0.00" : "0";
           break;
       }
       this.reset = true;
     },
-    done(){
-      this.init.single = parseFloat(this.init.single);
-      this.init.qty = ~~this.init.qty;
-      this.init.discount = parseFloat(this.init.discount);
-      this.init.resolve(this.init);
-    }
+    switchUnit() {
+      this.discount = this.unit ? "0.00" : "0";
+    },
+    done() {
+      this.item.single = parseFloat(this.item.single);
+      this.item.qty = ~~this.item.qty;
+      this.item.total = (parseFloat(this.item.single) * this.item.qty).toFixed(2);
+      let discount = this.unit ? this.discount : this.item.single * this.item.qty * (this.discount / 100);
+      discount > 0 &&
+        this.item.choiceSet.push({
+          qty: 1,
+          zhCN: `${this.unit ? '$' + this.discount.toFixed(2) : this.discount + ' %'} ${this.text('DISCOUNT')}`,
+          usEN: `${this.unit ? '$' + this.discount.toFixed(2) : this.discount + ' %'} Discount`,
+          single: -discount,
+          price: -discount
+        })
+      this.alterItem(this.item);
+      this.init.resolve();
+    },
+    ...mapActions(['alterItem'])
   },
-  computed:{
+  computed: {
+    total() {
+      let single = parseFloat(this.item.single);
+      let qty = parseFloat(this.item.qty);
+      let discount = this.unit ? this.discount : single * qty * (this.discount / 100);
+      return (single * qty - discount).toFixed(2)
+    },
     ...mapGetters(['language'])
   }
 }
 </script>
 
 <style scoped>
-  .modify{
-    width: 459px;
-    transform: translateY(-41px);
+.window {
+  width: 459px;
+  transform: translateY(-41px);
+}
+
+.inner {
+  display: flex;
+  padding: 0 2px 0 2px;
+}
+
+.display {
+  height: 90px;
+  padding: 2px;
+  display: flex;
+}
+
+span.price {
+  color: #EEEEEE;
+  float: right;
+  border-bottom: 1px dotted #80c3f7;
+}
+
+section.numpad {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  flex: 3;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding-left: 2px;
+}
+
+section.numpad div:last-child {
+  width: 223px;
+}
+
+.column {
+  flex: 1;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  margin: 4px 3px;
+  border-radius: 2px;
+  color: #666;
+  font-weight: lighter;
+  transition: all 0.3s ease;
+}
+
+.column.target {
+  color: #fff;
+  background: #5C6BC0;
+  text-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
+  font-weight: bold;
+  flex: 2;
+}
+
+.column h5 {
+  padding: 10px 5px 15px;
+  font-size: 1.35em;
+  font-weight: lighter;
+}
+
+.column>div {
+  text-align: right;
+  padding-right: 5px;
+  font-size: 1.25em;
+}
+
+.target .value {
+  position: relative;
+}
+
+.target .value:after {
+  height: 2px;
+  width: 100%;
+  background: #fff;
+  content: ' ';
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  animation: flash 1.5s ease infinite;
+}
+
+.unit {
+  display: none;
+  text-shadow: none;
+}
+
+.unit span {
+  color: #7f90ea;
+  text-shadow: none;
+}
+
+.target .unit {
+  display: block;
+}
+
+.unit input {
+  display: none;
+}
+
+.column div.unit {
+  position: absolute;
+  right: -5px;
+  top: 13px;
+  font-size: 16px!important;
+  font-weight: lighter;
+}
+
+.discount {
+  position: relative;
+}
+
+.unit label {
+  color: #b6beea;
+  padding: 5px 10px;
+}
+
+input:checked+label {
+  color: #fff;
+  border-radius: 4px;
+}
+
+@keyframes flash {
+  0% {
+    opacity: 0
   }
-  .inner {
-    display: flex;
-    padding: 0 2px 0 2px;
+  50% {
+    opacity: 1
   }
-  .display{
-    height: 90px;
-    padding: 2px;
-    display: flex;
+  100% {
+    opacity: 0
   }
-  section.numpad {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    flex: 3;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding-left: 2px;
-  }
-  section.numpad div:last-child{
-    width: 223px;
-  }
-  .column {
-    flex: 1;
-    background: #fff;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.5);
-    margin:4px 3px;
-    border-radius: 2px;
-    color:#666;
-    font-weight: lighter;
-  }
-  .column.target{
-    color: #fff;
-    background: #5C6BC0;
-    text-shadow: 0 2px 3px rgba(0,0,0,0.5);
-    font-weight: bold;
-  }
-  .column h5 {
-    padding: 10px 5px 15px;
-    font-size: 1.35em;
-    font-weight: lighter;
-  }
-  .column > div {
-    text-align: right;
-    padding-right: 5px;
-    font-size: 1.25em;
-  }
-  .target .value{
-    position: relative;
-  }
-  .target .value:after{
-    height: 2px;
-    width: 100%;
-    background: #fff;
-    content:' ';
-    position: absolute;
-    left: 0;
-    bottom:-3px;
-    animation:flash 1.5s ease infinite;
-  }
-  @keyframes flash {
-    0%{
-      opacity: 0
-    }
-    50%{
-        opacity: 1
-      }
-    100%{
-      opacity: 0
-    }
-  }
+}
 </style>

@@ -74,7 +74,7 @@ export default {
         let language = result.op.language || "usEN";
         moment.locale(language === 'usEN' ? 'en' : 'zh-cn');
         this.$setLanguage(language);
-        this.setApp({ language });
+        this.setApp({ language, mode: 'create' });
         this.setOp(result.op);
         this.setPin();
         this.$router.push({ path: '/main' });

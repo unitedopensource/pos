@@ -69,7 +69,7 @@ export default {
     },
     methods: {
         isEditable() {
-            if (this.isEmptyOrder) return;
+            if (this.isEmptyTicket) return;
             if (!this.approval(this.op.modify, "order")) {
                 this.$denyAccess();
                 return;
@@ -89,7 +89,7 @@ export default {
             this.editOrder();
         },
         isVoidable() {
-            if (this.isEmptyOrder) return;
+            if (this.isEmptyTicket) return;
             if (!this.approval(this.op.modify, "order")) {
                 this.$denyAccess();
                 return;
@@ -155,7 +155,7 @@ export default {
             }).catch(() => { this.$q() })
         },
         reOpenOrder() {
-            if (this.isEmptyOrder) return;
+            if (this.isEmptyTicket) return;
             this.$dialog({
                 type: "question",
                 title: this.text('RECOVER_ORDER_CONFIRM', this.order.number),
@@ -179,7 +179,7 @@ export default {
             }).catch(() => { this.$q() })
         },
         settle() {
-            if (this.isEmptyOrder) return;
+            if (this.isEmptyTicket) return;
             if (this.order.settled) {
                 this.settledOrder();
                 return;
@@ -223,7 +223,7 @@ export default {
         ...mapActions(['setApp', 'setTicket', 'resetMenu', 'removePayment'])
     },
     computed: {
-        ...mapGetters(['op', 'order', 'config', 'station', 'isEmptyOrder'])
+        ...mapGetters(['op', 'order', 'config', 'station', 'isEmptyTicket'])
     },
     components: {
         Calendar, Dialoger, Terminal, Payment, Reason, Report

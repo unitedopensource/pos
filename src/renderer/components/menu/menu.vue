@@ -16,7 +16,7 @@
             <order-list layout="order" :sort="sort"></order-list>
             <grids :layout="ticket.type" @open="openComponent"></grids>
         </section>
-        <div :is="component" :init="componentData"></div>
+        <div :is="component" :init="componentData" @execute="fn"></div>
     </div>
 </template>
 
@@ -29,12 +29,13 @@ import payment from '../payment/payment'
 import Printer from '../../print'
 import request from './request'
 import scaleItem from './scale'
+import builder from './builder'
 import modify from './modify'
 import course from './course'
 import grids from './grids'
 import split from './split'
 export default {
-    components: { modify, course, request, orderList, dialoger, grids, payment, scaleItem,split },
+    components: { modify, course, request, orderList, dialoger, grids, payment, scaleItem, split, builder },
     data() {
         return {
             menuInstance: null,
@@ -56,7 +57,12 @@ export default {
             this.menuInstance = JSON.parse(JSON.stringify(this.menu));
             this.flatten(this.menuInstance[0].item);
             this.setSides(this.fillOption([]));
-            this.ticket.type === 'DINE_IN' && this.config.store.table.seatOrder && (this.sort = 1);
+            if (this.ticket.type === 'DINE_IN') {
+                this.config.store.table.seatOrder && (this.sort = 1);
+                this.app.mode === 'create' && this.setOrder({ server: this.op.name, _id: ObjectId() });
+            } else {
+                this.app.mode === 'create' && this.setOrder({ cashier: this.op.name, _id: ObjectId() });
+            }
         },
         flatten(items) {
             console.time("clone");
@@ -127,32 +133,7 @@ export default {
             side.template ? this.callTemplate(side, index) : this.alterItemOption({ side, index });
         },
         callTemplate(side, index) {
-            this.$p("builder", { side });
-
-            // new Promise((resolve, reject) => {
-            //     this.componentData = { side, resolve, reject };
-            //     this.component = "builder";
-            // }).then((option) => {
-            //     this.emptyChoiceSet();
-            //     this.alterItemOption({ side, index, disableAutoAdd: true });
-            //     for (let key in option) {
-            //         let items = option[key];
-            //         items.forEach(item => {
-            //             let content = {
-            //                 qty: 1,
-            //                 zhCN: item.zhCN,
-            //                 usEN: item.usEN,
-            //                 single: parseFloat(item.price),
-            //                 price: item.price
-            //             }
-            //             this.setChoiceSet(content);
-            //         })
-            //     }
-            //     this.$q();
-            // }).catch((bool) => {
-            //     bool && this.alterItemOption({ side, index, disableAutoAdd: true });
-            //     this.$q();
-            // });
+            this.$p("builder", { side, index });
         },
         openComponent(name, args) {
             switch (name) {
@@ -166,7 +147,7 @@ export default {
                     this.component === 'request' ? this.$q() : this.component = "request";
                     break;
                 case "settle":
-                    this.$p("payment", { order: this.order });
+                    this.$p("payment");
                     break;
                 case "split":
                     this.$p("split", { order: this.order });
@@ -179,6 +160,17 @@ export default {
                     break;
             }
         },
+        fn(name) {
+            this[name]();
+        },
+        resetSection() {
+            this.resetMenu();
+            this.flatten(this.menuInstance[0].item);
+            this.setSides(this.fillOption([]));
+            this.setApp({ opLastAction: new Date });
+            toggleClass(".category .active", "active");
+            toggleClass(".category div", "active");
+        },
         resetExit() {
             if (this.currentTable && this.currentTable.current.invoice.length === 0) {
                 this.resetCurrentTable();
@@ -188,10 +180,10 @@ export default {
         },
         exit() {
             this.resetAll();
-            this.setApp({ opLastAction: new Date });
+            this.setApp({ opLastAction: new Date, mode: "create" });
             this.$router.push({ path: "/main" });
         },
-        ...mapActions(['setApp', 'setSides', 'addToOrder', 'resetAll', 'alterItemOption', 'resetCurrentTable'])
+        ...mapActions(['setApp', 'setOrder', 'setSides', 'addToOrder', 'resetMenu', 'resetAll', 'alterItemOption', 'resetCurrentTable'])
     },
     computed: {
         page() {
@@ -202,7 +194,7 @@ export default {
             }
             return this.items
         },
-        ...mapGetters(['op', 'menu', 'item', 'device', 'sides', 'store', 'ticket', 'order', 'course', 'customer', 'language', 'station', 'currentTable', 'isEmptyTicket'])
+        ...mapGetters(['op', 'app', 'menu', 'item', 'device', 'sides', 'store', 'ticket', 'order', 'course', 'customer', 'language', 'station', 'currentTable', 'isEmptyTicket'])
     }
 }
 </script>

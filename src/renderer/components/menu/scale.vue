@@ -63,7 +63,8 @@ export default {
     },
     methods: {
         input(num) {
-            this.scale = (((this.scale * 100) + num) / 100).toFixed(2)
+            let value = Math.round(parseFloat(this.scale) * 100);
+            this.scale = ((value + num) / 100).toFixed(2);
         },
         del() {
             this.scale = (String(this.scale * 100).slice(0, -1) / 100).toFixed(2)
@@ -73,12 +74,13 @@ export default {
             Object.assign(this.item, {
                 single: 0.00,
                 price: [0.00],
+                total:"",
                 prices: {
                     DEFAULT: [0.00]
                 },
                 choiceSet: [{
                     qty: 1,
-                    zhCN: `${this.scale}@${this.item.unitPrice.toFixed(2)}/`+this.text('PER_UNIT'),
+                    zhCN: `${this.scale}@${this.item.unitPrice.toFixed(2)}/` + this.text('PER_UNIT'),
                     usEN: `${this.scale}@${this.item.unitPrice.toFixed(2)}/per Unit`,
                     single: price,
                     price: this.total

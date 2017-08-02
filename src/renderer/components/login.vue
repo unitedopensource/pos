@@ -99,11 +99,11 @@ export default {
       //Promise.all([this.checkTerminal(),this.checkSettlement()]).then()
       Electron.ipcRenderer.send("Exit");
     },
-    checkTerminal(){
+    checkTerminal() {
 
     },
-    checkSettlement(){
-      
+    checkSettlement() {
+
     },
     ...mapActions(['setPin', 'delPin', 'setOp', 'setApp'])
   },
@@ -117,7 +117,7 @@ export default {
         let language = result.op.language || "usEN";
         moment.locale(language === 'usEN' ? 'en' : 'zh-cn');
         this.$setLanguage(language);
-        this.setApp({ language });
+        this.setApp({ language, mode: 'create' });
         this.setOp(result.op);
         this.setPin();
         this.$router.push({ path: '/main' });

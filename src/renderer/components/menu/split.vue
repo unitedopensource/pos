@@ -1,5 +1,5 @@
 <template>
-  <div class="popupMask center dark" @click.self="init.reject">
+  <div class="popupMask center dark">
     <div class="window" v-show="!component">
       <header class="title">
         <span>{{text('ORDER_SPLIT')}}</span>
@@ -24,6 +24,7 @@
           <div class="btn" @click="printAll">{{text('PRINT_ALL')}}</div>
           <div class="btn" @click="evenly">{{text('EVEN_SPLIT')}}</div>
         </div>
+        <div class="btn" @click="init.reject">{{text('CANCEL')}}</div>
         <div class="btn" @click="sort(1)">{{text('SORT')}}</div>
         <div class="btn" @click="save">{{text('SAVE')}}</div>
       </footer>
@@ -95,6 +96,7 @@ export default {
     },
     sort(index) {
       let unique = this.order.map(item => item.sort).filter((v, i, s) => s.indexOf(v) === i);
+      console.log(index);
       let max = Math.max(...unique);
       if (!unique.includes(index)) {
         let origin = unique[index - 1];
