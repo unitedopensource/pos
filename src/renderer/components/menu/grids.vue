@@ -190,7 +190,12 @@ export default {
     },
     done(print) {
       if (this.isEmptyTicket) return;
-      let order = this.combineOrderInfo({ server: this.op.name, print });
+      let order = this.combineOrderInfo({
+        server: this.op.name, print,
+        table: this.currentTable.name,
+        tableID: this.currentTable._id,
+        guest: isNumber(this.order.guest) ? this.order.guest : this.currentTable
+      });
       this.setCurrentTable({ current: { invoice: [order._id] } });
       this.app.mode === 'create' ? this.$socket.emit("[SAVE] DINE_IN_INVOICE", { table: this.currentTable, order }) : this.$socket.emit("[UPDATE] INVOICE", order);
       this.$socket.emit("INQUIRY_TICKET_NUMBER");
@@ -243,10 +248,10 @@ export default {
       moment.locale(language === 'usEN' ? 'en' : 'zh-cn');
       this.$forceUpdate();
     },
-    ...mapActions(['setApp', 'lessQty', 'moreQty', 'resetAll', 'setCurrentTable'])
+    ...mapActions(['setApp', 'lessQty', 'moreQty', 'resetAll', 'setOrder', 'setCurrentTable'])
   },
   computed: {
-    ...mapGetters(['op', 'app', 'config', 'order', 'ticket', 'store', 'customer', 'station', 'isEmptyTicket'])
+    ...mapGetters(['op', 'app', 'config', 'order', 'ticket', 'store', 'customer', 'station', 'isEmptyTicket', 'currentTable'])
   }
 }
 </script>

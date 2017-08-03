@@ -114,7 +114,8 @@ export default {
             zhCN: item.zhCN,
             usEN: item.usEN,
             single: parseFloat(item.price),
-            price: item.price.toFixed(2)
+            price: item.price.toFixed(2),
+            print: item.print
           }
           this.setChoiceSet(content);
         })

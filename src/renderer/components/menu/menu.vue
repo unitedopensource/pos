@@ -57,12 +57,8 @@ export default {
             this.menuInstance = JSON.parse(JSON.stringify(this.menu));
             this.flatten(this.menuInstance[0].item);
             this.setSides(this.fillOption([]));
-            if (this.ticket.type === 'DINE_IN') {
-                this.config.store.table.seatOrder && (this.sort = 1);
-                this.app.mode === 'create' && this.setOrder({ server: this.op.name, _id: ObjectId() });
-            } else {
-                this.app.mode === 'create' && this.setOrder({ cashier: this.op.name, _id: ObjectId() });
-            }
+            this.ticket.type === 'DINE_IN' && this.store.table.seatOrder && (this.sort = 1);
+            this.app.mode === 'create' && this.setOrder({ server: this.op.name, _id: ObjectId() });
         },
         flatten(items) {
             console.time("clone");
@@ -156,7 +152,7 @@ export default {
                     this.isEmptyTicket ? this.exit() : this.$dialog({ title: 'EXIT_CFM', msg: 'TIP_EXIT_CFM' }).then(() => { this.exit() }).catch(() => { this.$q() })
                     break;
                 case "dineinExit":
-                    this.isEmptyTicket ? this.exit() : this.resetExit();
+                    this.isEmptyTicket ?  this.resetTableExit() :this.$dialog({ title: 'EXIT_CFM', msg: 'TIP_EXIT_CFM' }).then(() => { this.resetTableExit() }).catch(() => { this.$q() });
                     break;
             }
         },
@@ -171,7 +167,7 @@ export default {
             toggleClass(".category .active", "active");
             toggleClass(".category div", "active");
         },
-        resetExit() {
+        resetTableExit() {
             if (this.currentTable && this.currentTable.current.invoice.length === 0) {
                 this.resetCurrentTable();
                 this.$socket.emit("TABLE_MODIFIED", this.currentTable);

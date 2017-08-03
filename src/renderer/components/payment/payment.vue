@@ -3,6 +3,12 @@
         <div class="window" v-show="!component">
             <header class="title">
                 <span>{{text('PAYMENT')}}</span>
+                <div v-if="!payMode && order.hasOwnProperty('splitPayment')" class="splitter">
+                    <label v-for="(split,index) in order.splitPayment" :key="index">
+                        <input type="radio" name="split" :id="'split_'+index" :value="index" v-model="current" @change="switchInvoice">
+                        <label :for="'split_'+index" class="tag">#{{index + 1}}</label>
+                    </label>
+                </div>
                 <i class="fa fa-times" @click="init.reject"></i>
             </header>
             <nav>
@@ -184,19 +190,28 @@ export default {
                 number: "",
                 balance: "0.00"
             },
-            evenPay: 1
+            evenPay: 1,
+            current: 0,
+            payMode: true //true pay in whole , false pay in 
         }
     },
     created() {
-        this.order.split ? this.askSplitPay() : this.initial();
+        this.init.hasOwnProperty("payment") ? this.payIndividual() :
+            this.order.split ? this.askSplitPay() : this.initial();
     },
     mounted() {
         this.setPaymentType(this.payment.type || 'CASH');
-        this.poleDisplay(["TOTAL DUE:", ""], ["", this.payment.due.toFixed(2)])
     },
     methods: {
         initial() {
             this.payment = JSON.parse(JSON.stringify(this.order.payment));
+            this.payment.balance = Math.max(0, (this.payment.due - this.payment.paid));
+            this.getQuickInput(this.payment.balance);
+            this.poleDisplay(["TOTAL DUE:", ""], ["", this.payment.due.toFixed(2)]);
+        },
+        payIndividual() {
+            this.payMode = false;
+            this.payment = JSON.parse(JSON.stringify(this.init.payment));
             this.payment.balance = Math.max(0, (this.payment.due - this.payment.paid));
             this.getQuickInput(this.payment.balance);
         },
@@ -207,15 +222,17 @@ export default {
                 msg: "TIP_SPLIT_PAYMENT",
                 buttons: [{ text: 'PAID_IN_FULL', fn: "reject" }, { text: "SPLIT_PAY", fn: "resolve" }]
             }).then(() => {
-                this.paySplit()
+                this.paySplit();
+                this.$q();
             }).catch(() => {
                 this.initial();
+                this.setPaymentType(this.payment.type || 'CASH');
                 this.$q()
             })
         },
         paySplit() {
-            this.init.resolve();
-            this.$p("Splitter");
+            this.payMode = false;
+            this.switchInvoice();
         },
         setPaymentType(type) {
             let dom = document.querySelector('.type.set');
@@ -486,9 +503,15 @@ export default {
         reload() {
 
         },
-        cashOut() { },
-        printBalance() { },
-        chargeGift() { },
+        cashOut() { 
+
+        },
+        printBalance() {
+
+         },
+        chargeGift() {
+            
+         },
         setQuickInput(value) {
             this.paid = value.toFixed(2);
         },
@@ -497,25 +520,21 @@ export default {
             let customer = Object.assign({}, this.customer);
             let paidCash = 0, paidCredit = 0, paidGift = 0;
             delete customer.extra;
-            switch (this.ticket.type) {
-                case "DINE_IN":
-                    Object.assign(order, { cashier: this.op.name, payment: this.payment })
-                    break;
-                default:
-                    Object.assign(order, {
-                        payment: this.payment,
-                        customer,
-                        type: this.app.mode === 'create' ? this.ticket.type : this.order.type,
-                        number: this.app.mode === 'create' ? this.ticket.number : this.order.number,
-                        station: this.station.alies,
-                        source: "POS",
-                        modify: this.app.mode === 'create' ? 0 : this.order.modify + 1,
-                        status: 1,
-                        time: this.app.mode === 'create' ? +new Date() : this.order.time,
-                        date: today(),
-                        settled: true
-                    })
-            }
+
+            Object.assign(order, {
+                payment: this.payment,
+                customer,
+                type: this.app.mode === 'create' ? this.ticket.type : this.order.type,
+                number: this.app.mode === 'create' ? this.ticket.number : this.order.number,
+                station: this.station.alies,
+                cashier: this.op.name,
+                source: "POS",
+                modify: this.app.mode === 'create' ? 0 : this.order.modify + 1,
+                status: 1,
+                time: this.app.mode === 'create' ? +new Date() : this.order.time,
+                date: today(),
+                settled: true
+            });
             order.content.forEach(item => {
                 item.print = true;
                 item.pending = false;
@@ -536,25 +555,124 @@ export default {
             if (paidCash) order.payment.paidCash = paidCash.toFixed(2);
             if (paidCredit) order.payment.paidCredit = paidCredit.toFixed(2);
             if (paidGift) order.payment.paidGift = paidGift.toFixed(2);
+            if (this.payMode) {
+                this.app.mode === 'create' ? this.$socket.emit("[SAVE] INVOICE", order) : this.$socket.emit("[UPDATE] INVOICE", order);
 
-            this.app.mode === 'create' ? this.$socket.emit("[SAVE] INVOICE", order) : this.$socket.emit("[UPDATE] INVOICE", order);
+                type === 'CASH' ?
+                    this.$dialog({
+                        title: this.text("CHANGE", change),
+                        msg: this.text("CUST_PAID", paid.toFixed(2)),
+                        buttons: [{ text: 'CONFIRM', fn: 'reject' }, { text: 'PRINT_RECEIPT', fn: 'resolve' }]
+                    }).then(() => { this.invoiceSettled(order) }).catch(() => { this.invoiceSettled(false) }) :
+                    this.askReceipt.then(() => { this.invoiceSettled(order) }).catch(() => { this.invoiceSettled(false) });
+            } else {
+                this.payment.settled = true;
+                if (this.order.hasOwnProperty('splitPayment')) {
+                    this.order.splitPayment[this.current] = this.payment;
+                    this.askReceipt().then(() => { this.printSplitReceipt() }).catch(() => { this.nextSplit() });
+                } else {
+                    this.init.resolve(this.payment);
+                }
 
-            type === 'CASH' ?
-                this.$dialog({
-                    title: this.text("CHANGE", change),
-                    msg: this.text("CUST_PAID", paid.toFixed(2)),
-                    buttons: [{ text: 'CONFIRM', fn: 'reject' }, { text: 'PRINT_RECEIPT', fn: 'resolve' }]
-                }).then(() => { this.invoiceSettled(order) }).catch(() => { this.invoiceSettled(false) }) :
-                this.$dialog({
-                    type: "question",
-                    title: "PRINT_RECEIPT",
-                    msg: "TIP_PRINT_RECEIPT",
-                    buttons: [{ text: 'CONFIRM', fn: 'reject' }, { text: 'PRINT_RECEIPT', fn: 'resolve' }]
-                }).then(() => { this.invoiceSettled(order) }).catch(() => { this.invoiceSettled(false) });
+            }
+        },
+        askReceipt() {
+            return this.$dialog({ type: "question", title: "PRINT_RECEIPT", msg: "TIP_PRINT_RECEIPT", buttons: [{ text: 'CONFIRM', fn: 'reject' }, { text: 'PRINT_RECEIPT', fn: 'resolve' }] })
+        },
+        printSplitReceipt() {
+            let index = this.current + 1;
+            let order = JSON.parse(JSON.stringify(this.order));
+            order.number = order.number + '-' + index;
+            order.payment = order.splitPayment[this.current];
+            order.cashier = this.op.name;
+            order.content = order.content.filter(item => item.sort === this.payment.sort).forEach(item => {
+                item.print = true;
+                item.pending = false;
+            });
+            Printer.init(this.config).setJob("receipt").print(order);
+            this.nextSplit();
+        },
+        nextSplit() {
+            this.$q();
+            let settled = this.order.splitPayment.every(ticket => ticket.settled === true);
+            if (settled) {
+                this.saveSplitPayment();
+                return;
+            };
+            let index = this.order.splitPayment.findIndex(ticket => !ticket.settled);
+            index === -1 ? this.saveSplitPayment() && this.init.resolve() : this.switchInvoice(index);
+        },
+        saveSplitPayment() {
+            let customer = Object.assign({}, this.customer);
+            delete customer.extra;
+            switch (this.$route.name) {
+                case "Menu":
+                    if (this.app.mode === 'create') {
+                        this.setOrder({
+                            customer,
+                            payment: this.combineSplitPayment(),
+                            type: this.ticket.type,
+                            number: this.ticket.number,
+                            station: this.station.alies,
+                            cashier: this.op.name,
+                            source: "POS",
+                            modify: 0,
+                            status: 1,
+                            settled: true,
+                            time: +new Date,
+                            date: today()
+                        });
+                        this.$socket.emit("[SAVE] INVOICE", this.order);
+                    } else {
+                        this.setOrder({
+                            lastEdit: +new Date,
+                            editor: this.op.name,
+                            modify: this.order.modify + 1,
+                            cashier: this.op.name,
+                            payment: this.combineSplitPayment(),
+                            settled: true
+                        });
+                        this.$socket.emit("[UPDATE] INVOICE", this.order)
+                    }
+                    this.resetAll();
+                    this.$router.push({ path: "/main" });
+                    break;
+                default:
+                    this.setOrder({
+                        cashier: this.op.name,
+                        payment: this.combineSplitPayment(),
+                        settled: true
+                    });
+                    this.$socket.emit("[UPDATE] INVOICE", this.order);
+                    this.init.resolve();
+            }
+        },
+        combineSplitPayment() {
+            let payment = { tip: 0, gratuity: 0, discount: 0, delivery: 0, subtotal: 0, tax: 0, total: 0, paid: 0, due: 0, log: [], paidCash: 0, paidCredit: 0, paidGift: 0 };
+            this.order.splitPayment.forEach(settle => {
+                payment.tip += settle.tip;
+                payment.gratuity += settle.gratuity;
+                payment.discount += settle.discount;
+                payment.delivery += settle.delivery;
+                payment.subtotal += settle.subtotal;
+                payment.tax += settle.tax;
+                payment.total += settle.total;
+                payment.paid += settle.paid;
+                payment.due += settle.due;
+                payment.log.push(...settle.log);
+                settle.hasOwnProperty('paidCash') && (payment.paidCash += parseFloat(settle.paidCash));
+                settle.hasOwnProperty('paidCredit') && (payment.paidCredit += parseFloat(settle.paidCredit));
+                settle.hasOwnProperty('paidGift') && (payment.paidGift += parseFloat(settle.paidGift));
+            })
+            return payment
         },
         savePayment() {
-            this.setOrder({ payment: this.payment });
-            this.init.resolve();
+            if (this.payMode) {
+                this.setOrder({ cashier: this.op.name, payment: this.payment });
+                this.init.resolve();
+            } else {
+                this.init.resolve(this.payment);
+            }
         },
         invoiceSettled(ticket) {
             ticket && Printer.init(this.config).setJob("receipt").print(ticket);
@@ -579,6 +697,14 @@ export default {
                 operator: this.op.name
             }
             this.$socket.emit("[CASHFLOW] NEW_ACTIVITY", { cashDrawer, activity });
+        },
+        switchInvoice(index) {
+            if (isNumber(index)) this.current = index;
+            this.payment = this.order.splitPayment[this.current];
+            this.payment.balance = Math.max(0, (this.payment.due - this.payment.paid));
+            this.paid = "0.00";
+            this.setPaymentType("CASH");
+            this.getQuickInput(this.payment.balance);
         },
         roundUp() {
             let rounded = Math.ceil(this.payment.due);
@@ -607,7 +733,8 @@ export default {
     computed: {
         due() {
             let change = this.paid - this.payment.due;
-            let balance = this.payment.due - this.paid;
+            let balance = this.payment.settled ? this.payment.balance : this.payment.due - this.paid;
+
             return {
                 change: Math.max(0, change).toFixed(2),
                 balance: Math.max(0, balance).toFixed(2)
@@ -853,6 +980,28 @@ span.people {
 span.card {
     font-size: 0.65em;
     color: #4CAF50;
+}
+
+.splitter input {
+    display: none;
+}
+
+.splitter {
+    display: inline-flex;
+    margin-left: 10px;
+}
+
+.splitter input:checked+label {
+    background: #3F51B5;
+}
+
+.splitter .tag {
+    padding: 5px 15px;
+    margin: 0 2px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    border-radius: 4px;
+    background: #51aef5;
 }
 
 @keyframes cursor {

@@ -7,7 +7,7 @@
             <order-summary :data="prevsHistory.length ? prevsHistory : history" :date="calendarDate || today" @filter="setFilter"></order-summary>
         </header>
         <article>
-            <function-grid :date="calendarDate || today" @update="setCalendar"></function-grid>
+            <grids :date="calendarDate || today" @change="setCalendar"></grids>
             <section class="tickets">
                 <div class="inner">
                     <div v-for="(ticket,index) in orders" class="invoice" @click="getInvoice(ticket)" :data-number="ticket.number" :key="index" :class="{void:ticket.status === 0,settled:ticket.settled}">
@@ -31,7 +31,7 @@
                 <order-list layout="display" :display="true"></order-list>
             </section>
         </article>
-        <div :is="component" :init="componentData" @exit="exitComponent"></div>
+        <div :is="component" :init="componentData"></div>
     </div>
 </template>
 
@@ -40,9 +40,25 @@ import { mapGetters, mapActions } from 'vuex'
 import moment from 'moment'
 import orderList from './common/orderList'
 import orderSummary from './history/summary'
-import functionGrid from './history/function'
+import grids from './history/function'
 import Maintenance from './dock/maintenance'
+import dialoger from './common/dialoger'
 export default {
+    components: { grids, orderList, orderSummary, Maintenance, dialoger },
+    data() {
+        return {
+            today: today(),
+            component: null,
+            componentData: null,
+            calendarDate: null,
+            prevsHistory: [],
+            summary: {},
+            page: 0,
+            view: "",
+            filter: "",
+            driver: null
+        }
+    },
     created() {
         this.$socket.emit("INQUIRY_UPDATE_TIME")
     },
@@ -50,20 +66,6 @@ export default {
         if (this.orders.length) {
             this.setViewOrder(this.orders[0]);
             document.querySelector(".invoice").classList.add("active");
-        }
-    },
-    data() {
-        return {
-            today: today(),
-            component: null,
-            componentData:null,
-            calendarDate: null,            
-            prevsHistory: [],
-            summary: {},
-            page: 0,
-            view: "",
-            filter: "",
-            driver: null
         }
     },
     methods: {
@@ -97,12 +99,10 @@ export default {
         },
         setCalendar(date) {
             this.calendarDate = date;
+            this.$socket.emit('INQUIRY_HISTORY_ORDER_LIST', date);
         },
-        getConsole(){
+        getConsole() {
             this.$p("Maintenance");
-        },
-        exitComponent(){
-            this.$q();
         },
         ...mapActions(['setViewOrder'])
     },
@@ -181,9 +181,6 @@ export default {
                     this.$q();
                 })
         }
-    },
-    components: {
-        orderList, orderSummary, functionGrid, Maintenance
     }
 }
 </script>

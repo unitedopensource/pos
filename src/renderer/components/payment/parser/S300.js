@@ -246,7 +246,7 @@ const Pax = function () {
       case "100023":
         return {
           code,
-          msg: 'BATH_NO_FOUND'
+          msg: 'BATCH_NO_FOUND'
         }
       case "199999":
         return {

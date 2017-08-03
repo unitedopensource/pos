@@ -12,7 +12,7 @@
             <i class="fa fa-ban"></i>
             <span class="text">{{text('DEL_ORDER')}}</span>
         </div>
-        <div class="btn" @click="settle">
+        <div class="btn" @click="isSettled">
             <i class="fa fa-money"></i>
             <span class="text">{{text('PAYMENT')}}</span>
         </div>
@@ -36,7 +36,7 @@
             <i class="fa fa-file-text"></i>
             <span class="text">{{text('REPORT')}}</span>
         </div>
-        <div class="btn">
+        <div class="btn" @click="stats">
             <i class="fa fa-bar-chart"></i>
             <span class="text">{{text('STATISTIC')}}</span>
         </div>
@@ -89,18 +89,10 @@ export default {
             this.editOrder();
         },
         isVoidable() {
-            if (this.isEmptyTicket) return;
-            if (!this.approval(this.op.modify, "order")) {
-                this.$denyAccess();
-                return;
-            };
-            if (this.order.settled) {
-                this.confirmPaymentRemoval();
-                return;
-            };
-            this.voidOrder();
+            this.isEmptyTicket && this.approval(this.op.modify, "order") && !this.order.settled && this.voidOrder();
+            !this.approval(this.op.modify, "order") ? this.$denyAccess() : this.order.settled && this.confirmPaymentRemoval();
         },
-        settledOrder() {
+        handleSettledInvoice() {
             this.$dialog({ title: "ORDER_SETTLED", msg: "TIP_ORDER_SETTLED", buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$q() })
         },
         editOrder() {
@@ -114,44 +106,22 @@ export default {
                 title: this.text('VOID_ORDER_CONFIRM', this.order.number, this.text(this.order.type)),
                 msg: 'VOID_ORDER_CONFIRM_TIP',
                 buttons: [{ text: 'CANCEL', fn: 'reject' }, { text: 'DEL_ORDER', fn: 'resolve' }]
-            }).then(confirm => {
-                this.$q();
-                new Promise(resolve => {
-                    this.componentData = { resolve };
-                    this.component = "Reason";
-                }).then(note => {
-                    let order = Object.assign({}, this.order);
-                    order.status = 0;
-                    order.void = {
-                        by: this.op.name,
-                        time: +new Date,
-                        note
-                    };
-                    this.$socket.emit("ORDER_MODIFIED", order);
-                    this.$q();
-                })
-            }).catch(() => { this.$q() })
+            }).then(confirm => { this.$p("Reason") }).catch(() => { this.$q() })
         },
         confirmPaymentRemoval() {
             this.$dialog({
                 title: this.text('REOPEN_SETTLED_ORD', this.order.number),
                 msg: this.text('REOPEN_SETTLED_ORD_TIP', this.text(this.order.payment.type)),
                 buttons: [{ text: 'REMOVE_PAYMENT', fn: 'resolve' }, { text: 'CANCEL', fn: 'reject' }]
-            }).then(() => {
-                this.$q();
-                this.removeOrderPayment();
-            }).catch(() => { this.$q() })
+            }).then(() => { this.removeOrderPayment() }).catch(() => { this.$q() })
         },
         removeOrderPayment() {
             this.$dialog({
-                type: "warning",
-                title: 'PAYMENT_REMOVE',
-                msg: this.text('PAYMENT_REMOVE_CONFIRM', this.text(this.order.payment.type))
+                type: "warning", title: 'PAYMENT_REMOVE', msg: this.text('PAYMENT_REMOVE_CONFIRM', this.text(this.order.payment.type))
             }).then(() => {
-                this.$q();
                 this.removePayment();
-                this.$socket.emit("ORDER_MODIFIED", this.order)
-                this.$dialog({ title: "PAYMENT_REMOVED", msg: this.text("ORDER_PAYMENT_REMOVED", this.order.number), buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.editOrder() });
+                this.updateInvoice(this.order);
+                this.$dialog({ title: "PAYMENT_REMOVED", msg: this.text("ORDER_PAYMENT_REMOVED", this.order.number), buttons: [{ text: 'CONFIRM', fn: 'reject' }, { text: 'EDIT_ORDER', fn: 'resolve' }] }).then(() => { this.editOrder() });
             }).catch(() => { this.$q() })
         },
         reOpenOrder() {
@@ -164,7 +134,7 @@ export default {
                 let order = JSON.parse(JSON.stringify(this.order));
                 order.status = 1;
                 delete order.void;
-                this.$socket.emit("ORDER_MODIFIED", order);
+                this.updateInvoice(order);
                 this.$q();
             }).catch(() => { this.$q() })
         },
@@ -173,29 +143,14 @@ export default {
                 this.componentData = { resolve, reject };
                 this.component = "Calendar";
             }).then((date) => {
-                this.$emit("update", date);
-                this.$socket.emit('INQUIRY_HISTORY_ORDER_LIST', date);
+                console.log(date);
+                this.$emit("change",date)
                 this.$q();
             }).catch(() => { this.$q() })
         },
-        settle() {
+        isSettled() {
             if (this.isEmptyTicket) return;
-            if (this.order.settled) {
-                this.settledOrder();
-                return;
-            }
-            new Promise((resolve, reject) => {
-                this.componentData = { order: this.order, resolve, reject };
-                this.component = "Payment";
-            }).then((result) => {
-                let order = JSON.parse(JSON.stringify(this.order));
-                order.payment = result.payment;
-                order.settled = true;
-                this.$socket.emit("ORDER_MODIFIED", order);
-                order.type = "PAYMENT";
-                Printer.init(this.config).setJob("receipt").print(order);
-                this.$q();
-            }).catch(() => { this.$q() });
+            this.order.settled ? this.handleSettledInvoice() : this.$p("Payment");
         },
         print() {
             let order = Object.assign({}, this.order);
@@ -205,7 +160,7 @@ export default {
                 item.pending = false;
                 return item;
             });
-            this.$socket.emit("ORDER_MODIFIED", order)
+            this.updateInvoice(order);
         },
         terminal() {
             this.station.terminal.enable ?
@@ -216,6 +171,11 @@ export default {
             this.approval(this.op.access, "report") ? this.$p("Report") : this.$denyAccess();
         },
         search() { },
+        updateInvoice(ticket) {
+            this.$socket.emit("[UPDATE] INVOICE", ticket);
+        },
+        stats(){
+        },
         exit() {
             this.resetMenu();
             this.$router.push({ path: "/main" });

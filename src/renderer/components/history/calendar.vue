@@ -36,8 +36,8 @@ export default {
   },
   data() {
     return {
-      today: +new Date(),
-      calendarDay: +new Date(),
+      today: +new Date,
+      calendarDay: +new Date,
       loading: false,
       flip: "M",
       days: null
@@ -58,9 +58,7 @@ export default {
       this.generateCalendar();
     },
     setCalendar(date) {
-      if (this.loading) return;
       this.init.resolve(date);
-      this.loading = true;
     },
     generateCalendar() {
       let time = this.calendarDay;

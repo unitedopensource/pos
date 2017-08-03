@@ -356,6 +356,7 @@ export default {
                 let taxClass = this.tax.class[item.taxClass];
                 if (!this.order.taxFree) tax += taxClass.apply[orderType] ? (taxClass.rate / 100 * amount) : tax;
             }
+            tax = parseFloat(tax.toFixed(2));
             this.payment.delivery =
                 (this.ticket.type === 'DELIVERY' && this.store.delivery && !this.order.deliveryFree) ?
                     this.store.deliveryCharge : 0;

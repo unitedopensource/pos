@@ -63,20 +63,22 @@ export default {
             this.queue = [];
         },
         check(split) {
-            this.split === split && (this.paid = true);
+            if (this.split === split) {
+                this.paid = true;
+                this.print();
+            }
         },
         print() {
             this.$emit("print", this.split);
-            document.querySelector(".btn.print").classList.add("active")
+            document.querySelector(`.ticket_${this.split} .done .print`).classList.add("active")
         },
         pay() {
             if (this.paid) return;
-            let due = this.payment.total + this.payment.tip + this.payment.gratuity - this.payment.discount;
+            let due = parseFloat(this.payment.total) + parseFloat(this.payment.tip) + parseFloat(this.payment.gratuity) - parseFloat(this.payment.discount);
             this.$emit("pay", {
                 split: this.split,
                 payment: Object.assign({}, this.payment, { due })
             })
-            document.querySelector(".btn.pay").classList.add("active")
         }
     },
     computed: {
@@ -102,12 +104,11 @@ export default {
                 delivery = (this.ticket.type === 'DELIVERY' && this.isChargeDelivery &&
                     this.store.delivery && !this.order.deliveryFree) ?
                     this.store.deliveryCharge : 0;
-            })
-
-            total = subtotal + tax + delivery;
-            due = subtotal + tax - discount;
-            tax = tax;
-            return { tip, gratuity, discount, delivery, subtotal, total, tax, paid, log }
+            });
+            tax = parseFloat(tax.toFixed(2));
+            total = subtotal + tax + tip + gratuity + delivery;
+            due = total - discount;
+            return { tip, gratuity, discount, delivery, subtotal, total, tax, paid, log, due, sort: this.split }
         },
         ...mapGetters(['tax', 'ticket', 'store', 'language'])
     },
@@ -242,7 +243,9 @@ header {
 
 .btn.active {
     background: linear-gradient(#ddd, #f5f5f5);
-    color: #666;
+    color: #988e8e;
+    text-shadow: 1px 1px 0 #fff;
+    box-shadow: none;
 }
 
 .paid::after {

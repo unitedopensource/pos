@@ -15,6 +15,11 @@
                     <label>{{text('PRICE')}}</label>
                     <input v-model="item.price" @keydown.enter="done">
                 </div>
+                <div class="printers">
+                    <div class="printer" v-for="printer in printers">
+                        <checkbox v-model="item.print" :multiple="true" :label="printer"></checkbox>
+                    </div>
+                </div>
             </div>
             <footer>
                 <div class="f1">
@@ -28,14 +33,20 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import checkbox from '../common/checkbox'
 export default {
     props: ['init'],
+    components: { checkbox },
     created() {
         this.init.item && Object.assign(this.item, this.init.item);
+        this.printers = Object.keys(this.config.printer);
+        !this.item.hasOwnProperty("print") && (this.item.print = [...this.printers]); 
     },
     data() {
         return {
-            item: {}
+            item: {},
+            printers: []
         }
     },
     methods: {
@@ -44,9 +55,12 @@ export default {
         },
         done() {
             !isNumber(this.item.price) && (this.item.price = 0);
-            !this.item.hasOwnProperty("key") && (this.item.key = Math.random().toString(36).substring(3,7));
+            !this.item.hasOwnProperty("key") && (this.item.key = Math.random().toString(36).substring(3, 7));
             this.init.resolve(this.item)
         }
+    },
+    computed: {
+        ...mapGetters(['config'])
     }
 }
 </script>
@@ -58,5 +72,10 @@ export default {
 
 input {
     width: 100px;
+}
+
+.printers {
+    display: flex;
+    padding: 7px 0 3px;
 }
 </style>
