@@ -194,13 +194,18 @@ export default {
     },
     done(print) {
       if (this.isEmptyTicket) return;
-      let order = this.combineOrderInfo({
-        server: this.op.name, print,
-        table: this.currentTable.name,
-        tableID: this.currentTable._id,
-        guest: isNumber(this.order.guest) ? this.order.guest : this.currentTable
-      });
-      this.setTableInfo({ current: { invoice: [order._id] } });
+      let order;
+      if (this.app.mode === 'create') {
+        order = this.combineOrderInfo({
+          server: this.op.name, print,
+          table: this.currentTable.name,
+          tableID: this.currentTable._id,
+          guest: isNumber(this.order.guest) ? this.order.guest : this.currentTable
+        });
+        this.setTableInfo({ current: { invoice: [order._id] } });
+      } else {
+        order = this.combineOrderInfo({});
+      }
       print && Printer.init(this.config).setJob("receipt").print(order);
       print && order.content.forEach(item => {
         item.print = true;

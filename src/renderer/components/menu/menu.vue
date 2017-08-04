@@ -57,7 +57,7 @@ export default {
             this.menuInstance = JSON.parse(JSON.stringify(this.menu));
             this.flatten(this.menuInstance[0].item);
             this.setSides(this.fillOption([]));
-            this.ticket.type === 'DINE_IN' && this.store.table.seatOrder && (this.sort = 1);
+            this.app.mode === 'create' && this.ticket.type === 'DINE_IN' && this.configDineIn();
             this.app.mode === 'create' && this.setOrder({ server: this.op.name, _id: ObjectId() });
         },
         flatten(items) {
@@ -79,6 +79,15 @@ export default {
                 array.push({ zhCN: "", usEN: "", disable: true })
             }
             return array;
+        },
+        configDineIn() {
+            this.store.table.seatOrder && (this.sort = 1);
+            this.setOrder({
+                server: this.op.name, 
+                table: this.currentTable.name,
+                tableID: this.currentTable._id,
+                guest:this.currentTable.current.guest
+            })
         },
         poleDisplay() {
             if (this.device.poleDisplay) {

@@ -88,6 +88,7 @@ var Dictionary = function (key) {
         BGS: [{ zhCN: "鱼香牛", usEN: "Beef w.Garlic Sauce", spicy: true }],
         BHS: [{ zhCN: "湖南牛", usEN: "Beef w.Hunan Style", spicy: true }],
         HSB: [{ zhCN: "干烧牛", usEN: "Hot & Spicy Beef", spicy: true }],
+        BSB: [{ zhCN: "四季豆牛", usEN: "beef w.String Bean" }],
         MB: [{ zhCN: "蒙古牛", usEN: "Beef w.Mongolian Style" }],
         BBS: [{ zhCN: "豆豉牛", usEN: "Beef w.Black Bean Sauce" }],
 
@@ -112,7 +113,7 @@ var Dictionary = function (key) {
         CHS: [{ zhCN: "湖南鸡", usEN: "Chicken w.Hunan Style", spicy: true }],
         HSC: [{ zhCN: "干烧鸡", usEN: "Hot & Spicy Chicken", spicy: true }],
         CBBS: [{ zhCN: "豆豉鸡", usEN: "Chk w.Black Bean Sauce" }],
-        CS: [{ zhCN: "四季豆鸡", usEN: "Chk w.String Bean" }],
+        CSB: [{ zhCN: "四季豆鸡", usEN: "Chk w.String Bean" }],
         CSS: [{ zhCN: "四川鸡", usEN: "Chicken w.Szechuan Style", spicy: true }],
 
         SB: [{ zhCN: "芥兰虾", usEN: "Shrimp Broccoli" }, { zhCN: "炒芥兰", usEN: "Sauteed Broccoli" }],
@@ -148,8 +149,8 @@ var Dictionary = function (key) {
 
         HF: [{ zhCN: "全家福", usEN: "Happy Family" }],
         DP: [{ zhCN: "龙凤配", usEN: "Dragon & Phoenix" }],
-        GTC: [{ zhCN: "左宗鸡", usEN: "General Taso's Chk", spicy: true }],
-        GTS: [{ zhCN: "左宗虾", usEN: "General Taso's Shrp", spicy: true }],
+        GTC: [{ zhCN: "左宗鸡", usEN: "General Tso's Chk", spicy: true }],
+        GTS: [{ zhCN: "左宗虾", usEN: "General Tso's Shrp", spicy: true }],
         SC: [{ zhCN: "芝麻鸡", usEN: "Sesame Chicken" }],
 
         OC: [{ zhCN: "陈皮鸡", usEN: "Orange Chicken" }],

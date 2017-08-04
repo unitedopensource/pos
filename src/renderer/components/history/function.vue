@@ -121,7 +121,8 @@ export default {
             }).then(() => {
                 this.removePayment();
                 this.updateInvoice(this.order);
-                this.$dialog({ title: "PAYMENT_REMOVED", msg: this.text("ORDER_PAYMENT_REMOVED", this.order.number), buttons: [{ text: 'CONFIRM', fn: 'reject' }, { text: 'EDIT_ORDER', fn: 'resolve' }] }).then(() => { this.editOrder() });
+                this.$dialog({ title: "PAYMENT_REMOVED", msg: this.text("ORDER_PAYMENT_REMOVED", this.order.number), buttons: [{ text: 'CONFIRM', fn: 'reject' }, { text: 'EDIT_ORDER', fn: 'resolve' }] })
+                    .then(() => { this.editOrder() }).catch(() => { this.$q() });
             }).catch(() => { this.$q() })
         },
         reOpenOrder() {
@@ -144,7 +145,7 @@ export default {
                 this.component = "Calendar";
             }).then((date) => {
                 console.log(date);
-                this.$emit("change",date)
+                this.$emit("change", date)
                 this.$q();
             }).catch(() => { this.$q() })
         },
@@ -174,7 +175,7 @@ export default {
         updateInvoice(ticket) {
             this.$socket.emit("[UPDATE] INVOICE", ticket);
         },
-        stats(){
+        stats() {
         },
         exit() {
             this.resetMenu();

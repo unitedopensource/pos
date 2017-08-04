@@ -199,9 +199,27 @@ export default {
       this.$dialog({ title: "ORDER_SETTLED", msg: "TIP_ORDER_SETTLED", buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$q() })
     },
     editOrder() {
-      this.setApp({mode:'edit'});
+      if (this.order.settled) {
+        this.$dialog({
+          title: this.text('REOPEN_SETTLED_ORD', this.order.number),
+          msg: this.text('REOPEN_SETTLED_ORD_TIP', this.text(this.order.payment.type)),
+          buttons: [{ text: 'REMOVE_PAYMENT', fn: 'resolve' }, { text: 'CANCEL', fn: 'reject' }]
+        }).then(() => { this.removeOrderPayment() }).catch(() => { this.$q() })
+        return;
+      }
+      this.setApp({ mode: 'edit' });
       this.setTicket({ type: "DINE_IN", number: this.order.number });
       this.$router.push({ path: '/main/menu' });
+    },
+    removeOrderPayment() {
+      this.$dialog({
+        type: "warning", title: 'PAYMENT_REMOVE', msg: this.text('PAYMENT_REMOVE_CONFIRM', this.text(this.order.payment.type))
+      }).then(() => {
+        this.removePayment();
+        this.$socket.emit("[UPDATE] INVOICE", this.order);
+        this.$dialog({ title: "PAYMENT_REMOVED", msg: this.text("ORDER_PAYMENT_REMOVED", this.order.number), buttons: [{ text: 'CONFIRM', fn: 'reject' }, { text: 'EDIT_ORDER', fn: 'resolve' }] })
+        .then(() => { this.editOrder() }).catch(()=>{ this.$q() });
+      }).catch(() => { this.$q() })
     },
     startSwitchTable() {
       this.$dialog({ title: 'TABLE_CFM_SWITCH', msg: 'TIP_SELECT_TABLE' }).then((resolve) => {
@@ -317,7 +335,7 @@ export default {
       this.resetAll();
       this.$router.push({ path: "/main" });
     },
-    ...mapActions(['setApp', 'resetAll', 'resetMenu', 'setOrder', 'setTicket', 'setTableInfo', 'setViewOrder', 'setCurrentTable', 'resetCurrentTable'])
+    ...mapActions(['setApp', 'resetAll', 'resetMenu', 'setOrder', 'setTicket','removePayment', 'setTableInfo', 'setViewOrder', 'setCurrentTable', 'resetCurrentTable'])
   },
   computed: {
     ...mapGetters(['op', 'config', 'store', 'history', 'tables', 'order', 'language', 'currentTable', 'isEmptyTicket'])

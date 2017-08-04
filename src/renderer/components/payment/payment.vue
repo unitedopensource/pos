@@ -793,6 +793,7 @@ export default {
 
             switch (this.$route.name) {
                 case "Menu":
+                    this.clearTable(ticket);
                     if (ticket.type !== 'BUFFET') {
                         this.resetAll();
                         this.init.resolve();
@@ -803,99 +804,128 @@ export default {
                     }
                     break;
                 case "History":
+                    this.clearTable(ticket);
                     this.init.resolve();
                     break;
                 case "Table":
                     this.store.table.autoClean ? this.resetCurrentTable() : this.setTableInfo({ status: 4 });
-                    this.$socket.emit("TABLE_MODIFIED", this.currentTable);
                     this.init.resolve();
                     break;
             }
         },
-        recordCashDrawerAction(inflow, outflow) {
-            if (!this.station.cashDrawer.enable) {
-                this.missCashDrawer();
-                return;
-            }
-            Printer.init(this.config).openCashDrawer();
-            let cashDrawer = this.store.stuffBank ? this.op.name : this.station.cashDrawer.name;
-            let activity = {
-                type: "CASHFLOW",
-                inflow: parseFloat(inflow),
-                outflow: parseFloat(outflow),
-                time: +new Date,
-                ticket: this.ticket,
-                operator: this.op.name
-            }
-            this.$socket.emit("[CASHFLOW] NEW_ACTIVITY", { cashDrawer, activity });
-        },
-        missCashDrawer() {
-            this.$dialog({ title: "CASH_DRAWER_NA", msg: "TIP_CASH_DRAWER_NA", buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$q() });
-        },
-        switchInvoice(index) {
-            if (isNumber(index)) this.current = index;
-            this.payment = this.order.splitPayment[this.current];
-            this.payment.balance = Math.max(0, (this.payment.due - this.payment.paid));
-            this.paid = "0.00";
-            this.setPaymentType("CASH");
-            this.getQuickInput(this.payment.balance);
-        },
-        roundUp() {
-            let rounded = Math.ceil(this.payment.due);
-            this.payment.due = rounded;
-            this.payment.balance = Math.max(0, (rounded - this.payment.discount)).toFixed(2);
-            this.paid = "0.00";
-            this.getQuickInput(rounded);
-        },
-        getQuickInput(amount) {
-            let preset = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 100, 120, 140, 150, 200, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000];
-            let array = [];
-            let round = Math.ceil(isNumber(amount) ? amount : 0);
-            array.push(amount.toFixed(2));
-            amount === round ? array.push((round + 1)) : array.push(round);
-            let index = preset.findIndex(i => i > round);
-            array.push(preset.slice(index, index + 6));
-            this.quickInput = [].concat.apply([], array);
-        },
-        poleDisplay() {
-            if (!this.device.poleDisplay) return;
-            poleDisplay.write('\f');
-            poleDisplay.write(line(line1, line2));
-        },
-        ...mapActions(['setOrder', 'resetAll', 'setTableInfo', 'resetCurrentTable'])
-    },
-    computed: {
-        isNewTicket() {
-            return this.app.mode === 'create' && this.$route.name === 'Menu';
-        },
-        due() {
-            let change = this.paid - this.payment.due;
-            let balance = this.payment.settled ? this.payment.balance : this.payment.due - this.paid;
-
-            return {
-                change: Math.max(0, change).toFixed(2),
-                balance: Math.max(0, balance).toFixed(2)
+        clearTable(ticket) {
+            if (ticket.type === 'DINE_IN') {
+                let table = this.getTable(ticket.tableID);
+                this.store.table.autoClean ? Object.assign(table,{
+                    current:{
+                        invoice:[],
+                        color:"",
+                        group:"",
+                        guest:0,
+                        server:"",
+                        time:""
+                    },
+                    status:1,
+                }) : table.status = 4;
+                this.$socket.emit("TABLE_MODIFIED",table);
             }
         },
-        ...mapGetters(['op', 'app', 'config', 'ticket', 'order', 'store', 'device', 'station', 'customer', 'currentTable'])
-    },
-    filters: {
-        cc: {
-            read(value) {
-                let card = [];
-                for (let i = 0; i < value.length; i += 4) {
-                    card.push(value.substring(i, i + 4));
+        getTable(id) {
+            let length = this.tables.length;
+            for (let i = 0; i < length; i++) {
+                let items = this.tables[i].item;
+                for (let i = 0; i < items.length; i++) {
+                    if (items[i]._id === id) {
+                        return items[i];
+                    }
                 }
-                return card.join(' ');
-            },
-            write(value) {
-                return value.replace(/[^0-9]/g, "");
+                break;
             }
-        },
-        exp(date) {
-            return date.replace(/(.{2})/, '$1 / ')
+    },
+    recordCashDrawerAction(inflow, outflow) {
+        if (!this.station.cashDrawer.enable) {
+            this.missCashDrawer();
+            return;
         }
+        Printer.init(this.config).openCashDrawer();
+        let cashDrawer = this.store.stuffBank ? this.op.name : this.station.cashDrawer.name;
+        let activity = {
+            type: "CASHFLOW",
+            inflow: parseFloat(inflow),
+            outflow: parseFloat(outflow),
+            time: +new Date,
+            ticket: this.ticket,
+            operator: this.op.name
+        }
+        this.$socket.emit("[CASHFLOW] NEW_ACTIVITY", { cashDrawer, activity });
+    },
+    missCashDrawer() {
+        this.$dialog({ title: "CASH_DRAWER_NA", msg: "TIP_CASH_DRAWER_NA", buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$q() });
+    },
+    switchInvoice(index) {
+        if (isNumber(index)) this.current = index;
+        this.payment = this.order.splitPayment[this.current];
+        this.payment.balance = Math.max(0, (this.payment.due - this.payment.paid));
+        this.paid = "0.00";
+        this.setPaymentType("CASH");
+        this.getQuickInput(this.payment.balance);
+    },
+    roundUp() {
+        let rounded = Math.ceil(this.payment.due);
+        this.payment.due = rounded;
+        this.payment.balance = Math.max(0, (rounded - this.payment.discount)).toFixed(2);
+        this.paid = "0.00";
+        this.getQuickInput(rounded);
+    },
+    getQuickInput(amount) {
+        let preset = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 100, 120, 140, 150, 200, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000];
+        let array = [];
+        let round = Math.ceil(isNumber(amount) ? amount : 0);
+        array.push(amount.toFixed(2));
+        amount === round ? array.push((round + 1)) : array.push(round);
+        let index = preset.findIndex(i => i > round);
+        array.push(preset.slice(index, index + 6));
+        this.quickInput = [].concat.apply([], array);
+    },
+    poleDisplay() {
+        if (!this.device.poleDisplay) return;
+        poleDisplay.write('\f');
+        poleDisplay.write(line(line1, line2));
+    },
+    ...mapActions(['setOrder', 'resetAll', 'setTableInfo', 'resetCurrentTable'])
+},
+computed: {
+    isNewTicket() {
+        return this.app.mode === 'create' && this.$route.name === 'Menu';
+    },
+    due() {
+        let change = this.paid - this.payment.due;
+        let balance = this.payment.settled ? this.payment.balance : this.payment.due - this.paid;
+
+        return {
+            change: Math.max(0, change).toFixed(2),
+            balance: Math.max(0, balance).toFixed(2)
+        }
+    },
+        ...mapGetters(['op', 'app', 'config', 'ticket', 'order', 'store', 'device', 'tables', 'station', 'customer', 'currentTable'])
+},
+filters: {
+    cc: {
+        read(value) {
+            let card = [];
+            for (let i = 0; i < value.length; i += 4) {
+                card.push(value.substring(i, i + 4));
+            }
+            return card.join(' ');
+        },
+        write(value) {
+            return value.replace(/[^0-9]/g, "");
+        }
+    },
+    exp(date) {
+        return date.replace(/(.{2})/, '$1 / ')
     }
+}
 }
 </script>
 
