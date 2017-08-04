@@ -199,6 +199,7 @@ Printer.prototype.printReceipt = function (raw) {
       let setCN = "";
       let setEN = "";
       item.choiceSet.forEach(set => {
+        if (set.hasOwnProperty('print') && Array.isArray(set.print) && !set.print.includes(printer)) return;
         setCN += `<p class="list choiceSet zhCN">
                       <span class="qty">${set.qty === 1 ? " " : set.qty}</span>
                       <span class="CNSet">${set.zhCN} ${parseFloat(set.price) !== 0 ? ' ($' + set.price.toFixed(2) + ')' : ""}</span>
@@ -349,7 +350,6 @@ Printer.prototype.printReceipt = function (raw) {
       (total * 0.20).toFixed(2),
       (total * 0.25).toFixed(2)
     ];
-
     let content = footer ? footer.map(text => "<p>" + text + "</p>").join("").toString() : "";
     let settle = (payment.settled || payment.log) ?
       payment.log.filter(trans => trans.type !== 'CASH').map(trans => `<p><span>${trans.type}</span><span>${trans.paid}</span><span>${trans.balance}</span></p>`).join("").toString() : "";
@@ -380,7 +380,7 @@ Printer.prototype.printReceipt = function (raw) {
                <section class="welcome">
                ${content}
                </section>
-               <p class="printTime">${moment().format('hh:mm:ss')}</p>
+               <p class="printTime"> @ ${moment().format('hh:mm:ss')}</p>
              </footer>`;
   }
 };

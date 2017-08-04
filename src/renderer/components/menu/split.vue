@@ -188,7 +188,7 @@ export default {
         combineInvoiceInfo() {
             let customer = Object.assign({}, this.customer);
             delete customer.extra;
-            if (this.app.mode === 'create') {
+            if (this.app.mode === 'create' && this.$route.name === 'Menu') {
                 this.setOrder({
                     customer,
                     content: this.items,
@@ -224,20 +224,8 @@ export default {
             this.init.reject()
         },
         exit() {
-            switch (this.$route.name) {
-                case "Menu":
-                    console.log(this.order)
-                    this.init.resolve();
-                    break;
-                case "History":
-                    this.$socket.emit("[UPDATE] INVOICE", this.items)
-                    break;
-                case "Table":
-                    this.$socket.emit("[UPDATE] INVOICE", this.items)
-                    break;
-                default:
-                //this.$router.push({ path: "/main" });
-            }
+            this.$socket.emit("[UPDATE] INVOICE", this.order);
+            this.init.resolve();
         },
         ...mapActions(['setOrder'])
     },

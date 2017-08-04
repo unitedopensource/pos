@@ -141,11 +141,12 @@ export default {
             componentData: null,
             pointer: null,
             spooler: [],
-            lastClickTime: +new Date()
+            lastClickTime: +new Date
         }
     },
     mounted() {
         this.$route.name === 'Menu' && this.app.mode === 'edit' && (this.payment = this.order.payment);
+        this.$route.name === 'Table' && this.order.content.length > 0 && (this.payment = this.order.payment);
     },
     methods: {
         setHighlight(item, e) {
@@ -173,21 +174,14 @@ export default {
             if (this.component === 'config') return;
             let taxFree = this.order.taxFree || false;
             let deliveryFree = this.order.deliveryFree || false;
-            new Promise((resolve, reject) => {
-                this.componentData = { taxFree, deliveryFree, resolve, reject };
-                this.component = "config";
-            }).then(resolve => {
-                this.$exitComponent();
-            }).catch(reject => {
-                this.$exitComponent();
-            })
+            this.$p("config", { taxFree, deliveryFree });
         },
         scroll(direction) {
             if (!this.overflow || this.offset > 0) return;
             let doms = document.querySelectorAll(".order .list");
             if (!doms[this.overflowIndex]) return;
             let offset = doms[this.overflowIndex].offsetHeight;
-            let currentClickTime = +new Date();
+            let currentClickTime = +new Date;
             if (direction === "up") {
                 if ((currentClickTime - this.lastClickTime) < 230) {
                     this.scrollAllTheWay(direction, doms);
@@ -218,7 +212,7 @@ export default {
                     }, 300)
                 }
             }
-            this.lastClickTime = +new Date();
+            this.lastClickTime = +new Date;
         },
         scrollAllTheWay(direction, doms) {
             if (direction === "up") {
@@ -272,34 +266,26 @@ export default {
             if (this.spooler.length === 0) return;
             let error = false;
             let sendItem = this.spooler.length;
-            let _order = JSON.parse(JSON.stringify(this.order));
-            let items = _order.content.map(item => {
+            let order = JSON.parse(JSON.stringify(this.order));
+            let items = order.content.map(item => {
                 if (item.pending) item.print = true;
                 return item;
             });
             let remain = items.filter(item => !item.print).length;
             try {
-                _order.content = this.spooler;
-                Printer.init(this.config).setJob("receipt").print(_order);
-                _order.content = items;
-                if (remain === 0) _order.print = true;
-                this.$socket.emit("ORDER_MODIFIED", _order);
+                order.content = this.spooler;
+                Printer.init(this.config).setJob("receipt").print(order);
+                order.content = items;
+                if (remain === 0) order.print = true;
+                this.$socket.emit("[UPDATE] INVOICE", order);
             } catch (e) {
                 error = true;
                 this.spooler = [];
-                this.$emit("popup", {
-                    type: 'warning',
-                    title: 'UNABLE_SEND',
-                    msg: e.toString()
-                })
+                this.$dialog({ type: 'warning', title: 'UNABLE_SEND', msg: e.toString(), buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$q() })
             }
             if (!error) {
-                let txt = remain > 0 ? this.text('TIP_REMAIN_ITEM', remain) : this.text('TIP_NO_REMAIN_ITEM')
-                this.$emit("popup", {
-                    type: 'info',
-                    title: 'ITEM_SEND',
-                    msg: this.text('TIP_PRINT_RESULT', sendItem) + ", " + txt
-                });
+                let txt = remain > 0 ? this.text('TIP_REMAIN_ITEM', remain) : this.text('TIP_NO_REMAIN_ITEM');
+                this.$dialog({ type: 'info', title: 'ITEM_SEND', msg: this.text('TIP_PRINT_RESULT', sendItem) + ", " + txt, buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$q() })
                 this.spooler.forEach(item => { item.print = true })
                 this.spooler = [];
             }

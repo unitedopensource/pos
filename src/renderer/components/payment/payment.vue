@@ -166,12 +166,12 @@ import Splitter from '../menu/split'
 import Preset from '../../preset'
 import GiftCard from './giftCard'
 import Printer from '../../print'
-import Inputter from './inputter'
+import Reloader from './Reloader'
 import Discount from './discount'
 import Tips from './tips'
 export default {
     props: ['init'],
-    components: { Dialoger, Inputter, Discount, CreditCard, GiftCard, Tips, Splitter },
+    components: { Dialoger, Reloader, Discount, CreditCard, GiftCard, Tips, Splitter },
     data() {
         return {
             componentData: null,
@@ -501,17 +501,108 @@ export default {
             }).catch(() => { this.$q() });
         },
         reload() {
-
+            if (!this.giftCard._id) return;
+            this.$p("Reloader", { title: "ADD_VALUE", giftCard: this.giftCard });
         },
-        cashOut() { 
-
+        cashOut() {
+            if (parseFloat(this.giftCard.balance) === 0) return;
+            this.$dialog({
+                type: "question", title: "CASH_OUT", msg: this.text("TIP_CASH_OUT", this.giftCard.balance.toFixed(2))
+            }).then(() => {
+                this.recordCashDrawerAction(0, parseFloat(this.giftCard.balance));
+                let money = this.giftCard.balance;
+                let value = 0;
+                let activity = {
+                    date: today(),
+                    time: +new Date,
+                    amount: value,
+                    balance: value,
+                    type: 'CASHOUT',
+                    op: this.op.name
+                };
+                this.$dialog({ title: this.text('WITHDRAW', money.toFixed(2)), msg: "TIP_WITHDRAW", buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => {
+                    this.$socket.emit("[GIFTCARD] CARD_ADJUST_VALUE", { _id: this.giftCard._id, value, activity });
+                    this.giftCard.balance = 0;
+                    Printer.init(this.config).setJob("cashout").print(this.giftCard);
+                    this.$q();
+                })
+            }).catch(() => { this.$q() })
         },
         printBalance() {
-
-         },
+            if (!this.giftCard._id) return;
+            this.poleDisplay("Gift Card Balance:", ["", this.giftCard.balance.toFixed(2)])
+            Printer.init(this.config).setJob("balance").print(this.giftCard);
+        },
+        activateGiftCard() {
+            // new Promise((resolve, reject) => {
+            //     let title = "INIT_AMOUNT";
+            //     this.componentData = { title, resolve, reject };
+            //     this.component = "Inputter";
+            // }).then((initialAmount) => {
+            //     this.recordCashDrawerAction(parseFloat(initialAmount), 0);
+            //     let card = Preset.giftCard(number, this.op.name, initialAmount, 0);
+            //     if (this.customer._id) {
+            //         card = Object.assign(card, { customer: this.customer._id })
+            //     }
+            //     this.giftCard = card;
+            //     this.$socket.emit("[GIFTCARD] CARD_ACTIVATION", card);
+            //     Printer.init(this.config).setJob("activation").print(card);
+            //     this.$q();
+            // }).catch(() => { this.$q() })
+        },
         chargeGift() {
-            
-         },
+            if (parseFloat(this.paid) === 0) return;
+            if (this.giftCard.balance > this.paid) {
+                this.poleDisplay("PAID by Gift Card", "Thank You");
+                let balance = Math.max(0, (this.payment.due - this.paid)).toFixed(2);
+                this.payment.log.push({
+                    type: "GIFT",
+                    paid: this.paid,
+                    change: 0,
+                    balance
+                });
+                let activity = {
+                    date: today(),
+                    time: +new Date,
+                    amount: this.paid,
+                    balance,
+                    type: 'DEBET',
+                    op: this.op.name
+                };
+                let remain = this.giftCard.balance - this.paid;
+                this.$socket.emit("[GIFTCARD] CARD_ACTIVITY", {
+                    _id: this.giftCard._id,
+                    value: remain,
+                    activity
+                });
+                this.payment.settled = true;
+                this.summarize({ print: true });
+            } else {
+                //insufficient fund
+                let balance = (Math.abs(this.giftCard.balance - this.paid)).toFixed(2);
+                this.poleDisplay("Gift Card NSF", ["Due:", balance]);
+                this.payment.log.push({
+                    type: "GIFT",
+                    paid: this.paid,
+                    change: 0,
+                    balance
+                });
+                let activity = {
+                    date: today(),
+                    time: +new Date,
+                    amount: this.paid,
+                    balance,
+                    type: 'DEBET',
+                    op: this.op.name
+                };
+                let remain = Math.max(0, (this.giftCard.balance - this.paid));
+                this.$socket.emit("[GIFTCARD] CARD_ACTIVITY", {
+                    _id: this.giftCard._id,
+                    value: remain,
+                    activity
+                });
+            }
+        },
         setQuickInput(value) {
             this.paid = value.toFixed(2);
         },
@@ -524,21 +615,19 @@ export default {
             Object.assign(order, {
                 payment: this.payment,
                 customer,
-                type: this.app.mode === 'create' ? this.ticket.type : this.order.type,
-                number: this.app.mode === 'create' ? this.ticket.number : this.order.number,
+                type: this.newTicket ? this.ticket.type : this.order.type,
+                number: this.newTicket ? this.ticket.number : this.order.number,
                 station: this.station.alies,
                 cashier: this.op.name,
                 source: "POS",
-                modify: this.app.mode === 'create' ? 0 : this.order.modify + 1,
+                modify: this.newTicket ? 0 : this.order.modify + 1,
                 status: 1,
-                time: this.app.mode === 'create' ? +new Date() : this.order.time,
+                time: this.newTicket ? +new Date() : this.order.time,
                 date: today(),
-                settled: true
+                settled: true,
+                print: true
             });
-            order.content.forEach(item => {
-                item.print = true;
-                item.pending = false;
-            });
+
             order.payment.log.forEach(trans => {
                 switch (trans.type) {
                     case "CASH":
@@ -556,7 +645,8 @@ export default {
             if (paidCredit) order.payment.paidCredit = paidCredit.toFixed(2);
             if (paidGift) order.payment.paidGift = paidGift.toFixed(2);
             if (this.payMode) {
-                this.app.mode === 'create' ? this.$socket.emit("[SAVE] INVOICE", order) : this.$socket.emit("[UPDATE] INVOICE", order);
+                this.newTicket ?
+                    this.$socket.emit("[SAVE] INVOICE", order) : this.$socket.emit("[UPDATE] INVOICE", order);
 
                 type === 'CASH' ?
                     this.$dialog({
@@ -573,7 +663,6 @@ export default {
                 } else {
                     this.init.resolve(this.payment);
                 }
-
             }
         },
         askReceipt() {
@@ -585,11 +674,12 @@ export default {
             order.number = order.number + '-' + index;
             order.payment = order.splitPayment[this.current];
             order.cashier = this.op.name;
-            order.content = order.content.filter(item => item.sort === this.payment.sort).forEach(item => {
+            order.customer = this.customer;
+            Printer.init(this.config).setJob("receipt").print(order);
+            order.content.filter(item => item.sort === this.payment.sort).forEach(item => {
                 item.print = true;
                 item.pending = false;
             });
-            Printer.init(this.config).setJob("receipt").print(order);
             this.nextSplit();
         },
         nextSplit() {
@@ -637,7 +727,18 @@ export default {
                     this.resetAll();
                     this.$router.push({ path: "/main" });
                     break;
-                default:
+                case "Table":
+                    this.setOrder({
+                        cashier: this.op.name,
+                        payment: this.combineSplitPayment(),
+                        settled: true
+                    });
+                    this.$socket.emit("[UPDATE] INVOICE", this.order);
+                    this.store.table.autoClean ? this.resetCurrentTable() : this.setTableInfo({ status: 4 });
+                    this.$socket.emit("TABLE_MODIFIED", this.currentTable);
+                    this.init.resolve();
+                    break;
+                case "History":
                     this.setOrder({
                         cashier: this.op.name,
                         payment: this.combineSplitPayment(),
@@ -645,6 +746,7 @@ export default {
                     });
                     this.$socket.emit("[UPDATE] INVOICE", this.order);
                     this.init.resolve();
+                    break;
             }
         },
         combineSplitPayment() {
@@ -675,14 +777,34 @@ export default {
             }
         },
         invoiceSettled(ticket) {
-            ticket && Printer.init(this.config).setJob("receipt").print(ticket);
-            if (this.ticket.type !== 'BUFFET') {
-                this.resetAll();
-                this.init.resolve();
-                this.$router.push({ path: "/main" });
-            } else {
-                this.init.resolve();
-                this.$emit("execute", 'resetSection');
+            if (ticket) {
+                Printer.init(this.config).setJob("receipt").print(ticket);
+                ticket.content.forEach(item => {
+                    item.print = true;
+                    item.pending = false;
+                });
+                this.$socket.emit("[UPDATE] INVOICE", ticket);
+            }
+
+            switch (this.$route.name) {
+                case "Menu":
+                    if (ticket.type !== 'BUFFET') {
+                        this.resetAll();
+                        this.init.resolve();
+                        this.$router.push({ path: "/main" });
+                    } else {
+                        this.init.resolve();
+                        this.$emit("execute", 'resetSection');
+                    }
+                    break;
+                case "History":
+                    this.init.resolve();
+                    break;
+                case "Table":
+                    this.store.table.autoClean ? this.resetCurrentTable() : this.setTableInfo({ status: 4 });
+                    this.$socket.emit("TABLE_MODIFIED", this.currentTable);
+                    this.init.resolve();
+                    break;
             }
         },
         recordCashDrawerAction(inflow, outflow) {
@@ -728,9 +850,12 @@ export default {
             poleDisplay.write('\f');
             poleDisplay.write(line(line1, line2));
         },
-        ...mapActions(['setOrder', 'resetAll'])
+        ...mapActions(['setOrder', 'resetAll', 'setTableInfo', 'resetCurrentTable'])
     },
     computed: {
+        isNewTicket(){
+            return this.app.mode === 'create' && this.$route.name === 'Menu';
+        },
         due() {
             let change = this.paid - this.payment.due;
             let balance = this.payment.settled ? this.payment.balance : this.payment.due - this.paid;
@@ -740,7 +865,7 @@ export default {
                 balance: Math.max(0, balance).toFixed(2)
             }
         },
-        ...mapGetters(['op', 'app', 'config', 'ticket', 'order', 'store', 'device', 'station', 'customer'])
+        ...mapGetters(['op', 'app', 'config', 'ticket', 'order', 'store', 'device', 'station', 'customer', 'currentTable'])
     },
     filters: {
         cc: {

@@ -183,8 +183,12 @@ export default {
     save(print) {
       if (this.isEmptyTicket) return;
       let order = this.combineOrderInfo({ cashier: this.op.name, print });
-      this.app.mode === 'create' ? this.$socket.emit("[SAVE] INVOICE", order) : this.$socket.emit("[UPDATE] INVOICE", order);
       print && Printer.init(this.config).setJob("receipt").print(order);
+      print && order.content.forEach(item => {
+        item.print = true;
+        item.pending = false;
+      });
+      this.app.mode === 'create' ? this.$socket.emit("[SAVE] INVOICE", order) : this.$socket.emit("[UPDATE] INVOICE", order);
       this.resetAll();
       this.$router.push({ path: "/main" });
     },
@@ -196,11 +200,16 @@ export default {
         tableID: this.currentTable._id,
         guest: isNumber(this.order.guest) ? this.order.guest : this.currentTable
       });
-      this.setCurrentTable({ current: { invoice: [order._id] } });
+      this.setTableInfo({ current: { invoice: [order._id] } });
+      print && Printer.init(this.config).setJob("receipt").print(order);
+      print && order.content.forEach(item => {
+        item.print = true;
+        item.pending = false;
+      });
       this.app.mode === 'create' ? this.$socket.emit("[SAVE] DINE_IN_INVOICE", { table: this.currentTable, order }) : this.$socket.emit("[UPDATE] INVOICE", order);
       this.$socket.emit("INQUIRY_TICKET_NUMBER");
-      this.$router.push({ name: "Table" });
       this.setOrder(order);
+      this.$router.push({ name: "Table" });
     },
     combineOrderInfo(extra) {
       let customer = Object.assign({}, this.customer);
@@ -226,10 +235,6 @@ export default {
           modify: this.order.modify + 1
         })
       }
-      print && Array.isArray(order.content) && order.content.forEach(item => {
-        item.print = true;
-        item.pending = false;
-      })
       return Object.assign({}, order, extra);
     },
     takeoutExit() {
@@ -248,7 +253,7 @@ export default {
       moment.locale(language === 'usEN' ? 'en' : 'zh-cn');
       this.$forceUpdate();
     },
-    ...mapActions(['setApp', 'lessQty', 'moreQty', 'resetAll', 'setOrder', 'setCurrentTable'])
+    ...mapActions(['setApp', 'lessQty', 'moreQty', 'resetAll', 'setOrder', 'setTableInfo'])
   },
   computed: {
     ...mapGetters(['op', 'app', 'config', 'order', 'ticket', 'store', 'customer', 'station', 'isEmptyTicket', 'currentTable'])

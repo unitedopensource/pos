@@ -59,7 +59,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import moment from 'moment'
-import Inputter from '../payment/inputter'
+import Inputter from './inputter'
 import dialoger from '../common/dialoger'
 import Printer from '../../print'
 export default {

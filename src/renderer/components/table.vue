@@ -104,7 +104,6 @@ export default {
       this.sectionView = section.item;
     },
     selectTable(table, e) {
-      console.log(table)
       this.setApp({ opLastAction: new Date });
       if (!table._id) return;
       if (this.pendingSwitch) {
@@ -171,29 +170,30 @@ export default {
 
     },
     settle() {
-      if (this.isEmptyOrder) return;
+      if (this.isEmptyTicket) return;
       if (this.order.settled) {
         this.settledOrder();
         return;
       }
+      this.$p("payment");
       //let payment = JSON.parse(JSON.stringify(this.order.payment))
-      new Promise((resolve, reject) => {
-        this.componentData = { order: this.order, resolve, reject };
-        this.component = "payment";
-      }).then(result => {
-        this.payment = result.payment;
-        this.store.table.autoClean ? this.resetCurrentTable() : this.setTableInfo({ status: 4 });
+      // new Promise((resolve, reject) => {
+      //   this.componentData = { order: this.order, resolve, reject };
+      //   this.component = "payment";
+      // }).then(result => {
+      //   this.payment = result.payment;
+      //   this.store.table.autoClean ? this.resetCurrentTable() : this.setTableInfo({ status: 4 });
 
-        this.$socket.emit("TABLE_MODIFIED", this.currentTable);
-        let order = JSON.parse(JSON.stringify(this.order));
-        order.payment = result.payment;
-        order.settled = true;
-        this.$socket.emit("ORDER_MODIFIED", order);
-        order.type = "PAYMENT";
-        Printer.init(this.config).setJob("receipt").print(order);
+      //   this.$socket.emit("TABLE_MODIFIED", this.currentTable);
+      //   let order = JSON.parse(JSON.stringify(this.order));
+      //   order.payment = result.payment;
+      //   order.settled = true;
+      //   this.$socket.emit("ORDER_MODIFIED", order);
+      //   order.type = "PAYMENT";
+      //   Printer.init(this.config).setJob("receipt").print(order);
 
-        this.$q();
-      }).catch(() => { this.$q() });
+      //   this.$q();
+      // }).catch(() => { this.$q() });
     },
     settledOrder() {
       this.$dialog({ title: "ORDER_SETTLED", msg: "TIP_ORDER_SETTLED", buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$q() })
@@ -293,14 +293,14 @@ export default {
       }
     },
     clearTable() {
-      if (this.currentTable.status === 4) {
+      if (this.currentTable.status === 4 || this.order.settled) {
         this.$dialog({
           title: "TABLE_CLEAR", msg: this.text("TIP_TABLE_CLEAR", this.currentTable.name),
           buttons: [{ text: 'CANCEL', fn: 'reject' }, { text: 'CLEAR', fn: 'resolve' }]
         }).then(() => {
-          this.resetCurrentTable()
-          this.$socket.emit("TABLE_MODIFIED", this.currentTable);
           this.resetMenu();
+          this.resetCurrentTable();
+          this.$socket.emit("TABLE_MODIFIED", this.currentTable);
           this.$q();
         }).catch(() => { this.$q() })
       } else {
@@ -320,7 +320,7 @@ export default {
     ...mapActions(['setApp', 'resetAll', 'resetMenu', 'setOrder', 'setTicket', 'setTableInfo', 'setViewOrder', 'setCurrentTable', 'resetCurrentTable'])
   },
   computed: {
-    ...mapGetters(['op', 'config', 'store', 'history', 'tables', 'order', 'language', 'currentTable', 'isEmptyOrder'])
+    ...mapGetters(['op', 'config', 'store', 'history', 'tables', 'order', 'language', 'currentTable', 'isEmptyTicket'])
   },
   watch: {
     order(n) {

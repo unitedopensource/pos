@@ -11,7 +11,9 @@
             <section class="tickets">
                 <div class="inner">
                     <div v-for="(ticket,index) in orders" class="invoice" @click="getInvoice(ticket)" :data-number="ticket.number" :key="index" :class="{void:ticket.status === 0,settled:ticket.settled}">
-                        <span class="type">{{text(ticket.type)}}</span>
+                        <span class="type">{{text(ticket.type)}}
+                            <span v-if="ticket.type === 'DINE_IN'" class="table">{{ticket.table}}</span>
+                        </span>
                         <span class="address">{{ticket.customer.address}}</span>
                         <span class="phone">{{ticket.customer.phone | dot}}</span>
                         <span class="total">$ {{(ticket.payment.total - ticket.payment.discount) | decimal}}</span>
@@ -290,8 +292,12 @@ section.ticket {
 
 .type {
     padding: 8px 0 0 35px;
-    display: block;
-    text-align: left;
+    display: flex;
+}
+
+.table {
+    flex: 1;
+    text-align: center;
 }
 
 .phone {
