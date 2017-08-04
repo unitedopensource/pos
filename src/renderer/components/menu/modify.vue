@@ -79,6 +79,22 @@ export default {
   methods: {
     initial() {
       this.item = JSON.parse(JSON.stringify(this.init.item));
+      if (this.init.openFood) {
+        this.item = Object.assign({}, this.item, {
+          single: 0,
+          qty: 1,
+          price: [0],
+          choiceSet: [],
+          mark: [[], []],
+          sort: 0,
+          unique: Math.random().toString(36).substr(2, 5),
+          print: false,
+          pending: false,
+          void: false,
+          total: "0.00",
+          side: ""
+        })
+      };
     },
     input(num) {
       switch (this.target) {
@@ -163,11 +179,11 @@ export default {
           usEN: `${this.unit ? '$' + this.discount.toFixed(2) : this.discount + ' %'} Discount`,
           single: -discount,
           price: -discount
-        })
-      this.alterItem(this.item);
+        });
+      this.init.openFood ? this.addToOrder(this.item) : this.alterItem(this.item);
       this.init.resolve();
     },
-    ...mapActions(['alterItem'])
+    ...mapActions(['alterItem', 'addToOrder'])
   },
   computed: {
     total() {

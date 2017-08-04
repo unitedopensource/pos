@@ -122,7 +122,7 @@ export default {
         },
         isOpenFood(item) {
             if (isNumber(item.price[0])) return false;
-            this.$p("modify", { item });
+            this.$p("modify", { item, openFood: true });
             return true
         },
         setOption(side, index) {
@@ -152,7 +152,7 @@ export default {
                     this.isEmptyTicket ? this.exit() : this.$dialog({ title: 'EXIT_CFM', msg: 'TIP_EXIT_CFM' }).then(() => { this.exit() }).catch(() => { this.$q() })
                     break;
                 case "dineinExit":
-                    this.isEmptyTicket ?  this.resetTableExit() :this.$dialog({ title: 'EXIT_CFM', msg: 'TIP_EXIT_CFM' }).then(() => { this.resetTableExit() }).catch(() => { this.$q() });
+                    this.isEmptyTicket ? this.resetTableExit() : this.$dialog({ title: 'EXIT_CFM', msg: 'TIP_EXIT_CFM' }).then(() => { this.resetTableExit() }).catch(() => { this.$q() });
                     break;
             }
         },
