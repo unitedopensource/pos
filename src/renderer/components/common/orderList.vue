@@ -303,8 +303,8 @@ export default {
         setDriver() {
             this.$p("driver", { driver: this.order.driver, ticket: this.ticket.number })
         },
-        calculator(n) {
-            if (n.length === 0) {
+        calculator(ticket) {
+            if (ticket.length === 0) {
                 this.payment = {
                     subtotal: 0,
                     tax: 0,
@@ -325,11 +325,11 @@ export default {
             let subtotal = 0;
             let tax = 0;
             let total = 0;
-            let length = n.length;
+            let length = ticket.length;
             let orderType = this.ticket.type;
 
             for (let i = 0; i < length; i++) {
-                let item = n[i];
+                let item = ticket[i];
                 let amount = parseFloat(item.single) * item.qty;
                 item.discount && (amount -= item.discount);
                 let choiceLength = item.choiceSet.length;

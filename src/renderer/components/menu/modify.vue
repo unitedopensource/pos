@@ -183,7 +183,6 @@ export default {
         single: -discount,
         price: -discount
       });
-      console.log(item)
       this.init.openFood ? this.addToOrder(item) : this.alterItem(item);
       this.init.resolve();
     },

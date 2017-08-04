@@ -422,7 +422,7 @@ export default {
             new Promise((resolve, reject) => {
                 this.componentData = { card, resolve, reject };
                 this.component = "CreditCard";
-            }).then((data) => { this.creditAccept(data); console.log(data) }).catch((reason) => { this.creditReject(reason); console.log(reason) });
+            }).then((data) => { this.creditAccept(data) }).catch((reason) => { this.creditReject(reason) });
         },
         creditAccept(trans) {
             this.payment.balance = Math.max(0, (this.payment.due - trans.amount.approve)).toFixed(2);
@@ -444,8 +444,19 @@ export default {
             }
         },
         creditReject(reason) {
-            console.log(reason)
-            this.$dialog(reason).then(() => { $q() }).catch(() => { this.$q() })
+            this.$dialog(reason).then(() => { $q() }).catch(() => {
+                this.$q();
+                this.payment.balance = 0;
+                this.payment.log.push({
+                    id: "",
+                    type: "CREDIT",
+                    paid: this.payment.due,
+                    change: "0.00",
+                    balance: this.payment.balance,
+                    number: "####"
+                });
+                this.invoicePaid(this.payment.due, 0, "CREDIT");
+            })
         },
         swipeGiftCard() {
             new Promise((resolve, reject) => {
@@ -490,10 +501,9 @@ export default {
                 this.componentData = { payment: this.payment, resolve, reject };
                 this.component = "Discount";
             }).then(result => {
-                let due = parseFloat(this.payment.total) + parseFloat(result.tip) + parseFloat(result.gratuity) - parseFloat(this.payment.discount);
+                let due = parseFloat(this.payment.total) + parseFloat(this.payment.tip) + parseFloat(this.payment.gratuity) - parseFloat(result.discount);
                 this.payment = Object.assign({}, this.payment, {
-                    tip: parseFloat(result.tip),
-                    gratuity: parseFloat(result.gratuity),
+                    discount: parseFloat(result.discount),
                     due, balance: due
                 });
                 this.getQuickInput(due);
@@ -803,7 +813,7 @@ export default {
             }
         },
         recordCashDrawerAction(inflow, outflow) {
-            if(!this.station.cashDrawer.enable){
+            if (!this.station.cashDrawer.enable) {
                 this.missCashDrawer();
                 return;
             }
@@ -819,7 +829,7 @@ export default {
             }
             this.$socket.emit("[CASHFLOW] NEW_ACTIVITY", { cashDrawer, activity });
         },
-        missCashDrawer(){
+        missCashDrawer() {
             this.$dialog({ title: "CASH_DRAWER_NA", msg: "TIP_CASH_DRAWER_NA", buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$q() });
         },
         switchInvoice(index) {

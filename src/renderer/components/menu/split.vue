@@ -224,7 +224,7 @@ export default {
             this.init.reject()
         },
         exit() {
-            this.$socket.emit("[UPDATE] INVOICE", this.order);
+            (this.app.mode !== 'create' && this.$route.name !== 'Menu') && this.$socket.emit("[UPDATE] INVOICE", this.order);
             this.init.resolve();
         },
         ...mapActions(['setOrder'])
