@@ -422,7 +422,7 @@ export default {
             new Promise((resolve, reject) => {
                 this.componentData = { card, resolve, reject };
                 this.component = "CreditCard";
-            }).then((data) => { this.creditAccept(data) }).catch((reason) => { this.creditReject(reason) });
+            }).then((data) => { this.creditAccept(data); console.log(data) }).catch((reason) => { this.creditReject(reason); console.log(reason) });
         },
         creditAccept(trans) {
             this.payment.balance = Math.max(0, (this.payment.due - trans.amount.approve)).toFixed(2);
@@ -444,6 +444,7 @@ export default {
             }
         },
         creditReject(reason) {
+            console.log(reason)
             this.$dialog(reason).then(() => { $q() }).catch(() => { this.$q() })
         },
         swipeGiftCard() {
@@ -611,18 +612,17 @@ export default {
             let customer = Object.assign({}, this.customer);
             let paidCash = 0, paidCredit = 0, paidGift = 0;
             delete customer.extra;
-
             Object.assign(order, {
                 payment: this.payment,
                 customer,
-                type: this.newTicket ? this.ticket.type : this.order.type,
-                number: this.newTicket ? this.ticket.number : this.order.number,
+                type: this.isNewTicket ? this.ticket.type : this.order.type,
+                number: this.isNewTicket ? this.ticket.number : this.order.number,
                 station: this.station.alies,
                 cashier: this.op.name,
                 source: "POS",
-                modify: this.newTicket ? 0 : this.order.modify + 1,
+                modify: this.isNewTicket ? 0 : this.order.modify + 1,
                 status: 1,
-                time: this.newTicket ? +new Date() : this.order.time,
+                time: this.isNewTicket ? +new Date() : this.order.time,
                 date: today(),
                 settled: true,
                 print: true
@@ -645,28 +645,23 @@ export default {
             if (paidCredit) order.payment.paidCredit = paidCredit.toFixed(2);
             if (paidGift) order.payment.paidGift = paidGift.toFixed(2);
             if (this.payMode) {
-                this.newTicket ?
+                this.isNewTicket ?
                     this.$socket.emit("[SAVE] INVOICE", order) : this.$socket.emit("[UPDATE] INVOICE", order);
 
                 type === 'CASH' ?
                     this.$dialog({
-                        title: this.text("CHANGE", change),
-                        msg: this.text("CUST_PAID", paid.toFixed(2)),
-                        buttons: [{ text: 'CONFIRM', fn: 'reject' }, { text: 'PRINT_RECEIPT', fn: 'resolve' }]
+                        title: this.text("CHANGE", change), msg: this.text("CUST_PAID", paid.toFixed(2)), buttons: [{ text: 'CONFIRM', fn: 'reject' }, { text: 'PRINT_RECEIPT', fn: 'resolve' }]
                     }).then(() => { this.invoiceSettled(order) }).catch(() => { this.invoiceSettled(false) }) :
-                    this.askReceipt.then(() => { this.invoiceSettled(order) }).catch(() => { this.invoiceSettled(false) });
+                    this.$dialog({ type: "question", title: "PRINT_RECEIPT", msg: "TIP_PRINT_RECEIPT", buttons: [{ text: 'CONFIRM', fn: 'reject' }, { text: 'PRINT_RECEIPT', fn: 'resolve' }] }).then(() => { this.invoiceSettled(order) }).catch(() => { this.invoiceSettled(false) });
             } else {
                 this.payment.settled = true;
                 if (this.order.hasOwnProperty('splitPayment')) {
                     this.order.splitPayment[this.current] = this.payment;
-                    this.askReceipt().then(() => { this.printSplitReceipt() }).catch(() => { this.nextSplit() });
+                    this.$dialog({ type: "question", title: "PRINT_RECEIPT", msg: "TIP_PRINT_RECEIPT", buttons: [{ text: 'CONFIRM', fn: 'reject' }, { text: 'PRINT_RECEIPT', fn: 'resolve' }] }).then(() => { this.printSplitReceipt() }).catch(() => { this.nextSplit() });
                 } else {
                     this.init.resolve(this.payment);
                 }
             }
-        },
-        askReceipt() {
-            return this.$dialog({ type: "question", title: "PRINT_RECEIPT", msg: "TIP_PRINT_RECEIPT", buttons: [{ text: 'CONFIRM', fn: 'reject' }, { text: 'PRINT_RECEIPT', fn: 'resolve' }] })
         },
         printSplitReceipt() {
             let index = this.current + 1;
@@ -808,6 +803,10 @@ export default {
             }
         },
         recordCashDrawerAction(inflow, outflow) {
+            if(!this.station.cashDrawer.enable){
+                this.missCashDrawer();
+                return;
+            }
             Printer.init(this.config).openCashDrawer();
             let cashDrawer = this.store.stuffBank ? this.op.name : this.station.cashDrawer.name;
             let activity = {
@@ -819,6 +818,9 @@ export default {
                 operator: this.op.name
             }
             this.$socket.emit("[CASHFLOW] NEW_ACTIVITY", { cashDrawer, activity });
+        },
+        missCashDrawer(){
+            this.$dialog({ title: "CASH_DRAWER_NA", msg: "TIP_CASH_DRAWER_NA", buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$q() });
         },
         switchInvoice(index) {
             if (isNumber(index)) this.current = index;
@@ -853,7 +855,7 @@ export default {
         ...mapActions(['setOrder', 'resetAll', 'setTableInfo', 'resetCurrentTable'])
     },
     computed: {
-        isNewTicket(){
+        isNewTicket() {
             return this.app.mode === 'create' && this.$route.name === 'Menu';
         },
         due() {

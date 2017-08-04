@@ -266,9 +266,9 @@
               'ORDER_PAYMENT_REMOVED': `您成功的移除 #${d[0]} 订单的付款记录`,
               'ORDER_SPLIT': '分单',
               'ORDER': '订单',
-              'PAID_IN_FULL':'合单付款',
-              'SPLIT_PAY':'分单付款',
-              'PER_UNIT':'每单位',
+              'PAID_IN_FULL': '合单付款',
+              'SPLIT_PAY': '分单付款',
+              'PER_UNIT': '每单位',
               'PRINT_MENU_ID': '菜单编号',
               'PRINT_DETAIL': '打印详细记录',
               'PAYMENT': '付款',
@@ -490,7 +490,7 @@
               'TERM_VOID_SALE': '取消信用卡订单',
               'TERM_NA': '无法连接终端机',
               'TERM_BATCH_DISABLE': '过账功能被临时停用',
-              'TIP_PRINT_RECEIPT':'是否需要打印订单收据?',
+              'TIP_PRINT_RECEIPT': '是否需要打印订单收据?',
               'TIP_TAX_ADVICE': '税务问题请咨询会计师',
               'TIP_TAX_GROUP': '创建税组用于一次性计算多种税',
               'TIP_FOR_SMS_ALERT': '短信发送服务',
@@ -527,7 +527,7 @@
               'TIP_CLOCK_OUT': `您打卡于 ${d[0]}, 总共工作时间: ${d[1]}`,
               'TIP_CLOCK_IN_REQ': '请在打卡后进行操作',
               'TIP_PD_ACCESS': '您没有执行此操作的权限，请联系经理',
-              'TIP_SPLIT_PAYMENT':'您要如何处理这个分单订单的付款？',
+              'TIP_SPLIT_PAYMENT': '您要如何处理这个分单订单的付款？',
               'TIMECARD': '打卡',
               'TABLE_LAYOUT': '座位',
               'TIME_ZONE': '时区',
@@ -563,7 +563,7 @@
               'VIEW_LIST': '列表',
               'UI': '界面',
               'SYSTEM': '系统',
-              'SPLIT_PAYMENT':'分单付款',
+              'SPLIT_PAYMENT': '分单付款',
               'UNABLE_SEND': '发送失败',
               'UNPAID_INVOICE': '未付订单',
               'US_EN': '英文',
@@ -626,8 +626,8 @@
               'BY_CALENDAR': 'Calendar',
               'BY_CASHIER': 'Cashier',
               'BY_DRIVER': 'Driver',
-              'CURRENT_WEEK':'Cur. Week',
-              'CURRENT_MONTH':'Cur. Month',
+              'CURRENT_WEEK': 'Cur. Week',
+              'CURRENT_MONTH': 'Cur. Month',
               'CASH_FLOW': 'Cashflow Control',
               'CASH_OUT_SETTLE': `Cash-out Total: $${d[0]}`,
               'CASH_IN_CONFIRM': 'Cash-in Confirm',
@@ -750,7 +750,7 @@
               'FRI': 'Fri',
               'FONT': 'Font',
               'FONT_SIZE': 'Font Size',
-              'GIFTCARD_SUMMARY':'Gift Card Report',
+              'GIFTCARD_SUMMARY': 'Gift Card Report',
               'GUEST_COUNT': 'Guest Count',
               'GET_PIN': 'PIN',
               'GOOGLE_MATRIX': 'Google Matrix',
@@ -785,7 +785,7 @@
               'ITEM_SIDE': 'Side(s)',
               'INVALID_VALUE': `${d[0]}'s format incorrect`,
               'INITIALIZING': 'Initializing...',
-              'LAST_MONTH':'Last Month',
+              'LAST_MONTH': 'Last Month',
               'LAYOUT': 'Layout',
               'LESS': 'Less',
               'LOOKING_FOR_HOST': 'Finding Host...',
@@ -914,9 +914,9 @@
               'PERMISSION': 'Permission',
               'RSA_KEY': 'RSA Private',
               'ROLE': 'Role',
-              'STAFF_SUMMARY':'Staff Summary',
-              'DRIVER_SUMMARY':'Driver Summary',
-              'SET_DATE':'Set Date',
+              'STAFF_SUMMARY': 'Staff Summary',
+              'DRIVER_SUMMARY': 'Driver Summary',
+              'SET_DATE': 'Set Date',
               'SALES': 'Sales',
               'SEARCH': 'Search',
               'SPLIT': 'Split',
@@ -988,8 +988,8 @@
               'STATISTIC': 'Stat.',
               'SENT_RPT_VIA_EMAIL': 'Send Email',
               'SUMMARY': 'Summary',
-              'TIP_PRINT_RECEIPT':'Do you want to print order receipt?',
-              'TIP_SUMMARY':'Tip Summary',
+              'TIP_PRINT_RECEIPT': 'Do you want to print order receipt?',
+              'TIP_SUMMARY': 'Tip Summary',
               'TEMP_ITEM': 'Temporary Item',
               'TIP_CASH_OUT_SETTLE': `Settled amount included initial deposit ($${d[0]})`,
               'TIP_CASH_OUT_REQ': 'Do you want to cash-out right now?',
@@ -1119,7 +1119,9 @@
               'ZH_CN': 'Chinese'
             }
           }
-          return dict[Vue.language][text.toUpperCase()] || text;
+          if (text) text = text.toUpperCase();
+          
+          return dict[Vue.language][text] || text;
         }
       }
     });

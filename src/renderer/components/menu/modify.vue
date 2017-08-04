@@ -127,7 +127,7 @@ export default {
           break;
       }
       this.reset = false;
-
+      console.log(this.item)
     },
     setPointer(target, e) {
       document.querySelector(".target").classList.remove("target");
@@ -168,19 +168,23 @@ export default {
       this.discount = this.unit ? "0.00" : "0";
     },
     done() {
-      this.item.single = parseFloat(this.item.single);
-      this.item.qty = ~~this.item.qty;
-      this.item.total = (parseFloat(this.item.single) * this.item.qty).toFixed(2);
-      let discount = this.unit ? this.discount : this.item.single * this.item.qty * (this.discount / 100);
-      discount > 0 &&
-        this.item.choiceSet.push({
-          qty: 1,
-          zhCN: `${this.unit ? '$' + this.discount.toFixed(2) : this.discount + ' %'} ${this.text('DISCOUNT')}`,
-          usEN: `${this.unit ? '$' + this.discount.toFixed(2) : this.discount + ' %'} Discount`,
-          single: -discount,
-          price: -discount
-        });
-      this.init.openFood ? this.addToOrder(this.item) : this.alterItem(this.item);
+      let single = parseFloat(this.item.single);
+      let discount = this.unit ? this.discount : single * this.item.qty * (this.discount / 100);
+      let item = Object.assign({}, this.item, {
+        single,
+        side:"",
+        price: [single],
+        qty: ~~this.item.qty,
+        total: (single * this.item.qty).toFixed(2),
+      });
+      discount > 0 && item.choiceSet.push({
+        qty: 1,
+        zhCN: `${this.unit ? '$' + this.discount.toFixed(2) : this.discount + ' %'} ${this.text('DISCOUNT')}`,
+        usEN: `${this.unit ? '$' + this.discount.toFixed(2) : this.discount + ' %'} Discount`,
+        single: -discount,
+        price: -discount
+      });
+      this.init.openFood ? this.addToOrder(item) : this.alterItem(item);
       this.init.resolve();
     },
     ...mapActions(['alterItem', 'addToOrder'])

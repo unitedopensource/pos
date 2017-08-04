@@ -67,7 +67,8 @@ export default {
     mounted() {
         if (this.orders.length) {
             this.setViewOrder(this.orders[0]);
-            document.querySelector(".invoice").classList.add("active");
+            let dom = document.querySelector(".invoice");
+            dom && dom.classList.add("active");
         }
     },
     methods: {
