@@ -95,6 +95,7 @@ export default {
           side: ""
         })
       };
+      console.log(this.item)
     },
     input(num) {
       switch (this.target) {
@@ -127,7 +128,6 @@ export default {
           break;
       }
       this.reset = false;
-      console.log(this.item)
     },
     setPointer(target, e) {
       document.querySelector(".target").classList.remove("target");
@@ -172,7 +172,6 @@ export default {
       let discount = this.unit ? this.discount : single * this.item.qty * (this.discount / 100);
       let item = Object.assign({}, this.item, {
         single,
-        side:"",
         price: [single],
         qty: ~~this.item.qty,
         total: (single * this.item.qty).toFixed(2),
@@ -184,6 +183,7 @@ export default {
         single: -discount,
         price: -discount
       });
+      console.log(item)
       this.init.openFood ? this.addToOrder(item) : this.alterItem(item);
       this.init.resolve();
     },
