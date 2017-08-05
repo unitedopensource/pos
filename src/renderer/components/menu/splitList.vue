@@ -89,6 +89,7 @@ export default {
         },
         payment() {
             let tip = 0, gratuity = 0, discount = 0, delivery = 0, subtotal = 0, tax = 0, total = 0, paid = 0, due = 0, log = [];
+            let type = this.$route.name === 'Menu' ? this.ticket.type : this.order.type;
             this.instance.forEach(item => {
                 let price = parseFloat(item.single) * item.qty;
                 let choiceLength = item.choiceSet.length;
@@ -99,9 +100,9 @@ export default {
                 }
                 if (this.isTax) {
                     let taxClass = this.tax.class[item.taxClass];
-                    tax += taxClass.apply[this.ticket.type] ? (taxClass.rate / 100 * (item.qty * item.single)) : tax;
+                    tax += taxClass.apply[type] ? (taxClass.rate / 100 * (item.qty * item.single)) : tax;
                 }
-                delivery = (this.ticket.type === 'DELIVERY' && this.isChargeDelivery &&
+                delivery = (type === 'DELIVERY' && this.isChargeDelivery &&
                     this.store.delivery && !this.order.deliveryFree) ?
                     this.store.deliveryCharge : 0;
             });

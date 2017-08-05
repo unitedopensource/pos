@@ -100,6 +100,7 @@ export default {
         confirm() {
             Promise.all([this.fetchData(), this.fetchCreditCard(), this.fetchGiftCard()]).then(datas => {
                 this.handler(datas);
+                console.log(this.report)
                 Printer.init(this.config).setJob("report").print({ date: this.reportRange, report: this.report });
                 this.init.resolve();
             })
