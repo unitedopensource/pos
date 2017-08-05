@@ -39,7 +39,7 @@ import { mapGetters } from 'vuex'
 import checkbox from '../setting/common/checkbox'
 export default {
     components: { checkbox },
-    props: ['order', 'split', 'done'],
+    props: ['invoice', 'split', 'done'],
     data() {
         return {
             queue: [],
@@ -76,16 +76,15 @@ export default {
             if (this.paid) return;
             let due = parseFloat(this.payment.total) + parseFloat(this.payment.tip) + parseFloat(this.payment.gratuity) - parseFloat(this.payment.discount);
             this.$emit("pay", {
-                split: this.split,
-                payment: Object.assign({}, this.payment, { due })
+                split: this.split, payment: Object.assign({}, this.payment, { due })
             })
         }
     },
     computed: {
         instance() {
             return this.split ?
-                this.order.filter(item => (typeof item.sort === "object" ? item.sort.includes(this.split) : item.sort === this.split)) :
-                this.order.filter(item => item.sort === 0);
+                this.invoice.filter(item => (typeof item.sort === "object" ? item.sort.includes(this.split) : item.sort === this.split)) :
+                this.invoice.filter(item => item.sort === 0);
         },
         payment() {
             let tip = 0, gratuity = 0, discount = 0, delivery = 0, subtotal = 0, tax = 0, total = 0, paid = 0, due = 0, log = [];
@@ -103,7 +102,7 @@ export default {
                     tax += taxClass.apply[type] ? (taxClass.rate / 100 * (item.qty * item.single)) : tax;
                 }
                 delivery = (type === 'DELIVERY' && this.isChargeDelivery &&
-                    this.store.delivery && !this.order.deliveryFree) ?
+                    this.store.delivery && !this.invoice.deliveryFree) ?
                     this.store.deliveryCharge : 0;
             });
             tax = parseFloat(tax.toFixed(2));
@@ -111,18 +110,14 @@ export default {
             due = total - discount;
             return { tip, gratuity, discount, delivery, subtotal, total, tax, paid, log, due, sort: this.split }
         },
-        ...mapGetters(['tax', 'ticket', 'store', 'language'])
+        ...mapGetters(['tax', 'ticket', 'store', 'order', 'language'])
     },
     watch: {
         queue(n) {
             let doms = document.querySelectorAll(`.ticket_${this.split} .active`);
-            doms.forEach(dom => {
-                dom && dom.classList.remove("active");
-            });
+            doms.forEach(dom => { dom && dom.classList.remove("active") });
             doms = document.querySelectorAll(`.ticket_${this.split} [data-key]`);
-            doms.forEach(dom => {
-                this.queue.includes(dom.dataset.key) && dom && dom.classList.add("active");
-            });
+            doms.forEach(dom => { this.queue.includes(dom.dataset.key) && dom && dom.classList.add("active") });
             this.$emit("queue", { origin: this.split, items: n })
         }
     },

@@ -6,12 +6,12 @@
                 <i class="fa fa-times" @click="cancel"></i>
             </header>
             <section>
-                <split-list :order="items" @queue="setQueue" v-show="remain !==0"></split-list>
+                <split-list :invoice="items" @queue="setQueue" v-show="remain !==0"></split-list>
                 <div class="wrap">
                     <div class="inner">
                         <i class="fa fa-3x fa-angle-left page" @click="page = page===(split-1) ? page : page+1" v-show="split > 2"></i>
                         <div class="extend" :style="offset">
-                            <split-list :order="items" :done="lock" v-for="i in split" :split="i" :key="i" @queue="setQueue" @click.native="trigger(i)" @print="printInvoice" @pay="settle"></split-list>
+                            <split-list :invoice="items" :done="lock" v-for="i in split" :split="i" :key="i" @queue="setQueue" @click.native="trigger(i)" @print="printInvoice" @pay="settle"></split-list>
                         </div>
                         <i class="fa fa-3x fa-angle-right page" @click="page = page===0 ? 0 : page-1" v-show="split > 2"></i>
                     </div>

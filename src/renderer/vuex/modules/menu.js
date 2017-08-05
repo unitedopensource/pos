@@ -13,6 +13,20 @@ const mutations = {
   [types.RESET_MENU](state) {
     state.order = {
       _id: ObjectId(),
+      payment: {
+        subtotal: 0,
+        tax: 0,
+        total: 0,
+        due: 0,
+        balance: 0,
+        paid: 0,
+        change: 0,
+        gratuity: 0,
+        tip: 0,
+        discount: 0,
+        delivery: 0,
+        log: []
+      },
       content: []
     };
     state.item = null;
