@@ -39,9 +39,7 @@ export default {
                 .then(response => response.text()).then((device) => {
                     this.device = this.terminal.check(device);
                     if (this.device.code !== "000000") {
-                        this.icon = "warning";
-                        this.msg = this.text("TERM_INIT_F", this.device.model || terminal.model);
-                        setTimeout(() => { this.init.reject(null) }, 1500);
+                        this.terminalError(this.text("TERM_INIT_F", this.device.model || terminal.model));
                         return;
                     }
                     clearTimeout(this.timeout);
@@ -53,12 +51,7 @@ export default {
                     this.transacting = true;
                     this.terminal.charge(this.init.card).then(response => response.text()).then(data => {
                         let result = this.terminal.explainTransaction(data);
-                        if (result.code === "000000") {
-                            this.init.resolve(result);
-                        } else {
-                            this.icon = "error";
-                            this.msg = this.text(result.msg);
-                        }
+                        result.code === "000000" ? this.init.resolve(result) : this.terminalError(this.text(result.msg));
                     })
                 });
             this.timeout = setTimeout(() => {
@@ -68,6 +61,11 @@ export default {
                     buttons: [{ text: 'CONFIRM', fn: 'reject' }]
                 });
             }, 6000)
+        },
+        terminalError(msg) {
+            this.icon = "error";
+            this.msg = msg;
+            setTimeout(() => { this.init.reject(null) }, 1500);
         },
         exit() {
             if (this.transacting) {
