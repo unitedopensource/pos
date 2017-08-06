@@ -33,15 +33,14 @@ const Pax = function () {
       mac: data[8]
     }
   };
-  this.charge = function (card, ticket) {
-    let { number, date, code, amount } = card;
-    amount = (amount * 100).toFixed(0);
+  this.charge = function (data, ticket) {
+    let { number, date, code } = data.creditCard;
+    let amount = (data.amount * 100).toFixed(0);
     if (!number && !date) {
       let command = this.parser(`T00_1.38_01_${amount}__1_____`);
       return fetch(command)
     } else {
       let info = `${number}|${date}|${code}`;
-      console.log(info)
       let command = this.parser(`T00_1.38_01_${amount}_${info}_1_____`);
       return fetch(command)
     }
@@ -49,7 +48,6 @@ const Pax = function () {
   this.explainTransaction = function (raw) {
     let data = raw.split(String.fromCharCode(28));
     let code = data[3];
-    //console.log(data);
     switch (code) {
       case "000000":
         let host = data[5].split(String.fromCharCode(31));

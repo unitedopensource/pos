@@ -169,7 +169,7 @@ export default {
             let { split, payment } = ticket;
 
             new Promise((resolve, reject) => {
-                this.componentData = { payment, resolve, reject };
+                this.componentData = { payment, index: split - 1, resolve, reject };
                 this.component = "payment";
             }).then(result => {
                 this.splitPayment[split] = result;
@@ -224,7 +224,7 @@ export default {
             this.init.reject()
         },
         exit() {
-            (this.app.mode !== 'create' && this.$route.name !== 'Menu') && this.$socket.emit("[UPDATE] INVOICE", this.order);
+            this.$route.name !== 'Menu' && this.$socket.emit("[UPDATE] INVOICE", this.order);
             this.init.resolve();
         },
         ...mapActions(['setOrder'])
@@ -238,7 +238,7 @@ export default {
         remain() {
             return this.items.filter(item => item.sort === 0).length
         },
-        ...mapGetters(['op','app', 'config', 'order', 'ticket', 'customer', 'station'])
+        ...mapGetters(['op', 'app', 'config', 'order', 'ticket', 'customer', 'station'])
     }
 }
 </script>

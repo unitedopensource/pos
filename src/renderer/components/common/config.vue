@@ -22,10 +22,18 @@
           <span></span>
         </label>
       </div>
+      <div class="option">
+        <span class="text">{{text('MENU_ID')}}</span>
+        <label class="input-toggle" @change="toggleMenuID">
+          <input type="checkbox" v-model="init.menuID">
+          <span></span>
+        </label>
+      </div>
     </div>
   </div>
 </template>
 <script>
+import { mapActions, mapGetters } from 'vuex'
 export default {
   props: ['init'],
   mounted() {
@@ -53,12 +61,20 @@ export default {
         deliveryFree: this.init.deliveryFree
       })
     },
+    toggleMenuID() {
+      let display = Object.assign({}, this.config.display, { menuID: this.init.menuID });
+      this.setConfig({ display });
+    },
     toggleViewCategory() {
       let dom = document.querySelector('.order');
       this.viewCategory ?
         dom.classList.add("showCategory") :
         dom.classList.remove("showCategory");
-    }
+    },
+    ...mapActions(['setConfig'])
+  },
+  computed: {
+    ...mapGetters(['config'])
   }
 }
 </script>

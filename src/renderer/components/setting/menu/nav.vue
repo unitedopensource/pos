@@ -6,6 +6,7 @@
             <router-link :to="{name:'Setting.menu'}" tag="div" append>{{text('MENU')}}</router-link>
             <router-link :to="{name:'Setting.request'}" tag="div" append>{{text('REQUEST')}}</router-link>
             <router-link :to="{name:'Setting.template'}" tag="div" append>{{text('TEMPLATE')}}</router-link>
+            <router-link :to="{name:'Setting.display'}" tag="div" append>{{text('DISPLAY')}}</router-link>
         </nav>
         <div class="content">
             <router-view @change="onChange" @unchange="change = false" class="inner"></router-view>
@@ -13,7 +14,7 @@
                 <i class="fa fa-info-circle"></i>
                 <span>{{txt}}</span>
                 <span v-show="!send">
-                    <span @click="save" class="update">{{text('SAVE')}}</span>
+                    <span @click="update" class="save">{{text('SAVE')}}</span>
                     <span @click="cancel" class="cancel">{{text('CANCEL')}}</span>
                 </span>
             </footer>
@@ -22,6 +23,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
     data() {
         return {
@@ -33,26 +35,25 @@ export default {
         back() {
             this.$router.push({ name: 'Setting.index' })
         },
-        onChange(store) {
+        onChange(ctrl) {
             this.txt = this.text("TIP_SAVE_CONFIG");
             this.change = true;
-            this.store = store;
+            this.ctrl = ctrl;
             this.send = false;
         },
         update() {
             this.txt = this.text('SETTING_UPDATED');
             this.send = true;
-            this.$socket.emit("[CMS] CONFIG_STORE", this.store);
-            this.setConfig({ store: this.store })
-            setTimeout(() => {
-                this.cancel();
-            }, 1500);
+            this.$socket.emit("[CMS] CONFIG_DISPLAY", this.ctrl);
+            this.setConfig({ display: this.ctrl });
+            setTimeout(() => { this.cancel() }, 1500);
         },
         cancel() {
-            this.store = null;
+            this.ctrl = null;
             this.change = false;
             this.send = false;
-        }
+        },
+        ...mapActions(['setConfig'])
     }
 }
 </script>

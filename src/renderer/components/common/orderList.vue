@@ -111,12 +111,13 @@
 </template>
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import itemMarker from '../menu/marker'
 import driver from '../history/driver'
 import Printer from '../../print'
 import config from './config'
 
 export default {
-    components: { config, driver },
+    components: { config, driver, itemMarker },
     props: ['layout', 'group', 'display', 'sort'],
     data() {
         return {
@@ -174,7 +175,8 @@ export default {
             if (this.component === 'config') return;
             let taxFree = this.order.taxFree || false;
             let deliveryFree = this.order.deliveryFree || false;
-            this.$p("config", { taxFree, deliveryFree });
+            let menuID = this.config.display.menuID;
+            this.$p("config", { taxFree, deliveryFree,menuID });
         },
         scroll(direction) {
             if (!this.overflow || this.offset > 0) return;
@@ -247,7 +249,7 @@ export default {
             }
         },
         openMarker() {
-            this.$emit("open")
+            this.$p("itemMarker")
         },
         addToSpooler(item) {
             if (item.print) return;
@@ -515,9 +517,7 @@ header i {
 }
 
 .itemWrap .item {
-    overflow: hidden;
     text-overflow: ellipsis;
-    display: inline-block;
     padding-right: 5px;
 }
 

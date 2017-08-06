@@ -3,7 +3,13 @@
         <section class="category">
             <div v-for="(category,index) in menu" @click="setCategory(index,$event)" :key="index">{{category[language]}}</div>
         </section>
-        <section class="items">
+        <section class="items" v-if="config.display.menuID">
+            <div v-for="(item,index) in page" @click="pick(item)" :class="{disable:!item.clickable,like:item.like}" :key="index" :data-menuID="item.menuID">{{item[language]}}</div>
+            <div @click="itemPage = 0" v-if="items.length >= 34" class="pageButton">{{text("FIRST_PAGE")}}</div>
+            <div @click="itemPage = 1" v-if="items.length >= 34" class="pageButton">{{text("SECOND_PAGE")}}</div>
+            <div @click="itemPage = 2" v-if="items.length >= 34" class="pageButton">{{text("THIRD_PAGE")}}</div>
+        </section>
+        <section class="items" v-else>
             <div v-for="(item,index) in page" @click="pick(item)" :class="{disable:!item.clickable,like:item.like}" :key="index">{{item[language]}}</div>
             <div @click="itemPage = 0" v-if="items.length >= 34" class="pageButton">{{text("FIRST_PAGE")}}</div>
             <div @click="itemPage = 1" v-if="items.length >= 34" class="pageButton">{{text("SECOND_PAGE")}}</div>
@@ -23,7 +29,6 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import orderList from '../common/orderList'
-
 import dialoger from '../common/dialoger'
 import payment from '../payment/payment'
 import Printer from '../../print'
@@ -51,6 +56,7 @@ export default {
     },
     mounted() {
         toggleClass(".category div", "active");
+        this.app.mode === 'edit' && this.resetPointer();
     },
     methods: {
         initial() {
@@ -63,6 +69,8 @@ export default {
         flatten(items) {
             console.time("clone");
             items = [].concat.apply([], items);
+            this.config.display.favorite && this.customer._id && this.customer.extra.favorite && items.forEach(item => { item.like = favorite.includes(item._id) });
+
             if (this.customer._id && this.customer.extra.favorite) {
                 let favorite = this.customer.extra.favorite;
                 items.forEach(item => {
@@ -83,10 +91,10 @@ export default {
         configDineIn() {
             this.store.table.seatOrder && (this.sort = 1);
             this.setOrder({
-                server: this.op.name, 
+                server: this.op.name,
                 table: this.currentTable.name,
                 tableID: this.currentTable._id,
-                guest:this.currentTable.current.guest
+                guest: this.currentTable.current.guest
             })
         },
         poleDisplay() {
@@ -188,7 +196,7 @@ export default {
             this.setApp({ opLastAction: new Date, mode: "create" });
             this.$router.push({ path: "/main" });
         },
-        ...mapActions(['setApp', 'setOrder', 'setSides', 'addToOrder', 'resetMenu', 'resetAll', 'alterItemOption', 'resetCurrentTable'])
+        ...mapActions(['setApp', 'setOrder', 'setSides', 'addToOrder', 'resetPointer', 'resetMenu', 'resetAll', 'alterItemOption', 'resetCurrentTable'])
     },
     computed: {
         page() {
@@ -199,7 +207,7 @@ export default {
             }
             return this.items
         },
-        ...mapGetters(['op', 'app', 'menu', 'item', 'device', 'sides', 'store', 'ticket', 'order', 'course', 'customer', 'language', 'station', 'currentTable', 'isEmptyTicket'])
+        ...mapGetters(['op', 'app', 'config', 'menu', 'item', 'device', 'sides', 'store', 'ticket', 'order', 'course', 'customer', 'language', 'station', 'currentTable', 'isEmptyTicket'])
     }
 }
 </script>

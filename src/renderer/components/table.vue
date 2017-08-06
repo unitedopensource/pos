@@ -176,49 +176,31 @@ export default {
         return;
       }
       this.$p("payment");
-      //let payment = JSON.parse(JSON.stringify(this.order.payment))
-      // new Promise((resolve, reject) => {
-      //   this.componentData = { order: this.order, resolve, reject };
-      //   this.component = "payment";
-      // }).then(result => {
-      //   this.payment = result.payment;
-      //   this.store.table.autoClean ? this.resetCurrentTable() : this.setTableInfo({ status: 4 });
-
-      //   this.$socket.emit("TABLE_MODIFIED", this.currentTable);
-      //   let order = JSON.parse(JSON.stringify(this.order));
-      //   order.payment = result.payment;
-      //   order.settled = true;
-      //   this.$socket.emit("ORDER_MODIFIED", order);
-      //   order.type = "PAYMENT";
-      //   Printer.init(this.config).setJob("receipt").print(order);
-
-      //   this.$q();
-      // }).catch(() => { this.$q() });
     },
     settledOrder() {
       this.$dialog({ title: "ORDER_SETTLED", msg: "TIP_ORDER_SETTLED", buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$q() })
     },
     editOrder() {
       if (this.order.settled) {
-        this.$dialog({
-          title: this.text('REOPEN_SETTLED_ORD', this.order.number),
-          msg: this.text('REOPEN_SETTLED_ORD_TIP', this.text(this.order.payment.type)),
-          buttons: [{ text: 'REMOVE_PAYMENT', fn: 'resolve' }, { text: 'CANCEL', fn: 'reject' }]
-        }).then(() => { this.removeOrderPayment() }).catch(() => { this.$q() })
+        this.handleSettledOrder();
         return;
       }
       this.setApp({ mode: 'edit' });
       this.setTicket({ type: "DINE_IN", number: this.order.number });
       this.$router.push({ path: '/main/menu' });
     },
-    removeOrderPayment() {
+    handleSettledOrder() {
       this.$dialog({
-        type: "warning", title: 'PAYMENT_REMOVE', msg: this.text('PAYMENT_REMOVE_CONFIRM', this.text(this.order.payment.type))
-      }).then(() => {
+        title: this.text('REOPEN_SETTLED_ORD', this.order.number),
+        msg: this.text('REOPEN_SETTLED_ORD_TIP', this.text(this.order.payment.type)),
+        buttons: [{ text: 'REMOVE_PAYMENT', fn: 'resolve' }, { text: 'CANCEL', fn: 'reject' }]
+      }).then(() => { this.removeOrderPayment() }).catch(() => { this.$q() })
+    },
+    removeOrderPayment() {
+      this.$dialog({ type: "warning", title: 'PAYMENT_REMOVE', msg: this.text('PAYMENT_REMOVE_CONFIRM', this.text(this.order.payment.type)) }).then(() => {
         this.removePayment();
         this.$socket.emit("[UPDATE] INVOICE", this.order);
-        this.$dialog({ title: "PAYMENT_REMOVED", msg: this.text("ORDER_PAYMENT_REMOVED", this.order.number), buttons: [{ text: 'CONFIRM', fn: 'reject' }, { text: 'EDIT_ORDER', fn: 'resolve' }] })
-        .then(() => { this.editOrder() }).catch(()=>{ this.$q() });
+        this.$dialog({ title: "PAYMENT_REMOVED", msg: this.text("ORDER_PAYMENT_REMOVED", this.order.number), buttons: [{ text: 'CONFIRM', fn: 'reject' }, { text: 'EDIT_ORDER', fn: 'resolve' }] }).then(() => { this.editOrder() }).catch(() => { this.$q() });
       }).catch(() => { this.$q() })
     },
     startSwitchTable() {
@@ -258,20 +240,11 @@ export default {
       this.$dialog({ title: 'TABLE_SWITCH_F', msg: 'TIP_TABLE_MUST_EMPTY' }).then(() => { this.$q() })
     },
     getReservation() {
-      new Promise((resolve, reject) => {
-        this.componentData = { resolve, reject };
-        this.component = "reservation";
-      }).then(resolve => { this.$q() }).catch(() => { this.$q() })
+      this.$p("reservation");
     },
     split() {
       if (!this.order) return;
-      new Promise((resolve, reject) => {
-        this.componentData = {
-          resolve, reject,
-          order: JSON.parse(JSON.stringify(this.order))
-        };
-        this.component = "split";
-      }).then(result => { this.$q() }).catch(() => { this.$q() })
+      this.$p("split");
     },
     seated(guest) {
       this.setTicket({ type: "DINE_IN" });
@@ -280,7 +253,7 @@ export default {
         current: {
           guest: ~~guest,
           server: this.op.name,
-          time: +new Date(),
+          time: +new Date,
           color: "",
           group: "",
           invoice: []
@@ -335,7 +308,7 @@ export default {
       this.resetAll();
       this.$router.push({ path: "/main" });
     },
-    ...mapActions(['setApp', 'resetAll', 'resetMenu', 'setOrder', 'setTicket','removePayment', 'setTableInfo', 'setViewOrder', 'setCurrentTable', 'resetCurrentTable'])
+    ...mapActions(['setApp', 'resetAll', 'resetMenu', 'setOrder', 'setTicket', 'removePayment', 'setTableInfo', 'setViewOrder', 'setCurrentTable', 'resetCurrentTable'])
   },
   computed: {
     ...mapGetters(['op', 'config', 'store', 'history', 'tables', 'order', 'language', 'currentTable', 'isEmptyTicket'])

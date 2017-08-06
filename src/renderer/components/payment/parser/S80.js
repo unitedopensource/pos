@@ -34,14 +34,13 @@ const Pax = function () {
     }
   };
   this.charge = function (card, ticket) {
-    let { number, date, code, amount } = card;
-    amount = (amount * 100).toFixed(0);
+    let { number, date, code } = data.creditCard;
+    let amount = (data.amount * 100).toFixed(0);
     if (!number && !date) {
       let command = this.parser(`T00_1.38_01_${amount}__1_____`);
       return fetch(command)
     } else {
       let info = `${number}|${date}|${code}`;
-      console.log(info)
       let command = this.parser(`T00_1.38_01_${amount}_${info}_1_____`);
       return fetch(command)
     }
@@ -243,7 +242,7 @@ const Pax = function () {
           msg: 'BATCH_DUP_TRANS'
         }
       case "100023":
-        return{
+        return {
           code,
           msg: 'BATH_NO_FOUND'
         }

@@ -14,9 +14,9 @@ export default {
     props: ['init'],
     data() {
         return {
+            msg: "",
             config: null,
             icon: "info",
-            msg: "",
             timeout: null,
             transacting: false,
             terminal: null,
@@ -55,17 +55,13 @@ export default {
                     })
                 });
             this.timeout = setTimeout(() => {
-                this.init.reject({
-                    type: "warning", title: "TERM_TIMEOUT",
-                    msg: this.text("TIP_TERM_TIMEOUT", terminal.address),
-                    buttons: [{ text: 'CONFIRM', fn: 'reject' }]
-                });
+                this.init.reject({ type: "warning", title: "TERM_TIMEOUT", msg: this.text("TIP_TERM_TIMEOUT", terminal.address), buttons: [{ text: 'CONFIRM', fn: 'reject' }] })
             }, 6000)
         },
         terminalError(msg) {
             this.icon = "error";
             this.msg = msg;
-            setTimeout(() => { this.init.reject(null) }, 1500);
+            setTimeout(() => { this.init.reject(false) }, 1500);
         },
         exit() {
             if (this.transacting) {

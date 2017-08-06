@@ -9,7 +9,10 @@
                 <section class="option">
                     <div class="for">
                         <span>{{text('REPORT_RANGE')}}</span>
-                        <span class="choice" v-if="reportRange">{{reportRange.from | moment('YYYY-MM-DD HH:mm')}} ~ {{reportRange.to | moment('YYYY-MM-DD HH:mm')}}</span>
+                        <span class="range">
+                            <span v-if="reportRange">{{reportRange.from | moment('YYYY-MM-DD HH:mm')}} ~ {{reportRange.to | moment('YYYY-MM-DD HH:mm')}}</span>
+                        </span>
+                        <checkbox v-model="daily" label="DAILY_REPORT"></checkbox>
                     </div>
                     <div class="rangeWrap">
                         <div>
@@ -81,6 +84,7 @@ export default {
     data() {
         return {
             tip: false,
+            daily: false,
             range: 'today',
             hourly: false,
             driver: false,
@@ -99,10 +103,13 @@ export default {
     methods: {
         confirm() {
             Promise.all([this.fetchData(), this.fetchCreditCard(), this.fetchGiftCard()]).then(datas => {
-                this.handler(datas);
-                console.log(this.report)
-                Printer.init(this.config).setJob("report").print({ date: this.reportRange, report: this.report });
-                this.init.resolve();
+                if (this.daily) {
+                    console.log(datas);
+                 } else {
+                    this.handler(datas);
+                    Printer.init(this.config).setJob("report").print({ date: this.reportRange, report: this.report });
+                    this.init.resolve();
+                }
             })
         },
         getRange(type) {
@@ -562,8 +569,17 @@ h5 {
     color: #fff;
 }
 
-.choice {
+.for {
+    display: flex;
+}
+
+.range {
+    flex: 1;
+    text-align: center;
     color: #009688;
+}
+
+.range span {
     background: #fff;
     border-radius: 4px;
     padding: 1px 10px 0;

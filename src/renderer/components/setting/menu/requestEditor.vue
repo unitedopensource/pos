@@ -61,13 +61,13 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 import checkbox from '../common/checkbox'
 export default {
     components: { checkbox },
     props: ['init'],
     created() {
         this.request = JSON.parse(JSON.stringify(this.init.data));
-        console.log(this.request)
     },
     data() {
         return {
@@ -76,11 +76,37 @@ export default {
     },
     methods: {
         del() {
-            this.init.reject(true)
+            switch (this.init.type) {
+                case "category":
+                    let index = this.init.index;
+                    let category = {
+                        zhCN: "",
+                        usEN: "",
+                        num: 99,
+                        contain: [""],
+                        item: []
+                    }
+                    this.updateRequestCategory({ category, index });
+                    this.$socket.emit("[CMS] UPDATE_REQUEST_CATEGORY", { category, index });
+                    break;
+                case "action":
+                    break;
+            }
+            this.init.resolve()
         },
         confirm() {
-            this.init.resolve(this.request)
-        }
+            switch (this.init.type) {
+                case "category":
+                    this.request.item = [];
+                    !Array.isArray(this.request.contain) && (this.request.contain = this.request.contain.split(","));
+                    this.$socket.emit("[CMS] UPDATE_REQUEST_CATEGORY", { category: this.request, index: this.init.index });
+                    break;
+                case "action":
+                    break;
+            }
+            this.init.resolve()
+        },
+        ...mapActions(['updateRequestCategory'])
     }
 }
 </script>

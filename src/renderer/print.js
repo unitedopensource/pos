@@ -706,7 +706,8 @@ Printer.prototype.printChecksum = function (data) {
                   <h5>${store.contact}</h5>
                 </div>
                 <div class="type">
-                  <h3>Sale Summary</h3>
+                  <h3>Credit Sales</h3>
+                  <h5>Summary Report</h5>
                 </div>
                 <div class="time">
                   <span>Date: ${date}</span>

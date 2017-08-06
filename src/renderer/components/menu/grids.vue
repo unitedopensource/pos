@@ -235,9 +235,10 @@ export default {
         });
       } else {
         Object.assign(order, {
+          type: this.ticket.type,
           lastEdit: +new Date,
           editor: this.op.name,
-          modify: this.order.modify + 1
+          modify: isNumber(this.order.modify) ? this.order.modify + 1 : 1
         })
       }
       return Object.assign({}, order, extra);

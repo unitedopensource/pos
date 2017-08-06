@@ -533,14 +533,12 @@ section.dataList {
   border-bottom: 1px solid #ccc;
   font-size: 24px;
 }
-
 .editor .default {
     margin: 20px 35px 10px;
     border: 1px dashed #cfd0d3;
     padding: 10px 0 4px;
     text-align: center;
 }
-
 .menu {
   display: flex;
   flex-wrap: nowrap;
@@ -549,11 +547,9 @@ section.dataList {
   width: 100%;
   background: url(../image/grid.png) #fcfcfc;
 }
-
 section.category {
   flex: 5;
 }
-
 .category div {
   height: 62.5px;
   width: 137.92px;
@@ -567,20 +563,16 @@ section.category {
   font-size: 1.15em;
   text-align: center;
 }
-
 .category .active {
   background: rgba(9, 177, 255, 0.35);
   border: 1px dashed #2196F3;
 }
-
 section.items {
   flex: 6
 }
-
 .items .disable {
   background: rgba(166, 195, 201, 0.55);
 }
-
 .items div {
   display: inline-flex;
   text-align: center;
@@ -595,6 +587,16 @@ section.items {
   vertical-align: top;
   font-size: 1.05em;
   will-change: background;
+  position: relative;
+}
+.items div:before {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    content: attr(data-menuid);
+    background: #546E7A;
+    color: #F5F5F5;
+    min-width: 25px;
 }
 .items .like{
   position: relative;

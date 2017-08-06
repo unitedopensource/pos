@@ -103,6 +103,10 @@ export default [{
         path: 'template',
         name: 'Setting.template',
         component: require('./components/setting/menu/template')
+      }, {
+        path: 'display',
+        name: 'Setting.display',
+        component: require('./components/setting/menu/display')
       }]
     }, {
       path: 'table',

@@ -14,8 +14,10 @@ var Dictionary = function (key) {
         SRT: [{ zhCN: "排骨尾", usEN: "Spare Rib tips" }],
         ST: [{ zhCN: "虾吐司", usEN: "Shrimp Toast" }, { zhCN: "海鲜三样", usEN: "Seafood Triple Delight" }],
         BSR: [{ zhCN: "排骨", usEN: "B.B.Q. Spare Ribs" }, { zhCN: "无排骨", usEN: "Boneless Spare Ribs" }],
+        CYGM: [{ zhCN: "鸡丫干面", usEN: "Chk Yat Gaw Mein" }],
+        PYGM: [{ zhCN: "叉烧丫干面", usEN: "Pork Yat Gaw Mein" }],
         BYGM: [{ zhCN: "牛丫干面", usEN: "Beef Yat Gaw Mein" }],
-        SYGM: [{ zhCN: "虾丫干面", ueEN: "Shrp Yat Gaw Mein" }],
+        SYGM: [{ zhCN: "虾丫干面", usEN: "Shrp Yat Gaw Mein" }],
         VYGM: [{ zhCN: "菜丫干面", usEN: "Veg Yat Gaw Mein" }],
 
         WS: [{ zhCN: "云吞汤", usEN: "Wonton Soup" }],
@@ -52,7 +54,7 @@ var Dictionary = function (key) {
         VMF: [{ zhCN: "菜米粉", usEN: "Vegetable Mei Fun" }],
         CMF: [{ zhCN: "鸡米粉", usEN: "Chicken Mei Fun" }],
         PMF: [{ zhCN: "叉烧米粉", usEN: "Pork Mei Fun" }],
-        SMF: [{ zhCN: "虾米粉", usEN: "Shrimp Mei Fun" }, { zhCN: "海鲜米粉", usEN: "Seafood Mei Fun" }, { zhCN: "星州米粉", usEN: "Singapore Mei Fun" }],
+        SMF: [{ zhCN: "虾米粉", usEN: "Shrimp Mei Fun" }, { zhCN: "海鲜米粉", usEN: "Seafood Mei Fun" }, { zhCN: "星州米粉", usEN: "Singapore Mei Fun", spicy: true }],
         BMF: [{ zhCN: "牛米粉", usEN: "Beef Mei Fun" }],
         HSMF: [{ zhCN: "本楼米粉", usEN: "House Special Mei Fun" }],
 
@@ -171,7 +173,7 @@ var Dictionary = function (key) {
 
     let prefix = '';
     key = key.toUpperCase();
-    if (key && key.includes('L.') || key.includes('C.')) {
+    if (key && key.includes('L.') || key.includes('C.') || key.includes('D.')) {
         prefix = key.slice(0, 2);
         key = key.substring(2);
     }

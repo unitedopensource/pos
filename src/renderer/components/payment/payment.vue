@@ -192,7 +192,7 @@ export default {
             },
             evenPay: 1,
             current: 0,
-            payMode: true //true pay in whole , false pay in 
+            payMode: true //true pay in whole , false pay in split
         }
     },
     created() {
@@ -211,6 +211,7 @@ export default {
         },
         payIndividual() {
             this.payMode = false;
+            this.current = isNumber(this.init.index)
             this.payment = JSON.parse(JSON.stringify(this.init.payment));
             this.payment.balance = Math.max(0, (this.payment.due - this.payment.paid));
             this.getQuickInput(this.payment.balance);
@@ -444,19 +445,22 @@ export default {
             }
         },
         creditReject(reason) {
-            this.$dialog(reason).then(() => { $q() }).catch(() => {
-                this.$q();
-                this.payment.balance = 0;
-                this.payment.log.push({
-                    id: "",
-                    type: "CREDIT",
-                    paid: this.payment.due,
-                    change: "0.00",
-                    balance: this.payment.balance,
-                    number: "####"
-                });
-                this.invoicePaid(this.payment.due, 0, "CREDIT");
-            })
+            reason ?
+                this.$dialog(reason).then(() => {
+                    this.$q();
+                    this.payment.balance = 0;
+                    this.payment.log.push({
+                        id: "",
+                        type: "CREDIT",
+                        paid: this.payment.due,
+                        change: "0.00",
+                        balance: this.payment.balance,
+                        number: "####"
+                    });
+                    this.invoicePaid(this.payment.due, 0, "CREDIT");
+                }).catch(() => {
+                    this.$q();
+                }) : this.$q();
         },
         swipeGiftCard() {
             new Promise((resolve, reject) => {
@@ -661,8 +665,8 @@ export default {
                 type === 'CASH' ?
                     this.$dialog({
                         title: this.text("CHANGE", change), msg: this.text("CUST_PAID", paid.toFixed(2)), buttons: [{ text: 'CONFIRM', fn: 'reject' }, { text: 'PRINT_RECEIPT', fn: 'resolve' }]
-                    }).then(() => { this.invoiceSettled(order,true) }).catch(() => { this.invoiceSettled(order,false) }) :
-                    this.$dialog({ type: "question", title: "PRINT_RECEIPT", msg: "TIP_PRINT_RECEIPT", buttons: [{ text: 'CONFIRM', fn: 'reject' }, { text: 'PRINT_RECEIPT', fn: 'resolve' }] }).then(() => { this.invoiceSettled(order,true) }).catch(() => { this.invoiceSettled(order,false) });
+                    }).then(() => { this.invoiceSettled(order, true) }).catch(() => { this.invoiceSettled(order, false) }) :
+                    this.$dialog({ type: "question", title: "PRINT_RECEIPT", msg: "TIP_PRINT_RECEIPT", buttons: [{ text: 'CONFIRM', fn: 'reject' }, { text: 'PRINT_RECEIPT', fn: 'resolve' }] }).then(() => { this.invoiceSettled(order, true) }).catch(() => { this.invoiceSettled(order, false) });
             } else {
                 this.payment.settled = true;
                 if (this.order.hasOwnProperty('splitPayment')) {
@@ -780,7 +784,7 @@ export default {
                 this.init.resolve(this.payment);
             }
         },
-        invoiceSettled(ticket,print) {
+        invoiceSettled(ticket, print) {
             if (print) {
                 Printer.init(this.config).setJob("receipt").print(ticket);
                 ticket.content.forEach(item => {
