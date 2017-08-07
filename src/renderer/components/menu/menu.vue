@@ -34,13 +34,14 @@ import payment from '../payment/payment'
 import Printer from '../../print'
 import request from './request'
 import scaleItem from './scale'
+import tempItem from './tempItem'
 import builder from './builder'
 import modify from './modify'
 import course from './course'
 import grids from './grids'
 import split from './split'
 export default {
-    components: { modify, course, request, orderList, dialoger, grids, payment, scaleItem, split, builder },
+    components: { modify, course, request, orderList, dialoger, grids, payment, scaleItem, split, builder, tempItem },
     data() {
         return {
             menuInstance: null,
