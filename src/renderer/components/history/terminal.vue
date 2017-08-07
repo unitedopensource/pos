@@ -72,9 +72,9 @@ export default {
     return {
       component: null,
       componentData: null,
+      allTransaction: [],
       today: today(),
       date: today(),
-      allTransaction: [],
       filter: 'all',
       terminal: null,
       device: null,
@@ -97,32 +97,35 @@ export default {
     },
     voidSale(record) {
       this.$dialog({
-        title: "TERM_VOID_SALE", msg: this.text("TIP_TERM_VOID_SALE", record.trace.trans),
-        buttons: [{ text: 'CANCEL', fn: 'reject' }, { text: 'CONFIRM&PRINT', fn: 'resolve' }]
+        title: "TERM_VOID_SALE", msg: this.text("TIP_TERM_VOID_SALE", record.trace.trans), buttons: [{ text: 'CANCEL', fn: 'reject' }, { text: 'CONFIRM&PRINT', fn: 'resolve' }]
       }).then((print) => {
         let invoice = record.order.number;
         let trans = record.trace.trans;
-        this.terminal.voidSale(invoice, trans)
-          .then((response) => response.text()).then((response) => {
-            let transaction = this.terminal.explainTransaction(response);
-            record = Object.assign(record, transaction, { status: 0 });
-            this.$socket.emit("[TERM] UPDATE_TRANSACTION", record);
-            Printer.init(this.config).setJob('creditCard').print(transaction);
-            let ticket = record.order.number;
-            let order = this.history.find(ticket=>ticket.number === record.order.number);
-            this.removePayment(order);
-          });
+        this.terminal.voidSale(invoice, trans).then((response) => response.text()).then((response) => {
+          let transaction = this.terminal.explainTransaction(response);
+          record = Object.assign(record, transaction, { status: 0 });
+          this.$socket.emit("[TERM] UPDATE_TRANSACTION", record);
+          Printer.init(this.config).setJob('creditCard').print(transaction);
+          let ticket = record.order.number;
+          let order = this.history.find(ticket => ticket.number === record.order.number);
+          this.removePayment(order);
+        });
         this.$q();
       }).catch(() => { this.$q() })
     },
-    removePayment(ticket){
+    removePayment(ticket) {
       ticket.settled = false;
+      ticket.payment.settled = false;
       ticket.payment.log = [];
+      ticket.payment.tip = 0;
+      ticket.payment.gratuity = 0;
+      ticket.payment.paid = 0;
+      ticket.payment.discount = 0;
       delete ticket.payment.paidCash;
       delete ticket.payment.paidCredit;
       delete ticket.payment.paidGift;
-      ticket.payment.due = parseFloat(ticket.payment.total) - parseFloat(ticket.payment.discount);
-      this.$socket.emit("ORDER_MODIFIED",ticket);
+      ticket.payment.due = parseFloat(ticket.payment.total);
+      this.$socket.emit("[SAVE] INVOICE", ticket);
     },
     adjustTip(record) {
       this.approval(this.op.modify, "terminal") ?
@@ -152,7 +155,7 @@ export default {
     adjustOrderTip(order, tip) {
       let invoice = this.history.find(ticket => order.number === ticket.number);
       invoice.payment.tip = parseFloat(tip);
-      this.$socket.emit("ORDER_MODIFIED", invoice);
+      this.$socket.emit("[SAVE] INVOICE", invoice);
     },
     checksum() {
       let summary = {

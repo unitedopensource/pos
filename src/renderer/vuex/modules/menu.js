@@ -268,10 +268,15 @@ const mutations = {
     delete state.order.payment.paidCredit;
     delete state.order.payment.paidGift;
     delete state.order.payment.type;
-    state.order.payment.paid = 0;
-    state.order.payment.settled = false;
     state.order.settled = false;
+    state.order.payment.settled = false;
+    state.order.payment.tip = 0;
+    state.order.payment.gratuity = 0;
+    state.order.payment.paid = 0;
+    state.order.payment.discount = 0;
+    state.order.payment.paid = 0;
     state.order.payment.log = [];
+    state.order.payment.due = parseFloat(state.order.payment.total);
   }
 }
 
