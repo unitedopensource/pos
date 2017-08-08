@@ -37,6 +37,9 @@ export default {
     created() {
         this.$socket.emit("[CMS] FETCH_ADDRESSES", this.page)
     },
+    mounted() {
+        window.addEventListener("keydown", this.input, false);
+    },
     data() {
         return {
             page: 0,
@@ -62,8 +65,16 @@ export default {
             this.addresses.splice(index, 1);
         },
         more() {
-
+            this.page += 30;
+            this.$socket.emit("[CMS] FETCH_ADDRESSES", this.page)
         },
+        input(e) {
+            e.key === 'F1' && this.component === null && this.add();
+            e.key === 'Escape' && (this.component = null);
+        }
+    },
+    beforeDestroy() {
+        window.removeEventListener("keydown", this.input, false);
     },
     sockets: {
         ADDRESS_LIST(list) {

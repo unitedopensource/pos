@@ -2,7 +2,8 @@
     <div>
         <section class="card">
             <header>{{text('BASIC_INFO')}}
-                <span class="tip">{{text('SETTING.ONLINE.TIP')}}</span></header>
+                <span class="tip">{{text('SETTING.ONLINE.TIP')}}</span>
+            </header>
             <article>
                 <smart-switch v-model="online.enable" label="ENABLE"></smart-switch>
                 <smart-input v-model="online.server" label="IP" reg="^\d+\s[A-z]+\s[A-z]+"></smart-input>
@@ -20,16 +21,22 @@
             </article>
         </section>
         <section class="card">
-            <header>{{text('SETTING')}}</header>
+            <header>{{text('SERVER')}}</header>
             <article>
                 <smart-switch v-model="online.acceptCreditCard" label="ACCEPT_CREDIT_CARD"></smart-switch>
                 <smart-switch v-model="online.acceptDelivery" label="ACCEPT_DELIVERY"></smart-switch>
+                <smart-switch v-model="online.acceptReservation" label="ACCEPT_RESERVATION"></smart-switch>
+            </article>
+        </section>
+        <section class="card">
+            <header>{{text('SETTING')}}</header>
+            <article>
                 <smart-input v-model="online.deliveryFee" label="DELIVERY_FEE" :disable="!online.acceptDelivery"></smart-input>
-                <smart-input v-model="online.minCashReq" label="MIN_CASH_REQ" reg="^[a-zA-Z0-9_. ]{5,30}$"></smart-input>
-                <smart-input v-model="online.minCreditReq" label="MIN_CREDIT_REQ" reg="^\d+\s[A-z]+\s[A-z]+"></smart-input>
+                <smart-input v-model="online.minCashRequire" label="MIN_CASH_REQ" reg="^[a-zA-Z0-9_. ]{5,30}$"></smart-input>
+                <smart-input v-model="online.minCreditRequire" label="MIN_CREDIT_REQ" reg="^\d+\s[A-z]+\s[A-z]+"></smart-input>
                 <smart-input v-model="online.maxDeliverMile" label="MAX_DELIVERY_RANGE" reg="^[a-zA-Z0-9_. ]{5,30}$"></smart-input>
-                <smart-input v-model="online.pickupDuration" label="PICKUP_DURATION" reg="^\d+\s[A-z]+\s[A-z]+"></smart-input>
-                <smart-input v-model="online.deliveryDuration" label="DELIVERY_DURATION" reg="^[a-zA-Z0-9_. ]{5,30}$"></smart-input>
+                <smart-input v-model="online.defaultPickupDuration" label="PICKUP_DURATION" reg="^\d+\s[A-z]+\s[A-z]+"></smart-input>
+                <smart-input v-model="online.defaultDeliveryDuration" label="DELIVERY_DURATION" reg="^[a-zA-Z0-9_. ]{5,30}$"></smart-input>
             </article>
         </section>
     </div>
@@ -40,9 +47,7 @@ import { mapGetters } from 'vuex'
 import smartInput from '../common/smartInput'
 import smartSwitch from '../common/smartSwitch'
 export default {
-    components: {
-        smartInput,smartSwitch
-    },
+    components: { smartInput, smartSwitch },
     created() {
         this.online = JSON.parse(JSON.stringify(this.config.online));
     },
