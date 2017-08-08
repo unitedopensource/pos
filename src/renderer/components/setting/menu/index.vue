@@ -10,7 +10,7 @@
             <div v-for="(group,gIndex) in items" :key="gIndex">
                 <draggable :list="group" @sort="sortItem" :options="{animation:300,group:group.category,ghostClass:'itemGhost',draggable:'.draggable'}">
                     <transition-group tag="section" class="items" :name="'drag'">
-                        <div v-for="(item,index) in group" @contextmenu="editItem(item,gIndex,index)" :class="{draggable:item.clickable,disable:!item.clickable}" :key="index">{{item[language]}}</div>
+                        <div v-for="(item,index) in group" @contextmenu="editItem(item,gIndex,index)" :class="{draggable:item.clickable,disable:!item.clickable}" :key="index" :data-menuid="item.menuID">{{item[language]}}</div>
                     </transition-group>
                 </draggable>
             </div>

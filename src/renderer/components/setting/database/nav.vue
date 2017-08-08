@@ -4,6 +4,7 @@
             <header @click="back">
                 <i class="fa fa-chevron-left"></i>{{text('BACK')}}</header>
             <router-link :to="{name:'Setting.database'}" tag="div" append>{{text('DATABASE')}}</router-link>
+            <router-link :to="{name:'Setting.address'}" tag="div" append>{{text('ADDRESS')}}</router-link>
             <router-link :to="{name:'Setting.client'}" tag="div" append>{{text('CUST_INFO')}}</router-link>
             <router-link :to="{name:'Setting.call'}" tag="div" append>{{text('CALL_LOG')}}</router-link>
         </nav>

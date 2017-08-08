@@ -148,6 +148,11 @@ export default [{
         name: 'Setting.database',
         component: require('./components/setting/database/index')
       }, {
+        path: 'Address',
+        name: 'Setting.address',
+        component: require('./components/setting/database/address')
+      },
+      {
         path: 'Client',
         name: 'Setting.client',
         component: require('./components/setting/database/client')
