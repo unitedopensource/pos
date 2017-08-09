@@ -41,14 +41,14 @@ export default {
       order.void = {
         by: this.op.name,
         time: +new Date,
-        note
+        note: this.reason
       };
       this.$socket.emit("[UPDATE] INVOICE", order);
       this.init.resolve();
     }
   },
   computed: {
-    ...mapGetters(['order'])
+    ...mapGetters(['op', 'order'])
   }
 }
 </script>

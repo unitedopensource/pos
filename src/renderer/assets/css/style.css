@@ -604,8 +604,8 @@ section.items {
 .like:after {
   content: '\f004';
   font-family: fontAwesome;
-  right: 3px;
-  bottom: 3px;
+  left: 2px;
+  bottom: 2px;
   position: absolute;
   color: #F44336;
 }

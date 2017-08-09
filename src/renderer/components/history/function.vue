@@ -89,7 +89,7 @@ export default {
             this.editOrder();
         },
         isVoidable() {
-            this.isEmptyTicket && this.approval(this.op.modify, "order") && !this.order.settled && this.voidOrder();
+            !this.isEmptyTicket && this.approval(this.op.modify, "order") && !this.order.settled && this.voidOrder();
             !this.approval(this.op.modify, "order") ? this.$denyAccess() : this.order.settled && this.confirmPaymentRemoval();
         },
         handleSettledInvoice() {
