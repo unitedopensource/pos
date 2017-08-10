@@ -111,7 +111,7 @@ var Dictionary = function (key) {
         PCO: [{ zhCN: "青椒鸡", usEN: "Pepper Chicken w.Onion" }],
         CCS: [{ zhCN: "咖喱鸡", usEN: "Chicken w.Curry Sauce", spicy: true }],
         CGS: [{ zhCN: "鱼香鸡", usEN: "Chicken w.Garlic Sauce", spicy: true }],
-        KPC: [{ zhCN: "宫保鸡", usEN: "Kong Pao Chicken", spicy: true }],
+        KPC: [{ zhCN: "宫保鸡", usEN: "Kung Pao Chicken", spicy: true }],
         CHS: [{ zhCN: "湖南鸡", usEN: "Chicken w.Hunan Style", spicy: true }],
         HSC: [{ zhCN: "干烧鸡", usEN: "Hot & Spicy Chicken", spicy: true }],
         CBBS: [{ zhCN: "豆豉鸡", usEN: "Chk w.Black Bean Sauce" }],

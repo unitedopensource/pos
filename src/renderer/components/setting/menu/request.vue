@@ -58,34 +58,24 @@ export default {
             this.items = this.request[index].item.slice();
         },
         editCategory(category, index) {
-            this.$p("requestEditor",{
-                title:'EDITOR.HEADER.REQUEST',
-                data:category,
-                type:'category',
+            this.$p("requestEditor", {
+                title: 'EDITOR.HEADER.REQUEST',
+                data: category,
+                type: 'category',
                 index
             })
         },
         editAction(action, index) {
-            console.log(action)
-            this.$p("requestEditor",{title:'EDITOR.HEADER.ACTION',data:action,type:'action'})
+            this.$p("requestEditor", { title: 'EDITOR.HEADER.ACTION', data: action, type: 'action', index })
         },
         editItem(item, sub, index) {
-            new Promise((resolve, reject) => {
-                this.componentData = {
-                    resolve, reject,
-                    data: item,
-                    category: this.request[this.categoryIndex].contain,
-                    title: 'EDITOR.HEADER.ITEM',
-                    type: 'item'
-                }
-                this.component = "requestEditor";
-            }).then((result) => {
-                result.clickable = true;
-                this.$socket.emit("[CMS] UPDATE_REQUEST_ITEM", { item: result, grp: this.categoryIndex, sub, index });
-                this.$exitComponent();
-            }).catch((del) => {
-                del && this.$socket.emit("[CMS] REMOVE_REQUEST_ITEM", { id: item._id, grp: this.categoryIndex, sub, index });
-                this.$exitComponent();
+            this.$p("requestEditor", {
+                data: item,
+                category: this.request[this.categoryIndex].contain,
+                title: 'EDITOR.HEADER.ITEM',
+                type: 'item',
+                grp: this.categoryIndex,
+                sub, index
             })
         },
         removeCategory(index) {

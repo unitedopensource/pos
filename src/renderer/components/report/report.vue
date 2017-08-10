@@ -102,14 +102,34 @@ export default {
     },
     methods: {
         confirm() {
-            Promise.all([this.fetchData(), this.fetchCreditCard(), this.fetchGiftCard()]).then(datas => {
-                if (this.daily) {
-                    console.log(datas);
-                 } else {
-                    this.handler(datas);
-                    Printer.init(this.config).setJob("report").print({ date: this.reportRange, report: this.report });
-                    this.init.resolve();
+            if (this.daily) {
+                let { from, to } = this.reportRange;
+                from = moment(from);
+                to = moment(to);
+                let days = to.diff(from, 'days') + 1;
+                let h = to.format('HH');
+                let m = to.format('mm');
+                to = from.clone().hours(h).minutes(m);
+                from = from.subtract(1, 'days');
+                for (let i = 0; i < days; i++) {
+                    from = from.add(1, 'days')
+                    to = to.add(1, 'days');
+
+                    this.reportRange = { from: +from, to: +to };
+
+                    i !== days - 1 ? this.process({ from: +from, to: +to }) : this.process(null, this.init.resolve);
                 }
+
+            } else {
+                this.process(null, this.init.resolve);
+            }
+        },
+        process(date, callback) {
+            Promise.all([this.fetchData(), this.fetchCreditCard(), this.fetchGiftCard()]).then(datas => {
+                this.handler(datas);
+                if (!date) date = this.reportRange;
+                Printer.init(this.config).setJob("report").print({ date, report: this.report });
+                callback && callback();
             })
         },
         getRange(type) {
@@ -184,6 +204,7 @@ export default {
             })
         },
         handler(datas) {
+            console.log(datas[0])
             this.summarize(datas[0]);
             this.report["CREDIT CARD"] = this.creditCardReport(datas[1]);
             this.report["GIFT CARD"] = this.giftCard ? this.giftCardReport(datas[2]) : null;

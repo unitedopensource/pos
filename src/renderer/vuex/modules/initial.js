@@ -161,7 +161,12 @@ const mutations = {
     },
     [types.UPDATE_REQUEST_ITEM](state, data) {
         let { item, grp, sub, index } = data;
+        item.clickable = true;
         state.config.layout.request[grp]['item'][sub].splice(index, 1, item)
+    },
+    [types.UPDATE_REQUEST_ACTION](state, data) {
+        let { action, index } = data;
+        state.config.layout.action.splice(index, 1, action)
     },
     [types.REMOVE_REQUEST_ITEM](state, data) {
         let { grp, sub, index } = data;

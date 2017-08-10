@@ -285,6 +285,8 @@ Printer.prototype.printReceipt = function (raw) {
       } = ctrl;
 
     let enlarge = enlargeDetail ? ".customer .enlarge{font-size:1.2em;font-family:'Tensentype RuiHeiJ-W2'}" : "";
+    !primaryFontSize.includes('px') && (primaryFontSize = primaryFontSize+"px");
+    !secondaryFontSize.includes('px') && (secondaryFontSize = secondaryFontSize+"px");
 
     return `<style>
               *{margin:0;padding:0}

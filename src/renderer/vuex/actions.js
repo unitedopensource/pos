@@ -110,7 +110,7 @@ export const setTableInfo = ({
 }
 export const resetCurrentTable = ({
   commit
-})=>{
+}) => {
   commit(types.RESET_CURRENT_TABLE)
 }
 export const setViewOrder = ({
@@ -177,6 +177,11 @@ export const updateRequestItem = ({
   commit
 }, data) => {
   commit(types.UPDATE_REQUEST_ITEM, data)
+}
+export const updateRequestAction = ({
+  commit
+}, data) => {
+  commit(types.UPDATE_REQUEST_ACTION, data)
 }
 export const removeRequestItem = ({
   commit
@@ -332,26 +337,26 @@ export const resortMenuCategory = ({
 }
 export const replaceRequestItem = ({
   commit
-},data)=>{
-  commit(types.REPLACE_REQUEST_ITEM,data)
+}, data) => {
+  commit(types.REPLACE_REQUEST_ITEM, data)
 }
 export const updateTableSection = ({
   commit
-},data) =>{
-  commit(types.UPDATE_TABLE_SECTION,data)
+}, data) => {
+  commit(types.UPDATE_TABLE_SECTION, data)
 }
 export const setTableSort = ({
   commit
-},data) =>{
-  commit(types.SET_TABLE_SORT,data)
+}, data) => {
+  commit(types.SET_TABLE_SORT, data)
 }
 export const updateTableInfo = ({
   commit
-},data) =>{
-  commit(types.UPDATE_TABLE_INFO,data);
+}, data) => {
+  commit(types.UPDATE_TABLE_INFO, data);
 }
 export const removeTable = ({
   commit
-},data) =>{
-  commit(types.REMOVE_TABLE,data)
+}, data) => {
+  commit(types.REMOVE_TABLE, data)
 }

@@ -51,7 +51,7 @@
             </div>
             <footer>
                 <div class="f1">
-                    <span class="del" @click="del">{{text('DELETE')}}</span>
+                    <span class="del" @click="del" v-show="request._id">{{text('DELETE')}}</span>
                 </div>
                 <div class="btn" @click="init.reject(false)">{{text('CANCEL')}}</div>
                 <div class="btn" @click="confirm">{{text('CONFIRM')}}</div>
@@ -77,19 +77,13 @@ export default {
     methods: {
         del() {
             switch (this.init.type) {
-                case "category":
-                    let index = this.init.index;
-                    let category = {
-                        zhCN: "",
-                        usEN: "",
-                        num: 99,
-                        contain: [""],
-                        item: []
-                    }
-                    this.updateRequestCategory({ category, index });
-                    this.$socket.emit("[CMS] UPDATE_REQUEST_CATEGORY", { category, index });
-                    break;
-                case "action":
+                case "item":
+                    this.$socket.emit("[CMS] REMOVE_REQUEST_ITEM", {
+                        id: this.request._id,
+                        grp: this.init.grp,
+                        sub: this.init.sub,
+                        index: this.init.index
+                    });
                     break;
             }
             this.init.resolve()
@@ -102,6 +96,18 @@ export default {
                     this.$socket.emit("[CMS] UPDATE_REQUEST_CATEGORY", { category: this.request, index: this.init.index });
                     break;
                 case "action":
+                    this.$socket.emit("[CMS] UPDATE_REQUEST_ACTION", {
+                        action: this.request,
+                        index: this.init.index
+                    })
+                    break;
+                case "item":
+                    this.$socket.emit("[CMS] UPDATE_REQUEST_ITEM", {
+                        item: this.request,
+                        grp: this.init.grp,
+                        sub: this.init.sub,
+                        index: this.init.index
+                    });
                     break;
             }
             this.init.resolve()

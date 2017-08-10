@@ -70,13 +70,10 @@ export default {
         flatten(items) {
             console.time("clone");
             items = [].concat.apply([], items);
-            this.config.display.favorite && this.customer._id && this.customer.extra.favorite && items.forEach(item => { item.like = favorite.includes(item._id) });
 
-            if (this.customer._id && this.customer.extra.favorite) {
+            if (this.config.hasOwnProperty('display') && this.config.display.favorite && this.customer._id && this.customer.extra.favorite) {
                 let favorite = this.customer.extra.favorite;
-                items.forEach(item => {
-                    item.like = favorite.includes(item._id);
-                });
+                items.forEach(item => { item.like = favorite.includes(item._id) });
             }
             console.timeEnd("clone");
             this.items = items;
