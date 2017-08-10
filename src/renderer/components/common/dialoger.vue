@@ -29,7 +29,11 @@ export default {
     },
     exit() {
       clearTimeout(this.timeout);
-      this.init.shadeClose && this.init.reject();
+      try {
+        this.init.reject()
+      }catch(e){
+        this.$parent.$options.methods.$q();
+      }
     }
   }
 }
@@ -64,7 +68,7 @@ export default {
   border-top: 2px solid #FFA726;
 }
 
-.dialog.error{
+.dialog.error {
   border-top: 2px solid #f51900;
 }
 
@@ -99,9 +103,9 @@ i {
   color: #FFA726;
 }
 
-.error i::before{
-  content:'\f12a';
-  color:#f51900;
+.error i::before {
+  content: '\f12a';
+  color: #f51900;
 }
 
 footer {

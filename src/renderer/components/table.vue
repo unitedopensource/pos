@@ -147,10 +147,8 @@ export default {
     },
     forceSelectTable(table, e) {
       if (this.op.role !== 'Manager') return;
-
       this.$dialog({
-        type: "alert", title: "FORCE_CLEAR",
-        msg: this.text("TIP_FORCE_CLEAR_TABLE", table.current.server, table.name),
+        type: "alert", title: "FORCE_CLEAR", msg: this.text("TIP_FORCE_CLEAR_TABLE", table.current.server, table.name),
         buttons: [{ text: 'CANCEL', fn: 'reject' }, { text: 'CLEAR', fn: 'resolve' }]
       }).then(() => {
         let _table = Object.assign({}, table, {
@@ -220,7 +218,7 @@ export default {
         let invoice = this.history.filter(order => order._id === origin.current.invoice[0])[0];
         invoice.table = table.name;
         invoice.tableId = table._id;
-        this.$socket.emit("ORDER_MODIFIED", invoice);
+        this.$socket.emit("[UPDATE] INVOICE", invoice);
         this.$socket.emit("TABLE_MODIFIED", table);
         origin.current = {
           color: "",

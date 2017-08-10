@@ -202,7 +202,15 @@ export default {
           tableID: this.currentTable._id,
           guest: isNumber(this.order.guest) ? this.order.guest : this.currentTable
         });
-        this.setTableInfo({ current: { invoice: [order._id] } });
+        let current = Object.assign({}, this.currentTable.current, {
+          invoice: [order._id],
+          color: "",
+          group: "",
+          guest: this.currentTable.current.guest || 0,
+          server: this.op.name,
+          time: +new Date
+        });
+        this.setTableInfo({ current });
       } else {
         order = this.combineOrderInfo({});
       }

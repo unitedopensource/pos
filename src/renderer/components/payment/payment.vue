@@ -807,18 +807,17 @@ export default {
                     }
                     break;
                 case "History":
-                    this.clearTable(ticket);
                     this.init.resolve();
+                    this.clearTable(ticket);
                     break;
                 case "Table":
-                    this.clearTable(ticket);
                     this.resetMenu();
                     this.init.resolve();
+                    this.clearTable(ticket);
                     break;
             }
         },
         clearTable(ticket) {
-            console.log(ticket)
             if (ticket.type === 'DINE_IN' && ticket.hasOwnProperty("tableID")) {
                 let table = this.getTable(ticket.tableID);
                 this.store.table.autoClean ? Object.assign(table, {
@@ -832,20 +831,16 @@ export default {
                     },
                     status: 1,
                 }) : table.status = 4;
-                console.log(table)
                 this.$socket.emit("TABLE_MODIFIED", table);
             }
         },
         getTable(id) {
             let length = this.tables.length;
-            for (let i = 0; i < length; i++) {
+            for(let i=0;i<length;i++){
                 let items = this.tables[i].item;
-                for (let i = 0; i < items.length; i++) {
-                    if (items[i]._id === id) {
-                        return items[i];
-                    }
+                for(let i=0;i<items.length;i++){
+                    if(items[i]._id === id) return items[i];
                 }
-                break;
             }
         },
         recordCashDrawerAction(inflow, outflow) {
