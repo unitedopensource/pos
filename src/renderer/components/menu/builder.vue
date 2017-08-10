@@ -103,9 +103,8 @@ export default {
       this.init.resolve();
     },
     confirm() {
-      this.emptyChoiceSet();
+      !this.template.insert && this.emptyChoiceSet();
       this.alterItemOption({ side: this.init.side, index: this.init.index, disableAutoAdd: true });
-
       Object.keys(this.option).forEach(key => {
         let items = this.option[key];
         items.forEach(item => {
@@ -122,7 +121,7 @@ export default {
       })
       this.init.resolve();
     },
-    ...mapActions(['setChoiceSet', 'emptyChoiceSet', 'alterItemOption'])
+    ...mapActions(['addChoiceSet', 'setChoiceSet', 'emptyChoiceSet', 'alterItemOption'])
   },
   computed: {
     maxItem() {

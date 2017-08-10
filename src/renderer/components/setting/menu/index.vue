@@ -60,19 +60,7 @@ export default {
             this.items = this.categories[index].item.slice();
         },
         editCategory(category, index) {
-            new Promise((resolve, reject) => {
-                this.componentData = { resolve, reject, category };
-                this.component = "categoryEditor";
-            }).then((result) => {
-                result.item = [];
-                this.$socket.emit("[CMS] MODIFY_CATEGORY", {
-                    category: result,
-                    index
-                });
-                this.$exitComponent();
-            }).catch(() => {
-                this.$exitComponent();
-            })
+            this.$p("categoryEditor", { category, index });
         },
         editItem(item, sub, idx) {
             if (!item.clickable) {
@@ -97,16 +85,19 @@ export default {
                     grp: this.categoryIndex,
                     sub, idx
                 });
-                this.$exitComponent();
+                this.$q();
             }).catch((item) => {
-                this.$exitComponent();
-                item && this.$dialog({ title: 'DEL_ITEM_CONFIRM', msg: this.text('DEL_ITEM_TIP', item[this.language]) }).then(() => {
-                    let id = item._id;
-                    let grp = this.categoryIndex;
-                    this.$socket.emit("[CMS] REMOVE_ITEM", { id, grp, sub, idx });
-                    this.$exitComponent();
-                }).catch(() => { this.$exitComponent() })
+                this.$q();
+                item && this.deleteConfirm(item, sub, idx);
             })
+        },
+        deleteConfirm(item, sub, idx) {
+            this.$dialog({ title: 'DEL_ITEM_CONFIRM', msg: this.text('DEL_ITEM_TIP', item[this.language]) }).then(() => {
+                let id = item._id;
+                let grp = this.categoryIndex;
+                this.$socket.emit("[CMS] REMOVE_ITEM", { id, grp, sub, idx });
+                this.$q();
+            }).catch(() => { this.$q() })
         },
         copyLastItem(sub, idx) {
             let item;
@@ -118,7 +109,7 @@ export default {
                     menuID: "",
                     zhCN: "",
                     usEN: "",
-                    spicy:false,
+                    spicy: false,
                     num: this.items[sub].filter(item => item.clickable).length,
                     prices: Object.assign({
                         DEFAULT: item.price,

@@ -63,12 +63,14 @@ export default {
         confirm() {
             let contain = this.manual ? this.contains.split(",") : this.contain;
             Object.assign(this.category, { contain })
-            this.init.resolve(this.category)
+            this.category.item = [];
+            this.$socket.emit("[CMS] MODIFY_CATEGORY", { category: this.category, index: this.init.index });
+            this.init.resolve()
         }
     },
     sockets: {
         CATEGORIES_LIST(data) {
-            this.categories = data.sort();
+            this.categories = data.sort()
         }
     }
 }

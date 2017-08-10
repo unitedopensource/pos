@@ -7,6 +7,7 @@
                     <i class="fa fa-pencil"></i>
                     <input v-model="template.template">
                 </div>
+                <checkbox v-model="template.insert" label="INSERT"></checkbox>
             </header>
             <div class="includes">
                 <aside>
@@ -61,9 +62,10 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import checkbox from '../common/checkbox'
 import editor from './templateItem'
 export default {
-    components: { editor },
+    components: { editor,checkbox },
     props: ['init'],
     created() {
         this.template = JSON.parse(JSON.stringify(this.init.template));
