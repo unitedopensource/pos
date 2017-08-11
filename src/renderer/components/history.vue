@@ -70,6 +70,7 @@ export default {
             let dom = document.querySelector(".invoice");
             dom && dom.classList.add("active");
         }
+        console.log(this.op.view)
     },
     methods: {
         getInvoice(invoice) {
@@ -107,13 +108,18 @@ export default {
         getConsole() {
             this.$p("Maintenance");
         },
+        view(bool) {
+            console.log(this.approval(this.op.view, "invoices"), bool)
+            return this.approval(this.op.view, "invoices") && bool
+        },
         ...mapActions(['setViewOrder'])
     },
     computed: {
         orders() {
             let min = this.page * 30;
             let max = min + 30;
-
+            let operator = this.op.name;
+            let approval = this.approval(this.op.view, "invoices");
             switch (this.filter) {
                 case "WALK_IN":
                 case "PICK_UP":
@@ -121,27 +127,33 @@ export default {
                 case "DINE_IN":
                 case "BAR":
                     return this.prevsHistory.length ?
-                        this.prevsHistory.filter(invoice => invoice.type === this.filter).slice(min, max) :
-                        this.history.filter(invoice => invoice.type === this.filter).slice(min, max);
+                        this.prevsHistory.filter(invoice => invoice.type === this.filter && view(invoice.server)).slice(min, max) :
+                        this.history.filter(invoice => invoice.type === this.filter && view(invoice.server)).slice(min, max);
                 case "UNSETTLE":
                     return this.prevsHistory.length ?
-                        this.prevsHistory.filter(invoice => !invoice.settled).slice(min, max) :
-                        this.history.filter(invoice => !invoice.settled).slice(min, max);
+                        this.prevsHistory.filter(invoice => !invoice.settled && view(invoice.server)).slice(min, max) :
+                        this.history.filter(invoice => !invoice.settled && view(invoice.server)).slice(min, max);
                 case "DRIVER":
                     return this.prevsHistory.length ?
-                        this.prevsHistory.filter(invoice => this.driver ? invoice.driver === this.driver : invoice.type === 'DELIVERY').slice(min, max) :
-                        this.history.filter(invoice => this.driver ? invoice.driver === this.driver : invoice.type === 'DELIVERY').slice(min, max);
+                        this.prevsHistory.filter(invoice => (this.driver ? invoice.driver === this.driver : invoice.type === 'DELIVERY') && view(invoice.server)).slice(min, max) :
+                        this.history.filter(invoice => (this.driver ? invoice.driver === this.driver : invoice.type === 'DELIVERY') && view(invoice.server)).slice(min, max);
                 default:
                     return this.prevsHistory.length ?
-                        this.prevsHistory.slice(min, max) :
-                        this.history.slice(min, max);
+                        this.prevsHistory.filter((invoice) => view(invoice.server)).slice(min, max) :
+                        this.history.filter((invoice) => view(invoice.server)).slice(min, max);
+            }
+
+            function view(server) {
+                if (!server) return true;
+                if (approval) return true;
+                return server === operator
             }
         },
         totalPage() {
             let length = this.prevsHistory.length || this.history.length;
             return Math.ceil(length / 30)
         },
-        ...mapGetters(['op', 'order', 'history'])
+        ...mapGetters(['op', 'order', 'history', 'store'])
     },
     filters: {
         dot(val) {
