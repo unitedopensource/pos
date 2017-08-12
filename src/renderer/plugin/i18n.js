@@ -121,10 +121,10 @@
               'CALCULATE': '计算',
               'CALLER_ID': '来电显示',
               'CHANGE_DATE': '更换日期',
-              'DAILY_REPORT':'按天打印',
-              'DISPLAY_VOID_ITEM':'显示取消物品',
-              'DISPLAY':'显示',
-              'DISPLAY_SETTING':'显示设置',
+              'DAILY_REPORT': '按天打印',
+              'DISPLAY_VOID_ITEM': '显示取消物品',
+              'DISPLAY': '显示',
+              'DISPLAY_SETTING': '显示设置',
               'DRIVER_SUMMARY': '司机概要',
               'DATA': '数据',
               'DATABASE': '数据库',
@@ -167,7 +167,7 @@
               'EDITOR.HEADER.REQUEST': '编辑要求类别',
               'EDITOR.HEADER.ACTION': '编辑缀词',
               'EDITOR.HEADER.ITEM': '编辑物品',
-              'EDITOR.HEADER.ADDRESS':'编辑地址',
+              'EDITOR.HEADER.ADDRESS': '编辑地址',
               'EDITOR.TAX.TIP': '按照订单类别应用此税率',
               'EDITOR.HEADER.TEMPLATE': '模板编辑',
               'EDITOR.TEMPLATE.MAX': '选择上限',
@@ -190,7 +190,7 @@
               'FRI': '周五',
               'FONT': '字体',
               'FONT_SIZE': '字体大小',
-              'FAVORITE_ITEM':'常点物品',
+              'FAVORITE_ITEM': '常点物品',
               'GROSS_SALES': '净销售',
               'GIFTCARD_SUMMARY': '礼物卡销售',
               'GUEST_COUNT': '计客',
@@ -416,7 +416,7 @@
               'STATION.POLEDISPLAY.SECONDLINE': '第二行',
               'SHUTDOWN': '关机',
               'STORE': '店面',
-              'STREET':'街道',
+              'STREET': '街道',
               'SORT_ITEM': '菜单类别',
               'SETTING': '设置',
               'SETTING.HEAD.TITLE': 'UnitedPOS 设置',
@@ -438,12 +438,14 @@
               'SETTING.PRINT.DOUBLE': '双份打印',
               'SETTING.AUTOCHARGE.TIP': '设置自动收取小费',
               'SETTING.ONLINE.TIP': '配置网络点餐服务器',
-              'SETTING.DATABASE.ADDRESS.TIP':'设置自动完成地址信息',
+              'SETTING.DATABASE.ADDRESS.TIP': '设置自动完成地址信息',
               'SETTING.OPERATOR.PIN_DUPLICATE': '当前的密码与其它用户有冲突，密码必须是唯一的',
               'SETTING.OPERATOR.NO_PIN': '必须输入密码',
               'STATISTIC': '数额',
               'SENT_RPT_VIA_EMAIL': '发送报表至邮箱',
               'SUMMARY': '总计',
+              'THIRD_PARTY_SERVER':'第三方服务',
+              'THIRD_PARTY_SUMMARY': '第三方概要',
               'TEMP_ITEM': '临时物品',
               'TIP_CASH_OUT_SETTLE': `结算现金中已包含初始金额 ($ ${d[0]})`,
               'TIP_CASH_OUT_REQ': `您是否要对 ${d[0]} 进行结算`,
@@ -1128,7 +1130,7 @@
             }
           }
           if (text) text = text.toUpperCase();
-          
+
           return dict[Vue.language][text] || text;
         }
       }

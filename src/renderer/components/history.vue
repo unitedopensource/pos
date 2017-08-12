@@ -62,7 +62,7 @@ export default {
         }
     },
     created() {
-        this.$socket.emit("INQUIRY_UPDATE_TIME")
+        this.$socket.emit("INQUIRY_UPDATE_TIME");
     },
     mounted() {
         if (this.orders.length) {
@@ -70,7 +70,6 @@ export default {
             let dom = document.querySelector(".invoice");
             dom && dom.classList.add("active");
         }
-        console.log(this.op.view)
     },
     methods: {
         getInvoice(invoice) {
@@ -107,10 +106,6 @@ export default {
         },
         getConsole() {
             this.$p("Maintenance");
-        },
-        view(bool) {
-            console.log(this.approval(this.op.view, "invoices"), bool)
-            return this.approval(this.op.view, "invoices") && bool
         },
         ...mapActions(['setViewOrder'])
     },
@@ -153,7 +148,7 @@ export default {
             let length = this.prevsHistory.length || this.history.length;
             return Math.ceil(length / 30)
         },
-        ...mapGetters(['op', 'order', 'history', 'store'])
+        ...mapGetters(['op', 'ticket', 'order', 'history', 'store'])
     },
     filters: {
         dot(val) {

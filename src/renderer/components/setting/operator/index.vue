@@ -20,6 +20,8 @@
                 <section class="card">
                     <header>{{text('CONFIG')}}
                         <span class="tip"></span>
+                        <span class="extra">
+                            <i class="fa fa-ellipsis-v"></i>{{text('EXTRA')}}</span>
                     </header>
                     <article>
                         <smart-input v-model="op.name" label="NAME"></smart-input>
@@ -27,8 +29,9 @@
                         <smart-input v-model="op.pin" label="PASSWORD" type="password"></smart-input>
                         <smart-option v-model="op.language" label="LANGUAGE" :options="languages"></smart-option>
                         <smart-switch v-model="op.timeCard" label="TIMECARD"></smart-switch>
+                        <smart-switch v-model="op.thirdParty" label="THIRD_PARTY_SERVICE"></smart-switch>
                         <smart-input v-model="op.employeeCard" label="EMPLOYEE_CARD" type="password"></smart-input>
-                        <smart-switch v-model="op.thirdParty" label="THIRD_PARTY"></smart-switch>
+    
                     </article>
                 </section>
                 <section class="card list">
@@ -123,7 +126,7 @@ export default {
             componentData: null,
             activities: [],
             roles: ['Manager', 'Cashier', 'Waitstaff', 'Bartender'],
-            languages: [{ label: this.text("ZH_CN"), value: "zhCN" }, { label:this.text("US_EN"), value: "usEN" }],
+            languages: [{ label: this.text("ZH_CN"), value: "zhCN" }, { label: this.text("US_EN"), value: "usEN" }],
             compare: null,
             change: false,
             send: false,
@@ -339,5 +342,16 @@ aside {
 
 .datalist .name {
     text-align: center;
+}
+
+.extra {
+    font-size: initial;
+    font-weight: initial;
+    float: right;
+    cursor: pointer;
+}
+
+.extra i {
+    margin-right: 5px;
 }
 </style>

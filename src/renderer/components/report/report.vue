@@ -55,6 +55,7 @@
                             <h5>{{text('PERFORMANCE')}}</h5>
                             <checkbox v-model="waitStaff" label="STAFF_SUMMARY"></checkbox>
                             <checkbox v-model="driver" label="DRIVER_SUMMARY"></checkbox>
+                            <checkbox v-model="thirdParty" label="THIRD_PARTY_SUMMARY"></checkbox>
                         </div>
                     </div>
                 </section>
@@ -93,6 +94,7 @@ export default {
             giftCard: false,
             waitStaff: false,
             countItem: false,
+            thirdParty: false,
             emailReport: false,
             reportRange: null,
             component: null,

@@ -91,20 +91,7 @@ export default {
         new Promise((resolve, reject) => {
           this.componentData = { lack, type: this.ticket.type, resolve, reject };
           this.component = "switcher";
-        }).then((type) => {
-          this.$dialog({ type: "question", title: 'CONFIRM_ORD_TYP_SW', msg: this.text('ORD_TYP_SW', this.text(this.ticket.type), this.text(type)) }).then(() => {
-            if (this.ticket.type === 'DINE_INE') {
-              this.resetCurrentTable();
-              this.$socket.emit("TABLE_MODIFIED", this.currentTable);
-              this.resetTable();
-            }
-            this.setTicket({ type });
-            this.applyPrice(type);
-            (type === 'DELIVERY' && (!this.customer.address || !this.customer.phone)) && this.$router.push({ name: 'Information' });
-            type === 'DINE_IN' && this.$router.push({ name: 'Table' });
-            this.$q()
-          }).catch(() => { this.$q() })
-        }).catch(() => { this.$q() })
+        }).then((type) => { this.confirmSwitch(type) }).catch(() => { this.$q() })
       }
     },
     applyPrice(type) {
@@ -113,6 +100,23 @@ export default {
         return item;
       })
       this.setOrder({ content });
+    },
+    confirmSwitch(type) {
+      this.$dialog({
+        type: "question", title: 'CONFIRM_ORD_TYP_SW', msg: this.text('ORD_TYP_SW', this.text(this.ticket.type), this.text(type))
+      }).then(() => {
+        if (this.ticket.type === 'DINE_INE') {
+          this.resetCurrentTable();
+          this.$socket.emit("TABLE_MODIFIED", this.currentTable);
+          this.resetTable();
+        }
+        this.setTicket({ type });
+        this.applyPrice(type);
+        type === 'PICK_UP' && this.$router.push({ name: 'Information' });
+        (type === 'DELIVERY' && (!this.customer.address || !this.customer.phone)) && this.$router.push({ name: 'Information' });
+        type === 'DINE_IN' && this.$router.push({ name: 'Table' });
+        this.$q()
+      }).catch(() => { this.$q() })
     },
     sectionTimeout(current) {
       let lapse = (current - this.app.opLastAction) / 1000;
@@ -137,9 +141,7 @@ export default {
       let schedule = moment(time).format("hh:mm");
       let toNow = moment(time).toNow(true);
       this.$dialog({
-        type: "question", title: "PRT_CFM",
-        msg: this.text("TIP_PRT_SPOOLER", schedule, toNow),
-        buttons: [{ text: "CANCEL", fn: 'reject' }, { text: "PRINT", fn: 'resolve' }]
+        type: "question", title: "PRT_CFM", msg: this.text("TIP_PRT_SPOOLER", schedule, toNow), buttons: [{ text: "CANCEL", fn: 'reject' }, { text: "PRINT", fn: 'resolve' }]
       }).then(() => {
         this.printFromSpooler(i);
         this.$q();

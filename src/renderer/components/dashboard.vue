@@ -34,8 +34,10 @@ export default {
       componentData: null
     }
   },
+  created() {
+    this.$socket.emit("INQUIRY_TICKET_NUMBER")
+  },
   mounted() {
-    this.$socket.emit("INQUIRY_TICKET_NUMBER");
     if (!this.station) {
       this.activateStation();
     } else {
@@ -74,7 +76,7 @@ export default {
         case "table":
           this.store.table.layout ?
             this.$router.push({ path: '/main/table' }) :
-            this.$dialog({ title: "DINE_IN_DISABLED", msg: "TIP_DINE_IN_ENABLE" }).then(() => { this.$q() });
+            this.$dialog({ title: "DINE_IN_DISABLED", msg: "TIP_DINE_IN_ENABLE", buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$q() });
           break;
         case "history":
           this.$router.push({ path: '/main/history' });
@@ -113,7 +115,7 @@ export default {
       }).then(() => {
         MAC.getMac((err, mac) => {
           if (err) {
-            this.$dialog({ type: "error", title: 'STA_REG_F', msg: this.text('TIP_REASON', err), buttons: [{ text: 'CANCEL', fn: 'resolve' }] }).then(() => { this.$q() });
+            this.$dialog({ type: "error", title: 'STA_REG_F', msg: this.text('TIP_REASON', err), buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$q() });
           } else {
             let stations = Object.assign({}, this.store.station);
             let length = Object.keys(stations).length + 1;
@@ -200,7 +202,12 @@ export default {
     ...mapActions(['setApp', 'setTicket', 'setCustomer', 'setStation', 'setStations', 'resetDashboard'])
   },
   computed: {
-    ...mapGetters(['op', 'ring', 'callLog', 'device', 'config', 'store', 'station', 'time'])
+    ...mapGetters(['op', 'time', 'ring', 'callLog', 'device', 'config', 'store', 'station', 'history'])
+  },
+  sockets: {
+    TICKET_NUMBER(n) {
+      (this.history.length !== (n - 1)) && this.$socket.emit("INQUIRY_TODAY_ORDER_LIST");
+    }
   }
 }
 </script>
