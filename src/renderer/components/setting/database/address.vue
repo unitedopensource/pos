@@ -65,8 +65,7 @@ export default {
             this.addresses.splice(index, 1);
         },
         more() {
-            this.page += 30;
-            this.$socket.emit("[CMS] FETCH_ADDRESSES", this.page)
+            this.$socket.emit("[CMS] FETCH_ADDRESSES", ++this.page)
         },
         input(e) {
             e.key === 'F1' && this.component === null && this.add();

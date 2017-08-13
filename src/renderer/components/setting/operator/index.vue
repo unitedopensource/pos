@@ -29,7 +29,6 @@
                         <smart-input v-model="op.pin" label="PASSWORD" type="password"></smart-input>
                         <smart-option v-model="op.language" label="LANGUAGE" :options="languages"></smart-option>
                         <smart-switch v-model="op.timeCard" label="TIMECARD"></smart-switch>
-                        <smart-switch v-model="op.thirdParty" label="THIRD_PARTY_SERVICE"></smart-switch>
                         <smart-input v-model="op.employeeCard" label="EMPLOYEE_CARD" type="password"></smart-input>
     
                     </article>
@@ -125,7 +124,7 @@ export default {
             component: null,
             componentData: null,
             activities: [],
-            roles: ['Manager', 'Cashier', 'Waitstaff', 'Bartender'],
+            roles: ['Manager', 'Cashier', 'Waitstaff', 'Bartender', 'ThirdParty'],
             languages: [{ label: this.text("ZH_CN"), value: "zhCN" }, { label: this.text("US_EN"), value: "usEN" }],
             compare: null,
             change: false,
@@ -200,7 +199,8 @@ export default {
                 name: 'New Operator',
                 role: 'Waitstaff',
                 pin: '',
-                language: 'PRIMARY',
+                language: 'usEN',
+                timeCard: false,
                 access: [],
                 modify: [],
                 assign: [],
@@ -296,7 +296,8 @@ aside {
 }
 
 .role {
-    font-style: italic;
+    color: #FF9800;
+    font-weight: lighter;
 }
 
 .list .header {
@@ -313,7 +314,7 @@ aside {
 }
 
 .content {
-    overflow: auto;
+    overflow-y: scroll;
     flex: 1;
 }
 

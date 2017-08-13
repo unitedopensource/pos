@@ -248,10 +248,7 @@ export default {
     },
     batch() {
       this.checksum();
-      this.$dialog({
-        title: "TERM_BATCH_CLOSE", msg: "TIP_TERM_BATCH_CLOSE",
-        buttons: [{ text: "CANCEL", fn: 'reject' }, { text: 'BATCH', fn: 'resolve' }]
-      }).then(() => {
+      this.$dialog({ title: "TERM_BATCH_CLOSE", msg: "TIP_TERM_BATCH_CLOSE", buttons: [{ text: "CANCEL", fn: 'reject' }, { text: 'BATCH', fn: 'resolve' }] }).then(() => {
         this.terminal.batch().then(response => response.text()).then(response => {
           let result = this.terminal.explainBatch(response);
           if (result.code === '000000') {
@@ -278,7 +275,10 @@ export default {
       })
     },
     missTerminal() {
-      this.$dialog({ type: 'warning', title: 'TERM_NA', msg: 'STA_TERM_NA', buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.init.resolve() })
+      this.$dialog({ type: 'warning', title: 'TERM_NA', msg: 'STA_TERM_NA', buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => {
+        this.$q();
+        this.init.resolve();
+      })
     },
     setFilter(type, e) {
       this.filter = type;

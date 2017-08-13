@@ -90,11 +90,15 @@ Printer.prototype.printReceipt = function (raw) {
 
         let html = header + list + footer + style;
 
+        if (printers[name].control.buzzer) {
+          this.printer.PRINT_INIT('BUZZER');
+          this.printer.SET_PRINTER_INDEX(name);
+          this.buzzer();
+        }
         this.printer.PRINT_INIT(this.job);
         this.printer.ADD_PRINT_HTM(0, 0, "100%", "100%", html);
         redirect && (name = this.config.station.print[name] || name);
         this.printer.SET_PRINTER_INDEX(name);
-        printers[name].buzzer && this.buzzer();
         this.printer.PRINT();
 
         if (printers[name].double[raw.type]) {
@@ -285,8 +289,8 @@ Printer.prototype.printReceipt = function (raw) {
       } = ctrl;
 
     let enlarge = enlargeDetail ? ".customer .enlarge{font-size:1.2em;font-family:'Tensentype RuiHeiJ-W2'}" : "";
-    !primaryFontSize.includes('px') && (primaryFontSize = primaryFontSize+"px");
-    !secondaryFontSize.includes('px') && (secondaryFontSize = secondaryFontSize+"px");
+    !primaryFontSize.includes('px') && (primaryFontSize += "px");
+    !secondaryFontSize.includes('px') && (secondaryFontSize += "px");
 
     return `<style>
               *{margin:0;padding:0}
@@ -310,7 +314,7 @@ Printer.prototype.printReceipt = function (raw) {
               .customer .tel{letter-spacing:2px;}
               .customer .ext{margin-left:10px;}
               ${enlarge}
-              section.body{padding:0px 5px 15px;}
+              section.body{padding:10px 5px;}
               p.list{display:flex;flex-direction:row}
               span.qty{width:25px;text-align:center;}
               span.itemWrap{flex:1;}
@@ -328,17 +332,23 @@ Printer.prototype.printReceipt = function (raw) {
               .choiceSet .itemWrap{text-indent:15px;}
               .choiceSet.zhCN{${printPrimary ? '' : 'display:none;'}}
               .choiceSet.usEN{${printSecondary ? '' : 'display:none;'}}
-              section.other{display:flex;flex-direction:row;border-bottom:1px solid #000;}
-              .payment{${printPayment ? '' : 'display:none;'}}
-              .misc,.payment{flex:1;vertical-align:top;}
-              .payment .text{width:calc(60% - 5px);text-align:right;display:inline-block;}
-              .payment .value{width:40%;text-align:right;display:inline-block;padding-right:5px;}
+              footer{font-family:'Agency FB';}
+              section.column{display:flex;flex-direction:row;}
+              .payment{${printPayment ? '' : 'display:none;'}min-width:150px;}
+              .empty{flex:1}
+              .payment p{display:flex;font-family:'Tensentype RuiHeiJ-W2';}
+              .payment .text{width:calc(60% - 5px);text-align:right;}
+              .payment .value{width:40%;text-align:right;padding-right:5px;}
               p.bold{font-weight:bold;font-size:22px;}
+              section.details{border:1px dashed #000;margin-top:5px;text-align:center;}
+              .details p{display:flex;}
+              .details span{flex:1}
+              .details .text{text-align:right;padding-right:20px;}
+              .details .value{text-align:left;}
               section.tip{font-family:'Agency FB'; margin:auto;width:90%;${printSuggestion ? '' : 'display:none;'}}
               section.tip .text{text-align:left;display:inline-block;width:50%}
               section.tip .value{text-align:right;display:inline-block;width:50%}
-              section.welcome{text-align:center;font-weight:lighter;margin-top:10px;}
-              footer{font-family:'Agency FB';}
+              section.note{text-align:center;font-weight:lighter;margin-top:10px;border-top:1px solid #000;}
               .printTime{${printActionTime ? '' : 'display:none;'}font-weight:bold;text-align:center;}
               .zhCN{font-family:'${primaryFont}';font-size:${primaryFontSize};${printPrimary ? '' : 'display:none;'}}
               .usEN{font-family:'${secondaryFont}';font-size:${secondaryFontSize};${printSecondary ? '' : 'display:none;'}}
@@ -347,43 +357,72 @@ Printer.prototype.printReceipt = function (raw) {
   function createFooter(ctrl, payment) {
     let { footer, printSuggestion } = ctrl;
     let { total } = payment;
-    let gratuity = [
-      (total * 0.15).toFixed(2),
-      (total * 0.20).toFixed(2),
-      (total * 0.25).toFixed(2)
-    ];
-    let content = footer ? footer.map(text => "<p>" + text + "</p>").join("").toString() : "";
-    let settle = (payment.settled || payment.log) ?
-      payment.log.filter(trans => trans.type !== 'CASH').map(trans => `<p><span>${trans.type}</span><span>${trans.paid}</span><span>${trans.balance}</span></p>`).join("").toString() : "";
-    let cash = (payment.hasOwnProperty('paidCash') && parseFloat(payment.paidCash) !== 0) ?
-      `<p class="bold"><span class="text">CASH:</span><span class="value">${payment.paidCash}</span></p>
-       <p class="bold"><span class="text">CHANGE:</span><span class="value">${(Math.max(0, (payment.paidCash - payment.due))).toFixed(2)}</span></p>` : "";
-    let credit = (payment.hasOwnProperty('paidCredit') && parseFloat(payment.paidCredit) !== 0) ? `<p class="bold"><span class="text">CREDIT:</span><span class="value">${payment.paidCredit}</span></p>` : "";
-    let gift = (payment.hasOwnProperty('paidGift') && parseFloat(payment.paidGift) != 0) ? `<p class="bold"><span class="text">GIFT:</span><span class="value">${payment.paidGift}</span></p>` : "";
-    let discount = parseFloat(payment.discount) !== 0 ? `<p class="bold"><span class="text">Discount:</span><span class="value">-${payment.discount}</span></p>` : '';
-    let paid = (cash + credit + gift) || "";
+    let suggestion = [{
+      text: 'Good Service',
+      percentage: 15,
+      value: (total * 0.15).toFixed(2)
+    }, {
+      text: 'Great Service',
+      percentage: 20,
+      value: (total * 0.20).toFixed(2)
+    }, {
+      text: 'Excellent Service',
+      percentage: 25,
+      value: (total * 0.25).toFixed(2)
+    }];
+    suggestion.map(kindness => `<p><span class="text">${kindness.text}</span><span class="value">${kindness.percentage}% Gratuity: $${kindness.value}</span></p>`).join("").toString();
+    let note = footer ? footer.map(text => `<p>${text}</p>`).join("").toString() : "";
+    let cash = payment.hasOwnProperty('paidCash') ?
+      `<section class="details">
+          <h3>Paid by Cash - Thank You</h3>
+          <p>
+            <span class="text">Paid:</span>
+            <span class="value">$${payment.paidCash}</span>
+          </p>
+          <p>
+            <span class="text">Change:</span>
+            <span class="value">$${(Math.max(0, (payment.paidCash - payment.due))).toFixed(2)}</span>
+          </p>
+        </section>`: "";
+    let credit = payment.hasOwnProperty('paidCredit') ?
+      `<section class="details">
+        <h3>Paid by Credit Card - Thank You</h3>
+        <p>
+          <span class="text">Paid:</span>
+          <span class="value">$${payment.paidCredit}</span>
+        </p>
+      </section>`: "";
+
+    let gift = payment.hasOwnProperty('paidGift') ?
+      `<section class="details">
+        <h3>Paid by Gift Card - Thank You</h3>
+        <p>
+          <span class="text">Paid:</span>
+          <span class="value">$${payment.paidGift}</span>
+        </p>
+      </section>`: "";
+    let discount = parseFloat(payment.discount) > 0 ?
+      `<p><span class="text">Discount:</span><span class="value">- ${payment.discount}</span></p>` : "";
+    let tip = parseFloat(payment.tip) > 0 ?
+      `<p><span class="text">Tip:</span><span class="value">- ${payment.tip}</span></p>` : "";
+    let gratuity = parseFloat(payment.gratuity) > 0 ?
+      `<p><span class="text">Gratuity:</span><span class="value">- ${payment.gratuity}</span></p>` : "";
+    let details = (cash + credit + gift) || "";
+
     return `<footer>
-               <section class="other">
-                 <div class="misc"></div>
-                 <div class="payment">
-                   <p><span class="text">Subtotal:</span><span class="value">${payment.subtotal.toFixed(2)}</span></p>
-                   <p><span class="text">Tax:</span><span class="value">${payment.tax.toFixed(2)}</span></p>
-                   ${discount}
-                   <p class="bold"><span class="text">TOTAL:</span><span class="value">${(payment.total - payment.discount).toFixed(2)}</span></p>
-                   ${paid}
-                 </div>
-               </section>
-               <section class="settle">${settle}</section>
-               <section class="tip">
-                 <p><span class="text">Good Service</span><span class="value">15% Gratuity: $${gratuity[0]}</span></p>
-                 <p><span class="text">Great Service</span><span class="value">20% Gratuity: $${gratuity[1]}</span></p>
-                 <p><span class="text">Excellent Service</span><span class="value">25% Gratuity: $${gratuity[2]}</span></p>
-               </section>
-               <section class="welcome">
-               ${content}
-               </section>
-               <p class="printTime"> @ ${moment().format('hh:mm:ss')}</p>
-             </footer>`;
+              <section class="column">
+                <div class="empty"></div>
+                <div class="payment">
+                  <p><span class="text">Subtotal:</span><span class="value">${payment.subtotal.toFixed(2)}</span></p>
+                  <p><span class="text">Tax:</span><span class="value">${payment.tax.toFixed(2)}</span></p>
+                  ${discount}${tip}${gratuity}
+                  <p class="bold"><span class="text">TOTAL:</span><span class="value">${payment.due}</span></p>
+                </div>
+              </section>
+              ${details}
+              <section class="note">${note}</section>
+              <p class="printTime">Print @ ${moment().format('hh:mm:ss')}</p>
+            </footer>`
   }
 };
 Printer.prototype.printLabel = function (name, order) {
@@ -930,8 +969,8 @@ Printer.prototype.printCashOutReport = function (data, detail) {
                   <span>${log.ticket === null ? '&nbsp;' : log.ticket.type}</span>
                 </div>
                 <div class="record">
-                  <span>+${log.inflow}</span>
-                  <span>-${log.outflow}</span>
+                  <span>+ ${log.inflow.toFixed(2)}</span>
+                  <span>- ${log.outflow.toFixed(2)}</span>
                 </div>
                 <span class="diff">$${(amount += (log.inflow - log.outflow)).toFixed(2)}</span>
             </div>`).join("").toString() : "";

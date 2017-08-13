@@ -47,12 +47,12 @@
                             <checkbox v-model="profile.control.printCustomer" label="PRINT_CUST_INFO" @input="toggleCustomer"></checkbox>
                             <checkbox v-model="profile.control.printActionTime" label="PRINT_PRINTTIME"></checkbox>
                             <checkbox v-model="profile.control.enlargeDetail" label="PRINT_ENLARGE_CUST_INFO"></checkbox>
-                            <checkbox v-model="profile.control.printPrice" label="PRINT_PRICE"></checkbox>
-                            <checkbox v-model="profile.control.printPayment" label="PRINT_PAYMENT"></checkbox>
+                            <checkbox v-model="profile.control.printPrice" label="PRINT_PRICE" @input="togglePrice"></checkbox>
+                            <checkbox v-model="profile.control.printPayment" label="PRINT_PAYMENT" @input="togglePayment"></checkbox>
                             <checkbox v-model="profile.control.printSuggestion" label="PRINT_TIP_SUGG"></checkbox>
                             <checkbox v-model="profile.control.buzzer" label="BUZZER"></checkbox>
                             <!-- <checkbox v-model="profile.control.printCoupon" label="PRINT_COUPON"></checkbox> -->
-                            <checkbox v-model="profile.control.printMenuID" label="PRINT_MENU_ID"></checkbox>
+                            <!-- <checkbox v-model="profile.control.printMenuID" label="PRINT_MENU_ID"></checkbox> -->
                         </div>
                     </fieldset>
                 </div>
@@ -129,7 +129,7 @@
                                 <span class="mark"></span>
                             </span>
                         </span>
-                        <span class="price">12.59</span>
+                        <span class="price" :class="{hide:!receipt.price}">12.59</span>
                     </p>
                     <p class="list mark" :style="style.zhCN">
                         <span class="qty"></span>
@@ -152,10 +152,10 @@
                                 <span class="mark">K</span>
                             </span>
                         </span>
-                        <span class="price">5.99</span>
+                        <span class="price" :class="{hide:!receipt.price}">5.99</span>
                     </p>
                 </section>
-                <div class="payment">
+                <div class="payment" :class="{hide:!receipt.payment}">
                     <p>
                         <span class="text">Subtotal:</span>
                         <span class="value">18.58</span>
@@ -175,10 +175,11 @@
             </div>
             <aside class="action">
                 <i class="fa fa-plus"></i>
-                <i class="fa fa-trash"></i>
+                <i class="fa fa-trash" @click="removePrinterConfirm"></i>
                 <i class="fa fa-print"></i>
             </aside>
         </section>
+        <div :is="component" :init="componentData"></div>
     </div>
 </template>
 
@@ -186,25 +187,28 @@
 import { mapGetters, mapActions } from 'vuex'
 import smartOption from '../common/smartOption'
 import smartRange from '../common/smartRange'
+import dialoger from '../../common/dialoger'
 import checkbox from '../common/checkbox'
 import moment from 'moment'
 export default {
-    components: { smartOption, smartRange, checkbox },
+    components: { smartOption, smartRange, checkbox, dialoger },
     created() {
         this.printers = JSON.parse(JSON.stringify(this.config.printer));
         this.devices = Object.keys(this.printers) || [""];
     },
     data() {
         return {
+            fonts: ["Agency FB", "Noto Sans SC Light", "Tensentype RuiHeiJ-W2", "Trebuchet MS", "Yuanti SC", "QingYuan", "Microsoft YaHei"],
+            presets: ["cashier", "kitchen", "bar", "payment", "runner"],
+            time: moment().locale('en').format('hh:mm a'),
+            date: moment().format('MM-DD-YYYY'),
+            componentData: null,
+            profile: undefined,
+            component: null,
             printers: null,
             devices: [],
             device: null,
-            profile: undefined,
-            presets: ["cashier", "kitchen", "bar", "payment", "runner"],
             preset: "",
-            fonts: ["Agency FB", "Noto Sans SC Light", "Tensentype RuiHeiJ-W2", "Trebuchet MS", "Yuanti SC", "QingYuan"],
-            date: moment().format('MM-DD-YYYY'),
-            time: moment().locale('en').format('hh:mm a'),
             receipt: {
                 zhCN: true,
                 usEN: true,
@@ -245,12 +249,25 @@ export default {
         togglePrice(bool) {
             this.receipt.price = bool;
         },
+        togglePayment(bool) {
+            this.receipt.payment = bool;
+        },
+        removePrinterConfirm() {
+            this.device && this.$dialog({ type: "question", title: "REMOVE_PRINTER", msg: this.text("TIP_REMOVE_PRINTER", this.device) })
+                .then(() => { this.remove(this.device) }).catch(() => { this.$q() });
+        },
+        remove(printer) {
+            this.$socket.emit("[CMS] REMOVE_PRINTER", printer);
+            this.removePrinter(printer);
+            this.device = null;
+            this.$q();
+        },
         save() {
             if (!this.device) return;
             this.$socket.emit("[CMS] UPDATE_PRINTER", { [this.device]: this.profile });
             this.setPrinter({ [this.device]: this.profile });
         },
-        ...mapActions(['setPrinter'])
+        ...mapActions(['setPrinter', 'removePrinter'])
     },
     watch: {
         device(profile) {
@@ -314,7 +331,7 @@ export default {
     align-items: center;
     margin: 7px;
     background: #fff;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 fieldset {

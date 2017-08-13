@@ -80,8 +80,12 @@ const mutations = {
   },
   [types.ADD_TO_ORDER](state, item) {
     delete item.clickable;
+    let zhCN = !item.disableAutoOption ? item.option.length ? item.option[0].overWrite ? item.option[0].zhCN : item.zhCN : item.zhCN : item.zhCN;
+    let usEN = !item.disableAutoOption ? item.option.length ? item.option[0].overWrite ? item.option[0].usEN : item.usEN : item.usEN : item.zhCN;
+    let side = !item.disableAutoOption ? item.option.length ? item.option[0].overWrite ? { zhCN: `[${item.option[0].zhCN}]`, usEN: `[${item.option[0].usEN}]` } : "" : "" : "";
     Object.assign(item, {
       unique: Math.random().toString(36).substr(2, 5),
+      zhCN, usEN, side,
       print: false,
       pending: false,
       void: false,
@@ -90,12 +94,7 @@ const mutations = {
       mark: [[], []],
       choiceSet: item.choiceSet ? item.choiceSet : [],
       single: parseFloat(item.price[0]),
-      total: item.hasOwnProperty('total') ? item.total : parseFloat(item.price[0]).toFixed(2),
-      side: !item.disableAutoOption ?
-        item.option.length ? {
-          zhCN: `[${item.option[0].zhCN}]`,
-          usEN: `[${item.option[0].usEN}]`
-        } : "" : ""
+      total: item.hasOwnProperty('total') ? item.total : parseFloat(item.price[0]).toFixed(2)
     });
 
     if (state.item) {
@@ -143,9 +142,11 @@ const mutations = {
         }
         item.single = price;
         item.total = item.single.toFixed(2);
-        item.side = {
-          zhCN: `[${data.side.zhCN}]`,
-          usEN: `[${data.side.usEN}]`
+        if (data.side.overWrite) {
+          item.zhCN = data.side.zhCN;
+          item.usEN = data.side.usEN;
+        } else {
+          item.side = { zhCN: `[${data.side.zhCN}]`, usEN: `[${data.side.usEN}]` }
         }
       }
     } else {

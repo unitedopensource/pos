@@ -69,6 +69,7 @@
                 <smart-option v-model="workStation.cashDrawer.bind" label="BINDING" :options="printers"></smart-option>
                 <smart-switch v-model="workStation.cashDrawer.cashFlowCtrl" label="CASH_FLOW"></smart-switch>
                 <smart-input v-model="workStation.cashDrawer.initialAmount" label="INIT_AMOUNT" :disable="!workStation.cashDrawer.cashFlowCtrl"></smart-input>
+                <smart-input v-model.number="workStation.cashDrawer.errors" label="CALC_ERRORS" :disable="!workStation.cashDrawer.cashFlowCtrl"></smart-input>
             </article>
         </section>
         <section class="card">

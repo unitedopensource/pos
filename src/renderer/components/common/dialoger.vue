@@ -1,5 +1,5 @@
 <template>
-  <div class="popupMask center dark" @click.self="exit">
+  <div class="popupMask center dark" @dblclick.self="exit">
     <div class="dialog" :class="[init.type]">
       <i class="fa"></i>
       <h3>{{text(init.title)}}</h3>
@@ -29,11 +29,7 @@ export default {
     },
     exit() {
       clearTimeout(this.timeout);
-      try {
-        this.init.reject()
-      }catch(e){
-        this.$parent.$options.methods.$q();
-      }
+      this.init.resolve() || this.$parent.$q();
     }
   }
 }

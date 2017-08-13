@@ -75,6 +75,9 @@ const mutations = {
     [types.SET_REQUEST](state, data) {
         state.config.layout.request = flatten(state.config.layout.request, data, false)
     },
+    [types.REMOVE_PRINTER](state, data) {
+        delete state.config.printer[data];
+    },
     [types.SET_TABLE](state, data) {
         let layout = state.config.layout.table;
         state.config.layout.table = layout.map(section => {

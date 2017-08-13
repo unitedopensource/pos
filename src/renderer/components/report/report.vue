@@ -45,7 +45,8 @@
                         <div class="left">
                             <h5>{{text('STATISTICS')}}</h5>
                             <checkbox v-model="summary" label="SUMMARY"></checkbox>
-                            <checkbox v-model="category" label="CATEGORY_REPORT"></checkbox>
+                            <checkbox v-model="salesCategory" label="SALES_CATEGORY"></checkbox>
+                            <checkbox v-model="countCategory" label="CATEGORY_SALES"></checkbox>
                             <checkbox v-model="hourly" label="HOURLY_REPORT"></checkbox>
                             <checkbox v-model="tip" label="TIP_SUMMARY"></checkbox>
                             <checkbox v-model="giftCard" label="GIFTCARD_SUMMARY"></checkbox>
@@ -90,7 +91,6 @@ export default {
             hourly: false,
             driver: false,
             summary: true,
-            category: false,
             giftCard: false,
             waitStaff: false,
             countItem: false,
@@ -99,6 +99,8 @@ export default {
             reportRange: null,
             component: null,
             componentData: null,
+            countCategory: false,
+            salesCategory: false,
             report: {}
         }
     },
@@ -206,14 +208,15 @@ export default {
             })
         },
         handler(datas) {
-            console.log(datas[0])
             this.summarize(datas[0]);
             this.report["CREDIT CARD"] = this.creditCardReport(datas[1]);
             this.report["GIFT CARD"] = this.giftCard ? this.giftCardReport(datas[2]) : null;
             this.report["EMPOLYEE"] = this.waitStaff ? this.employeeReport(datas[0]) : null;
             this.report["DRIVER"] = this.driver ? this.driverReport(datas[0]) : null;
             this.report["HOURLY REPORT"] = this.hourly ? this.hourlyReport(datas[0]) : null;
-            this.report["MOST ORDER"] = this.countItem ? this.itemCounter(datas[0]) : null;
+            this.report["ITEM SALES"] = this.countItem ? this.itemCounter(datas[0]) : null;
+            this.report["CATEGORY SALES"] = this.countCategory ? this.categoryCounter(datas[0]) : null;
+            this.report["SOURCE REPORT"] = this.thirdParty ? this.sourceReport(datas[0]) : null;
         },
         employeeReport(data) {
             let staff = {};
@@ -242,10 +245,30 @@ export default {
             })
             return staff;
         },
+        sourceReport(data) {
+            let source = {};
+            data.forEach(invoice => {
+                let name = invoice.source;
+                if (source.hasOwnProperty(name)) {
+                    source[name]["amount"] += parseFloat(invoice.payment.due);
+                    source[name]["tip"] += parseFloat(invoice.payment.tip);
+                    source[name]["count"]++;
+                } else {
+                    source[name] = {
+                        text: name,
+                        tip: parseFloat(invoice.payment.tip),
+                        amount: parseFloat(invoice.payment.due),
+                        count: 1
+                    }
+                }
+
+            })
+            return source;
+        },
         driverReport(data) {
             let drivers = {};
             data.forEach(invoice => {
-                if (invoice.driver) {
+                if (invoice.driver && invoice.status === 1) {
                     let name = invoice.driver;
                     if (drivers.hasOwnProperty(name)) {
                         drivers[name]["amount"] += parseFloat(invoice.payment.due);
@@ -310,7 +333,7 @@ export default {
             }];
         },
         summarize(data) {
-            let total = 0, totalAmount = 0, grossAmount = 0,
+            let gross = 0, grossAmount = 0, netAmount = 0,
                 walkin = 0, walkinAmount = 0,
                 pickup = 0, pickupAmount = 0,
                 delivery = 0, deliveryAmount = 0,
@@ -353,9 +376,9 @@ export default {
                         otherAmount += due;
                 }
                 if (ticket.status === 1) {
-                    total++;
-                    totalAmount += parseFloat(ticket.payment.total);
-                    grossAmount += due;
+                    gross++;
+                    grossAmount += parseFloat(ticket.payment.total);
+                    netAmount += due;
                     if (ticket.payment.discount > 0) {
                         discount++;
                         discountAmount += parseFloat(ticket.payment.discount)
@@ -387,14 +410,14 @@ export default {
                 }
             })
             this.report["SUMMARY"] = this.summary ? [{
-                text: this.text('TOTAL'),
-                count: total,
-                amount: totalAmount
+                text: this.text('GROSS_SALES'),
+                count: gross,
+                amount: grossAmount
             },
             {
-                text: this.text('GROSS_SALES'),
+                text: this.text('NET_SALES'),
                 count: 0,
-                amount: grossAmount
+                amount: netAmount
             },
             {
                 text: this.text('DISCOUNT'),
@@ -402,7 +425,7 @@ export default {
                 amount: -discountAmount
             }] : null;
 
-            this.report["DETAIL REPORT"] = this.category ?
+            this.report["SALES CATEGORY"] = this.salesCategory ?
                 [{
                     text: this.text('CASH'),
                     count: cash,
@@ -493,7 +516,25 @@ export default {
                     }
                 })
             })
-            return Object.values(counter).filter(item => item.amount > 0).sort((a, b) => a.count > b.count ? -1 : 1).slice(0, 20)
+            return Object.values(counter).filter(item => item.amount > 0).sort((a, b) => a.count > b.count ? -1 : 1)
+        },
+        categoryCounter(data) {
+            let counter = {};
+            data.forEach(ticket => {
+                ticket.content.forEach(item => {
+                    if (!counter.hasOwnProperty(item.category)) {
+                        counter[item.category] = {
+                            text: this.language === 'zhCN' ? (item.categoryCN || item.category) : item.category,
+                            count: 1,
+                            amount: item.single * item.qty
+                        }
+                    } else {
+                        counter[item.category].count++;
+                        counter[item.category].amount += item.single * item.qty;
+                    }
+                })
+            })
+            return Object.values(counter).filter(item => item.amount > 0).sort((a, b) => a.count > b.count ? -1 : 1)
         },
         generateCSV() {
             let excel = [['Index', 'Date', 'Content']];

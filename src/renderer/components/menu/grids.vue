@@ -182,7 +182,7 @@ export default {
     },
     save(print) {
       if (this.isEmptyTicket) return;
-      let order = this.combineOrderInfo({ cashier: this.op.name, print });
+      let order = this.combineOrderInfo({ print });
       print && Printer.init(this.config).setJob("receipt").print(order);
       print && order.content.forEach(item => {
         item.print = true;
@@ -235,7 +235,7 @@ export default {
           type: this.ticket.type,
           number: this.ticket.number,
           station: this.station.alies,
-          source: "POS",
+          source: this.op.role !== 'ThirdParty' ? "POS" : this.op.name,
           modify: 0,
           status: 1,
           time: +new Date,

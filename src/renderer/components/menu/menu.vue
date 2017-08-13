@@ -108,9 +108,6 @@ export default {
             this.flatten(this.menuInstance[i].item);
             this.setApp({ opLastAction: new Date });
         },
-        setSides() {
-
-        },
         pick(item) {
             if (!item.clickable) return;
             if (this.isTemporary(item)) return;

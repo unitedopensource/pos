@@ -9,7 +9,12 @@
                 <section class="card">
                     <header>
                         <span>{{text('ITEM_INFO')}}</span>
-                        <span class="advance">{{text('EXTRA')}}</span>
+                        <div class="advance" @click="advance = !advance">
+                            <span v-if="!advance">
+                                <i class="fa fa-eye"></i>{{text('ADVANCE')}}</span>
+                            <span v-else>
+                                <i class="fa fa-eye-slash"></i>{{text('NORMAL')}}</span>
+                        </div>
                     </header>
                     <article>
                         <smart-input v-model="item.menuID" reg="^[a-zA-Z0-9_. ]{0,3}$" label="MENU_ID"></smart-input>
@@ -42,7 +47,7 @@
                         </div>
                         <smart-switch v-model="item.spicy" label="IS_SPICY"></smart-switch>
                         <smart-option v-model="item.taxClass" :options="taxOption" label="TAX_CLASS"></smart-option>
-                        <smart-input v-model="item.priority" label="PRIORITY" name="priority" @change="set"></smart-input>
+                        <smart-input v-model="item.priority" label="PRIORITY" name="priority" @change="set" v-if="advance"></smart-input>
                     </article>
                 </section>
                 <section class="card">
@@ -64,23 +69,22 @@
                                             <label>{{text('US_EN')}}</label>
                                             <input type="text" v-model="side.usEN">
                                         </div>
-                                        <div>
+                                        <div class="price" v-show="index !== 0">
+                                            <label>{{text('PRICE')}}</label>
+                                            <input type="text" v-model.number="side.price">
                                             <label>{{text('PRICE_EXTRA')}}</label>
                                             <input type="text" v-model.number="side.extra">
                                         </div>
-                                        <div>
-                                            <label>{{text('PRICE')}}</label>
-                                            <input type="text" v-model.number="side.price">
-                                        </div>
-                                    </div>
-                                    <div class="ctrl">
-                                        <checkbox v-model="side.sub" label="SUBITEM"></checkbox>
-                                        <div class="template">
+                                        <div class="template" v-if="advance">
                                             <label>{{text('TEMPLATE')}}</label>
                                             <select v-model="side.template">
-                                                <option v-for="name in templateOption">{{name}}</option>
+                                                <option v-for="(name,index) in templateOption" :key="index">{{name}}</option>
                                             </select>
                                         </div>
+                                    </div>
+                                    <div class="ctrl" v-if="advance">
+                                        <checkbox v-model="side.sub" label="SUBITEM"></checkbox>
+                                        <checkbox v-model="side.overWrite" label="OVERWRITE"></checkbox>
                                     </div>
                                     <i class="fa fa-trash remove" @click="removeOption(index)"></i>
                                 </div>
@@ -152,6 +156,25 @@ import checkbox from '../common/checkbox'
 export default {
     props: ['init'],
     components: { smartInput, smartSwitch, smartOption, draggable, checkbox, instantInput },
+    data() {
+        return {
+            item: {},
+            code: null,
+            coding: false,
+            advance: false,
+            checking: false,
+            errorLine: null,
+            extraPrice: false,
+            templateOption: [],
+            taxOption: [],
+            printers: [],
+            dragtions: {
+                animation: 300,
+                ghostClass: 'ghost'
+            },
+            errorText: ""
+        }
+    },
     created() {
         this.taxOption = Object.keys(this.tax.class).map(key => ({
             value: key,
@@ -183,24 +206,6 @@ export default {
                     dom && dom.classList.add('selected');
                 })
             })
-        }
-    },
-    data() {
-        return {
-            item: {},
-            code: null,
-            coding: false,
-            checking: false,
-            errorLine: null,
-            extraPrice: false,
-            templateOption: [],
-            taxOption: [],
-            printers: [],
-            dragtions: {
-                animation: 300,
-                ghostClass: 'ghost'
-            },
-            errorText: ""
         }
     },
     methods: {
@@ -612,16 +617,27 @@ div.add {
 }
 
 .template {
-    margin: 8px 0;
-    font-size: 1.1em;
+    margin-top: 1px;
 }
 
-span.advance {
+.template select {
+    width: 172px;
+}
+
+.advance {
     font-size: initial;
     font-weight: initial;
     color: #607D8B;
     float: right;
     border-bottom: 1px dotted #9E9E9E;
     cursor: pointer;
+}
+
+.advance i {
+    margin-right: 5px;
+}
+
+.item .price input{
+    width: 60px;
 }
 </style>

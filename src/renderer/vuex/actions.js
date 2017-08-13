@@ -330,6 +330,11 @@ export const setPrinter = ({
 }, data) => {
   commit(types.SET_PRINTER, data)
 }
+export const removePrinter = ({
+  commit
+}, data) => {
+  commit(types.REMOVE_PRINTER, data)
+}
 export const resortMenuCategory = ({
   commit
 }, data) => {

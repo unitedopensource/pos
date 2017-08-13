@@ -36,7 +36,9 @@
       <div class="value">$ {{summary.unsettleSum}}</div>
     </div>
     <div class="filter dropdown" @click="setFilter('DRIVER',$event)" v-show="Object.keys(summary.driver).length !== 0">
-      <div class="text">{{text('BY_DRIVER')}}<span v-if="driver">{{driver}} ({{summary.driver[driver].count}})</span></div>
+      <div class="text">{{text('BY_DRIVER')}}
+        <span v-if="driver">{{driver}} ({{summary.driver[driver].count}})</span>
+      </div>
       <div class="value">{{driver ? '$ '+summary.driver[driver].total.toFixed(2) : Object.keys(summary.driver).length}}</div>
       <div class="drivers" v-show="!driver">
         <div class="driver" v-for="(value,key,index) in summary.driver" :key="index" @click.stop="setDriver(key)">
@@ -78,6 +80,8 @@ export default {
   },
   computed: {
     summary() {
+      let invoices = this.approval(this.op.view, "invoices") ? this.data : this.data.filter(ticket => ticket.server === this.op.name);
+
       let total = 0, totalSum = 0, totalTip = 0, totalGratuity = 0,
         walkin = 0, walkinSum = 0, walkinTip = 0, walkinGratuity = 0,
         pickup = 0, pickupSum = 0, pickupTip = 0, pickupGratuity = 0,
@@ -90,12 +94,12 @@ export default {
         cash = 0, credit = 0, gift = 0, discountSum = 0,
         corrupted = 0,
         driver = {},
-        length = this.data.length;
+        length = invoices.length;
 
       for (let i = 0; i < length; i++) {
-        let invoice = this.data[i];
+        let invoice = invoices[i];
         let due = isNumber(invoice.payment.due) ? parseFloat(invoice.payment.due) : invoice.payment.total - invoice.payment.discount;
-        if (this.data[i].status === 1) {
+        if (invoices[i].status === 1) {
           if (invoice.payment) {
             total++;
             totalSum += due;
@@ -167,7 +171,7 @@ export default {
             invoice.payment.hasOwnProperty('paidCredit') && (credit += parseFloat(invoice.payment.paidCredit));
             invoice.payment.hasOwnProperty('paidGift') && (credit += parseFloat(invoice.payment.paidGift));
           }
-        } else if (this.data[i].status === 0) {
+        } else if (invoices[i].status === 0) {
           voided++;
           voidedSum += invoice.payment.total;
         }
