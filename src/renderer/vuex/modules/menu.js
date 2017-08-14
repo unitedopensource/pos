@@ -81,8 +81,8 @@ const mutations = {
   [types.ADD_TO_ORDER](state, item) {
     delete item.clickable;
     let zhCN = !item.disableAutoOption ? item.option.length ? item.option[0].overWrite ? item.option[0].zhCN : item.zhCN : item.zhCN : item.zhCN;
-    let usEN = !item.disableAutoOption ? item.option.length ? item.option[0].overWrite ? item.option[0].usEN : item.usEN : item.usEN : item.zhCN;
-    let side = !item.disableAutoOption ? item.option.length ? item.option[0].overWrite ? { zhCN: `[${item.option[0].zhCN}]`, usEN: `[${item.option[0].usEN}]` } : "" : "" : "";
+    let usEN = !item.disableAutoOption ? item.option.length ? item.option[0].overWrite ? item.option[0].usEN : item.usEN : item.usEN : item.usEN;
+    let side = !item.disableAutoOption ? item.option.length ? item.option[0].overWrite ? "" : { zhCN: `[${item.option[0].zhCN}]`, usEN: `[${item.option[0].usEN}]` } : "" : "";
     Object.assign(item, {
       unique: Math.random().toString(36).substr(2, 5),
       zhCN, usEN, side,
