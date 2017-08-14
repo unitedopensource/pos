@@ -18,7 +18,7 @@
             </header>
             <article>
                 <smart-switch v-model="store.delivery" label="DELIVERY"></smart-switch>
-                <smart-input v-model="store.deliveryCharge" label="DELIVERY_FEE" :disable="!store.delivery"></smart-input>
+                <smart-input v-model.number="store.deliveryCharge" label="DELIVERY_FEE" :disable="!store.delivery"></smart-input>
                 <smart-switch v-model="store.dynamicCharge" label="DYN_CHRG"></smart-switch>
                 <smart-input v-model="store.perMileCost" label="MILE_COST" :disable="!store.dynamicCharge"></smart-input>
             </article>

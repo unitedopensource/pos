@@ -371,6 +371,7 @@ Printer.prototype.printReceipt = function (raw) {
       value: (total * 0.25).toFixed(2)
     }];
     suggestion.map(kindness => `<p><span class="text">${kindness.text}</span><span class="value">${kindness.percentage}% Gratuity: $${kindness.value}</span></p>`).join("").toString();
+    let delivery = parseFloat(payment.delivery) > 0 ? `<p><span class="text">Delivery:</span><span class="value">${payment.delivery.toFixed(2)}</span></p>` : "";
     let note = footer ? footer.map(text => `<p>${text}</p>`).join("").toString() : "";
     let cash = payment.hasOwnProperty('paidCash') ?
       `<section class="details">
@@ -415,7 +416,7 @@ Printer.prototype.printReceipt = function (raw) {
                 <div class="payment">
                   <p><span class="text">Subtotal:</span><span class="value">${payment.subtotal.toFixed(2)}</span></p>
                   <p><span class="text">Tax:</span><span class="value">${payment.tax.toFixed(2)}</span></p>
-                  ${discount}${tip}${gratuity}
+                  ${delivery}${discount}${tip}${gratuity}
                   <p class="bold"><span class="text">TOTAL:</span><span class="value">${payment.due}</span></p>
                 </div>
               </section>
