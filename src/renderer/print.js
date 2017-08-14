@@ -325,16 +325,14 @@ Printer.prototype.printReceipt = function (raw) {
               span.side{font-weight:lighter;}
               span.price{width:35px;text-align:right;${printPrice ? '' : 'display:none;'}}
               div.category{border-bottom:1px dashed #000;margin-top:5px;${sortItem ? '' : 'display:none;'}}
-              .list.zhCN{margin-top:5px;${printPrimary ? '' : 'display:none;'}}
-              .list.usEN{margin-top:-5px;${printSecondary ? '' : 'display:none;'}}
+              .list.zhCN{margin-top:5px;}
+              .list.usEN{${printPrimary ? 'margin-top:-5px' : 'margin-bottom:10px'}}
               p.list.choiceSet{margin-top:0px;}
               .CNSet{text-indent:15px;font-size:0.8em;}
               .choiceSet .itemWrap{text-indent:15px;}
-              .choiceSet.zhCN{${printPrimary ? '' : 'display:none;'}}
-              .choiceSet.usEN{${printSecondary ? '' : 'display:none;'}}
               footer{font-family:'Agency FB';}
               section.column{display:flex;flex-direction:row;}
-              .payment{${printPayment ? '' : 'display:none;'}min-width:150px;}
+              .payment{min-width:150px;${printPayment ? '' : 'display:none;'}}
               .empty{flex:1}
               .payment p{display:flex;font-family:'Tensentype RuiHeiJ-W2';}
               .payment .text{width:calc(60% - 5px);text-align:right;}
@@ -350,8 +348,8 @@ Printer.prototype.printReceipt = function (raw) {
               section.tip .value{text-align:right;display:inline-block;width:50%}
               section.note{text-align:center;font-weight:lighter;margin-top:10px;border-top:1px solid #000;}
               .printTime{${printActionTime ? '' : 'display:none;'}font-weight:bold;text-align:center;}
-              .zhCN{font-family:'${primaryFont}';font-size:${primaryFontSize};${printPrimary ? '' : 'display:none;'}}
-              .usEN{font-family:'${secondaryFont}';font-size:${secondaryFontSize};${printSecondary ? '' : 'display:none;'}}
+              .zhCN{font-family:'${primaryFont}';font-size:${primaryFontSize};${printPrimary ? '' : 'display:none!important;'}}
+              .usEN{font-family:'${secondaryFont}';font-size:${secondaryFontSize};${printSecondary ? '' : 'display:none!important;'}}
           </style>`
   }
   function createFooter(ctrl, payment) {
