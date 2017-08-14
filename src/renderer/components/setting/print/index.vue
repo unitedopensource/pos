@@ -35,10 +35,10 @@
                         <legend>{{text('SETTING.PRINT.CONTROL')}}</legend>
                         <div class="selection">
                             <checkbox v-model="profile.control.printPrimary" label="PRINT_PRIMARY" @input="togglePrimary"></checkbox>
-                            <smart-option v-model="profile.control.primaryFont" label="FONT" :options="fonts"></smart-option>
+                            <smart-option v-model="profile.control.primaryFont" label="FONT" :options="chineseFonts"></smart-option>
                             <smart-range v-model="profile.control.primaryFontSize" label="FONT_SIZE" min="10" max="40" step="1"></smart-range>
                             <checkbox v-model="profile.control.printSecondary" label="PRINT_SECONDARY" @input="toggleSecondary"></checkbox>
-                            <smart-option v-model="profile.control.secondaryFont" label="FONT" :options="fonts"></smart-option>
+                            <smart-option v-model="profile.control.secondaryFont" label="FONT" :options="englishFonts"></smart-option>
                             <smart-range v-model="profile.control.secondaryFontSize" label="FONT_SIZE" min="10" max="40" step="1"></smart-range>
                             <checkbox v-model="profile.control.sortItem" label="SORT_ITEM"></checkbox>
                             <checkbox v-model="profile.control.duplicate" label="PRINT_DUPLICATE"></checkbox>
@@ -198,7 +198,8 @@ export default {
     },
     data() {
         return {
-            fonts: ["Agency FB", "Noto Sans SC Light", "Tensentype RuiHeiJ-W2", "Trebuchet MS", "Yuanti SC", "QingYuan", "Microsoft YaHei"],
+            englishFonts:["Agency FB","Tahoma","Tensentype RuiHeiJ-W2","Trebuchet MS","Noto Mono","Futura LT Condensed"],
+            chineseFonts:["Noto Sans SC Light",  "Yuanti SC", "QingYuan"],
             presets: ["cashier", "kitchen", "bar", "payment", "runner"],
             time: moment().locale('en').format('hh:mm a'),
             date: moment().format('MM-DD-YYYY'),

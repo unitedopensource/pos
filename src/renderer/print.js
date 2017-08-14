@@ -322,7 +322,7 @@ Printer.prototype.printReceipt = function (raw) {
               .itemWrap.markItem{margin-top:5px;}
               span.item,span.side{position:relative;display:inline-block;}
               span.mark{position:absolute;top:-10px;left:0;font-size:10px;width:100%;text-align:center;display:inline-block;font-weight:bold;}
-              span.side{font-weight:lighter;}
+              span.side{font-size:0.8em;vertical-align:middle;}
               span.price{width:35px;text-align:right;${printPrice ? '' : 'display:none;'}}
               div.category{border-bottom:1px dashed #000;margin-top:5px;${sortItem ? '' : 'display:none;'}}
               .list.zhCN{margin-top:5px;}
