@@ -353,6 +353,7 @@ Printer.prototype.printReceipt = function (raw) {
           </style>`
   }
   function createFooter(ctrl, payment) {
+    if(!payment) return "";
     let { footer, printSuggestion } = ctrl;
     let { total } = payment;
     let suggestion = [{

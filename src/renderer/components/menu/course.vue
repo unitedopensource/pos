@@ -151,6 +151,7 @@ export default {
       this.jumpStep(3);
       this.steps.filter(step => step.contain.length).map(schedule => {
         let order = JSON.parse(JSON.stringify(this.init.order));
+        delete order.payment;
         Object.assign(order, {
           type: this.app.mode === 'create' ? this.ticket.type : order.type,
           number: this.app.mode === 'create' ? this.ticket.number : order.number,
@@ -158,7 +159,7 @@ export default {
           course: schedule.name,
           delay: Number(schedule.delay),
           content: schedule.contain.map(item => {
-            item.pending = true; 
+            item.pending = true;
             return item
           })
         });
@@ -166,17 +167,45 @@ export default {
       }).forEach(task => {
         this.delayPrint(task)
       });
-       this.exit();
+      this.exit();
     },
     exit() {
+      let order = JSON.parse(JSON.stringify(this.init.order));
+      let customer = this.customer;
+      delete customer.extra;
+      Object.assign(order, {
+        type: this.app.mode === 'create' ? this.ticket.type : order.type,
+        number: this.app.mode === 'create' ? this.ticket.number : order.number,
+        modify: this.app.mode === 'create' ? 0 : order.modify++,
+        source: this.op.role !== 'ThirdParty' ? "POS" : this.op.name,
+        status: 1,
+        settle: false,
+        customer,
+        date: today(),
+        content: order.content.map(item => {
+          item.pending = true;
+          return item
+        })
+      });
+      let current = Object.assign({}, this.currentTable.current, {
+        invoice: [order._id],
+        color: "",
+        group: "",
+        guest: this.currentTable.current.guest || 0,
+        server: this.op.name,
+        time: +new Date
+      });
+      this.setTableInfo({ current });
+      this.app.mode === 'create' ? this.$socket.emit("[SAVE] DINE_IN_INVOICE", { table: this.currentTable, order }) : this.$socket.emit("[UPDATE] INVOICE", order);
       this.init.resolve();
       this.resetAll();
+      this.setOrder(order);
       this.$router.push({ path: "/main/table" })
     },
-    ...mapActions(['resetAll', 'delayPrint'])
+    ...mapActions(['setOrder', 'resetAll', 'delayPrint', 'setTableInfo'])
   },
   computed: {
-    ...mapGetters(['app', 'ticket', 'customer', 'language'])
+    ...mapGetters(['op', 'app', 'ticket', 'customer', 'language', 'currentTable'])
   }
 }
 </script>

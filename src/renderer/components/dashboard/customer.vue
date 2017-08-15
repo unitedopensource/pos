@@ -66,7 +66,7 @@ export default {
         if (this.customer.extra.hasOwnProperty('tag')) {
             this.applied = this.customer.extra.tag;
         } else {
-            this.customer.extra.tag = [];
+            this.applied = this.customer.extra.tag = [];
         }
     },
     data() {
