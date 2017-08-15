@@ -111,13 +111,13 @@
 </template>
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import dialoger from '../common/dialoger'
 import itemMarker from '../menu/marker'
 import driver from '../history/driver'
 import Printer from '../../print'
 import config from './config'
-
 export default {
-    components: { config, driver, itemMarker },
+    components: { config, driver, itemMarker, dialoger },
     props: ['layout', 'group', 'display', 'sort'],
     data() {
         return {
@@ -176,7 +176,7 @@ export default {
             let taxFree = this.order.taxFree || false;
             let deliveryFree = this.order.deliveryFree || false;
             let menuID = this.config.display.menuID;
-            this.$p("config", { taxFree, deliveryFree,menuID });
+            this.$p("config", { taxFree, deliveryFree, menuID });
         },
         scroll(direction) {
             if (!this.overflow || this.offset > 0) return;

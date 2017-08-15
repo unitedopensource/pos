@@ -153,9 +153,9 @@ export default {
         this.$denyAccess();
     },
     adjustOrderTip(order, tip) {
-      let invoice = this.history.find(ticket => order.number === ticket.number);
+      let invoice = this.history.find(ticket => order._id === ticket._id);
       invoice.payment.tip = parseFloat(tip);
-      this.$socket.emit("[SAVE] INVOICE", invoice);
+      this.$socket.emit("[UPDATE] INVOICE", invoice);
     },
     checksum() {
       let summary = {

@@ -474,11 +474,13 @@ export default {
         assignOrder() {
             return this.ticket.type === 'DINE_IN' ?
                 {
+                    _id: this.order._id,
                     type: this.order.hasOwnProperty("type") ? this.order.type : this.ticket.type,
                     number: this.order.hasOwnProperty("number") ? this.order.number : this.ticket.number,
                     cashier: this.order.hasOwnProperty("cashier") ? this.order.cashier : this.op.name,
                     server: this.order.hasOwnProperty("server") ? this.order.server : this.op.name,
                 } : {
+                    _id: this.order._id,
                     type: this.order.hasOwnProperty("type") ? this.order.type : this.ticket.type,
                     number: this.order.hasOwnProperty("number") ? this.order.number : this.ticket.number,
                     cashier: this.order.hasOwnProperty("cashier") ? this.order.cashier : this.op.name,
@@ -625,6 +627,7 @@ export default {
             let order = JSON.parse(JSON.stringify(this.order));
             let customer = Object.assign({}, this.customer);
             let paidCash = 0, paidCredit = 0, paidGift = 0;
+            this.payment.settled = true;
             delete customer.extra;
             Object.assign(order, {
                 payment: this.payment,
@@ -836,10 +839,10 @@ export default {
         },
         getTable(id) {
             let length = this.tables.length;
-            for(let i=0;i<length;i++){
+            for (let i = 0; i < length; i++) {
                 let items = this.tables[i].item;
-                for(let i=0;i<items.length;i++){
-                    if(items[i]._id === id) return items[i];
+                for (let i = 0; i < items.length; i++) {
+                    if (items[i]._id === id) return items[i];
                 }
             }
         },

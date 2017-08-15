@@ -66,7 +66,11 @@ export default {
             this.flatten(this.menuInstance[0].item);
             this.setSides(this.fillOption([]));
             this.app.mode === 'create' && this.ticket.type === 'DINE_IN' && this.configDineIn();
-            this.app.mode === 'create' && this.setOrder({ server: this.op.name, _id: ObjectId() });
+            this.app.mode === 'create' && this.setOrder({
+                _id: ObjectId(),
+                server: this.op.name,
+                station: this.station.alies
+            });
         },
         flatten(items) {
             console.time("clone");
@@ -91,6 +95,7 @@ export default {
             this.store.table.seatOrder && (this.sort = 1);
             this.setOrder({
                 server: this.op.name,
+                station: this.station.alies,
                 table: this.currentTable.name,
                 tableID: this.currentTable._id,
                 guest: this.currentTable.current.guest

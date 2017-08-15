@@ -237,7 +237,6 @@ export default {
           customer,
           type: this.ticket.type,
           number: this.ticket.number,
-          station: this.station.alies,
           source: this.op.role !== 'ThirdParty' ? "POS" : this.op.name,
           modify: 0,
           status: 1,

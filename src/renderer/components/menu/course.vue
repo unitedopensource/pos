@@ -158,17 +158,17 @@ export default {
           course: schedule.name,
           delay: Number(schedule.delay),
           content: schedule.contain.map(item => {
-            item.pending = true; return item
+            item.pending = true; 
+            return item
           })
         });
         return order
       }).forEach(task => {
         this.delayPrint(task)
       });
-      // this.exit();
+       this.exit();
     },
     exit() {
-      console.log(this.init.order)
       this.init.resolve();
       this.resetAll();
       this.$router.push({ path: "/main/table" })
