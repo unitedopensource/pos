@@ -198,7 +198,7 @@ export default {
     },
     data() {
         return {
-            englishFonts:["Agency FB","Tahoma","Tensentype RuiHeiJ-W2","Trebuchet MS","Noto Mono","Futura LT Condensed"],
+            englishFonts:["Agency FB","Tahoma","Tensentype RuiHeiJ-W2","Trebuchet MS","Noto Mono","Futura LT Condensed","Noto Sans SC Light"],
             chineseFonts:["Noto Sans SC Light",  "Yuanti SC", "QingYuan"],
             presets: ["cashier", "kitchen", "bar", "payment", "runner"],
             time: moment().locale('en').format('hh:mm a'),

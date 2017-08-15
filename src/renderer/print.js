@@ -326,7 +326,7 @@ Printer.prototype.printReceipt = function (raw) {
               span.price{width:35px;text-align:right;${printPrice ? '' : 'display:none;'}}
               div.category{border-bottom:1px dashed #000;margin-top:5px;${sortItem ? '' : 'display:none;'}}
               .list.zhCN{margin-top:5px;}
-              .list.usEN{${printPrimary ? 'margin-top:-5px' : 'margin-bottom:10px'}}
+              .list.usEN{${printPrimary ? 'margin-top:-5px' : 'margin-bottom:8px'}}
               p.list.choiceSet{margin-top:0px;}
               .CNSet{text-indent:15px;font-size:0.8em;}
               .choiceSet .itemWrap{text-indent:15px;}

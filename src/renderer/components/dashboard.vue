@@ -23,7 +23,6 @@ import counter from './common/counter'
 import Printer from '../print'
 import Preset from '../preset'
 import MAC from 'getmac'
-// import moment from 'moment'
 
 export default {
   components: { dialoger, counter },

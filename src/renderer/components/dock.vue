@@ -32,12 +32,13 @@ import terminal from './history/terminal'
 import dialoger from './common/dialoger'
 import giftCard from './giftCard/index'
 import switcher from './dock/switcher'
+import notifier from './dock/notifier'
 import spooler from './dock/spooler'
 import opPanel from './dock/opPanel'
 import caller from './dock/caller'
 import Printer from '../print'
 export default {
-  components: { maintenance, caller, switcher, dialoger, opPanel, spooler, giftCard, terminal },
+  components: { maintenance, caller, switcher, dialoger, opPanel, spooler, giftCard, terminal, notifier },
   mounted() {
     setTimeout(() => {
       document.querySelector(".dock").classList.add("slideDown");
@@ -282,6 +283,8 @@ export default {
   sockets: {
     connect() {
       this.setApp({ database: true });
+      this.component === 'notifier' && (this.component = null);
+      this.$socket.emit("INQUIRY_TICKET_NUMBER")
     },
     TICKET_NUMBER(number) {
       this.app.mode !== 'edit' && this.setTicket({ number });
@@ -337,7 +340,10 @@ export default {
     MENU_ITEM_REMOVE(data) { this.removeMenuItem(data) },
     UPDATE_TABLE_SECTION(data) { this.updateTableSection(data) },
     UPDATE_TABLE_INFO(data) { this.updateTableInfo(data) },
-    disconnect() { this.setApp({ database: false }) }
+    disconnect() {
+      this.setApp({ database: false });
+      this.$p("notifier")
+    }
   }
 }
 </script>

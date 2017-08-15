@@ -150,7 +150,8 @@ export default {
       if (this.list.length !== 0) return;
       this.jumpStep(3);
       let steps = this.steps.filter(step => step.contain.length);
-      this.init.resolve(steps);
+      console.log(steps);
+      //this.init.resolve(steps);
     }
   },
   computed: {
