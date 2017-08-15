@@ -125,12 +125,6 @@ Array.prototype.getLastInsertIndex = function (array) {
   }
   return index + 1;
 };
-Array.prototype.permit = function (privilege) {
-  return this.includes(privilege);
-}
-// Number.prototype.round = function (places) {
-//   return +(Math.round(this + "e+" + places) + "e-" + places);
-// };
 String.prototype.toFixed = function (places) {
   return isNumber(this) ? parseFloat(this).toFixed(places) : "0.00";
 }

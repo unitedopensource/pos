@@ -102,6 +102,7 @@ export default {
                     })
                     break;
                 case "item":
+                    !isNumber(this.request.price) && (this.request.price = 0);
                     this.$socket.emit("[CMS] UPDATE_REQUEST_ITEM", {
                         item: this.request,
                         grp: this.init.grp,
@@ -116,5 +117,3 @@ export default {
     }
 }
 </script>
-
-<style></style>

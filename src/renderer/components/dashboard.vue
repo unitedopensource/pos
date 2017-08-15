@@ -18,16 +18,15 @@
 <script>
 import { ipcRenderer } from 'electron'
 import { mapActions, mapGetters } from 'vuex'
-import MAC from 'getmac'
-import moment from 'moment'
-import Printer from '../print'
-import Preset from '../preset'
 import dialoger from './common/dialoger'
 import counter from './common/counter'
+import Printer from '../print'
+import Preset from '../preset'
+import MAC from 'getmac'
+// import moment from 'moment'
+
 export default {
-  components: {
-    dialoger, counter
-  },
+  components: { dialoger, counter },
   data() {
     return {
       component: null,
@@ -78,6 +77,8 @@ export default {
             this.$router.push({ path: '/main/table' }) :
             this.$dialog({ title: "DINE_IN_DISABLED", msg: "TIP_DINE_IN_ENABLE", buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$q() });
           break;
+        case "pickup list":
+          break;
         case "history":
           this.$router.push({ path: '/main/history' });
           break;
@@ -87,9 +88,7 @@ export default {
             this.$denyAccess();
           break;
         case "cashDrawer":
-          this.station.cashDrawer.enable ?
-            this.cashDrawerAvailable() :
-            this.missCashDrawer();
+          this.station.cashDrawer.enable ? this.cashDrawerAvailable() : this.missCashDrawer();
           break;
         case "lock":
           this.resetDashboard();
@@ -105,14 +104,10 @@ export default {
       this.$dialog({ title: "CASH_DRAWER_NA", msg: "TIP_CASH_DRAWER_NA", buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$q() });
     },
     cashFlowCtrl() {
-      this.store.stuffBank ?
-        this.cashInflow(this.op.name) :
-        this.station.cashDrawer.cashFlowCtrl ? this.cashInflow(this.station.cashDrawer.name) : Printer.init(this.config).openCashDrawer();
+      this.store.stuffBank ? this.cashInflow(this.op.name) : this.station.cashDrawer.cashFlowCtrl ? this.cashInflow(this.station.cashDrawer.name) : Printer.init(this.config).openCashDrawer();
     },
     activateStation() {
-      this.$dialog({
-        type: "warning", title: 'STA_UNREG', msg: 'TIP_REG_STA', buttons: [{ text: 'ACTIVATION', fn: 'resolve' }]
-      }).then(() => {
+      this.$dialog({ type: "warning", title: 'STA_UNREG', msg: 'TIP_REG_STA', buttons: [{ text: 'ACTIVATION', fn: 'resolve' }] }).then(() => {
         MAC.getMac((err, mac) => {
           if (err) {
             this.$dialog({ type: "error", title: 'STA_REG_F', msg: this.text('TIP_REASON', err), buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$q() });

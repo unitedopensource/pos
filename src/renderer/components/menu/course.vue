@@ -7,12 +7,12 @@
       </header>
       <div class="inner">
         <div class="indicator">
-          <div class="step" v-for="(course,index) in steps" @click="jumpStep(index)" :class="{active:step===index,done:course.contain.length !== 0}">
+          <div class="step" v-for="(course,index) in steps" @click="jumpStep(index)" :class="{active:step===index,done:course.contain.length !== 0}" :key="index">
             <div class="name">{{text(course.name)}}
               <span v-show="course.delay" class="delay">[{{course.delay | moment('hh:mm')}}]</span>
             </div>
             <ul>
-              <li v-for="(item,i) in course.contain" class="">{{item[language]}}
+              <li v-for="(item,i) in course.contain" :key="i">{{item[language]}}
                 <i class="fa fa-times" @click="remove(item,i)"></i>
               </li>
             </ul>
@@ -20,7 +20,7 @@
         </div>
         <div class="content" v-if="list.length !== 0">
           <ul>
-            <li v-for="(item,index) in list" class="order" @click="addToCourse(item,index)">
+            <li v-for="(item,index) in list" class="order" @click="addToCourse(item,index)" :key="index">
               <span class="f1">{{item.qty}}</span>
               <span class="f4">{{item[language]}}</span>
               <span class="f1">{{item.total}}</span>
