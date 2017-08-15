@@ -106,7 +106,7 @@
       <i class="fa fa-money"></i>
       <span class="text">{{text("PAYMENT")}}</span>
     </div>
-    <div class="btn" @click="course">
+    <div class="btn" @click="timer">
       <i class="fa fa-clock-o"></i>
       <span class="text">{{text("TIMER")}}</span>
     </div>
@@ -175,6 +175,9 @@ export default {
     },
     search() {
 
+    },
+    timer(){
+      this.callComponent("timer");
     },
     split() {
       if (this.isEmptyTicket) return;

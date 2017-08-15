@@ -8,17 +8,12 @@
             <section class="inner">
                 <div class="input">
                     <div>
-                        <label>{{text('WEIGHT')}}</label>
-                        <input type="text" v-model.number="scale" ref="scale" @keydown.enter="done">
+                        <h3>{{text('WEIGHT')}}</h3>
+                        <input type="text" v-model.number="scale" ref="scale" @keydown.enter="done" class="value">
                     </div>
                     <div>
-                        <label>@</label>
-                        <input type="text" v-model="item.unitPrice" :disabled="true">
-                    </div>
-                    <div>
-                        <label>=
-                            <span>{{total}}</span>
-                        </label>
+                        <h3>@ {{item.unitPrice}} / {{text('PER_UNIT')}}</h3>
+                        <span class="value">{{total}}</span>
                     </div>
                 </div>
                 <div class="wrap">
@@ -64,17 +59,18 @@ export default {
     methods: {
         input(num) {
             let value = Math.round(parseFloat(this.scale) * 100);
+            if(value + num > 99999)return;
             this.scale = ((value + num) / 100).toFixed(2);
         },
         del() {
-            this.scale = (String(this.scale * 100).slice(0, -1) / 100).toFixed(2)
+            this.scale = (String(this.scale * 100).toFixed(0).slice(0, -1) / 100).toFixed(2)
         },
         done() {
             let price = parseFloat(this.total);
             Object.assign(this.item, {
                 single: 0.00,
                 price: [0.00],
-                total:"",
+                total: "",
                 prices: {
                     DEFAULT: [0.00]
                 },
@@ -103,12 +99,13 @@ export default {
 
 <style scoped>
 .input {
-    height: 75px;
+    display: flex;
+    width: 460px;
 }
 
 .wrap {
     display: flex;
-    padding: 0 1px 0 3px;
+    padding: 0 1px 0 4px;
 }
 
 section.numpad {
@@ -121,7 +118,42 @@ section.numpad {
     width: 337px;
 }
 
-.input {
+.input div {
+    flex: 1;
+    height: 90px;
+    margin: 6px;
+    border-radius: 2px;
+    background: #fff;
+    box-shadow: var(--shadow);
+}
+
+h3 {
+    padding: 8px 5px;
+    border-bottom: 1px solid #eee;
+    background: #607D8B;
+    color: #fff;
+    text-align: center;
+}
+
+input {
+    width: 100%;
+    border: none;
+}
+
+.value {
+    font-size: 43px;
+    font-family: 'Agency FB';
+    font-weight: bold;
+    color: #616161;
+    letter-spacing: 4px;
+    text-align: right;
+    display: block;
+}
+
+
+
+
+/* .input {
     display: flex;
     margin-left: 3em;
     align-items: center;
@@ -130,5 +162,5 @@ section.numpad {
 .input input {
     font-size: 2em;
     width: 100px;
-}
+} */
 </style>

@@ -38,10 +38,11 @@ import tempItem from './tempItem'
 import builder from './builder'
 import modify from './modify'
 import course from './course'
+import timer from './timer'
 import grids from './grids'
 import split from './split'
 export default {
-    components: { modify, course, request, orderList, dialoger, grids, payment, scaleItem, split, builder, tempItem },
+    components: { modify, course, request, orderList, dialoger, grids, payment, scaleItem, split, builder, tempItem, timer },
     data() {
         return {
             menuInstance: null,
@@ -150,6 +151,11 @@ export default {
                     break;
                 case "course":
                     this.$p("course", { order: this.order });
+                    break;
+                case "timer":
+                    this.$p("timer", { order: this.order });
+                    break;
+                case "search":
                     break;
                 case "request":
                     this.component === 'request' ? this.$q() : this.component = "request";

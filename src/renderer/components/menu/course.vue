@@ -56,8 +56,8 @@
         </div>
       </div>
       <footer>
-        <div class="btn" @click="init.reject(true)">{{text('CHANGE_DATE')}}</div>
-        <div class="btn" @click="init.reject(false)">{{text('CANCEL')}}</div>
+        <div class="btn" @click="init.reject">{{text('CHANGE_DATE')}}</div>
+        <div class="btn" @click="init.reject">{{text('CANCEL')}}</div>
         <div class="btn" @click="confirm">{{text('CONFIRM')}}</div>
       </footer>
     </div>
@@ -66,13 +66,10 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import moment from 'moment'
 export default {
   props: ['init'],
-  created() {
-    this.initial();
-  },
   data() {
     return {
       component: null,
@@ -105,6 +102,9 @@ export default {
       hour: "00",
       minute: "00"
     }
+  },
+  created() {
+    this.initial();
   },
   methods: {
     initial() {
@@ -149,13 +149,34 @@ export default {
     confirm() {
       if (this.list.length !== 0) return;
       this.jumpStep(3);
-      let steps = this.steps.filter(step => step.contain.length);
-      console.log(steps);
-      //this.init.resolve(steps);
-    }
+      this.steps.filter(step => step.contain.length).map(schedule => {
+        let order = JSON.parse(JSON.stringify(this.init.order));
+        Object.assign(order, {
+          type: this.app.mode === 'create' ? this.ticket.type : order.type,
+          number: this.app.mode === 'create' ? this.ticket.number : order.number,
+          customer: this.customer,
+          course: schedule.name,
+          delay: Number(schedule.delay),
+          content: schedule.contain.map(item => {
+            item.pending = true; return item
+          })
+        });
+        return order
+      }).forEach(task => {
+        this.delayPrint(task)
+      });
+      // this.exit();
+    },
+    exit() {
+      console.log(this.init.order)
+      this.init.resolve();
+      this.resetAll();
+      this.$router.push({ path: "/main/table" })
+    },
+    ...mapActions(['resetAll', 'delayPrint'])
   },
   computed: {
-    ...mapGetters(['language'])
+    ...mapGetters(['app', 'ticket', 'customer', 'language'])
   }
 }
 </script>

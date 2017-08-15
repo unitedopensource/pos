@@ -12,7 +12,7 @@
     <span class="op" @click="openPanel">
       <i class="fa fa-user"></i>{{op.name}}</span>
     <span class="corner" v-if="$route.name !== 'Dashboard'">{{time | moment('hh:mm a')}}</span>
-    <span class="corner right" v-else>
+    <span class="corner" v-else>
       <i class="fa fa-phone-square" :class="{NA:!device.callid}"></i>
       <i class="fa fa-globe NA"></i>
       <i class="fa fa-credit-card" :class="{NA:!device.terminal}"></i>
@@ -172,7 +172,7 @@ export default {
         if (!item.print) isPrint = false;
       });
       order.print = isPrint;
-      this.$socket.emit("ORDER_MODIFIED", order);
+      this.$socket.emit("[UPDATE] INVOICE", order);
     },
     modifyInfo() {
       this.$route.name === 'Menu' && this.$router.push({ name: 'Information' });
@@ -420,11 +420,7 @@ span.op {
 span.corner {
   padding: 0 10px;
   text-align: center;
-  min-width: 115px;
-}
-
-.corner.right {
-  text-align: right;
+  min-width: 135px;
 }
 
 span.op i {

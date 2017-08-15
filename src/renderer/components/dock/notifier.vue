@@ -25,7 +25,6 @@ export default {
     computed: {
         pass() {
             let diff = this.time - this.happened;
-            console.log(diff)
             return `${Math.floor(diff/1000/60)}:${Math.floor(diff/1000)}`
         },
         ...mapGetters(['time'])

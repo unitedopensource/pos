@@ -96,7 +96,7 @@ const mutations = {
         state.lastSync = Object.assign({}, state.lastSync, data)
     },
     [types.SET_TODAYORDER](state, data) {
-        state.orders = data//data.sort((a, b) => (Number(b.number) - Number(a.number)));
+        state.orders = data
     },
     [types.ADD_SPOOLER](state, data) {
         state.spooler.push(data);
