@@ -38,8 +38,8 @@ Printer.prototype.print = function (data) {
     case "void":
       this.printVoidTranscation(data);
       break;
-    case "checksum":
-      this.printChecksum(data);
+    case "prebatch":
+      this.printPrebatch(data);
       break;
     case "batch":
       this.printBatchReport(data);
@@ -214,7 +214,7 @@ Printer.prototype.printReceipt = function (raw) {
                       <span class="price">${parseFloat(set.price) !== 0 ? set.price.toFixed(2) : ""}</span>
                     </p>`;
       });
-      let name = (item[printer] && item[printer].hasOwnProperty("zhCN")) ? item[printer].zhCN : item.zhCN;
+      let name = (item[printer] && item[printer].hasOwnProperty("zhCN")) ? item[printer].zhCN :  printMenuID ? item.menuID + " " + item.zhCN : item.zhCN;
       let zhCN = `<p class="list zhCN">
                     <span class="qty">${qty}</span>
                     <span class="itemWrap ${mark}">
@@ -222,7 +222,7 @@ Printer.prototype.printReceipt = function (raw) {
                       <span class="side">${side}<span class="mark">${markB}</span></span>
                     </span></p>${setCN}`;
       side = item.side.usEN ? item.side.usEN : "";
-      name = (item[printer] && item[printer].hasOwnProperty("usEN")) ? item[printer].usEN : item.usEN;
+      name = (item[printer] && item[printer].hasOwnProperty("usEN")) ? item[printer].usEN : printMenuID ? item.menuID + " " + item.usEN : item.usEN;
       let usEN = `<p class="list usEN">
                       <span class="qty">${qty}</span>
                       <span class="itemWrap">
@@ -232,8 +232,7 @@ Printer.prototype.printReceipt = function (raw) {
                       <span class="price">${item.total}</span></p>${setEN}`;
       return zhCN + usEN;
     }
-
-    let { sortItem, duplicate } = ctrl;
+    let { sortItem, duplicate, printMenuID } = ctrl;
     let list = data.filter(item => item.printer[printer]);
     !duplicate && (list = list.filter(item => !item.print));
 
@@ -353,7 +352,7 @@ Printer.prototype.printReceipt = function (raw) {
           </style>`
   }
   function createFooter(ctrl, payment) {
-    if(!payment) return "";
+    if (!payment) return "";
     let { footer, printSuggestion } = ctrl;
     let { total } = payment;
     let suggestion = [{
@@ -402,7 +401,7 @@ Printer.prototype.printReceipt = function (raw) {
         </p>
       </section>`: "";
     let discount = parseFloat(payment.discount) > 0 ?
-      `<p><span class="text">Discount:</span><span class="value">- ${payment.discount}</span></p>` : "";
+      `<p><span class="text">Disc.:</span><span class="value">- ${payment.discount}</span></p>` : "";
     let tip = parseFloat(payment.tip) > 0 ?
       `<p><span class="text">Tip:</span><span class="value">- ${payment.tip}</span></p>` : "";
     let gratuity = parseFloat(payment.gratuity) > 0 ?
@@ -416,7 +415,7 @@ Printer.prototype.printReceipt = function (raw) {
                   <p><span class="text">Subtotal:</span><span class="value">${payment.subtotal.toFixed(2)}</span></p>
                   <p><span class="text">Tax:</span><span class="value">${payment.tax.toFixed(2)}</span></p>
                   ${delivery}${discount}${tip}${gratuity}
-                  <p class="bold"><span class="text">TOTAL:</span><span class="value">${payment.due}</span></p>
+                  <p class="bold"><span class="text">TOTAL:</span><span class="value">${payment.due.toFixed(2)}</span></p>
                 </div>
               </section>
               ${details}
@@ -709,7 +708,7 @@ Printer.prototype.printReport = function (data) {
             </style>`;
   }
 }
-Printer.prototype.printChecksum = function (data) {
+Printer.prototype.printPrebatch = function (data) {
   let store = this.config.store;
   let date = moment().format("MM/DD/YYYY");
   let time = moment().format("hh:mm:ss");
@@ -728,16 +727,16 @@ Printer.prototype.printChecksum = function (data) {
             </li>`
   }).join("").toString();
   let detail = '';
-  detail = data.summary.visa ? detail + `<p><span class="text">Visa (${data.summary.visa})</span><span class="value">$${data.summary.visaSum.toFixed(2)}</span></p>` : detail;
-  detail = data.summary.master ? detail + `<p><span class="text">Mastercard (${data.summary.master})</span><span class="value">$${data.summary.masterSum.toFixed(2)}</span></p>` : detail;
-  detail = data.summary.discover ? detail + `<p><span class="text">Discover (${data.summary.discover})</span><span class="value">$${data.summary.discoverSum.toFixed(2)}</span></p>` : detail;
-  detail = data.summary.amex ? detail + `<p><span class="text">AMEX (${data.summary.amex})</span><span class="value">$${data.summary.amexSum.toFixed(2)}</span></p>` : detail;
-  detail = data.summary.other ? detail + `<p><span class="text">Other (${data.summary.other})</span><span class="value">$${data.summary.otherSum.toFixed(2)}</span></p>` : detail;
+  detail = data.summary.visa ? detail + `<p><span class="text">Visa (${data.summary.visa})</span><span class="value">$${data.summary.visaAmount.toFixed(2)}</span></p>` : detail;
+  detail = data.summary.master ? detail + `<p><span class="text">Mastercard (${data.summary.master})</span><span class="value">$${data.summary.masterAmount.toFixed(2)}</span></p>` : detail;
+  detail = data.summary.discover ? detail + `<p><span class="text">Discover (${data.summary.discover})</span><span class="value">$${data.summary.discoverAmount.toFixed(2)}</span></p>` : detail;
+  detail = data.summary.amex ? detail + `<p><span class="text">AMEX (${data.summary.amex})</span><span class="value">$${data.summary.amexAmount.toFixed(2)}</span></p>` : detail;
+  detail = data.summary.other ? detail + `<p><span class="text">Other (${data.summary.other})</span><span class="value">$${data.summary.otherAmount.toFixed(2)}</span></p>` : detail;
 
   let summary = '';
-  summary = data.summary.voided ? summary = `<p><span class="text">Voided (${data.summary.voided})</span><span class="value">($${data.summary.voidedSum.toFixed(2)})</span></p>` : summary;
-  summary = data.summary.tip ? summary + `<p><span class="text">Tips (${data.summary.tip})</span><span class="value">$${data.summary.tipSum.toFixed(2)}</span></p>` : summary;
-  summary = data.summary.sale ? summary + `<p><span class="text">Total Credit Sales (${data.summary.sale})</span><span class="value">$${data.summary.saleSum.toFixed(2)}</span></p>` : summary;
+  summary = data.summary.voidSale ? summary = `<p><span class="text">Voided (${data.summary.voidSale})</span><span class="value">($${data.summary.voidSaleAmount.toFixed(2)})</span></p>` : summary;
+  summary = data.summary.tip ? summary + `<p><span class="text">Tips (${data.summary.tip})</span><span class="value">$${data.summary.tipAmount.toFixed(2)}</span></p>` : summary;
+  summary = data.summary.sales ? summary + `<p><span class="text">Total Credit Sales (${data.summary.sales})</span><span class="value">$${data.summary.salesAmount.toFixed(2)}</span></p>` : summary;
 
   let html = `<section class="header">
                 <div class="store">

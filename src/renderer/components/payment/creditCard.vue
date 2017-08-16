@@ -32,28 +32,26 @@ export default {
     methods: {
         initTerminal() {
             let terminal = this.station.terminal;
-            let file = terminal.model;
             this.msg = this.text('TERM_INIT', terminal.model);
-            this.terminal = require('./parser/' + file);
-            this.terminal.initial(terminal.address, terminal.port, terminal.sn)
-                .then(response => response.text()).then((device) => {
-                    this.device = this.terminal.check(device);
-                    if (this.device.code !== "000000") {
-                        this.terminalError(this.text("TERM_INIT_F", this.device.model || terminal.model));
-                        return;
-                    }
-                    clearTimeout(this.timeout);
-                    setTimeout(() => {
-                        this.msg = (this.init.card.number && this.init.card.date) ?
-                            this.text('TERM_COMM', this.device.model || terminal.model) :
-                            this.text("TERM_MANUAL", this.device.model || terminal.model);
-                    }, 2000)
-                    this.transacting = true;
-                    this.terminal.charge(this.init.card).then(response => response.text()).then(data => {
-                        let result = this.terminal.explainTransaction(data);
-                        result.code === "000000" ? this.init.resolve(result) : this.terminalError(this.text(result.msg));
-                    })
-                });
+            this.terminal = this.getFile(terminal.model);
+            this.terminal.initial(terminal.address, terminal.port, terminal.sn).then(response => response.text()).then((device) => {
+                this.device = this.terminal.check(device);
+                if (this.device.code !== "000000") {
+                    this.terminalError(this.text("TERM_INIT_F", this.device.model || terminal.model));
+                    return;
+                }
+                clearTimeout(this.timeout);
+                setTimeout(() => {
+                    this.msg = (this.init.card.number && this.init.card.date) ?
+                        this.text('TERM_COMM', this.device.model || terminal.model) :
+                        this.text("TERM_MANUAL", this.device.model || terminal.model);
+                }, 2000)
+                this.transacting = true;
+                this.terminal.charge(this.init.card).then(response => response.text()).then(data => {
+                    let result = this.terminal.explainTransaction(data);
+                    result.code === "000000" ? this.init.resolve(result) : this.terminalError(this.text(result.msg));
+                })
+            });
             this.timeout = setTimeout(() => {
                 this.init.reject({ type: "warning", title: "TERM_TIMEOUT", msg: this.text("TIP_TERM_TIMEOUT", terminal.address), buttons: [{ text: 'CONFIRM', fn: 'reject' }] })
             }, 6000)
@@ -62,6 +60,16 @@ export default {
             this.icon = "error";
             this.msg = msg;
             setTimeout(() => { this.init.reject(false) }, 1500);
+        },
+        getFile(device) {
+            switch (device) {
+                case 'SP30':
+                case 'S80':
+                case 'S300':
+                    return require('./parser/pax.js')
+                case 'NX2200':
+                    return require('./parser/exadigm.js')
+            }
         },
         exit() {
             if (this.transacting) {

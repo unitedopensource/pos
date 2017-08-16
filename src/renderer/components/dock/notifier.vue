@@ -19,7 +19,7 @@ export default {
     props: ['init'],
     data() {
         return {
-            happened: +new Date
+            happened: +new Date - 1000
         }
     },
     computed: {

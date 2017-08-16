@@ -782,6 +782,7 @@ export default {
         savePayment() {
             if (this.payMode) {
                 this.setOrder({ cashier: this.op.name, payment: this.payment });
+                (this.$route.name === 'History' || this.$route.name === 'Table') && this.$socket.emit("[UPDATE] INVOICE",this.order);
                 this.init.resolve();
             } else {
                 this.init.resolve(this.payment);
