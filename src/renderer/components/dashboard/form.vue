@@ -77,7 +77,13 @@ export default {
                             this.customer[this.target] = a + char + b;
                             this.caret++;
                         }
-                        this.customer[this.target].length === 10 && this.anchor("address");
+                        if (this.customer[this.target].length === 10) {
+                            this.anchor("address");
+                            if (this.predict.phone && this.predict.phone.length) {
+                                let profile = this.predict.phone.find(predict => predict.phone === this.customer.phone);
+                                profile && this.setCustomer(profile);
+                            }
+                        }
                         keyword = this.customer.phone;
                     }
                     break;

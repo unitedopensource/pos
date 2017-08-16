@@ -11,7 +11,7 @@
             <div class="inner">
                 <section class="trans">
                     <header>
-                        <span>ID</span>
+                        <span>&nbsp;</span>
                         <span class="trans">Transaction</span>
                         <span class="record">Card Information</span>
                         <span class="amount">{{text('AMOUNT')}}</span>
@@ -69,11 +69,12 @@
 <script>
 import { mapGetters } from 'vuex'
 import dialoger from '../common/dialoger'
+import progressBar from './progress'
 import Printer from '../../print'
 import tipper from './tipper'
 export default {
     props: ['init'],
-    components: { dialoger, tipper },
+    components: { dialoger, tipper, progressBar },
     data() {
         return {
             transactions: [],
@@ -217,6 +218,7 @@ export default {
             }).then(() => { this.processBatch() }).catch(() => { this.$q() })
         },
         processBatch() {
+            this.$p("progressBar");
             this.terminal.batch().then(response => response.text()).then(response => {
                 let result = this.terminal.explainBatch(response);
                 if (result.code === '000000') {
@@ -226,7 +228,6 @@ export default {
                         return trans;
                     })
                     this.$socket.emit("[TERM] BATCH_TRANS_CLOSE", updated);
-
                     Printer.init(this.config).setJob("batch").print(result);
                     this.$socket.emit('[TERM] SAVE_BATCH_RESULT', result);
                     this.$q();
@@ -341,13 +342,13 @@ export default {
     },
     computed: {
         transaction() {
-            let min = this.page * 13;
-            let max = min + 13;
+            let min = this.page * 12;
+            let max = min + 12;
             return this.transactions.slice(min, max)
         },
         totalPage() {
             let length = this.transactions.length;
-            return Math.ceil(length / 13)
+            return Math.ceil(length / 12)
         },
         ...mapGetters(['op', 'config', 'language', 'history', 'station'])
     },
@@ -534,5 +535,33 @@ li.void,
     text-shadow: 0 0 1px #0D47A1;
     font-weight: bold;
     margin-left: 10px;
+}
+
+.pagination {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    justify-content: center;
+}
+
+.pagination .page {
+    margin: 5px;
+    width: 20px;
+    text-align: center;
+    cursor: pointer;
+    padding: 10px 10px;
+    border-radius: 4px;
+    text-shadow: 0 1px 1px #fff;
+    background: linear-gradient(#fefefe, #cfd0d3);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .7);
+}
+
+.page.active {
+    font-weight: bold;
+    background: #676767;
+    color: #fff;
+    text-shadow: 0 1px 1px #000;
+    box-shadow: rgba(0, 0, 0, 0.75) 0 0 0 0 inset;
 }
 </style>
