@@ -80,6 +80,7 @@ export default {
                         if (this.customer[this.target].length === 10) {
                             this.anchor("address");
                             if (this.predict.phone && this.predict.phone.length) {
+                                this.resetAutoComplete();
                                 let profile = this.predict.phone.find(predict => predict.phone === this.customer.phone);
                                 profile && this.setCustomer(profile);
                             }
@@ -247,6 +248,7 @@ export default {
     },
     sockets: {
         AUTO_COMPLETE(data) {
+            console.log("trigger")
             data.results.length && (this.predict[data.type] = data.results);
             data.type === 'address' && this.highlight(data.results);
         }
