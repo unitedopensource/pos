@@ -52,7 +52,7 @@
                             <checkbox v-model="profile.control.printSuggestion" label="PRINT_TIP_SUGG"></checkbox>
                             <checkbox v-model="profile.control.buzzer" label="BUZZER"></checkbox>
                             <!-- <checkbox v-model="profile.control.printCoupon" label="PRINT_COUPON"></checkbox> -->
-                            <checkbox v-model="profile.control.printMenuID" label="PRINT_MENU_ID"></checkbox> 
+                            <checkbox v-model="profile.control.printMenuID" label="PRINT_MENU_ID"></checkbox>
                         </div>
                     </fieldset>
                 </div>
@@ -198,8 +198,8 @@ export default {
     },
     data() {
         return {
-            englishFonts:["Agency FB","Tahoma","Tensentype RuiHeiJ-W2","Trebuchet MS","Noto Mono","Futura LT Condensed","Noto Sans SC Light"],
-            chineseFonts:["Noto Sans SC Light",  "Yuanti SC", "QingYuan"],
+            englishFonts: ["Agency FB", "Tahoma", "Tensentype RuiHeiJ-W2", "Trebuchet MS", "Noto Mono", "Futura LT Condensed", "Noto Sans SC Light", "PingFang SC Regular"],
+            chineseFonts: ["Noto Sans SC Light", "QingYuan", "PingFang SC Regular", 'PingFang Light'],
             presets: ["cashier", "kitchen", "bar", "payment", "runner"],
             time: moment().locale('en').format('hh:mm a'),
             date: moment().format('MM-DD-YYYY'),

@@ -128,6 +128,9 @@ Array.prototype.getLastInsertIndex = function (array) {
 String.prototype.toFixed = function (places) {
   return isNumber(this) ? parseFloat(this).toFixed(places) : "0.00";
 }
+String.prototype.toCapitalCase = function () {
+  return this.replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); });
+};
 window.ObjectId = (m = Math, d = Date, h = 16, s = s => m.floor(s).toString(h)) => s(d.now() / 1000) + ' '.repeat(h).replace(/./g, () => s(m.random() * h));
 window.isNumber = (n => (/^-?[\d.]+(?:e-?\d+)?$/.test(n)));
 window.today = function (offset = 0) {

@@ -313,16 +313,16 @@ Printer.prototype.printReceipt = function (raw) {
               .customer .tel{letter-spacing:2px;}
               .customer .ext{margin-left:10px;}
               ${enlarge}
-              section.body{padding:10px 5px;}
+              section.body{padding:10px 0px;}
               p.list{display:flex;flex-direction:row}
-              span.qty{width:25px;text-align:center;}
+              span.qty{min-width:25px;text-align:left;}
               span.itemWrap{flex:1;}
               span.space{margin-left:10px;}
               .itemWrap.markItem{margin-top:5px;}
               span.item,span.side{position:relative;display:inline-block;}
               span.mark{position:absolute;top:-10px;left:0;font-size:10px;width:100%;text-align:center;display:inline-block;font-weight:bold;}
               span.side{font-size:0.8em;vertical-align:middle;}
-              span.price{width:35px;text-align:right;${printPrice ? '' : 'display:none;'}}
+              span.price{min-width:30px;padding-right:5px;text-align:right;${printPrice ? '' : 'display:none;'}}
               div.category{border-bottom:1px dashed #000;margin-top:5px;${sortItem ? '' : 'display:none;'}}
               .list.zhCN{margin-top:5px;}
               .list.usEN{${printPrimary ? 'margin-top:-5px' : 'margin-bottom:8px'}}
