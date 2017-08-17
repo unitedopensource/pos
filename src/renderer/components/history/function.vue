@@ -98,6 +98,7 @@ export default {
         editOrder() {
             this.setTicket({ type: this.order.type, number: this.order.number });
             this.setApp({ mode: 'edit' });
+            this.setCustomer(this.order.customer);
             this.$router.push({ path: '/main/menu' });
         },
         voidOrder() {
@@ -181,7 +182,7 @@ export default {
             this.resetMenu();
             this.$router.push({ path: "/main" });
         },
-        ...mapActions(['setApp', 'setTicket', 'resetMenu', 'removePayment'])
+        ...mapActions(['setApp', 'setTicket', 'resetMenu', 'setCustomer', 'removePayment'])
     },
     computed: {
         ...mapGetters(['op', 'order', 'config', 'station', 'isEmptyTicket'])
