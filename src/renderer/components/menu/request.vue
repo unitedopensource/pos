@@ -2,13 +2,13 @@
   <div class="request">
     <section class="content">
       <div class="category">
-        <div v-for="category in request" @click="getItems(category)">{{category[language]}}</div>
+        <div v-for="(category,index) in request" @click="getItems(category)" :key="index">{{category[language]}}</div>
       </div>
       <div class="prefix">
         <div v-for="(action,index) in actions" @click="getPrefix(action,$event)" :key="index">{{action[language]}}</div>
       </div>
       <div class="item">
-        <div v-for="item in items" @click="setChoice(item)" :class="{disable:!item.clickable}">{{item[language]}}</div>
+        <div v-for="(item,index) in items" @click="setChoice(item)" :class="{disable:!item.clickable}" :key="index">{{item[language]}}</div>
       </div>
       <div class="shortCut">
         <div @click="setPrice(0.50)">$0.50</div>
@@ -32,16 +32,17 @@
 import { mapGetters, mapActions } from 'vuex'
 import modify from './modify'
 export default {
-  mounted() {
-    this.items = [].concat.apply([], this.request[0].item);
-  },
+  components: { modify },
   data() {
     return {
       items: [],
-      prefix: null,
+      action: null,
       component: null,
       componentData: null
     }
+  },
+  mounted() {
+    this.items = [].concat.apply([], this.request[0].item);
   },
   methods: {
     getItems(category) {
@@ -50,17 +51,25 @@ export default {
     getPrefix(action, e) {
       let dom = document.querySelector('.acting');
       dom && dom.classList.remove('acting');
-      this.prefix = action;
+      this.action = action;
       e.currentTarget.classList.add("acting");
-
     },
     setChoice(item) {
       if (!item.clickable) return;
-
+      let zhCN = item.zhCN, usEN = item.usEN;
+      if (this.action) {
+        if (this.action.prefix) {
+          zhCN = this.action.zhCN + zhCN;
+          usEN = this.action.usEN + " " + usEN;
+        } else {
+          zhCN = zhCN + this.action.zhCN;
+          usEN = usEN + " " + this.action.usEN;
+        }
+      }
       let content = {
         qty: 1,
-        zhCN: this.prefix ? this.prefix.zhCN + item.zhCN : item.zhCN,
-        usEN: this.prefix ? this.prefix.usEN + " " + item.usEN : item.usEN,
+        zhCN,
+        usEN,
         single: parseFloat(item.price),
         price: item.price
       }
@@ -72,44 +81,16 @@ export default {
     setPrice(total) {
       total ?
         this.setPriceForChoiceSet({ total }) :
-        new Promise((resolve, reject) => {
-          this.componentData = {
-            name: this.text('SELF_INPUT_PRICE'),
-            qty: 1,
-            single: "0.00",
-            discount: "0.00",
-            total: "0.00",
-            resolve, reject
-          };
-          this.component = "modify";
-        }).then(resolve => {
-          this.setPriceForChoiceSet({
-            single: resolve.single,
-            total: resolve.total,
-            qty: resolve.qty
-          });
-          this.exitComponent();
-        }).catch(reject => {
-          this.exitComponent();
-        })
-    },
-    exitComponent() {
-      this.component = null;
-      this.componentData = null;
-    },
-    exit() {
-      this.$emit("exit");
-    },
-    redo() {
-      this.$emit("redo");
+        this.$p("modify", { item: {
+          qty:1,
+          single:0,
+          discount:0
+        }, type: 'request' });
     },
     ...mapActions(['setChoiceSet', 'setPriceForChoiceSet', 'setChoiceSetTarget'])
   },
   computed: {
     ...mapGetters(['request', 'language', 'actions'])
-  },
-  components: {
-    modify
   }
 }
 </script>

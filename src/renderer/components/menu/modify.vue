@@ -53,7 +53,7 @@
         <aside class="numpad">
           <div @click="del">&#8592;</div>
           <div @click="clear">C</div>
-          <div @click="done">&#8626;</div>
+          <div @click="confirm">&#8626;</div>
         </aside>
       </div>
     </div>
@@ -167,7 +167,20 @@ export default {
     switchUnit() {
       this.discount = this.unit ? "0.00" : "0";
     },
-    done() {
+    confirm() {
+      this.init.type === 'request' ?
+        this.adjustRequestItem() : this.adjustMenuItem();
+    },
+    adjustRequestItem() {
+      let single = parseFloat(this.item.single);
+      this.setPriceForChoiceSet({
+        single,
+        total: (single * this.item.qty).toFixed(2),
+        qty: ~~this.item.qty
+      });
+      this.init.resolve();
+    },
+    adjustMenuItem() {
       let single = parseFloat(this.item.single);
       let discount = this.unit ? this.discount : single * this.item.qty * (this.discount / 100);
       let item = Object.assign({}, this.item, {
@@ -186,7 +199,7 @@ export default {
       this.init.openFood ? this.addToOrder(item) : this.alterItem(item);
       this.init.resolve();
     },
-    ...mapActions(['alterItem', 'addToOrder'])
+    ...mapActions(['alterItem', 'addToOrder', 'setPriceForChoiceSet'])
   },
   computed: {
     total() {
