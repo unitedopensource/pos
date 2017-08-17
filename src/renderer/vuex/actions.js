@@ -251,6 +251,11 @@ export const setChoiceSet = ({
 }, set) => {
   commit(types.SET_CHOICE_SET, set)
 }
+export const alertChoiceSet = ({
+  commit
+},set) =>{
+  commit(types.ALERT_CHOICE_SET,set)
+}
 export const resetChoiceSet = ({
   commit
 }) => {

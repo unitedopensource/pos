@@ -350,6 +350,7 @@
               'PORT': '端口',
               'POLE_DISPLAY': '客显',
               'PRESET': '配置',
+              'REMIND':'提醒',
               'RESET': '重置',
               'RESTART_APP': '重启程序',
               'RECEIPT_PRINTER': '收据打印机',

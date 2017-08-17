@@ -327,8 +327,8 @@ Printer.prototype.printReceipt = function (raw) {
               .list.zhCN{margin-top:5px;}
               .list.usEN{${printPrimary ? 'margin-top:-5px' : 'margin-bottom:8px'}}
               p.list.choiceSet{margin-top:0px;}
-              .CNSet{text-indent:15px;font-size:0.8em;}
-              .choiceSet .itemWrap{text-indent:15px;}
+              .CNSet{text-indent:10px;font-size:0.9em;}
+              .choiceSet .itemWrap{text-indent:10px;}
               footer{font-family:'Agency FB';}
               section.column{display:flex;flex-direction:row;}
               .payment{min-width:150px;${printPayment ? '' : 'display:none;'}}

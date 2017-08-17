@@ -71,23 +71,27 @@ export default {
         zhCN,
         usEN,
         single: parseFloat(item.price),
-        price: item.price
+        price: item.price,
+        key:item._id.slice(-4)
       }
-      this.prefix = null;
-      this.setChoiceSet(content);
-      let dom = document.querySelector('.acting');
+      this.action = null;
+      let dom = document.querySelector(".choiceSet.target");
+      dom ? this.alertChoiceSet(content) : this.setChoiceSet(content);
+      dom = document.querySelector('.acting');
       dom && dom.classList.remove('acting');
     },
     setPrice(total) {
       total ?
         this.setPriceForChoiceSet({ total }) :
-        this.$p("modify", { item: {
-          qty:1,
-          single:0,
-          discount:0
-        }, type: 'request' });
+        this.$p("modify", {
+          item: {
+            qty: 1,
+            single: 0,
+            discount: 0
+          }, type: 'request'
+        });
     },
-    ...mapActions(['setChoiceSet', 'setPriceForChoiceSet', 'setChoiceSetTarget'])
+    ...mapActions(['setChoiceSet', 'alertChoiceSet', 'setPriceForChoiceSet', 'setChoiceSetTarget'])
   },
   computed: {
     ...mapGetters(['request', 'language', 'actions'])

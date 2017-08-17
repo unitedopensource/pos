@@ -129,8 +129,7 @@ export default {
       let newItem = Object.assign({}, item, { note: "" });
       let index = this.editList.findIndex(target => target.key === item.key);
       this.editList.splice(index, 1, newItem);
-
-      console.log(e.target.parentElement.parentElement.childNodes[1])
+      
     },
     onChange() {
       let target = this.content.name;
@@ -164,8 +163,8 @@ export default {
         items.forEach(item => {
           let { zhCN, usEN, qty } = item;
           if (item.hasOwnProperty('note')) {
-            zhCN = zhCN + ` (${item.note.toCapitalCase()})`;
-            usEN = usEN + ` (${item.note.toCapitalCase()})`;
+            zhCN = zhCN + ` *${item.note.toCapitalCase()}*`;
+            usEN = usEN + ` *${item.note.toCapitalCase()}*`;
           }
           let content = {
             qty, zhCN, usEN,

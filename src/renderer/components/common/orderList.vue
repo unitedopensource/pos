@@ -621,7 +621,7 @@ i.flip {
 }
 
 .choiceSet .item {
-    margin-left: 10px;
+    margin-left: 5px;
     color: #555;
     border-bottom: 1px dashed #ccc;
     vertical-align: top;

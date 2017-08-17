@@ -30,6 +30,9 @@
                 </div>
             </div>
             <footer>
+                <div class="f1">
+                    <checkbox v-model="remind" label="REMIND"></checkbox>
+                </div>
                 <div class="btn" @click="init.reject">{{text('CANCEL')}}</div>
                 <div class="btn" @click="confirm">{{text('CONFIRM')}}</div>
             </footer>
@@ -40,13 +43,16 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import checkbox from '../setting/common/checkbox'
 import dialoger from '../common/dialoger'
+
 export default {
     props: ['init'],
-    components: { dialoger },
+    components: { dialoger,checkbox },
     data() {
         return {
             time: moment().format('HHmm').split(""),
+            remind:false,
             componentData: null,
             component: null
         }
@@ -172,5 +178,10 @@ span.time {
 
 .wrap i:active {
     background: linear-gradient(#E2E3E4, #AAADB4);
+}
+
+.f1{
+    display: flex;
+    align-items: center;
 }
 </style>

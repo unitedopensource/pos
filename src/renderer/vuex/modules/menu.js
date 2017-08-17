@@ -243,6 +243,11 @@ const mutations = {
     let dom = document.querySelector(".choiceSet.target");
     dom && dom.classList.remove("target");
   },
+  [types.ALERT_CHOICE_SET](state, set) {
+    let { zhCN, usEN } = set;
+    state.choiceSetTarget.zhCN = state.choiceSetTarget.zhCN + " " + zhCN;
+    state.choiceSetTarget.usEN = state.choiceSetTarget.usEN + " " + usEN;
+  },
   [types.RESET_CHOICE_SET](state) {
     state.choiceSetTarget = null;
   },
