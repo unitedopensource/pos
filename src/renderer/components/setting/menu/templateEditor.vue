@@ -10,16 +10,18 @@
                 <checkbox v-model="template.insert" label="INSERT"></checkbox>
             </header>
             <div class="includes">
-                <aside>
-                    <div class="group" v-for="(group,index) in template.contain" :key="index" @click="setGroup(index)">
-                        <h3>{{group.name}}</h3>
-                        <span>{{group.contain.length}} Items</span>
-                        <i class="fa fa-times" @click="delGroup(index)"></i>
-                    </div>
-                    <div class="addGroup" @click="addGroup">
-                        <i class="fa fa-plus"></i>
-                    </div>
-                </aside>
+                <draggable v-model="template.contain" :options="{animation:300,group:'item',ghostClass:'itemGhost',draggable:'.draggable'}">
+                    <transition-group tag="aside">
+                        <div class="group draggable" v-for="(group,index) in template.contain" :key="index" @click="setGroup(index)">
+                            <h3>{{group.name}}</h3>
+                            <span>{{group.contain.length}} {{text('ITEMS')}}</span>
+                            <i class="fa fa-times" @click="delGroup(index)"></i>
+                        </div>
+                        <div class="addGroup" @click="addGroup" :key="999">
+                            <i class="fa fa-plus"></i>
+                        </div>
+                    </transition-group>
+                </draggable>
                 <div class="container">
                     <div v-if="container">
                         <div class="config">
@@ -36,12 +38,14 @@
                                 <input v-model.number="container.addition">
                             </div>
                         </div>
-                        <ul class="item">
-                            <li v-for="(item,index) in container.contain" @click="editItem(item,index)" :key="index">{{item[language]}}</li>
-                            <li class="addItem" @click="addItem">
-                                <i class="fa fa-plus"></i>
-                            </li>
-                        </ul>
+                        <draggable v-model="container.contain" :options="{animation:300,group:'item',ghostClass:'itemGhost',draggable:'.draggable'}">
+                            <transition-group tag="ul" class="item">
+                                <li v-for="(item,index) in container.contain" @contextmenu="editItem(item,index)" :key="index" class="draggable">{{item[language]}}</li>
+                                <li class="addItem" @click="addItem" :key="999">
+                                    <i class="fa fa-plus"></i>
+                                </li>
+                            </transition-group>
+                        </draggable>
                     </div>
                     <div v-else>
     
@@ -63,9 +67,10 @@
 <script>
 import { mapGetters } from 'vuex'
 import checkbox from '../common/checkbox'
+import draggable from 'vuedraggable'
 import editor from './templateItem'
 export default {
-    components: { editor,checkbox },
+    components: { editor, checkbox, draggable },
     props: ['init'],
     created() {
         this.template = JSON.parse(JSON.stringify(this.init.template));
@@ -143,10 +148,17 @@ export default {
 <style scoped>
 header {
     display: flex;
+    align-items: center;
 }
 
 header .name {
     margin-left: 15px;
+    flex: 1;
+}
+
+header .text {
+    font-weight: initial;
+    font-family: 'Yuanti-SC';
 }
 
 .name input {
@@ -171,6 +183,10 @@ aside {
     position: relative;
 }
 
+.container>div {
+    width: 100%;
+}
+
 .includes {
     display: flex;
     background: #F5F5F5;
@@ -184,6 +200,7 @@ aside {
     cursor: pointer;
     color: #9E9E9E;
     position: relative;
+    border: 1px solid transparent;
     border-left: 2px solid transparent;
 }
 
@@ -251,5 +268,10 @@ li {
 
 .group.active i {
     display: block;
+}
+
+.itemGhost {
+    opacity: 0.5;
+    border: 1px dashed gray;
 }
 </style>

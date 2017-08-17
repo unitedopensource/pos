@@ -16,7 +16,7 @@ const state = {
     templates: [],
     reservation: [],
     ticket: {
-        number: "01",
+        number: 1,
         type: ""
     },
     lastSync: {
@@ -33,7 +33,7 @@ const mutations = {
             state.app.date = tick.date;
             state.orders = [];
             state.ticket = {
-                number: "01",
+                number: 1,
                 type: ""
             }
         }

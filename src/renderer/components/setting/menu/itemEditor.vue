@@ -521,7 +521,7 @@ footer .tip i {
     display: none;
     width: 589px;
     padding: 10px 0;
-    text-indent: 15px;
+    text-indent: 10px;
     background: #fff;
     margin: 0px 0 5px 10px;
     box-shadow: var(--shadow);
@@ -532,8 +532,12 @@ footer .tip i {
 }
 
 .extra span {
-    margin-right: 2.5em;
+    margin-right: 1em;
     color: #FF9800;
+}
+
+.extra input {
+    width: 150px;
 }
 
 .show .extra {
@@ -637,7 +641,7 @@ div.add {
     margin-right: 5px;
 }
 
-.item .price input{
+.item .price input {
     width: 60px;
 }
 </style>
