@@ -76,7 +76,8 @@ export default {
             console.time("clone");
             items = [].concat.apply([], items);
 
-            if (this.config.hasOwnProperty('display') && this.config.display.favorite && this.customer._id && this.customer.extra.favorite) {
+            if (this.config.hasOwnProperty('display') && this.config.display.favorite &&
+                this.customer._id && this.customer.hasOwnProperty('extra') && this.customer.extra.favorite) {
                 let favorite = this.customer.extra.favorite;
                 items.forEach(item => { item.like = favorite.includes(item._id) });
             }
@@ -94,8 +95,6 @@ export default {
         configDineIn() {
             this.store.table.seatOrder && (this.sort = 1);
             this.setOrder({
-                server: this.op.name,
-                station: this.station.alies,
                 table: this.currentTable.name,
                 tableID: this.currentTable._id,
                 guest: this.currentTable.current.guest

@@ -20,9 +20,9 @@
                     <div>
                         <i class="fa fa-clock-o"></i>{{order.time | moment('hh:mm:ss a')}}</div>
                     <div>
-                        <i class="fa fa-phone"></i>{{order.customer && order.customer.phone}}</div>
+                        <i class="fa fa-phone"></i>{{order.customer.phone}}</div>
                     <div>
-                        <i class="fa fa-map-marker"></i>{{order.customer && order.customer.address}}</div>
+                        <i class="fa fa-map-marker"></i>{{order.customer.address}}</div>
                 </div>
             </div>
             <span class="timePass" v-show="order.time">

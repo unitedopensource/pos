@@ -5,81 +5,172 @@
                 <span>{{text('TIMER')}}</span>
             </header>
             <div class="inner">
-                <section class="date">
+                <div class="timer">
                     <div class="wrap">
-                        <div class="day" v-for="(day,i) in days" :key="i">
-                            <span class="week">{{day | moment('ddd')}}</span>
-                            <span class="value">{{day | moment('D')}}</span>
-                        </div>
+                        <i class="fa fa-angle-up" @click="add(0)"></i>
+                        <span class="time">{{time[0]}}</span>
+                        <i class="fa fa-angle-down" @click="sub(0)"></i>
                     </div>
-                    <div class="leftDate"></div>
-                    <div class="rightDate"></div>
-                </section>
-                <section class="clock">
-    
-                </section>
+                    <div class="wrap">
+                        <i class="fa fa-angle-up" @click="add(1)"></i>
+                        <span class="time">{{time[1]}}</span>
+                        <i class="fa fa-angle-down" @click="sub(1)"></i>
+                    </div>
+                    <div class="blink">:</div>
+                    <div class="wrap">
+                        <i class="fa fa-angle-up" @click="add(2)"></i>
+                        <span class="time">{{time[2]}}</span>
+                        <i class="fa fa-angle-down" @click="sub(2)"></i>
+                    </div>
+                    <div class="wrap">
+                        <i class="fa fa-angle-up" @click="add(3)"></i>
+                        <span class="time">{{time[3]}}</span>
+                        <i class="fa fa-angle-down" @click="sub(3)"></i>
+                    </div>
+                </div>
             </div>
             <footer>
                 <div class="btn" @click="init.reject">{{text('CANCEL')}}</div>
                 <div class="btn" @click="confirm">{{text('CONFIRM')}}</div>
             </footer>
         </div>
+        <div :is="component" :init="componentData"></div>
     </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
+import dialoger from '../common/dialoger'
 export default {
     props: ['init'],
-    components: {},
+    components: { dialoger },
     data() {
         return {
-            days: []
+            time: moment().format('HHmm').split(""),
+            componentData: null,
+            component: null
         }
-    },
-    created() {
-        this.initial()
     },
     methods: {
-        initial() {
-            let today = moment().startOf('days');
-            for (let i = -4; i < 0; i++) {
-                let date = today.clone().subtract(i, 'days')
-                this.days.push(date)
-            }
-            for (let i = 0; i < 5; i++) {
-                let date = today.clone().add(i, 'days')
-                this.days.push(date)
-            }
+        add(i) {
+            let num = ~~this.time[i];
+            num = num < 9 ? num + 1 : 0;
+            i === 0 && num > 2 && (num = 2);
+            i === 2 && num > 6 && (num = 6);
+            this.time.splice(i, 1, num);
+        },
+        sub(i) {
+            let num = ~~this.time[i];
+            num = num > 1 ? num - 1 : 0;
+            this.time.splice(i, 1, num);
         },
         confirm() {
-
-        }
+            let hour = this.time[0] + this.time[1];
+            let minute = this.time[2] + this.time[3];
+            let current = moment();
+            let schedule = moment().startOf('day').hour(hour).minute(minute);
+            schedule.isAfter(current) ? this.confirmTime(schedule) : this.timeError();
+        },
+        timeError() {
+            this.$dialog({ title: 'SCHEDULE_ERROR', msg: this.text('SCHEDULE_TIME_ERROR'), buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$q() })
+        },
+        confirmTime(schedule) {
+            let now = moment();
+            let duration = moment.duration(schedule.diff(now)).humanize();
+            this.$dialog({ title: 'CONFIRM_SCHEDULE', msg: this.text('SCHEDULE_TIME', schedule.format('hh:mm a'), duration) })
+                .then(() => { this.submit(schedule) }).catch(() => { this.$q() })
+        },
+        submit(schedule) {
+            this.$q();
+            delete this.customer.extra;
+            if (this.app.mode === 'create') {
+                Object.assign(this.order, {
+                    customer: this.customer,
+                    type: this.ticket.type,
+                    number: this.ticket.number,
+                    modify: 0,
+                    time: +new Date,
+                    status: 1,
+                    date: today(),
+                    schedule: +schedule,
+                    source: this.op.role !== 'ThirdParty' ? "POS" : this.op.name,
+                    print: false
+                });
+                this.$socket.emit("[SAVE] INVOICE", this.order);
+            } else {
+                Object.assign(this.order, {
+                    customer: this.customer,
+                    type: this.ticket.type,
+                    lastEdit: +new Date,
+                    editor: this.op.name,
+                    schedule: +schedule,
+                    modify: isNumber(this.order.modify) ? this.order.modify + 1 : 1
+                });
+                this.$socket.emit("[UPDATE] INVOICE", this.order);
+            }
+            this.resetAll();
+            this.setApp({ opLastAction: new Date, mode: "create" });
+            this.$router.push({ path: "/main" });
+        },
+        ...mapActions(['setApp', 'resetAll'])
     },
     computed: {
-        ...mapGetters(['op', 'language'])
+        ...mapGetters(['op', 'app', 'order', 'ticket', 'customer', 'language'])
     }
 }
 </script>
 
 <style scoped>
 .inner {
-    width: 540px;
+    width: 400px;
 }
 
-.date .wrap {
+.timer {
     display: flex;
+    justify-content: center;
 }
 
-.date .day {
-    width: 55px;
-    padding: 5px;
+.blink {
+    line-height: 185px;
+    font-size: 5em;
+    animation: blinker 1s infinite;
+}
+
+@keyframes blinker {
+    50% {
+        opacity: 0;
+    }
+}
+
+.timer .wrap {
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
     text-align: center;
+    margin: 5px 10px;
 }
 
-.day>span {
+span.time {
+    padding: 10px;
+    font-family: 'Agency FB';
+    font-weight: bold;
+    color: #fff;
+    background: #333;
+    font-size: 3em;
     width: 50px;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.wrap i {
+    padding: 10px 29px;
+    background: linear-gradient(#fefefe, #cfd0d3);
+    margin: 8px 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.wrap i:active {
+    background: linear-gradient(#E2E3E4, #AAADB4);
 }
 </style>
