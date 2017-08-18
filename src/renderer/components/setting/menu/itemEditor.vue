@@ -69,7 +69,7 @@
                                             <label>{{text('US_EN')}}</label>
                                             <input type="text" v-model="side.usEN">
                                         </div>
-                                        <div class="price" v-show="index !== 0">
+                                        <div class="price">
                                             <label>{{text('PRICE')}}</label>
                                             <input type="text" v-model.number="side.price">
                                             <label>{{text('PRICE_EXTRA')}}</label>
@@ -425,7 +425,7 @@ article.option {
 i.remove {
     position: absolute;
     right: -36px;
-    top: 30px;
+    top: calc(50% - 19px);
     color: #F44336;
     opacity: 0.2;
     z-index: 0;

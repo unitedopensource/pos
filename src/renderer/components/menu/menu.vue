@@ -100,7 +100,7 @@ export default {
                 guest: this.currentTable.current.guest
             })
         },
-        poleDisplay() {
+        poleDisplay(line1,line2) {
             if (this.device.poleDisplay) {
                 poleDisplay.write('\f');
                 poleDisplay.write(line(line1, line2));

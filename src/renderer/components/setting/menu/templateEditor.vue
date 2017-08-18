@@ -41,7 +41,7 @@
                         <draggable v-model="container.contain" :options="{animation:300,group:'item',ghostClass:'itemGhost',draggable:'.draggable'}">
                             <transition-group tag="ul" class="item">
                                 <li v-for="(item,index) in container.contain" @contextmenu="editItem(item,index)" :key="index" class="draggable">{{item[language]}}</li>
-                                <li class="addItem" @click="addItem" :key="999">
+                                <li class="addItem" @click="addItem" :key="999" v-show="container.contain.length < 24">
                                     <i class="fa fa-plus"></i>
                                 </li>
                             </transition-group>
