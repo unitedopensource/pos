@@ -95,7 +95,7 @@ export default {
                 subtotal += price;
 
                 for (let x = 0; x < choiceLength; x++) {
-                    subtotal += item.choiceSet[x].price;
+                    subtotal += parseFloat(item.choiceSet[x].price);
                 }
                 if (this.isTax) {
                     let taxClass = this.tax.class[item.taxClass];
@@ -106,8 +106,8 @@ export default {
                     this.store.deliveryCharge : 0;
             });
             tax = parseFloat(tax.toFixed(2));
-            total = subtotal + tax + tip + gratuity + delivery;
-            due = total - discount;
+            total = (subtotal + tax + tip + gratuity + delivery).toFixed(2);
+            due = (parseFloat(total) - discount).toFixed(2);
             return { tip, gratuity, discount, delivery, subtotal, total, tax, paid, log, due, sort: this.split }
         },
         ...mapGetters(['tax', 'ticket', 'store', 'order', 'language'])

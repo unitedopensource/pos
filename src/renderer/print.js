@@ -209,13 +209,12 @@ Printer.prototype.printReceipt = function (raw) {
       item.choiceSet.forEach(set => {
         if (set.hasOwnProperty('print') && Array.isArray(set.print) && !set.print.includes(printer)) return;
         setCN += `<p class="list choiceSet zhCN">
-                      <span class="qty">${set.qty === 1 ? " " : set.qty}</span>
-                      <span class="CNSet">${set.zhCN} ${parseFloat(set.price) !== 0 ? ' ($' + set.price.toFixed(2) + ')' : ""}</span>
+                      <span class="set">${set.zhCN}<span class="qty">${set.qty === 1 ? " " : '×' + set.qty}</span></span>
+                      <span class="price">${parseFloat(set.price) > 0 ? set.price.toFixed(2) : ""}</span>
                     </p>`;
         setEN += `<p class="list choiceSet usEN">
-                      <span class="qty">${set.qty === 1 ? " " : set.qty}</span>
-                      <span class="itemWrap">${set.usEN}</span>
-                      <span class="price">${parseFloat(set.price) !== 0 ? set.price.toFixed(2) : ""}</span>
+                      <span class="set">${set.usEN}<span class="qty">${set.qty === 1 ? " " : '×' + set.qty}</span></span>
+                      <span class="price">${parseFloat(set.price) > 0 ? set.price.toFixed(2) : ""}</span>
                     </p>`;
       });
       let name = (item[printer] && item[printer].hasOwnProperty("zhCN")) ? item[printer].zhCN : printMenuID ? item.menuID + " " + item.zhCN : item.zhCN;
@@ -224,19 +223,20 @@ Printer.prototype.printReceipt = function (raw) {
                     <span class="itemWrap ${mark}">
                       <span class="item">${name}<span class="mark">${markA}</span></span>
                       <span class="side">${side}<span class="mark">${markB}</span></span>
-                    </span></p>${setCN}`;
+                    </span>
+                    <span class="price">${item.total}</span></p>${setCN}`;
       side = item.side.usEN ? item.side.usEN : "";
       name = (item[printer] && item[printer].hasOwnProperty("usEN")) ? item[printer].usEN : printMenuID ? item.menuID + " " + item.usEN : item.usEN;
       let usEN = `<p class="list usEN">
                       <span class="qty">${qty}</span>
                       <span class="itemWrap">
-                        <span class="item">${name}</span>
-                        <span class="side">${side}</span>
+                        <span class="item">${name}<span class="mark">${markA}</span></span>
+                        <span class="side">${side}<span class="mark">${markB}</span></span>
                       </span>
                       <span class="price">${item.total}</span></p>${setEN}`;
       return zhCN + usEN;
     }
-    let { sortItem, duplicate, printMenuID } = ctrl;
+    let { sortItem, duplicate, printMenuID} = ctrl;
     let list = data.filter(item => item.printer[printer]);
     !duplicate && (list = list.filter(item => !item.print));
 
@@ -282,7 +282,8 @@ Printer.prototype.printReceipt = function (raw) {
       printStore,
       printType,
       printCustomer,
-      printPrice,
+      printPrimaryPrice,
+      printSecondaryPrice,
       printPayment,
       printSuggestion,
       printCoupon,
@@ -326,13 +327,16 @@ Printer.prototype.printReceipt = function (raw) {
               span.item,span.side{position:relative;display:inline-block;}
               span.mark{position:absolute;top:-10px;left:0;font-size:10px;width:100%;text-align:center;display:inline-block;font-weight:bold;}
               span.side{font-size:0.8em;vertical-align:middle;}
-              span.price{min-width:30px;padding-right:5px;text-align:right;${printPrice ? '' : 'display:none;'}}
+              span.price{min-width:30px;padding-right:5px;text-align:right;}
               div.category{border-bottom:1px dashed #000;margin-top:5px;${sortItem ? '' : 'display:none;'}}
               .list.zhCN{margin-top:5px;}
               .list.usEN{${printPrimary ? 'margin-top:-5px' : 'margin-bottom:8px'}}
-              p.list.choiceSet{margin-top:0px;}
-              .CNSet{text-indent:10px;font-size:0.9em;}
-              .choiceSet .itemWrap{text-indent:10px;}
+              .zhCN .price{${printPrimaryPrice ? 'display:initial':'display:none'}}
+              .usEN .price{${printSecondaryPrice ? 'display:initial':'display:none'}}
+              p.list.choiceSet{margin-top:0px;display:flex;}
+              .choiceSet .set{flex:1;padding:0 35px;font-size:0.8em;}
+              .choiceSet .price{font-size:0.8em;}
+              .set .qty{margin-left:1em;}
               footer{font-family:'Agency FB';}
               section.column{display:flex;flex-direction:row;}
               .payment{min-width:150px;${printPayment ? '' : 'display:none;'}}

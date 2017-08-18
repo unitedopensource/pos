@@ -186,14 +186,15 @@ export default {
             splitPayment.forEach(pay => {
                 Object.keys(pay).forEach(key => {
                     if (payment.hasOwnProperty(key)) {
-                        typeof payment[key] === 'number' ?
-                            payment[key] += pay[key] :
+                        isNumber(payment[key]) ?
+                            payment[key] = parseFloat(payment[key]) + parseFloat(pay[key]) :
                             payment[key].push(...pay[key]);
                     } else {
                         payment[key] = pay[key]
                     }
                 })
             })
+            delete payment.sort;
             this.setOrder({ splitPayment, payment });
         },
         combineInvoiceInfo() {

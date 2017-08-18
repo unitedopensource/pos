@@ -458,11 +458,11 @@ header i {
 }
 
 .simple .item {
-    width: 188px;
+    flex: 1;
 }
 
 .simple .price {
-    width: 52px;
+    width: 48px;
     text-align: center;
 }
 
@@ -474,11 +474,12 @@ header i {
 
 .list {
     border-bottom: 1px solid #ddd;
-    padding: 10px 5px 8px;
+    padding: 10px 0 8px;
     background: #fff;
     font-size: 1.05em;
     width: 100%;
     display: flex;
+    min-height: 20px;
     flex-direction: column;
 }
 
@@ -510,6 +511,7 @@ header i {
 .itemWrap {
     display: flex;
     flex: 1;
+    align-items: center;
 }
 
 .itemWrap>span {
@@ -542,9 +544,9 @@ header i {
 }
 
 .list .price {
-    width: 50px;
+    min-width: 45px;
     text-align: right;
-    padding-right: 15px;
+    padding-right: 10px;
     vertical-align: top;
     font-size: initial;
 }
@@ -590,6 +592,7 @@ i.flip {
     border-bottom: 1px solid #eee;
     background: #fff;
     padding: 1px;
+    display:flex;
 }
 
 .settle .text {
@@ -597,7 +600,8 @@ i.flip {
 }
 
 .settle .value {
-    width: 67px;
+    flex: 1;
+    padding-right: 10px;
     overflow: hidden;
     vertical-align: text-top;
     text-overflow: ellipsis;
@@ -605,14 +609,13 @@ i.flip {
 
 .settle .text,
 .settle .value {
-    display: inline-block;
     text-align: right;
 }
 
 .settle div:last-child {
-    border-bottom: none;
     font-weight: 700;
     font-size: larger;
+    padding: 2.5px 0;
 }
 
 .choiceSet {

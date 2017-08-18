@@ -47,7 +47,11 @@
                         </div>
                         <smart-switch v-model="item.spicy" label="IS_SPICY"></smart-switch>
                         <smart-option v-model="item.taxClass" :options="taxOption" label="TAX_CLASS"></smart-option>
-                        <smart-input v-model="item.priority" label="PRIORITY" name="priority" @change="set" v-if="advance"></smart-input>
+                        <div v-if="advance">
+                            <smart-input v-model="item.priority" label="PRIORITY"></smart-input>
+                            <smart-input v-model="item.inventory" label="INVENTORY"></smart-input>
+                            <smart-input v-model="item.rewardPoint" label="REWARD_POINT"></smart-input>
+                        </div>
                     </article>
                 </section>
                 <section class="card">

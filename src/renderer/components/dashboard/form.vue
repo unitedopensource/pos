@@ -248,7 +248,7 @@ export default {
     },
     sockets: {
         AUTO_COMPLETE(data) {
-            data.results.length && (this.predict[data.type] = data.results);
+            this.predict[data.type] = data.results;
             data.type === 'address' && this.highlight(data.results);
         }
     }

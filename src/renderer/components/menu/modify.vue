@@ -94,8 +94,7 @@ export default {
           total: "0.00",
           side: ""
         })
-      };
-      console.log(this.item)
+      }
     },
     input(num) {
       switch (this.target) {
@@ -111,7 +110,7 @@ export default {
           break;
         case "qty":
           if (this.reset && num === '0' || num === '00') return;
-          if (this.item.qty + num > 99) return;
+          if (this.item.qty + num > 999) return;
           this.item.qty = this.reset ? num : String(this.item.qty) + num;
           break;
         case "discount":

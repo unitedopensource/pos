@@ -125,11 +125,11 @@ export default {
         })
       }
     },
-    addNote(item,e) {
+    addNote(item, e) {
       let newItem = Object.assign({}, item, { note: "" });
       let index = this.editList.findIndex(target => target.key === item.key);
       this.editList.splice(index, 1, newItem);
-      
+
     },
     onChange() {
       let target = this.content.name;
@@ -161,16 +161,15 @@ export default {
       Object.keys(this.option).forEach(key => {
         let items = this.option[key];
         items.forEach(item => {
-          let { zhCN, usEN, qty } = item;
+          let { zhCN, usEN, qty, price, print } = item;
           if (item.hasOwnProperty('note')) {
             zhCN = zhCN + ` *${item.note.toCapitalCase()}*`;
             usEN = usEN + ` *${item.note.toCapitalCase()}*`;
           }
           let content = {
-            qty, zhCN, usEN,
-            single: parseFloat(item.price),
-            price: item.price.toFixed(2),
-            print: item.print
+            qty, zhCN, usEN, print,
+            single: parseFloat(price),
+            price: (price * qty).toFixed(2)
           }
           this.setChoiceSet(content);
         })

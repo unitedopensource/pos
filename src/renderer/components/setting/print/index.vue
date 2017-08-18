@@ -35,9 +35,11 @@
                         <legend>{{text('SETTING.PRINT.CONTROL')}}</legend>
                         <div class="selection">
                             <checkbox v-model="profile.control.printPrimary" label="PRINT_PRIMARY" @input="togglePrimary"></checkbox>
+                            <checkbox v-model="profile.control.printPrimaryPrice" label="PRINT_PRICE" @input="togglePrimaryPrice"></checkbox>
                             <smart-option v-model="profile.control.primaryFont" label="FONT" :options="chineseFonts"></smart-option>
                             <smart-range v-model="profile.control.primaryFontSize" label="FONT_SIZE" min="10" max="40" step="1"></smart-range>
                             <checkbox v-model="profile.control.printSecondary" label="PRINT_SECONDARY" @input="toggleSecondary"></checkbox>
+                            <checkbox v-model="profile.control.printSecondaryPrice" label="PRINT_PRICE" @input="toggleSecondaryPrice"></checkbox>
                             <smart-option v-model="profile.control.secondaryFont" label="FONT" :options="englishFonts"></smart-option>
                             <smart-range v-model="profile.control.secondaryFontSize" label="FONT_SIZE" min="10" max="40" step="1"></smart-range>
                             <checkbox v-model="profile.control.sortItem" label="SORT_ITEM"></checkbox>
@@ -47,7 +49,6 @@
                             <checkbox v-model="profile.control.printCustomer" label="PRINT_CUST_INFO" @input="toggleCustomer"></checkbox>
                             <checkbox v-model="profile.control.printActionTime" label="PRINT_PRINTTIME"></checkbox>
                             <checkbox v-model="profile.control.enlargeDetail" label="PRINT_ENLARGE_CUST_INFO"></checkbox>
-                            <checkbox v-model="profile.control.printPrice" label="PRINT_PRICE" @input="togglePrice"></checkbox>
                             <checkbox v-model="profile.control.printPayment" label="PRINT_PAYMENT" @input="togglePayment"></checkbox>
                             <checkbox v-model="profile.control.printSuggestion" label="PRINT_TIP_SUGG"></checkbox>
                             <checkbox v-model="profile.control.buzzer" label="BUZZER"></checkbox>
@@ -118,6 +119,7 @@
                                 <span class="mark"></span>
                             </span>
                         </span>
+                        <span class="price" :class="{hide:!receipt.primaryPrice}">12.59</span>
                     </p>
                     <p class="list" :style="style.usEN">
                         <span class="qty">2</span>
@@ -129,7 +131,7 @@
                                 <span class="mark"></span>
                             </span>
                         </span>
-                        <span class="price" :class="{hide:!receipt.price}">12.59</span>
+                        <span class="price" :class="{hide:!receipt.secondaryPrice}">12.59</span>
                     </p>
                     <p class="list mark" :style="style.zhCN">
                         <span class="qty"></span>
@@ -141,6 +143,7 @@
                                 <span class="mark">K</span>
                             </span>
                         </span>
+                        <span class="price" :class="{hide:!receipt.primaryPrice}">5.99</span>
                     </p>
                     <p class="list mark" :style="style.usEN">
                         <span class="qty"></span>
@@ -152,7 +155,7 @@
                                 <span class="mark">K</span>
                             </span>
                         </span>
-                        <span class="price" :class="{hide:!receipt.price}">5.99</span>
+                        <span class="price" :class="{hide:!receipt.secondaryPrice}">5.99</span>
                     </p>
                 </section>
                 <div class="payment" :class="{hide:!receipt.payment}">
@@ -216,7 +219,8 @@ export default {
                 store: true,
                 type: true,
                 customer: true,
-                price: true,
+                primaryPrice: false,
+                secondaryPrice: true,
                 payment: true,
                 tip: true,
                 coupon: true
@@ -247,8 +251,11 @@ export default {
         toggleCustomer(bool) {
             this.receipt.customer = bool;
         },
-        togglePrice(bool) {
-            this.receipt.price = bool;
+        togglePrimaryPrice(bool) {
+            this.receipt.primaryPrice = bool;
+        },
+        toggleSecondaryPrice(bool) {
+            this.receipt.secondaryPrice = bool;
         },
         togglePayment(bool) {
             this.receipt.payment = bool;
@@ -280,7 +287,8 @@ export default {
                 store: control.printStore,
                 type: control.printType,
                 customer: control.printCustomer,
-                price: control.printPrice,
+                primaryPrice: control.primaryPrice,
+                secondaryPrice: control.secondaryPrice,
                 payment: control.printPayment,
                 tip: control.printSuggestion,
                 coupon: control.printCoupon
