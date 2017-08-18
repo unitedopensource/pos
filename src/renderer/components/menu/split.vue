@@ -144,9 +144,7 @@ export default {
             for (let i = 1; i < this.split + 1; i++) {
                 this.printInvoice(i);
             }
-            this.gatherPayment();
-            this.init.resolve();
-            this.exit();
+            this.quit();
         },
         print(index) {
             let content = this.items.filter(item => item.sort === index);
@@ -156,7 +154,8 @@ export default {
                 content, customer,
                 number: this.items.number ? this.items.number : `${this.ticket.number}-${index}`,
                 type: this.items.type ? this.items.type : this.ticket.type,
-                payment: this.splitPayment[index] || this.$children[index].payment
+                payment: this.splitPayment[index] || this.$children[index].payment,
+                time: +new Date
             });
             Printer.init(this.config).setJob("receipt").print(order);
         },
@@ -183,7 +182,19 @@ export default {
                 splitPayment.push(invoice.payment)
             });
             splitPayment.splice(0, 1);
-            this.setOrder({ splitPayment });
+            let payment = {};
+            splitPayment.forEach(pay => {
+                Object.keys(pay).forEach(key => {
+                    if (payment.hasOwnProperty(key)) {
+                        typeof payment[key] === 'number' ?
+                            payment[key] += pay[key] :
+                            payment[key].push(...pay[key]);
+                    } else {
+                        payment[key] = pay[key]
+                    }
+                })
+            })
+            this.setOrder({ splitPayment, payment });
         },
         combineInvoiceInfo() {
             let customer = Object.assign({}, this.customer);
@@ -227,7 +238,18 @@ export default {
             this.$route.name !== 'Menu' && this.$socket.emit("[UPDATE] INVOICE", this.order);
             this.init.resolve();
         },
-        ...mapActions(['setOrder'])
+        quit() {
+            this.combineInvoiceInfo();
+            if (this.$route.name !== 'Menu') {
+                this.$socket.emit("[UPDATE] INVOICE", this.order);
+                this.init.resolve();
+            } else {
+                this.$socket.emit("[SAVE] INVOICE", this.order);
+                this.resetAll();
+                this.$router.push({ path: '/main' });
+            }
+        },
+        ...mapActions(['setOrder', 'resetAll'])
     },
     computed: {
         offset() {

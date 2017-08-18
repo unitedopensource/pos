@@ -113,8 +113,12 @@ Printer.prototype.printReceipt = function (raw) {
   function createHeader(store, data) {
     let { type, time, number, server, cashier, station, table, customer } = data;
     let ticket = {};
-
-    let phone = customer.phone && customer.phone.replace(/^\D?(\d{3})\D?\D?(\d{3})\D?(\d{4})/, "$1.$2.$3");
+    let phone = null;
+    try {
+      phone = customer.phone && customer.phone.replace(/^\D?(\d{3})\D?\D?(\d{3})\D?(\d{4})/, "$1.$2.$3");
+    } catch (e) {
+      phone = customer.phone
+    }
     switch (type) {
       case "WALK_IN":
         ticket.zhCN = "外等";
@@ -214,7 +218,7 @@ Printer.prototype.printReceipt = function (raw) {
                       <span class="price">${parseFloat(set.price) !== 0 ? set.price.toFixed(2) : ""}</span>
                     </p>`;
       });
-      let name = (item[printer] && item[printer].hasOwnProperty("zhCN")) ? item[printer].zhCN :  printMenuID ? item.menuID + " " + item.zhCN : item.zhCN;
+      let name = (item[printer] && item[printer].hasOwnProperty("zhCN")) ? item[printer].zhCN : printMenuID ? item.menuID + " " + item.zhCN : item.zhCN;
       let zhCN = `<p class="list zhCN">
                     <span class="qty">${qty}</span>
                     <span class="itemWrap ${mark}">
@@ -306,9 +310,9 @@ Printer.prototype.printReceipt = function (raw) {
               .server{border-bottom:1px solid #000;padding-bottom:1px;text-align:left;}
               .server .wrap{display:flex;padding:0 10px;}
               .wrap .text{flex:2;}.wrap .value{flex:3;}
-              .customer{${printCustomer ? '' : 'display:none;'}}
-              .customer p{text-align:left;}
-              .customer p:last-child{border-bottom:1px solid #000;padding-bottom:4px;}
+              .customer{padding:4px 0;${printCustomer ? '' : 'display:none;'}}
+              .customer p{text-align:left;padding-bottom:2px;}
+              .customer p:last-child{border-bottom:1px solid #000;padding-bottom:0px;}
               .customer .text{display:inline-block;width:32px;margin-left:5px;}
               .customer .tel{letter-spacing:2px;}
               .customer .ext{margin-left:10px;}
