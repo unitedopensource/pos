@@ -319,9 +319,9 @@ Printer.prototype.printReceipt = function (raw) {
               .customer .ext{margin-left:10px;}
               ${enlarge}
               section.body{padding:10px 0px;}
-              p.list{display:flex;flex-direction:row}
+              p.list{display:flex;}
               span.qty{min-width:25px;text-align:left;}
-              span.itemWrap{flex:1;}
+              span.itemWrap{flex:1;display:flex;align-items:center;}
               span.space{margin-left:10px;}
               .itemWrap.markItem{margin-top:5px;}
               span.item,span.side{position:relative;display:inline-block;}
@@ -338,7 +338,7 @@ Printer.prototype.printReceipt = function (raw) {
               .choiceSet .price{font-size:0.8em;}
               .set .qty{margin-left:1em;}
               footer{font-family:'Agency FB';}
-              section.column{display:flex;flex-direction:row;}
+              section.column{display:flex;}
               .payment{min-width:150px;${printPayment ? '' : 'display:none;'}}
               .empty{flex:1}
               .payment p{display:flex;font-family:'Tensentype RuiHeiJ-W2';}

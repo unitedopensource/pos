@@ -110,8 +110,7 @@ export default {
           break;
         case "qty":
           if (this.reset && num === '0' || num === '00') return;
-          if (this.item.qty + num > 999) return;
-          this.item.qty = this.reset ? num : String(this.item.qty) + num;
+          this.reset ? this.item.qty = num : (this.item.qty + num < 1000) && (this.item.qty = String(this.item.qty) + num);
           break;
         case "discount":
           if (this.reset) {
