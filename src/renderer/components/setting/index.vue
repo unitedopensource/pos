@@ -58,12 +58,37 @@
                 <span class="intro">{{text('SETTING.EXIT.TIP')}}</span>
             </figure>
         </section>
+        <section class="about">
+            <div>
+                <span class="text">Host:</span>
+                <span class="value">{{about.host}}</span>
+            </div>
+            <div>
+                <span class="text">Version:</span>
+                <span class="value">{{about.version}} ({{about.build | moment('MMDD')}})</span>
+            </div>
+            <div>
+                <span class="text">Support:</span>
+                <span class="value">{{about.support}}</span>
+            </div>
+        </section>
     </section>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 export default {
+    data() {
+        return {
+            about: {}
+        }
+    },
+    created() {
+        this.$socket.emit("ABOUT", (us) => {
+            console.log(us)
+            this.about = us;
+        })
+    },
     methods: {
         go(name) {
             this.$router.push({ name })
@@ -132,5 +157,22 @@ figcaption {
 .intro {
     color: gray;
     text-align: center;
+}
+
+section.about {
+    position: fixed;
+    left: 5px;
+    bottom: 5px;
+}
+
+section.about>div {
+    display: flex;
+    width: 180px;
+}
+
+section.about .value {
+    flex: 1;
+    text-align: right;
+    color: #37474F;
 }
 </style>
