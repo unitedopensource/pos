@@ -248,7 +248,6 @@ export default {
     },
     sockets: {
         AUTO_COMPLETE(data) {
-            console.log("trigger")
             data.results.length && (this.predict[data.type] = data.results);
             data.type === 'address' && this.highlight(data.results);
         }

@@ -56,7 +56,7 @@ export default {
     },
     setChoice(item) {
       if (!item.clickable) return;
-      let zhCN = item.zhCN, usEN = item.usEN;
+      let { zhCN, usEN, price } = item;
       if (this.action) {
         if (this.action.prefix) {
           zhCN = this.action.zhCN + zhCN;
@@ -66,13 +66,14 @@ export default {
           usEN = usEN + " " + this.action.usEN;
         }
       }
+      price = isNumber(price) ? parseFloat(price) : 0;
       let content = {
         qty: 1,
         zhCN,
         usEN,
-        single: parseFloat(item.price),
-        price: item.price,
-        key:item._id.slice(-4)
+        single: price,
+        price: price.toFixed(2),
+        key: item._id.slice(-4)
       }
       this.action = null;
       let dom = document.querySelector(".choiceSet.target");
