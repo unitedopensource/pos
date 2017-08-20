@@ -249,11 +249,11 @@ export default {
                     break;
                 case "CREDIT":
                     doms[1].classList.add("set");
-                    this.paid = this.payment.due.toFixed(2);
+                    this.paid = (parseFloat(this.payment.due) - parseFloat(this.payment.paid)).toFixed(2);
                     break;
                 case "GIFT":
                     doms[2].classList.add("set");
-                    this.paid = this.payment.due.toFixed(2);
+                    this.paid = (parseFloat(this.payment.due) - parseFloat(this.payment.paid)).toFixed(2);
                     this.giftCard = {
                         number: "",
                         balance: "0.00"
@@ -413,7 +413,7 @@ export default {
         },
         chargeCredit() {
             if (parseFloat(this.paid) === 0) return;
-            if (this.paid > this.payment.due) this.paid = this.payment.due.toFixed(2);
+            if (this.paid > this.payment.due) this.paid = (parseFloat(this.payment.due) - parseFloat(this.payment.paid)).toFixed(2);
 
             let card = Object.assign({}, {
                 creditCard: this.creditCard,
@@ -452,15 +452,13 @@ export default {
                     this.payment.log.push({
                         id: "",
                         type: "CREDIT",
-                        paid: this.payment.due,
+                        paid: this.paid,
                         change: "0.00",
                         balance: this.payment.balance,
                         number: "####"
                     });
                     this.invoicePaid(this.payment.due, 0, "CREDIT");
-                }).catch(() => {
-                    this.$q();
-                }) : this.$q();
+                }).catch(() => { this.$q() }) : this.$q();
         },
         swipeGiftCard() {
             new Promise((resolve, reject) => {
@@ -782,7 +780,7 @@ export default {
         savePayment() {
             if (this.payMode) {
                 this.setOrder({ cashier: this.op.name, payment: this.payment });
-                (this.$route.name === 'History' || this.$route.name === 'Table') && this.$socket.emit("[UPDATE] INVOICE",this.order);
+                (this.$route.name === 'History' || this.$route.name === 'Table') && this.$socket.emit("[UPDATE] INVOICE", this.order);
                 this.init.resolve();
             } else {
                 this.init.resolve(this.payment);

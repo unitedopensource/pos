@@ -69,6 +69,8 @@ export default {
                     return require('./parser/pax.js')
                 case 'NX2200':
                     return require('./parser/exadigm.js')
+                default:
+                    return require('./parser/pax.js')
             }
         },
         exit() {

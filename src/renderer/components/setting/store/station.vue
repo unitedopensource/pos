@@ -17,7 +17,7 @@
             <article>
                 <smart-switch v-model="workStation.terminal.enable" label="ENABLE"></smart-switch>
                 <smart-option v-model="workStation.terminal.model" :options="devices" label="MODEL"></smart-option>
-                <smart-input v-model="workStation.terminal.address" reg="^[0-9. ]{3,}$" label="ADDRESS"></smart-input>
+                <smart-input v-model="workStation.terminal.address" reg="^[0-9. ]{3,}$" label="ADDRESS" @dblclick.native="searchTool"></smart-input>
                 <smart-input v-model="workStation.terminal.port" reg="^[a-zA-Z0-9_. ]{2,10}$" label="PORT"></smart-input>
                 <smart-input v-model="workStation.terminal.sn" label="AUTH_CODE"></smart-input>
             </article>
@@ -93,9 +93,10 @@ import smartRange from '../common/smartRange'
 import smartSwitch from '../common/smartSwitch'
 import smartOption from '../common/smartOption'
 import redirector from '../common/redirector'
+import search from './search'
 import editor from './uiEditor'
 export default {
-    components: { smartInput, smartRange, smartSwitch, smartOption, redirector, editor },
+    components: { smartInput, smartRange, smartSwitch, smartOption, redirector, editor, search },
     created() {
         this.workStation = JSON.parse(JSON.stringify(this.station));
         this.printers = Object.keys(this.config.printer);
@@ -119,10 +120,17 @@ export default {
                 this.component = "editor";
             }).then(result => {
                 this.workStation.interface.splice(index, 1, result);
-                this.$exitComponent();
-            }).catch(() => {
-                this.$exitComponent();
-            })
+                this.$q()
+            }).catch(() => { this.$q() })
+        },
+        searchTool() {
+            new Promise((resolve, reject) => {
+                this.componentData = { resolve, reject };
+                this.component = "search";
+            }).then(ip => {
+                this.workStation.terminal.address = ip;
+                this.$q();
+            }).catch(() => { this.$q() })
         },
         update(data) {
             this.workStation.print = data;

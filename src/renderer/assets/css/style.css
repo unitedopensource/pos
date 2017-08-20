@@ -22,6 +22,7 @@ ul {
   width: 1024px;
   height: 768px;
   user-select: none;
+  touch-action: none;
 }
 #app.admin{
   background: url(../image/9.jpg) center center;
