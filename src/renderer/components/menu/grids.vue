@@ -156,7 +156,8 @@ export default {
       this.$emit("open", name);
     },
     less() {
-      this.lessQty();
+      let dom = document.querySelector('div.request');
+      this.lessQty(dom !== null);
     },
     modify() {
       if (this.isEmptyTicket) return;

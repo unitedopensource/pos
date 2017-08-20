@@ -30,6 +30,20 @@
         </header>
         <div class="order" @click.self="resetHighlight" v-if="layout === 'order'">
             <div class="inner" :style="scrollStyle" :class="{overflow}">
+                <div class="list void" v-for="(list,index) in voidItems" :key="index">
+                    <div class="itemOuter">
+                        <span class="qty">{{list.qty}}</span>
+                        <span class="itemWrap">
+                            <span class="item">{{list[language]}}
+                                <span class="mark">{{list.mark[0] | mark}}</span>
+                            </span>
+                            <span class="side">{{list.side[language]}}
+                                <span class="mark">{{list.mark[1] | mark}}</span>
+                            </span>
+                        </span>
+                        <span class="price">{{list.total}}</span>
+                    </div>
+                </div>
                 <div class="list" v-for="(list,index) in cart" @click="setHighlight(list,$event)" :data-category="list.category" :key="index">
                     <div class="itemOuter">
                         <span class="qty">{{list.qty}}</span>
@@ -43,7 +57,7 @@
                         </span>
                         <span class="price">{{list.total}}</span>
                     </div>
-                    <div class="choiceSet" v-for="set in list.choiceSet" @click.stop="adjustChoiceSet(set,$event)">
+                    <div class="choiceSet" v-for="(set,index) in list.choiceSet" @click.stop="adjustChoiceSet(set,$event)" :key="index">
                         <span class="qty" :class="{hide:set.qty === 1}">{{set.qty}}</span>
                         <span class="item">{{set[language]}}</span>
                         <span class="price" :class="{hide:set.price == 0}">{{set.price | decimal}}</span>
@@ -67,7 +81,7 @@
                         <span class="price">{{list.total}}</span>
                         <i class="fa"></i>
                     </div>
-                    <div class="choiceSet" v-for="set in list.choiceSet">
+                    <div class="choiceSet" v-for="(set,index) in list.choiceSet" :key="index">
                         <span class="qty" :class="{hide:set.qty === 1}">{{set.qty}}</span>
                         <span class="item">{{set[language]}}</span>
                         <span class="price" :class="{hide:set.price == 0}">{{set.price | decimal}}</span>
@@ -306,8 +320,8 @@ export default {
         setDriver() {
             this.$p("driver", { driver: this.order.driver, ticket: this.ticket.number })
         },
-        calculator(ticket) {
-            if (ticket.length === 0) {
+        calculator(items) {
+            if (items.length === 0) {
                 this.payment = {
                     subtotal: 0,
                     tax: 0,
@@ -324,37 +338,31 @@ export default {
                 };
                 return;
             }
-
+            let { type } = this.ticket;
+            let total = 0;
             let subtotal = 0;
             let tax = 0;
-            let total = 0;
-            let length = ticket.length;
-            let orderType = this.ticket.type;
-
-            for (let i = 0; i < length; i++) {
-                let item = ticket[i];
-                let amount = parseFloat(item.single) * item.qty;
-                item.discount && (amount -= item.discount);
-                let choiceLength = item.choiceSet.length;
-                subtotal += amount;
-
-                for (let x = 0; x < choiceLength; x++) {
-                    subtotal += parseFloat(item.choiceSet[x].price);
-                    amount += parseFloat(item.choiceSet[x].price);
-                }
+            let delivery = 0;
+            let due = 0;
+            let { tip, gratuity, discount } = this.payment;
+            items.forEach(item => {
+                if (item.void) return;
                 let taxClass = this.tax.class[item.taxClass];
-                if (!this.order.taxFree) tax += taxClass.apply[orderType] ? (taxClass.rate / 100 * amount) : tax;
-            }
-            tax = parseFloat(tax.toFixed(2));
-            this.payment.delivery =
-                (this.ticket.type === 'DELIVERY' && this.store.delivery && !this.order.deliveryFree) ?
-                    this.store.deliveryCharge : 0;
-            total = subtotal + tax + parseFloat(this.payment.tip) + parseFloat(this.payment.gratuity) + this.payment.delivery;
-            let due = total - this.payment.discount;
-            this.payment.subtotal = subtotal;
-            this.payment.tax = tax.toFixed(2);
-            this.payment.total = total.toFixed(2);
-            this.payment.due = due.toFixed(2);
+                let amount = item.single * item.qty;
+                item.choiceSet.forEach(set => { amount += set.single * set.qty });
+                if (!this.order.taxFree) tax += taxClass.apply[type] ? (taxClass.rate / 100 * amount) : tax;
+                subtotal += amount;
+            });
+
+            delivery = (this.ticket.type === 'DELIVERY' && this.store.delivery && !this.order.deliveryFree) ? this.store.deliveryCharge : 0;
+            total = subtotal + tax + delivery + parseFloat(tip) + parseFloat(gratuity);
+            due = total - parseFloat(discount);
+            this.payment = Object.assign({}, this.payment, {
+                subtotal: subtotal.toFixed(2),
+                tax: tax.toFixed(2),
+                total: total.toFixed(2),
+                due: due.toFixed(2),
+            });
             this.setOrder({ payment: this.payment });
 
             this.$nextTick(() => {
@@ -365,7 +373,7 @@ export default {
                 });
                 height = 329 - height;
                 this.overflow = height < 0;
-                this.overflowIndex = this.overflow ? length - 1 : null;
+                this.overflowIndex = this.overflow ? items.length - 1 : null;
                 this.offset = this.overflow ? height : 0;
             })
         },
@@ -376,7 +384,10 @@ export default {
             return { transform: `translate3d(0,${this.offset}px,0)` }
         },
         cart() {
-            return this.sort ? this.order.content.filter(item => item.sort === this.sort) : this.order.content
+            return this.sort ? this.order.content.filter(item => item.sort === this.sort && !item.void) : this.order.content.filter(item=>!item.void)
+        },
+        voidItems() {
+            return this.config.display.voidItem ? this.order.content.filter(item => item.void) : []
         },
         ...mapGetters(['app', 'config', 'store', 'tax', 'order', 'item', 'ticket', 'language', 'isEmptyOrder'])
     },
@@ -481,6 +492,11 @@ header i {
     display: flex;
     min-height: 20px;
     flex-direction: column;
+}
+
+.list.void {
+    color: red;
+    opacity: 0.5;
 }
 
 .list.highlight {
@@ -592,7 +608,7 @@ i.flip {
     border-bottom: 1px solid #eee;
     background: #fff;
     padding: 1px;
-    display:flex;
+    display: flex;
 }
 
 .settle .text {

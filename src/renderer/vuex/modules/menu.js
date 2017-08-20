@@ -192,37 +192,32 @@ const mutations = {
       } else {
         state.choiceSetTarget.price = (--state.choiceSetTarget.qty * state.choiceSetTarget.single).toFixed(2);
       }
-      return;
     } else if (delChoiceSetFirst) {
       let set = state.item.choiceSet.last();
-      if (set) {
-        set.qty === 1 ?
-          state.item.choiceSet.pop() :
-          set.price = (--set.qty * set.single).toFixed(2);
-        return;
-      }
-    }
-    let currentActionTime = +new Date();
-    let diff = currentActionTime - state.lastActionTime;
-    if (!state.item) state.item = state.order.content.last();
-    if (state.item.qty !== 1 && diff > 250) {
-      state.item.total = (--state.item.qty * state.item.single).toFixed(2);
-      state.order.content.splice();
+      set && (set.qty === 1 ? state.item.choiceSet.pop() : set.price = (--set.qty * set.single).toFixed(2));
     } else {
-      state.order.content.remove(state.item);
-      state.item = state.order.content.last();
-      let dom = document.querySelector('.list.highlight');
-      dom && dom.classList.remove("highlight");
-      let sides = state.order.content.length ? state.order.content.last().option.slice() : [];
-      let length = sides.length;
-      for (let i = length; i < 11; i++) {
-        sides.push({
-          zhCN: "",
-          usEN: "",
-          disable: true
-        })
+      let currentActionTime = +new Date();
+      let diff = currentActionTime - state.lastActionTime;
+      if (!state.item) state.item = state.order.content.last();
+      if (state.item.qty !== 1 && diff > 250) {
+        state.item.total = (--state.item.qty * state.item.single).toFixed(2);
+        state.order.content.splice();
+      } else {
+        state.order.content.remove(state.item);
+        state.item = state.order.content.last();
+        let dom = document.querySelector('.list.highlight');
+        dom && dom.classList.remove("highlight");
+        let sides = state.order.content.length ? state.order.content.last().option.slice() : [];
+        let length = sides.length;
+        for (let i = length; i < 11; i++) {
+          sides.push({
+            zhCN: "",
+            usEN: "",
+            disable: true
+          })
+        }
+        state.sides = sides;
       }
-      state.sides = sides;
     }
     state.lastActionTime = +new Date();
   },
