@@ -69,33 +69,25 @@ export default {
                 case "phone":
                     if (isNumber(char)) {
                         if (length === 0) {
-                            this.customer[this.target] = char;
+                            this.customer.phone = char;
                             this.caret = 1;
-                        } else if (length < 10) {
+                        } else {
                             let a = value.substr(0, this.caret);
                             let b = value.substr(this.caret);
-                            this.customer[this.target] = a + char + b;
+                            this.customer.phone = a + char + b;
                             this.caret++;
+                            keyword = this.customer.phone;
                         }
-                        if (this.customer[this.target].length === 10) {
-                            this.anchor("address");
-                            if (this.predict.phone && this.predict.phone.length) {
-                                this.resetAutoComplete();
-                                let profile = this.predict.phone.find(predict => predict.phone === this.customer.phone);
-                                profile && this.setCustomer(profile);
-                            }
-                        }
-                        keyword = this.customer.phone;
                     }
                     break;
                 case "address":
                     if (length === 0) {
-                        this.customer[this.target] = char;
+                        this.customer.address = char;
                         this.caret = 1;
                     } else if (length < 40) {
                         let a = value.substr(0, this.caret);
                         let b = value.substr(this.caret);
-                        this.customer[this.target] = a + char + b;
+                        this.customer.address = a + char + b;
                         this.caret++;
                     }
                     keyword = this.customer.address.replace(/ +/g, ' ').trim().split(" ").slice(1).join(" ");
@@ -249,7 +241,14 @@ export default {
     sockets: {
         AUTO_COMPLETE(data) {
             this.predict[data.type] = data.results;
+            if (data.type === 'phone' && this.customer.phone.length === 10) {
+                this.anchor("address");
+                let profile = data.results.find(predict => predict.phone === this.customer.phone);
+                profile && this.setCustomer(profile);
+                this.resetAutoComplete();
+            }
             data.type === 'address' && this.highlight(data.results);
+
         }
     }
 }

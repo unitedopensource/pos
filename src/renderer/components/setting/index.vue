@@ -84,10 +84,7 @@ export default {
         }
     },
     created() {
-        this.$socket.emit("ABOUT", (us) => {
-            console.log(us)
-            this.about = us;
-        })
+        this.$socket.emit("ABOUT", (us) => { this.about = us })
     },
     methods: {
         go(name) {

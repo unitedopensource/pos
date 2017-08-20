@@ -148,7 +148,7 @@ export default {
     mounted() {
         this.$route.name === 'Menu' && this.app.mode === 'edit' && (this.payment = this.order.payment);
         this.$route.name === 'Table' && this.order.content.length > 0 && (this.payment = this.order.payment);
-        this.app.mode === 'create' && this.order.content.length > 0 && this.calculator(this.order.content)
+        this.app.mode === 'create' && this.order.content.length > 0 && this.calculator(this.order.content);
     },
     methods: {
         setHighlight(item, e) {
