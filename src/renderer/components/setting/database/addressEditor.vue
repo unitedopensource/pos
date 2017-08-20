@@ -45,7 +45,7 @@ export default {
     methods: {
         del() {
             this.$emit("del", this.init.index);
-            this.$socket.emit("[CMD] REMOVE_ADDRESS", this.address._id);
+            this.$socket.emit("[CMS] REMOVE_ADDRESS", this.address._id);
             this.init.reject();
         },
         confirm() {
@@ -53,7 +53,7 @@ export default {
             this.address.street = this.address.street.toUpperCase();
             this.address.city = this.address.city.toUpperCase();
             this.$emit("add", this.address);
-            this.$socket.emit("[CMD] EDIT_ADDRESS", this.address);
+            this.$socket.emit("[CMS] EDIT_ADDRESS", this.address);
             this.init.resolve();
         }
     }

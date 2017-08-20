@@ -40,9 +40,7 @@ import Printer from '../print'
 export default {
   components: { maintenance, caller, switcher, dialoger, opPanel, spooler, giftCard, terminal, notifier },
   mounted() {
-    setTimeout(() => {
-      document.querySelector(".dock").classList.add("slideDown");
-    }, 300);
+    setTimeout(() => { toggleClass(".dock","slideDown") }, 300);
   },
   data() {
     return {

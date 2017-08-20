@@ -4,7 +4,7 @@
             <header>{{text('ADDRESS')}}
                 <span class="tip">{{text('SETTING.DATABASE.ADDRESS.TIP')}}</span>
             </header>
-            <div class="header">
+            <div class="listHeader">
                 <span class="f2">{{text('STREET')}}</span>
                 <span class="f1">{{text('CITY')}}</span>
                 <span class="action">{{text('ACTION')}}</span>
@@ -34,12 +34,6 @@
 import editor from './addressEditor'
 export default {
     components: { editor },
-    created() {
-        this.$socket.emit("[CMS] FETCH_ADDRESSES", this.page)
-    },
-    mounted() {
-        window.addEventListener("keydown", this.input, false);
-    },
     data() {
         return {
             page: 0,
@@ -48,6 +42,13 @@ export default {
             componentData: null
         }
     },
+    created() {
+        this.$socket.emit("[CMS] FETCH_ADDRESSES", this.page)
+    },
+    mounted() {
+        window.addEventListener("keydown", this.input, false);
+    },
+
     methods: {
         edit(address, index) {
             this.$p("editor", { address, index })

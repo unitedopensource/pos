@@ -65,7 +65,9 @@
             </div>
             <div>
                 <span class="text">Version:</span>
-                <span class="value">{{about.version}} ({{about.build | moment('MMDD')}})</span>
+                <span class="value">{{app}}
+                    <span :title="'Server Build: '+time(about.build)">({{about.version}})</span>
+                </span>
             </div>
             <div>
                 <span class="text">Support:</span>
@@ -77,18 +79,24 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import Electron from 'electron'
 export default {
     data() {
         return {
-            about: {}
+            about: {},
+            app: null,
         }
     },
     created() {
+        this.app = Electron.remote.app.getVersion();
         this.$socket.emit("ABOUT", (us) => { this.about = us })
     },
     methods: {
         go(name) {
             this.$router.push({ name })
+        },
+        time(value){
+            return moment(value).fromNow()
         }
     },
     computed: {

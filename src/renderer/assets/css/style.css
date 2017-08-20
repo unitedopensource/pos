@@ -243,6 +243,14 @@ section.card {
   color: #78909C;
 }
 
+.listHeader{
+  padding: 10px 0;
+  background: #4D6D83;
+  color: #fff;
+  display: flex;
+  border-bottom: 1px solid #455A64;
+}
+
 ::-webkit-scrollbar {
   width: 5px;
 }
