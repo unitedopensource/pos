@@ -100,7 +100,7 @@ export default {
                 guest: this.currentTable.current.guest
             })
         },
-        poleDisplay(line1,line2) {
+        poleDisplay(line1, line2) {
             if (this.device.poleDisplay) {
                 poleDisplay.write('\f');
                 poleDisplay.write(line(line1, line2));
@@ -170,11 +170,11 @@ export default {
                 case "split":
                     this.$p("split", { order: this.order });
                     break;
-                case "takeoutExit":
-                    this.isEmptyTicket ? this.exit() : this.$dialog({ title: 'EXIT_CFM', msg: 'TIP_EXIT_CFM' }).then(() => { this.exit() }).catch(() => { this.$q() })
-                    break;
                 case "dineinExit":
                     this.isEmptyTicket ? this.resetTableExit() : this.$dialog({ title: 'EXIT_CFM', msg: 'TIP_EXIT_CFM' }).then(() => { this.resetTableExit() }).catch(() => { this.$q() });
+                    break;
+                case "exit":
+                    this.isEmptyTicket ? this.exit() : this.$dialog({ title: 'EXIT_CFM', msg: 'TIP_EXIT_CFM' }).then(() => { this.exit() }).catch(() => { this.$q() })
                     break;
             }
         },

@@ -68,23 +68,23 @@
       <i class="fa fa-calculator"></i>
       <span class="text">{{text("MODIFY")}}</span>
     </button>
-    <div class="btn settle" @click="trigger('settle')">
+    <div class="btn settle" @click="settle">
       <i class="fa fa-money"></i>
       <span class="text">{{text("PAYMENT")}}</span>
     </div>
-    <div class="btn split" @click="trigger('split')">
+    <div class="btn split" @click="split">
       <i class="fa fa-columns"></i>
       <span class="text">{{text("SPLIT")}}</span>
     </div>
-    <div class="btn" @click="trigger('save',false)">
+    <div class="btn" @click="save(false)">
       <i class="fa fa-save"></i>
       <span class="text">{{text("SAVE")}}</span>
     </div>
-    <div class="btn" @click="trigger('exitConfirm')">
+    <div class="btn" @click="exit">
       <i class="fa fa-times"></i>
       <span class="text">{{text("EXIT")}}</span>
     </div>
-    <div class="btn" @click="trigger('switchLanguage')">
+    <div class="btn" @click="switchLanguage">
       <i class="fa fa-language"></i>
       <span class="text">中/EN</span>
     </div>
@@ -130,7 +130,7 @@
       <i class="fa fa-calculator"></i>
       <span class="text">{{text("MODIFY")}}</span>
     </button>
-    <div class="btn" @click="takeoutExit">
+    <div class="btn" @click="exit">
       <i class="fa fa-times"></i>
       <span class="text">{{text("EXIT")}}</span>
     </div>
@@ -254,14 +254,11 @@ export default {
       }
       return Object.assign({}, order, extra);
     },
-    takeoutExit() {
-      this.callComponent("takeoutExit");
+    exit() {
+      this.callComponent("exit");
     },
     dineinExit() {
       this.callComponent("dineinExit");
-    },
-    buffetExit() {
-
     },
     switchLanguage() {
       let language = this.app.language === "usEN" ? "zhCN" : "usEN";
