@@ -111,22 +111,26 @@ export default {
                 from = moment(from);
                 to = moment(to);
                 let days = to.diff(from, 'days') + 1;
+                let current = 0;
                 let h = to.format('HH');
                 let m = to.format('mm');
+
                 to = from.clone().hours(h).minutes(m);
-                from = from.subtract(1, 'days');
-                for (let i = 0; i < days; i++) {
-                    from = from.add(1, 'days')
-                    to = to.add(1, 'days');
-
-                    this.reportRange = { from: +from, to: +to };
-
-                    i !== days - 1 ? this.process({ from: +from, to: +to }) : this.process(null, this.init.resolve);
-                }
-
+                from = from.clone().subtract(1, 'days');
+                this.processLoop({ from, to }, current, days);
             } else {
                 this.process(null, this.init.resolve);
             }
+        },
+        processLoop(date, current, days) {
+            let { from, to } = date;
+            from = from.clone().add(1, 'days');
+            to = to.clone().add(1, 'days');
+            this.reportRange = { from: +from, to: +to };
+            this.process(null, () => {
+                current++;
+                current !== days ? this.processLoop({ from, to }, current, days) : this.init.resolve();
+            });
         },
         process(date, callback) {
             Promise.all([this.fetchData(), this.fetchCreditCard(), this.fetchGiftCard()]).then(datas => {

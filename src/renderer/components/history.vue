@@ -185,7 +185,8 @@ export default {
             if (prevs.orders.length === 0)
                 this.$dialog({
                     title: this.calendarDate + " " + this.text('NO_PREVS_ORDER'),
-                    msg: 'NO_PREVS_ORDER_TIP'
+                    msg: 'NO_PREVS_ORDER_TIP',
+                    buttons:[{text:'CONFIRM',fn:'resolve'}]
                 }).then(confirm => {
                     this.calendarDate = null;
                     this.$q();
