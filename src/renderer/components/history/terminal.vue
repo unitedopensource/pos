@@ -379,6 +379,14 @@ li {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
     margin: 5px;
     background: #fff;
+    position: relative;
+}
+
+.risk{
+    position: absolute;
+    color: var(--yellow);
+    left: 20px;
+    bottom: 5px;
 }
 
 .status {
@@ -388,9 +396,13 @@ li {
     text-shadow: 0 0px 1px #009688;
 }
 
-.info,
-.card {
+.info{
     flex: 1;
+    display: flex;
+}
+
+.card {
+    width:180px;
     display: flex;
 }
 
