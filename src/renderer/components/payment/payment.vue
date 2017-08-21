@@ -359,21 +359,17 @@ export default {
                 this.paid = (this.paid * 100).toFixed(0).slice(0, -1) / 100;
         },
         delGift() {
-            let p = this.pointer;
+            let p = this.anchor;
             p !== 'paid' ?
                 this.giftCard.number = this.giftCard.number.slice(0, -1) :
                 this.paid = (this.paid * 100).toFixed(0).slice(0, -1) / 100;
         },
         clearCredit() {
-            switch (this.pointer) {
+            switch (this.anchor) {
                 case "number":
-                    this.creditCard.number = "";
-                    break;
                 case "date":
-                    this.creditCard.date = "";
-                    break;
                 case "code":
-                    this.creditCard.code = "";
+                    this.creditCard[this.anchor] = "";
                     break;
                 default:
                     this.paid = "0.00"
@@ -387,7 +383,7 @@ export default {
             if (parseFloat(this.paid) === 0) return;
             this.payment.paid += parseFloat(this.paid);
 
-            let change = this.payment.change = Math.max(0, (this.paid - this.payment.due)).toFixed(2);
+            let change = this.payment.change = Math.max(0, (this.paid - this.payment.balance)).toFixed(2);
             let balance = this.payment.balance = Math.max(0, (this.payment.due - this.payment.paid)).toFixed(2);
 
             this.payment.log.push({
@@ -413,7 +409,8 @@ export default {
         },
         chargeCredit() {
             if (parseFloat(this.paid) === 0) return;
-            if (this.paid > this.payment.due) this.paid = (parseFloat(this.payment.due) - parseFloat(this.payment.paid)).toFixed(2);
+            if (this.paid > this.payment.due)
+                this.paid = (parseFloat(this.payment.due) - parseFloat(this.payment.paid)).toFixed(2);
 
             let card = Object.assign({}, {
                 creditCard: this.creditCard,
@@ -426,7 +423,8 @@ export default {
             }).then((data) => { this.creditAccept(data) }).catch((reason) => { this.creditReject(reason) });
         },
         creditAccept(trans) {
-            this.payment.balance = Math.max(0, (this.payment.due - trans.amount.approve)).toFixed(2);
+            this.payment.paid += parseFloat(trans.amount.approve);
+            this.payment.balance = Math.max(0, (this.payment.due - this.payment.paid)).toFixed(2);
             this.payment.log.push({
                 id: trans.unique,
                 type: "CREDIT",
@@ -442,6 +440,10 @@ export default {
                 this.payment.settled = true;
                 this.poleDisplay("PAID by Credit Card", "Thank You");
                 this.invoicePaid(trans.amount.approve, 0, "CREDIT")
+            } else {
+                this.$q();
+                this.getQuickInput(this.payment.balance);
+                this.paid = this.payment.balance;
             }
         },
         creditReject(reason) {

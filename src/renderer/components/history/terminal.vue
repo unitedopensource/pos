@@ -222,9 +222,9 @@ export default {
             this.terminal.batch().then(response => response.text()).then(response => {
                 let result = this.terminal.explainBatch(response);
                 if (result.code === '000000') {
-                    let sn = this.station.terminal.sn;
+                    let { sn } = this.device;
                     let updated = this.transactions.filter(trans => !trans.close).map(trans => {
-                        if (trans.addition.SN === sn) trans.close = true;
+                        trans.addition.SN === sn && (trans.close = true);
                         return trans;
                     })
                     this.$socket.emit("[TERM] BATCH_TRANS_CLOSE", updated);
@@ -257,7 +257,7 @@ export default {
             }
 
             let content = this.transaction.filter(trans => {
-                if (trans.close) return;
+                if (trans.close) return false;
                 let approve = parseFloat(trans.amount.approve);
                 let tip = parseFloat(trans.amount.tip);
                 if (trans.status === 0) {
@@ -382,7 +382,7 @@ li {
     position: relative;
 }
 
-.risk{
+.risk {
     position: absolute;
     color: var(--yellow);
     left: 20px;
@@ -396,13 +396,13 @@ li {
     text-shadow: 0 0px 1px #009688;
 }
 
-.info{
+.info {
     flex: 1;
     display: flex;
 }
 
 .card {
-    width:180px;
+    width: 180px;
     display: flex;
 }
 
@@ -415,7 +415,7 @@ li {
 }
 
 .type {
-    flex: 1;
+    width: 90px;
     text-align: center;
 }
 
@@ -470,12 +470,12 @@ span.tip {
 }
 
 header .trans {
-    width: 200px;
+    width: 260px;
     padding: 0 15px;
 }
 
 header .record {
-    width: 230px;
+    width: 180px;
 }
 
 header .amount {

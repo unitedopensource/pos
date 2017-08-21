@@ -544,9 +544,9 @@ aside.action {
     line-height: 45px;
     text-align: center;
     display: block;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .2), 0 1px 1px 0 rgba(0, 0, 0, .14), 0 2px 1px -1px rgba(0, 0, 0, .12);
+    box-shadow: 0 2px 5px 0 rgba(22, 45, 61, 0.58);
     border-radius: 50%;
-    background: #f2f4f6;
+    background: linear-gradient(to bottom, white 0%, #eeeeee 100%);
     color: #5f5d5d;
     margin-bottom: 15px;
     cursor: pointer;

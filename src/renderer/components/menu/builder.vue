@@ -157,7 +157,7 @@ export default {
     },
     confirm() {
       !this.template.insert && this.emptyChoiceSet();
-      this.alterItemOption({ side: this.init.side, index: this.init.index, disableAutoAdd: true });
+      this.alterItemOption({ side: this.init.side, index: this.init.index, disableAutoAdd: true, disableQtyAdd:true });
       Object.keys(this.option).forEach(key => {
         let items = this.option[key];
         items.forEach(item => {

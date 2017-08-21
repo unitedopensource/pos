@@ -42,7 +42,8 @@ export default {
                 }
                 clearTimeout(this.timeout);
                 setTimeout(() => {
-                    this.msg = (this.init.card.number && this.init.card.date) ?
+                    let { creditCard } = this.init.card;
+                    this.msg = (creditCard.number && creditCard.date) ?
                         this.text('TERM_COMM', this.device.model || terminal.model) :
                         this.text("TERM_MANUAL", this.device.model || terminal.model);
                 }, 2000)

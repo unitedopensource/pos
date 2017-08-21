@@ -56,25 +56,13 @@ const mutations = {
   [types.SET_POINTER](state, item) {
     state.item = item;
     let sides = item.option.slice();
-    for (let i = sides.length; i < 11; i++) {
-      sides.push({
-        zhCN: "",
-        usEN: "",
-        disable: true
-      })
-    }
+    Array(11 - sides.length).fill().forEach(_ => { sides.push({ zhCN: "", usEN: "", disable: true }) });
     state.sides = sides;
   },
   [types.RESET_POINTER](state) {
     state.item = state.order.content.last();
     let sides = state.item ? state.item.option.slice() : [];
-    for (let i = sides.length; i < 11; i++) {
-      sides.push({
-        zhCN: "",
-        usEN: "",
-        disable: true
-      })
-    }
+    Array(11 - sides.length).fill().forEach(_ => { sides.push({ zhCN: "", usEN: "", disable: true }) });
     state.sides = sides;
     state.choiceSetTarget = null;
   },
@@ -133,26 +121,24 @@ const mutations = {
       if (item.side.zhCN === `[${data.side.zhCN}]` && item.side.usEN === `[${data.side.usEN}]` && !data.disableAutoAdd) {
         item.total = (++item.qty * item.single).toFixed(2);
       } else {
-        if (data.side.hasOwnProperty('price')) {
-          price = parseFloat(data.side.price)
-        } else if (data.side.hasOwnProperty('extra')) {
-          price = parseFloat(item.price[0]) + parseFloat(data.side.extra)
-        } else {
-          price = item.price[data.index] ? parseFloat(item.price[data.index]) : parseFloat(item.price[0])
-        }
-        item.single = price;
+        item.single =
+          data.side.hasOwnProperty('price') ? parseFloat(data.side.price) :
+            data.side.hasOwnProperty('extra') ? parseFloat(item.price[0]) + parseFloat(data.side.extra) :
+              item.price[data.index] ? parseFloat(item.price[data.index]) : parseFloat(item.price[0]);
+
         item.total = item.single.toFixed(2);
+
         if (data.side.overWrite) {
           item.zhCN = data.side.zhCN;
           item.usEN = data.side.usEN;
         } else {
           item.side = { zhCN: `[${data.side.zhCN}]`, usEN: `[${data.side.usEN}]` }
         }
+
       }
     } else {
-      if (item.side.zhCN === `[${data.side.zhCN}]` &&
-        item.side.usEN === `[${data.side.usEN}]`) {
-        item.total = (++item.qty * item.single).toFixed(2);
+      if (item.side.zhCN === `[${data.side.zhCN}]` && item.side.usEN === `[${data.side.usEN}]`) {
+        item.total = data.disableQtyAdd ? (item.qty * item.single).toFixed(2) : (++item.qty * item.single).toFixed(2);
       } else {
         item.total = (--item.qty * item.single).toFixed(2);
         item = Object.assign({}, item);
@@ -240,8 +226,8 @@ const mutations = {
   },
   [types.ALERT_CHOICE_SET](state, set) {
     let { zhCN, usEN } = set;
-    state.choiceSetTarget.zhCN = state.choiceSetTarget.zhCN + " " + zhCN;
-    state.choiceSetTarget.usEN = state.choiceSetTarget.usEN + " " + usEN;
+    state.choiceSetTarget.zhCN = `${state.choiceSetTarget.zhCN} ${zhCN}`;
+    state.choiceSetTarget.usEN = `${state.choiceSetTarget.usEN} ${usEN}`;
   },
   [types.RESET_CHOICE_SET](state) {
     state.choiceSetTarget = null;
@@ -253,10 +239,8 @@ const mutations = {
     if (!state.choiceSetTarget) return;
     let single = data.single || data.total;
     let qty = data.qty || 1;
-    let total = (single * qty).toFixed(2);
-    state.choiceSetTarget.qty = qty;
-    state.choiceSetTarget.single = single;
-    state.choiceSetTarget.price = total;
+    let price = (single * qty).toFixed(2);
+    Object.assign(state.choiceSetTarget, { qty, single, price })
   },
   [types.SET_CHOICE_SET_TARGET](state, target) {
     state.choiceSetTarget = target;
