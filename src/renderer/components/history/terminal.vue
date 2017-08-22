@@ -12,8 +12,8 @@
                 <section class="trans">
                     <header>
                         <span>&nbsp;</span>
-                        <span class="trans">Transaction</span>
-                        <span class="record">Card Information</span>
+                        <span class="trans">{{text('TRANSACTION')}}</span>
+                        <span class="record">{{text('CARD_INFO')}}</span>
                         <span class="amount">{{text('AMOUNT')}}</span>
                         <span class="action">{{text("action")}}</span>
                     </header>
