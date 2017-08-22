@@ -4,7 +4,6 @@ var Printer = function () { };
 Printer.prototype.init = function (config) {
   this.config = config;
   this.printer = CLODOP;
-  this.printer.webskt.onclose = function (e) { };
   return this;
 };
 Printer.prototype.setJob = function (job) {
@@ -66,7 +65,9 @@ Printer.prototype.openCashDrawer = function () {
   station.cashDrawer && CLODOP.SET_PRINTER_INDEX(station.cashDrawer.bind);
   CLODOP.SEND_PRINT_RAWDATA(String.fromCharCode(27) + String.fromCharCode(112) + String.fromCharCode(48) + String.fromCharCode(55) + String.fromCharCode(221));
 };
-Printer.prototype.buzzer = function () {
+Printer.prototype.buzzer = function (name) {
+  this.printer.PRINT_INIT('BUZZER');
+  name && this.printer.SET_PRINTER_INDEX(name);
   CLODOP.SEND_PRINT_RAWDATA(String.fromCharCode(27) + String.fromCharCode(67) + String.fromCharCode(4) + String.fromCharCode(2) + String.fromCharCode(3));
 }
 Printer.prototype.printReceipt = function (raw) {
@@ -90,11 +91,8 @@ Printer.prototype.printReceipt = function (raw) {
 
         let html = header + list + footer + style;
 
-        if (printers[name].control.buzzer) {
-          this.printer.PRINT_INIT('BUZZER');
-          this.printer.SET_PRINTER_INDEX(name);
-          this.buzzer();
-        }
+        printers[name].control.buzzer && this.buzzer(name);
+
         this.printer.PRINT_INIT(this.job);
         this.printer.ADD_PRINT_HTM(0, 0, "100%", "100%", html);
         redirect && (name = this.config.station.print[name] || name);
@@ -236,7 +234,7 @@ Printer.prototype.printReceipt = function (raw) {
                       <span class="price">${item.total}</span></p>${setEN}`;
       return zhCN + usEN;
     }
-    let { sortItem, duplicate, printMenuID} = ctrl;
+    let { sortItem, duplicate, printMenuID } = ctrl;
     let list = data.filter(item => item.printer[printer]);
     !duplicate && (list = list.filter(item => !item.print));
 
@@ -331,8 +329,8 @@ Printer.prototype.printReceipt = function (raw) {
               div.category{border-bottom:1px dashed #000;margin-top:5px;${sortItem ? '' : 'display:none;'}}
               .list.zhCN{margin-top:5px;}
               .list.usEN{${printPrimary ? 'margin-top:-5px' : 'margin-bottom:8px'}}
-              .zhCN .price{${printPrimaryPrice ? 'display:initial':'display:none'}}
-              .usEN .price{${printSecondaryPrice ? 'display:initial':'display:none'}}
+              .zhCN .price{${printPrimaryPrice ? 'display:initial' : 'display:none'}}
+              .usEN .price{${printSecondaryPrice ? 'display:initial' : 'display:none'}}
               p.list.choiceSet{margin-top:0px;display:flex;}
               .choiceSet .set{flex:1;padding:0 35px;font-size:0.8em;}
               .choiceSet .price{font-size:0.8em;}

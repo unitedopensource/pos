@@ -172,7 +172,6 @@ export default {
             single: parseFloat(price),
             price: (price * qty).toFixed(2)
           }
-          console.log(content)
           this.setChoiceSet(content);
         })
       })

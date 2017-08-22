@@ -6,7 +6,7 @@
                 <span class="tip">{{text('SETTING.DATABASE.CUSTOMER.TIP')}}</span>
                 <div class="search">
                     <i class="fa fa-search"></i>
-                    <input type="text" v-model="search">
+                    <input type="text" v-model="keyword" @keydown.enter="search">
                 </div>
             </header>
             <div class="listHeader">
@@ -21,6 +21,7 @@
                         <span class="city" v-show="customer.city">, {{customer.city}}</span>
                     </span>
                     <span class="last">{{customer.extra.lastDate | fromNow}}</span>
+                    <i class="fa fa-times" @click="removeClient(customer)"></i>
                 </div>
             </article>
         </section>
@@ -35,7 +36,7 @@ export default {
             componentData: null,
             component: null,
             customers: [],
-            search: "",
+            keyword: "",
             page: 0
         }
     },
@@ -50,8 +51,13 @@ export default {
 
         },
         search() {
-
-        }
+            //this.$socket.emit("[CMS]")
+        },
+        removeClient(customer) {
+            this.$socket.emit("[CMS] DELETE_CUSTOMER", customer._id);
+            let index = this.customers.findIndex(client => client._id === customer._id);
+            index !== 1 && this.customers.splice(index, 1);
+        },
     },
     sockets: {
         CUSTOMER_LIST(list) {
@@ -92,7 +98,12 @@ export default {
     margin-left: 5px;
 }
 
-.last{
+.last {
     width: 200px;
+}
+
+i{
+    padding: 0 10px;
+    cursor: pointer;
 }
 </style>
