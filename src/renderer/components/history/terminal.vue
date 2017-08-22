@@ -108,6 +108,8 @@ export default {
                     return require('../payment/parser/pax.js')
                 case 'NX2200':
                     return require('../payment/parser/exadigm.js')
+                default:
+                    return require('../payment/parser/pax.js')
             }
         },
         isRisk(trans) {
