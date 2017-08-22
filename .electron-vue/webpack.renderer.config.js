@@ -109,6 +109,12 @@ let rendererConfig = {
       template: path.resolve(__dirname, '../src/splash.html'),
       inject: false
     }),
+    new HtmlWebpackPlugin({
+      title: "Presentation",
+      filename: 'presentation.html',
+      template: path.resolve(__dirname, '../src/presentation.html'),
+      inject: false
+    }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin()
   ],
