@@ -763,15 +763,15 @@ export default {
         combineSplitPayment() {
             let payment = { tip: 0, gratuity: 0, discount: 0, delivery: 0, subtotal: 0, tax: 0, total: 0, paid: 0, due: 0, log: [], paidCash: 0, paidCredit: 0, paidGift: 0 };
             this.order.splitPayment.forEach(settle => {
-                payment.tip += settle.tip;
-                payment.gratuity += settle.gratuity;
-                payment.discount += settle.discount;
-                payment.delivery += settle.delivery;
-                payment.subtotal += settle.subtotal;
-                payment.tax += settle.tax;
-                payment.total += settle.total;
-                payment.paid += settle.paid;
-                payment.due += settle.due;
+                payment.tip += parseFloat(settle.tip);
+                payment.gratuity += parseFloat(settle.gratuity);
+                payment.discount += parseFloat(settle.discount);
+                payment.delivery += parseFloat(settle.delivery);
+                payment.subtotal += parseFloat(settle.subtotal);
+                payment.tax += parseFloat(settle.tax);
+                payment.total += parseFloat(settle.total);
+                payment.paid += parseFloat(settle.paid);
+                payment.due += parseFloat(settle.due);
                 payment.log.push(...settle.log);
                 settle.hasOwnProperty('paidCash') && (payment.paidCash += parseFloat(settle.paidCash));
                 settle.hasOwnProperty('paidCredit') && (payment.paidCredit += parseFloat(settle.paidCredit));

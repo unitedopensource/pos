@@ -171,10 +171,21 @@ export default {
                 this.componentData = { payment, index: split - 1, resolve, reject };
                 this.component = "payment";
             }).then(result => {
+                this.$q();
                 this.splitPayment[split] = result;
                 this.$bus.emit("SPLIT_PAID", split);
-                this.$q();
+                this.checkSettle();
             }).catch(() => { this.$q() })
+        },
+        checkSettle() {
+            let settle = 0;
+            Object.keys(this.splitPayment).forEach(split => {
+                this.splitPayment[split].settled && settle++
+            });
+            if (settle === this.split) {
+                this.setOrder({ settled: true });
+                this.quit();
+            }
         },
         gatherPayment() {
             let splitPayment = []
