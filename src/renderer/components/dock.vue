@@ -39,15 +39,14 @@ import caller from './dock/caller'
 import Printer from '../print'
 export default {
   components: { maintenance, caller, switcher, dialoger, opPanel, spooler, giftCard, terminal, notifier },
-  mounted() {
-    setTimeout(() => { toggleClass(".dock","slideDown") }, 300);
-  },
   data() {
     return {
-      temp: null,
       component: null,
       componentData: null
     }
+  },
+  mounted() {
+    setTimeout(() => { toggleClass(".dock", "slideDown") }, 300);
   },
   computed: {
     type() {

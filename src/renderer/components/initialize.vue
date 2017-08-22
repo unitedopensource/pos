@@ -6,7 +6,6 @@
 <script>
 import Electron from 'electron'
 import Vue from 'vue'
-import moment from 'moment'
 import MAC from 'getmac'
 import serialport from 'serialport'
 import { mapActions, mapGetters } from "vuex"
@@ -19,7 +18,7 @@ export default {
     moment.locale(language === 'usEN' ? 'en' : 'zh-cn');
     this.$setLanguage(language);
     this.setApp({
-      date: moment().subtract('4', 'hours').format("YYYY-MM-DD"),
+      date: today(),
       language,
       printer: true,
       database: true
@@ -53,18 +52,14 @@ export default {
       this.setLastSync(data.update);
       MAC.getMac((err, mac) => {
         if (err) {
-          Electron.ipcRenderer.send("Loading", "An unknown network issue occurred...");
-          setTimeout(() => {
-            Electron.ipcRenderer.send("Initialized");
-            this.$router.push('Login');
-          }, 5000)
+          Electron.ipcRenderer.send("Loading", "An hardware issue occurred...")
         } else {
           this.findStation(mac);
           this.initDevices();
           Electron.ipcRenderer.send("Initialized");
           this.$router.push('Login');
         }
-      });
+      })
     }
   },
   methods: {
@@ -72,7 +67,7 @@ export default {
       if (this.station) {
         this.station.callid.enable && this.initCallerId(this.station.callid.port);
         this.station.pole.enable && this.initPoleDisplay(this.station.pole.port);
-        this.station.scale.enable && this.initWeightSacle(this.station.scale.port);
+        this.station.scale.enable && this.initWeightScale(this.station.scale.port);
         this.station.terminal.enable && this.setDevice({ terminal: true });
       }
     },
@@ -124,7 +119,7 @@ export default {
         }
       })
     },
-    initWeightSacle(port) {
+    initWeightScale(port) {
 
     },
     ...mapActions([

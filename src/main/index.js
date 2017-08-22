@@ -61,20 +61,20 @@ function createWindow() {
       break;
     }
   }
-  if (externalDisplay) {
-    presentationWindow = new BrowserWindow({
-      x: externalDisplay.bounds.x + 50,
-      y: externalDisplay.bounds.y + 50,
-      autoHideMenuBar: true,
-      //alwaysOnTop: true,
-      skipTaskbar: true,
-      frame: false,
-      width: 1024,
-      height: 768,
-      //fullscreen: true
-    })
-    presentationWindow.loadURL(presentUrl)
-  }
+  // if (externalDisplay) {
+  //   presentationWindow = new BrowserWindow({
+  //     x: externalDisplay.bounds.x + 50,
+  //     y: externalDisplay.bounds.y + 50,
+  //     autoHideMenuBar: true,
+  //     //alwaysOnTop: true,
+  //     skipTaskbar: true,
+  //     frame: false,
+  //     width: 1024,
+  //     height: 768,
+  //     //fullscreen: true
+  //   })
+  //   presentationWindow.loadURL(presentUrl)
+  // }
 
   splashWindow.once('ready-to-show', () => {
     splashWindow.show();

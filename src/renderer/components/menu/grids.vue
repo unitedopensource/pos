@@ -177,7 +177,7 @@ export default {
     search() {
 
     },
-    timer(){
+    timer() {
       this.callComponent("timer");
     },
     split() {

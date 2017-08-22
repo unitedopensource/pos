@@ -166,11 +166,13 @@ export default {
             zhCN = zhCN + ` *${item.note.toCapitalCase()}*`;
             usEN = usEN + ` *${item.note.toCapitalCase()}*`;
           }
+          qty = qty || 1;
           let content = {
             qty, zhCN, usEN, print,
             single: parseFloat(price),
             price: (price * qty).toFixed(2)
           }
+          console.log(content)
           this.setChoiceSet(content);
         })
       })

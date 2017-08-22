@@ -158,6 +158,7 @@ export default {
           customer: this.customer,
           course: schedule.name,
           delay: Number(schedule.delay),
+          time: Number(schedule.delay),
           content: schedule.contain.map(item => {
             item.pending = true;
             return item
@@ -182,6 +183,8 @@ export default {
         settle: false,
         customer,
         date: today(),
+        delay: Number(schedule.delay),
+        time: Number(schedule.delay),
         content: order.content.map(item => {
           item.pending = true;
           return item

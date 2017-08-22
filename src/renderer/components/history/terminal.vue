@@ -258,7 +258,7 @@ export default {
                 voidSaleAmount: 0
             }
 
-            let content = this.transaction.filter(trans => {
+            let content = this.transactions.filter(trans => {
                 if (trans.close) return false;
                 let approve = parseFloat(trans.amount.approve);
                 let tip = parseFloat(trans.amount.tip);

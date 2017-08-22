@@ -48,13 +48,13 @@ import dialoger from '../common/dialoger'
 
 export default {
     props: ['init'],
-    components: { dialoger,checkbox },
+    components: { dialoger, checkbox },
     data() {
         return {
             time: moment().format('HHmm').split(""),
-            remind:false,
             componentData: null,
-            component: null
+            component: null,
+            remind: true
         }
     },
     methods: {
@@ -114,9 +114,13 @@ export default {
                 });
                 this.$socket.emit("[UPDATE] INVOICE", this.order);
             }
+            this.remind && this.eventReminder();
             this.resetAll();
             this.setApp({ opLastAction: new Date, mode: "create" });
             this.$router.push({ path: "/main" });
+        },
+        eventReminder(){
+            
         },
         ...mapActions(['setApp', 'resetAll'])
     },
@@ -180,7 +184,7 @@ span.time {
     background: linear-gradient(#E2E3E4, #AAADB4);
 }
 
-.f1{
+.f1 {
     display: flex;
     align-items: center;
 }

@@ -23,7 +23,8 @@ const state = {
         table: +new Date,
         order: +new Date
     },
-    callLog: []
+    callLog: [],
+    todo: []
 }
 
 const mutations = {

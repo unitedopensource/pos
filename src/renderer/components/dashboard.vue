@@ -33,7 +33,8 @@ export default {
     }
   },
   created() {
-    this.$socket.emit("INQUIRY_TICKET_NUMBER")
+    this.$socket.emit("INQUIRY_TICKET_NUMBER");
+    this.setApp({ opLastAction: new Date });
   },
   mounted() {
     if (!this.station) {
