@@ -23,7 +23,7 @@ export default {
       printer: true,
       database: true
     })
-    Electron.ipcRenderer.send("Loading", "Looking for host...");
+    Electron.ipcRenderer.send("Loading", this.$t('initial.findHost'));
   },
   data() {
     return {
@@ -32,16 +32,16 @@ export default {
   },
   sockets: {
     CONNECTED(text) {
-      Electron.ipcRenderer.send("Loading", "Host server connected.");
+      Electron.ipcRenderer.send("Loading", this.$t('initial.hostConnected'));
       this.$socket.emit("INITIALIZING");
-      Electron.ipcRenderer.send("Loading", "Initializing application...");
+      Electron.ipcRenderer.send("Loading", this.$t('initial.initialApplication'));
     },
     APPLICATION_CONFIG(data) {
-      Electron.ipcRenderer.send("Loading", "Loading configuration...");
+      Electron.ipcRenderer.send("Loading", this.$t('initial.loadConfiguration'));
       this.setConfig(data.config[0]);
       this.setMenu(data.menu);
       this.setRequest(data.request);
-      Electron.ipcRenderer.send("Loading", "Setting environment...");
+      Electron.ipcRenderer.send("Loading", this.$t('initial.applyConfiguration'));
       this.setTable(data.table);
       this.setTemplates(data.template);
       this.setReservation(data.reservation);
@@ -52,7 +52,7 @@ export default {
       this.setLastSync(data.update);
       MAC.getMac((err, mac) => {
         if (err) {
-          Electron.ipcRenderer.send("Loading", "An hardware issue occurred...")
+          Electron.ipcRenderer.send("Loading", this.$t('initial.hardwareIssue'))
         } else {
           this.findStation(mac);
           this.initDevices();

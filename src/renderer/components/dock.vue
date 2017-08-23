@@ -50,11 +50,12 @@ export default {
   },
   computed: {
     type() {
+      let type = 'type.'+this.ticket.type;
       if (this.currentTable) {
         let guest = this.currentTable.current.guest > 0 ? " - " + this.currentTable.current.guest : "";
-        return this.text(this.ticket.type, this.app.language) + " - " + this.text('SEAT') + " " + this.currentTable.name + guest;
+        return this.$t(type, this.app.language) + " - " + this.text('SEAT') + " " + this.currentTable.name + guest;
       }
-      return this.text(this.ticket.type, this.app.language);
+      return this.$t(type, this.app.language);
     },
     ...mapGetters(['op', 'app', 'time', 'ring', 'order', 'config', 'ticket', 'update', 'device', 'history', 'station', 'spooler', 'customer', 'language', 'currentTable'])
   },

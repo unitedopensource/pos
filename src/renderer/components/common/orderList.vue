@@ -1,9 +1,9 @@
 <template>
     <div>
         <header v-if="layout === 'order'" class="simple">
-            <span class="qty">{{text('QTY')}}</span>
-            <span class="item">{{text('ITEM')}}</span>
-            <span class="price">{{text('PRICE')}}</span>
+            <span class="qty">{{$t('menu.quantity')}}</span>
+            <span class="item">{{$t('menu.item')}}</span>
+            <span class="price">{{$t('menu.price')}}</span>
         </header>
         <header v-else class="info">
             <div class="roundWrap">
@@ -98,28 +98,28 @@
             </div>
             <div class="settle" @click="openConfig">
                 <div>
-                    <span class="text">{{text("SUBTOTAL")}}:</span>
+                    <span class="text">{{$t("menu.subtotal")}}:</span>
                     <span class="value">{{payment.subtotal | decimal}}</span>
                 </div>
                 <div>
-                    <span class="text">{{text("TAX")}}:</span>
+                    <span class="text">{{$t("menu.tax")}}:</span>
                     <span class="value">{{payment.tax | decimal}}</span>
                 </div>
                 <div>
-                    <span class="text">{{text("DELIVERY_FEE")}}:</span>
+                    <span class="text">{{$t("menu.deliveryFee")}}:</span>
                     <span class="value">{{payment.delivery | decimal}}</span>
                 </div>
                 <div>
-                    <span class="text">{{text("DISCOUNT")}}:</span>
+                    <span class="text">{{$t("menu.discount")}}:</span>
                     <span class="value">{{payment.discount | decimal}}</span>
                 </div>
                 <div>
-                    <span class="text">{{text("TOTAL")}}:</span>
+                    <span class="text">{{$t("menu.total")}}:</span>
                     <span class="value">{{payment.due | decimal}}</span>
                 </div>
             </div>
         </div>
-        <div class="driver btn" v-if="order.type ==='DELIVERY' && $route.name ==='History'" @click="setDriver">{{text('SET_DRIVER')}}</div>
+        <div class="driver btn" v-if="order.type ==='DELIVERY' && $route.name ==='History'" @click="setDriver">{{$T('menu.setDriver')}}</div>
         <div :is="component" :init="componentData" @trigger="update"></div>
     </div>
 </template>

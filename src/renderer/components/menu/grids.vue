@@ -3,51 +3,51 @@
     <div class="top">
       <div class="btn" @click="less">
         <i class="fa fa-minus-square"></i>
-        <span class="text">{{text("LESS")}}</span>
+        <span class="text">{{$t('menu.less')}}</span>
       </div>
       <div class="btn" @click="moreQty">
         <i class="fa fa-plus-square"></i>
-        <span class="text">{{text("MORE")}}</span>
+        <span class="text">{{$t('menu.more')}}</span>
       </div>
       <div class="btn" @click="request">
         <i class="fa fa-commenting-o"></i>
-        <span class="text">{{text("REQUEST")}}</span>
+        <span class="text">{{$t('menu.request')}}</span>
       </div>
     </div>
     <div class="bottomLeft">
       <div class="btn" @click="trigger('switchGuest')" v-if="store.table.seatOrder">
         <i class="fa fa-users"></i>
-        <span class="text">{{text("SWITCH")}}</span>
+        <span class="text">{{$t('menu.switch')}}</span>
       </div>
       <div class="btn" @click="split" v-else>
         <i class="fa fa-columns"></i>
-        <span class="text">{{text("SPLIT")}}</span>
+        <span class="text">{{$t('menu.split')}}</span>
       </div>
       <div class="btn" @click="course">
         <i class="fa fa-clock-o"></i>
-        <span class="text">{{text("TIMER")}}</span>
+        <span class="text">{{$t('menu.timer')}}</span>
       </div>
       <div class="btn" @click="search">
         <i class="fa fa-search"></i>
-        <span class="text">{{text("SEARCH")}}</span>
+        <span class="text">{{$t('menu.search')}}</span>
       </div>
       <div class="btn" @click="done(false)">
         <i class="fa fa-save"></i>
-        <span class="text">{{text("HOLD")}}</span>
+        <span class="text">{{$t('menu.hold')}}</span>
       </div>
       <button class="btn" @click="modify">
         <i class="fa fa-calculator"></i>
-        <span class="text">{{text("MODIFY")}}</span>
+        <span class="text">{{$t('menu.modify')}}</span>
       </button>
       <div class="btn" @click="dineinExit">
         <i class="fa fa-times"></i>
-        <span class="text">{{text("EXIT")}}</span>
+        <span class="text">{{$t('menu.exit')}}</span>
       </div>
     </div>
     <div class="bottomRight">
       <button class="btn long" @click="done(true)">
         <i class="fa fa-print"></i>
-        <span class="text">{{text("DONE")}}</span>
+        <span class="text">{{$t('menu.done')}}</span>
       </button>
       <div class="btn" @click="switchLanguage">
         <i class="fa fa-language"></i>
@@ -58,61 +58,61 @@
   <div class="grid" v-else-if="layout === 'BUFFET'">
     <div class="btn" @click="less">
       <i class="fa fa-minus-square"></i>
-      <span class="text">{{text("LESS")}}</span>
+      <span class="text">{{$t('menu.less')}}</span>
     </div>
     <div class="btn" @click="moreQty">
       <i class="fa fa-plus-square"></i>
-      <span class="text">{{text("MORE")}}</span>
+      <span class="text">{{$t('menu.more')}}</span>
     </div>
     <button class="btn" @click="modify">
       <i class="fa fa-calculator"></i>
-      <span class="text">{{text("MODIFY")}}</span>
+      <span class="text">{{$t('menu.modify')}}</span>
     </button>
     <div class="btn settle" @click="settle">
       <i class="fa fa-money"></i>
-      <span class="text">{{text("PAYMENT")}}</span>
+      <span class="text">{{$t('menu.payment')}}</span>
     </div>
     <div class="btn split" @click="split">
       <i class="fa fa-columns"></i>
-      <span class="text">{{text("SPLIT")}}</span>
+      <span class="text">{{$t('menu.split')}}</span>
     </div>
     <div class="btn" @click="save(false)">
       <i class="fa fa-save"></i>
-      <span class="text">{{text("SAVE")}}</span>
+      <span class="text">{{$t('menu.save')}}</span>
     </div>
     <div class="btn" @click="exit">
       <i class="fa fa-times"></i>
-      <span class="text">{{text("EXIT")}}</span>
+      <span class="text">{{$t('menu.exit')}}</span>
     </div>
     <div class="btn" @click="switchLanguage">
       <i class="fa fa-language"></i>
-      <span class="text">中/EN</span>
+      <span class="text">{{$t('menu.switchLanguage')}}</span>
     </div>
   </div>
   <div class="function" v-else>
     <div class="btn" @click="less">
       <i class="fa fa-minus-square"></i>
-      <span class="text">{{text("LESS")}}</span>
+      <span class="text">{{$t('menu.less')}}</span>
     </div>
     <div class="btn" @click="moreQty">
       <i class="fa fa-plus-square"></i>
-      <span class="text">{{text("MORE")}}</span>
+      <span class="text">{{$t('menu.more')}}</span>
     </div>
     <div class="btn" @click="request">
       <i class="fa fa-commenting-o"></i>
-      <span class="text">{{text("REQUEST")}}</span>
+      <span class="text">{{$t('menu.request')}}</span>
     </div>
     <div class="btn" @click="settle">
       <i class="fa fa-money"></i>
-      <span class="text">{{text("PAYMENT")}}</span>
+      <span class="text">{{$t('menu.payment')}}</span>
     </div>
     <div class="btn" @click="timer">
       <i class="fa fa-clock-o"></i>
-      <span class="text">{{text("TIMER")}}</span>
+      <span class="text">{{$t('menu.timer')}}</span>
     </div>
     <button class="btn" @click="save(true)">
       <i class="fa fa-print"></i>
-      <span class="text">{{text("PRINT")}}</span>
+      <span class="text">{{$t('menu.print')}}</span>
     </button>
     <div class="btn" @click="search">
       <i class="fa fa-search"></i>

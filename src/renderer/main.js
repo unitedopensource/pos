@@ -7,7 +7,7 @@ import Net from 'net'
 import Ip from 'ip'
 import App from './App'
 import routes from './routes'
-import i18n from './plugin/i18n'
+import i18n from './plugin/dict'
 import dialog from './plugin/dialog'
 import VueBus from './plugin/bus'
 

@@ -1,14 +1,14 @@
 <template>
     <section>
-        <label :for="label.toLowerCase()">
-            {{text(label)}}
+        <label :for="id">
+            {{$t(label)}}
             <transition-group name="slideUp">
                 <span class="distance" v-if="distance" :key="1">{{distance}}</span>
                 <span class="duration" v-if="duration" :key="2">{{duration}}</span>
             </transition-group>
         </label>
         <div class="field">
-            <input type="text" :id="label.toLowerCase()" :value="value" @change="$emit('input',$event.target.value)" @click="setAnchor($event)">
+            <input type="text" :id="id" :value="value" @change="$emit('input',$event.target.value)" @click="setAnchor($event)">
             <i :class="icon"></i>
         </div>
         <dialog v-if="autoComplete">
@@ -31,7 +31,7 @@
 
 <script>
 export default {
-    props: ['label', 'value', 'icon', 'autoComplete', 'duration', 'distance'],
+    props: ['label', 'value', 'icon', 'autoComplete', 'duration', 'distance', 'id'],
     methods: {
         setAnchor(e) {
             let dom = document.querySelector("input.active");
@@ -134,7 +134,7 @@ dialog {
 }
 
 .time {
-    flex:1;
+    flex: 1;
     text-align: right;
     white-space: nowrap;
     font-size: 0.8em;

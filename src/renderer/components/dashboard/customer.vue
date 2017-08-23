@@ -6,11 +6,11 @@
                     <span class="phone">{{customer.phone | tel}}</span>
                     <div class="date">
                         <div>
-                            <span class="text">First Time</span>
+                            <span class="text">{{$t('dashboard.firstTime')}}</span>
                             <span class="value">{{customer.extra.firstDate | moment('MM/DD/YYYY')}}</span>
                         </div>
                         <div>
-                            <span class="text">Latest Time</span>
+                            <span class="text">{{$t('dashboard.lastTime')}}</span>
                             <span class="value">{{customer.extra.lastDate | moment('MM/DD')}}
                                 <span class="days">({{customer.extra.lastDate | fromNow}})</span>
                             </span>
@@ -19,35 +19,35 @@
                 </header>
                 <div class="data">
                     <div class="column" v-show="customer.name">
-                        <span class="text">{{text('NAME')}}</span>
+                        <span class="text">{{$t('dashboard.name')}}</span>
                         <span class="value">{{customer.name}}</span>
                     </div>
                     <div class="column f1">
-                        <span class="text">{{text('ADDRESS')}}</span>
+                        <span class="text">{{$t('dashboard.address')}}</span>
                         <span class="value">{{customer.address}}</span>
                     </div>
                     <div class="column">
-                        <span class="text">{{text('CITY')}}</span>
+                        <span class="text">{{$t('dashboard.city')}}</span>
                         <span class="value">{{customer.city}}</span>
                     </div>
                     <div class="column">
-                        <span class="text">{{text('DISTANCE')}}</span>
+                        <span class="text">{{$t('dashboard.distance')}}</span>
                         <span class="value">{{customer.distance}}</span>
                     </div>
                     <div class="column">
-                        <span class="text">{{text('DURATION')}}</span>
+                        <span class="text">{{$('dashboard.duration')}}</span>
                         <span class="value">{{customer.duration}}</span>
                     </div>
                 </div>
                 <div class="tags">
-                    <span class="text">{{text('TAG')}}</span>
+                    <span class="text">{{$t('dashboard.tag')}}</span>
                     <div class="wrap">
-                        <span class="tag" v-for="tag in tags" @click="add(tag)" :class="has(tag)">{{text(tag)}}</span>
+                        <span class="tag" v-for="(tag,index) in tags" @click="add(tag)" :class="has(tag)" :key="index">{{text(tag)}}</span>
                     </div>
                 </div>
             </div>
             <div class="extra">
-    
+
             </div>
         </section>
         <section class="map">

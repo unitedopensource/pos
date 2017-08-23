@@ -30,15 +30,15 @@
           <ul v-show="toggleMenu">
             <li @click="shutdown">
               <i class="fa fa-desktop"></i>
-              <span>{{text('SHUTDOWN')}}</span>
+              <span>{{$t('login.shutdown')}}</span>
             </li>
             <li @click="restart">
               <i class="fa fa-retweet"></i>
-              <span>{{text('RESTART_APP')}}</span>
+              <span>{{$t('login.restart')}}</span>
             </li>
             <li @click="exit">
               <i class="fa fa-window-close-o"></i>
-              <span>{{text('EXIT')}}</span>
+              <span>{{$t('login.exit')}}</span>
             </li>
           </ul>
         </transition>

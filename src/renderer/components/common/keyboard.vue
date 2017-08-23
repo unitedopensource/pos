@@ -35,8 +35,8 @@
       <span @click="input('|')">|</span>
       <span class="space" @click="input(' ')"></span>
       <i class="fa fa-keyboard-o" @click="toggleKeyboard"></i>
-      <span @click="cancelOrder">{{this.text('CANCEL')}}</span>
-      <span class="double created" @click="createOrder">{{this.text('CREATE')}}</span>
+      <span @click="cancelOrder">{{$t('dashboard.cancel')}}</span>
+      <span class="double created" @click="createOrder">{{$t('dashboard.create')}}</span>
     </section>
     <section class="numeric">
       <span @click="input('7')">7</span>
