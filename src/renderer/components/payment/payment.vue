@@ -2,7 +2,7 @@
     <div class="popupMask center dark">
         <div class="window" v-show="!component">
             <header class="title">
-                <span>{{text('PAYMENT')}}</span>
+                <span>{{$t('menu.payment')}}</span>
                 <div v-if="!payMode && order.hasOwnProperty('splitPayment')" class="splitter">
                     <label v-for="(split,index) in order.splitPayment" :key="index">
                         <input type="radio" name="split" :id="'split_'+index" :value="index" v-model="current" @change="switchInvoice">
@@ -13,32 +13,32 @@
             </header>
             <nav>
                 <div class="typeWrap">
-                    <div class="type" @click="setPaymentType('CASH')">{{text('CASH')}}</div>
-                    <div class="type" @click="setPaymentType('CREDIT')">{{text('CREDIT_CARD')}}</div>
-                    <div class="type" @click="setPaymentType('GIFT')">{{text('GIFT_CARD')}}</div>
+                    <div class="type" @click="setPaymentType('CASH')">{{$t('text.cash')}}</div>
+                    <div class="type" @click="setPaymentType('CREDIT')">{{$t('text.creditCard')}}</div>
+                    <div class="type" @click="setPaymentType('GIFT')">{{$t('text.giftCard')}}</div>
                 </div>
                 <div class="totalDue" @dblclick="roundUp">
-                    <span class="text">{{text('BALANCE_DUE')}}:</span>
+                    <span class="text">{{$t('text.balanceDue')}}:</span>
                     <div class="inner">
                         <span class="due">{{payment.balance | decimal}}</span>
                         <div class="addition" v-show="payment.discount !== 0">
-                            <span class="text">{{text('DISCOUNT')}}</span>
+                            <span class="text">{{$t('text.discount')}}</span>
                             <span class="value">-{{payment.discount | decimal}}</span>
                         </div>
                         <div class="addition" v-show="payment.tip !== 0">
-                            <span class="text">{{text('TIP')}}</span>
+                            <span class="text">{{$t('text.tip')}}</span>
                             <span class="value">+{{payment.tip | decimal}}</span>
                         </div>
                         <div class="addition" v-show="payment.gratuity !== 0">
-                            <span class="text">{{text('GRATUITY')}}</span>
+                            <span class="text">{{$t('text.gratuity')}}</span>
                             <span class="value">+{{payment.gratuity | decimal}}</span>
                         </div>
                     </div>
                 </div>
                 <div class="extra">
-                    <div class="btn" @click="setTips">{{text('SET_TIP')}}</div>
-                    <div class="btn" @click="setDiscount">{{text('SET_DISCOUNT')}}</div>
-                    <div class="btn" @click="savePayment">{{text('SAVE')}}</div>
+                    <div class="btn" @click="setTips">{{$t('button.setTip')}}</div>
+                    <div class="btn" @click="setDiscount">{{$t('button.setDiscount')}}</div>
+                    <div class="btn" @click="savePayment">{{$t('button.save')}}</div>
                 </div>
             </nav>
             <article>
@@ -58,19 +58,19 @@
                 <section class="field" v-if="payment.type ==='CASH'">
                     <div class="display">
                         <div class="data" @click="setInputAnchor('paid',$event)">
-                            <span class="text">{{text('PAYMENT')}}</span>
+                            <span class="text">{{$t('text.paid')}}</span>
                             <span class="value">{{paid | decimal}}</span>
                         </div>
                         <div class="data">
-                            <span class="text">{{text('CHANGE_DUE')}}</span>
+                            <span class="text">{{$t('text.changeDue')}}</span>
                             <span class="value">{{due.change}}</span>
                         </div>
                         <div class="data">
-                            <span class="text">{{text('BALANCE_REMAIN')}}</span>
+                            <span class="text">{{$t('text.balance')}}</span>
                             <span class="value">{{due.balance}}</span>
                         </div>
                         <div class="data" @click="setInputAnchor('evenPay',$event)">
-                            <span class="text">{{text('SEPARATE')}}
+                            <span class="text">{{$t('text.separate')}}
                                 <span class="people">${{(payment.due / evenPay) | decimal}}</span>
                             </span>
                             <span class="value">{{evenPay}}</span>
@@ -85,19 +85,19 @@
                 <section class="field" v-else-if="payment.type === 'CREDIT'">
                     <div class="display">
                         <div class="data" @click="setInputAnchor('paid',$event)">
-                            <span class="text">{{text('PAYMENT')}}</span>
+                            <span class="text">{{$t('text.paid')}}</span>
                             <span class="value">{{paid | decimal}}</span>
                         </div>
                         <div class="data" @click="setInputAnchor('number',$event)">
-                            <span class="text">{{text('CC_NUMBER')}}</span>
+                            <span class="text">{{$t('card.number')}}</span>
                             <input v-model="creditCard.number">
                         </div>
                         <div class="data" @click="setInputAnchor('date',$event)">
-                            <span class="text">{{text('CC_EXP')}}</span>
+                            <span class="text">{{$t('card.expirationDate')}}</span>
                             <span class="value">{{creditCard.date | exp}}</span>
                         </div>
                         <div class="data" @click="setInputAnchor('code',$event)">
-                            <span class="text">{{text('CVV')}}</span>
+                            <span class="text">{{$t('card.securityCode')}}</span>
                             <span class="value">{{creditCard.code}}</span>
                         </div>
                     </div>
@@ -110,15 +110,15 @@
                 <section class="field" v-else>
                     <div class="display">
                         <div class="data" @click="setInputAnchor('paid',$event)">
-                            <span class="text">{{text('PAYMENT')}}</span>
+                            <span class="text">{{$t('text.paid')}}</span>
                             <span class="value">{{paid}}</span>
                         </div>
                         <div class="data" @click="setInputAnchor('number',$event)" v-if="giftCard.number.length !== 16">
-                            <span class="text">{{text('CC_NUMBER')}}</span>
+                            <span class="text">{{$t('card.number')}}</span>
                             <input v-model="giftCard.number">
                         </div>
                         <div class="data" v-else>
-                            <span class="text">{{text('BALANCE_DUE')}}
+                            <span class="text">{{$t('text.balance')}}
                                 <span class="card" v-show="giftCard.number">(...{{giftCard.number.slice(12,16)}})</span>
                             </span>
                             <span class="value">$ {{giftCard.balance | decimal}}</span>
@@ -126,19 +126,19 @@
                         <div class="option">
                             <div class="grid btn" @click="reload">
                                 <i class="fa fa-plus"></i>
-                                <span class="text">{{text('ADD_VALUE')}}</span>
+                                <span class="text">{{$t('card.reload')}}</span>
                             </div>
                             <div class="grid btn" @click="cashOut">
                                 <i class="fa fa-money"></i>
-                                <span class="text">{{text('REDEMP')}}</span>
+                                <span class="text">{{$t('card.redemption')}}</span>
                             </div>
                             <div class="grid btn" @click="printBalance">
                                 <i class="fa fa-print"></i>
-                                <span class="text">{{text('PRT_BALANCE')}}</span>
+                                <span class="text">{{$t('card.printBalance')}}</span>
                             </div>
                             <div class="grid btn">
                                 <i class="fa fa-list-ol"></i>
-                                <span class="text">{{text('HISTORY')}}</span>
+                                <span class="text">{{$t('card.history')}}</span>
                             </div>
                         </div>
                     </div>

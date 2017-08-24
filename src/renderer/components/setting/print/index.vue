@@ -1,66 +1,67 @@
 <template>
     <div class="printer">
         <section class="setting">
-            <smart-option label="PRINTER" v-model="device" :options="devices"></smart-option>
+            <smart-option label="text.printer" v-model="device" :options="devices"></smart-option>
             <div class="wrap">
                 <div class="config" v-if="profile">
                     <fieldset class="section">
-                        <legend>{{text('SETTING.PRINT.PRINT')}}</legend>
+                        <legend>{{$t('setting.printReceipt')}}</legend>
                         <div class="selection">
-                            <checkbox v-model="profile.print.WALK_IN" label="WALK_IN"></checkbox>
-                            <checkbox v-model="profile.print.PICK_UP" label="PICK_UP"></checkbox>
-                            <checkbox v-model="profile.print.DELIVERY" label="DELIVERY"></checkbox>
-                            <checkbox v-model="profile.print.DINE_IN" label="DINE_IN"></checkbox>
-                            <checkbox v-model="profile.print.BAR" label="BAR"></checkbox>
-                            <checkbox v-model="profile.print.PRE_PAYMENT" label="PRE_PAYMENT"></checkbox>
-                            <checkbox v-model="profile.print.PAYMENT" label="PAYMENT"></checkbox>
-                            <checkbox v-model="profile.print.REPORT" label="REPORT"></checkbox>
-                            <checkbox v-model="profile.print.SALES" label="SALES"></checkbox>
-                            <checkbox v-model="profile.print.BUFFET" label="BUFFET"></checkbox>
-                            <checkbox v-model="profile.print.CREDITCARD" label="CREDIT_CARD"></checkbox>
+                            <checkbox v-model="profile.print.WALK_IN" label="type.WALK_IN"></checkbox>
+                            <checkbox v-model="profile.print.PICK_UP" label="type.PICK_UP"></checkbox>
+                            <checkbox v-model="profile.print.DELIVERY" label="type.DELIVERY"></checkbox>
+                            <checkbox v-model="profile.print.DINE_IN" label="type.DINE_IN"></checkbox>
+                            <checkbox v-model="profile.print.BAR" label="type.BAR"></checkbox>
+                            <checkbox v-model="profile.print.PRE_PAYMENT" label="type.PRE_PAYMENT"></checkbox>
+                            <checkbox v-model="profile.print.PAYMENT" label="type.PAYMENT"></checkbox>
+                            <checkbox v-model="profile.print.REPORT" label="type.REPORT"></checkbox>
+                            <checkbox v-model="profile.print.SALES" label="type.SALES"></checkbox>
+                            <checkbox v-model="profile.print.BUFFET" label="type.BUFFET"></checkbox>
+                            <checkbox v-model="profile.print.CREDITCARD" label="type.CREDIT_CARD"></checkbox>
                         </div>
                     </fieldset>
                     <fieldset class="section">
-                        <legend>{{text('SETTING.PRINT.DOUBLE')}}</legend>
+                        <legend>{{$t('setting.doubleReceipt')}}</legend>
                         <div class="selection">
-                            <checkbox v-model="profile.double.WALK_IN" label="WALK_IN"></checkbox>
-                            <checkbox v-model="profile.double.PICK_UP" label="PICK_UP"></checkbox>
-                            <checkbox v-model="profile.double.DELIVERY" label="DELIVERY"></checkbox>
-                            <checkbox v-model="profile.double.DINE_IN" label="DINE_IN"></checkbox>
-                            <checkbox v-model="profile.double.BAR" label="BAR"></checkbox>
-                            <checkbox v-model="profile.double.BUFFET" label="BUFFET"></checkbox>
+                            <checkbox v-model="profile.double.WALK_IN" label="type.WALK_IN"></checkbox>
+                            <checkbox v-model="profile.double.PICK_UP" label="type.PICK_UP"></checkbox>
+                            <checkbox v-model="profile.double.DELIVERY" label="type.DELIVERY"></checkbox>
+                            <checkbox v-model="profile.double.DINE_IN" label="type.DINE_IN"></checkbox>
+                            <checkbox v-model="profile.double.BAR" label="type.BAR"></checkbox>
+                            <checkbox v-model="profile.double.BUFFET" label="type.BUFFET"></checkbox>
+                            <checkbox v-model="profile.double.SALES" label="type.SALES"></checkbox>
                         </div>
                     </fieldset>
                     <fieldset class="section">
-                        <legend>{{text('SETTING.PRINT.CONTROL')}}</legend>
+                        <legend>{{$t('setting.printStyle')}}</legend>
                         <div class="selection">
-                            <checkbox v-model="profile.control.printPrimary" label="PRINT_PRIMARY" @input="togglePrimary"></checkbox>
-                            <checkbox v-model="profile.control.printPrimaryPrice" label="PRINT_PRICE" @input="togglePrimaryPrice"></checkbox>
-                            <smart-option v-model="profile.control.primaryFont" label="FONT" :options="chineseFonts"></smart-option>
-                            <smart-range v-model="profile.control.primaryFontSize" label="FONT_SIZE" min="10" max="40" step="1"></smart-range>
-                            <checkbox v-model="profile.control.printSecondary" label="PRINT_SECONDARY" @input="toggleSecondary"></checkbox>
-                            <checkbox v-model="profile.control.printSecondaryPrice" label="PRINT_PRICE" @input="toggleSecondaryPrice"></checkbox>
-                            <smart-option v-model="profile.control.secondaryFont" label="FONT" :options="englishFonts"></smart-option>
-                            <smart-range v-model="profile.control.secondaryFontSize" label="FONT_SIZE" min="10" max="40" step="1"></smart-range>
-                            <checkbox v-model="profile.control.sortItem" label="SORT_ITEM"></checkbox>
-                            <checkbox v-model="profile.control.duplicate" label="PRINT_DUPLICATE"></checkbox>
-                            <checkbox v-model="profile.control.printStore" label="PRINT_STORE" @input="toggleStore"></checkbox>
-                            <checkbox v-model="profile.control.printType" label="PRINT_ORDER_TYPE" @input="toggleType"></checkbox>
-                            <checkbox v-model="profile.control.printCustomer" label="PRINT_CUST_INFO" @input="toggleCustomer"></checkbox>
-                            <checkbox v-model="profile.control.printActionTime" label="PRINT_PRINTTIME"></checkbox>
-                            <checkbox v-model="profile.control.enlargeDetail" label="PRINT_ENLARGE_CUST_INFO"></checkbox>
-                            <checkbox v-model="profile.control.printPayment" label="PRINT_PAYMENT" @input="togglePayment"></checkbox>
-                            <checkbox v-model="profile.control.printSuggestion" label="PRINT_TIP_SUGG"></checkbox>
-                            <checkbox v-model="profile.control.buzzer" label="BUZZER"></checkbox>
+                            <checkbox v-model="profile.control.printPrimary" label="setting.printPrimary" @input="togglePrimary"></checkbox>
+                            <checkbox v-model="profile.control.printPrimaryPrice" label="setting.printPrice" @input="togglePrimaryPrice"></checkbox>
+                            <smart-option v-model="profile.control.primaryFont" label="setting.font" :options="chineseFonts"></smart-option>
+                            <smart-range v-model="profile.control.primaryFontSize" label="setting.fontSize" min="10" max="40" step="1"></smart-range>
+                            <checkbox v-model="profile.control.printSecondary" label="setting.printSecondary" @input="toggleSecondary"></checkbox>
+                            <checkbox v-model="profile.control.printSecondaryPrice" label="setting.printPrice" @input="toggleSecondaryPrice"></checkbox>
+                            <smart-option v-model="profile.control.secondaryFont" label="setting.font" :options="englishFonts"></smart-option>
+                            <smart-range v-model="profile.control.secondaryFontSize" label="setting.fontSize" min="10" max="40" step="1"></smart-range>
+                            <checkbox v-model="profile.control.sortItem" label="setting.sortItem"></checkbox>
+                            <checkbox v-model="profile.control.duplicate" label="setting.printDuplicate"></checkbox>
+                            <checkbox v-model="profile.control.printStore" label="setting.printStoreInfo" @input="toggleStore"></checkbox>
+                            <checkbox v-model="profile.control.printType" label="setting.printOrderType" @input="toggleType"></checkbox>
+                            <checkbox v-model="profile.control.printCustomer" label="setting.printCustomerInfo" @input="toggleCustomer"></checkbox>
+                            <checkbox v-model="profile.control.printActionTime" label="setting.printActionTime"></checkbox>
+                            <checkbox v-model="profile.control.enlargeDetail" label="setting.enlargeCustomerInfo"></checkbox>
+                            <checkbox v-model="profile.control.printPayment" label="setting.printPayment" @input="togglePayment"></checkbox>
+                            <checkbox v-model="profile.control.printSuggestion" label="setting.printTipSuggestion"></checkbox>
+                            <checkbox v-model="profile.control.buzzer" label="setting.buzzer"></checkbox>
                             <!-- <checkbox v-model="profile.control.printCoupon" label="PRINT_COUPON"></checkbox> -->
-                            <checkbox v-model="profile.control.printMenuID" label="PRINT_MENU_ID"></checkbox>
+                            <checkbox v-model="profile.control.printMenuID" label="setting.printMenuID"></checkbox>
                         </div>
                     </fieldset>
                 </div>
             </div>
             <footer>
-                <div class="btn" @click="back">{{text('BACK')}}</div>
-                <div class="btn f1" @click="save">{{text('SAVE')}}</div>
+                <div class="btn" @click="back">{{$t('button.back')}}</div>
+                <div class="btn f1" @click="save">{{$t('button.save')}}</div>
             </footer>
         </section>
         <section class="preview">
@@ -73,7 +74,7 @@
                         <h5>{{store.contact}}</h5>
                     </div>
                     <div class="type" :class="{hide:!receipt.type}">
-                        <p class="zhCN" :style="style.zhCN">{{text('DELIVERY')}}</p>
+                        <p class="zhCN" :style="style.zhCN">送餐</p>
                         <p class="usEN" :style="style.usEN">DELIVERY</p>
                     </div>
                     <div class="time">

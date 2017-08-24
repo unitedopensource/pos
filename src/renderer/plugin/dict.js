@@ -10,8 +10,9 @@ const dict = {
                     return text.split('.').reduce((p, c) => p && p[c] || c, Vue.locales);
                 },
                 $t(text, ...d) {
-                    //d[0] && typeof d[0] === 'object'
-                    return text.split('.').reduce((p, c) => p && p[c] || c, Vue.locales);
+                    let i = 0;
+                    let string = text.split('.').reduce((p, c) => p && p[c] || c, Vue.locales);
+                    return d ? string.replace(/\{i\}/g, () => d[i++]) : string;
                 }
             }
         })

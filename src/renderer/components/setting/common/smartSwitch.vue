@@ -1,6 +1,6 @@
 <template>
     <div class="input">
-        <label class="label">{{text(label)}}</label>
+        <label class="label">{{$t(label)}}</label>
         <label class="input-toggle">
             <input type="checkbox" :checked="value" @change="$emit('input',$event.target.checked)">
             <span></span>

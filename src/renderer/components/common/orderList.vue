@@ -1,9 +1,9 @@
 <template>
     <div>
         <header v-if="layout === 'order'" class="simple">
-            <span class="qty">{{$t('menu.quantity')}}</span>
-            <span class="item">{{$t('menu.item')}}</span>
-            <span class="price">{{$t('menu.price')}}</span>
+            <span class="qty">{{$t('text.qty')}}</span>
+            <span class="item">{{$t('text.item')}}</span>
+            <span class="price">{{$t('text.price')}}</span>
         </header>
         <header v-else class="info">
             <div class="roundWrap">
@@ -98,23 +98,23 @@
             </div>
             <div class="settle" @click="openConfig">
                 <div>
-                    <span class="text">{{$t("menu.subtotal")}}:</span>
+                    <span class="text">{{$t("text.subtotal")}}:</span>
                     <span class="value">{{payment.subtotal | decimal}}</span>
                 </div>
                 <div>
-                    <span class="text">{{$t("menu.tax")}}:</span>
+                    <span class="text">{{$t("text.tax")}}:</span>
                     <span class="value">{{payment.tax | decimal}}</span>
                 </div>
                 <div>
-                    <span class="text">{{$t("menu.deliveryFee")}}:</span>
+                    <span class="text">{{$t("text.deliveryFee")}}:</span>
                     <span class="value">{{payment.delivery | decimal}}</span>
                 </div>
                 <div>
-                    <span class="text">{{$t("menu.discount")}}:</span>
+                    <span class="text">{{$t("text.discount")}}:</span>
                     <span class="value">{{payment.discount | decimal}}</span>
                 </div>
                 <div>
-                    <span class="text">{{$t("menu.total")}}:</span>
+                    <span class="text">{{$t("text.total")}}:</span>
                     <span class="value">{{payment.due | decimal}}</span>
                 </div>
             </div>

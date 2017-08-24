@@ -11,16 +11,16 @@
       </header>
       <div class="inner">
         <div class="wk">
-          <span>{{text('MON')}}</span>
-          <span>{{text('TUE')}}</span>
-          <span>{{text('WEN')}}</span>
-          <span>{{text('THU')}}</span>
-          <span>{{text('FRI')}}</span>
-          <span>{{text('SAT')}}</span>
-          <span>{{text('SUN')}}</span>
+          <span>{{$t('calendar.mon')}}</span>
+          <span>{{$t('calendar.tue')}}</span>
+          <span>{{$t('calendar.wen')}}</span>
+          <span>{{$t('calendar.thu')}}</span>
+          <span>{{$t('calendar.fri')}}</span>
+          <span>{{$t('calendar.sat')}}</span>
+          <span>{{$t('calendar.sun')}}</span>
         </div>
         <div class="dayWrap">
-          <div class="day" v-for="calendar in days" :class="{current:calendar.current}" :data-day="calendar.day" @click="setCalendar(calendar.date)">{{calendar.day}}</div>
+          <div class="day" v-for="(calendar,index) in days" :class="{current:calendar.current}" :data-day="calendar.day" @click="setCalendar(calendar.date)" :key="index">{{calendar.day}}</div>
         </div>
       </div>
     </div>

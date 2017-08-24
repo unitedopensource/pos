@@ -1,76 +1,76 @@
 <template>
     <section class="index">
-        <h3>{{text('SETTING.HEAD.TITLE')}}</h3>
+        <h3>{{$t('text.softwareSetting')}}</h3>
         <section class="grid">
             <figure @click="go('Setting.store')">
                 <i class="fa fa-2x fa-cogs"></i>
-                <figcaption>{{text('STORE')}}</figcaption>
-                <span class="intro">{{text('SETTING.STORE.TIP')}}</span>
+                <figcaption>{{$t('setting.store')}}</figcaption>
+                <span class="intro">{{$t('setting.storeTip')}}</span>
             </figure>
             <figure @click="go('Setting.menu')">
                 <i class="fa fa-2x fa-table"></i>
-                <figcaption>{{text('MENU')}}</figcaption>
-                <span class="intro">{{text('SETTING.MENU.TIP')}}</span>
+                <figcaption>{{$t('setting.menu')}}</figcaption>
+                <span class="intro">{{$t('setting.menuTip')}}</span>
             </figure>
             <figure @click="go('Setting.table')">
                 <i class="fa fa-2x fa-cutlery"></i>
-                <figcaption>{{text('SEAT')}}</figcaption>
-                <span class="intro">{{text('SETTING.SEAT.TIP')}}</span>
+                <figcaption>{{$t('setting.seat')}}</figcaption>
+                <span class="intro">{{$t('setting.seatTip')}}</span>
             </figure>
             <figure @click="go('Setting.online')">
                 <i class="fa fa-2x fa-globe"></i>
-                <figcaption>{{text('ONLINE_ORDER')}}</figcaption>
-                <span class="intro">{{text('SETTING.ONLINE.TIP')}}</span>
+                <figcaption>{{$t('setting.onlineOrder')}}</figcaption>
+                <span class="intro">{{text('setting.onlineOrderTip')}}</span>
             </figure>
             <figure @click="go('Setting.print')">
                 <i class="fa fa-2x fa-print"></i>
-                <figcaption>{{text('PRINT')}}</figcaption>
-                <span class="intro">{{text('SETTING.PRINT.TIP')}}</span>
+                <figcaption>{{$t('setting.print')}}</figcaption>
+                <span class="intro">{{$t('setting.printTip')}}</span>
             </figure>
             <figure @click="go('Setting.operator')">
                 <i class="fa fa-2x fa-users"></i>
-                <figcaption>{{text('OP')}}</figcaption>
-                <span class="intro">{{text('SETTING.USERS.TIP')}}</span>
+                <figcaption>{{$t('setting.operator')}}</figcaption>
+                <span class="intro">{{$t('setting.operatorTip')}}</span>
             </figure>
             <figure @click="go('Setting.database')">
                 <i class="fa fa-2x fa-database"></i>
-                <figcaption>{{text('DATABASE')}}</figcaption>
-                <span class="intro">{{text('SETTING.DATABASE.TIP')}}</span>
+                <figcaption>{{$t('setting.database')}}</figcaption>
+                <span class="intro">{{$t('setting.databaseTip')}}</span>
             </figure>
             <figure>
                 <i class="fa fa-2x fa-list-alt"></i>
-                <figcaption>{{text('THIRD_PARTY')}}</figcaption>
-                <span class="intro">{{text('SETTING.THIRDPARTY.TIP')}}</span>
+                <figcaption>{{$t('setting.thirdParty')}}</figcaption>
+                <span class="intro">{{$t('setting.thirdPartyTip')}}</span>
             </figure>
             <figure>
                 <i class="fa fa-2x fa-money"></i>
-                <figcaption>{{text('SALES')}}</figcaption>
-                <span class="intro">{{text('SETTING.SALES.TIP')}}</span>
+                <figcaption>{{$t('setting.sales')}}</figcaption>
+                <span class="intro">{{$t('setting.salesTip')}}</span>
             </figure>
             <figure v-if="op.role === 'Admin'">
                 <i class="fa fa-2x fa-refresh"></i>
-                <figcaption>{{text('SYSTEM')}}</figcaption>
-                <span class="intro">{{text('SETTING.SYSTEM.TIP')}}</span>
+                <figcaption>{{$t('setting.system')}}</figcaption>
+                <span class="intro">{{$t('setting.systemTip')}}</span>
             </figure>
             <figure @click="go('Dashboard')">
                 <i class="fa fa-2x fa-external-link"></i>
-                <figcaption>{{text('EXIT')}}</figcaption>
-                <span class="intro">{{text('SETTING.EXIT.TIP')}}</span>
+                <figcaption>{{$t('setting.exit')}}</figcaption>
+                <span class="intro">{{$t('setting.exitTip')}}</span>
             </figure>
         </section>
         <section class="about">
             <div>
-                <span class="text">Host:</span>
+                <span class="text">{{$t('setting.host')}}:</span>
                 <span class="value">{{about.host}}</span>
             </div>
             <div>
-                <span class="text">Version:</span>
+                <span class="text">{{$t('setting.version')}}:</span>
                 <span class="value">{{app}}
-                    <span :title="'Server Build: '+time(about.build)">({{about.version}})</span>
+                    <span :title="$t('setting.buildTime')+time(about.build)">({{about.version}})</span>
                 </span>
             </div>
             <div>
-                <span class="text">Support:</span>
+                <span class="text">{{$t('setting.support')}}:</span>
                 <span class="value">{{about.support}}</span>
             </div>
         </section>

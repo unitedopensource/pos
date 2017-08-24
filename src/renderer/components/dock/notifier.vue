@@ -2,12 +2,12 @@
     <div class="popupMask center dark">
         <div class="wrap">
             <i class="fa fa-warning icon"></i>
-            <h3>{{text("COMMUNICATION_INTERRUPTED")}}</h3>
+            <h3>{{$t("dialog.communicationInterrupted")}}</h3>
             <h5>{{pass}}</h5>
             <footer>
                 <div>
-                    <i class="fa fa-commenting"></i>Please CONTACT our technical support</div>
-                <span class="phone">(888)299-0524</span>
+                    <i class="fa fa-commenting"></i>{{$t('dialog.communicationInterruptedTip')}}</div>
+                <span class="phone">{{$t('technicalSupportNumber')}}</span>
             </footer>
         </div>
     </div>
@@ -19,7 +19,7 @@ export default {
     props: ['init'],
     data() {
         return {
-            happened: +new Date - 1000
+            happened: +new Date() - 1000
         }
     },
     computed: {

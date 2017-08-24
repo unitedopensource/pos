@@ -2,7 +2,7 @@
     <div class="popupMask center dark" @click.self="init.reject">
         <div class="inputer window">
             <header class="title">
-                <span>{{text("ADJUST_TIP")}}</span>
+                <span>{{$t("text.adjustTip")}}</span>
                 <i class="fa fa-times" @click="init.reject"></i>
             </header>
             <div class="inner">

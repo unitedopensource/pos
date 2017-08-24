@@ -3,7 +3,7 @@
         <i class="fa" :class="[icon]"></i>
         <h3>{{msg}}</h3>
         <footer>
-            <button class="btn" @click="init.reject">{{text('CANCEL')}}</button>
+            <button class="btn" @click="init.reject">{{$t('button.cancel')}}</button>
         </footer>
     </div>
 </template>
@@ -16,7 +16,7 @@ export default {
             timeout: null,
             card: "",
             icon: "info",
-            msg: this.text("GC_SWIPE")
+            msg: this.$t('card.swipeGiftCard')
         }
     },
     mounted() {
@@ -37,7 +37,7 @@ export default {
         },
         parser(data) {
             if (data.includes("%E") || data.includes(";E?")) {
-                this.msg = this.text("READ_TRACK_FAILED");
+                this.msg = this.$t("card.cantReadTack");
                 this.card = "";
                 return;
             }
@@ -45,7 +45,7 @@ export default {
                 let number = data.match(/\d{16,16}/)[0];
                 this.init.resolve(number);
             } catch (e) {
-                this.msg = this.text("READ_TRACK_FAILED");
+                this.msg = this.$t("card.cantReadTack");
                 this.card = "";
             }
         }

@@ -1,10 +1,10 @@
 <template>
-  <div class="popupMask center dark" @click.self="init.reject">
+  <div class="popupMask center dark">
     <div class="reservation window">
       <header class="title">
-        <span>{{text('RESERVATION')}}</span>
+        <span>{{$t('text.reservation')}}</span>
         <span class="date">{{date}}</span>
-        <i class="fa fa-times" @click="init.reject"></i>
+        <i class="fa fa-times" @click="exit"></i>
       </header>
       <div class="inner">
         <section class="dataList">

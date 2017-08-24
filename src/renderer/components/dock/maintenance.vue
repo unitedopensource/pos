@@ -2,8 +2,8 @@
   <div class="maintenance">
     <div v-if="ban" class="banned">
       <i class="fa fa-5x fa-info-circle"></i>
-      <h3>{{text("POS_MAINTENANCE")}}</h3>
-      <h5>{{text("POS_MAINTENANCE_TIP")}}</h5>
+      <h3>{{$t("dialog.maintenance")}}</h3>
+      <h5>{{$t("dialog.maintenanceTip")}}</h5>
       <svg>
         <defs>
           <filter id="goo">

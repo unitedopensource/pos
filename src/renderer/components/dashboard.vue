@@ -65,6 +65,7 @@ export default {
           break;
         case "pickup":
           this.setTicket({ type: 'PICK_UP' });
+          this.ring && this.setCustomer(this.callLog[0]);
           this.$router.push({ path: '/main/info' });
           break;
         case "delivery":
@@ -75,7 +76,10 @@ export default {
         case "table":
           this.store.table.layout ?
             this.$router.push({ path: '/main/table' }) :
-            this.$dialog({ title: "DINE_IN_DISABLED", msg: "TIP_DINE_IN_ENABLE", buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$q() });
+            this.$dialog({
+              title: "dialog.dineInDisabled", msg: "dialog.dineInEnableTip",
+              buttons: [{ text: 'button.confirm', fn: 'resolve' }]
+            }).then(() => { this.$q() });
           break;
         case "pickup list":
           break;
@@ -101,16 +105,25 @@ export default {
       this.approval(this.op.access, "cashdrawer") ? this.cashFlowCtrl() : this.$denyAccess();
     },
     missCashDrawer() {
-      this.$dialog({ title: "CASH_DRAWER_NA", msg: "TIP_CASH_DRAWER_NA", buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$q() });
+      this.$dialog({
+        title: "dialog.cashDrawerNotAvailable", msg: "dialog.cashDrawerNotAvailableTip",
+        buttons: [{ text: 'button.confirm', fn: 'resolve' }]
+      }).then(() => { this.$q() });
     },
     cashFlowCtrl() {
       this.store.stuffBank ? this.cashInflow(this.op.name) : this.station.cashDrawer.cashFlowCtrl ? this.cashInflow(this.station.cashDrawer.name) : Printer.init(this.config).openCashDrawer();
     },
     activateStation() {
-      this.$dialog({ type: "warning", title: 'STA_UNREG', msg: 'TIP_REG_STA', buttons: [{ text: 'ACTIVATION', fn: 'resolve' }] }).then(() => {
+      this.$dialog({
+        type: "warning", title: 'dialog.stationUnregistered',
+        msg: 'dialog.stationUnregisteredTip', buttons: [{ text: 'button.activation', fn: 'resolve' }]
+      }).then(() => {
         MAC.getMac((err, mac) => {
           if (err) {
-            this.$dialog({ type: "error", title: 'STA_REG_F', msg: this.text('TIP_REASON', err), buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$q() });
+            this.$dialog({
+              type: "error", title: 'dialog.stationRegisterFailed', msg: this.text('dialog.stationRegisterFailedTip', err),
+              buttons: [{ text: 'button.confirm', fn: 'resolve' }]
+            }).then(() => { this.$q() });
           } else {
             let stations = Object.assign({}, this.store.station);
             let length = Object.keys(stations).length + 1;
@@ -134,7 +147,7 @@ export default {
       this.op.timecard && !this.op.clockIn && this.reqClockIn();
     },
     reqClockIn() {
-      this.$dialog({ title: "CLOCK_IN_REQ", msg: "TIP_CLOCK_IN_REQ" }).then(() => { this.$q() })
+      this.$dialog({ title: "dialog.clockInRequire", msg: "dialog.clockInRequireTip" }).then(() => { this.$q() })
     },
     cashInflow(cashDrawer) {
       new Promise((resolve, reject) => {
@@ -143,14 +156,13 @@ export default {
       }).then(() => { this.recordCashDrawerAction() }).catch(() => { this.askCashIn() })
     },
     askCashIn() {
-      this.$dialog({ title: "CASH_IN_REQ", msg: "TIP_CASH_IN_REQ" }).then(() => { this.countCash(this.station.cashDrawer.initialAmount) }).catch(() => { this.$q() });
+      this.$dialog({ title: "dialog.cashIn", msg: "dialog.cashInTip" }).then(() => { this.countCash(this.station.cashDrawer.initialAmount) }).catch(() => { this.$q() });
     },
     countCash(total) {
       if (isNumber(total) && total > 0) {
         Printer.init(this.config).openCashDrawer();
-        this.$dialog({ title: 'CASH_IN_CONFIRM', msg: this.text('CASH_IN_AMOUNT', parseFloat(total).toFixed(2)) })
-          .then(() => { this.cashin(total) })
-          .catch(() => { this.countCash() })
+        this.$dialog({ title: 'dialog.cashInConfirm', msg: this.text('dialog.cashInConfirmTip', parseFloat(total).toFixed(2)) })
+          .then(() => { this.cashin(total) }).catch(() => { this.countCash() })
       } else {
         new Promise((resolve, reject) => {
           this.componentData = { resolve, reject };
@@ -272,13 +284,13 @@ export default {
 
 h4 {
   font-weight: normal;
-  color: gray;
+  color:#757575;
 }
 
 h1 {
   font-weight: 500;
-  font-size: 3em;
-  margin-top: 45px;
+  font-size: 46px;
+  margin-top: 50px;
 }
 
 .dashboard .clock {

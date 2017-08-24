@@ -2,13 +2,13 @@
     <div class="popupMask center dark" @click.self="init.reject(false)">
         <div class="window">
             <header class="title">
-                <span>{{text('STATISTIC')}}</span>
+                <span>{{$t('history.stats')}}</span>
             </header>
             <div class="inner">
     
             </div>
             <footer>
-                <div class="btn">{{text('CONFIRM')}}</div>
+                <div class="btn">{{$t('button.confirm')}}</div>
             </footer>
         </div>
     </div>

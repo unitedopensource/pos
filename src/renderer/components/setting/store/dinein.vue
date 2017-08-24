@@ -1,32 +1,32 @@
 <template>
     <div>
         <section class="card">
-            <header>{{text('DINE_IN')}}
+            <header>{{$t('setting.dineIn')}}
                 <span class="tip"></span>
             </header>
             <article>
-                <smart-switch v-model="table.layout" label="ENABLE"></smart-switch>
-                <smart-switch v-model="table.guestCount" label="GUEST_COUNT"></smart-switch>
-                <smart-switch v-model="table.seatOrder" label="SEAT_ORDER"></smart-switch>
-                <smart-switch v-model="table.autoClean" label="AUTO_CLEAN_TABLE"></smart-switch>
+                <smart-switch v-model="table.layout" label="text.enable"></smart-switch>
+                <smart-switch v-model="table.guestCount" label="text.guestCount"></smart-switch>
+                <smart-switch v-model="table.seatOrder" label="text.orderBySeat"></smart-switch>
+                <smart-switch v-model="table.autoClean" label="text.autoCleanTable"></smart-switch>
             </article>
         </section>
         <section class="card">
-            <header>{{text('STUFF_BANK')}}
+            <header>{{$t('setting.stuffBank')}}
                 <span class="tip"></span>
             </header>
             <article>
-                <smart-switch v-model="table.stuffBank" label="ENABLE"></smart-switch>
-                <smart-input v-model.number="table.initialAmount" label="INIT_AMOUNT" :disable="!table.stuffBank"></smart-input>
+                <smart-switch v-model="table.stuffBank" label="text.enable"></smart-switch>
+                <smart-input v-model.number="table.initialAmount" label="text.initialAmount" :disable="!table.stuffBank"></smart-input>
             </article>
         </section>
         <section class="card">
-            <header>{{text('AUTO_CHARGE')}}
-                <span class="SETTING.AUTOCHARGE.TIP"></span>
+            <header>{{$t('autoCharge')}}
+                <span class="tip">{{$t('autoChargeTip')}}</span>
             </header>
             <article>
-                <smart-switch v-model="table.autoTip" label="ENABLE"></smart-switch>
-                <smart-input v-model.number="table.AutoChargeAbove" label="AUTO_CHARGE_ABOVE" :disable="!table.autoTip"></smart-input>
+                <smart-switch v-model="table.autoTip" label="text.enable"></smart-switch>
+                <smart-input v-model.number="table.AutoChargeAbove" label="text.autoChargeAbove" :disable="!table.autoTip"></smart-input>
             </article>
         </section>
     </div>

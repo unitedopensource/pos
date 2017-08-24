@@ -1,79 +1,79 @@
 <template>
     <div>
         <section class="card">
-            <header>{{text('STATION')}}
+            <header>{{$t('setting.station')}}
                 <span class="tip"></span>
             </header>
             <article>
-                <smart-input v-model="workStation.alies" reg="^[a-zA-Z0-9_. ]{2,10}$" label="NAME"></smart-input>
-                <smart-input v-model="workStation.mac" label="MAC" :disable="true"></smart-input>
-                <smart-switch v-model="workStation.receiveOnlineOrder" label="ONLINE_ORDER"></smart-switch>
+                <smart-input v-model="workStation.alies" reg="^[a-zA-Z0-9_. ]{2,10}$" label="text.name"></smart-input>
+                <smart-input v-model="workStation.mac" label="text.mac" :disable="true"></smart-input>
+                <smart-switch v-model="workStation.receiveOnlineOrder" label="text.receiveOnlineOrder"></smart-switch>
             </article>
         </section>
         <section class="card">
-            <header>{{text('TERM')}}
-                <span class="tip">{{text('STATION.TERM.TIP')}}</span>
+            <header>{{$t('setting.terminal')}}
+                <span class="tip">{{$t('setting.terminalTip')}}</span>
             </header>
             <article>
-                <smart-switch v-model="workStation.terminal.enable" label="ENABLE"></smart-switch>
-                <smart-option v-model="workStation.terminal.model" :options="devices" label="MODEL"></smart-option>
-                <smart-input v-model="workStation.terminal.address" reg="^[0-9. ]{3,}$" label="ADDRESS" @dblclick.native="searchTool"></smart-input>
-                <smart-input v-model="workStation.terminal.port" reg="^[a-zA-Z0-9_. ]{2,10}$" label="PORT"></smart-input>
-                <smart-input v-model="workStation.terminal.sn" label="AUTH_CODE"></smart-input>
+                <smart-switch v-model="workStation.terminal.enable" label="text.enable"></smart-switch>
+                <smart-option v-model="workStation.terminal.model" :options="devices" label="text.model"></smart-option>
+                <smart-input v-model="workStation.terminal.address" reg="^[0-9. ]{3,}$" label="text.ipAddress" @dblclick.native="searchTool"></smart-input>
+                <smart-input v-model="workStation.terminal.port" reg="^[a-zA-Z0-9_. ]{2,10}$" label="text.port"></smart-input>
+                <smart-input v-model="workStation.terminal.sn" label="text.authCode"></smart-input>
             </article>
         </section>
         <section class="card">
-            <header>{{text('POLE_DISPLAY')}}
-                <span class="tip">{{text('STATION.POLEDISPLAY.TIP')}}</span>
+            <header>{{$t('setting.poleDisplay')}}
+                <span class="tip">{{$t('setting.poleDisplayTip')}}</span>
             </header>
             <article>
-                <smart-switch v-model="workStation.pole.enable" label="ENABLE"></smart-switch>
-                <smart-option v-model="workStation.pole.port" label="PORT" :options="ports"></smart-option>
-                <smart-input v-model="workStation.pole.top" label="STATION.POLEDISPLAY.FIRSTLINE" :disable="!workStation.pole.enable"></smart-input>
-                <smart-input v-model="workStation.pole.btm" label="STATION.POLEDISPLAY.SECONDLINE" :disable="!workStation.pole.enable"></smart-input>
+                <smart-switch v-model="workStation.pole.enable" label="text.enable"></smart-switch>
+                <smart-option v-model="workStation.pole.port" label="text.port" :options="ports"></smart-option>
+                <smart-input v-model="workStation.pole.top" label="text.firstLine" :disable="!workStation.pole.enable"></smart-input>
+                <smart-input v-model="workStation.pole.btm" label="text.secondLine" :disable="!workStation.pole.enable"></smart-input>
             </article>
         </section>
         <section class="card">
-            <header>{{text('WEIGHT_SCALE')}}</header>
+            <header>{{$t('setting.scale')}}</header>
             <article>
-                <smart-switch v-model="workStation.scale.enable" label="ENABLE"></smart-switch>
-                <smart-option v-model="workStation.scale.port" label="PORT" :options="ports"></smart-option>
+                <smart-switch v-model="workStation.scale.enable" label="text.enable"></smart-switch>
+                <smart-option v-model="workStation.scale.port" label="text.port" :options="ports"></smart-option>
             </article>
         </section>
         <section class="card">
-            <header>{{text('CALLER_ID')}}</header>
+            <header>{{$t('setting.callerId')}}</header>
             <article>
-                <smart-switch v-model="workStation.callid.enable" label="ENABLE"></smart-switch>
-                <smart-option v-model="workStation.callid.port" label="PORT" :options="ports"></smart-option>
-                <smart-option v-model="workStation.callid.command" :options="commands" label="COMMAND"></smart-option>
+                <smart-switch v-model="workStation.callid.enable" label="text.enable"></smart-switch>
+                <smart-option v-model="workStation.callid.port" label="text.port" :options="ports"></smart-option>
+                <smart-option v-model="workStation.callid.command" :options="commands" label="text.command"></smart-option>
             </article>
         </section>
         <section class="card">
-            <header>{{text('SECURITY')}}</header>
+            <header>{{$t('setting.security')}}</header>
             <article>
-                <smart-range v-model="workStation.timeout" label="AUTO_LOGOUT" min="0" max="600" step="30"></smart-range>
+                <smart-range v-model="workStation.timeout" label="text.autoLock" min="0" max="600" step="30"></smart-range>
             </article>
         </section>
         <section class="card">
-            <header>{{text('PRINTER')}}</header>
+            <header>{{$t('setting.printer')}}</header>
             <article>
-                <smart-switch v-model="workStation.printRedirect" label="PRINT_REDIRECT"></smart-switch>
+                <smart-switch v-model="workStation.printRedirect" label="text.redirect"></smart-switch>
                 <redirector :options="printers" @update="update" :init="workStation.print"></redirector>
             </article>
         </section>
         <section class="card">
-            <header>{{text('CASHDRAWER')}}</header>
+            <header>{{text('setting.cashDrawer')}}</header>
             <article>
-                <smart-switch v-model="workStation.cashDrawer.enable" label="ENABLE"></smart-switch>
-                <smart-input v-model="workStation.cashDrawer.name" label="ALIES" :disable="!workStation.cashDrawer.enable"></smart-input>
-                <smart-option v-model="workStation.cashDrawer.bind" label="BINDING" :options="printers"></smart-option>
-                <smart-switch v-model="workStation.cashDrawer.cashFlowCtrl" label="CASH_FLOW"></smart-switch>
-                <smart-input v-model="workStation.cashDrawer.initialAmount" label="INIT_AMOUNT" :disable="!workStation.cashDrawer.cashFlowCtrl"></smart-input>
-                <smart-input v-model.number="workStation.cashDrawer.errors" label="CALC_ERRORS" :disable="!workStation.cashDrawer.cashFlowCtrl"></smart-input>
+                <smart-switch v-model="workStation.cashDrawer.enable" label="text.enable"></smart-switch>
+                <smart-input v-model="workStation.cashDrawer.name" label="text.name" :disable="!workStation.cashDrawer.enable"></smart-input>
+                <smart-option v-model="workStation.cashDrawer.bind" label="text.binding" :options="printers"></smart-option>
+                <smart-switch v-model="workStation.cashDrawer.cashFlowCtrl" label="text.cashFlowCtrl"></smart-switch>
+                <smart-input v-model="workStation.cashDrawer.initialAmount" label="text.initialAmount" :disable="!workStation.cashDrawer.cashFlowCtrl"></smart-input>
+                <!-- <smart-input v-model.number="workStation.cashDrawer.errors" label="errorsAllow" :disable="!workStation.cashDrawer.cashFlowCtrl"></smart-input> -->
             </article>
         </section>
         <section class="card">
-            <header>{{text('UI')}}</header>
+            <header>{{$t('text.ui')}}</header>
             <article class="grid">
                 <div v-for="(grid,index) in workStation.interface" :key="index" class="block" @click="edit(grid,index)" :class="{disable:!grid.enable}">
                     <i class="fa icon" :class="[grid.icon]"></i>

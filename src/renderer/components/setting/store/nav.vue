@@ -2,11 +2,11 @@
     <section class="route">
         <nav class="route">
             <header @click="back">
-                <i class="fa fa-chevron-left"></i>{{text('BACK')}}</header>
-            <router-link :to="{name:'Setting.store'}" tag="div" append>{{text('BASIC_INFO')}}</router-link>
-            <router-link :to="{name:'Setting.station'}" tag="div" append>{{text('STATION')}}</router-link>
-            <router-link :to="{name:'Setting.tax'}" tag="div" append>{{text('TAX_RATE')}}</router-link>
-            <router-link :to="{name:'Setting.dinein'}" tag="div" append>{{text('DINE_IN')}}</router-link>
+                <i class="fa fa-chevron-left"></i>{{$t('button.back')}}</header>
+            <router-link :to="{name:'Setting.store'}" tag="div" append>{{$t('setting.storeInfo')}}</router-link>
+            <router-link :to="{name:'Setting.station'}" tag="div" append>{{$t('setting.station')}}</router-link>
+            <router-link :to="{name:'Setting.tax'}" tag="div" append>{{$t('setting.tax')}}</router-link>
+            <router-link :to="{name:'Setting.dinein'}" tag="div" append>{{$t('setting.dineIn')}}</router-link>
         </nav>
         <div class="content">
             <router-view @change="onChange" @unchange="change = false" class="inner"></router-view>
@@ -14,8 +14,8 @@
                 <i class="fa fa-info-circle"></i>
                 <span>{{txt}}</span>
                 <span v-show="!send">
-                    <span @click="update" class="save">{{text('SAVE')}}</span>
-                    <span @click="cancel" class="cancel">{{text('CANCEL')}}</span>
+                    <span @click="update" class="save">{{$t('button.save')}}</span>
+                    <span @click="cancel" class="cancel">{{$t('button.cancel')}}</span>
                 </span>
             </footer>
         </div>
@@ -37,13 +37,13 @@ export default {
             this.$router.push({ name: 'Setting.index' })
         },
         onChange(store) {
-            this.txt = this.text("TIP_SAVE_CONFIG");
+            this.txt = this.$t("text.saveSetting");
             this.change = true;
             this.store = store;
             this.send = false;
         },
         update() {
-            this.txt = this.text('SETTING_UPDATED');
+            this.txt = this.$t('text.settingUpdated');
             this.send = true;
             this.$socket.emit("[CMS] CONFIG_STORE", this.store);
             this.setConfig({ store: this.store })

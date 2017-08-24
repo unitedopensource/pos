@@ -2,7 +2,7 @@
   <div class="popupMask center dark" @click.self="setOption">
     <div class="window">
       <header class="title">
-        <span>{{text('ITEM_BUILDER')}}</span>
+        <span>{{$t('menu.builder')}}</span>
         <i class="fa fa-times" @click="init.reject"></i>
       </header>
       <div class="inner">
@@ -28,7 +28,7 @@
           </form>
           <div v-else>
             <fieldset>
-              <legend>{{text('EDIT')}}</legend>
+              <legend>{{$t('text.edit')}}</legend>
               <ul class="editList">
                 <li v-for="(item,index) in editList" :key="index">
                   <div class="item">
@@ -38,7 +38,7 @@
                       <span>{{item.qty}}</span>
                       <i class="fa fa-plus" @click="addQty(item)"></i>
                     </div>
-                    <span class="note" @click="addNote(item,$event)">{{text('NOTE')}}</span>
+                    <span class="note" @click="addNote(item,$event)">{{$t('button.note')}}</span>
                   </div>
                   <div class="input" v-if="item.hasOwnProperty('note')">
                     <input type="text" v-model="item.note">
@@ -50,10 +50,10 @@
         </div>
       </div>
       <footer>
-        <div class="btn" @click="init.reject">{{text('CANCEL')}}</div>
-        <div class="btn" v-if="edit" @click="edit = false">{{text('DONE')}}</div>
-        <div class="btn" v-else @click="editItem">{{text('EDIT')}}</div>
-        <div class="btn" @click="confirm">{{text('CONFIRM')}}</div>
+        <div class="btn" @click="init.reject">{{$t('button.cancel')}}</div>
+        <div class="btn" v-if="edit" @click="edit = false">{{$t('button.done')}}</div>
+        <div class="btn" v-else @click="editItem">{{$t('button.edit')}}</div>
+        <div class="btn" @click="confirm">{{$t('button.confirm')}}</div>
       </footer>
     </div>
   </div>

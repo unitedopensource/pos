@@ -1,7 +1,7 @@
 <template>
     <div class="redirect">
-        <smart-option label="RECEIPT_PRINTER" v-model="printer" :options="options" class="f1" @input="trigger"></smart-option>
-        <smart-option label="PRINT_REDIRECT_TO" v-model="redirect" :options="options" class="f1" @input="trigger"></smart-option>
+        <smart-option label="text.printer" v-model="printer" :options="options" class="f1" @input="trigger"></smart-option>
+        <smart-option label="text.redirect" v-model="redirect" :options="options" class="f1" @input="trigger"></smart-option>
     </div>
 </template>
 

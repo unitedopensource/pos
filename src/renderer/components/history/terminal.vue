@@ -3,7 +3,7 @@
         <div class="window" v-show="!component">
             <header class="title">
                 <div class="wrap">
-                    <span>{{text('TERM_REPORT')}}</span>
+                    <span>{{$t('history.terminalRecord')}}</span>
                     <span class="date">{{date}}</span>
                 </div>
                 <i class="fa fa-times" @click="init.resolve"></i>
@@ -12,19 +12,19 @@
                 <section class="trans">
                     <header>
                         <span>&nbsp;</span>
-                        <span class="trans">{{text('TRANSACTION')}}</span>
-                        <span class="record">{{text('CARD_INFO')}}</span>
-                        <span class="amount">{{text('AMOUNT')}}</span>
-                        <span class="action">{{text("action")}}</span>
+                        <span class="trans">{{$t('text.transaction')}}</span>
+                        <span class="record">{{$t('text.cardInfo')}}</span>
+                        <span class="amount">{{$t('text.amount')}}</span>
+                        <span class="action">{{$t("text.action")}}</span>
                     </header>
                     <ul class="content">
                         <li v-for="(trans,index) in transaction" :key="index" :class="{void:trans.status === 0,settled:trans.close}">
-                            <i class="fa fa-exclamation-triangle risk" v-if="isRisk(trans)" :title="text('TIP_CHARGE_BACK')"></i>
+                            <i class="fa fa-exclamation-triangle risk" v-if="isRisk(trans)" :title="$t('text.chargeBackRisk')"></i>
                             <i :class="getIcon(trans.status)" class="status"></i>
                             <div class="info">
                                 <span class="num">#{{trans.trace.trans}}</span>
                                 <span class="type">{{trans.transType}}</span>
-                                <span class="order">{{text(trans.order.type)}}
+                                <span class="order">{{$t('type.'+trans.order.type)}}
                                     <span class="ticket">(#{{trans.order.number}})</span>
                                 </span>
                             </div>
@@ -38,16 +38,16 @@
                                 <span v-show="parseFloat(trans.amount.tip) > 0" class="tip">(Tip: $ {{trans.amount.tip}})</span>
                             </div>
                             <div class="action">
-                                <span @click="adjustTip(trans)" class="adjust">{{text('ADJUST_TIP')}}</span>
-                                <span @click="print(trans)" class="reprint">{{text('PRINT')}}</span>
-                                <span @click="voidSale(trans)" class="void">{{text('VOID')}}</span>
+                                <span @click="adjustTip(trans)" class="adjust">{{$t('button.adjust')}}</span>
+                                <span @click="print(trans)" class="reprint">{{$t('button.print')}}</span>
+                                <span @click="voidSale(trans)" class="void">{{$t('button.void')}}</span>
                             </div>
                         </li>
                     </ul>
                 </section>
             </div>
             <footer>
-                <button class="btn" @click="batch" :disabled="!device">{{text('BATCH')}}</button>
+                <button class="btn" @click="batch" :disabled="!device">{{$t('button.batch')}}</button>
                 <div class="pagination">
                     <div class="page" @click="page = page > 0 ? page - 1 : 0">
                         <i class="fa fa-angle-left"></i>
@@ -58,7 +58,7 @@
                     </div>
                 </div>
                 <div>
-                    <div class="btn" @click="init.resolve">{{text('EXIT')}}</div>
+                    <div class="btn" @click="init.resolve">{{$t('button.exit')}}</div>
                 </div>
             </footer>
         </div>

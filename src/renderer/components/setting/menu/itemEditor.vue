@@ -2,62 +2,62 @@
     <div class="popupMask center dark">
         <div class="itemEditor window" v-if="!coding">
             <header class="title">
-                <span>{{text('ITEM_EDITOR')}}</span>
+                <span>{{$t('setting.itemEditor')}}</span>
                 <i class="fa fa-code" @click.ctrl="viewCode"></i>
             </header>
             <div class="inner">
                 <section class="card">
                     <header>
-                        <span>{{text('ITEM_INFO')}}</span>
+                        <span>{{$t('text.itemInfo')}}</span>
                         <div class="advance" @click="advance = !advance">
                             <span v-if="!advance">
-                                <i class="fa fa-eye"></i>{{text('ADVANCE')}}</span>
+                                <i class="fa fa-eye"></i>{{$t('text.advance')}}</span>
                             <span v-else>
-                                <i class="fa fa-eye-slash"></i>{{text('NORMAL')}}</span>
+                                <i class="fa fa-eye-slash"></i>{{$t('text.normal')}}</span>
                         </div>
                     </header>
                     <article>
-                        <smart-input v-model="item.menuID" reg="^[a-zA-Z0-9_. ]{0,3}$" label="MENU_ID"></smart-input>
-                        <smart-option v-model="item.category" label="CATEGORY" :options="init.categories"></smart-option>
-                        <smart-input v-model.trim="item.categoryCN" reg="^.{0,10}$" label="CATEGORY_CN"></smart-input>
-                        <instant-input v-model="item.usEN" label="US_EN" @fill="fill"></instant-input>
-                        <smart-input v-model="item.zhCN" reg="^.{0,15}$" label="ZH_CN"></smart-input>
-                        <smart-input v-model="item.price" reg="^[0-9.,]{3,}$" label="PRICE" :more="true" @toggle="extraPrice = !extraPrice"></smart-input>
+                        <smart-input v-model="item.menuID" reg="^[a-zA-Z0-9_. ]{0,3}$" label="text.menuID"></smart-input>
+                        <smart-option v-model="item.category" label="text.category" :options="init.categories"></smart-option>
+                        <smart-input v-model.trim="item.categoryCN" reg="^.{0,10}$" label="text.categoryCN"></smart-input>
+                        <instant-input v-model="item.usEN" label="text.primary" @fill="fill"></instant-input>
+                        <smart-input v-model="item.zhCN" reg="^.{0,15}$" label="text.secondary"></smart-input>
+                        <smart-input v-model="item.price" reg="^[0-9.,]{3,}$" label="text.price" :more="true" @toggle="extraPrice = !extraPrice"></smart-input>
                         <div class="extraPrice" v-if="extraPrice">
                             <div>
-                                <label>{{text('WALK_IN')}}</label>
+                                <label>{{$t('type.WALK_IN')}}</label>
                                 <input v-model="item.prices.WALK_IN">
                             </div>
                             <div>
-                                <label>{{text('PICK_UP')}}</label>
+                                <label>{{$t('type.PICK_UP')}}</label>
                                 <input v-model="item.prices.PICK_UP">
                             </div>
                             <div>
-                                <label>{{text('DELIVERY')}}</label>
+                                <label>{{$t('type.DELIVERY')}}</label>
                                 <input v-model="item.prices.DELIVERY">
                             </div>
                             <div>
-                                <label>{{text('DINE_IN')}}</label>
+                                <label>{{$t('type.DINE_IN')}}</label>
                                 <input v-model="item.prices.DINE_IN">
                             </div>
                             <div>
-                                <label>{{text('BAR')}}</label>
+                                <label>{{$t('type.BAR')}}</label>
                                 <input v-model="item.prices.BAR">
                             </div>
                         </div>
-                        <smart-switch v-model="item.spicy" label="IS_SPICY"></smart-switch>
-                        <smart-option v-model="item.taxClass" :options="taxOption" label="TAX_CLASS"></smart-option>
+                        <smart-switch v-model="item.spicy" label="text.spicy"></smart-switch>
+                        <smart-option v-model="item.taxClass" :options="taxOption" label="text.taxClass"></smart-option>
                         <div v-if="advance">
-                            <smart-input v-model="item.priority" label="PRIORITY"></smart-input>
-                            <smart-input v-model="item.inventory" label="INVENTORY"></smart-input>
-                            <smart-input v-model="item.rewardPoint" label="REWARD_POINT"></smart-input>
+                            <smart-input v-model="item.priority" label="text.priority"></smart-input>
+                            <smart-input v-model="item.inventory" label="text.inventory"></smart-input>
+                            <smart-input v-model="item.rewardPoint" label="text.rewardPoint"></smart-input>
                         </div>
                     </article>
                 </section>
                 <section class="card">
-                    <header>{{text('ITEM_SIDE')}}
-                        <checkbox v-model="item.disableAutoOption" label="DISABLE_AUTO_ADD"></checkbox>
-                        <span class="tip">({{text('MAX_ITEM',11)}})</span>
+                    <header>{{$t('text.sideItem')}}
+                        <checkbox v-model="item.disableAutoOption" label="text.disableAutoAdd"></checkbox>
+                        <span class="tip">({{$t('text.maxItem',11)}})</span>
                     </header>
                     <article class="option">
                         <draggable v-model="item.option" :options="dragtions">
@@ -66,29 +66,29 @@
                                     <div class="index">{{index+1}}</div>
                                     <div class="item">
                                         <div>
-                                            <label>{{text('ZH_CN')}}</label>
-                                            <input type="text" v-model="side.zhCN">
-                                        </div>
-                                        <div>
-                                            <label>{{text('US_EN')}}</label>
+                                            <label>{{$t('text.primary')}}</label>
                                             <input type="text" v-model="side.usEN">
                                         </div>
+                                        <div>
+                                            <label>{{$t('text.secondary')}}</label>
+                                            <input type="text" v-model="side.zhCN">
+                                        </div>
                                         <div class="price">
-                                            <label>{{text('PRICE')}}</label>
+                                            <label>{{$t('text.price')}}</label>
                                             <input type="text" v-model.number="side.price">
-                                            <label>{{text('PRICE_EXTRA')}}</label>
+                                            <label>{{$t('text.priceExtra')}}</label>
                                             <input type="text" v-model.number="side.extra">
                                         </div>
                                         <div class="template" v-if="advance">
-                                            <label>{{text('TEMPLATE')}}</label>
+                                            <label>{{$t('text.template')}}</label>
                                             <select v-model="side.template">
                                                 <option v-for="(name,index) in templateOption" :key="index">{{name}}</option>
                                             </select>
                                         </div>
                                     </div>
                                     <div class="ctrl" v-if="advance">
-                                        <checkbox v-model="side.sub" label="SUBITEM"></checkbox>
-                                        <checkbox v-model="side.overWrite" label="OVERWRITE"></checkbox>
+                                        <checkbox v-model="side.sub" label="text.subItem"></checkbox>
+                                        <checkbox v-model="side.overWrite" label="text.overWrite"></checkbox>
                                     </div>
                                     <i class="fa fa-trash remove" @click="removeOption(index)"></i>
                                 </div>
@@ -96,12 +96,12 @@
                         </draggable>
                         <div v-show="addButton">
                             <div class="add" @click="addOption">
-                                <i class="fa fa-plus"></i>{{text('ADD_SIDE')}}</div>
+                                <i class="fa fa-plus"></i>{{$t('text.addSide')}}</div>
                         </div>
                     </article>
                 </section>
                 <section class="card">
-                    <header>{{text('PRINT_SETUP')}}</header>
+                    <header>{{$t('setting.print')}}</header>
                     <div v-for="(printer,index) in printers" :id="printer" :key="index">
                         <div class="printer" @click="togglePrinter(printer,$event)">
                             <div class="name">
@@ -112,31 +112,31 @@
                         </div>
                         <div class="extra" v-if="item.printer[printer]">
                             <i class="fa fa-exclamation-circle"></i>
-                            <span>{{text('PRT_ITEM_OR')}}</span>
-                            <label>{{text('ZH_CN')}}</label>
-                            <input v-model="item.printer[printer]['zhCN']">
-                            <label>{{text('US_EN')}}</label>
+                            <span>{{$t('text.printItemName')}}</span>
+                            <label>{{$t('text.primary')}}</label>
                             <input v-model="item.printer[printer]['usEN']">
+                            <label>{{$t('text.secondary')}}</label>
+                            <input v-model="item.printer[printer]['zhCN']">
                         </div>
                     </div>
                 </section>
             </div>
             <footer class="relative">
                 <span class="del" @click="del" v-show="item._id">
-                    <i class="fa fa-trash-o"></i>{{text('DELETE')}}</span>
+                    <i class="fa fa-trash-o"></i>{{$t('button.delete')}}</span>
                 <div class="tip" v-show="errorText">
                     <i class="fa fa-exclamation-circle"></i>
                     <span class="text">{{errorText}}</span>
                 </div>
                 <div class="buttons">
-                    <div class="btn" @click="exit" id="cancelEdit">{{text('CANCEL')}}</div>
-                    <div class="btn" @click="confirm" id="confirmEdit">{{text('CONFIRM')}}</div>
+                    <div class="btn" @click="exit" id="cancelEdit">{{$t('button.cancel')}}</div>
+                    <div class="btn" @click="confirm" id="confirmEdit">{{$t('button.confirm')}}</div>
                 </div>
             </footer>
         </div>
         <div class="coding window" v-else>
             <header class="title">
-                <span>{{text('CODE_EDITOR')}}</span>
+                <span>{{$t('setting.codeEditor')}}</span>
                 <i class="fa fa-list-alt" @click="hateCoding"></i>
             </header>
             <div class="inner">
@@ -299,7 +299,7 @@ export default {
             } else {
                 let dom = document.querySelector(".invalid");
                 let text = dom.parentElement.children[0].innerText;
-                this.errorText = this.text("INVALID_VALUE", text);
+                this.errorText = this.$t("text.invalidValue", text);
                 dom.scrollIntoView({ behavior: "smooth" });
                 dom.parentElement.children[1].focus();
             }

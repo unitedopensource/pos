@@ -2,7 +2,7 @@
     <div class="popupMask center dark" @click.self="init.reject">
         <div class="window">
             <header class="title">
-                <span>{{text('GIFT_CARD')}}</span>
+                <span>{{$t('card.giftCard')}}</span>
                 <i class="fa fa-close" @click.self="init.reject"></i>
             </header>
             <div class="inner">

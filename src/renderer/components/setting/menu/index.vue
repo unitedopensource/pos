@@ -17,8 +17,8 @@
         </div>
         <aside>
             <div>
-                <div class="btn" @click="applyItemSort" v-if="isItemSort">{{text('APPLY')}}</div>
-                <div class="btn" @click="applyCategorySort" v-if="isCategorySort">{{text('APPLY')}}</div>
+                <div class="btn" @click="applyItemSort" v-if="isItemSort">{{$t('button.apply')}}</div>
+                <div class="btn" @click="applyCategorySort" v-if="isCategorySort">{{$t('button.apply')}}</div>
             </div>
         </aside>
         <div :is="component" :init="componentData"></div>
@@ -27,24 +27,18 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import categoryEditor from './categoryEditor'
 import dialoger from '../../common/dialoger'
+import itemEditor from './itemEditor'
 import draggable from 'vuedraggable'
 import Preset from '../../../preset'
-import itemEditor from './itemEditor'
-import categoryEditor from './categoryEditor'
+
 export default {
     components: { draggable, dialoger, itemEditor, categoryEditor },
-    created() {
-        this.categories = JSON.parse(JSON.stringify(this.menu));
-        this.items = JSON.parse(JSON.stringify(this.categories[0].item))
-    },
-    mounted() {
-        window.addEventListener("keydown", this.input, false);
-    },
     data() {
         return {
-            component: null,
             componentData: null,
+            component: null,
             categories: null,
             items: null,
             categoryIndex: 0,
@@ -53,6 +47,14 @@ export default {
             pointIndex: 0
         }
     },
+    created() {
+        this.categories = JSON.parse(JSON.stringify(this.menu));
+        this.items = JSON.parse(JSON.stringify(this.categories[0].item))
+    },
+    mounted() {
+        window.addEventListener("keydown", this.input, false);
+    },
+
     methods: {
         setCategory(index) {
             this.pointIndex = null;
@@ -92,7 +94,7 @@ export default {
             })
         },
         deleteConfirm(item, sub, idx) {
-            this.$dialog({ title: 'DEL_ITEM_CONFIRM', msg: this.text('DEL_ITEM_TIP', item[this.language]) }).then(() => {
+            this.$dialog({ title: 'dialog.deleteItemConfirm', msg: this.$t('deleteItemConfirmTip', item[this.language]) }).then(() => {
                 let id = item._id;
                 let grp = this.categoryIndex;
                 this.$socket.emit("[CMS] REMOVE_ITEM", { id, grp, sub, idx });

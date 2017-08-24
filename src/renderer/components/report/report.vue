@@ -2,70 +2,70 @@
     <div class="popupMask center dark">
         <div class="window" v-show="!component">
             <header class="title">
-                <span>{{text('PRINT_REPORT')}}</span>
+                <span>{{$t('report.configuration')}}</span>
                 <i class="fa fa-times" @click="init.reject"></i>
             </header>
             <div class="inner">
                 <section class="option">
                     <div class="for">
-                        <span>{{text('REPORT_RANGE')}}</span>
+                        <span>{{$t('report.range')}}</span>
                         <span class="range">
                             <span v-if="reportRange">{{reportRange.from | moment('YYYY-MM-DD HH:mm')}} ~ {{reportRange.to | moment('YYYY-MM-DD HH:mm')}}</span>
                         </span>
-                        <checkbox v-model="daily" label="DAILY_REPORT"></checkbox>
+                        <checkbox v-model="daily" label="report.dailyReport"></checkbox>
                     </div>
                     <div class="rangeWrap">
                         <div>
                             <input type="radio" name="range" v-model="range" value="today" id="today" @click="getRange('today')">
-                            <label for="today">{{text('TODAY')}}</label>
+                            <label for="today">{{$t('report.today')}}</label>
                         </div>
                         <div>
                             <input type="radio" name="range" v-model="range" value="week" id="week" @click="getRange('week')">
-                            <label for="week">{{text('CURRENT_WEEK')}}</label>
+                            <label for="week">{{$t('report.currentWeek')}}</label>
                         </div>
                         <div>
                             <input type="radio" name="range" v-model="range" value="month" id="month" @click="getRange('month')">
-                            <label for="month">{{text('CURRENT_MONTH')}}</label>
+                            <label for="month">{{$t('report.currentMonth')}}</label>
                         </div>
                         <div>
                             <input type="radio" name="range" v-model="range" value="last" id="last" @click="getRange('last')">
-                            <label for="last">{{text('LAST_MONTH')}}</label>
+                            <label for="last">{{$t('report.lastMonth')}}</label>
                         </div>
                         <div>
                             <input type="radio" name="range" v-model="range" value="custom" id="custom" @click="openCalendar">
-                            <label for="custom">{{text('SET_DATE')}}</label>
+                            <label for="custom">{{$t('report.setDate')}}</label>
                         </div>
                     </div>
                 </section>
                 <section class="option">
                     <div class="for">
-                        <span>{{text('REPORT_DETAILS')}}</span>
+                        <span>{{$t('report.details')}}</span>
                     </div>
                     <div class="detailWrap">
                         <div class="left">
-                            <h5>{{text('STATISTICS')}}</h5>
-                            <checkbox v-model="summary" label="SUMMARY"></checkbox>
-                            <checkbox v-model="salesCategory" label="SALES_CATEGORY"></checkbox>
-                            <checkbox v-model="countCategory" label="CATEGORY_SALES"></checkbox>
-                            <checkbox v-model="hourly" label="HOURLY_REPORT"></checkbox>
-                            <checkbox v-model="tip" label="TIP_SUMMARY"></checkbox>
-                            <checkbox v-model="giftCard" label="GIFTCARD_SUMMARY"></checkbox>
-                            <checkbox v-model="countItem" label="REPORT_COUNT_ITEM"></checkbox>
+                            <h5>{{$t('report.statistics')}}</h5>
+                            <checkbox v-model="summary" label="report.summary"></checkbox>
+                            <checkbox v-model="salesCategory" label="report.salesCategory"></checkbox>
+                            <checkbox v-model="countCategory" label="report.categorySales"></checkbox>
+                            <checkbox v-model="hourly" label="report.hourlyReport"></checkbox>
+                            <checkbox v-model="tip" label="report.tipSummary"></checkbox>
+                            <checkbox v-model="giftCard" label="report.giftCardSummary"></checkbox>
+                            <checkbox v-model="countItem" label="report.countItem"></checkbox>
                         </div>
                         <div class="right">
-                            <h5>{{text('PERFORMANCE')}}</h5>
-                            <checkbox v-model="waitStaff" label="STAFF_SUMMARY"></checkbox>
-                            <checkbox v-model="driver" label="DRIVER_SUMMARY"></checkbox>
-                            <checkbox v-model="thirdParty" label="THIRD_PARTY_SUMMARY"></checkbox>
+                            <h5>{{$t('report.performance')}}</h5>
+                            <checkbox v-model="waitStaff" label="report.staffSummary"></checkbox>
+                            <checkbox v-model="driver" label="report.driverSummary"></checkbox>
+                            <checkbox v-model="thirdParty" label="report.thirdPartySummary"></checkbox>
                         </div>
                     </div>
                 </section>
             </div>
             <footer>
                 <div class="f1">
-                    <checkbox v-model="emailReport" label="SENT_RPT_VIA_EMAIL"></checkbox>
+                    <checkbox v-model="emailReport" label="report.viaEmail"></checkbox>
                 </div>
-                <div class="btn" @click="confirm">{{text('CONFIRM')}}</div>
+                <div class="btn" @click="confirm">{{$t('button.confirm')}}</div>
             </footer>
         </div>
         <div :is="component" :init="componentData"></div>
@@ -323,15 +323,15 @@ export default {
                     }
                 });
             return [{
-                text: this.text("GIFT_CARD_ACTIVATION"),
+                text: this.$t("card.activation"),
                 count: activation,
-                amount: `$ ${initialAmount.toFixed(2)} (Bouns:$ ${bouns.toFixed(2)})`,
+                amount: `$ ${initialAmount.toFixed(2)}` + this.$t('card.bonus', bouns.toFixed(2))
             }, {
-                text: this.text("GIFT_CARD_CREDIT"),
+                text: this.$t('card.giftCardCredit'),
                 count: credit,
                 amount: creditAmount
             }, {
-                text: this.text("GIFT_CARD_DEBET"),
+                text: this.$t("card.giftCardDebit"),
                 count: debet,
                 amount: debetAmount
             }];
@@ -414,34 +414,34 @@ export default {
                 }
             })
             this.report["SUMMARY"] = this.summary ? [{
-                text: this.text('GROSS_SALES'),
+                text: this.$t('report.grossSales'),
                 count: gross,
                 amount: grossAmount
             },
             {
-                text: this.text('NET_SALES'),
+                text: this.$t('report.netSales'),
                 count: 0,
                 amount: netAmount
             },
             {
-                text: this.text('DISCOUNT'),
+                text: this.$t('report.discount'),
                 count: discount,
                 amount: -discountAmount
             }] : null;
 
             this.report["SALES CATEGORY"] = this.salesCategory ?
                 [{
-                    text: this.text('CASH'),
+                    text: this.$t('report.cash'),
                     count: cash,
                     amount: cashAmount
                 },
                 {
-                    text: this.text('CREDIT_CARD'),
+                    text: this.$t('report.creditCard'),
                     count: credit,
                     amount: creditAmount
                 },
                 {
-                    text: this.text('GIFT_CARD'),
+                    text: this.$t('report.giftCard'),
                     count: gift,
                     amount: giftAmount
                 },
@@ -451,24 +451,24 @@ export default {
                     amount: ""
                 },
                 {
-                    text: this.text('WALK_IN'),
+                    text: this.$t('type.walkIn'),
                     count: walkin,
                     amount: walkinAmount
                 }, {
-                    text: this.text('PICK_UP'),
+                    text: this.$t('type.pickUp'),
                     count: pickup,
                     amount: pickupAmount
                 }, {
-                    text: this.text('DELIVERY'),
+                    text: this.$t('type.delivery'),
                     count: delivery,
                     amount: deliveryAmount
                 }, {
-                    text: this.text('DINE_IN'),
+                    text: this.$t('type.dineIn'),
                     count: dinein,
                     amount: dineinAmount
                 },
                 {
-                    text: this.text('OTHERS'),
+                    text: this.$t('type.other'),
                     count: 0,
                     amount: otherAmount
                 },
@@ -477,11 +477,11 @@ export default {
                     count: 0,
                     amount: ""
                 }, {
-                    text: this.text("SETTLED"),
+                    text: this.$t("type.settled"),
                     count: settle,
                     amount: settleAmount
                 }, {
-                    text: this.text("UNSETTLE"),
+                    text: this.$t("type.unsettled"),
                     count: unsettle,
                     amount: unsettleAmount
                 }] : null;

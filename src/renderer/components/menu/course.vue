@@ -2,13 +2,13 @@
   <div class="popupMask center dark">
     <div class="course window">
       <header class="title">
-        <span>{{text("COURSE_TIME")}}</span>
+        <span>{{$t('menu.course')}}</span>
         <i class="fa fa-times" @click="init.reject"></i>
       </header>
       <div class="inner">
         <div class="indicator">
           <div class="step" v-for="(course,index) in steps" @click="jumpStep(index)" :class="{active:step===index,done:course.contain.length !== 0}" :key="index">
-            <div class="name">{{text(course.name)}}
+            <div class="name">{{$t('text.'+course.name)}}
               <span v-show="course.delay" class="delay">[{{course.delay | moment('hh:mm')}}]</span>
             </div>
             <ul>
@@ -30,11 +30,11 @@
         <div class="timer" v-else>
           <header class="display">
             <div class="time" @click="target = 'hour'" :class="{active:target ==='hour'}">
-              <h3>{{text('HOUR')}}</h3>
+              <h3>{{$t('menu.hour')}}</h3>
               <div class="value">{{hour}}</div>
             </div>
             <div class="time" @click="target = 'minute'" :class="{active:target === 'minute'}">
-              <h3>{{text('MINUTE')}}</h3>
+              <h3>{{$t('menu.minute')}}</h3>
               <div class="value">{{minute}}</div>
             </div>
           </header>
@@ -56,9 +56,9 @@
         </div>
       </div>
       <footer>
-        <div class="btn" @click="init.reject">{{text('CHANGE_DATE')}}</div>
-        <div class="btn" @click="init.reject">{{text('CANCEL')}}</div>
-        <div class="btn" @click="confirm">{{text('CONFIRM')}}</div>
+        <div class="btn" @click="changeDate">{{$t('button.changeDate')}}</div>
+        <div class="btn" @click="init.reject">{{$t('button.cancel')}}</div>
+        <div class="btn" @click="confirm">{{text('button.confirm')}}</div>
       </footer>
     </div>
     <div :is="component" :init="componentData"></div>

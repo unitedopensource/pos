@@ -3,9 +3,9 @@
         <section class="card">
             <header>{{text('DISPLAY_SETTING')}}</header>
             <article>
-                <smart-switch v-model="display.menuID" label="MENU_ID"></smart-switch>
-                <smart-switch v-model="display.favorite" label="FAVORITE_ITEM"></smart-switch>
-                <smart-switch v-model="display.voidItem" label="DISPLAY_VOID_ITEM"></smart-switch>
+                <smart-switch v-model="display.menuID" label="text.menuID"></smart-switch>
+                <smart-switch v-model="display.favorite" label="text.favoriteItem"></smart-switch>
+                <smart-switch v-model="display.voidItem" label="text.displayVoidItem"></smart-switch>
             </article>
         </section>
     </div>

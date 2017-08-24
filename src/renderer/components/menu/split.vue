@@ -2,7 +2,7 @@
     <div class="popupMask center dark">
         <div class="window" v-show="!component">
             <header class="title">
-                <span>{{text('ORDER_SPLIT')}}</span>
+                <span>{{$t('menu.split')}}</span>
                 <i class="fa fa-times" @click="cancel"></i>
             </header>
             <section>
@@ -20,13 +20,13 @@
             </section>
             <footer>
                 <div class="f1">
-                    <div class="btn confirm" @click="settleInvoice($event)">{{text('PAYMENT')}}</div>
-                    <div class="btn" @click="printAllInvoices">{{text('PRINT_ALL')}}</div>
-                    <div class="btn" @click="splitEvenly">{{text('EVEN_SPLIT')}}</div>
+                    <div class="btn confirm" @click="settleInvoice($event)">{{$t('button.payment')}}</div>
+                    <div class="btn" @click="printAllInvoices">{{$t('button.printAll')}}</div>
+                    <div class="btn" @click="splitEvenly">{{$t('button.evenSplit')}}</div>
                 </div>
-                <div class="btn" @click="init.reject">{{text('CANCEL')}}</div>
-                <div class="btn" @click="sort(1)">{{text('SORT')}}</div>
-                <div class="btn" @click="save">{{text('SAVE')}}</div>
+                <div class="btn" @click="init.reject">{{$t('button.cancel')}}</div>
+                <div class="btn" @click="sort(1)">{{$t('button.sort')}}</div>
+                <div class="btn" @click="save">{{$t('button.save')}}</div>
             </footer>
         </div>
         <div :is="component" :init="componentData"></div>

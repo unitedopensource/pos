@@ -2,23 +2,23 @@
     <div class="popupMask center dark" @click.self="init.reject">
         <div class="window">
             <header class="title">
-                <span>{{text('TEMP_ITEM')}}</span>
+                <span>{{$t('menu.temporary')}}</span>
             </header>
             <div class="inner">
                 <section class="item">
                     <div>
-                        <label for="item">{{text('ITEM')}}:</label>
+                        <label for="item">{{$t('text.item')}}:</label>
                         <input type="type" v-model="item" id="item" placeholder="Temporary Item" ref="item">
                     </div>
                     <div>
-                        <label for="price">{{text('PRICE')}}:</label>
+                        <label for="price">{{$t('text.price')}}:</label>
                         <input type="type" v-model.number="single" id="Price" placeholder="0.00" @keydown.enter="confirm">
                     </div>
                 </section>
-                <textarea v-model="comment" placeholder="Enter item comment if any"></textarea>
+                <textarea v-model="comment" :placeholder="$t('')"></textarea>
             </div>
             <footer>
-                <div class="btn" @click="confirm">{{text('CONFIRM')}}</div>
+                <div class="btn" @click="confirm">{{$t('button.confirm')}}</div>
             </footer>
         </div>
     </div>

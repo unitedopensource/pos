@@ -2,10 +2,10 @@
   <div class="popupMask center dark" @dblclick.self="exit">
     <div class="dialog" :class="[init.type]">
       <i class="fa"></i>
-      <h3>{{text(init.title)}}</h3>
-      <h5>{{text(init.msg)}}</h5>
+      <h3>{{$t(init.title)}}</h3>
+      <h5>{{$t(init.msg)}}</h5>
       <footer>
-        <div class="btn" v-for="button in init.buttons" @click="trigger(button)">{{text(button.text)}}</div>
+        <div class="btn" v-for="(button,index) in init.buttons" @click="trigger(button)" :key="index">{{$t(button.text)}}</div>
       </footer>
     </div>
   </div>

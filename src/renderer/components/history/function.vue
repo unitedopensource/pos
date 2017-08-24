@@ -2,47 +2,47 @@
     <aside>
         <div class="btn" @click="isEditable">
             <i class="fa fa-pencil-square-o"></i>
-            <span class="text">{{text('EDIT_ORDER')}}</span>
+            <span class="text">{{$t('button.edit')}}</span>
         </div>
         <div class="btn" @click="reOpenOrder" v-if="this.order && this.order.status !== 1">
             <i class="fa fa-ban"></i>
-            <span class="text">{{text('RECOVER_ORDER')}}</span>
+            <span class="text">{{$t('button.recover')}}</span>
         </div>
         <div class="btn" @click="isVoidable" v-else>
             <i class="fa fa-ban"></i>
-            <span class="text">{{text('DEL_ORDER')}}</span>
+            <span class="text">{{$t('button.delete')}}</span>
         </div>
         <div class="btn" @click="isSettled">
             <i class="fa fa-money"></i>
-            <span class="text">{{text('PAYMENT')}}</span>
+            <span class="text">{{$t('button.payment')}}</span>
         </div>
         <div class="btn" @click="print">
             <i class="fa fa-print"></i>
-            <span class="text">{{text('PRINT')}}</span>
+            <span class="text">{{$t('button.print')}}</span>
         </div>
         <div class="btn" @click="calendar">
             <i class="fa fa-calendar"></i>
-            <span class="text">{{text('BY_CALENDAR')}}</span>
+            <span class="text">{{$t('button.calendar')}}</span>
         </div>
         <div class="btn" @click="search">
             <i class="fa fa-search"></i>
-            <span class="text">{{text('SEARCH')}}</span>
+            <span class="text">{{$t('button.search')}}</span>
         </div>
         <div class="btn" @click="terminal">
             <i class="fa fa-tablet"></i>
-            <span class="text">{{text('TERMINAL')}}</span>
+            <span class="text">{{$t('button.terminal')}}</span>
         </div>
         <div class="btn" @click="report">
             <i class="fa fa-file-text"></i>
-            <span class="text">{{text('REPORT')}}</span>
+            <span class="text">{{$t('button.report')}}</span>
         </div>
         <div class="btn" @click="stats">
             <i class="fa fa-bar-chart"></i>
-            <span class="text">{{text('STATISTIC')}}</span>
+            <span class="text">{{$t('button.stats')}}</span>
         </div>
         <div class="btn" @click="exit">
             <i class="fa fa-times"></i>
-            <span class="text">{{text("EXIT")}}</span>
+            <span class="text">{{$t('button.exit')}}</span>
         </div>
         <div :is="component" :init="componentData"></div>
     </aside>

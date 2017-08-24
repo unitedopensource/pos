@@ -2,7 +2,7 @@
   <div class="popupMask center dark" @click.self="init.reject">
     <div class="window">
       <header class="title">
-        <span>{{text('SET_TIP')}}</span>
+        <span>{{$t('text.adjustTip')}}</span>
         <i class="fa fa-times" @click="init.reject"></i>
       </header>
       <div class="inner">
@@ -13,11 +13,11 @@
             </div>
             <div class="wrap">
               <div class="data" @click="setTarget('tip')" :class="{active:target==='tip'}">
-                <span class="text">{{text('SET_TIP')}}</span>
+                <span class="text">{{$t('button.setTip')}}</span>
                 <span class="value">{{tip}}</span>
               </div>
               <div class="data" @click="setTarget('gratuity')" :class="{active:target==='gratuity'}">
-                <span class="text">{{text('SET_GRATUITY')}}</span>
+                <span class="text">{{$t('button.setGratuity')}}</span>
                 <span class="value">{{gratuity}}</span>
               </div>
             </div>

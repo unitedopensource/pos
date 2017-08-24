@@ -2,20 +2,20 @@
   <div class="popupMask center dark" @click.self="init.reject">
     <div class="window">
       <header class="title">
-        <span>{{text("MODIFY")}}</span>
+        <span>{{$t("menu.modify")}}</span>
         <span>{{item[language]}}</span>
         <span class="price">${{total}}</span>
       </header>
       <section class="display">
         <div class="column target" @click="setPointer('single',$event)">
-          <h5>{{text("SINGLE")}}</h5>
+          <h5>{{$t("text.single")}}</h5>
           <div>
             <span>$</span>
             <span class="value">{{item.single | decimal}}</span>
           </div>
         </div>
         <div class="column" @click="setPointer('qty',$event)">
-          <h5>{{text("QTY")}}</h5>
+          <h5>{{$t("text.qty")}}</h5>
           <div>
             <span class="value">{{item.qty}}</span>
           </div>
@@ -28,7 +28,7 @@
             <input type="radio" name="unit" v-model="unit" id="pct" :value="false" @change="switchUnit">
             <label for="pct">%</label>
           </div>
-          <h5>{{text("DISCOUNT")}}</h5>
+          <h5>{{$t("text.discount")}}</h5>
           <div>
             <span v-show="unit">$</span>
             <span class="value">{{discount}}</span>

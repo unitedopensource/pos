@@ -1,7 +1,7 @@
 <template>
   <div class="popupMask center dark" @click.self="init.reject">
     <div class="search window">
-      <header class="title"><span>{{text('SEARCH')}}</span><i class="fa fa-times" @click="init.reject"></i></header>
+      <header class="title"><span>{{$t('history.search')}}</span><i class="fa fa-times" @click="init.reject"></i></header>
       <div class="inner">
         <input type="text" v-model="invoice">
         <section class="numpad">

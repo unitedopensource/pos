@@ -2,28 +2,28 @@
   <div class="popupMask center dark" @click.self="init.reject">
     <div class="config" :style="offsetTop">
       <div class="option">
-        <span class="text">{{text('TAX_FREE')}}</span>
+        <span class="text">{{$t('text.taxFree')}}</span>
         <label class="input-toggle">
           <input type="checkbox" v-model="init.taxFree" @change="toggleTax">
           <span></span>
         </label>
       </div>
       <div class="option">
-        <span class="text">{{text('DELIVERY_FREE')}}</span>
+        <span class="text">{{$t('text.deliveryFree')}}</span>
         <label class="input-toggle" @change="toggleDelivery">
           <input type="checkbox" v-model="init.deliveryFree">
           <span></span>
         </label>
       </div>
       <div class="option">
-        <span class="text">{{text('DP_CATEGORY')}}</span>
+        <span class="text">{{$t('text.displayCategory')}}</span>
         <label class="input-toggle" @change="toggleViewCategory">
           <input type="checkbox" v-model="viewCategory">
           <span></span>
         </label>
       </div>
       <div class="option">
-        <span class="text">{{text('MENU_ID')}}</span>
+        <span class="text">{{$t('text.displayMenuId')}}</span>
         <label class="input-toggle" @change="toggleMenuID">
           <input type="checkbox" v-model="init.menuID">
           <span></span>

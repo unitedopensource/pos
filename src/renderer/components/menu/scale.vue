@@ -2,17 +2,17 @@
     <div class="popupMask center dark" @click.self="init.reject(false)">
         <div class="window">
             <header class="title">
-                <span>{{text('WEIGHT_SCALE')}}</span>
+                <span>{{$t('menu.scale')}}</span>
                 <span>{{item[language]}}</span>
             </header>
             <section class="inner">
                 <div class="input">
                     <div>
-                        <h3>{{text('WEIGHT')}}</h3>
+                        <h3>{{$t('text.weight')}}</h3>
                         <input type="text" v-model.number="scale" ref="scale" @keydown.enter="done" class="value">
                     </div>
                     <div>
-                        <h3>@ {{item.unitPrice}} / {{text('PER_UNIT')}}</h3>
+                        <h3>@ {{item.unitPrice}} / {{$t('text.perUnit')}}</h3>
                         <span class="value">{{total}}</span>
                     </div>
                 </div>

@@ -3,140 +3,140 @@
     <div class="top">
       <div class="btn" @click="less">
         <i class="fa fa-minus-square"></i>
-        <span class="text">{{$t('menu.less')}}</span>
+        <span class="text">{{$t('button.less')}}</span>
       </div>
       <div class="btn" @click="moreQty">
         <i class="fa fa-plus-square"></i>
-        <span class="text">{{$t('menu.more')}}</span>
+        <span class="text">{{$t('button.more')}}</span>
       </div>
       <div class="btn" @click="request">
         <i class="fa fa-commenting-o"></i>
-        <span class="text">{{$t('menu.request')}}</span>
+        <span class="text">{{$t('button.request')}}</span>
       </div>
     </div>
     <div class="bottomLeft">
       <div class="btn" @click="trigger('switchGuest')" v-if="store.table.seatOrder">
         <i class="fa fa-users"></i>
-        <span class="text">{{$t('menu.switch')}}</span>
+        <span class="text">{{$t('button.switch')}}</span>
       </div>
       <div class="btn" @click="split" v-else>
         <i class="fa fa-columns"></i>
-        <span class="text">{{$t('menu.split')}}</span>
+        <span class="text">{{$t('button.split')}}</span>
       </div>
       <div class="btn" @click="course">
         <i class="fa fa-clock-o"></i>
-        <span class="text">{{$t('menu.timer')}}</span>
+        <span class="text">{{$t('button.timer')}}</span>
       </div>
       <div class="btn" @click="search">
         <i class="fa fa-search"></i>
-        <span class="text">{{$t('menu.search')}}</span>
+        <span class="text">{{$t('button.search')}}</span>
       </div>
       <div class="btn" @click="done(false)">
         <i class="fa fa-save"></i>
-        <span class="text">{{$t('menu.hold')}}</span>
+        <span class="text">{{$t('button.hold')}}</span>
       </div>
       <button class="btn" @click="modify">
         <i class="fa fa-calculator"></i>
-        <span class="text">{{$t('menu.modify')}}</span>
+        <span class="text">{{$t('button.modify')}}</span>
       </button>
       <div class="btn" @click="dineinExit">
         <i class="fa fa-times"></i>
-        <span class="text">{{$t('menu.exit')}}</span>
+        <span class="text">{{$t('button.exit')}}</span>
       </div>
     </div>
     <div class="bottomRight">
       <button class="btn long" @click="done(true)">
         <i class="fa fa-print"></i>
-        <span class="text">{{$t('menu.done')}}</span>
+        <span class="text">{{$t('button.done')}}</span>
       </button>
       <div class="btn" @click="switchLanguage">
         <i class="fa fa-language"></i>
-        <span class="text">中/EN</span>
+        <span class="text">{{$t('switchLanguage')}}</span>
       </div>
     </div>
   </div>
   <div class="grid" v-else-if="layout === 'BUFFET'">
     <div class="btn" @click="less">
       <i class="fa fa-minus-square"></i>
-      <span class="text">{{$t('menu.less')}}</span>
+      <span class="text">{{$t('button.less')}}</span>
     </div>
     <div class="btn" @click="moreQty">
       <i class="fa fa-plus-square"></i>
-      <span class="text">{{$t('menu.more')}}</span>
+      <span class="text">{{$t('button.more')}}</span>
     </div>
     <button class="btn" @click="modify">
       <i class="fa fa-calculator"></i>
-      <span class="text">{{$t('menu.modify')}}</span>
+      <span class="text">{{$t('button.modify')}}</span>
     </button>
     <div class="btn settle" @click="settle">
       <i class="fa fa-money"></i>
-      <span class="text">{{$t('menu.payment')}}</span>
+      <span class="text">{{$t('button.payment')}}</span>
     </div>
     <div class="btn split" @click="split">
       <i class="fa fa-columns"></i>
-      <span class="text">{{$t('menu.split')}}</span>
+      <span class="text">{{$t('button.split')}}</span>
     </div>
     <div class="btn" @click="save(false)">
       <i class="fa fa-save"></i>
-      <span class="text">{{$t('menu.save')}}</span>
+      <span class="text">{{$t('button.save')}}</span>
     </div>
     <div class="btn" @click="exit">
       <i class="fa fa-times"></i>
-      <span class="text">{{$t('menu.exit')}}</span>
+      <span class="text">{{$t('button.exit')}}</span>
     </div>
     <div class="btn" @click="switchLanguage">
       <i class="fa fa-language"></i>
-      <span class="text">{{$t('menu.switchLanguage')}}</span>
+      <span class="text">{{$t('button.switchLanguage')}}</span>
     </div>
   </div>
   <div class="function" v-else>
     <div class="btn" @click="less">
       <i class="fa fa-minus-square"></i>
-      <span class="text">{{$t('menu.less')}}</span>
+      <span class="text">{{$t('button.less')}}</span>
     </div>
     <div class="btn" @click="moreQty">
       <i class="fa fa-plus-square"></i>
-      <span class="text">{{$t('menu.more')}}</span>
+      <span class="text">{{$t('button.more')}}</span>
     </div>
     <div class="btn" @click="request">
       <i class="fa fa-commenting-o"></i>
-      <span class="text">{{$t('menu.request')}}</span>
+      <span class="text">{{$t('button.request')}}</span>
     </div>
     <div class="btn" @click="settle">
       <i class="fa fa-money"></i>
-      <span class="text">{{$t('menu.payment')}}</span>
+      <span class="text">{{$t('button.payment')}}</span>
     </div>
     <div class="btn" @click="timer">
       <i class="fa fa-clock-o"></i>
-      <span class="text">{{$t('menu.timer')}}</span>
+      <span class="text">{{$t('button.timer')}}</span>
     </div>
     <button class="btn" @click="save(true)">
       <i class="fa fa-print"></i>
-      <span class="text">{{$t('menu.print')}}</span>
+      <span class="text">{{$t('button.print')}}</span>
     </button>
     <div class="btn" @click="search">
       <i class="fa fa-search"></i>
-      <span class="text">{{text("SEARCH")}}</span>
+      <span class="text">{{$t("button.search")}}</span>
     </div>
     <div class="btn" @click="split">
       <i class="fa fa-columns"></i>
-      <span class="text">{{text("SPLIT")}}</span>
+      <span class="text">{{$t("button.split")}}</span>
     </div>
     <div class="btn" @click="save(false)">
       <i class="fa fa-save"></i>
-      <span class="text">{{text("SAVE")}}</span>
+      <span class="text">{{$t("button.save")}}</span>
     </div>
     <button class="btn" @click="modify">
       <i class="fa fa-calculator"></i>
-      <span class="text">{{text("MODIFY")}}</span>
+      <span class="text">{{$t("button.modify")}}</span>
     </button>
     <div class="btn" @click="exit">
       <i class="fa fa-times"></i>
-      <span class="text">{{text("EXIT")}}</span>
+      <span class="text">{{$t("button.exit")}}</span>
     </div>
     <div class="btn" @click="switchLanguage">
       <i class="fa fa-language"></i>
-      <span class="text">中/EN</span>
+      <span class="text">{{$t("button.switchLanguage")}}</span>
     </div>
   </div>
 </template>

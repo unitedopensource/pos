@@ -3,20 +3,20 @@
     <div class="wrap">
       <div class="type" @click="init.resolve('WALK_IN')" v-if="init.type !== 'WALK_IN'">
         <i class="fa fa-user"></i>
-        <span>{{text('WALK_IN')}}</span>
+        <span>{{$t('type.WALK_IN')}}</span>
       </div>
       <div class="type" @click="init.resolve('PICK_UP')" v-if="init.type !== 'PICK_UP'">
         <i class="fa fa-phone"></i>
-        <span>{{text('PICK_UP')}}</span>
+        <span>{{$t('type.PICK_UP')}}</span>
       </div>
       <div class="type" @click="init.resolve('DELIVERY')" v-if="init.type !== 'DELIVERY'">
         <i class="fa fa-car"></i>
-        <span>{{text('DELIVERY')}}</span>
-        <span class="require" v-show="init.lack">{{text('LACK_INFO')}}</span>
+        <span>{{$t('type.DELIVERY')}}</span>
+        <span class="require" v-show="init.lack">{{text('dock.missInfo')}}</span>
       </div>
       <div class="type" @click="init.resolve('DINE_IN')" v-if="init.type !== 'DINE_IN'">
         <i class="fa fa-cutlery"></i>
-        <span>{{text('DINE_IN')}}</span>
+        <span>{{$t('type.DINE_IN')}}</span>
       </div>
     </div>
   </div>

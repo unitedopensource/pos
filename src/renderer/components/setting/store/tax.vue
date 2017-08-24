@@ -1,40 +1,41 @@
 <template>
     <div>
         <section class="card">
-            <header>{{text('TAX_CALC')}}
-                <span class="tip">{{text('TIP_TAX_ADVICE')}}</span>
+            <header>{{$t('setting.taxCalculation')}}
+                <span class="tip">{{$t('setting.taxCalculationTip')}}</span>
             </header>
             <article>
-                <smart-switch v-model="tax.beforeDisc" label="TAX_BEFORE_DISC"></smart-switch>
-                <smart-switch v-model="tax.beforeCredit" label="TAX_BEFORE_CREDIT"></smart-switch>
+                <smart-switch v-model="tax.beforeDisc" label="text.taxBeforeDiscount"></smart-switch>
+                <smart-switch v-model="tax.beforeCredit" label="text.taxBeforeCredit"></smart-switch>
             </article>
         </section>
         <section class="card list">
-            <header>{{text('TAX_CLASS')}}
+            <header>{{$t('taxClass')}}
                 <span class="tip"></span>
             </header>
             <div class="header">
-                <span class="name">{{text('ALIES')}}</span>
-                <span class="rate">{{text('TAX_RATE')}}</span>
-                <span class="f1">{{text('APPLY')}}</span>
-                <span class="action">{{text('ACTION')}}</span>
+                <span class="name">{{$t('text.name')}}</span>
+                <span class="rate">{{$t('text.taxRate')}}</span>
+                <span class="f1">{{$t('text.apply')}}</span>
+                <span class="action">{{$t('text.action')}}</span>
             </div>
             <article>
                 <div v-for="(category,key,index) in tax.class" class="datalist" :key="index">
                     <span class="name">{{category.alies}}</span>
                     <span class="rate">{{category.rate}}%</span>
                     <span class="f1">
-                        <checkbox v-model="category.apply.WALK_IN" label="WALK_IN"></checkbox>
-                        <checkbox v-model="category.apply.PICK_UP" label="PICK_UP"></checkbox>
-                        <checkbox v-model="category.apply.DELIVERY" label="DELIVERY"></checkbox>
-                        <checkbox v-model="category.apply.DINE_IN" label="DINE_IN"></checkbox>
-                        <checkbox v-model="category.apply.BAR" label="BAR"></checkbox>
-                        <checkbox v-model="category.apply.BUFFET" label="BUFFET"></checkbox>
+                        <checkbox v-model="category.apply.WALK_IN" label="type.WALK_IN"></checkbox>
+                        <checkbox v-model="category.apply.PICK_UP" label="type.PICK_UP"></checkbox>
+                        <checkbox v-model="category.apply.DELIVERY" label="type.DELIVERY"></checkbox>
+                        <checkbox v-model="category.apply.DINE_IN" label="type.DINE_IN"></checkbox>
+                        <checkbox v-model="category.apply.BAR" label="type.BAR"></checkbox>
+                        <checkbox v-model="category.apply.BUFFET" label="type.BUFFET"></checkbox>
+                        <checkbox v-model="category.apply.SALES" label="type.SALES"></checkbox>
                     </span>
                     <span class="action" @click="edit(category,key)">
                         <span>
                             <i class="fa fa-pencil"></i>
-                            <span>{{text("EDIT")}}</span>
+                            <span>{{$t('text.edit')}}</span>
                         </span>
                     </span>
                 </div>
@@ -94,7 +95,8 @@ export default {
                     PICK_UP: false,
                     DELIVERY: false,
                     DINE_IN: false,
-                    BAR: false
+                    BAR: false,
+                    SALES:false
                 }
             })
         }

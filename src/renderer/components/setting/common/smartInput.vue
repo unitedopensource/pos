@@ -1,6 +1,6 @@
 <template>
     <div class="input">
-        <label :for="id">{{text(label)}}</label>
+        <label :for="id">{{$t(label)}}</label>
         <input :id="id" :value="value" :type="type" @input="$emit('input', $event.target.value)" :disabled="disable && !admin">
         <i class="fa fa-level-down" v-if="more" @click="trigger"></i>
     </div>

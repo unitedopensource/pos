@@ -5,9 +5,9 @@
             <div class="invoice" v-for="(ticket,index) in history" :key="index">
                 <i :class="status(ticket.status)"></i>
                 <span class="ticket">#{{ticket.number}}</span>
-                <span class="type">{{text(ticket.type)}}</span>
+                <span class="type">{{$t('type.'+ticket.type)}}</span>
                 <span class="time">{{ticket.time | moment('MM/DD/YY HH:mm')}}</span>
-    
+
                 <div class="f1">
                     <span class="void" v-if="ticket.status === 0">{{text(ticket.void.note)}} ({{ticket.void.by}})</span>
                 </div>
@@ -46,7 +46,6 @@ export default {
     },
     sockets: {
         ENQUIRY_CUSTOMER_HISTORY(data) {
-            console.log(data);
             this.history = data;
         }
     }

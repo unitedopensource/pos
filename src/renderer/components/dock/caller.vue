@@ -2,7 +2,7 @@
     <transition name="pop">
         <div class="caller" v-show="this.$route.name === 'Dashboard'" @click="go">
             <header>
-                <span class="f1">{{text('INCOMING_CALL')}}</span>
+                <span class="f1">{{$t('dock.incomingCall')}}</span>
                 <span class="time">{{init.extra.lastDate | fromNow}}</span>
             </header>
             <div class="wrap">
@@ -16,7 +16,7 @@
                 </div>
             </div>
             <div class="tags">
-                <span class="tag" v-for="(tag,index) in init.extra.tag" :key="index">{{text(tag)}}</span>
+                <span class="tag" v-for="(tag,index) in init.extra.tag" :key="index">{{$t('tag.'+tag)}}</span>
             </div>
         </div>
     </transition>

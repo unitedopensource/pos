@@ -1,22 +1,22 @@
 <template>
     <div class="popupMask center dark" @click.self="init.reject">
         <div class="editor">
-            <header>{{text('EDITOR.HEADER.CATEGORY')}}</header>
+            <header>{{$t('setting.categoryEditor')}}</header>
             <div class="inner">
                 <div class="input">
-                    <label>{{text('ZH_CN')}}</label>
+                    <label>{{$t('text.primary')}}</label>
                     <input v-model="category.zhCN">
                 </div>
                 <div class="input">
-                    <label>{{text('US_EN')}}</label>
+                    <label>{{$t('text.secondary')}}</label>
                     <input v-model="category.usEN">
                 </div>
                 <div class="input" v-show="manual">
-                    <label>{{text('CONTAIN')}}</label>
+                    <label>{{$t('text.contain')}}</label>
                     <input v-model="contains">
                 </div>
                 <fieldset v-show="!manual">
-                    <legend>{{text('CONTAIN')}}</legend>
+                    <legend>{{$t('text.contain')}}</legend>
                     <div class="options">
                         <checkbox :label="name" v-model="contain" v-for="(name,index) in categories" :multiple="true" :key="index"></checkbox>
                     </div>
@@ -24,10 +24,10 @@
             </div>
             <footer>
                 <div class="f1">
-                    <checkbox label="MANUAL_INPUT" v-model="manual" @input="trigger"></checkbox>
+                    <checkbox label="text.manualInput" v-model="manual" @input="trigger"></checkbox>
                 </div>
-                <div class="btn" @click="exit" id="cancelEdit">{{text('CANCEL')}}</div>
-                <div class="btn" @click="confirm" id="confirmEdit">{{text('CONFIRM')}}</div>
+                <div class="btn" @click="exit" id="cancelEdit">{{$t('button.cancel')}}</div>
+                <div class="btn" @click="confirm" id="confirmEdit">{{$t('button.confirm')}}</div>
             </footer>
         </div>
     </div>

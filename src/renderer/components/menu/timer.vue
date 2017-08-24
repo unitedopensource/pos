@@ -2,7 +2,7 @@
     <div class="popupMask center dark" @click.self="init.reject">
         <div class="window">
             <header class="title">
-                <span>{{text('TIMER')}}</span>
+                <span>{{$t('menu.timer')}}</span>
             </header>
             <div class="inner">
                 <div class="timer">
@@ -31,10 +31,10 @@
             </div>
             <footer>
                 <div class="f1">
-                    <checkbox v-model="remind" label="REMIND"></checkbox>
+                    <checkbox v-model="remind" label="text.autoPrint"></checkbox>
                 </div>
-                <div class="btn" @click="init.reject">{{text('CANCEL')}}</div>
-                <div class="btn" @click="confirm">{{text('CONFIRM')}}</div>
+                <div class="btn" @click="init.reject">{{$t('button.cancel')}}</div>
+                <div class="btn" @click="confirm">{{$t('button.confirm')}}</div>
             </footer>
         </div>
         <div :is="component" :init="componentData"></div>

@@ -63,7 +63,7 @@
                 </section>
             </section>
             <footer>
-                <div class="btn" @click="confirm">{{text('CONFIRM')}}</div>
+                <div class="btn" @click="confirm">{{$t('dialog.confirm')}}</div>
             </footer>
         </div>
     </div>

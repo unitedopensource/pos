@@ -1,7 +1,7 @@
 <template>
     <div class="popupMask center dark">
         <div class="loader">
-            <h3>Please wait...</h3>
+            <h3>{{$t('dialog.systemProcessing')}}</h3>
             <div class="spinner">
                 <div class="bounce1"></div>
                 <div class="bounce2"></div>

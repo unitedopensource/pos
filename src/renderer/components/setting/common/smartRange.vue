@@ -1,6 +1,6 @@
 <template>
     <div class="range">
-        <label :for="id">{{text(label)}}</label>
+        <label :for="id">{{$t(label)}}</label>
         <input :id="id" :value="value" type="range" @input="$emit('input',$event.target.value)" :min="min" :max="max" :step="step">
         <span>{{value}}</span>
     </div>

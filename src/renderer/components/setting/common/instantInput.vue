@@ -1,11 +1,11 @@
 <template>
     <div class="input">
-        <label for="autoComplete">{{text(label)}}</label>
+        <label for="autoComplete">{{$t(label)}}</label>
         <input id="autoComplete" :value="value" type="text" @input="input($event)" @focus="focus($event)" @keydown.enter="fill" @keydown.up="up" @keydown.down="down" @blur="blur">
         <div class="frame">
-            <p>{{text('AUTO_COMPLETE')}}</p>
+            <p>{{$t('text.autoComplete')}}</p>
             <ul>
-                <li v-for="item in items" class="ac">
+                <li v-for="(item,index) in items" class="ac" :key="index">
                     <h4>{{item.usEN}}</h4>
                     <h5>{{item.zhCN}}</h5>
                 </li>

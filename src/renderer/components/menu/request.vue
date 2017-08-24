@@ -21,7 +21,7 @@
         <div @click="setPrice(2.50)">$2.50</div>
         <div @click="setPrice(3.00)">$3.00</div>
         <div @click="setPrice(4.00)">$4.00</div>
-        <div @click="setPrice()">{{text('SELF_INPUT_PRICE')}}</div>
+        <div @click="setPrice()">{{$t('button.inputPrice')}}</div>
       </div>
     </section>
     <div :is="component" :init="componentData"></div>

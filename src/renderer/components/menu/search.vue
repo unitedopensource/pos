@@ -3,7 +3,7 @@
     <section class="keyboard">
       <header>
         <span class="query">{{query}}</span>
-        <div class="btn">{{text('REMOVE')}}</div>
+        <div class="btn">{{$t('button.remove')}}</div>
       </header>
       <div class="keys">
         <div>A</div>

@@ -1,48 +1,48 @@
 <template>
   <div class="summary" :class="{hide:!isDisplay}">
     <div class="filter active" @click="setFilter('',$event)">
-      <span class="text">{{text('ALL_INVOICE')}}</span>
+      <span class="text">{{$t('type.allInvoice')}}</span>
       <span>({{summary.total}})</span>
       <div class="value">$ {{summary.totalSum}}</div>
     </div>
     <div class="filter" @click="setFilter('WALK_IN',$event)" v-show="summary.walkin">
-      <div class="text">{{text('WALK_IN_INVOICE')}}
+      <div class="text">{{$t('type.walkInInvoice')}}
         <span>({{summary.walkin}})</span>
       </div>
       <div class="value">$ {{summary.walkinSum}}</div>
     </div>
     <div class="filter" @click="setFilter('PICK_UP',$event)" v-show="summary.pickup">
-      <div class="text">{{text('PICK_UP_INVOICE')}}
+      <div class="text">{{$t('type.pickUpInvoice')}}
         <span>({{summary.pickup}})</span>
       </div>
       <div class="value">$ {{summary.pickupSum}}</div>
     </div>
     <div class="filter" @click="setFilter('DELIVERY',$event)" v-show="summary.delivery">
-      <div class="text">{{text('DELIVERY_INVOICE')}}
+      <div class="text">{{$t('type.deliveryInvoice')}}
         <span>({{summary.delivery}})</span>
       </div>
       <div class="value">$ {{summary.deliverySum}}</div>
     </div>
     <div class="filter" @click="setFilter('DINE_IN',$event)" v-show="summary.dinein">
-      <div class="text">{{text('DINE_IN_INVOICE')}}
+      <div class="text">{{$t('type.dineInInvoice')}}
         <span>({{summary.dinein}})</span>
       </div>
       <div class="value">$ {{summary.dineinSum}}</div>
     </div>
     <div class="filter" @click="setFilter('UNSETTLE',$event)" v-show="summary.unsettle">
-      <div class="text">{{text('UNPAID_INVOICE')}}
+      <div class="text">{{$t('type.unpaidInvoice')}}
         <span>({{summary.unsettle}})</span>
       </div>
       <div class="value">$ {{summary.unsettleSum}}</div>
     </div>
-    <div class="filter dropdown" @click="setFilter('DRIVER',$event)" v-show="Object.keys(summary.driver).length !== 0">
-      <div class="text">{{text('BY_DRIVER')}}
+    <div class="filter dropDown" @click="setFilter('DRIVER',$event)" v-show="Object.keys(summary.driver).length !== 0">
+      <div class="text">{{$t('type.driverInvoice')}}
         <span v-if="driver">{{driver}} ({{summary.driver[driver].count}})</span>
       </div>
       <div class="value">{{driver ? '$ '+summary.driver[driver].total.toFixed(2) : Object.keys(summary.driver).length}}</div>
       <div class="drivers" v-show="!driver">
         <div class="driver" v-for="(value,key,index) in summary.driver" :key="index" @click.stop="setDriver(key)">
-          <span>{{text('DRIVER')}} #{{key}}</span>
+          <span>{{$t('text.driver')}} #{{key}}</span>
           <span class="price">$ {{value.total.toFixed(2)}}</span>
         </div>
       </div>
@@ -232,15 +232,15 @@ export default {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
-.dropdown {
+.dropDown {
   position: relative;
 }
 
-.dropdown.active .drivers {
+.dropDown.active .drivers {
   display: block;
 }
 
-.dropdown.active::after {
+.dropDown.active::after {
   content: ' ';
   position: absolute;
   bottom: -10px;

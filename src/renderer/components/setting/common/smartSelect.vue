@@ -1,6 +1,6 @@
 <template>
   <div class="dropdownWrap relative">
-    <label>{{text(label)}}</label>
+    <label>{{$t(label)}}</label>
     <div @click.self="toggleDropdown" class="dropdown">
       <span class="tag relative" v-for="(tag,i) in tags" :key="i">
         {{tag}}
@@ -12,7 +12,7 @@
   
     <transition>
       <ul v-if="open" class="dropdownMenu">
-        <li v-for="(option,index) in options" @mousedown.prevent="select(index)">{{option}}</li>
+        <li v-for="(option,index) in options" @mousedown.prevent="select(index)" :key="index">{{option}}</li>
       </ul>
     </transition>
   </div>

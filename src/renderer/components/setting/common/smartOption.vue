@@ -1,6 +1,6 @@
 <template>
     <div class="input">
-        <label>{{text(label)}}</label>
+        <label>{{$t(label)}}</label>
         <select :value="value" @change="$emit('input', $event.target.value)">
             <option :value="option.value" v-for="(option,index) in data" :key="index">{{option.label}}</option>
         </select>

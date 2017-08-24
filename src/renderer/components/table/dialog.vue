@@ -4,7 +4,7 @@
       <header class="title">{{text("SET_TABLE")}}<i class="fa fa-retweet" @click="reset"></i></header>
         <div class="tables">
           <h5>{{text("SET_GUEST")}}</h5>
-          <div v-for="table in init.tables" class="table">
+          <div v-for="(table,index) in init.tables" class="table" :key="index">
             <span class="name">{{table.stats.name}}</span>
             <span :class="table.stats.shape" class="icon" :style="{color:table.current.color}" @click="addCustomer(table)"></span>
             <span>{{table.current.guest}}</span>
@@ -31,8 +31,8 @@
         </div>
       </div>
       <footer>
-        <button class="btn" @click="exit">{{text("CANCEL")}}</button>
-        <button class="btn" @click="confirm">{{text("CONFIRM")}}</button>
+        <button class="btn" @click="exit">{{$t('button.exit')}}</button>
+        <button class="btn" @click="confirm">{{$t("button.confirm")}}</button>
       </footer>
     </div>
   </div>

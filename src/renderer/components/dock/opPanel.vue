@@ -4,14 +4,14 @@
       <div class="list" @click="clockIn" v-if="!op.clockIn">
         <i class="fa fa-2x fa-clock-o"></i>
         <div>
-          <h3>{{text('CLOCK_IN')}}</h3>
+          <h3>{{$t('dock.clockIn')}}</h3>
           <h5>{{time | moment('HH:mm:ss')}}</h5>
         </div>
       </div>
       <div class="list" @click="clockOut" v-else>
         <i class="fa fa-2x fa-clock-o"></i>
         <div class="f1">
-          <h3>{{text('CLOCK_OUT')}}</h3>
+          <h3>{{$t('dock.clockOut')}}</h3>
           <h5>{{time | moment('HH:mm:ss')}}
             <span class="pass">{{op.clockIn | fromNow(true)}}</span>
           </h5>
@@ -20,36 +20,36 @@
       <div class="list" @click="giftCard">
         <i class="fa fa-2x fa-credit-card-alt"></i>
         <div>
-          <h3>{{text('GIFT_CARD')}}</h3>
+          <h3>{{$t('dock.giftCard')}}</h3>
           <h5></h5>
         </div>
       </div>
       <div class="list" @click="creditCard">
         <i class="fa fa-2x fa-credit-card"></i>
         <div>
-          <h3>{{text('CREDIT_CARD')}}</h3>
-          <h5></h5>
+          <h3>{{$t('dock.terminal')}}</h3>
+          <h5>{{$t('dock.terminalTip')}}</h5>
         </div>
       </div>
       <div class="list">
         <i class="fa fa-2x fa-desktop"></i>
         <div>
-          <h3>{{text('STATION')}}</h3>
-          <h5>Change Station Setting</h5>
+          <h3>{{$t('dock.station')}}</h3>
+          <h5>{{$t('dock.stationTip')}}</h5>
         </div>
       </div>
       <div class="list" @click="language">
         <i class="fa fa-2x fa-language"></i>
         <div>
-          <h3>Language</h3>
-          <h5>Switch Language</h5>
+          <h3>{{$t('dock.language')}}</h3>
+          <h5>{{$t('dock.languageTip')}}</h5>
         </div>
       </div>
       <div class="list" @click="logout">
         <i class="fa fa-2x fa-sign-out"></i>
         <div>
-          <h3>{{text('LOGOUT')}}</h3>
-          <h5>Cash Out & Sign Out</h5>
+          <h3>{{$t('dock.logout')}}</h3>
+          <h5>{{$t('dock.logoutTip')}}</h5>
         </div>
       </div>
     </div>

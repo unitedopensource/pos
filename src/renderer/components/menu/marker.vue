@@ -2,7 +2,7 @@
   <div class="popupMask center dark" @click.self="init.reject">
     <div class="marker window">
       <header class="title">
-        <span>{{text("MARKER")}}</span>
+        <span>{{$t("menu.marker")}}</span>
         <i class="fa fa-times" @click="init.reject"></i>
       </header>
       <section class="display">
@@ -26,8 +26,8 @@
         <span @click="markIt('M')">M</span>
       </section>
       <footer>
-        <button class="btn" @click="clear">{{text("CLEAR")}}</button>
-        <button class="btn" @click="done">{{text("CONFIRM")}}</button>
+        <button class="btn" @click="clear">{{$t("button.clear")}}</button>
+        <button class="btn" @click="done">{{$t("button.done")}}</button>
       </footer>
     </div>
   </div>
@@ -137,11 +137,6 @@ span.marked {
 
 footer {
   margin-top: 25px;
-}
-
-footer .btn {
-  margin: 5px;
-  flex: 1;
 }
 
 section.mark span:active {

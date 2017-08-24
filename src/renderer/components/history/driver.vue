@@ -2,17 +2,17 @@
   <div class="popupMask center dark" @click.self="exit()">
     <div class="driver window">
       <header class="title">
-        <span>#{{init.ticket}} {{text('SET_DRIVER')}}</span>
+        <span>#{{init.ticket}} {{$t('menu.setDriver')}}</span>
       </header>
       <div class="inner">
         <div v-for="(letter,index) in letters" :key="letter" @click="setDriver(letter,$event)" :class="letter">{{letter}}</div>
       </div>
       <footer>
         <div class="f1">
-          <div class="btn" @click="clear">{{text("CLEAR")}}</div>
+          <div class="btn" @click="clear">{{$t("dialog.clear")}}</div>
         </div>
-        <div class="btn">{{text('SET_TIP')}}</div>
-        <div class="btn" @click="confirm">{{text("CONFIRM")}}</div>
+        <div class="btn">{{$t('dialog.setTip')}}</div>
+        <div class="btn" @click="confirm">{{$t("dialog.confirm")}}</div>
       </footer>
     </div>
   </div>

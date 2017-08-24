@@ -35,13 +35,13 @@ const dialog = {
         };
         args.hasOwnProperty('buttons') ?
           args.buttons.forEach(button => { this.componentData.buttons.push({ text: button.text, fn: button.fn === 'resolve' ? resolve : reject }) }) :
-          this.componentData.buttons = [{ text: 'CANCEL', fn: reject }, { text: 'CONFIRM', fn: resolve }]
+          this.componentData.buttons = [{ text: 'button.cancel', fn: reject }, { text: 'button.confirm', fn: resolve }]
         this.component = "dialoger";
       });
     }
     Vue.prototype.$denyAccess = function (manager) {
-      let buttons = manager ? [{ text: 'MANAGER_CODE', fn: 'resolve' }, { text: 'CONFIRM', fn: 'reject' }] : [{ text: 'CONFIRM', fn: 'reject' }];
-      this.$dialog({ type: 'warning', title: 'PD_ACCESS', msg: 'TIP_PD_ACCESS', timeout: { duration: 10000 }, buttons }).then(() => { this.$q() }).catch(() => { this.$q() })
+      let buttons = manager ? [{ text: 'button.code', fn: 'resolve' }, { text: 'button.cancel', fn: 'reject' }] : [{ text: 'button.confirm', fn: 'reject' }];
+      this.$dialog({ type: 'warning', title: 'dialog.accessDenied', msg: 'dialog.accessDeniedTip', timeout: { duration: 10000 }, buttons }).then(() => { this.$q() }).catch(() => { this.$q() })
     }
     Vue.prototype.$q = function () {
       this.component = null;

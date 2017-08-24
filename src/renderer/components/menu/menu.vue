@@ -5,15 +5,15 @@
         </section>
         <section class="items" v-if="config.display.menuID">
             <div v-for="(item,index) in page" @click="pick(item)" :class="{disable:!item.clickable,like:item.like}" :key="index" :data-menuID="item.menuID">{{item[language]}}</div>
-            <div @click="itemPage = 0" v-if="items.length >= 34" class="pageButton">{{text("FIRST_PAGE")}}</div>
-            <div @click="itemPage = 1" v-if="items.length >= 34" class="pageButton">{{text("SECOND_PAGE")}}</div>
-            <div @click="itemPage = 2" v-if="items.length >= 34" class="pageButton">{{text("THIRD_PAGE")}}</div>
+            <div @click="itemPage = 0" v-if="items.length >= 34" class="pageButton">{{$t("button.firstPage")}}</div>
+            <div @click="itemPage = 1" v-if="items.length >= 34" class="pageButton">{{$t("button.secondPage")}}</div>
+            <div @click="itemPage = 2" v-if="items.length >= 34" class="pageButton">{{$t("button.thirdPage")}}</div>
         </section>
         <section class="items" v-else>
             <div v-for="(item,index) in page" @click="pick(item)" :class="{disable:!item.clickable,like:item.like}" :key="index">{{item[language]}}</div>
-            <div @click="itemPage = 0" v-if="items.length >= 34" class="pageButton">{{text("FIRST_PAGE")}}</div>
-            <div @click="itemPage = 1" v-if="items.length >= 34" class="pageButton">{{text("SECOND_PAGE")}}</div>
-            <div @click="itemPage = 2" v-if="items.length >= 34" class="pageButton">{{text("THIRD_PAGE")}}</div>
+            <div @click="itemPage = 0" v-if="items.length >= 34" class="pageButton">{{$t("button.firstPage")}}</div>
+            <div @click="itemPage = 1" v-if="items.length >= 34" class="pageButton">{{$t("button.secondPage")}}</div>
+            <div @click="itemPage = 2" v-if="items.length >= 34" class="pageButton">{{$t("button.thirdPage")}}</div>
         </section>
         <section class="sides">
             <div v-for="(side,index) in sides" @click="setOption(side,index)" :key="index">{{side[language]}}</div>
@@ -171,10 +171,10 @@ export default {
                     this.$p("split", { order: this.order });
                     break;
                 case "dineinExit":
-                    this.isEmptyTicket ? this.resetTableExit() : this.$dialog({ title: 'EXIT_CFM', msg: 'TIP_EXIT_CFM' }).then(() => { this.resetTableExit() }).catch(() => { this.$q() });
+                    this.isEmptyTicket ? this.resetTableExit() : this.$dialog({ title: 'dialog.exitConfirm', msg: 'dialog.exitConfirmTip' }).then(() => { this.resetTableExit() }).catch(() => { this.$q() });
                     break;
                 case "exit":
-                    this.isEmptyTicket ? this.exit() : this.$dialog({ title: 'EXIT_CFM', msg: 'TIP_EXIT_CFM' }).then(() => { this.exit() }).catch(() => { this.$q() })
+                    this.isEmptyTicket ? this.exit() : this.$dialog({ title: 'dialog.exitConfirm', msg: 'dialog.exitConfirmTip' }).then(() => { this.exit() }).catch(() => { this.$q() })
                     break;
             }
         },
