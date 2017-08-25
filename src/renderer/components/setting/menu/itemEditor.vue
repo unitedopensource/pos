@@ -73,13 +73,13 @@
                                             <label>{{$t('text.secondary')}}</label>
                                             <input type="text" v-model="side.zhCN">
                                         </div>
-                                        <div class="price">
+                                        <div class="price right">
                                             <label>{{$t('text.price')}}</label>
                                             <input type="text" v-model.number="side.price">
                                             <label>{{$t('text.priceExtra')}}</label>
                                             <input type="text" v-model.number="side.extra">
                                         </div>
-                                        <div class="template" v-if="advance">
+                                        <div class="template right" v-if="advance">
                                             <label>{{$t('text.template')}}</label>
                                             <select v-model="side.template">
                                                 <option v-for="(name,index) in templateOption" :key="index">{{name}}</option>
@@ -647,5 +647,9 @@ div.add {
 
 .item .price input {
     width: 60px;
+}
+
+.right{
+    text-align: right;
 }
 </style>

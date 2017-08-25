@@ -189,7 +189,7 @@ export default {
       });
       discount > 0 && item.choiceSet.push({
         qty: 1,
-        zhCN: `${this.unit ? '$' + this.discount.toFixed(2) : this.discount + ' %'} ${this.text('DISCOUNT')}`,
+        zhCN: `${this.unit ? '$' + this.discount.toFixed(2) : this.discount + ' %'} ${this.$t('text.discount')}`,
         usEN: `${this.unit ? '$' + this.discount.toFixed(2) : this.discount + ' %'} Discount`,
         single: -discount,
         price: -discount

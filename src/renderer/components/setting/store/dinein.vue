@@ -21,8 +21,8 @@
             </article>
         </section>
         <section class="card">
-            <header>{{$t('autoCharge')}}
-                <span class="tip">{{$t('autoChargeTip')}}</span>
+            <header>{{$t('setting.autoCharge')}}
+                <span class="tip">{{$t('setting.autoChargeTip')}}</span>
             </header>
             <article>
                 <smart-switch v-model="table.autoTip" label="text.enable"></smart-switch>

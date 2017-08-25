@@ -1,6 +1,6 @@
 <template>
     <section class="index">
-        <h3>{{$t('text.softwareSetting')}}</h3>
+        <h3>{{$t('setting.softwareSetting')}}</h3>
         <section class="grid">
             <figure @click="go('Setting.store')">
                 <i class="fa fa-2x fa-cogs"></i>
