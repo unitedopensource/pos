@@ -234,7 +234,9 @@ export default {
                 if (result.code === '000000') {
                     let { sn } = this.device;
                     let updated = this.transactions.filter(trans => !trans.close).map(trans => {
-                        trans.addition.SN === sn && (trans.close = true);
+                        if (trans.hasOwnProperty('device')) {
+                            trans.device.sn === sn && (trans.close = true);
+                        }
                         return trans;
                     })
                     this.$socket.emit("[TERM] BATCH_TRANS_CLOSE", updated);

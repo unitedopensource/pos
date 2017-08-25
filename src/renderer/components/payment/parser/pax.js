@@ -1,5 +1,6 @@
 const Pax = function () {
   let url = null;
+  let device = {};
   let cardType = ['',
     'Visa',
     'MasterCard',
@@ -23,15 +24,17 @@ const Pax = function () {
     let command = this.parser("A00_1.38");
     return fetch(command);
   };
-  this.check = function (device) {
-    let data = device.split(String.fromCharCode(28));
-    return {
+  this.check = function (d) {
+    let data = d.split(String.fromCharCode(28));
+    let sn = data[5].indexOf(String.fromCharCode(3)) !== -1 ? data[5].split(String.fromCharCode(3))[0] : data[5];
+    device = {
       code: data[3],
       msg: data[4],
-      sn: data[5],
+      sn: sn,
       model: data[6],
       mac: data[8]
-    }
+    };
+    return device;
   };
   this.charge = function (data, ticket) {
     let { number, date, code } = data.creditCard;
@@ -99,6 +102,7 @@ const Pax = function () {
             ref: trace[1],
             time: trace[2]
           },
+          device,
           addition,
           unique: Math.random().toString(36).substring(3, 8),
           time: +new Date,

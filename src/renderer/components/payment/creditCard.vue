@@ -59,7 +59,7 @@ export default {
             });
             this.timeout = setTimeout(() => {
                 this.init.reject({
-                    type: "warning", title: "terminal.timeout", msg: this.$t("terminal.timeoutTip", terminal.address),
+                    type: "warning", title: "terminal.timeout", msg: ["terminal.timeoutTip", terminal.address],
                     buttons: [{ text: 'button.confirm', fn: 'reject' }]
                 })
             }, 6000)

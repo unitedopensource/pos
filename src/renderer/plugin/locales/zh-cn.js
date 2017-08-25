@@ -259,7 +259,7 @@ export default {
         'batchClose': '过账确认',
         'batchCloseTip': '请您确认已经输入完所有订单上的小费',
         'batchFailed': '过账失败',
-        'batchFailedTip': '',
+        'batchFailedTip': '过账错误代码: {i}',
         'cashChange': '请找 ${i}',
         'cashChangeTip': '客人支付现金 (${i})',
         'printReceiptConfirm': '打印收据',
@@ -270,7 +270,7 @@ export default {
     terminal: {
         'initial': '正在初始化 {i}...',
         'initialFailed': '初始化 {i} 失败。 错误代码: {i}',
-        'communicating': '正在与 {i} 通信当...',
+        'ready': '请将信用卡插入 {i}',
         'transacting': '正在发送卡号信息到 {i}...',
         'timeout': '终端机连接超时',
         'timeoutTip': '请检查刷卡终端机的IP地址是否正确 (设定IP: {i})',
