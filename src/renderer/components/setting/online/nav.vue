@@ -2,9 +2,9 @@
     <section class="route">
         <nav class="route">
             <header @click="back">
-                <i class="fa fa-chevron-left"></i>{{text('BACK')}}</header>
-            <router-link :to="{name:'Setting.online.config'}" tag="div" append>{{text('CONFIG')}}</router-link>
-            <router-link :to="{name:'Setting.online.menu'}" tag="div" append>{{text('MENU')}}</router-link>
+                <i class="fa fa-chevron-left"></i>{{$t('button.back')}}</header>
+            <router-link :to="{name:'Setting.online.config'}" tag="div" append>{{$t('setting.config')}}</router-link>
+            <router-link :to="{name:'Setting.online.menu'}" tag="div" append>{{$t('setting.menu')}}</router-link>
         </nav>
         <div class="content">
             <router-view @change="onChange" @unchange="change = false" class="inner"></router-view>
@@ -12,8 +12,8 @@
                 <i class="fa fa-info-circle"></i>
                 <span>{{txt}}</span>
                 <span v-show="!send">
-                    <span @click="update" class="save">{{text('SAVE')}}</span>
-                    <span @click="cancel" class="cancel">{{text('CANCEL')}}</span>
+                    <span @click="update" class="save">{{$t('button.save')}}</span>
+                    <span @click="cancel" class="cancel">{{$t('button.cancel')}}</span>
                 </span>
             </footer>
         </div>
@@ -35,13 +35,13 @@ export default {
             this.$router.push({ name: 'Setting.index' })
         },
         onChange(store) {
-            this.txt = this.text("TIP_SAVE_CONFIG");
+            this.txt = this.$t("text.saveSetting");
             this.change = true;
             this.store = store;
             this.send = false;
         },
         update() {
-            this.txt = this.text('SETTING_UPDATED');
+            this.txt = this.$t('text.settingUpdated');
             this.send = true;
             this.$socket.emit("[CMS] CONFIG_STORE", this.store);
             this.setConfig({ store: this.store })

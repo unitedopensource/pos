@@ -6,7 +6,7 @@
                 <i class="fa fa-times" @click="init.reject"></i>
             </header>
             <div class="inner">
-                <input type="text" v-model="value">
+                <input type="text" v-model="value" :placeholder="init.tip">
                 <section class="numpad">
                     <div @click="input('7')">7</div>
                     <div @click="input('8')">8</div>
@@ -31,7 +31,7 @@
 
 <script>
 export default {
-    props:['init'],
+    props: ['init'],
     data() {
         return {
             value: ""
@@ -39,6 +39,7 @@ export default {
     },
     methods: {
         input(string) {
+            if (string === '.' && this.value.indexOf('.') !== -1) return;
             this.value += string;
         },
         del() {

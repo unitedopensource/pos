@@ -667,14 +667,21 @@ export default {
 
                 type === 'CASH' ?
                     this.$dialog({
-                        title: this.text("CHANGE", change), msg: this.text("CUST_PAID", paid.toFixed(2)), buttons: [{ text: 'CONFIRM', fn: 'reject' }, { text: 'PRINT_RECEIPT', fn: 'resolve' }]
+                        title: this.$t("dialog.cashChange", change), msg: this.$t("dialog.cashChangeTip", paid.toFixed(2)),
+                        buttons: [{ text: 'button.noReceipt', fn: 'reject' }, { text: 'button.printReceipt', fn: 'resolve' }]
                     }).then(() => { this.invoiceSettled(order, true) }).catch(() => { this.invoiceSettled(order, false) }) :
-                    this.$dialog({ type: "question", title: "PRINT_RECEIPT", msg: "TIP_PRINT_RECEIPT", buttons: [{ text: 'CONFIRM', fn: 'reject' }, { text: 'PRINT_RECEIPT', fn: 'resolve' }] }).then(() => { this.invoiceSettled(order, true) }).catch(() => { this.invoiceSettled(order, false) });
+                    this.$dialog({
+                        type: "question", title: "dialog.printReceiptConfirm", msg: "dialog.printReceiptConfirmTip",
+                        buttons: [{ text: 'button.noReceipt', fn: 'reject' }, { text: 'button.printReceipt', fn: 'resolve' }]
+                    }).then(() => { this.invoiceSettled(order, true) }).catch(() => { this.invoiceSettled(order, false) });
             } else {
                 this.payment.settled = true;
                 if (this.order.hasOwnProperty('splitPayment')) {
                     this.order.splitPayment[this.current] = this.payment;
-                    this.$dialog({ type: "question", title: "PRINT_RECEIPT", msg: "TIP_PRINT_RECEIPT", buttons: [{ text: 'CONFIRM', fn: 'reject' }, { text: 'PRINT_RECEIPT', fn: 'resolve' }] }).then(() => { this.printSplitReceipt() }).catch(() => { this.nextSplit() });
+                    this.$dialog({
+                        type: "question", title: "dialog.printReceiptConfirm", msg: "dialog.printReceiptConfirmTip",
+                        buttons: [{ text: 'button.noReceipt', fn: 'reject' }, { text: 'button.printReceipt', fn: 'resolve' }]
+                    }).then(() => { this.printSplitReceipt() }).catch(() => { this.nextSplit() });
                 } else {
                     this.init.resolve(this.payment);
                 }
@@ -865,7 +872,10 @@ export default {
             this.$socket.emit("[CASHFLOW] NEW_ACTIVITY", { cashDrawer, activity });
         },
         missCashDrawer() {
-            this.$dialog({ title: "CASH_DRAWER_NA", msg: "TIP_CASH_DRAWER_NA", buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$q() });
+            this.$dialog({
+                title: "dialog.cashDrawerNotAvailable", msg: "dialog.cashDrawerNotAvailableTip",
+                buttons: [{ text: 'button.confirm', fn: 'resolve' }]
+            }).then(() => { this.$q() });
         },
         switchInvoice(index) {
             if (isNumber(index)) this.current = index;

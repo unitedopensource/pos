@@ -59,20 +59,20 @@ export default {
         },
         editCategory(category, index) {
             this.$p("requestEditor", {
-                title: 'EDITOR.HEADER.REQUEST',
+                title: 'setting.request',
                 data: category,
                 type: 'category',
                 index
             })
         },
         editAction(action, index) {
-            this.$p("requestEditor", { title: 'EDITOR.HEADER.ACTION', data: action, type: 'action', index })
+            this.$p("requestEditor", { title: 'setting.action', data: action, type: 'action', index })
         },
         editItem(item, sub, index) {
             this.$p("requestEditor", {
                 data: item,
                 category: this.request[this.categoryIndex].contain,
-                title: 'EDITOR.HEADER.ITEM',
+                title: 'setting.item',
                 type: 'item',
                 grp: this.categoryIndex,
                 sub, index

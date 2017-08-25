@@ -6,11 +6,11 @@
         <div class="section bottom">
           <div class="section btn" @click="getReservation">
             <i class="fa fa-user-o"></i>
-            <span class="text">{{text("RESERVATION")}}</span>
+            <span class="text">{{$t("button.reservation")}}</span>
           </div>
           <div class="section btn">
             <i class="fa fa-list-alt"></i>
-            <span class="text">{{text("VIEW_LIST")}}</span>
+            <span class="text">{{$t("button.viewList")}}</span>
           </div>
         </div>
       </div>
@@ -27,39 +27,39 @@
         <div class="function">
           <button class="btn" @click="editOrder" :disabled="order.content.length === 0">
             <i class="fa fa-list-alt"></i>
-            <span class="text">{{text("EDIT_ORDER")}}</span>
+            <span class="text">{{$t("button.edit")}}</span>
           </button>
           <button class="btn" @click="startSwitchTable">
             <i class="fa fa-exchange"></i>
-            <span class="text">{{text("SWITCH_TABLE")}}</span>
+            <span class="text">{{$t("button.switchTable")}}</span>
           </button>
           <div class="btn">
             <i class="fa fa-hand-paper-o"></i>
-            <span class="text">{{text("COMBINE_TABLE")}}</span>
+            <span class="text">{{$t("button.combineTable")}}</span>
           </div>
           <div class="btn" @click="prePayment">
             <i class="fa fa-print"></i>
-            <span class="text">{{text("RECEIPT")}}</span>
+            <span class="text">{{$t("button.receipt")}}</span>
           </div>
           <div class="btn" @click="settle">
             <i class="fa fa-money"></i>
-            <span class="text">{{text("PAYMENT")}}</span>
+            <span class="text">{{$t("button.payment")}}</span>
           </div>
           <div class="btn">
             <i class="fa fa-user-times"></i>
-            <span class="text">{{text("SWITCH")}}</span>
+            <span class="text">{{$t("button.switch")}}</span>
           </div>
           <div class="btn" @click="split">
             <i class="fa fa-clone"></i>
-            <span class="text">{{text("SPLIT")}}</span>
+            <span class="text">{{$t("button.split")}}</span>
           </div>
           <div class="btn" @click="exit">
             <i class="fa fa-times"></i>
-            <span class="text">{{text("EXIT")}}</span>
+            <span class="text">{{$t("button.exit")}}</span>
           </div>
           <div class="btn" @click="clearTable">
             <i class="fa fa-recycle"></i>
-            <span class="text">{{text("CLEAR")}}</span>
+            <span class="text">{{$t("button.clearTable")}}</span>
           </div>
         </div>
       </div>
@@ -70,31 +70,33 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import Printer from '../print'
-import dialoger from './common/dialoger'
 import reservation from './table/reservation'
 import orderList from './common/orderList'
-import split from './menu/split'
+import dialoger from './common/dialoger'
 import payment from './payment/payment'
 import setup from './table/setup'
+import split from './menu/split'
+import Printer from '../print'
+
 export default {
   components: {
     setup, split, dialoger, reservation, payment, orderList
+  },
+  data() {
+    return {
+      pendingSwitch: false,
+      componentData: null,
+      component: null,
+      payment: null,
+      sectionView: [],
+      table: [],
+    }
   },
   mounted() {
     this.$socket.emit("INQUIRY_UPDATE_TIME");
     this.currentTable ? this.focusTable() : this.sectionView = this.tables[0].item;
   },
-  data() {
-    return {
-      table: [],
-      sectionView: [],
-      pendingSwitch: false,
-      payment: null,
-      component: null,
-      componentData: null
-    }
-  },
+
   methods: {
     focusTable() {
       let index = this.tables.findIndex(section => section.zone === this.currentTable.zone);
@@ -148,8 +150,8 @@ export default {
     forceSelectTable(table, e) {
       if (this.op.role !== 'Manager') return;
       this.$dialog({
-        type: "alert", title: "FORCE_CLEAR", msg: this.text("TIP_FORCE_CLEAR_TABLE", table.current.server, table.name),
-        buttons: [{ text: 'CANCEL', fn: 'reject' }, { text: 'CLEAR', fn: 'resolve' }]
+        type: "alert", title: "dialog.forceClearTable", msg: this.$t("dialog.forceClearTableTip", table.current.server, table.name),
+        buttons: [{ text: 'button.cancel', fn: 'reject' }, { text: 'button.clear', fn: 'resolve' }]
       }).then(() => {
         let _table = Object.assign({}, table, {
           status: 1,
@@ -165,7 +167,6 @@ export default {
         this.$socket.emit("TABLE_MODIFIED", _table);
         this.$q();
       }).catch(() => { this.$q() })
-
     },
     settle() {
       if (this.isEmptyTicket) return;
@@ -176,7 +177,10 @@ export default {
       this.$p("payment");
     },
     settledOrder() {
-      this.$dialog({ title: "ORDER_SETTLED", msg: "TIP_ORDER_SETTLED", buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$q() })
+      this.$dialog({
+        title: "dialog.invoiceSettled", msg: "dialog.invoiceSettledTip",
+        buttons: [{ text: 'button.comfirm', fn: 'resolve' }]
+      }).then(() => { this.$q() })
     },
     editOrder() {
       if (this.order.settled) {
@@ -189,20 +193,29 @@ export default {
     },
     handleSettledOrder() {
       this.$dialog({
-        title: this.text('REOPEN_SETTLED_ORD', this.order.number),
-        msg: this.text('REOPEN_SETTLED_ORD_TIP', this.text(this.order.payment.type)),
-        buttons: [{ text: 'REMOVE_PAYMENT', fn: 'resolve' }, { text: 'CANCEL', fn: 'reject' }]
+        title: this.$t('dialog.settledOrderReopen', this.order.number),
+        msg: this.$t('dialog.settledOrderReopenTip', this.$t('type.' + this.order.payment.type)),
+        buttons: [{ text: 'button.removePayment', fn: 'resolve' }, { text: 'button.cancel', fn: 'reject' }]
       }).then(() => { this.removeOrderPayment() }).catch(() => { this.$q() })
     },
     removeOrderPayment() {
-      this.$dialog({ type: "warning", title: 'PAYMENT_REMOVE', msg: this.text('PAYMENT_REMOVE_CONFIRM', this.text(this.order.payment.type)) }).then(() => {
+      this.$dialog({
+        type: "warning", title: 'dialog.paymentRemoveConfirm',
+        msg: this.$t('dialog.paymentRemoveConfirmTip', this.$t('type.' + this.order.payment.type))
+      }).then(() => {
         this.removePayment();
         this.$socket.emit("[UPDATE] INVOICE", this.order);
-        this.$dialog({ title: "PAYMENT_REMOVED", msg: this.text("ORDER_PAYMENT_REMOVED", this.order.number), buttons: [{ text: 'CONFIRM', fn: 'reject' }, { text: 'EDIT_ORDER', fn: 'resolve' }] }).then(() => { this.editOrder() }).catch(() => { this.$q() });
+        this.askEditOrder();
       }).catch(() => { this.$q() })
     },
+    askEditOrder() {
+      this.$dialog({
+        title: "dialog.paymentRemoved", msg: this.$t("dialog.paymentRemovedTip", this.order.number),
+        buttons: [{ text: 'button.confirm', fn: 'reject' }, { text: 'button.edit', fn: 'resolve' }]
+      }).then(() => { this.editOrder() }).catch(() => { this.$q() });
+    },
     startSwitchTable() {
-      this.$dialog({ title: 'TABLE_CFM_SWITCH', msg: 'TIP_SELECT_TABLE' }).then((resolve) => {
+      this.$dialog({ title: 'dialog.tableSwitchConfirm', msg: 'dialog.tableSwitchConfirmTip' }).then((resolve) => {
         this.pendingSwitch = true;
         this.$q();
       }).catch((reject) => {
@@ -212,7 +225,7 @@ export default {
     },
     switchTable(table) {
       let origin = this.currentTable;
-      this.$dialog({ title: 'TABLE_SWITCH', msg: this.text('TIP_SWITCH_CFM', origin.name, table.name) }).then(() => {
+      this.$dialog({ title: 'dialog.tableSwitch', msg: this.$t('dialog.tableSwitchTip', origin.name, table.name) }).then(() => {
         table.current = origin.current;
         table.status = origin.status;
         let invoice = this.history.filter(order => order._id === origin.current.invoice[0])[0];
@@ -235,7 +248,7 @@ export default {
       }).catch(() => { this.$q() })
     },
     switchTableFail() {
-      this.$dialog({ title: 'TABLE_SWITCH_F', msg: 'TIP_TABLE_MUST_EMPTY' }).then(() => { this.$q() })
+      this.$dialog({ title: 'dialog.tableSwitchFailed', msg: 'dialog.tableSwitchFailedTip' }).then(() => { this.$q() })
     },
     getReservation() {
       this.$p("reservation");
@@ -265,8 +278,8 @@ export default {
       if (this.order.content.length === 0) return;
       if (this.order.print) {
         this.$dialog({
-          type: "question", title: "PRT_PRE_PAYT", msg: this.text('TIP_PRE_PAYT', this.order.table),
-          buttons: [{ text: 'CANCEL', fn: "reject" }, { text: "PRINT", fn: "resolve" }]
+          type: "question", title: "dialog.prePayment", msg: this.$t('dialog.prePaymentTip', this.order.table),
+          buttons: [{ text: 'button.cancel', fn: "reject" }, { text: "button.print", fn: "resolve" }]
         }).then(() => {
           let order = JSON.parse(JSON.stringify(this.order));
           order.type = "PRE_PAYMENT";
@@ -278,14 +291,14 @@ export default {
         }).catch(() => { this.$q() })
       } else {
         let remain = this.order.content.filter(item => !item.print).length;
-        this.$dialog({ title: 'PRT_PRE_PAYT_NA', msg: this.text('TIP_REMAIN_ITEM', remain) }).then(() => { this.$q() })
+        this.$dialog({ title: 'dialog.prePaymentFailed', msg: this.$t('dialog.prePaymentFailedTip', remain) }).then(() => { this.$q() })
       }
     },
     clearTable() {
       if (this.currentTable.status === 4 || this.order.settled) {
         this.$dialog({
-          title: "TABLE_CLEAR", msg: this.text("TIP_TABLE_CLEAR", this.currentTable.name),
-          buttons: [{ text: 'CANCEL', fn: 'reject' }, { text: 'CLEAR', fn: 'resolve' }]
+          title: "dialog.tableClear", msg: this.$t("dialog.tableClearTip", this.currentTable.name),
+          buttons: [{ text: 'button.cancel', fn: 'reject' }, { text: 'button.clear', fn: 'resolve' }]
         }).then(() => {
           this.resetMenu();
           this.resetCurrentTable();
@@ -293,7 +306,10 @@ export default {
           this.$q();
         }).catch(() => { this.$q() })
       } else {
-        this.$dialog({ type: "info", title: 'TABLE_CLEAR_F', msg: this.text('TIP_TABLE_CLEAR_F', this.currentTable.name), buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$q() })
+        this.$dialog({
+          type: "info", title: 'dialog.tableClearFailed', msg: this.text('dialog.tableClearFailedTip', this.currentTable.name),
+          buttons: [{ text: 'button.confirm', fn: 'resolve' }]
+        }).then(() => { this.$q() })
       }
     },
     setPayment(payment) {

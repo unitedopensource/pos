@@ -2,8 +2,8 @@
   <div class="popupMask center dark" @dblclick.self="exit">
     <div class="dialog" :class="[init.type]">
       <i class="fa"></i>
-      <h3>{{$t(init.title)}}</h3>
-      <h5>{{$t(init.msg)}}</h5>
+      <h3>{{title}}</h3>
+      <h5>{{msg}}</h5>
       <footer>
         <div class="btn" v-for="(button,index) in init.buttons" @click="trigger(button)" :key="index">{{$t(button.text)}}</div>
       </footer>
@@ -14,11 +14,18 @@
 <script>
 export default {
   props: ['init'],
+  data() {
+    return {
+      title: "",
+      msg: ""
+    }
+  },
+  created() {
+    this.title = typeof this.init.title === 'string' ? this.$t(this.init.title) : this.$t(...this.init.title);
+    this.msg = typeof this.init.msg === 'string' ? this.$t(this.init.msg) : this.$t(...this.init.msg);
+  },
   mounted() {
-    if (this.init.timeout)
-      this.timeout = setTimeout(() => {
-        this.init.timeout.fn();
-      }, this.init.timeout.duration)
+    if (this.init.timeout) this.timeout = setTimeout(() => { this.init.timeout.fn() }, this.init.timeout.duration);
   },
   methods: {
     trigger(button) {

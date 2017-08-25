@@ -1,42 +1,42 @@
 <template>
     <div>
         <section class="card">
-            <header>{{text('BASIC_INFO')}}
-                <span class="tip">{{text('SETTING.ONLINE.TIP')}}</span>
+            <header>{{$t('setting.onlineOrder')}}
+                <span class="tip">{{$t('setting.onlineOrderTip')}}</span>
             </header>
             <article>
-                <smart-switch v-model="online.enable" label="ENABLE"></smart-switch>
-                <smart-input v-model="online.server" label="IP" reg="^\d+\s[A-z]+\s[A-z]+"></smart-input>
-                <smart-input v-model="online.port" label="PORT" reg="^[a-zA-Z0-9_. ]{5,30}$"></smart-input>
-                <smart-input v-model="online.user" label="ACCOUNT" reg="^[a-zA-Z0-9_. ]{5,30}$"></smart-input>
-                <smart-input v-model="online.password" label="PASSWORD" reg="^[a-zA-Z0-9_. ]{5,30}$"></smart-input>
-                <smart-input v-model="online.database" label="DATABASE" reg="^[a-zA-Z0-9_. ]{5,30}$"></smart-input>
+                <smart-switch v-model="online.enable" label="text.enable"></smart-switch>
+                <smart-input v-model="online.ip" label="text.ipAddress" reg="^\d+\s[A-z]+\s[A-z]+"></smart-input>
+                <smart-input v-model="online.port" label="text.port" reg="^[a-zA-Z0-9_. ]{5,30}$"></smart-input>
+                <smart-input v-model="online.user" label="text.account" reg="^[a-zA-Z0-9_. ]{5,30}$"></smart-input>
+                <smart-input v-model="online.password" label="text.password" reg="^[a-zA-Z0-9_. ]{5,30}$"></smart-input>
+                <smart-input v-model="online.database" label="text.database" reg="^[a-zA-Z0-9_. ]{5,30}$"></smart-input>
             </article>
         </section>
         <section class="card">
-            <header>{{text('SECURITY')}}</header>
+            <header>{{$t('setting.security')}}</header>
             <article>
-                <smart-input v-model="online.privateKey" label="RSA_KEY" reg="^\d+\s[A-z]+\s[A-z]+"></smart-input>
-                <smart-input v-model="online.rsaExp" label="CC_EXP" reg="^[a-zA-Z0-9_. ]{5,30}$" :disable="true"></smart-input>
+                <smart-input v-model="online.privateKey" label="text.privateKey" reg="^\d+\s[A-z]+\s[A-z]+"></smart-input>
+                <smart-input v-model="online.rsaExp" label="text.expirationDate" reg="^[a-zA-Z0-9_. ]{5,30}$" :disable="true"></smart-input>
             </article>
         </section>
         <section class="card">
-            <header>{{text('SERVER')}}</header>
+            <header>{{$t('setting.acceptance')}}</header>
             <article>
-                <smart-switch v-model="online.acceptCreditCard" label="ACCEPT_CREDIT_CARD"></smart-switch>
-                <smart-switch v-model="online.acceptDelivery" label="ACCEPT_DELIVERY"></smart-switch>
-                <smart-switch v-model="online.acceptReservation" label="ACCEPT_RESERVATION"></smart-switch>
+                <smart-switch v-model="online.acceptCreditCard" label="text.acceptCreditCard"></smart-switch>
+                <smart-switch v-model="online.acceptDelivery" label="text.acceptDelivery"></smart-switch>
+                <smart-switch v-model="online.acceptReservation" label="text.acceptReservation"></smart-switch>
             </article>
         </section>
         <section class="card">
-            <header>{{text('SETTING')}}</header>
+            <header>{{$t('setting.other')}}</header>
             <article>
-                <smart-input v-model="online.deliveryFee" label="DELIVERY_FEE" :disable="!online.acceptDelivery"></smart-input>
-                <smart-input v-model="online.minCashRequire" label="MIN_CASH_REQ" reg="^[a-zA-Z0-9_. ]{5,30}$"></smart-input>
-                <smart-input v-model="online.minCreditRequire" label="MIN_CREDIT_REQ" reg="^\d+\s[A-z]+\s[A-z]+"></smart-input>
-                <smart-input v-model="online.maxDeliverMile" label="MAX_DELIVERY_RANGE" reg="^[a-zA-Z0-9_. ]{5,30}$"></smart-input>
-                <smart-input v-model="online.defaultPickupDuration" label="PICKUP_DURATION" reg="^\d+\s[A-z]+\s[A-z]+"></smart-input>
-                <smart-input v-model="online.defaultDeliveryDuration" label="DELIVERY_DURATION" reg="^[a-zA-Z0-9_. ]{5,30}$"></smart-input>
+                <smart-input v-model="online.deliveryFee" label="text.deliveryFee" :disable="!online.acceptDelivery"></smart-input>
+                <smart-input v-model="online.minCashRequire" label="text.minCashRequire" reg="^[a-zA-Z0-9_. ]{5,30}$"></smart-input>
+                <smart-input v-model="online.minCreditRequire" label="text.minCreditRequire" reg="^\d+\s[A-z]+\s[A-z]+"></smart-input>
+                <smart-input v-model="online.maxDeliverMile" label="text.maxDeliverMile" reg="^[a-zA-Z0-9_. ]{5,30}$"></smart-input>
+                <smart-input v-model="online.pickupWaitTime" label="text.pickupWaitTime" reg="^\d+\s[A-z]+\s[A-z]+"></smart-input>
+                <smart-input v-model="online.deliveryWaitTime" label="text.deliveryWaitTime" reg="^[a-zA-Z0-9_. ]{5,30}$"></smart-input>
             </article>
         </section>
     </div>

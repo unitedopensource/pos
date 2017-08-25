@@ -2,17 +2,17 @@
     <div>
         <section class="card list">
             <header>
-                <span>{{text('CUST_INFO')}}</span>
-                <span class="tip">{{text('SETTING.DATABASE.CUSTOMER.TIP')}}</span>
+                <span>{{$t('setting.customer')}}</span>
+                <span class="tip">{{$t('setting.customerTip')}}</span>
                 <div class="search">
                     <i class="fa fa-search"></i>
                     <input type="text" v-model="keyword" @keydown.enter="search">
                 </div>
             </header>
             <div class="listHeader">
-                <span class="number">{{text('PHONE')}}</span>
-                <span class="address">{{text('ADDRESS')}}</span>
-                <span class="last">{{text('LAST_ACTIVITY')}}</span>
+                <span class="number">{{$t('text.phone')}}</span>
+                <span class="address">{{$t('text.address')}}</span>
+                <span class="last">{{$t('text.lastActivity')}}</span>
             </div>
             <article>
                 <div v-for="(customer,index) in customers" class="datalist" :key="index">

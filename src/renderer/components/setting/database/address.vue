@@ -1,13 +1,13 @@
 <template>
     <div>
         <section class="card list">
-            <header>{{text('ADDRESS')}}
-                <span class="tip">{{text('SETTING.DATABASE.ADDRESS.TIP')}}</span>
+            <header>{{$t('setting.address')}}
+                <span class="tip">{{$t('setting.addressTip')}}</span>
             </header>
             <div class="listHeader">
-                <span class="f2">{{text('STREET')}}</span>
-                <span class="f1">{{text('CITY')}}</span>
-                <span class="action">{{text('ACTION')}}</span>
+                <span class="f2">{{$t('text.street')}}</span>
+                <span class="f1">{{$t('text.city')}}</span>
+                <span class="action">{{$t('text.action')}}</span>
             </div>
             <article>
                 <div v-for="(address,index) in addresses" class="datalist" :key="index">
@@ -16,7 +16,7 @@
                     <span class="action" @click="edit(address,index)">
                         <span>
                             <i class="fa fa-pencil"></i>
-                            <span>{{text("EDIT")}}</span>
+                            <span>{{$t("button.edit")}}</span>
                         </span>
                     </span>
                 </div>

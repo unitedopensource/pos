@@ -92,7 +92,7 @@ export default {
     methods: {
         initialTerminal() {
             let terminal = this.station.terminal;
-            this.msg = this.text('TERM_INIT', terminal.model);
+            this.msg = this.$t('terminal.initial', terminal.model);
             this.terminal = this.getFile(terminal.model);
             this.terminal.initial(terminal.address, terminal.port).then(response => response.text()).then((device) => {
                 this.device = this.terminal.check(device);
@@ -154,8 +154,10 @@ export default {
             Printer.init(this.config).setJob('reprint creditCard').print(receipt);
         },
         voidSale(record) {
+            console.log(record)
             this.$dialog({
-                title: "TERM_VOID_SALE", msg: this.text("TIP_TERM_VOID_SALE", record.trace.trans), buttons: [{ text: 'CANCEL', fn: 'reject' }, { text: 'CONFIRM&PRINT', fn: 'resolve' }]
+                title: "dialog.voidCreditSale", msg: ["dialog.voidCreditSaleTip", record.order.number, 'type.' + record.order.type],
+                buttons: [{ text: 'button.cancel', fn: 'reject' }, { text: 'button.confirmPrint', fn: 'resolve' }]
             }).then((print) => {
                 let invoice = record.order.number;
                 let trans = record.trace.trans;
@@ -186,25 +188,30 @@ export default {
             this.$socket.emit("[SAVE] INVOICE", ticket);
         },
         adjustTip(record) {
+            let tip = record.amount.tip;
             this.approval(this.op.modify, "terminal") ?
                 new Promise((resolve, reject) => {
-                    this.componentData = { resolve, reject };
+                    this.componentData = { tip, resolve, reject };
                     this.component = "tipper";
                 }).then((value) => {
                     this.$q();
                     value = isNumber(value) ? value : 0;
                     let total = parseFloat(record.amount.approve) + value;
-                    this.$dialog({ title: 'TERM_CONFIRM_ADJUST', msg: this.text('TIP_TERM_ADJUST_TIP', value.toFixed(2), total.toFixed(2)) }).then(() => {
+                    this.$dialog({
+                        title: 'dialog.tipAdjustment', msg: ['dialog.tipAdjustmentTip', value.toFixed(2), total.toFixed(2)]
+                    }).then(() => {
+                        this.$p("progressBar");
                         let amount = Math.round(value * 100);
                         let invoice = record.order.number;
                         let trans = record.trace.trans;
-                        this.terminal.adjust(invoice, trans, amount).then(response => response.text()).then((response) => {
-                            this.$q();
-                            record.status = 2;
-                            record.amount.tip = value.toFixed(2);
-                            this.$socket.emit("[TERM] UPDATE_TRANSACTION", record);
-                            this.adjustOrderTip(record.order, value);
-                        });
+                        this.terminal.adjust(invoice, trans, amount).then(response => response.text())
+                            .then((response) => {
+                                this.$q();
+                                record.status = 2;
+                                record.amount.tip = value.toFixed(2);
+                                this.$socket.emit("[TERM] UPDATE_TRANSACTION", record);
+                                this.adjustOrderTip(record.order, value);
+                            });
                     }).catch(() => { this.$q() })
                 }).catch(() => { this.$q() }) :
                 this.$denyAccess();
@@ -216,7 +223,8 @@ export default {
         },
         batch() {
             this.preBatch() && this.$dialog({
-                title: 'TERM_BATCH_CLOSE', msg: "TIP_TERM_BATCH_CLOSE", buttons: [{ text: "CANCEL", fn: 'reject' }, { text: 'BATCH', fn: 'resolve' }]
+                title: 'dialog.batchClose', msg: "dialog.batchCloseTip",
+                buttons: [{ text: "button.cancel", fn: 'reject' }, { text: 'button.batch', fn: 'resolve' }]
             }).then(() => { this.processBatch() }).catch(() => { this.$q() })
         },
         processBatch() {
@@ -234,7 +242,10 @@ export default {
                     this.$socket.emit('[TERM] SAVE_BATCH_RESULT', result);
                     this.$q();
                 } else {
-                    this.$dialog({ type: 'warning', title: result.msg, msg: this.text('ERROR_CODE', result.code), buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$q() })
+                    this.$dialog({
+                        type: 'warning', title: result.msg, msg: ['terminal.error', result.code],
+                        buttons: [{ text: 'button.confirm', fn: 'resolve' }]
+                    }).then(() => { this.$q() })
                 }
             })
         },
@@ -327,7 +338,10 @@ export default {
             return true;
         },
         noRecord() {
-            this.$dialog({ title: "BATCH_NO_FOUND", msg: this.text('ERROR_CODE', 100023), buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$q() })
+            this.$dialog({
+                title: "dialog.batchFailed", msg: this.$t('terminal.error', 100023),
+                buttons: [{ text: 'button.confirm', fn: 'resolve' }]
+            }).then(() => { this.$q() })
         },
         disableBatchFn() {
             this.$dialog({ type: 'warning', title: 'TERM_NA', msg: 'TERM_BATCH_DISABLE', buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => {
@@ -467,7 +481,6 @@ span.tip {
     display: flex;
     color: #797575;
     text-shadow: 0 0px 1px #fff;
-    font-weight: bold;
     font-family: 'Microsoft YaHei';
 }
 

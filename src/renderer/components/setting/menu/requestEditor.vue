@@ -1,60 +1,61 @@
 <template>
     <div class="popupMask center dark" @click.self="init.reject(false)">
         <div class="editor">
-            <header>{{text(init.title)}}</header>
+            <header>{{$t(init.title)}}</header>
             <div class="inner" v-if="init.type === 'category'">
                 <div class="input">
-                    <label>{{text('ZH_CN')}}</label>
-                    <input v-model="request.zhCN">
-                </div>
-                <div class="input">
-                    <label>{{text('ZH_CN')}}</label>
+                    <label>{{$t('text.primary')}}</label>
                     <input v-model="request.usEN">
                 </div>
                 <div class="input">
-                    <label>{{text('CONTAIN')}}</label>
+                    <label>{{$t('text.secondary')}}</label>
+                    <input v-model="request.zhCN">
+                </div>
+                <div class="input">
+                    <label>{{$t('text.contain')}}</label>
                     <input v-model="request.contain">
                 </div>
             </div>
             <div class="inner" v-else-if="init.type === 'action'">
                 <div class="input">
-                    <label>{{text('ZH_CN')}}</label>
-                    <input v-model="request.zhCN">
-                </div>
-                <div class="input">
-                    <label>{{text('US_EN')}}</label>
+                    <label>{{$t('text.primary')}}</label>
                     <input v-model="request.usEN">
                 </div>
+                <div class="input">
+                    <label>{{$t('text.secondary')}}</label>
+                    <input v-model="request.zhCN">
+                </div>
                 <div class="default">
-                    <checkbox v-model="request.prefix" label="PREFIX_VERB"></checkbox>
+                    <checkbox v-model="request.prefix" label="text.prefix"></checkbox>
                 </div>
             </div>
             <div class="inner" v-else-if="init.type === 'item'">
                 <div class="input">
-                    <label>{{text('ZH_CN')}}</label>
-                    <input v-model="request.zhCN">
-                </div>
-                <div class="input">
-                    <label>{{text('US_EN')}}</label>
+                    <label>{{$t('text.primary')}}</label>
                     <input v-model="request.usEN">
                 </div>
                 <div class="input">
-                    <label>{{text('CATEGORY')}}</label>
+                    <label>{{$t('text.secondary')}}</label>
+                    <input v-model="request.zhCN">
+                </div>
+
+                <div class="input">
+                    <label>{{$t('text.category')}}</label>
                     <select v-model="request.category">
-                        <option v-for="category in init.category">{{category}}</option>
+                        <option v-for="(category,index) in init.category" :key="index">{{category}}</option>
                     </select>
                 </div>
                 <div class="input">
-                    <label>{{text('PRICE')}}</label>
+                    <label>{{$t('text.price')}}</label>
                     <input v-model.number="request.price">
                 </div>
             </div>
             <footer>
                 <div class="f1">
-                    <span class="del" @click="del" v-show="request._id">{{text('DELETE')}}</span>
+                    <span class="del" @click="del" v-show="request._id">{{$t('button.delete')}}</span>
                 </div>
-                <div class="btn" @click="init.reject(false)">{{text('CANCEL')}}</div>
-                <div class="btn" @click="confirm">{{text('CONFIRM')}}</div>
+                <div class="btn" @click="init.reject(false)">{{$t('button.cancel')}}</div>
+                <div class="btn" @click="confirm">{{$t('button.confirm')}}</div>
             </footer>
         </div>
     </div>

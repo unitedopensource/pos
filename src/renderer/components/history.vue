@@ -11,7 +11,7 @@
             <section class="tickets">
                 <div class="inner">
                     <div v-for="(ticket,index) in orders" class="invoice" @click="getInvoice(ticket)" :data-number="ticket.number" :key="index" :class="{void:ticket.status === 0,settled:ticket.settled}">
-                        <span class="type">{{text(ticket.type)}}
+                        <span class="type">{{$t('type.'+ticket.type)}}
                             <span v-if="ticket.type === 'DINE_IN'" class="table">{{ticket.table}}</span>
                         </span>
                         <span class="address">{{ticket.customer.address}}</span>
@@ -186,7 +186,7 @@ export default {
                 this.$dialog({
                     title: this.calendarDate + " " + this.text('NO_PREVS_ORDER'),
                     msg: 'NO_PREVS_ORDER_TIP',
-                    buttons:[{text:'CONFIRM',fn:'resolve'}]
+                    buttons: [{ text: 'CONFIRM', fn: 'resolve' }]
                 }).then(confirm => {
                     this.calendarDate = null;
                     this.$q();

@@ -3,11 +3,11 @@
         <div class="switch">
             <figure :class="{active:ticket.type === 'PICK_UP'}" @click="setTicket({type:'PICK_UP'})">
                 <i class="fa fa-user"></i>
-                <span class="text">{{$t('type.pickUp')}}</span>
+                <span class="text">{{$t('type.PICK_UP')}}</span>
             </figure>
             <figure :class="{active:ticket.type === 'DELIVERY'}" @click="setTicket({type:'DELIVERY'})">
                 <i class="fa fa-car"></i>
-                <span class="text">{{$t('type.delivery')}}</span>
+                <span class="text">{{$t('type.DELIVERY')}}</span>
             </figure>
         </div>
         <header>

@@ -35,14 +35,14 @@
                         <span class="value">{{customer.distance}}</span>
                     </div>
                     <div class="column">
-                        <span class="text">{{$('dashboard.duration')}}</span>
+                        <span class="text">{{$t('dashboard.duration')}}</span>
                         <span class="value">{{customer.duration}}</span>
                     </div>
                 </div>
                 <div class="tags">
                     <span class="text">{{$t('dashboard.tag')}}</span>
                     <div class="wrap">
-                        <span class="tag" v-for="(tag,index) in tags" @click="add(tag)" :class="has(tag)" :key="index">{{text(tag)}}</span>
+                        <span class="tag" v-for="(tag,index) in tags" @click="add(tag)" :class="has(tag)" :key="index">{{$t('tag.'+tag)}}</span>
                     </div>
                 </div>
             </div>
@@ -59,26 +59,23 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 export default {
+    data() {
+        return {
+            tags: ['goodCustomer', 'badCustomer', 'farAway', 'lousyCustomer', 'fraud', 'noService', 'impoliteCustomer', 'white', 'black', 'mexican', 'asian', 'bar', 'hotel', 'company', 'hospital'],
+            destination: null,
+            polyline: null,
+            origin: null,
+            applied: [],
+            route: null,
+            url: null
+        }
+    },
     created() {
         this.getPolyline();
     },
     mounted() {
-        if (this.customer.extra.hasOwnProperty('tag')) {
-            this.applied = this.customer.extra.tag;
-        } else {
-            this.applied = this.customer.extra.tag = [];
-        }
-    },
-    data() {
-        return {
-            tags: ['GOOD_CUST', 'BAD_CUST', 'FAR_AWAY', 'LOUSY_CUST', 'FRAUD', 'NO_SERVICE', 'IMPOLITE', 'WHITE', 'BLACK', 'MEXICAN', 'ASIAN', 'BAR', 'HOTEL'],
-            applied: [],
-            url: null,
-            polyline: null,
-            route: null,
-            origin: null,
-            destination: null
-        }
+        this.applied = this.customer.extra.hasOwnProperty('tag') ?
+            this.customer.extra.tag : this.applied = this.customer.extra.tag = [];
     },
     methods: {
         add(tag) {

@@ -2,7 +2,7 @@
     <div class="container">
         <aside>
             <div class="back" @click="back">
-                <i class="fa fa-chevron-left"></i>{{text('BACK')}}</div>
+                <i class="fa fa-chevron-left"></i>{{$t('button.back')}}</div>
             <div v-for="(operator,index) in operators" :key="index" class="op" @click="getProfile(operator,index,$event)">
                 <h3>{{operator.name}}</h3>
                 <span class="role">{{operator.role}}</span>
@@ -14,71 +14,72 @@
         </aside>
         <main class="form">
             <div class="content" v-if="!op">
-                index
+
             </div>
             <div v-else class="content">
                 <section class="card">
-                    <header>{{text('CONFIG')}}
+                    <header>{{$t('setting.config')}}
                         <span class="tip"></span>
                         <span class="extra">
-                            <i class="fa fa-ellipsis-v"></i>{{text('EXTRA')}}</span>
+                            <i class="fa fa-ellipsis-v"></i>{{$t('text.advance')}}</span>
                     </header>
                     <article>
-                        <smart-input v-model="op.name" label="NAME"></smart-input>
-                        <smart-option v-model="op.role" label="ROLE" :options="roles"></smart-option>
-                        <smart-input v-model="op.pin" label="PASSWORD" type="password"></smart-input>
-                        <smart-option v-model="op.language" label="LANGUAGE" :options="languages"></smart-option>
-                        <smart-switch v-model="op.timeCard" label="TIMECARD"></smart-switch>
-                        <smart-input v-model="op.employeeCard" label="EMPLOYEE_CARD" type="password"></smart-input>
-    
+                        <smart-input v-model="op.name" label="text.name"></smart-input>
+                        <smart-option v-model="op.role" label="text.role" :options="roles"></smart-option>
+                        <smart-input v-model="op.pin" label="text.password" type="password"></smart-input>
+                        <smart-option v-model="op.language" label="text.defaultLanguage" :options="languages"></smart-option>
+                        <smart-switch v-model="op.timeCard" label="text.timeCard"></smart-switch>
+                        <smart-input v-model="op.employeeCard" label="text.employeeCard" type="password"></smart-input>
+
                     </article>
                 </section>
                 <section class="card list">
-                    <header>{{text('PERMISSION')}}
-                        <span class="tip">{{text('OPERATOR.PERMISSION.TIP')}}</span>
+                    <header>{{$t('setting.permission')}}
+                        <span class="tip">{{$t('setting.permissionTip')}}</span>
                     </header>
                     <div class="header">
-                        <span class="name">{{text('ALIES')}}</span>
-                        <span class="f1">{{text('APPLY')}}</span>
+                        <span class="name">{{$t('text.name')}}</span>
+                        <span class="f1">{{$t('text.apply')}}</span>
                     </div>
                     <article>
                         <div class="datalist">
-                            <span class="name">{{text('ACCESS')}}</span>
+                            <span class="name">{{$t('setting.access')}}</span>
                             <div class="f1">
-                                <checkbox v-model="op.access" label="setting" :multiple="true"></checkbox>
-                                <checkbox v-model="op.access" label="cashdrawer" :multiple="true"></checkbox>
-                                <checkbox v-model="op.access" label="report" :multiple="true"></checkbox>
+                                <checkbox v-model="op.access" key="setting" label="text.setting" :multiple="true"></checkbox>
+                                <checkbox v-model="op.access" key="cashdrawer" label="text.cashDrawer" :multiple="true"></checkbox>
+                                <checkbox v-model="op.access" key="report" label="text.report" :multiple="true"></checkbox>
+                                <checkbox v-model="op.access" key="terminal" label="text.terminal" :multiple="true"></checkbox>
                             </div>
                         </div>
                         <div class="datalist">
-                            <span class="name">{{text('MODIFY')}}</span>
+                            <span class="name">{{$t('setting.modify')}}</span>
                             <div class="f1">
-                                <checkbox v-model="op.modify" label="price" :multiple="true"></checkbox>
-                                <checkbox v-model="op.modify" label="order" :multiple="true"></checkbox>
-                                <checkbox v-model="op.modify" label="driver" :multiple="true"></checkbox>
-                                <checkbox v-model="op.modify" label="terminal" :multiple="true"></checkbox>
-                                <checkbox v-model="op.modify" label="discount" :multiple="true"></checkbox>
+                                <checkbox v-model="op.modify" key="price" label="text.price" :multiple="true"></checkbox>
+                                <checkbox v-model="op.modify" key="order" label="text.order" :multiple="true"></checkbox>
+                                <checkbox v-model="op.modify" key="driver" label="text.driver" :multiple="true"></checkbox>
+                                <checkbox v-model="op.modify" key="transaction" label="text.transaction" :multiple="true"></checkbox>
+                                <checkbox v-model="op.modify" key="discount" label="text.discount" :multiple="true"></checkbox>
                             </div>
                         </div>
                         <div class="datalist">
                             <span class="name">{{text('VIEW')}}</span>
                             <div class="f1">
-                                <checkbox v-model="op.view" label="summary" :multiple="true"></checkbox>
-                                <checkbox v-model="op.view" label="invoices" :multiple="true"></checkbox>
-                                <checkbox v-model="op.view" label="tables" :multiple="true"></checkbox>
+                                <checkbox v-model="op.view" key="summary" label="text.viewSummary" :multiple="true"></checkbox>
+                                <checkbox v-model="op.view" key="invoices" label="text.viewInvoices" :multiple="true"></checkbox>
+                                <checkbox v-model="op.view" key="tables" label="text.viewTables" :multiple="true"></checkbox>
                             </div>
                         </div>
                     </article>
                 </section>
                 <section class="card list">
-                    <header>{{text('ACTIVITY')}}
-                        <span class="tip">{{text('OPERATOR.TIMECARD.TIP')}}</span>
+                    <header>{{$t('setting.timeCardActivity')}}
+                        <span class="tip">{{text('setting.timeCardActivityTip')}}</span>
                     </header>
                     <div class="header">
-                        <span class="approve">{{text('STATUS')}}</span>
-                        <span class="time">{{text('CLOCK_IN')}}</span>
-                        <span class="time">{{text('CLOCK_OUT')}}</span>
-                        <span class="calc">{{text('WORK_HOUR')}}</span>
+                        <span class="approve">{{$t('text.approve')}}</span>
+                        <span class="time">{{$t('text.clockInTime')}}</span>
+                        <span class="time">{{$t('text.clockOutTime')}}</span>
+                        <span class="calc">{{$t('text.workHour')}}</span>
                     </div>
                     <article>
                         <div class="datalist" v-for="(log,index) in activities" :key="index">
@@ -89,7 +90,7 @@
                         </div>
                         <div class="more" @click="more">
                             <i class="fa fa-caret-down"></i>
-                            <span>{{text('VIEW_MORE')}}</span>
+                            <span>{{$t('button.viewMore')}}</span>
                         </div>
                     </article>
                 </section>
@@ -98,8 +99,8 @@
                 <i class="fa fa-info-circle"></i>
                 <span>{{txt}}</span>
                 <span v-show="!send">
-                    <span @click="save" class="save">{{text('SAVE')}}</span>
-                    <span @click="cancel" class="cancel">{{text('CANCEL')}}</span>
+                    <span @click="save" class="save">{{$t('button.save')}}</span>
+                    <span @click="cancel" class="cancel">{{$t('button.save')}}</span>
                 </span>
             </footer>
         </main>
@@ -125,7 +126,9 @@ export default {
             componentData: null,
             activities: [],
             roles: ['Manager', 'Cashier', 'Waitstaff', 'Bartender', 'ThirdParty'],
-            languages: [{ label: this.text("ZH_CN"), value: "zhCN" }, { label: this.text("US_EN"), value: "usEN" }],
+            languages: [
+                { label: this.$t("text.primary") + ' us-en', value: "usEN" },
+                { label: this.$t("text.secondary") + ' zh-cn', value: "zhCN" }],
             compare: null,
             change: false,
             send: false,
@@ -158,33 +161,42 @@ export default {
         },
         remove(op, index) {
             if (this.operators.length === 1) {
-                this.$dialog({ title: 'OP_DELETE_FAILED', msg: "TIP_DELETE_FAILED", buttons: [{ title: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$exitComponent() });
+                this.$dialog({
+                    title: 'dialog.deleteOperatorFailed', msg: "deleteOperatorFailedTip",
+                    buttons: [{ title: 'button.confirm', fn: 'resolve' }]
+                }).then(() => { this.$q() });
                 return;
             }
-            this.$dialog({ title: "OP_DELETE_CONFIRM", msg: "TIP_OP_DELETE" }).then(() => {
+            this.$dialog({
+                title: "dialog.deleteOperatorConfirm", msg: this.$t('dialog.deleteOperatorConfirmTip', op.name)
+            }).then(() => {
                 op._id ?
                     this.$socket.emit("[CMS] REMOVE_USER", op._id) :
                     this.operators.splice(index, 1);
                 this.op = null;
-                this.$exitComponent();
-            }).catch(() => {
-                this.$exitComponent();
-            })
+                this.$q();
+            }).catch(() => { this.$q() })
         },
         save() {
             if (this.checkUniquePin()) {
-                this.$dialog({ title: 'SAVE_FAILED', msg: 'SETTING.OPERATOR.PIN_DUPLICATE', buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$exitComponent() });
+                this.$dialog({
+                    title: 'dialog.saveOperatorFailed', msg: 'dialog.operatorPinDuplicate',
+                    buttons: [{ text: 'button.confirm', fn: 'resolve' }]
+                }).then(() => { this.$q() });
                 return;
             }
             this.send = true;
-            this.txt = this.text('SETTING_UPDATED');
+            this.txt = this.$t('text.settingUpdated');
             this.$socket.emit("[CMS] UPDATE_USER", this.op);
             setTimeout(() => { this.cancel() }, 1000);
         },
         checkUniquePin() {
             let pin = this.op.pin;
             if (!pin) {
-                this.$dialog({ title: 'SAVE_FAILED', msg: 'SETTING.OPERATOR.NO_PIN', buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$exitComponent() });
+                this.$dialog({
+                    title: 'dialog.saveOperatorFailed', msg: 'dialog.operatorNoPin',
+                    buttons: [{ text: 'button.confirm', fn: 'resolve' }]
+                }).then(() => { this.$q() });
                 return true
             };
             let operators = this.operators.filter((op, index) => (index !== this.index && op.pin)).map(op => op.pin);

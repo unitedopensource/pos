@@ -97,7 +97,8 @@ var Preset = function () {
         "PRE_PAYMENT": true,
         "RECEIPT": true,
         "PAYMENT": true,
-        "REPORT": true
+        "REPORT": true,
+        'SALES':true
       },
       "double": {
         "WALK_IN": false,
@@ -108,7 +109,7 @@ var Preset = function () {
       },
       "control": {
         "printPrimary": true,
-        "primaryFont": "晴圆",
+        "primaryFont": "Qing Yuan",
         "primaryFontSize": "19",
         "printSecondary": true,
         "secondaryFont": "Agency FB",

@@ -3,7 +3,7 @@
         <i class="fa" :class="[icon]"></i>
         <h3>{{msg}}</h3>
         <footer>
-            <div class="btn" @click="exit">{{text('CANCEL')}}</div>
+            <div class="btn" @click="exit">{{$t('button.cancelAction')}}</div>
         </footer>
     </div>
 </template>
@@ -27,25 +27,29 @@ export default {
     created() {
         this.station.terminal.enable ?
             this.initTerminal() :
-            this.init.reject({ type: 'info', title: 'PYMT_F', msg: 'STA_TERM_NA', buttons: [{ text: 'CANCEL', fn: 'reject' }, { text: 'CONTINUE', fn: 'resolve' }] })
+            this.init.reject({
+                type: 'info', title: 'terminal.paymentFailed', msg: 'terminal.paymentFailedTip',
+                buttons: [{ text: 'button.cancel', fn: 'reject' }, { text: 'button.markAsPaid', fn: 'resolve' }]
+            })
     },
     methods: {
         initTerminal() {
             let terminal = this.station.terminal;
-            this.msg = this.text('TERM_INIT', terminal.model);
+            this.msg = this.$t('terminal.initial', terminal.model);
             this.terminal = this.getFile(terminal.model);
             this.terminal.initial(terminal.address, terminal.port, terminal.sn).then(response => response.text()).then((device) => {
                 this.device = this.terminal.check(device);
                 if (this.device.code !== "000000") {
-                    this.terminalError(this.text("TERM_INIT_F", this.device.model || terminal.model));
+                    this.terminalError(this.$t("terminal.initialFailed", (this.device.model || terminal.model), this.device.code));
                     return;
                 }
                 clearTimeout(this.timeout);
                 setTimeout(() => {
                     let { creditCard } = this.init.card;
                     this.msg = (creditCard.number && creditCard.date) ?
-                        this.text('TERM_COMM', this.device.model || terminal.model) :
-                        this.text("TERM_MANUAL", this.device.model || terminal.model);
+                        this.$t("terminal.transacting", this.device.model || terminal.model) :
+                        this.$t('terminal.ready', this.device.model || terminal.model);
+
                 }, 2000)
                 this.transacting = true;
                 this.terminal.charge(this.init.card).then(response => response.text()).then(data => {
@@ -54,7 +58,10 @@ export default {
                 })
             });
             this.timeout = setTimeout(() => {
-                this.init.reject({ type: "warning", title: "TERM_TIMEOUT", msg: this.text("TIP_TERM_TIMEOUT", terminal.address), buttons: [{ text: 'CONFIRM', fn: 'reject' }] })
+                this.init.reject({
+                    type: "warning", title: "terminal.timeout", msg: this.$t("terminal.timeoutTip", terminal.address),
+                    buttons: [{ text: 'button.confirm', fn: 'reject' }]
+                })
             }, 6000)
         },
         terminalError(msg) {
@@ -76,7 +83,7 @@ export default {
         },
         exit() {
             if (this.transacting) {
-                this.msg = this.text('TERM_ABORT');
+                this.msg = this.$t('terminal.aborting');
                 this.terminal.abort();
                 this.transacting = false;
                 setTimeout(() => { this.init.reject(false) }, 800);

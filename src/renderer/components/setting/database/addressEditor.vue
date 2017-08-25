@@ -1,27 +1,27 @@
 <template>
     <div class="popupMask center dark" @click.self="init.reject(false)">
         <div class="editor">
-            <header>{{text('EDITOR.HEADER.ADDRESS')}}</header>
+            <header>{{$t('setting.address')}}</header>
             <div class="inner">
                 <div class="input">
-                    <label>{{text('STREET')}}</label>
+                    <label>{{$t('text.street')}}</label>
                     <input v-model="address.street" ref="street">
                 </div>
                 <div class="input">
-                    <label>{{text('CITY')}}</label>
+                    <label>{{$t('text.city')}}</label>
                     <input v-model="address.city" @keydown.enter="confirm">
                 </div>
                 <div class="input">
-                    <label>{{text('ZIP_CODE')}}</label>
+                    <label>{{$t('text.zipCode')}}</label>
                     <input v-model="address.zipCode" @keydown.enter="confirm">
                 </div>
             </div>
             <footer>
                 <div class="f1" v-show="Number.isInteger(this.init.index)">
-                    <span class="del" @click="del">{{text('DELETE')}}</span>
+                    <span class="del" @click="del">{{$t('button.delete')}}</span>
                 </div>
-                <div class="btn" @click="init.reject()">{{text('CANCEL')}}</div>
-                <div class="btn" @click="confirm">{{text('CONFIRM')}}</div>
+                <div class="btn" @click="init.reject()">{{$t('button.cancel')}}</div>
+                <div class="btn" @click="confirm">{{$t('button.confirm')}}</div>
             </footer>
         </div>
     </div>
