@@ -39,12 +39,12 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import moment from 'moment'
-import orderList from './common/orderList'
 import orderSummary from './history/summary'
-import grids from './history/function'
 import Maintenance from './dock/maintenance'
+import orderList from './common/orderList'
 import dialoger from './common/dialoger'
+import grids from './history/function'
+
 export default {
     components: { grids, orderList, orderSummary, Maintenance, dialoger },
     data() {
@@ -62,7 +62,7 @@ export default {
         }
     },
     created() {
-        this.$socket.emit("INQUIRY_UPDATE_TIME");
+        this.checkSync()
     },
     mounted() {
         if (this.orders.length) {
@@ -72,6 +72,12 @@ export default {
         }
     },
     methods: {
+        checkSync() {
+            this.$socket.emit("[SYNC] POS", time => {
+                time !== this.sync && console.log("SYNC REQUIRED");
+                time !== this.sync && this.$socket.emit("[SYNC] TABLE_LIST")
+            })
+        },
         getInvoice(invoice) {
             this.setViewOrder(invoice);
         },
@@ -102,7 +108,7 @@ export default {
         },
         setCalendar(date) {
             this.calendarDate = date;
-            this.$socket.emit('INQUIRY_HISTORY_ORDER_LIST', date);
+            this.$socket.emit('[INQUIRY] HISTORY_ORDER', date);
         },
         getConsole() {
             this.$p("Maintenance");
@@ -148,7 +154,7 @@ export default {
             let length = this.prevsHistory.length || this.history.length;
             return Math.ceil(length / 30)
         },
-        ...mapGetters(['op', 'ticket', 'order', 'history', 'store'])
+        ...mapGetters(['op', 'sync', 'ticket', 'order', 'history', 'store'])
     },
     filters: {
         dot(val) {
@@ -179,18 +185,17 @@ export default {
         }
     },
     sockets: {
-        PREVS_ORDER_HISTORY(prevs) {
-            this.prevsHistory = prevs.orders.sort((a, b) => (Number(b.number) - Number(a.number)));;
+        HISTORY_ORDER(data) {
+            this.prevsHistory = data.orders;
             this.$q();
-            if (prevs.orders.length === 0)
-                this.$dialog({
-                    title: this.calendarDate + " " + this.text('NO_PREVS_ORDER'),
-                    msg: 'NO_PREVS_ORDER_TIP',
-                    buttons: [{ text: 'CONFIRM', fn: 'resolve' }]
-                }).then(confirm => {
-                    this.calendarDate = null;
-                    this.$q();
-                })
+            data.orders.length === 0 && this.$dialog({
+                title: 'dialog.noInvoice',
+                msg: ['dialog.noInvoiceTip', this.calendarDate],
+                buttons: [{ text: 'button.confirm', fn: 'resolve' }]
+            }).then(() => {
+                this.calendarDate = null;
+                this.$q()
+            })
         }
     }
 }

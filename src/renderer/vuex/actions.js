@@ -55,8 +55,8 @@ export const setReservation = ({
 }
 export const setLastSync = ({
   commit
-}, data) => {
-  commit(types.SET_LASTSYNC, data)
+}, time) => {
+  commit(types.SET_LASTSYNC, time)
 }
 export const setMenu = ({
   commit
@@ -264,7 +264,7 @@ export const resetChoiceSet = ({
 export const emptyChoiceSet = ({
   commit
 }) => {
-  commit(types.EMPTY_CHOICE_SET);
+  commit(types.EMPTY_CHOICE_SET)
 }
 export const setChoiceSetTarget = ({
   commit
@@ -279,36 +279,43 @@ export const setPriceForChoiceSet = ({
 export const updateTable = ({
   commit
 }, data) => {
-  let { table, time } = data;
-  commit(types.SET_LASTSYNC, { table: time });
-  commit(types.UPDATE_TABLE_STATUS, table);
+  let { table, sync } = data;
+  commit(types.SET_LASTSYNC, sync);
+  commit(types.UPDATE_TABLE_STATUS, table)
 }
 export const insertOrder = ({
   commit
 }, data) => {
-  let { ticket, time, order } = data;
-  commit(types.SET_TICKET, { number: ticket });
-  commit(types.SET_LASTSYNC, { order: time });
-  commit(types.INSERT_ORDER, order);
+  let { number, sync, order } = data;
+  commit(types.SET_TICKET, { number });
+  commit(types.SET_LASTSYNC, sync);
+  commit(types.INSERT_ORDER, order)
 }
 export const updateOrder = ({
   commit
 }, data) => {
   let { time, order } = data;
-  commit(types.SET_LASTSYNC, { order: time });
-  commit(types.UPDATE_ORDER, order);
+  commit(types.SET_LASTSYNC, sync);
+  commit(types.UPDATE_ORDER, order)
 }
 export const updateMenuCategory = ({
   commit
 }, data) => {
-  commit(types.UPDATE_MENU_CATEGORY, data);
+  commit(types.UPDATE_MENU_CATEGORY, data)
 }
 export const setTodayOrder = ({
   commit
 }, data) => {
-  let { time, orders } = data;
-  commit(types.SET_TODAYORDER, orders);
-  commit(types.SET_LASTSYNC, { order: time });
+  let { sync, orders } = data;
+  commit(types.SET_LASTSYNC, sync);
+  commit(types.SET_TODAYORDER, orders)
+}
+export const syncTables = ({
+  commit
+}, data) => {
+  let { sync, tables } = data;
+  commit(types.SET_LASTSYNC, sync);
+  commit(types.SET_TABLE, tables)
 }
 export const setCurrentTable = ({
   commit

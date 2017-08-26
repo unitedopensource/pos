@@ -4,7 +4,7 @@
       <div class="login shadow">
         <h2>{{store.name}}</h2>
         <div class="input">
-          <span v-for="circle in password"></span>
+          <span v-for="(circle,index) in password" :key="index"></span>
         </div>
         <section class="numpad">
           <div @click="setPin(7)">7</div>
@@ -51,7 +51,6 @@
 import { mapActions, mapGetters } from 'vuex'
 import _debounce from 'lodash.debounce'
 import Electron from 'electron'
-import moment from 'moment'
 export default {
   data() {
     return {
@@ -82,7 +81,7 @@ export default {
       this.reset = true;
       this.$socket.emit("INQUIRY_LOGIN", this.password.join(''));
     },
-    autoLogin: _debounce(function () {
+    autoLogin: _debounce(function() {
       if (this.$route.name === 'Login') {
         this.login();
         this.reset = false;
@@ -228,11 +227,7 @@ section div:nth-child(3n+3) {
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.75);
 }
 
-.ctrl.hide {
-  display: none;
-}
-
-.ctrl input {
+.ctrl.hide,.ctrl input {
   display: none;
 }
 

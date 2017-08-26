@@ -1,6 +1,6 @@
 <template>
   <div class="checkbox">
-    <input :id="id" :value="label" :checked="has(label)" type="checkbox" @change="toggle($event)" v-if="multiple">
+    <input :id="id" :value="label" :checked="has(val)" type="checkbox" @change="toggle($event)" v-if="multiple">
     <input :id="id" :checked="value" type="checkbox" @change="$emit('input',$event.target.checked)" v-else>
     <label :for="id" class="box"></label>
     <label class="text" :for="id">{{$t(label)}}</label>
@@ -9,7 +9,7 @@
 
 <script>
 export default {
-  props: ['label', 'value', 'multiple'],
+  props: ['val', 'label', 'value', 'multiple'],
   data() {
     return {
       id: Math.random().toString(36).substring(3, 6)

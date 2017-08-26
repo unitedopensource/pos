@@ -4,26 +4,23 @@ const state = {
     app: {},
     ring: null,
     config: {},
-    time: +new Date,
-    device: {
-        callid: false,
-        scale: false,
-        poleDisplay: false,
-        terminal: false
-    },
     orders: [],
+    callLog: [],
     spooler: [],
     templates: [],
     reservation: [],
+    sync: +new Date(),
+    time: +new Date(),
     ticket: {
         number: 1,
         type: ""
     },
-    lastSync: {
-        table: +new Date,
-        order: +new Date
-    },
-    callLog: []
+    device: {
+        callid: false,
+        scale: false,
+        terminal: false,
+        poleDisplay: false,
+    }
 }
 
 const mutations = {
@@ -92,8 +89,8 @@ const mutations = {
             return section;
         });
     },
-    [types.SET_LASTSYNC](state, data) {
-        state.lastSync = Object.assign({}, state.lastSync, data)
+    [types.SET_LASTSYNC](state, time) {
+        state.sync = time
     },
     [types.SET_TODAYORDER](state, data) {
         state.orders = data

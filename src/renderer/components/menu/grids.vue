@@ -51,7 +51,7 @@
       </button>
       <div class="btn" @click="switchLanguage">
         <i class="fa fa-language"></i>
-        <span class="text">{{$t('switchLanguage')}}</span>
+        <span class="text">{{$t('button.language')}}</span>
       </div>
     </div>
   </div>
@@ -86,7 +86,7 @@
     </div>
     <div class="btn" @click="switchLanguage">
       <i class="fa fa-language"></i>
-      <span class="text">{{$t('button.switchLanguage')}}</span>
+      <span class="text">{{$t('button.language')}}</span>
     </div>
   </div>
   <div class="function" v-else>
@@ -136,7 +136,7 @@
     </div>
     <div class="btn" @click="switchLanguage">
       <i class="fa fa-language"></i>
-      <span class="text">{{$t("button.switchLanguage")}}</span>
+      <span class="text">{{$t("button.language")}}</span>
     </div>
   </div>
 </template>
@@ -212,7 +212,7 @@ export default {
           group: "",
           guest: this.currentTable.current.guest || 0,
           server: this.op.name,
-          time: +new Date
+          time: +new Date()
         });
         this.setTableInfo({ current });
       } else {
@@ -241,13 +241,13 @@ export default {
           source: this.op.role !== 'ThirdParty' ? "POS" : this.op.name,
           modify: 0,
           status: 1,
-          time: +new Date,
+          time: +new Date(),
           date: today()
         });
       } else {
         Object.assign(order, {
           type: this.ticket.type,
-          lastEdit: +new Date,
+          lastEdit: +new Date(),
           editor: this.op.name,
           modify: isNumber(this.order.modify) ? this.order.modify + 1 : 1
         })

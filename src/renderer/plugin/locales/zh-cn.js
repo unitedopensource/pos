@@ -113,7 +113,7 @@ export default {
         'modify': '修改',
         'exit': '退出',
         'setDriver': '设定司机',
-        'switchLanguage': '语言',
+        'language': '语言',
         'confirm': '确定',
         'cancel': '取消',
         'clear': '清除',
@@ -264,7 +264,9 @@ export default {
         'printReceiptConfirm': '打印收据',
         'printReceiptConfirmTip': '是否需要打印收据给客？',
         'cashDrawerNotAvailable': '无法使用钱机',
-        'cashDrawerNotAvailableTip': '需要先为此工作站配置一个钱机'
+        'cashDrawerNotAvailableTip': '需要先为此工作站配置一个钱机',
+        'noInvoice':'没有任何订单',
+        'noInvoiceTip':'{i} 没有找到任何订单'
     },
     terminal: {
         'initial': '正在初始化 {i}...',

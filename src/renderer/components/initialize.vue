@@ -4,13 +4,17 @@
 </template>
 
 <script>
-import Electron from 'electron'
-import Vue from 'vue'
-import MAC from 'getmac'
-import serialport from 'serialport'
 import { mapActions, mapGetters } from "vuex"
+import { ipcRenderer } from 'electron'
+import serialport from 'serialport'
+import MAC from 'getmac'
 
 export default {
+  data() {
+    return {
+      timeout: null
+    }
+  },
   created() {
     this.startTick();
     let language = navigator.language === "us-EN" ? "usEN" : "zhCN";
@@ -23,40 +27,33 @@ export default {
       printer: true,
       database: true
     })
-    Electron.ipcRenderer.send("Loading", this.$t('initial.findHost'));
-  },
-  data() {
-    return {
-      timeout: null
-    }
+    ipcRenderer.send("Loading", this.$t('initial.findHost'));
   },
   sockets: {
     CONNECTED(text) {
-      Electron.ipcRenderer.send("Loading", this.$t('initial.hostConnected'));
-      this.$socket.emit("INITIALIZING");
-      Electron.ipcRenderer.send("Loading", this.$t('initial.initialApplication'));
+      ipcRenderer.send("Loading", this.$t('initial.hostConnected'));
+      this.$socket.emit("[INITIAL] POS");
+      ipcRenderer.send("Loading", this.$t('initial.initialApplication'));
     },
-    APPLICATION_CONFIG(data) {
-      Electron.ipcRenderer.send("Loading", this.$t('initial.loadConfiguration'));
-      this.setConfig(data.config[0]);
-      this.setMenu(data.menu);
-      this.setRequest(data.request);
-      Electron.ipcRenderer.send("Loading", this.$t('initial.applyConfiguration'));
-      this.setTable(data.table);
-      this.setTemplates(data.template);
-      this.setReservation(data.reservation);
-      this.setTodayOrder({
-        orders: data.orders,
-        time: data.update.order
-      });
-      this.setLastSync(data.update);
+    APP_RUNTIME_ENVIRONMENT(data) {
+      let { config, menu, request, orders, table, template, reservation, sync } = data;
+      ipcRenderer.send("Loading", this.$t('initial.loadConfiguration'));
+      this.setConfig(config);
+      this.setMenu(menu);
+      this.setRequest(request);
+      ipcRenderer.send("Loading", this.$t('initial.applyConfiguration'));
+      this.setTable(table);
+      this.setTemplates(template);
+      this.setReservation(reservation);
+      this.setTodayOrder({ orders, sync });
+      this.setLastSync(sync);
       MAC.getMac((err, mac) => {
         if (err) {
-          Electron.ipcRenderer.send("Loading", this.$t('initial.hardwareIssue'))
+          ipcRenderer.send("Loading", this.$t('initial.hardwareIssue'))
         } else {
           this.findStation(mac);
           this.initDevices();
-          Electron.ipcRenderer.send("Initialized");
+          ipcRenderer.send("Initialized");
           this.$router.push('Login');
         }
       })
@@ -73,12 +70,15 @@ export default {
     },
     initCallerId(port) {
       this.setDevice({ callid: true });
+
       let telephone = new serialport(port, {
         autoOpen: false,
         parser: serialport.parsers.raw
       });
+
       //window.telephone = telephone;
       telephone.open(err => { err ? this.setDevice({ callid: false }) : telephone.write(this.station.callid.command + String.fromCharCode(13)) });
+
       telephone.on('data', (data) => {
         let raw = data.toString().split('\n');
         if (raw.length === 9 || raw.length === 6) {
@@ -101,13 +101,17 @@ export default {
             case "OK":
               this.setDevice({ callid: true });
               break;
+            default:
+              this.setDevice({ callid: false });
           }
         }
-      });
+      })
     },
     initPoleDisplay(port) {
-      this.setDevice({ poleDisplay: true })
       let poleDisplay = new serialport(port, { autoOpen: false });
+
+      this.setDevice({ poleDisplay: true });
+
       poleDisplay.open(err => {
         if (err) {
           console.log('Display Pole Not Install');
@@ -115,7 +119,7 @@ export default {
         } else {
           poleDisplay.write('\f');
           poleDisplay.write(line("United POS", "[888] 299-0524"));
-          window.poleDisplay = poleDisplay;
+          //window.poleDisplay = poleDisplay;
         }
       })
     },
@@ -143,6 +147,4 @@ export default {
 }
 </script>
 
-<style>
-
-</style>
+<style></style>

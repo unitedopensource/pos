@@ -92,12 +92,20 @@ export default {
       table: [],
     }
   },
+  created() {
+    this.checkSync()
+  },
   mounted() {
     this.$socket.emit("INQUIRY_UPDATE_TIME");
     this.currentTable ? this.focusTable() : this.sectionView = this.tables[0].item;
   },
-
   methods: {
+    checkSync() {
+      this.$socket.emit("[SYNC] POS", time => {
+        time !== this.sync && console.log("SYNC REQUIRED");
+        time !== this.sync && this.$socket.emit("[SYNC] ORDER_LIST")
+      })
+    },
     focusTable() {
       let index = this.tables.findIndex(section => section.zone === this.currentTable.zone);
       this.sectionView = this.tables[index].item;
@@ -325,7 +333,7 @@ export default {
     ...mapActions(['setApp', 'resetAll', 'resetMenu', 'setOrder', 'setTicket', 'removePayment', 'setTableInfo', 'setViewOrder', 'setCurrentTable', 'resetCurrentTable'])
   },
   computed: {
-    ...mapGetters(['op', 'config', 'store', 'history', 'tables', 'order', 'language', 'currentTable', 'isEmptyTicket'])
+    ...mapGetters(['op', 'sync', 'config', 'store', 'history', 'tables', 'order', 'language', 'currentTable', 'isEmptyTicket'])
   },
   watch: {
     order(n) {

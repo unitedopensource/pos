@@ -254,6 +254,7 @@ export default {
       'resetAll',
       'setTicket',
       'setUpdate',
+      'syncTables',
       'resetTable',
       'setCustomer',
       'insertOrder',
@@ -285,12 +286,12 @@ export default {
       this.app.mode !== 'edit' && this.setTicket({ number });
     },
     UPDATE_TABLE_STATUS(data) {
-      this.updateTable(data);
+      this.updateTable(data)
     },
-    LAST_UPDATE_TIME(update) {
-      this.update.table !== update.table && this.$socket.emit("INQUIRY_ALL_TABLES");
-      this.update.order !== update.order && this.$socket.emit("INQUIRY_TODAY_ORDER_LIST", today());
-    },
+    // LAST_UPDATE_TIME(update) {
+    //   this.update.table !== update.table && this.$socket.emit("INQUIRY_ALL_TABLES");
+    //   this.update.order !== update.order && this.$socket.emit("INQUIRY_TODAY_ORDER_LIST", today());
+    // },
     CUSTOMER_ENQUIRE_RESULT(info) {
       this.newPhoneCall(info);
       this.componentData = info;
@@ -324,7 +325,8 @@ export default {
     },
     INSERT_ORDER(data) { this.insertOrder(data) },
     UPDATE_ORDER(data) { this.updateOrder(data) },
-    TODAY_ORDER_HISTORY(orders) { this.setTodayOrder(orders) },
+    SYNC_ORDERS(data) { this.setTodayOrder(data) },
+    SYNC_TABLES(data) { this.syncTables(table) },
     REQUEST_CATEGORY_UPDATE(data) { this.updateRequestCategory(data) },
     REQUEST_ACTION_UPDATE(data) { this.updateRequestAction(data) },
     REQUEST_ITEM_UPDATE(data) { this.updateRequestItem(data) },

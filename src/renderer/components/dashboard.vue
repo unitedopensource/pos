@@ -16,7 +16,6 @@
 </template>
 
 <script>
-import { ipcRenderer } from 'electron'
 import { mapActions, mapGetters } from 'vuex'
 import dialoger from './common/dialoger'
 import counter from './common/counter'
@@ -33,12 +32,12 @@ export default {
     }
   },
   created() {
-    this.$socket.emit("INQUIRY_TICKET_NUMBER");
+    this.$socket.emit("[INQUIRY] TICKET_NUMBER", number => { this.setTicket({ number }) });
     this.setApp({ opLastAction: new Date });
   },
   mounted() {
     if (!this.station) {
-      this.activateStation();
+      this.activateStation()
     } else {
       this.device.poleDisplay && this.welcome();
       this.store.timeCard && this.checkClockIn();
@@ -49,7 +48,7 @@ export default {
     go(grid) {
       this.setApp({ opLastAction: new Date });
       if (!grid.enable) return;
-      let route = grid.route;
+      let { route } = grid;
       switch (route) {
         case "buffet":
           this.setTicket({ type: 'BUFFET' });
@@ -79,17 +78,16 @@ export default {
             this.$dialog({
               title: "dialog.dineInDisabled", msg: "dialog.dineInEnableTip",
               buttons: [{ text: 'button.confirm', fn: 'resolve' }]
-            }).then(() => { this.$q() });
+            }).then(() => { this.$q() })
           break;
         case "pickup list":
           break;
         case "history":
-          this.$router.push({ path: '/main/history' });
+          this.$router.push({ path: '/main/history' })
           break;
         case "setting":
           this.approval(this.op.access, route) ?
-            this.$router.push({ path: '/main/setting' }) :
-            this.$denyAccess();
+            this.$router.push({ path: '/main/setting' }) : this.$denyAccess();
           break;
         case "cashDrawer":
           this.station.cashDrawer.enable ? this.cashDrawerAvailable() : this.missCashDrawer();
@@ -108,10 +106,12 @@ export default {
       this.$dialog({
         title: "dialog.cashDrawerNotAvailable", msg: "dialog.cashDrawerNotAvailableTip",
         buttons: [{ text: 'button.confirm', fn: 'resolve' }]
-      }).then(() => { this.$q() });
+      }).then(() => { this.$q() })
     },
     cashFlowCtrl() {
-      this.store.stuffBank ? this.cashInflow(this.op.name) : this.station.cashDrawer.cashFlowCtrl ? this.cashInflow(this.station.cashDrawer.name) : Printer.init(this.config).openCashDrawer();
+      this.store.stuffBank ?
+        this.cashInflow(this.op.name) : this.station.cashDrawer.cashFlowCtrl ?
+          this.cashInflow(this.station.cashDrawer.name) : Printer.init(this.config).openCashDrawer();
     },
     activateStation() {
       this.$dialog({
@@ -140,14 +140,18 @@ export default {
       })
     },
     welcome() {
+      let { top, btm } = this.station.pole;
       poleDisplay.write("\f");
-      poleDisplay.write(line(this.station.pole.top, this.station.pole.btm));
+      poleDisplay.write(line(top, btm));
     },
     checkClockIn() {
       this.op.timecard && !this.op.clockIn && this.reqClockIn();
     },
     reqClockIn() {
-      this.$dialog({ title: "dialog.clockInRequire", msg: "dialog.clockInRequireTip" }).then(() => { this.$q() })
+      this.$dialog({
+        title: "dialog.clockInRequire", msg: "dialog.clockInRequireTip",
+        buttons: [{ text: 'button.confirm', fn: 'resolve' }]
+      }).then(() => { this.$q() })
     },
     cashInflow(cashDrawer) {
       new Promise((resolve, reject) => {
@@ -156,7 +160,8 @@ export default {
       }).then(() => { this.recordCashDrawerAction() }).catch(() => { this.askCashIn() })
     },
     askCashIn() {
-      this.$dialog({ title: "dialog.cashIn", msg: "dialog.cashInTip" }).then(() => { this.countCash(this.station.cashDrawer.initialAmount) }).catch(() => { this.$q() });
+      this.$dialog({ title: "dialog.cashIn", msg: "dialog.cashInTip" })
+        .then(() => { this.countCash(this.station.cashDrawer.initialAmount) }).catch(() => { this.$q() })
     },
     countCash(total) {
       if (isNumber(total) && total > 0) {
@@ -167,7 +172,7 @@ export default {
         new Promise((resolve, reject) => {
           this.componentData = { resolve, reject };
           this.component = "counter";
-        }).then((total) => { this.countCash(total) }).catch(() => { this.$q() });
+        }).then((total) => { this.countCash(total) }).catch(() => { this.$q() })
       }
     },
     cashin(amount) {
@@ -210,12 +215,12 @@ export default {
   },
   computed: {
     ...mapGetters(['op', 'time', 'ring', 'callLog', 'device', 'config', 'store', 'station', 'history'])
-  },
-  sockets: {
-    TICKET_NUMBER(n) {
-      (this.history.length !== (n - 1)) && this.$socket.emit("INQUIRY_TODAY_ORDER_LIST");
-    }
   }
+  // sockets: {
+  //   TICKET_NUMBER(n) {
+  //     (this.history.length !== (n - 1)) && this.$socket.emit("INQUIRY_TODAY_ORDER_LIST");
+  //   }
+  // }
 }
 </script>
 
@@ -284,7 +289,7 @@ export default {
 
 h4 {
   font-weight: normal;
-  color:#757575;
+  color: #757575;
 }
 
 h1 {

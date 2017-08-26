@@ -45,28 +45,28 @@
                         <div class="datalist">
                             <span class="name">{{$t('setting.access')}}</span>
                             <div class="f1">
-                                <checkbox v-model="op.access" key="setting" label="text.setting" :multiple="true"></checkbox>
-                                <checkbox v-model="op.access" key="cashdrawer" label="text.cashDrawer" :multiple="true"></checkbox>
-                                <checkbox v-model="op.access" key="report" label="text.report" :multiple="true"></checkbox>
-                                <checkbox v-model="op.access" key="terminal" label="text.terminal" :multiple="true"></checkbox>
+                                <checkbox v-model="op.access" val="setting" label="text.setting" :multiple="true"></checkbox>
+                                <checkbox v-model="op.access" val="cashdrawer" label="text.cashDrawer" :multiple="true"></checkbox>
+                                <checkbox v-model="op.access" val="report" label="text.report" :multiple="true"></checkbox>
+                                <checkbox v-model="op.access" val="terminal" label="text.terminal" :multiple="true"></checkbox>
                             </div>
                         </div>
                         <div class="datalist">
                             <span class="name">{{$t('setting.modify')}}</span>
                             <div class="f1">
-                                <checkbox v-model="op.modify" key="price" label="text.price" :multiple="true"></checkbox>
-                                <checkbox v-model="op.modify" key="order" label="text.order" :multiple="true"></checkbox>
-                                <checkbox v-model="op.modify" key="driver" label="text.driver" :multiple="true"></checkbox>
-                                <checkbox v-model="op.modify" key="transaction" label="text.transaction" :multiple="true"></checkbox>
-                                <checkbox v-model="op.modify" key="discount" label="text.discount" :multiple="true"></checkbox>
+                                <checkbox v-model="op.modify" val="price" label="text.price" :multiple="true"></checkbox>
+                                <checkbox v-model="op.modify" val="order" label="text.order" :multiple="true"></checkbox>
+                                <checkbox v-model="op.modify" val="driver" label="text.driver" :multiple="true"></checkbox>
+                                <checkbox v-model="op.modify" val="transaction" label="text.transaction" :multiple="true"></checkbox>
+                                <checkbox v-model="op.modify" val="discount" label="text.discount" :multiple="true"></checkbox>
                             </div>
                         </div>
                         <div class="datalist">
-                            <span class="name">{{text('VIEW')}}</span>
+                            <span class="name">{{$t('setting.view')}}</span>
                             <div class="f1">
-                                <checkbox v-model="op.view" key="summary" label="text.viewSummary" :multiple="true"></checkbox>
-                                <checkbox v-model="op.view" key="invoices" label="text.viewInvoices" :multiple="true"></checkbox>
-                                <checkbox v-model="op.view" key="tables" label="text.viewTables" :multiple="true"></checkbox>
+                                <checkbox v-model="op.view" val="summary" label="text.viewSummary" :multiple="true"></checkbox>
+                                <checkbox v-model="op.view" val="invoices" label="text.viewInvoices" :multiple="true"></checkbox>
+                                <checkbox v-model="op.view" val="tables" label="text.viewTables" :multiple="true"></checkbox>
                             </div>
                         </div>
                     </article>
