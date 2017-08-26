@@ -2,7 +2,7 @@
   <div class="popupMask center dark" @click.self="init.reject">
     <div class="window">
       <header class="title">
-        <span>{{text('SET_DISCOUNT')}}</span>
+        <span>{{$t('text.discount')}}</span>
         <i class="fa fa-times" @click="init.reject"></i>
       </header>
       <div class="inner">
@@ -13,7 +13,7 @@
           </div>
           <div class="wrap">
             <div class="data active">
-              <span class="text">{{text('SET_DISCOUNT')}}</span>
+              <span class="text">{{$t('button.setDiscount')}}</span>
               <span class="value">{{discount}}</span>
             </div>
           </div>

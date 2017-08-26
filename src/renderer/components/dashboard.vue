@@ -121,9 +121,9 @@ export default {
         MAC.getMac((err, mac) => {
           if (err) {
             this.$dialog({
-              type: "error", title: 'dialog.stationRegisterFailed', msg: this.text('dialog.stationRegisterFailedTip', err),
+              type: "error", title: 'dialog.stationRegisterFailed', msg: ['dialog.stationRegisterFailedTip', err],
               buttons: [{ text: 'button.confirm', fn: 'resolve' }]
-            }).then(() => { this.$q() });
+            }).then(() => { this.$q() })
           } else {
             let stations = Object.assign({}, this.store.station);
             let length = Object.keys(stations).length + 1;

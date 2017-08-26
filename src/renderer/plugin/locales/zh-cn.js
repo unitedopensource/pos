@@ -301,7 +301,15 @@ export default {
         'cashingOutConfirm':'确认取现',
         'cashingOutConfirmTip':'请确定客户要将所有现金( ${i} )取出',
         'withdraw':'现金 ${i}',
-        'withdrawTip':'请从钱机中取出上述现金给予客人'
+        'withdrawTip':'请从钱机中取出上述现金给予客人',
+        'orderVoided':'订单已被取消',
+        'settleVoidedOrder':'您无法为一个已被取消的订单进行付款操作',
+        'scheduleError':'时间错误',
+        'scheduleErrorTip':'输入的时间必须超过当前的时间',
+        'scheduleConfirm':'定时确定',
+        'scheduleConfirmTip':'您设定的出餐时间 {i} ( {i} )',
+        'printerRemoveConfirm':'删除打印机',
+        'printerRemoveConfirmTip':'您确定要从设置里面删除 {i} 打印机吗？'
     },
     terminal: {
         'initial': '正在初始化 {i}...',
@@ -411,6 +419,7 @@ export default {
         'displayCategory': '显示类别',
         'displayMenuId': '显示菜单ID',
         'autoPrint': '自动打印',
+        'tenMinuteAhead':'提前10分钟通知',
         'cash': '现金',
         'creditCard': '信用卡',
         'giftCard': '礼物卡',

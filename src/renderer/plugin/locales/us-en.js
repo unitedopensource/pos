@@ -43,10 +43,10 @@ export default {
         'vietDineIn': 'Viet Dine-in Restaurant',
         'buffet': 'Buffet Restaurant',
         'retail': 'Retail Store',
-        'CASH':'Cash',
-        'CREDIT':'Credit Card',
-        'DEBIT':'Debit Card',
-        'GIFT':'Gift Card'
+        'CASH': 'Cash',
+        'CREDIT': 'Credit Card',
+        'DEBIT': 'Debit Card',
+        'GIFT': 'Gift Card'
     },
     tag: {
         'goodCustomer': 'Good',
@@ -65,14 +65,14 @@ export default {
         'company': 'COMPANY',
         'hospital': 'HOSPITAL'
     },
-    reason:{
-        'customerNoShow':'Customer No-Show',
-        'customerCancel':'Cancel By Customer',
-        'operatorCancel':'Cancel By Operator',
-        'maliceOrder':'Malice Order',
-        'invalidOrder':'Invalid Order',
-        'paymentIssue':'Payment Issue',
-        'managerRedemption':'Manager Redemption'
+    reason: {
+        'customerNoShow': 'Customer No-Show',
+        'customerCancel': 'Cancel By Customer',
+        'operatorCancel': 'Cancel By Operator',
+        'maliceOrder': 'Malice Order',
+        'invalidOrder': 'Invalid Order',
+        'paymentIssue': 'Payment Issue',
+        'managerRedemption': 'Manager Redemption'
     },
     dashboard: {
         'name': 'Name',
@@ -171,9 +171,9 @@ export default {
         'confirmPrint': 'Confirm & Print',
         'noReceipt': 'No Receipt',
         'printReceipt': 'Print Receipt',
-        'deleteOrder':'Delete Order',
-        'paidInFull':'Paid In Full',
-        'splitPay':'Split Pay'
+        'deleteOrder': 'Delete Order',
+        'paidInFull': 'Paid In Full',
+        'splitPay': 'Split Pay'
     },
     menu: {
         'course': 'Course',
@@ -194,7 +194,7 @@ export default {
         'search': 'Search',
         'stats': 'Stats',
         'terminalRecord': 'Terminal Records',
-        'voidNote':'Void Note'
+        'voidNote': 'Void Note'
     },
     dialog: {
         'maintenance': 'Maintenance',
@@ -282,8 +282,8 @@ export default {
         'printReceiptConfirmTip': 'Do you want to print a receipt to customer?',
         'cashDrawerNotAvailable': 'Cash Drawer Unavailable',
         'cashDrawerNotAvailableTip': 'You need to set up a cash drawer for current station.',
-        'noInvoice':'No Result',
-        'noInvoiceTip':'There is no invoice on selected date',
+        'noInvoice': 'No Result',
+        'noInvoiceTip': 'There is no invoice on selected date',
         'unableEdit': 'Unable Edit',
         'editPrevOrderTip': 'You can not edit previous ticket.',
         'editVoidOrderTip': 'You can not edit voided ticket ( Voided By: {i} )',
@@ -296,12 +296,20 @@ export default {
         'recoverOrderConfirmTip': 'This ticket is voided by {i}. ( Reason: {i} )',
         'unableAccess': 'Unable Access',
         'stationNoTerminal': 'There is no terminal attach to this station.',
-        'splitPayment':'Split Payment',
-        'splitPaymentTip':'How does customer wish to pay this split ticket?',
-        'cashingOutConfirm':'Cashing Out Confirm',
-        'cashingOutConfirmTip':'Please make sure customer wants to cashing all cash out ( Total: ${i} )',
-        'withdraw':'Cash ${i}',
-        'withdrawTip':'Please take out cash amount above from cash drawer to customer.'
+        'splitPayment': 'Split Payment',
+        'splitPaymentTip': 'How does customer wish to pay this split ticket?',
+        'cashingOutConfirm': 'Cashing Out Confirm',
+        'cashingOutConfirmTip': 'Please make sure customer wants to cashing all cash out ( Total: ${i} )',
+        'withdraw': 'Cash ${i}',
+        'withdrawTip': 'Please take out cash amount above from cash drawer to customer.',
+        'orderVoided': 'Ticket Voided',
+        'settleVoidedOrder': 'You can not settle a voided ticket.',
+        'scheduleError': 'Schedule Time Error',
+        'scheduleErrorTip': 'Entered Time must grater than current time',
+        'scheduleConfirm': 'Schedule Confirm',
+        'scheduleConfirmTip': 'You have set cook time to {i} ( {i} )',
+        'printerRemoveConfirm':'Print Remove Confirm',
+        'printerRemoveConfirmTip':'Are you sure you want to remove Printer {i} from the list?'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',
@@ -411,6 +419,7 @@ export default {
         'displayCategory': 'Display Category',
         'displayMenuId': 'Display Menu ID',
         'autoPrint': 'Auto Print',
+        'tenMinuteAhead':'Print ticket 10 Min. ahead',
         'cash': 'Cash',
         'creditCard': 'Credit Card',
         'giftCard': 'Gift Card',
@@ -519,10 +528,10 @@ export default {
         'name': 'Name',
         'account': 'Account',
         'database': 'Database',
-        'setting':'Setting',
-        'cashDrawer':'Cash Drawer',
-        'report':'Report',
-        'order':'Order'
+        'setting': 'Setting',
+        'cashDrawer': 'Cash Drawer',
+        'report': 'Report',
+        'order': 'Order'
     },
     setting: {
         'softwareSetting': 'UnitedPOS Setting',
@@ -602,7 +611,7 @@ export default {
         'menu': 'Menu',
         'request': 'Request',
         'template': 'Template',
-        'templateTip':'',
+        'templateTip': '',
         'display': 'Display',
         'categoryEditor': 'Category Editor',
         'itemEditor': 'Item Editor',
@@ -628,7 +637,7 @@ export default {
         'view': 'View',
         'timeCardActivity': 'Time Card Activity',
         'timeCardActivityTip': 'Employee time card activity record',
-        'display':'Display'
+        'display': 'Display'
     },
     reservation: {
 

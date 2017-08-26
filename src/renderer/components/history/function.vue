@@ -150,7 +150,7 @@ export default {
                 order.status = 1;
                 delete order.void;
                 this.updateInvoice(order);
-                this.$q();
+                this.$q()
             }).catch(() => { this.$q() })
         },
         calendar() {
@@ -158,13 +158,20 @@ export default {
                 this.componentData = { resolve, reject };
                 this.component = "Calendar";
             }).then((date) => {
-                console.log(date);
                 this.$emit("change", date)
-                this.$q();
+                this.$q()
             }).catch(() => { this.$q() })
         },
         isSettled() {
             if (this.isEmptyTicket) return;
+            if (this.order.status === 0) {
+                this.$dialog({
+                    title: 'dialog.orderVoided',
+                    msg: 'dialog.settleVoidedOrder',
+                    buttons: [{ text: 'button.confirm', fn: 'resolve' }]
+                }).then(() => { this.$q() })
+                return;
+            }
             this.order.settled ? this.handleSettledInvoice() : this.$p("Payment");
         },
         print() {

@@ -14,7 +14,7 @@
         </ul>
       </div>
       <footer>
-        <button class="btn" :disabled="!reason" @click="confirm">{{$('button.confirm')}}</button>
+        <button class="btn" :disabled="!reason" @click="confirm">{{$t('button.confirm')}}</button>
       </footer>
     </div>
   </div>

@@ -193,7 +193,6 @@ import smartOption from '../common/smartOption'
 import smartRange from '../common/smartRange'
 import dialoger from '../../common/dialoger'
 import checkbox from '../common/checkbox'
-import moment from 'moment'
 export default {
     components: { smartOption, smartRange, checkbox, dialoger },
     created() {
@@ -262,8 +261,9 @@ export default {
             this.receipt.payment = bool;
         },
         removePrinterConfirm() {
-            this.device && this.$dialog({ type: "question", title: "REMOVE_PRINTER", msg: this.text("TIP_REMOVE_PRINTER", this.device) })
-                .then(() => { this.remove(this.device) }).catch(() => { this.$q() });
+            this.device && this.$dialog({
+                type: "question", title: "dialog.printerRemoveConfirm", msg: ["dialog.printerRemoveConfirmTip", this.device]
+            }).then(() => { this.remove(this.device) }).catch(() => { this.$q() });
         },
         remove(printer) {
             this.$socket.emit("[CMS] REMOVE_PRINTER", printer);

@@ -31,7 +31,7 @@
             </div>
             <footer>
                 <div class="f1">
-                    <checkbox v-model="remind" label="text.autoPrint"></checkbox>
+                    <checkbox v-model="ahead" label="text.tenMinuteAhead"></checkbox>
                 </div>
                 <div class="btn" @click="init.reject">{{$t('button.cancel')}}</div>
                 <div class="btn" @click="confirm">{{$t('button.confirm')}}</div>
@@ -54,7 +54,7 @@ export default {
             time: moment().format('HHmm').split(""),
             componentData: null,
             component: null,
-            remind: true
+            ahead: true
         }
     },
     methods: {
@@ -78,13 +78,17 @@ export default {
             schedule.isAfter(current) ? this.confirmTime(schedule) : this.timeError();
         },
         timeError() {
-            this.$dialog({ title: 'SCHEDULE_ERROR', msg: this.text('SCHEDULE_TIME_ERROR'), buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$q() })
+            this.$dialog({
+                title: 'dialog.scheduleError', msg: 'dialog.scheduleErrorTip',
+                buttons: [{ text: 'button.confirm', fn: 'resolve' }]
+            }).then(() => { this.$q() })
         },
         confirmTime(schedule) {
             let now = moment();
             let duration = moment.duration(schedule.diff(now)).humanize();
-            this.$dialog({ title: 'CONFIRM_SCHEDULE', msg: this.text('SCHEDULE_TIME', schedule.format('hh:mm a'), duration) })
-                .then(() => { this.submit(schedule) }).catch(() => { this.$q() })
+            this.$dialog({
+                title: 'dialog.scheduleConfirm', msg: ['dialog.scheduleConfirmTip', schedule.format('hh:mm a'), duration]
+            }).then(() => { this.submit(schedule) }).catch(() => { this.$q() })
         },
         submit(schedule) {
             this.$q();
@@ -95,7 +99,7 @@ export default {
                     type: this.ticket.type,
                     number: this.ticket.number,
                     modify: 0,
-                    time: +new Date,
+                    time: +new Date(),
                     status: 1,
                     date: today(),
                     schedule: +schedule,
@@ -107,7 +111,7 @@ export default {
                 Object.assign(this.order, {
                     customer: this.customer,
                     type: this.ticket.type,
-                    lastEdit: +new Date,
+                    lastEdit: +new Date(),
                     editor: this.op.name,
                     schedule: +schedule,
                     modify: isNumber(this.order.modify) ? this.order.modify + 1 : 1
@@ -116,11 +120,11 @@ export default {
             }
             this.remind && this.eventReminder();
             this.resetAll();
-            this.setApp({ opLastAction: new Date, mode: "create" });
+            this.setApp({ opLastAction: new Date(), mode: "create" });
             this.$router.push({ path: "/main" });
         },
-        eventReminder(){
-            
+        eventReminder() {
+
         },
         ...mapActions(['setApp', 'resetAll'])
     },
