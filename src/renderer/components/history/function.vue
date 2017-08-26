@@ -50,16 +50,17 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import Terminal from './terminal'
 import Dialoger from '../common/dialoger'
 import Payment from '../payment/payment'
 import Report from '../report/report'
 import Calendar from './calendar'
 import Printer from '../../print'
+import Terminal from './terminal'
 import Reason from './reason'
 import Search from './search'
 export default {
     props: ['date'],
+    components: { Calendar, Dialoger, Terminal, Payment, Reason, Report },
     data() {
         return {
             today: today(),
@@ -75,11 +76,17 @@ export default {
                 return;
             };
             if (this.date !== this.today) {
-                this.$dialog({ title: 'UNAVOIDABLE_PREVS_ORDER', msg: 'UNAVOIDABLE_PREVS_ORDER_TIP', buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$q() })
+                this.$dialog({
+                    title: 'dialog.unableEdit', msg: 'dialog.editPrevOrderTip',
+                    buttons: [{ text: 'button.confirm', fn: 'resolve' }]
+                }).then(() => { this.$q() })
                 return;
             };
             if (this.order.status === 0) {
-                this.$dialog({ title: 'CANT_EDIT_VOIDED_ORDER', msg: this.text('CANT_EDIT_VOIDED_ORDER_TIP', this.order.void.by), buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$q() })
+                this.$dialog({
+                    title: 'dialog.unableEdit', msg: ['dialog.editVoidOrderTip', this.order.void.by],
+                    buttons: [{ text: 'button.confirm', fn: 'resolve' }]
+                }).then(() => { this.$q() })
                 return;
             };
             if (this.order.settled) {
@@ -93,7 +100,10 @@ export default {
             !this.approval(this.op.modify, "order") ? this.$denyAccess() : this.order.settled && this.confirmPaymentRemoval();
         },
         handleSettledInvoice() {
-            this.$dialog({ title: "ORDER_SETTLED", msg: "TIP_ORDER_SETTLED", buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$q() })
+            this.$dialog({
+                title: "dialog.orderSettled", msg: "dialog.orderSettledTip",
+                buttons: [{ text: 'button.confirm', fn: 'resolve' }]
+            }).then(() => { this.$q() })
         },
         editOrder() {
             this.setTicket({ type: this.order.type, number: this.order.number });
@@ -104,34 +114,37 @@ export default {
         voidOrder() {
             this.$dialog({
                 type: "warning",
-                title: this.text('VOID_ORDER_CONFIRM', this.order.number, this.text(this.order.type)),
-                msg: 'VOID_ORDER_CONFIRM_TIP',
-                buttons: [{ text: 'CANCEL', fn: 'reject' }, { text: 'DEL_ORDER', fn: 'resolve' }]
+                title: ['dialog.voidOrderConfirm', this.order.number, this.$t('type.' + this.order.type)],
+                msg: 'dialog.voidOrderConfirmTip',
+                buttons: [{ text: 'button.cancel', fn: 'reject' }, { text: 'button.delete', fn: 'resolve' }]
             }).then(confirm => { this.$p("Reason") }).catch(() => { this.$q() })
         },
         confirmPaymentRemoval() {
             this.$dialog({
-                title: this.text('REOPEN_SETTLED_ORD', this.order.number),
-                msg: this.text('REOPEN_SETTLED_ORD_TIP', this.text(this.order.payment.type)),
-                buttons: [{ text: 'REMOVE_PAYMENT', fn: 'resolve' }, { text: 'CANCEL', fn: 'reject' }]
+                type: 'question',
+                title: 'dialog.orderSettled',
+                msg: ['dialog.reopenSettledOrderTip', this.$t('type.' + this.order.payment.type)],
+                buttons: [{ text: 'button.removePayment', fn: 'resolve' }, { text: 'button.cancel', fn: 'reject' }]
             }).then(() => { this.removeOrderPayment() }).catch(() => { this.$q() })
         },
         removeOrderPayment() {
             this.$dialog({
-                type: "warning", title: 'PAYMENT_REMOVE', msg: this.text('PAYMENT_REMOVE_CONFIRM', this.text(this.order.payment.type))
+                type: "warning", title: 'dialog.paymentRemoveConfirm', msg: ['paymentRemoveConfirmTip', this.$t('type.' + this.order.payment.type)]
             }).then(() => {
                 this.removePayment();
                 this.updateInvoice(this.order);
-                this.$dialog({ title: "PAYMENT_REMOVED", msg: this.text("ORDER_PAYMENT_REMOVED", this.order.number), buttons: [{ text: 'CONFIRM', fn: 'reject' }, { text: 'EDIT_ORDER', fn: 'resolve' }] })
-                    .then(() => { this.editOrder() }).catch(() => { this.$q() });
+                this.$dialog({
+                    title: "dialog.paymentRemoved", msg: ["dialog.paymentRemovedTip", this.order.number],
+                    buttons: [{ text: 'button.done', fn: 'reject' }, { text: 'button.edit', fn: 'resolve' }]
+                }).then(() => { this.editOrder() }).catch(() => { this.$q() });
             }).catch(() => { this.$q() })
         },
         reOpenOrder() {
             if (this.isEmptyTicket) return;
             this.$dialog({
                 type: "question",
-                title: this.text('RECOVER_ORDER_CONFIRM', this.order.number),
-                msg: this.text('RECOVER_ORDER_CONFIRM_TIP', this.order.void.by, this.text(this.order.void.note))
+                title: ['dialog.recoverOrderConfirm', this.order.number],
+                msg: ['dialog.recoverOrderConfirm', this.order.void.by, this.$t('reason.' + this.order.void.note)]
             }).then(() => {
                 let order = JSON.parse(JSON.stringify(this.order));
                 order.status = 1;
@@ -167,7 +180,10 @@ export default {
         terminal() {
             this.station.terminal.enable ?
                 this.$p("Terminal") :
-                this.$dialog({ title: 'UNABLE_ACCESS', msg: 'STA_TERM_NA', buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$q() });
+                this.$dialog({
+                    title: 'dialog.accessDenied', msg: 'dialog.stationNoTerminal',
+                    buttons: [{ text: 'button.confirm', fn: 'resolve' }]
+                }).then(() => { this.$q() });
         },
         report() {
             this.approval(this.op.access, "report") ? this.$p("Report") : this.$denyAccess();
@@ -187,9 +203,7 @@ export default {
     computed: {
         ...mapGetters(['op', 'order', 'config', 'station', 'isEmptyTicket'])
     },
-    components: {
-        Calendar, Dialoger, Terminal, Payment, Reason, Report
-    }
+
 }
 </script>
 

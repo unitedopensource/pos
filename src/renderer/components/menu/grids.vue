@@ -223,7 +223,9 @@ export default {
         item.print = true;
         item.pending = false;
       });
-      this.app.mode === 'create' ? this.$socket.emit("[SAVE] DINE_IN_INVOICE", { table: this.currentTable, order }) : this.$socket.emit("[UPDATE] INVOICE", order);
+      this.app.mode === 'create' 
+      ? this.$socket.emit("[SAVE] DINE_IN_INVOICE", { table: this.currentTable, order }) 
+      : this.$socket.emit("[UPDATE] INVOICE", order);
       this.$socket.emit("INQUIRY_TICKET_NUMBER");
       this.setOrder(order);
       this.$router.push({ name: "Table" });

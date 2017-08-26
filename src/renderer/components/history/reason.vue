@@ -1,19 +1,20 @@
 <template>
   <div class="popupMask center dark">
     <div class="reason window">
-      <header class="title">{{text('VOID_REASON')}}</header>
+      <header class="title">{{$t('history.voidNote')}}</header>
       <div class="inner">
         <ul>
-          <li class="flag" @click="setReason('REASON_CUST_NO_SHOW',$event)">{{text('REASON_CUST_NO_SHOW')}}</li>
-          <li @click="setReason('REASON_CUST_CANCEL',$event)">{{text('REASON_CUST_CANCEL')}}</li>
-          <li @click="setReason('REASON_OP_CANCEL',$event)">{{text('REASON_OP_CANCEL')}}</li>
-          <li class="flag" @click="setReason('REASON_MALICE_ORDER',$event)">{{text('REASON_MALICE_ORDER')}}</li>
-          <li @click="setReason('REASON_INVALID_ORDER',$event)">{{text('REASON_INVALID_ORDER')}}</li>
-          <li class="flag" @click="setReason('REASON_PAYMENT_ISSUE',$event)">{{text('REASON_PAYMENT_ISSUE')}}</li>
+          <li class="flag" @click="setReason('customerNoShow',$event)">{{$t('reason.customerNoShow')}}</li>
+          <li @click="setReason('customerCancel',$event)">{{$t('reason.customerCancel')}}</li>
+          <li @click="setReason('operatorCancel',$event)">{{$t('reason.operatorCancel')}}</li>
+          <li class="flag" @click="setReason('maliceOrder',$event)">{{$t('reason.maliceOrder')}}</li>
+          <li @click="setReason('invalidOrder',$event)">{{$t('reason.invalidOrder')}}</li>
+          <li class="flag" @click="setReason('paymentIssue',$event)">{{$t('reason.paymentIssue')}}</li>
+          <li class="flag" @click="setReason('managerRedemption',$event)">{{$t('reason.managerRedemption')}}</li>
         </ul>
       </div>
       <footer>
-        <button class="btn" :disabled="!reason" @click="confirm">{{text('CONFIRM')}}</button>
+        <button class="btn" :disabled="!reason" @click="confirm">{{$('button.confirm')}}</button>
       </footer>
     </div>
   </div>
@@ -40,7 +41,7 @@ export default {
       order.status = 0;
       order.void = {
         by: this.op.name,
-        time: +new Date,
+        time: +new Date(),
         note: this.reason
       };
       this.$socket.emit("[UPDATE] INVOICE", order);

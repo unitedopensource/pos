@@ -78,10 +78,10 @@ export default {
                         this.tax.class[key].default = false
                     })
                 this.tax.class[key] = result;
-                this.$exitComponent();
+                this.$q();
             }).catch(del => {
                 del && delete this.tax.class[key] && (this.change = true);
-                this.$exitComponent();
+                this.$q();
             })
         },
         add() {

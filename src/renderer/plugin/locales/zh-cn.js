@@ -42,7 +42,11 @@ export default {
         'thaiDineIn': '泰餐堂吃',
         'vietDineIn': '越餐堂吃',
         'buffet': '自助店',
-        'retail': '零售'
+        'retail': '零售',
+        'CASH': '现金',
+        'CREDIT': '信用卡',
+        'DEBIT': '借记卡',
+        'GIFT': '礼物卡'
     },
     tag: {
         'goodCustomer': '好客人',
@@ -60,6 +64,15 @@ export default {
         'hotel': '旅馆',
         'company': '公司',
         'hospital': '医院'
+    },
+    reason: {
+        'customerNoShow': '客人没来',
+        'customerCancel': '客人取消',
+        'operatorCancel': '职员取消',
+        'maliceOrder': '恶意订单',
+        'invalidOrder': '无效订单',
+        'paymentIssue': '付款问题',
+        'managerRedemption': '经理免单'
     },
     dashboard: {
         'name': '名字',
@@ -157,7 +170,10 @@ export default {
         'markAsPaid': '设为已付',
         'confirmPrint': '确定并打印',
         'noReceipt': '不打印',
-        'printReceipt': '打印收据'
+        'printReceipt': '打印收据',
+        'deleteOrder': '删除订单',
+        'paidInFull':'合单付款',
+        'splitPay':'分单付款'
     },
     menu: {
         'course': '定时',
@@ -177,7 +193,8 @@ export default {
     history: {
         'search': '搜索',
         'stats': '数据',
-        'terminalRecord': '刷卡记录'
+        'terminalRecord': '刷卡记录',
+        'voidNote': '删除原因'
     },
     dialog: {
         'maintenance': '维护',
@@ -265,8 +282,26 @@ export default {
         'printReceiptConfirmTip': '是否需要打印收据给客？',
         'cashDrawerNotAvailable': '无法使用钱机',
         'cashDrawerNotAvailableTip': '需要先为此工作站配置一个钱机',
-        'noInvoice':'没有任何订单',
-        'noInvoiceTip':'{i} 没有找到任何订单'
+        'noInvoice': '没有任何订单',
+        'noInvoiceTip': '{i} 没有找到任何订单',
+        'unableEdit': '无法修改',
+        'editPrevOrderTip': '您无法修改过去的订单',
+        'editVoidOrderTip': '您无法修改已经删除的订单。(此订单被 {i} 删除)',
+        'orderSettled': '订单已结账',
+        'orderSettledTip': '此订单已经关闭',
+        'voidOrderConfirm': '确认取消 #{i} {i}订单？',
+        'voidOrderConfirmTip': '取消之后将无法修改订单的内容',
+        'reopenSettledOrderTip': '您要先移除此单的 {i}结账 记录后才能修改订单',
+        'recoverOrderConfirm': '您确定要恢复 {i}号 订单吗？',
+        'recoverOrderConfirmTip': '该订单是由 {i} 取消。原因: {i}',
+        'unableAccess': '无法打开',
+        'stationNoTerminal': '此工作站没有配置信用卡终端',
+        'splitPayment':'分单付款',
+        'splitPaymentTip':'您要如何处理这个分单订单的付款？',
+        'cashingOutConfirm':'确认取现',
+        'cashingOutConfirmTip':'请确定客户要将所有现金( ${i} )取出',
+        'withdraw':'现金 ${i}',
+        'withdrawTip':'请从钱机中取出上述现金给予客人'
     },
     terminal: {
         'initial': '正在初始化 {i}...',
@@ -484,11 +519,10 @@ export default {
         'name': '名称',
         'account': '账号',
         'database': '数据库',
-        'setting':'后台设定',
-        'cashDrawer':'钱箱',
-        'report':'报表',
-        'order':'订单',
-
+        'setting': '后台设定',
+        'cashDrawer': '钱箱',
+        'report': '报表',
+        'order': '订单'
     },
     setting: {
         'softwareSetting': 'UnitedPOS 后台设置',
@@ -568,7 +602,7 @@ export default {
         'menu': '菜单',
         'request': '要求',
         'template': '模板',
-        'templateTip':'便捷的添加预先设置的物品',
+        'templateTip': '便捷的添加预先设置的物品',
         'display': '显示',
         'categoryEditor': '类别编辑',
         'itemEditor': '物品编辑',
@@ -594,7 +628,7 @@ export default {
         'view': '查看',
         'timeCardActivity': '打卡记录',
         'timeCardActivityTip': '员工打卡记录列表',
-        'display':'显示设置'
+        'display': '显示设置'
     },
     reservation: {
 

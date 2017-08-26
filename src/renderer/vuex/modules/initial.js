@@ -109,6 +109,7 @@ const mutations = {
         state.orders.unshift(order);
     },
     [types.UPDATE_ORDER](state, order) {
+        console.log("Receive order update. #",order.number);
         for (let i = 0; i < state.orders.length; i++) {
             if (state.orders[i]._id === order._id) {
                 state.orders.splice(i, 1, order);

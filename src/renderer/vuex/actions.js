@@ -294,7 +294,7 @@ export const insertOrder = ({
 export const updateOrder = ({
   commit
 }, data) => {
-  let { time, order } = data;
+  let { sync, order } = data;
   commit(types.SET_LASTSYNC, sync);
   commit(types.UPDATE_ORDER, order)
 }

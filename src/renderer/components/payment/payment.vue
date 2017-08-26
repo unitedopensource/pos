@@ -159,7 +159,6 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-
 import Dialoger from '../common/dialoger'
 import CreditCard from './creditCard'
 import Splitter from '../menu/split'
@@ -219,9 +218,9 @@ export default {
         askSplitPay() {
             this.$dialog({
                 type: "question",
-                title: "SPLIT_PAYMENT",
-                msg: "TIP_SPLIT_PAYMENT",
-                buttons: [{ text: 'PAID_IN_FULL', fn: "reject" }, { text: "SPLIT_PAY", fn: "resolve" }]
+                title: "dialog.splitPayment",
+                msg: "dialog.splitPaymentTip",
+                buttons: [{ text: 'button.paidInFull', fn: "reject" }, { text: "button.splitPay", fn: "resolve" }]
             }).then(() => {
                 this.paySplit();
                 this.$q();
@@ -524,7 +523,7 @@ export default {
         cashOut() {
             if (parseFloat(this.giftCard.balance) === 0) return;
             this.$dialog({
-                type: "question", title: "CASH_OUT", msg: this.text("TIP_CASH_OUT", this.giftCard.balance.toFixed(2))
+                type: "question", title: "dialog.cashingOutConfirm", msg: ["dialog.cashOutConfirmTip", this.giftCard.balance.toFixed(2)]
             }).then(() => {
                 this.recordCashDrawerAction(0, parseFloat(this.giftCard.balance));
                 let money = this.giftCard.balance;
@@ -537,7 +536,10 @@ export default {
                     type: 'CASHOUT',
                     op: this.op.name
                 };
-                this.$dialog({ title: this.text('WITHDRAW', money.toFixed(2)), msg: "TIP_WITHDRAW", buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => {
+                this.$dialog({
+                    title: ['dialog.withdraw', money.toFixed(2)], msg: "dialog.withdrawTip",
+                    buttons: [{ text: 'button.confirm', fn: 'resolve' }]
+                }).then(() => {
                     this.$socket.emit("[GIFTCARD] CARD_ADJUST_VALUE", { _id: this.giftCard._id, value, activity });
                     this.giftCard.balance = 0;
                     Printer.init(this.config).setJob("cashout").print(this.giftCard);
@@ -667,7 +669,7 @@ export default {
 
                 type === 'CASH' ?
                     this.$dialog({
-                        title: this.$t("dialog.cashChange", change), msg: this.$t("dialog.cashChangeTip", paid.toFixed(2)),
+                        title: ["dialog.cashChange", change], msg: ["dialog.cashChangeTip", paid.toFixed(2)],
                         buttons: [{ text: 'button.noReceipt', fn: 'reject' }, { text: 'button.printReceipt', fn: 'resolve' }]
                     }).then(() => { this.invoiceSettled(order, true) }).catch(() => { this.invoiceSettled(order, false) }) :
                     this.$dialog({

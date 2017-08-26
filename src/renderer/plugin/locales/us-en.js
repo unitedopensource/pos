@@ -42,7 +42,11 @@ export default {
         'thaiDineIn': 'Thai Dine-in Restaurant',
         'vietDineIn': 'Viet Dine-in Restaurant',
         'buffet': 'Buffet Restaurant',
-        'retail': 'Retail Store'
+        'retail': 'Retail Store',
+        'CASH':'Cash',
+        'CREDIT':'Credit Card',
+        'DEBIT':'Debit Card',
+        'GIFT':'Gift Card'
     },
     tag: {
         'goodCustomer': 'Good',
@@ -60,6 +64,15 @@ export default {
         'hotel': 'HOTEL',
         'company': 'COMPANY',
         'hospital': 'HOSPITAL'
+    },
+    reason:{
+        'customerNoShow':'Customer No-Show',
+        'customerCancel':'Cancel By Customer',
+        'operatorCancel':'Cancel By Operator',
+        'maliceOrder':'Malice Order',
+        'invalidOrder':'Invalid Order',
+        'paymentIssue':'Payment Issue',
+        'managerRedemption':'Manager Redemption'
     },
     dashboard: {
         'name': 'Name',
@@ -157,7 +170,10 @@ export default {
         'markAsPaid': 'Mark As Paid',
         'confirmPrint': 'Confirm & Print',
         'noReceipt': 'No Receipt',
-        'printReceipt': 'Print Receipt'
+        'printReceipt': 'Print Receipt',
+        'deleteOrder':'Delete Order',
+        'paidInFull':'Paid In Full',
+        'splitPay':'Split Pay'
     },
     menu: {
         'course': 'Course',
@@ -177,7 +193,8 @@ export default {
     history: {
         'search': 'Search',
         'stats': 'Stats',
-        'terminalRecord': 'Terminal Records'
+        'terminalRecord': 'Terminal Records',
+        'voidNote':'Void Note'
     },
     dialog: {
         'maintenance': 'Maintenance',
@@ -266,7 +283,25 @@ export default {
         'cashDrawerNotAvailable': 'Cash Drawer Unavailable',
         'cashDrawerNotAvailableTip': 'You need to set up a cash drawer for current station.',
         'noInvoice':'No Result',
-        'noInvoiceTip':'There is no invoice on selected date'
+        'noInvoiceTip':'There is no invoice on selected date',
+        'unableEdit': 'Unable Edit',
+        'editPrevOrderTip': 'You can not edit previous ticket.',
+        'editVoidOrderTip': 'You can not edit voided ticket ( Voided By: {i} )',
+        'orderSettled': 'Ticket Settled',
+        'orderSettledTip': 'This ticket has been closed.',
+        'voidOrderConfirm': 'Void Ticket #{i} {i}?',
+        'voidOrderConfirmTip': 'You will not be able to edit after void this ticket.',
+        'reopenSettledOrderTip': 'You have to remove {i} payment first before you can edit this ticket.',
+        'recoverOrderConfirm': 'Do you want to recover {i} ticket?',
+        'recoverOrderConfirmTip': 'This ticket is voided by {i}. ( Reason: {i} )',
+        'unableAccess': 'Unable Access',
+        'stationNoTerminal': 'There is no terminal attach to this station.',
+        'splitPayment':'Split Payment',
+        'splitPaymentTip':'How does customer wish to pay this split ticket?',
+        'cashingOutConfirm':'Cashing Out Confirm',
+        'cashingOutConfirmTip':'Please make sure customer wants to cashing all cash out ( Total: ${i} )',
+        'withdraw':'Cash ${i}',
+        'withdrawTip':'Please take out cash amount above from cash drawer to customer.'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',

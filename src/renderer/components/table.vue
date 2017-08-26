@@ -103,7 +103,7 @@ export default {
     checkSync() {
       this.$socket.emit("[SYNC] POS", time => {
         time !== this.sync && console.log("SYNC REQUIRED");
-        time !== this.sync && this.$socket.emit("[SYNC] ORDER_LIST")
+        time !== this.sync && this.$socket.emit("[SYNC] TABLE_LIST")
       })
     },
     focusTable() {
