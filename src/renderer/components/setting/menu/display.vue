@@ -1,7 +1,7 @@
 <template>
     <div>
         <section class="card">
-            <header>{{text('DISPLAY_SETTING')}}</header>
+            <header>{{$t('setting.display')}}</header>
             <article>
                 <smart-switch v-model="display.menuID" label="text.menuID"></smart-switch>
                 <smart-switch v-model="display.favorite" label="text.favoriteItem"></smart-switch>

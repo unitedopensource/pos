@@ -17,7 +17,7 @@ export default {
   },
   created() {
     this.startTick();
-    let language = navigator.language === "us-EN" ? "usEN" : "zhCN";
+    let language = navigator.language === "zh-CN" ? "zhCN" : "usEN";
     document.documentElement.lang = language;
     moment.locale(language === 'usEN' ? 'en' : 'zh-cn');
     this.$setLanguage(language);

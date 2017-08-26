@@ -593,7 +593,8 @@ export default {
         'modify': '修改',
         'view': '查看',
         'timeCardActivity': '打卡记录',
-        'timeCardActivityTip': '员工打卡记录列表'
+        'timeCardActivityTip': '员工打卡记录列表',
+        'display':'显示设置'
     },
     reservation: {
 

@@ -1,6 +1,6 @@
 <template>
   <div class="checkbox">
-    <input :id="id" :value="label" :checked="has(val)" type="checkbox" @change="toggle($event)" v-if="multiple">
+    <input :id="id" :value="val" :checked="has(val)" type="checkbox" @change="toggle($event)" v-if="multiple">
     <input :id="id" :checked="value" type="checkbox" @change="$emit('input',$event.target.checked)" v-else>
     <label :for="id" class="box"></label>
     <label class="text" :for="id">{{$t(label)}}</label>

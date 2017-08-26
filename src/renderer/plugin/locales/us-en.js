@@ -4,7 +4,7 @@ export default {
         'hostConnected': 'Exchange Information With Host...',
         'initialApplication': 'Initializing Application...',
         'loadConfiguration': 'Loading Configuration...',
-        'applyConfiguration': 'Setting Runtime Envirement...',
+        'applyConfiguration': 'Setting Runtime Environment...',
         'hardwareIssue': 'Critical Error: Hardware Malfunction'
     },
     login: {
@@ -87,7 +87,7 @@ export default {
         'clockIn': 'Clock In',
         'clockOut': 'Clock Out',
         'giftCard': 'Gift Card',
-        'giftCardTip': 'Activation · Check Blanace',
+        'giftCardTip': 'Activation · Check Balance',
         'terminal': 'Terminal',
         'terminalTip': 'View All Transaction',
         'station': 'Station',
@@ -461,9 +461,9 @@ export default {
         'lastActivity': 'Last Activity',
         'privateKey': 'Private Key',
         'expirationDate': 'Exp Date',
-        'acceptCreditCard': 'Accpet Credit',
+        'acceptCreditCard': 'Accept Credit',
         'acceptDelivery': 'Accept Delivery',
-        'acceptReservation': 'Accept Resv',
+        'acceptReservation': 'Accept Resv.',
         'minCashRequire': 'Minimum Cash',
         'minCreditRequire': 'Minimum Credit',
         'maxDeliverMile': 'Maximum Mile',
@@ -508,7 +508,7 @@ export default {
         'thirdParty': 'Third Party',
         'thirdPartyTip': 'Third Party Configuration',
         'sales': 'Sales',
-        'salesTip': '图表 · 报表 · 业绩',
+        'salesTip': 'Performance · Excel',
         'system': 'System',
         'systemTip': 'POS Setup',
         'exit': 'Exit',
@@ -539,7 +539,7 @@ export default {
         'callerId': 'Caller ID',
         'security': 'Security',
         'printer': 'Printer',
-        'cashDrawer': 'Cashdrawer Setting',
+        'cashDrawer': 'Cash drawer Setting',
         'taxCalculation': 'Tax Calculation',
         'taxCalculationTip': 'Please consult with your individual tax advisor',
         'taxEditor': 'Tax Editor',
@@ -592,7 +592,8 @@ export default {
         'modify': 'Modify',
         'view': 'View',
         'timeCardActivity': 'Time Card Activity',
-        'timeCardActivityTip': '员工打卡记录列表'
+        'timeCardActivityTip': 'Employee time card activity record',
+        'display':'Display'
     },
     reservation: {
 
