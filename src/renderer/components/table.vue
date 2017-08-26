@@ -180,20 +180,20 @@ export default {
       if (this.isEmptyTicket) return;
       if (this.order.settled) {
         this.settledOrder();
-        return;
+        return
       }
-      this.$p("payment");
+      this.$p("payment")
     },
     settledOrder() {
       this.$dialog({
         title: "dialog.invoiceSettled", msg: "dialog.invoiceSettledTip",
-        buttons: [{ text: 'button.comfirm', fn: 'resolve' }]
+        buttons: [{ text: 'button.confirm', fn: 'resolve' }]
       }).then(() => { this.$q() })
     },
     editOrder() {
       if (this.order.settled) {
         this.handleSettledOrder();
-        return;
+        return
       }
       this.setApp({ mode: 'edit' });
       this.setTicket({ type: "DINE_IN", number: this.order.number });
@@ -287,7 +287,9 @@ export default {
     },
     prePayment() {
       if (this.order.content.length === 0) return;
-      if (this.order.print) {
+      if (this.order.settled){
+        this.settledOrder();
+      }else if (this.order.print) {
         this.$dialog({
           type: "question", title: "dialog.prePayment", msg: ['dialog.prePaymentTip', this.order.table],
           buttons: [{ text: 'button.cancel', fn: "reject" }, { text: "button.print", fn: "resolve" }]

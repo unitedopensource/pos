@@ -52,7 +52,7 @@ export default {
       let type = 'type.' + this.ticket.type;
       if (this.currentTable) {
         let guest = this.currentTable.current.guest > 0 ? " - " + this.currentTable.current.guest : "";
-        return this.$t(type, this.app.language) + " - " + this.text('SEAT') + " " + this.currentTable.name + guest;
+        return this.$t(type, this.app.language) + " - " + this.currentTable.name + guest;
       }
       return this.$t(type, this.app.language);
     },
@@ -100,8 +100,10 @@ export default {
       this.setOrder({ content });
     },
     confirmSwitch(type) {
-      let msg = this.$t('dialog.orderTypeSwitchTip', this.$t('type.' + this.ticket.type), this.$t('type.' + type));
-      this.$dialog({ type: "question", title: 'dialog.orderTypeSwitchConfirm', msg }).then(() => {
+      this.$dialog({
+        type: "question", title: 'dialog.orderTypeSwitchConfirm',
+        msg: ['dialog.orderTypeSwitchTip', this.$t('type.' + this.ticket.type), this.$t('type.' + type)]
+      }).then(() => {
         if (this.ticket.type === 'DINE_INE') {
           this.resetCurrentTable();
           this.$socket.emit("TABLE_MODIFIED", this.currentTable);
@@ -120,7 +122,7 @@ export default {
       if (lapse > this.station.timeout) {
         this.setApp({ autoLock: false });
         this.$dialog({
-          title: 'dialog.autoLock', msg: this.text('dialog.autoLockTip', this.station.timeout),
+          title: 'dialog.autoLock', msg: ['dialog.autoLockTip', this.station.timeout],
           timeout: { fn: 'resolve', duration: 10000 },
           buttons: [{ text: 'button.extend', fn: 'reject' }]
         }).then(() => {
@@ -138,7 +140,7 @@ export default {
       let schedule = moment(time).format("hh:mm");
       let toNow = moment(time).toNow(true);
       this.$dialog({
-        type: "question", title: "dialog.printConfirm", msg: this.text("dialog.printSpoolerTip", schedule, toNow),
+        type: "question", title: "dialog.printConfirm", msg: ["dialog.printSpoolerTip", schedule, toNow],
         buttons: [{ text: "button.cancel", fn: 'reject' }, { text: "button.print", fn: 'resolve' }]
       }).then(() => {
         this.printFromSpooler(i);
@@ -171,7 +173,10 @@ export default {
       this.$route.name === 'Menu' && this.$router.push({ name: 'Information' });
     },
     clockIn() {
-      this.$dialog({ type: "question", title: "dialog.clockInConfirm", msg: this.$t("dialog.clockInTip", moment(this.time).format("hh:mm:ss a")) }).then(() => {
+      this.$dialog({
+        type: "question", title: "dialog.clockInConfirm",
+        msg: ["dialog.clockInTip", moment(this.time).format("hh:mm:ss a")]
+      }).then(() => {
         this.setOp({ clockIn: this.time, timeCard: ObjectId() })
         this.$socket.emit("[TIMECARD] CLOCK_IN", this.op)
         this.$q();
@@ -181,7 +186,10 @@ export default {
       let diff = moment().diff(moment(this.op.clockIn));
       let h = ("0" + Math.floor(diff / 36e5)).slice(-2) + " " + this.$t("text.hour");
       let m = ("0" + Math.floor(diff / 6e4)).slice(-2) + " " + this.text("text.minute");
-      this.$dialog({ type: "question", title: "dialog.clockOutConfirm", msg: this.$t("clockOutTip", moment(this.op.clockIn).format("hh:mm:ss a"), (h + " " + m)) }).then(() => {
+      this.$dialog({
+        type: "question", title: "dialog.clockOutConfirm",
+        msg: ["clockOutTip", moment(this.op.clockIn).format("hh:mm:ss a"), (h + " " + m)]
+      }).then(() => {
         this.$socket.emit("[TIMECARD] CLOCK_OUT", this.op)
         this.setOp({ clockIn: null, timeCard: null });
         this.$q();
@@ -197,7 +205,7 @@ export default {
       let diff = (parseFloat(cashflow.end) - parseFloat(cashflow.begin)).toFixed(2);
       let msg = this.$t("cashOutSettleTip", cashflow.begin, diff, cashflow.end);
       this.$dialog({
-        type: "question", title: this.$t("cashOutSettle", cashflow.end), msg: this.$t("cashOutSettleTip", cashflow.begin),
+        type: "question", title: ["cashOutSettle", cashflow.end], msg: ["cashOutSettleTip", cashflow.begin],
         buttons: [{ text: "button.printDetail", fn: "reject" }, { text: 'button.print', fn: 'resolve' }]
       }).then(() => {
         Printer.setJob("cashout report").print(cashflow);
@@ -236,16 +244,16 @@ export default {
           break;
         case "cashOut":
           let cashDrawer = this.config.store.stuffBank ? this.op.name : this.station.cashDrawer.name;
-          this.$dialog({ type: "question", title: "cashOut", msg: this.$t("cashOutTip", cashDrawer) })
+          this.$dialog({ type: "question", title: "cashOut", msg: ["cashOutTip", cashDrawer] })
             .then(() => { this.cashingOut(cashDrawer) }).catch(() => { this.$router.push({ path: '/Login' }) })
           break;
         case "creditCard":
-          this.$p("terminal");
+          this.$p("terminal")
           break;
       }
     },
     exitComponent() {
-      this.$q();
+      this.$q()
     },
     ...mapActions([
       'setOp',

@@ -87,7 +87,7 @@ Printer.prototype.printReceipt = function (raw) {
       let list = isPrint ? createList(name, ctrl, raw.content) : [];
       if (list && list.length) {
         let style = createStyle(printers[name]['control']);
-        let footer = createFooter(printers[name]['control'], raw.payment);
+        let footer = createFooter(printers[name]['control'], raw);
 
         let html = header + list + footer + style;
 
@@ -235,8 +235,9 @@ Printer.prototype.printReceipt = function (raw) {
       return zhCN + usEN;
     }
     let { sortItem, duplicate, printMenuID } = ctrl;
-    let list = data.filter(item => item.printer[printer]);
-    !duplicate && (list = list.filter(item => !item.print));
+    let list = duplicate ?
+      data.filter(item => item.printer[printer]) :
+      data.filter(item => item.printer[printer] && !item.print);
 
     if (list.length === 0) return null;
     let content = "";
@@ -345,9 +346,8 @@ Printer.prototype.printReceipt = function (raw) {
               p.bold{font-weight:bold;font-size:22px;}
               section.details{border:1px dashed #000;margin-top:5px;text-align:center;}
               .details p{display:flex;}
-              .details span{flex:1}
-              .details .text{text-align:right;padding-right:20px;}
-              .details .value{text-align:left;}
+              .details .text{text-align:right;padding-right:20px;flex:5;}
+              .details .value{text-align:left;flex:6}
               section.tip{font-family:'Agency FB'; margin:auto;width:90%;${printSuggestion ? '' : 'display:none;'}}
               section.tip .text{text-align:left;display:inline-block;width:50%}
               section.tip .value{text-align:right;display:inline-block;width:50%}
@@ -357,22 +357,22 @@ Printer.prototype.printReceipt = function (raw) {
               .usEN{font-family:'${secondaryFont}';font-size:${secondaryFontSize};${printSecondary ? '' : 'display:none!important;'}}
           </style>`
   }
-  function createFooter(ctrl, payment) {
-    if (!payment) return "";
+  function createFooter(ctrl, ticket) {
+    if (!ticket.hasOwnProperty('payment')) return "";
     let { footer, printSuggestion } = ctrl;
-    let { total } = payment;
+    let { payment } = ticket;
     let suggestion = [{
       text: 'Good Service',
       percentage: 15,
-      value: (total * 0.15).toFixed(2)
+      value: (payment.due * 0.15).toFixed(2)
     }, {
       text: 'Great Service',
       percentage: 20,
-      value: (total * 0.20).toFixed(2)
+      value: (payment.due * 0.20).toFixed(2)
     }, {
       text: 'Excellent Service',
       percentage: 25,
-      value: (total * 0.25).toFixed(2)
+      value: (payment.due * 0.25).toFixed(2)
     }];
     suggestion.map(kindness => `<p><span class="text">${kindness.text}</span><span class="value">${kindness.percentage}% Gratuity: $${kindness.value}</span></p>`).join("").toString();
     let delivery = parseFloat(payment.delivery) > 0 ? `<p><span class="text">Delivery:</span><span class="value">${payment.delivery.toFixed(2)}</span></p>` : "";
@@ -412,7 +412,16 @@ Printer.prototype.printReceipt = function (raw) {
       `<p><span class="text">Tip:</span><span class="value">- ${payment.tip}</span></p>` : "";
     let gratuity = parseFloat(payment.gratuity) > 0 ?
       `<p><span class="text">Gratuity:</span><span class="value">- ${payment.gratuity}</span></p>` : "";
-    let details = (cash + credit + gift) || "";
+    let voidTicket = ticket.status === 0 ?
+      `<section class="details">
+        <h3>*** Ticket Voided ***</h3>
+         <p>
+          <span class="text">Reason:</span>
+          <span class="value">${ticket.void.note}</span>
+        </p>
+        <h3>Void by: ${ticket.void.by} @ ${moment(ticket.void.time).format('HH:mm:ss')}</h3>
+      </section>`: "";
+    let details = (voidTicket + cash + credit + gift) || "";
 
     return `<footer>
               <section class="column">

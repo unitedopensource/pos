@@ -4,13 +4,13 @@
       <header class="title">{{$t('history.voidNote')}}</header>
       <div class="inner">
         <ul>
-          <li class="flag" @click="setReason('customerNoShow',$event)">{{$t('reason.customerNoShow')}}</li>
-          <li @click="setReason('customerCancel',$event)">{{$t('reason.customerCancel')}}</li>
-          <li @click="setReason('operatorCancel',$event)">{{$t('reason.operatorCancel')}}</li>
-          <li class="flag" @click="setReason('maliceOrder',$event)">{{$t('reason.maliceOrder')}}</li>
-          <li @click="setReason('invalidOrder',$event)">{{$t('reason.invalidOrder')}}</li>
-          <li class="flag" @click="setReason('paymentIssue',$event)">{{$t('reason.paymentIssue')}}</li>
-          <li class="flag" @click="setReason('managerRedemption',$event)">{{$t('reason.managerRedemption')}}</li>
+          <li class="flag" @click="setReason('Customer No-Show',$event)">{{$t('reason.Customer No-Show')}}</li>
+          <li @click="setReason('Cancel By Customer',$event)">{{$t('reason.Cancel By Customer')}}</li>
+          <li @click="setReason('operatorCancel',$event)">{{$t('reason.Cancel By Staff')}}</li>
+          <li class="flag" @click="setReason('Malice Order',$event)">{{$t('reason.Malice Order')}}</li>
+          <li @click="setReason('Invalid Order',$event)">{{$t('reason.Invalid Order')}}</li>
+          <li class="flag" @click="setReason('Payment Issue',$event)">{{$t('reason.Payment Issue')}}</li>
+          <li class="flag" @click="setReason('Manager Redemption',$event)">{{$t('reason.Manager Redemption')}}</li>
         </ul>
       </div>
       <footer>
@@ -44,6 +44,7 @@ export default {
         time: +new Date(),
         note: this.reason
       };
+      //add table clear logic here
       this.$socket.emit("[UPDATE] INVOICE", order);
       this.init.resolve();
     }

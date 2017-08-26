@@ -253,8 +253,12 @@ const mutations = {
     delete state.order.payment.paidCredit;
     delete state.order.payment.paidGift;
     delete state.order.payment.type;
-    delete state.order.payment.splitPayment;
-    
+
+    if (state.order.payment.splitPayment) {
+      delete state.order.payment.splitPayment;
+      delete state.order.split;
+    }
+
     state.order.settled = false;
     state.order.payment.settled = false;
     state.order.payment.tip = 0;

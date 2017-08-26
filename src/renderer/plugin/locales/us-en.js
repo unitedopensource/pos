@@ -66,13 +66,13 @@ export default {
         'hospital': 'HOSPITAL'
     },
     reason: {
-        'customerNoShow': 'Customer No-Show',
-        'customerCancel': 'Cancel By Customer',
-        'operatorCancel': 'Cancel By Operator',
-        'maliceOrder': 'Malice Order',
-        'invalidOrder': 'Invalid Order',
-        'paymentIssue': 'Payment Issue',
-        'managerRedemption': 'Manager Redemption'
+        'Customer No-Show': 'Customer No-Show',
+        'Cancel By Customer': 'Cancel By Customer',
+        'Cancel By Staff': 'Cancel By Staff',
+        'Malice Order': 'Malice Order',
+        'Invalid Order': 'Invalid Order',
+        'Payment Issue': 'Payment Issue',
+        'Manager Redemption': 'Manager Redemption'
     },
     dashboard: {
         'name': 'Name',

@@ -3,11 +3,15 @@
         <div class="wrap">
             <i class="fa fa-warning icon"></i>
             <h3>{{$t("dialog.communicationInterrupted")}}</h3>
-            <h5>{{pass}}</h5>
+            <h5>
+                <span>{{pass.minute}}</span>
+                <span>:</span>
+                <span>{{pass.second}}</span>
+            </h5>
             <footer>
                 <div>
                     <i class="fa fa-commenting"></i>{{$t('dialog.communicationInterruptedTip')}}</div>
-                <span class="phone">{{$t('technicalSupportNumber')}}</span>
+                <span class="phone">{{$t('dialog.technicalSupportNumber')}}</span>
             </footer>
         </div>
     </div>
@@ -25,7 +29,12 @@ export default {
     computed: {
         pass() {
             let diff = this.time - this.happened;
-            return `${Math.floor(diff/1000/60)}:${Math.floor(diff/1000)}`
+            let minute = Math.floor(diff / 1000 / 60);
+            let second = Math.floor(diff / 1000 % 60);
+            return {
+                minute: ("0" + minute).slice(-2),
+                second: ("0" + second).slice(-2)
+            }
         },
         ...mapGetters(['time'])
     }
@@ -40,6 +49,7 @@ export default {
 
 .icon {
     color: #E53935;
+    text-shadow: 0 1px 3px #920707;
     font-size: 5em;
 }
 
@@ -50,8 +60,9 @@ footer i {
 footer div,
 footer span {
     background: #FF5722;
-    border-radius: 14px;
-    padding: 0 20px;
+    border-radius: 4px;
+    padding: 1px 20px;
     margin: 5px;
+    text-shadow: 0 1px 1px #333;
 }
 </style>

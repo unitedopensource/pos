@@ -66,13 +66,13 @@ export default {
         'hospital': '医院'
     },
     reason: {
-        'customerNoShow': '客人没来',
-        'customerCancel': '客人取消',
-        'operatorCancel': '职员取消',
-        'maliceOrder': '恶意订单',
-        'invalidOrder': '无效订单',
-        'paymentIssue': '付款问题',
-        'managerRedemption': '经理免单'
+        'Customer No-Show': '客人没来',
+        'Cancel By Customer': '客人取消',
+        'Cancel By Staff': '职员取消',
+        'Malice Order': '恶意订单',
+        'Invalid Order': '无效订单',
+        'Payment Issue': '付款问题',
+        'Manager Redemption': '经理免单'
     },
     dashboard: {
         'name': '名字',
@@ -200,7 +200,7 @@ export default {
         'maintenance': '维护',
         'maintenanceTip': '系统正在维护中...',
         'communicationInterrupted': '失去与服务器的连接，正在尝试重连...',
-        'communicationInterruptedTip': '如果问题依然存在请拨打技术部门热线',
+        'communicationInterruptedTip': '如果问题依然存在，请拨打技术部门热线',
         'technicalSupportNumber': '(888)299-0524',
         'exitConfirm': '您确定要退出吗？',
         'exitConfirmTip': '未保存的订单将会被删除',
