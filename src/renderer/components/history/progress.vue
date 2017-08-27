@@ -2,10 +2,14 @@
     <div class="popupMask center dark">
         <div class="loader">
             <h3>{{$t('dialog.systemProcessing')}}</h3>
-            <div class="spinner">
-                <div class="bounce1"></div>
-                <div class="bounce2"></div>
-                <div class="bounce3"></div>
+            <div class="wrap">
+                <div class="dots">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -26,37 +30,63 @@ export default {
     text-align: center;
 }
 
-.spinner {
-    margin: 25px auto;
-    width: 70px;
-    text-align: center;
+.wrap {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
 }
 
-.spinner>div {
-    width: 18px;
-    height: 18px;
-    background-color: #333;
-    border-radius: 100%;
+.dots {
+    height: 50px;
+    width: 80px;
+}
+
+.dot {
     display: inline-block;
-    animation: bouncedelay 1.4s infinite ease-in-out both;
+    background: #444;
+    height: 10px;
+    width: 10px;
+    opacity: 0.3;
+    border-radius: 50%;
+    animation: moveit 0.8s infinite;
 }
 
-.spinner .bounce1 {
-    animation-delay: -0.32s;
+dot:nth-child(2) {
+    animation-delay: .15s;
 }
 
-.spinner .bounce2 {
-    animation-delay: -0.16s;
+.dot:nth-child(3) {
+    animation-delay: .3s;
 }
 
-@keyframes bouncedelay {
-    0%,
-    80%,
-    100% {
-        transform: scale(0);
+.dot:nth-child(4) {
+    animation-delay: .45s;
+}
+
+.dot:nth-child(5) {
+    animation-delay: .6s;
+}
+
+@keyframes moveit {
+    0% {
+        transform: translateY(0px);
     }
-    40% {
-        transform: scale(1.0);
+    35% {
+        transform: translateY(0px);
+        opacity: 0.3;
+    }
+    50% {
+        transform: translateY(-20px);
+        opacity: 0.8;
+    }
+    70% {
+        transform: translateY(3px);
+        opacity: 0.8;
+    }
+    85% {
+        transform: translateY(-3px);
     }
 }
 </style>

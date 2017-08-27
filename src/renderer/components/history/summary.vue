@@ -55,6 +55,12 @@
 import { mapGetters } from 'vuex'
 export default {
   props: ['data', 'date'],
+  data() {
+    return {
+      isDisplay: false,
+      driver: null
+    }
+  },
   created() {
     this.isDisplay = (this.op.view && this.op.view.includes("summary") || this.op.role === 'Admin');
   },
@@ -72,12 +78,7 @@ export default {
       this.$emit("filter", "DRIVER", id)
     }
   },
-  data() {
-    return {
-      isDisplay: false,
-      driver: null
-    }
-  },
+
   computed: {
     summary() {
       let invoices = this.approval(this.op.view, "invoices") ? this.data : this.data.filter(ticket => ticket.server === this.op.name);

@@ -20,7 +20,7 @@
             <figure @click="go('Setting.online')">
                 <i class="fa fa-2x fa-globe"></i>
                 <figcaption>{{$t('setting.onlineOrder')}}</figcaption>
-                <span class="intro">{{text('setting.onlineOrderTip')}}</span>
+                <span class="intro">{{$t('setting.onlineOrderTip')}}</span>
             </figure>
             <figure @click="go('Setting.print')">
                 <i class="fa fa-2x fa-print"></i>

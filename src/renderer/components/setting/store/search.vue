@@ -13,7 +13,7 @@
                 <li v-for="(ip,index) in results" @click="select(ip)" :key="index">{{ip}}</li>
             </ul>
             <footer>
-                <div class="btn" @click="confirm">{{text('CONFIRM')}}</div>
+                <div class="btn" @click="confirm">{{$t('button.confirm')}}</div>
             </footer>
         </div>
     </div>

@@ -129,7 +129,7 @@ export default {
                 this.component = "search";
             }).then(ip => {
                 this.workStation.terminal.address = ip;
-                this.$q();
+                this.$q()
             }).catch(() => { this.$q() })
         },
         update(data) {

@@ -2,7 +2,7 @@
     <section class="route">
         <nav class="route">
             <header @click="back">
-                <i class="fa fa-chevron-left"></i>{{text('BACK')}}</header>
+                <i class="fa fa-chevron-left"></i>{{$t('button.back')}}</header>
             <router-link :to="{name:'Setting.table'}" tag="div" append>{{text('TABLE')}}</router-link>
         </nav>
         <div class="content">

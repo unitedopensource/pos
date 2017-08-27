@@ -26,14 +26,12 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import draggable from 'vuedraggable'
 import dialoger from '../../common/dialoger'
 import sectionEditor from './sectionEditor'
 import tableEditor from './tableEditor'
+import draggable from 'vuedraggable'
 export default {
-    components: {
-        draggable, dialoger, sectionEditor, tableEditor
-    },
+    components: { draggable, dialoger, sectionEditor, tableEditor },
     data() {
         return {
             tabs: [],
@@ -67,18 +65,14 @@ export default {
                 this.componentData = { section, resolve, reject };
                 this.component = "sectionEditor";
             }).then((result) => {
-                console.log(result)
                 this.sections.splice(index, 1, result);
                 this.$socket.emit("[CMS] EDIT_TABLE_SECTION", { section: result, index });
-                this.$exitComponent();
+                this.$q();
             }).catch((remove) => {
                 remove ? this.$dialog({ title: "TABLE_SECTION_REMOVE", msg: "TIP_REMOVE_TABLE_SECTION" }).then(() => {
                     this.removeSection(index);
-                    this.$exitComponent();
-                }).catch(() => {
-                    this.$exitComponent();
-                }) :
-                    this.$exitComponent();
+                    this.$q()
+                }).catch(() => { this.$q() }) : this.$q()
             })
         },
         editTable(table, index) {
@@ -89,22 +83,19 @@ export default {
             }).then((table) => {
                 this.tabs.splice(index, 1, table);
                 this.$socket.emit("[CMS] TABLE_MODIFY", { table, index, section: this.currentSection });
-                this.$exitComponent();
+                this.$q()
             }).catch((remove) => {
                 remove ? this.$dialog({ title: "TABLE_REMOVE", msg: "TIP_TABLE_REMOVE" }).then(() => {
                     this.removeTab(table, index);
-                    this.$exitComponent();
-                }).catch(() => {
-                    this.$exitComponent();
-                }) : this.$exitComponent();
-            });
+                    this.$q()
+                }).catch(() => { this.$q() }) : this.$q()
+            })
         },
         sortSection() {
-            this.isSectionSort = true;
-            console.log(this.sections)
+            this.isSectionSort = true
         },
         sortTable() {
-            this.isTableSort = true;
+            this.isTableSort = true
         },
         applySectionSort() {
             this.$socket.emit("[CMS] TABLE_SECTION_SORT", this.sectionSorted);
@@ -141,7 +132,7 @@ export default {
             });
             this.removeTable({ section: this.currentSection, index })
         },
-        ...mapActions(['setTableSort','removeTable'])
+        ...mapActions(['setTableSort', 'removeTable'])
     },
     computed: {
         ...mapGetters(['tables', 'language'])

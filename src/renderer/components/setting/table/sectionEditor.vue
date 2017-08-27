@@ -1,26 +1,27 @@
 <template>
     <div class="popupMask center dark" @click.self="init.reject(false)">
         <div class="editor">
-            <header>{{text('TABLE_EDITOR')}}</header>
+            <header>{{$t('setting.sectionEditor')}}</header>
             <div class="inner">
                 <div class="input">
-                    <label for="primary">{{text('ZH_CN')}}</label>
-                    <input v-model="section.zhCN" id="primary">
+                    <label for="primary">{{$t('text.primary')}}</label>
+                    <input v-model="section.usEN" id="primary">
                 </div>
                 <div class="input">
-                    <label for="secondary">{{text('US_EN')}}</label>
-                    <input v-model="section.usEN" id="secondary">
+                    <label for="secondary">{{$t('text.secondary')}}</label>
+                    <input v-model="section.zhCN" id="secondary">
                 </div>
+
                 <div class="input">
-                    <label for="zone">{{text('ZONE')}}</label>
+                    <label for="zone">{{$t('text.zone')}}</label>
                     <input v-model="section.zone" id="zone">
                 </div>
             </div>
             <footer>
                 <div class="f1">
-                    <span class="del" @click="init.reject(true)">{{text('DELETE')}}</span>
+                    <span class="del" @click="init.reject(true)">{{$t('button.delete')}}</span>
                 </div>
-                <div class="btn" @click="confirm">{{text('CONFIRM')}}</div>
+                <div class="btn" @click="confirm">{{$t('button.confirm')}}</div>
             </footer>
         </div>
     </div>

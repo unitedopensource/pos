@@ -6,17 +6,14 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 import dock from './dock'
-import {mapActions} from 'vuex'
-  export default {
-    components:{
-      dock
-    },
-    methods:{
-      ...mapActions(['toggleKeyboard'])
-    }
+export default {
+  components: { dock },
+  methods: {
+    ...mapActions(['toggleKeyboard'])
   }
+}
 </script>
 
-<style>
-</style>
+<style></style>

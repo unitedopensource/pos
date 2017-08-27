@@ -28,7 +28,6 @@
 </template>
 
 <script>
-import moment from 'moment'
 export default {
   props: ['init'],
   created() {
@@ -36,8 +35,8 @@ export default {
   },
   data() {
     return {
-      today: +new Date,
-      calendarDay: +new Date,
+      calendarDay: +new Date(),
+      today: +new Date(),
       loading: false,
       flip: "M",
       days: null
@@ -105,10 +104,10 @@ export default {
           today = document.querySelectorAll('[data-day]')[(start + today)];
           today.classList.add("today");
         }
-      });
+      })
     },
     exit() {
-      this.init.reject();
+      this.init.reject()
     }
   }
 }
