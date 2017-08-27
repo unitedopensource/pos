@@ -36,15 +36,16 @@ export default {
     this.setApp({ opLastAction: new Date().getTime() });
   },
   mounted() {
-    if (!this.station) {
-      this.activateStation()
-    } else {
-      this.device.poleDisplay && this.welcome();
-      this.store.timeCard && this.checkClockIn();
-      ~~this.station.timeout !== 0 ? this.setApp({ autoLock: true, opLastAction: new Date().getTime() }) : this.setApp({ autoLock: false });
-    }
+    this.station ? this.initial() : this.activateStation();
   },
   methods: {
+    initial() {
+      this.device.poleDisplay && this.welcomeScreen();
+      this.store.timeCard && this.checkClockIn();
+      ~~this.station.timeout !== 0
+        ? this.setApp({ autoLock: true, opLastAction: new Date().getTime() })
+        : this.setApp({ autoLock: false });
+    },
     go(grid) {
       this.setApp({ opLastAction: new Date().getTime() });
       if (!grid.enable) return;
@@ -139,7 +140,7 @@ export default {
         })
       })
     },
-    welcome() {
+    welcomeScreen() {
       let { top, btm } = this.station.pole;
       poleDisplay.write("\f");
       poleDisplay.write(line(top, btm));

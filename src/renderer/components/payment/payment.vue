@@ -833,7 +833,6 @@ export default {
         clearTable(ticket) {
             if (ticket.type === 'DINE_IN' && ticket.hasOwnProperty("tableID")) {
                 let table = this.getTable(ticket.tableID);
-                console.log(table,ticket.tableID)
                 this.store.table.autoClean ? Object.assign(table, {
                     current: {
                         invoice: [],

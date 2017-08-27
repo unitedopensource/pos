@@ -114,7 +114,6 @@ export default {
       this.sectionView = section.item;
     },
     selectTable(table, e) {
-      this.setApp({ opLastAction: new Date });
       if (!table._id) return;
       if (this.pendingSwitch) {
         table.status === 1 ?
@@ -146,8 +145,8 @@ export default {
         case 4:
           if (table.current.invoice.length) {
             this.setCurrentTable(table);
-            let invoice = this.history.filter(order => order._id === table.current.invoice[0]);
-            invoice.length && this.setViewOrder(JSON.parse(JSON.stringify(invoice[0])));
+            let invoice = this.history.find(order => order._id === table.current.invoice[0]);
+            this.setViewOrder(JSON.parse(JSON.stringify(invoice)));
           } else {
             this.resetMenu();
           }
@@ -234,25 +233,35 @@ export default {
     },
     switchTable(target) {
       let origin = JSON.parse(JSON.stringify(this.currentTable));
-      this.$dialog({ title: 'dialog.tableSwitch', msg: ['dialog.tableSwitchTip', origin.name, target.name] }).then(() => {
-        target.current = origin.current;
-        target.status = origin.status;
-        let invoice = this.history.find(order => order._id === origin.current.invoice[0]);
-        invoice = JSON.parse(JSON.stringify(invoice));
-        invoice.table = target.name;
-        invoice.tableId = target._id;
-        this.$socket.emit("[UPDATE] INVOICE", invoice);
-        this.$socket.emit("TABLE_MODIFIED", table);
-        origin.current = {
-          color: "",
-          group: "",
-          guest: 0,
-          invoice: [],
-          server: "",
-          time: ""
-        };
-        origin.status = 1;
+      target = JSON.parse(JSON.stringify(target));
+
+      this.$dialog({
+        title: 'dialog.tableSwitch',
+        msg: ['dialog.tableSwitchTip', origin.name, target.name]
+      }).then(() => {
+        Object.assign(target, { current: origin.current, status: origin.status });
+        let ticket = this.history.find(invoice => invoice._id === origin.current.invoice[0]);
+        ticket = JSON.parse(JSON.stringify(ticket));
+        Object.assign(ticket, {
+          table: target.name,
+          tableID: target._id
+        });
+        this.$socket.emit("[UPDATE] INVOICE", ticket);
+        this.$socket.emit("TABLE_MODIFIED", target);
+
+        Object.assign(origin, {
+          current: {
+            color: "",
+            group: "",
+            guest: 0,
+            invoice: [],
+            server: "",
+            time: ""
+          },
+          status: 1
+        });
         this.$socket.emit("TABLE_MODIFIED", origin);
+        this.setViewOrder(ticket);
         this.pendingSwitch = false;
         this.$q();
       }).catch(() => { this.$q() })

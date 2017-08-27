@@ -46,7 +46,8 @@ export default {
             this.txt = this.$t('text.settingUpdated');
             this.send = true;
             this.$socket.emit("[CMS] CONFIG_STORE", this.store);
-            this.setConfig({ store: this.store })
+            this.setConfig({ store: this.store });
+            this.setApp({ autoLock: false });
             this.updateStation(this.store);
             setTimeout(() => { this.cancel() }, 1000);
         },
@@ -62,7 +63,7 @@ export default {
             this.change = false;
             this.send = false;
         },
-        ...mapActions(['setConfig', 'setStation'])
+        ...mapActions(['setApp', 'setConfig', 'setStation'])
     },
     computed: {
         ...mapGetters(['station'])

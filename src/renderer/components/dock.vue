@@ -9,7 +9,6 @@
         <span class="name" v-show="customer.name">{{customer.name}}</span>
       </div>
     </div>
-    <span>{{(time-app.opLastAction) / 1000}}</span>
     <span class="op" @click="openPanel">
       <i class="fa fa-user"></i>{{op.name}}</span>
     <span class="corner" v-if="$route.name !== 'Dashboard'">{{time | moment('hh:mm a')}}</span>
