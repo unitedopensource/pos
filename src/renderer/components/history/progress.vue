@@ -28,6 +28,7 @@ export default {
     background: #fff;
     border-radius: 6px;
     text-align: center;
+    background:repeating-linear-gradient(-55deg,#f44336,#f44336 20px,#e63b32 20px,#e63b32 40px);
 }
 
 .wrap {
