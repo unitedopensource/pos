@@ -675,7 +675,7 @@ export default {
                     this.$dialog({
                         type: "question", title: "dialog.printReceiptConfirm", msg: "dialog.printReceiptConfirmTip",
                         buttons: [{ text: 'button.noReceipt', fn: 'reject' }, { text: 'button.printReceipt', fn: 'resolve' }]
-                    }).then(() => { this.invoiceSettled(order, true) }).catch(() => { this.invoiceSettled(order, false) });
+                    }).then(() => { this.invoiceSettled(order, true) }).catch(() => { this.invoiceSettled(order, false) })
             } else {
                 this.payment.settled = true;
                 if (this.order.hasOwnProperty('splitPayment')) {
@@ -685,7 +685,7 @@ export default {
                         buttons: [{ text: 'button.noReceipt', fn: 'reject' }, { text: 'button.printReceipt', fn: 'resolve' }]
                     }).then(() => { this.printSplitReceipt() }).catch(() => { this.nextSplit() });
                 } else {
-                    this.init.resolve(this.payment);
+                    this.init.resolve(this.payment)
                 }
             }
         },

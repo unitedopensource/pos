@@ -9,6 +9,7 @@
                 <smart-switch v-model="table.guestCount" label="text.guestCount"></smart-switch>
                 <smart-switch v-model="table.seatOrder" label="text.orderBySeat"></smart-switch>
                 <smart-switch v-model="table.autoClean" label="text.autoCleanTable"></smart-switch>
+                <smart-input v-model.number="table.maxCount" label="text.recount"></smart-input>
             </article>
         </section>
         <section class="card">
