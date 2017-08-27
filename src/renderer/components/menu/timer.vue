@@ -73,6 +73,7 @@ export default {
         confirm() {
             let hour = this.time[0] + this.time[1];
             let minute = this.time[2] + this.time[3];
+            console.log(hour,minute)
             let current = moment();
             let schedule = moment().startOf('day').hour(hour).minute(minute);
             schedule.isAfter(current) ? this.confirmTime(schedule) : this.timeError();
@@ -118,15 +119,12 @@ export default {
                 });
                 this.$socket.emit("[UPDATE] INVOICE", this.order);
             }
-            this.remind && this.eventReminder();
+            this.delayPrint(this.order);
             this.resetAll();
             this.setApp({ opLastAction: new Date(), mode: "create" });
             this.$router.push({ path: "/main" });
         },
-        eventReminder() {
-
-        },
-        ...mapActions(['setApp', 'resetAll'])
+        ...mapActions(['setApp', 'delayPrint', 'resetAll'])
     },
     computed: {
         ...mapGetters(['op', 'app', 'order', 'ticket', 'customer', 'language'])

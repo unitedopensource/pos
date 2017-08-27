@@ -145,10 +145,14 @@ export default {
       time = ("0" + time).slice(0, -1);
       this[this.target] = time;
     },
+    changeDate() {
+
+    },
     confirm() {
       if (this.list.length !== 0) return;
       this.jumpStep(3);
       this.steps.filter(step => step.contain.length).map(schedule => {
+        let delay = Number(schedule.delay);
         let order = JSON.parse(JSON.stringify(this.init.order));
         delete order.payment;
         Object.assign(order, {
@@ -156,8 +160,8 @@ export default {
           number: this.app.mode === 'create' ? this.ticket.number : order.number,
           customer: this.customer,
           course: schedule.name,
-          delay: Number(schedule.delay),
-          time: Number(schedule.delay),
+          delay,
+          time: delay,
           content: schedule.contain.map(item => {
             item.pending = true;
             return item
@@ -182,8 +186,7 @@ export default {
         settle: false,
         customer,
         date: today(),
-        delay: Number(schedule.delay),
-        time: Number(schedule.delay),
+        time: +new Date(),
         content: order.content.map(item => {
           item.pending = true;
           return item
