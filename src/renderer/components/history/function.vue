@@ -96,8 +96,8 @@ export default {
             this.editOrder();
         },
         isVoidable() {
-            !this.isEmptyTicket && this.approval(this.op.modify, "order") && !this.order.settled && this.voidOrder();
-            !this.approval(this.op.modify, "order") ? this.$denyAccess() : this.order.settled && this.confirmPaymentRemoval();
+            !this.isEmptyTicket && this.approval(this.op.modify, "order") ?
+                this.order.settled ? this.confirmPaymentRemoval() : this.voidOrder() : this.$denyAccess();
         },
         handleSettledInvoice() {
             this.$dialog({
@@ -122,14 +122,18 @@ export default {
         confirmPaymentRemoval() {
             this.$dialog({
                 type: 'question',
-                title: 'dialog.orderSettled',
-                msg: ['dialog.reopenSettledOrderTip', this.$t('type.' + this.order.payment.type)],
+                title: 'dialog.paymentRemove',
+                msg: ['dialog.paymentRemoveTip', this.$t('type.' + this.order.payment.type)],
                 buttons: [{ text: 'button.removePayment', fn: 'resolve' }, { text: 'button.cancel', fn: 'reject' }]
-            }).then(() => { this.removeOrderPayment() }).catch(() => { this.$q() })
+            }).then(() => {
+                this.$q();
+                this.$nextTick(() => { this.removeOrderPayment() })
+            }).catch(() => { this.$q() })
         },
         removeOrderPayment() {
             this.$dialog({
-                type: "warning", title: 'dialog.paymentRemoveConfirm', msg: ['paymentRemoveConfirmTip', this.$t('type.' + this.order.payment.type)]
+                type: "warning", title: 'dialog.paymentRemoveConfirm',
+                msg: ['dialog.paymentRemoveConfirmTip', this.$t('type.' + this.order.payment.type)]
             }).then(() => {
                 this.removePayment();
                 this.updateInvoice(this.order);
@@ -190,7 +194,7 @@ export default {
                 this.$dialog({
                     title: 'dialog.accessDenied', msg: 'dialog.stationNoTerminal',
                     buttons: [{ text: 'button.confirm', fn: 'resolve' }]
-                }).then(() => { this.$q() });
+                }).then(() => { this.$q() })
         },
         report() {
             this.approval(this.op.access, "report") ? this.$p("Report") : this.$denyAccess();

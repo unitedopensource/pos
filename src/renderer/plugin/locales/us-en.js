@@ -250,6 +250,8 @@ export default {
         'invoiceSettledTip': 'You can not modify a settled invoice',
         'settledOrderReopen': 'Reopen #{i} invoice',
         'settledOrderReopenTip': 'You need to remove payment record ({i}) before you can modify this invoice',
+        'paymentRemove':'Ticket Is Paid',
+        'paymentRemoveTip':'If you wish to reopen this ticket, please remove payment record first.',
         'paymentRemoveConfirm': 'Payment Removal',
         'paymentRemoveConfirmTip': 'Are you sure you want to remove ({i}) record?',
         'paymentRemoved': 'Payment Removed',

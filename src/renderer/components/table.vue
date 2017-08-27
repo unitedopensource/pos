@@ -173,6 +173,7 @@ export default {
           }
         });
         this.$socket.emit("TABLE_MODIFIED", _table);
+        this.resetMenu();
         this.$q();
       }).catch(() => { this.$q() })
     },
@@ -231,14 +232,15 @@ export default {
         this.$q();
       })
     },
-    switchTable(table) {
-      let origin = this.currentTable;
-      this.$dialog({ title: 'dialog.tableSwitch', msg: ['dialog.tableSwitchTip', origin.name, table.name] }).then(() => {
-        table.current = origin.current;
-        table.status = origin.status;
-        let invoice = this.history.filter(order => order._id === origin.current.invoice[0])[0];
-        invoice.table = table.name;
-        invoice.tableId = table._id;
+    switchTable(target) {
+      let origin = JSON.parse(JSON.stringify(this.currentTable));
+      this.$dialog({ title: 'dialog.tableSwitch', msg: ['dialog.tableSwitchTip', origin.name, target.name] }).then(() => {
+        target.current = origin.current;
+        target.status = origin.status;
+        let invoice = this.history.find(order => order._id === origin.current.invoice[0]);
+        invoice = JSON.parse(JSON.stringify(invoice));
+        invoice.table = target.name;
+        invoice.tableId = target._id;
         this.$socket.emit("[UPDATE] INVOICE", invoice);
         this.$socket.emit("TABLE_MODIFIED", table);
         origin.current = {
@@ -287,9 +289,9 @@ export default {
     },
     prePayment() {
       if (this.order.content.length === 0) return;
-      if (this.order.settled){
+      if (this.order.settled) {
         this.settledOrder();
-      }else if (this.order.print) {
+      } else if (this.order.print) {
         this.$dialog({
           type: "question", title: "dialog.prePayment", msg: ['dialog.prePaymentTip', this.order.table],
           buttons: [{ text: 'button.cancel', fn: "reject" }, { text: "button.print", fn: "resolve" }]
