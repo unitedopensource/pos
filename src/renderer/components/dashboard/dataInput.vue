@@ -2,7 +2,7 @@
     <section>
         <label :for="id">
             {{$t(label)}}
-            <transition-group name="slideUp">
+            <transition-group name="slideUp" class="matrix" tag="div">
                 <span class="distance" v-if="distance" :key="1">{{distance}}</span>
                 <span class="duration" v-if="duration" :key="2">{{duration}}</span>
             </transition-group>
@@ -12,7 +12,7 @@
             <i :class="icon"></i>
         </div>
         <dialog v-if="autoComplete">
-            <div class="predict" v-for="data in autoComplete" @click="fill(data)">
+            <div class="predict" v-for="(data,index) in autoComplete" @click="fill(data)" :key="index">
                 <div v-if="data.phone" class="column">
                     <div class="top">
                         <span class="phone">{{data.phone | tel}}</span>
@@ -158,28 +158,21 @@ span.street {
     font-weight: normal;
 }
 
-span.distance,
-span.duration {
-    display: inline-flex;
+.matrix {
+    position: absolute;
+    top: 3px;
+    right: 0;
+}
+
+.matrix span {
+    border: 2px solid #e5e5e5;
+    border-bottom: 0;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
     margin: 0 5px;
-    padding: 0 10px;
-    text-indent: 0;
+    padding: 2px 10px;
     color: #009688;
     background: #fff;
-    border: 2px solid #e5e5e5;
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
-    border-bottom: none;
-    position: absolute;
-    top: 0;
-}
-
-span.duration {
-    right: 28px;
-}
-
-span.distance {
-    right: 115px;
 }
 
 .predict:last-child div {
@@ -188,11 +181,11 @@ span.distance {
 
 .slideUp-enter-active,
 .slideUp-leave-active {
-    transition: transform .3s;
+    transition: opacity .3s;
 }
 
 .slideUp-enter,
 .slideUp-leave-active {
-    transform: translate3d(0, 20px, 0);
+    opacity: 0;
 }
 </style>

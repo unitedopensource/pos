@@ -100,7 +100,7 @@
                 <span>{{txt}}</span>
                 <span v-show="!send">
                     <span @click="save" class="save">{{$t('button.save')}}</span>
-                    <span @click="cancel" class="cancel">{{$t('button.save')}}</span>
+                    <span @click="cancel" class="cancel">{{$t('button.cancel')}}</span>
                 </span>
             </footer>
         </main>
@@ -152,7 +152,7 @@ export default {
             this.$router.push({ name: "Setting.index" })
         },
         trigger() {
-            this.txt = this.text("TIP_SAVE_CONFIG");
+            this.txt = this.$t("text.saveSetting");
             this.change = true;
             this.send = false;
         },
