@@ -25,7 +25,13 @@ export default {
     this.msg = typeof this.init.msg === 'string' ? this.$t(this.init.msg) : this.$t(...this.init.msg);
   },
   mounted() {
-    if (this.init.timeout) this.timeout = setTimeout(() => { this.init.timeout.fn() }, this.init.timeout.duration);
+    if (this.init.timeout) {
+      this.timeout = setTimeout(() => {
+        typeof this.init.timeout.fn === 'function'
+          ? this.init.timeout.fn()
+          : eval(this.init.timeout.fn);
+      }, this.init.timeout.duration)
+    }
   },
   methods: {
     trigger(button) {

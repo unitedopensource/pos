@@ -9,6 +9,7 @@
         <span class="name" v-show="customer.name">{{customer.name}}</span>
       </div>
     </div>
+    <span>{{(time-app.opLastAction) / 1000}}</span>
     <span class="op" @click="openPanel">
       <i class="fa fa-user"></i>{{op.name}}</span>
     <span class="corner" v-if="$route.name !== 'Dashboard'">{{time | moment('hh:mm a')}}</span>
@@ -118,20 +119,21 @@ export default {
       }).catch(() => { this.$q() })
     },
     sectionTimeout(current) {
-      let lapse = (current - this.app.opLastAction) / 1000;
-      if (lapse > this.station.timeout) {
+      let lapse = Math.round((current - this.app.opLastAction) / 1000);
+      if (lapse >= this.station.timeout) {
         this.setApp({ autoLock: false });
         this.$dialog({
-          title: 'dialog.autoLock', msg: ['dialog.autoLockTip', this.station.timeout],
+          title: 'dialog.autoLock',
           timeout: { fn: 'resolve', duration: 10000 },
+          msg: ['dialog.autoLockTip', this.station.timeout],
           buttons: [{ text: 'button.extend', fn: 'reject' }]
         }).then(() => {
           this.$q();
           this.resetAll();
-          this.$router.push({ path: '/main/lock' });
+          this.$router.push({ path: '/main/lock' })
         }).catch(() => {
-          this.setApp({ opLastAction: new Date, autoLock: true });
           this.$q();
+          this.setApp({ opLastAction: new Date().getTime(), autoLock: true });
         })
       }
     },

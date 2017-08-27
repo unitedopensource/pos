@@ -265,7 +265,7 @@ export default {
     switchLanguage() {
       let language = this.app.language === "usEN" ? "zhCN" : "usEN";
       this.$setLanguage(language);
-      this.setApp({ language, opLastAction: new Date });
+      this.setApp({ language });
       moment.locale(language === 'usEN' ? 'en' : 'zh-cn');
       this.$forceUpdate();
     },

@@ -2,12 +2,12 @@
     <div class="popupMask center dark" @click.self="init.reject(false)">
         <div class="editor">
             <header>
-                <div>{{text('EDITOR.HEADER.TEMPLATE')}}</div>
+                <div>{{$t('setting.template')}}</div>
                 <div class="name">
                     <i class="fa fa-pencil"></i>
                     <input v-model="template.template">
                 </div>
-                <checkbox v-model="template.insert" label="INSERT"></checkbox>
+                <checkbox v-model="template.insert" label="text.insert"></checkbox>
             </header>
             <div class="includes">
                 <draggable v-model="template.contain" :options="{animation:300,group:'item',ghostClass:'itemGhost',draggable:'.draggable'}">
@@ -26,15 +26,15 @@
                     <div v-if="container">
                         <div class="config">
                             <div>
-                                <label>{{text('NAME')}}</label>
+                                <label>{{$t('text.name')}}</label>
                                 <input v-model="container.name">
-                                <label>{{text('EDITOR.TEMPLATE.MAX')}}</label>
+                                <label>{{$t('text.max')}}</label>
                                 <input v-model.number="container.max">
                             </div>
                             <div>
-                                <label>{{text('EDITOR.TEMPLATE.STARTAT')}}</label>
+                                <label>{{$t('text.startAt')}}</label>
                                 <input v-model.number="container.startAt">
-                                <label>{{text('EDITOR.TEMPLATE.ADDITION')}}</label>
+                                <label>{{$t('text.additionCost')}}</label>
                                 <input v-model.number="container.addition">
                             </div>
                         </div>
@@ -48,16 +48,16 @@
                         </draggable>
                     </div>
                     <div v-else>
-    
+
                     </div>
                 </div>
             </div>
             <footer>
                 <div class="f1">
-                    <span class="del" @click="del">{{text('DELETE')}}</span>
+                    <span class="del" @click="del">{{$t('button.delete')}}</span>
                 </div>
-                <div class="btn" @click="init.reject(false)">{{text('CANCEL')}}</div>
-                <div class="btn" @click="confirm">{{text('CONFIRM')}}</div>
+                <div class="btn" @click="init.reject(false)">{{$t('button.cancel')}}</div>
+                <div class="btn" @click="confirm">{{$t('button.confirm')}}</div>
             </footer>
         </div>
         <div :is="component" :init="componentData"></div>
@@ -109,27 +109,25 @@ export default {
         },
         addItem() {
             new Promise((resolve, reject) => {
-                let title = "NEW_ITEM"
-                this.componentData = { resolve, reject, title };
+                let title = "setting.newItem";
+                this.componentData = { resolve, reject };
                 this.component = "editor";
             }).then((item) => {
                 this.template.contain[this.index].contain.push(item);
-                this.$exitComponent();
-            }).catch(() => {
-                this.$exitComponent();
-            })
+                this.$q()
+            }).catch(() => { this.$q() })
         },
         editItem(item, index) {
             new Promise((resolve, reject) => {
-                let title = "EDIT_ITEM";
+                let title = "setting.editItem";
                 this.componentData = { resolve, reject, title, item };
                 this.component = "editor";
             }).then((item) => {
                 this.template.contain[this.index].contain.splice(index, 1, item);
-                this.$exitComponent();
+                this.$q();
             }).catch((del) => {
                 del && this.template.contain[this.index].contain.splice(index, 1);
-                this.$exitComponent();
+                this.$q();
             })
         },
         del() {

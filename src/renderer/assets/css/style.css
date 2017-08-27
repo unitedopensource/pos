@@ -504,6 +504,7 @@ section.dataList {
 .editor .input label {
   width: 80px;
   padding: 0 10px;
+  text-align: right;
 }
 
 .editor .inner {

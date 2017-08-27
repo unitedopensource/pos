@@ -4,12 +4,12 @@
             <header>{{$t('setting.categoryEditor')}}</header>
             <div class="inner">
                 <div class="input">
-                    <label>{{$t('text.primary')}}</label>
-                    <input v-model="category.zhCN">
+                    <label title="English">{{$t('text.primary')}}</label>
+                    <input v-model="category.usEN">
                 </div>
                 <div class="input">
                     <label>{{$t('text.secondary')}}</label>
-                    <input v-model="category.usEN">
+                    <input v-model="category.zhCN">
                 </div>
                 <div class="input" v-show="manual">
                     <label>{{$t('text.contain')}}</label>

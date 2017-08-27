@@ -533,7 +533,8 @@ export default {
         'setting': '后台设定',
         'cashDrawer': '钱箱',
         'report': '报表',
-        'order': '订单'
+        'order': '订单',
+        'insert':'插入'
     },
     setting: {
         'softwareSetting': 'UnitedPOS 后台设置',
@@ -639,7 +640,9 @@ export default {
         'view': '查看',
         'timeCardActivity': '打卡记录',
         'timeCardActivityTip': '员工打卡记录列表',
-        'display': '显示设置'
+        'display': '显示设置',
+        'newItem':'新建物品',
+        'editItem':'编辑物品'
     },
     reservation: {
 

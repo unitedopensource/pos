@@ -10,8 +10,17 @@ import { mapActions } from 'vuex'
 import dock from './dock'
 export default {
   components: { dock },
+  mounted() {
+    window.addEventListener("click", this.record, false);
+  },
+  beforeDestroy() {
+    window.removeEventListener("click", this.record, false);
+  },
   methods: {
-    ...mapActions(['toggleKeyboard'])
+    record() {
+      this.setApp({ opLastAction: new Date().getTime() })
+    },
+    ...mapActions(['setApp', 'toggleKeyboard'])
   }
 }
 </script>

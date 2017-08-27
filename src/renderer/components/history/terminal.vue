@@ -69,12 +69,12 @@
 <script>
 import { mapGetters } from 'vuex'
 import dialoger from '../common/dialoger'
-import progressBar from './progress'
+import processor from '../common/processor'
 import Printer from '../../print'
 import tipper from './tipper'
 export default {
     props: ['init'],
-    components: { dialoger, tipper, progressBar },
+    components: { dialoger, tipper, processor },
     data() {
         return {
             transactions: [],
@@ -200,7 +200,7 @@ export default {
                     this.$dialog({
                         title: 'dialog.tipAdjustment', msg: ['dialog.tipAdjustmentTip', value.toFixed(2), total.toFixed(2)]
                     }).then(() => {
-                        this.$p("progressBar");
+                        this.$p("processor");
                         let amount = Math.round(value * 100);
                         let invoice = record.order.number;
                         let trans = record.trace.trans;
@@ -228,7 +228,7 @@ export default {
             }).then(() => { this.processBatch() }).catch(() => { this.$q() })
         },
         processBatch() {
-            this.$p("progressBar");
+            this.$p("processor");
             this.terminal.batch().then(response => response.text()).then(response => {
                 let result = this.terminal.explainBatch(response);
                 if (result.code === '000000') {

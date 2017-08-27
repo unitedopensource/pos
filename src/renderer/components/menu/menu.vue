@@ -111,7 +111,6 @@ export default {
             e.currentTarget.classList.add("active");
             this.itemPage = 0;
             this.flatten(this.menuInstance[i].item);
-            this.setApp({ opLastAction: new Date });
         },
         pick(item) {
             if (!item.clickable) return;
@@ -125,7 +124,6 @@ export default {
             (item.hasOwnProperty("prices") && item.prices[this.ticket.type]) && (item.price = item.prices[this.ticket.type]);
             this.setSides(this.fillOption(item.option));
             this.addToOrder(item);
-            this.setApp({ opLastAction: new Date });
         },
         isTemporary(item) {
             if (!item.temporary) return false;
@@ -185,7 +183,6 @@ export default {
             this.resetMenu();
             this.flatten(this.menuInstance[0].item);
             this.setSides(this.fillOption([]));
-            this.setApp({ opLastAction: new Date });
             toggleClass(".category .active", "active");
             toggleClass(".category div", "active");
         },
@@ -198,7 +195,7 @@ export default {
         },
         exit() {
             this.resetAll();
-            this.setApp({ opLastAction: new Date, mode: "create" });
+            this.setApp({ mode: "create" });
             this.$router.push({ path: "/main" });
         },
         ...mapActions(['setApp', 'setOrder', 'setSides', 'addToOrder', 'resetPointer', 'resetMenu', 'resetAll', 'alterItemOption', 'resetCurrentTable'])

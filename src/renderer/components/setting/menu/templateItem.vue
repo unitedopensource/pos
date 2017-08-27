@@ -1,18 +1,19 @@
 <template>
     <div class="popupMask center dark" @click.self="init.reject(false)">
         <div class="editor">
-            <header>{{text(init.title)}}</header>
+            <header>{{$t(init.title)}}</header>
             <div class="form">
                 <div class="input">
-                    <label>{{text('ZH_CN')}}</label>
-                    <input v-model="item.zhCN">
+                    <label>{{$t('text.primary')}}</label>
+                    <input v-model="item.usEN">
                 </div>
                 <div class="input">
-                    <label>{{text('US_EN')}}</label>
-                    <input v-model="item.usEN" @keydown.enter="done">
+                    <label>{{$t('text.secondary')}}</label>
+                    <input v-model="item.zhCN" @keydown.enter="done">
                 </div>
+
                 <div class="input">
-                    <label>{{text('PRICE')}}</label>
+                    <label>{{$t('text.price')}}</label>
                     <input v-model="item.price" @keydown.enter="done">
                 </div>
                 <div class="printers">
@@ -23,10 +24,10 @@
             </div>
             <footer>
                 <div class="f1">
-                    <span class="del" @click="del">{{text('DELETE')}}</span>
+                    <span class="del" @click="del">{{$t('button.delete')}}</span>
                 </div>
-                <div class="btn" @click="init.reject(false)">{{text('CANCEL')}}</div>
-                <div class="btn" @click="done">{{text('CONFIRM')}}</div>
+                <div class="btn" @click="init.reject(false)">{{$t('button.cancel')}}</div>
+                <div class="btn" @click="done">{{$t('button.confirm')}}</div>
             </footer>
         </div>
     </div>
@@ -38,16 +39,16 @@ import checkbox from '../common/checkbox'
 export default {
     props: ['init'],
     components: { checkbox },
-    created() {
-        this.init.item && Object.assign(this.item, this.init.item);
-        this.printers = Object.keys(this.config.printer);
-        !this.item.hasOwnProperty("print") && (this.item.print = [...this.printers]); 
-    },
     data() {
         return {
             item: {},
             printers: []
         }
+    },
+    created() {
+        this.init.item && Object.assign(this.item, this.init.item);
+        this.printers = Object.keys(this.config.printer);
+        !this.item.hasOwnProperty("print") && (this.item.print = [...this.printers]);
     },
     methods: {
         del() {

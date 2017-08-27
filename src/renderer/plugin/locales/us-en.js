@@ -533,7 +533,8 @@ export default {
         'setting': 'Setting',
         'cashDrawer': 'Cash Drawer',
         'report': 'Report',
-        'order': 'Order'
+        'order': 'Order',
+        'insert':'Insert'
     },
     setting: {
         'softwareSetting': 'UnitedPOS Setting',
@@ -639,7 +640,9 @@ export default {
         'view': 'View',
         'timeCardActivity': 'Time Card Activity',
         'timeCardActivityTip': 'Employee time card activity record',
-        'display': 'Display'
+        'display': 'Display',
+        'newItem':'New Item',
+        'editItem':'Edit Item'
     },
     reservation: {
 

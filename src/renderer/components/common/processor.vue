@@ -25,10 +25,17 @@ export default {
 .loader {
     width: 300px;
     padding: 15px;
-    background: #fff;
     border-radius: 6px;
     text-align: center;
-    background:repeating-linear-gradient(-55deg,#f44336,#f44336 20px,#e63b32 20px,#e63b32 40px);
+    background: repeating-linear-gradient(-55deg, #f44336, #f44336 20px, #e63b32 20px, #e63b32 40px);
+    animation: Move 5s infinite;
+}
+
+h3 {
+    color: #fff;
+    font-weight: normal;
+    text-shadow: 0 1px 1px #333;
+    letter-spacing: 2px;
 }
 
 .wrap {
@@ -36,41 +43,41 @@ export default {
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    margin: auto;
+    margin: 15px auto 5px;
 }
 
 .dots {
-    height: 50px;
     width: 80px;
 }
 
 .dot {
     display: inline-block;
-    background: #444;
+    background: #fff;
+    box-shadow: 0 1px 1px #333;
     height: 10px;
     width: 10px;
     opacity: 0.3;
     border-radius: 50%;
-    animation: moveit 0.8s infinite;
+    animation: Bounce 1s infinite;
 }
 
-dot:nth-child(2) {
-    animation-delay: .15s;
+.dot:nth-child(2) {
+    animation-delay: .2s;
 }
 
 .dot:nth-child(3) {
-    animation-delay: .3s;
+    animation-delay: .4s;
 }
 
 .dot:nth-child(4) {
-    animation-delay: .45s;
-}
-
-.dot:nth-child(5) {
     animation-delay: .6s;
 }
 
-@keyframes moveit {
+.dot:nth-child(5) {
+    animation-delay: .8s;
+}
+
+@keyframes Bounce {
     0% {
         transform: translateY(0px);
     }

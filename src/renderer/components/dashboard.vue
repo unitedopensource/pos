@@ -33,7 +33,7 @@ export default {
   },
   created() {
     this.$socket.emit("[INQUIRY] TICKET_NUMBER", number => { this.setTicket({ number }) });
-    this.setApp({ opLastAction: new Date });
+    this.setApp({ opLastAction: new Date().getTime() });
   },
   mounted() {
     if (!this.station) {
@@ -41,12 +41,12 @@ export default {
     } else {
       this.device.poleDisplay && this.welcome();
       this.store.timeCard && this.checkClockIn();
-      ~~this.station.timeout !== 0 ? this.setApp({ autoLock: true, opLastAction: new Date }) : this.setApp({ autoLock: false });
+      ~~this.station.timeout !== 0 ? this.setApp({ autoLock: true, opLastAction: new Date().getTime() }) : this.setApp({ autoLock: false });
     }
   },
   methods: {
     go(grid) {
-      this.setApp({ opLastAction: new Date });
+      this.setApp({ opLastAction: new Date().getTime() });
       if (!grid.enable) return;
       let { route } = grid;
       switch (route) {

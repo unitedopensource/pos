@@ -28,7 +28,7 @@ const dialog = {
           timeout: args.hasOwnProperty('timeout') ?
             {
               duration: args.timeout.duration || 15000,
-              fn: args.timeout.hasOwnProperty('fn') ? eval(args.timeout.fn) : reject
+              fn: args.timeout.fn === 'resolve' ? resolve : reject
             } : null,
           buttons: [],
           resolve, reject
