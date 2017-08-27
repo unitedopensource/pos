@@ -176,7 +176,10 @@ export default {
         calculateDistance(data) {
             if (!this.store.mapAPI) return;
             let api = this.store.mapAPI;
-            let origin = `${this.store.address.split(' ').join('+')},${this.store.city.split(' ').join('+')}+${this.store.state}`;
+            let { address, city, state } = this.store;
+            address = this.$options.filters.formatAddress(address).split(' ').join('+');
+            city = city.split(' ').join('+');
+            let origin = `${address},${city}+${state}`;
             let destination = this.$options.filters.formatAddress(data.address).split(' ').join('+');
             let url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${origin}&destinations=${destination},${data.city.split(' ').join('+')}+${this.store.state}&key=${api}&language=en&units=imperial`;
             this.$socket.emit("[INQUIRY] GOOGLE_DISTANCE_MATRIX", url);
@@ -188,8 +191,10 @@ export default {
             doms.forEach(dom => { dom.classList.remove("next") });
 
             next.forEach(key => {
-                key = key.toUpperCase();
-                document.getElementById(key) && document.getElementById(key).classList.add("next");
+                if (key) {
+                    key = key.toUpperCase();
+                    document.getElementById(key) && document.getElementById(key).classList.add("next");
+                }
             })
         },
         cancelOrder() {
@@ -233,7 +238,7 @@ export default {
     },
     filters: {
         formatAddress(address) {
-            let reg = /\d+(\s+\w+){1,}\s+(?:st(?:\.|reet)?|dr(?:\.|ive)?|pl(?:\.|ace)?|ave(?:\.|nue)?|rd|road|lane|drive|way|court|plaza|square|run|parkway|point|pike|square|driveway|trace|park|terrace|blvd)/i;
+            let reg = /\d+(\s+\w+){1,}\s+(?:st(?:\.|reet)?|dr(?:\.|ive)?|pl(?:\.|ace)?|ave(?:\.|nue)?|rd|road|lane|drive|way|court|plaza|square|run|parkway|point|pike|square|driveway|trace|park|terrace|blvd|broadway)/i;
             let match = address.match(reg);
             return match ? match[0] : address;
         }

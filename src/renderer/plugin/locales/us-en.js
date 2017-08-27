@@ -446,7 +446,7 @@ export default {
         'password': 'Password',
         'email': 'Email',
         'area': 'Area',
-        'saveSetting': 'Save Setting',
+        'saveSetting': 'To apply new setting please save.',
         'settingUpdated': 'Setting is Updated',
         'guestCount': 'Guest Count',
         'orderBySeat': 'Order By Seat',

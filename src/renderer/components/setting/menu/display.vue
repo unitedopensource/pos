@@ -22,7 +22,19 @@ export default {
         }
     },
     created() {
-        this.display = JSON.parse(JSON.stringify(this.config.display));
+        try {
+            this.display = JSON.parse(JSON.stringify(this.config.display));
+        } catch (e) {
+            Object.assign(this.config, {
+                display: {
+                    menuID: false,
+                    favorite: false,
+                    voidItem: false
+                }
+            })
+        } finally {
+            this.display = JSON.parse(JSON.stringify(this.config.display))
+        }
     },
     watch: {
         display: {

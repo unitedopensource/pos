@@ -446,7 +446,7 @@ export default {
         'password': '密码',
         'email': '电子邮箱',
         'area': '地区',
-        'saveSetting': '保存设置',
+        'saveSetting': '设置已经改变，请保存',
         'settingUpdated': '设置已保存',
         'guestCount': '统计客人数量',
         'orderBySeat': '按位点餐',

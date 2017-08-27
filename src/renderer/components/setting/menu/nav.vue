@@ -42,7 +42,7 @@ export default {
             this.send = false;
         },
         update() {
-            this.txt = this.$t('settingUpdated');
+            this.txt = this.$t('text.settingUpdated');
             this.send = true;
             this.$socket.emit("[CMS] CONFIG_DISPLAY", this.ctrl);
             this.setConfig({ display: this.ctrl });
