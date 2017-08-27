@@ -698,6 +698,7 @@ export default {
             order.customer = this.customer;
             Printer.init(this.config).setJob("receipt").print(order);
             order.content.filter(item => item.sort === this.payment.sort).forEach(item => {
+                delete item.new;
                 item.print = true;
                 item.pending = false;
             });
@@ -801,6 +802,7 @@ export default {
             if (print) {
                 Printer.init(this.config).setJob("receipt").print(ticket);
                 ticket.content.forEach(item => {
+                    delete item.new;
                     item.print = true;
                     item.pending = false;
                 });

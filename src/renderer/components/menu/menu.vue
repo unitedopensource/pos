@@ -118,7 +118,8 @@ export default {
             if (this.isScalable(item)) return;
             if (this.isOpenFood(item)) return;
 
-            item = Object.assign({}, item);
+            item = JSON.parse(JSON.stringify(item));
+            this.app.mode === 'edit' && (item.new = true);
             this.poleDisplay(item.usEN.slice(0, 20), ["Price:", (item.price[0]).toFixed(2)]);
             this.store.table.seatOrder && (item.sort = this.sort);
             (item.hasOwnProperty("prices") && item.prices[this.ticket.type]) && (item.price = item.prices[this.ticket.type]);

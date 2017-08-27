@@ -137,7 +137,10 @@ export default {
         },
         printInvoice(index) {
             this.print(index);
-            this.items.forEach(item => item.sort === index && (item.print = true))
+            this.items.forEach(item => {
+                item.sort === index && (item.print = true);
+                delete item.new;
+            })
         },
         printAllInvoices() {
             this.sort(1);

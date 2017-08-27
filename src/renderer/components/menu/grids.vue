@@ -189,6 +189,7 @@ export default {
       let order = this.combineOrderInfo({ print });
       print && Printer.init(this.config).setJob("receipt").print(order);
       print && order.content.forEach(item => {
+        delete item.new;
         item.print = true;
         item.pending = false;
       });
@@ -220,12 +221,13 @@ export default {
       }
       print && Printer.init(this.config).setJob("receipt").print(order);
       print && order.content.forEach(item => {
+        delete item.new;
         item.print = true;
         item.pending = false;
       });
-      this.app.mode === 'create' 
-      ? this.$socket.emit("[SAVE] DINE_IN_INVOICE", { table: this.currentTable, order }) 
-      : this.$socket.emit("[UPDATE] INVOICE", order);
+      this.app.mode === 'create'
+        ? this.$socket.emit("[SAVE] DINE_IN_INVOICE", { table: this.currentTable, order })
+        : this.$socket.emit("[UPDATE] INVOICE", order);
       this.$socket.emit("INQUIRY_TICKET_NUMBER");
       this.setOrder(order);
       this.$router.push({ name: "Table" });

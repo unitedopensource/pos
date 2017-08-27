@@ -181,11 +181,11 @@ export default {
         print() {
             let order = Object.assign({}, this.order);
             Printer.init(this.config).setJob("receipt").print(order);
-            order.content = order.content.map(item => {
+            order.content.forEach(item => {
+                delete item.new;
                 item.print = true;
                 item.pending = false;
-                return item;
-            });
+            })
             this.updateInvoice(order);
         },
         terminal() {

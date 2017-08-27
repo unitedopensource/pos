@@ -84,7 +84,7 @@ Printer.prototype.printReceipt = function (raw) {
       let ctrl = printers[name]['control'];
       let isPrint = printers[name]['print'][raw.type];
       let header = createHeader(this.config.store, raw);
-      let list = isPrint ? createList(name, ctrl, raw.content) : [];
+      let list = isPrint ? createList(name, ctrl, raw) : [];
       if (list && list.length) {
         let style = createStyle(printers[name]['control']);
         let footer = createFooter(printers[name]['control'], raw);
@@ -195,13 +195,14 @@ Printer.prototype.printReceipt = function (raw) {
                 </div>
             </section>`;
   }
-  function createList(printer, ctrl, data) {
+  function createList(printer, ctrl, invoice) {
     function mockup(item) {
       let side = item.side.zhCN ? item.side.zhCN : "";
       let qty = item.qty === 1 ? "" : item.qty;
       let markA = item.mark[0].join(" ");
       let markB = item.mark[1].join(" ");
       let mark = (markA || markB) ? "markItem" : "";
+      let newItem = item.new ? '<span class="new">★</span>':'';
       let setCN = "";
       let setEN = "";
       item.choiceSet.forEach(set => {
@@ -218,6 +219,7 @@ Printer.prototype.printReceipt = function (raw) {
       let name = (item[printer] && item[printer].hasOwnProperty("zhCN")) ? item[printer].zhCN : printMenuID ? item.menuID + " " + item.zhCN : item.zhCN;
       let zhCN = `<p class="list zhCN">
                     <span class="qty">${qty}</span>
+                    ${newItem}
                     <span class="itemWrap ${mark}">
                       <span class="item">${name}<span class="mark">${markA}</span></span>
                       <span class="side">${side}<span class="mark">${markB}</span></span>
@@ -227,6 +229,7 @@ Printer.prototype.printReceipt = function (raw) {
       name = (item[printer] && item[printer].hasOwnProperty("usEN")) ? item[printer].usEN : printMenuID ? item.menuID + " " + item.usEN : item.usEN;
       let usEN = `<p class="list usEN">
                       <span class="qty">${qty}</span>
+                      ${newItem}
                       <span class="itemWrap">
                         <span class="item">${name}<span class="mark">${markA}</span></span>
                         <span class="side">${side}<span class="mark">${markB}</span></span>
@@ -236,8 +239,16 @@ Printer.prototype.printReceipt = function (raw) {
     }
     let { sortItem, duplicate, printMenuID } = ctrl;
     let list = duplicate ?
-      data.filter(item => item.printer[printer]) :
-      data.filter(item => item.printer[printer] && !item.print);
+      invoice.content.filter(item => item.printer[printer]) :
+      invoice.content.filter(item => item.printer[printer] && !item.print);
+
+    //   invoice.modify > 0 && list.forEach(item => {
+    //   console.log(item)
+    //   if (item.new) {
+    //     item.zhCN = "✚ " + item.zhCN;
+    //     item.usEN = "✚ " + item.usEN;
+    //   }
+    // });
 
     if (list.length === 0) return null;
     let content = "";
