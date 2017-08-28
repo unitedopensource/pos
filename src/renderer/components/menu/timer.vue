@@ -54,7 +54,8 @@ export default {
             time: moment().format('HHmm').split(""),
             componentData: null,
             component: null,
-            ahead: true
+            ahead: true,
+            current: +new Date()
         }
     },
     methods: {
@@ -67,16 +68,15 @@ export default {
         },
         sub(i) {
             let num = ~~this.time[i];
-            num = num > 1 ? num - 1 : 0;
+            num = num > 0 ? num - 1 : 9;
             this.time.splice(i, 1, num);
         },
         confirm() {
-            let hour = this.time[0] + this.time[1];
-            let minute = this.time[2] + this.time[3];
-            console.log(hour, minute)
-            let current = moment();
-            let schedule = moment().startOf('day').hour(hour).minute(minute);
-            schedule.isAfter(current) ? this.confirmTime(schedule) : this.timeError();
+            let hour = Number(String(this.time[0]) + String(this.time[1]));
+            let minute = Number(String(this.time[2]) + String(this.time[3]));
+            let schedule = moment().hour(hour).minute(minute);
+            this.ahead && schedule.subtract(10, 'minutes');
+            schedule > this.current ? this.confirmTime(schedule) : this.timeError();
         },
         timeError() {
             this.$dialog({

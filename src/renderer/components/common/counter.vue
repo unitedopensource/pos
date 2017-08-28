@@ -1,9 +1,10 @@
 <template>
-    <div class="popupMask center dark" @click.self="init.reject(false)">
+    <div class="popupMask center dark">
         <div class="window">
             <header class="title">
-                <span>{{text('CASH_IN_COUNT')}}</span>
+                <span>{{$t('text.cashInCount')}}</span>
                 <span class="cash">$ {{amount.toFixed(2)}}</span>
+                <i class="fa fa-times" @click="init.reject"></i>
             </header>
             <section class="inner">
                 <aside>
@@ -63,15 +64,20 @@
                 </section>
             </section>
             <footer>
-                <div class="btn" @click="confirm">{{$t('dialog.confirm')}}</div>
+                <div class="f1">
+                    <checkbox v-model="detail" label="text.recordDetail"></checkbox>
+                </div>
+                <div class="btn" @click="confirm">{{$t('button.confirm')}}</div>
             </footer>
         </div>
     </div>
 </template>
 
 <script>
+import checkbox from '../setting/common/checkbox'
 export default {
     props: ['init'],
+    components:{ checkbox },
     data() {
         return {
             hundred: 0,
@@ -85,7 +91,8 @@ export default {
             nickel: 0,
             penny: 0,
             anchor: '',
-            reset: true
+            reset: true,
+            detail:false
         }
     },
     mounted() {
@@ -178,5 +185,10 @@ section.numpad {
 .del {
     width: 222px;
     background: #78909C;
+}
+
+.f1{
+    display: flex;
+    align-items: center;
 }
 </style>

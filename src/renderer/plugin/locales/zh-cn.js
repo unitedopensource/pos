@@ -535,7 +535,9 @@ export default {
         'report': '报表',
         'order': '订单',
         'insert':'插入',
-        'queueItem':'{i} 个物品在队列中'
+        'queueItem':'{i} 个物品在队列中',
+        'cashInCount':'起始现金',
+        'recordDetail':'详细记录'
     },
     setting: {
         'softwareSetting': 'UnitedPOS 后台设置',

@@ -152,6 +152,7 @@ export default {
       let _id = this.spooler[i]._id;
       let items = [];
       this.spooler[i].content.forEach(item => { items.push(item.unique) });
+      Printer.buzzer('cashier');
       Printer.init(this.config).setJob("receipt").print(this.spooler[0]);
       this.removeSpooler(i);
       let index = this.history.findIndex(order => order._id === _id);

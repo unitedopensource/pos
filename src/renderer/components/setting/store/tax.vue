@@ -10,7 +10,7 @@
             </article>
         </section>
         <section class="card list">
-            <header>{{$t('taxClass')}}
+            <header>{{$t('text.taxClass')}}
                 <span class="tip"></span>
             </header>
             <div class="header">

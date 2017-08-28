@@ -162,7 +162,7 @@ export default {
         'reservation': 'RESV',
         'viewList': 'View',
         'switchTable': 'Switch T.',
-        'combineTable': 'Combine T.',
+        'combineTable': 'Comb. T.',
         'receipt': 'Receipt',
         'clearTable': 'Clear T.',
         'removePayment': 'Remove Payment',
@@ -535,7 +535,9 @@ export default {
         'report': 'Report',
         'order': 'Order',
         'insert':'Insert',
-        'queueItem':'{i} Items in queue'
+        'queueItem':'{i} Items in queue',
+        'cashInCount':'Cash In Count',
+        'recordDetail':'Record Detail'
     },
     setting: {
         'softwareSetting': 'UnitedPOS Setting',
