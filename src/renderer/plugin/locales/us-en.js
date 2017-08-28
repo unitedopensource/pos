@@ -173,7 +173,8 @@ export default {
         'printReceipt': 'Print Receipt',
         'deleteOrder': 'Delete Order',
         'paidInFull': 'Paid In Full',
-        'splitPay': 'Split Pay'
+        'splitPay': 'Split Pay',
+        'create':'Create'
     },
     menu: {
         'course': 'Course',
@@ -538,7 +539,10 @@ export default {
         'insert':'Insert',
         'queueItem':'{i} Items in queue',
         'cashInCount':'Cash In Count',
-        'recordDetail':'Record Detail'
+        'recordDetail':'Record Detail',
+        'date':'Date',
+        'time':'Time',
+        'note':'Note'
     },
     setting: {
         'softwareSetting': 'UnitedPOS Setting',
@@ -649,6 +653,13 @@ export default {
         'editItem':'Edit Item'
     },
     reservation: {
-
+        'create':'Create Reservation',
+        'edit':'Edit Reservation',
+        'date':'Book Date',
+        'walkIn':'Walk In',
+        'phone':'Phone',
+        'name':'Customer Name',
+        'guest':'Party Size',
+        'number':'Current ticket number'
     }
 }

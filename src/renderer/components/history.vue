@@ -16,7 +16,7 @@
                         </span>
                         <span class="address">{{ticket.customer.address}}</span>
                         <span class="phone">{{ticket.customer.phone | dot}}</span>
-                        <span class="total">$ {{(ticket.payment.total - ticket.payment.discount) | decimal}}</span>
+                        <span class="total">$ {{ticket.payment.due.toFixed(2)}}</span>
                     </div>
                 </div>
                 <div class="pagination" v-if="totalPage > 1">

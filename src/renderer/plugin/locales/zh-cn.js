@@ -173,7 +173,8 @@ export default {
         'printReceipt': '打印收据',
         'deleteOrder': '删除订单',
         'paidInFull':'合单付款',
-        'splitPay':'分单付款'
+        'splitPay':'分单付款',
+        'create':'创建'
     },
     menu: {
         'course': '定时',
@@ -538,7 +539,10 @@ export default {
         'insert':'插入',
         'queueItem':'{i} 个物品在队列中',
         'cashInCount':'起始现金',
-        'recordDetail':'详细记录'
+        'recordDetail':'详细记录',
+        'date':'日期',
+        'time':'时间',
+        'note':'备注'
     },
     setting: {
         'softwareSetting': 'UnitedPOS 后台设置',
@@ -649,6 +653,13 @@ export default {
         'editItem':'编辑物品'
     },
     reservation: {
-
+        'create':'创建预约',
+        'edit':'编辑预约',
+        'date':'预约日期',
+        'walkIn':'外等',
+        'phone':'电话预约',
+        'name':'名字',
+        'guest':'人数',
+        'number':'当前等待号码'
     }
 }

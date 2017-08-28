@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="reservation">
         
     </div>
 </template>
@@ -11,5 +11,7 @@ export default{
 </script>
 
 <style scoped>
-
+.reservation{
+    flex:1;
+}
 </style>

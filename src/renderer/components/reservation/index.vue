@@ -13,15 +13,15 @@
                     <nav class="tab">
                         <div>
                             <input type="radio" name="tab" v-model="tab" :value="0" id="reservation">
-                            <label for="reservation">Reservation</label>
+                            <label for="reservation">{{$t('button.reservation')}}</label>
                         </div>
                         <div>
                             <input type="radio" name="tab" v-model="tab" :value="1" id="wait">
-                            <label for="wait">Wait List</label>
+                            <label for="wait">{{$t('button.viewList')}}</label>
                         </div>
                     </nav>
                 </div>
-                <i class="fa fa-plus add"></i>
+                <i class="fa fa-plus add" @click="create"></i>
             </header>
             <reservation v-if="tab === 0"></reservation>
             <wait-list v-else></wait-list>
@@ -56,7 +56,10 @@ export default {
                 time !== this.sync && console.log("SYNC REQUIRED");
                 time !== this.sync && this.$socket.emit("[SYNC] RESERVATION_LIST")
             })
-        }
+        },
+        create() {
+            this.$p("editor")
+        },
     },
     computed: {
         ...mapGetters(['sync', 'reservation'])
@@ -78,6 +81,7 @@ export default {
     height: 738px;
     display: flex;
     flex-direction: column;
+    border-left: 1px solid #E0E0E0;
     background: url(../../assets/image/grid.png) #ebeff1;
 }
 
@@ -102,7 +106,7 @@ header {
 
 .calendar i {
     color: #03A9F4;
-    padding: 5px 25px;
+    padding: 0 25px;
     border-radius: 4px;
     width: 25px;
     text-align: center;
