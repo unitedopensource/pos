@@ -906,7 +906,7 @@ export default {
             array.push(preset.slice(index, index + 6));
             this.quickInput = [].concat.apply([], array);
         },
-        poleDisplay() {
+        poleDisplay(line1,line2) {
             if (!this.device.poleDisplay) return;
             poleDisplay.write('\f');
             poleDisplay.write(line(line1, line2));

@@ -73,7 +73,7 @@ export default {
         confirm() {
             let hour = this.time[0] + this.time[1];
             let minute = this.time[2] + this.time[3];
-            console.log(hour,minute)
+            console.log(hour, minute)
             let current = moment();
             let schedule = moment().startOf('day').hour(hour).minute(minute);
             schedule.isAfter(current) ? this.confirmTime(schedule) : this.timeError();
@@ -101,6 +101,7 @@ export default {
                     number: this.ticket.number,
                     modify: 0,
                     time: +new Date(),
+                    delay: +schedule,
                     status: 1,
                     date: today(),
                     schedule: +schedule,

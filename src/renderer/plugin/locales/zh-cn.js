@@ -534,7 +534,8 @@ export default {
         'cashDrawer': '钱箱',
         'report': '报表',
         'order': '订单',
-        'insert':'插入'
+        'insert':'插入',
+        'queueItem':'{i} 个物品在队列中'
     },
     setting: {
         'softwareSetting': 'UnitedPOS 后台设置',

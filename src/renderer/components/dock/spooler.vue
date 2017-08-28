@@ -7,10 +7,9 @@
                     <div class="f1">
                         <span class="invoice">{{invoice.number}}</span>
                         <span>{{$t('type.'+invoice.type)}}</span>
-                        <span>{{$t(invoice.course)}}</span>
+                        <span>{{invoice.course}}</span>
                     </div>
-    
-                    <span class="items" :title="invoice.content | tooltip(language)">{{$t('ITEM_PENDING',invoice.content.length)}}</span>
+                    <span class="items" :title="invoice.content | tooltip(language)">{{$t('text.queueItem',invoice.content.length)}}</span>
                     <i class="fa fa-print" @click="print(index)"></i>
                 </li>
             </ul>

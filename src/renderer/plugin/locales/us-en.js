@@ -534,7 +534,8 @@ export default {
         'cashDrawer': 'Cash Drawer',
         'report': 'Report',
         'order': 'Order',
-        'insert':'Insert'
+        'insert':'Insert',
+        'queueItem':'{i} Items in queue'
     },
     setting: {
         'softwareSetting': 'UnitedPOS Setting',
