@@ -119,7 +119,7 @@ export default {
         } else {
           poleDisplay.write('\f');
           poleDisplay.write(line("United POS", "[888] 299-0524"));
-          //window.poleDisplay = poleDisplay;
+          window.poleDisplay = poleDisplay;
         }
       })
     },
