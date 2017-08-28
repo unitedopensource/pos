@@ -70,7 +70,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import reservation from './table/reservation'
+import resv from './reservation/index'
 import orderList from './common/orderList'
 import dialoger from './common/dialoger'
 import payment from './payment/payment'
@@ -80,7 +80,7 @@ import Printer from '../print'
 
 export default {
   components: {
-    setup, split, dialoger, reservation, payment, orderList
+    setup, split, dialoger, resv, payment, orderList
   },
   data() {
     return {
@@ -273,11 +273,11 @@ export default {
       }).then(() => { this.$q() })
     },
     getReservation() {
-      this.$p("reservation");
+      this.$p("resv")
     },
     split() {
       if (!this.order) return;
-      this.$p("split");
+      this.$p("split")
     },
     seated(guest) {
       this.setTicket({ type: "DINE_IN" });

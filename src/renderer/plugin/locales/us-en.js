@@ -330,6 +330,7 @@ export default {
         'giftCard': 'Gift Card',
         'debitCard': 'Debit Card',
         'number': 'Card Number',
+        'giftCardNumber':'Gift card number ({i})',
         'securityCode': 'Security',
         'zipCode': 'Zip Code',
         'expirationDate': 'Expiration Date',

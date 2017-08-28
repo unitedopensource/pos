@@ -42,7 +42,7 @@ export default {
 
 <style scoped>
 .spooler {
-    min-width: 303px;
+    min-width: 302px;
     font-size: 16px;
     position: absolute;
     right: 0px;
@@ -51,6 +51,7 @@ export default {
     height: 728px;
     color: #424242;
     padding: 5px;
+    border-left: 1px solid rgba(38, 50, 56, 0.32);
 }
 
 li {

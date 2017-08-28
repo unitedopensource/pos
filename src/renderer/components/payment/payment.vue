@@ -167,10 +167,11 @@ import GiftCard from './giftCard'
 import Printer from '../../print'
 import Reloader from './Reloader'
 import Discount from './discount'
+import Inputter from './inputter'
 import Tips from './tips'
 export default {
     props: ['init'],
-    components: { Dialoger, Reloader, Discount, CreditCard, GiftCard, Tips, Splitter },
+    components: { Dialoger, Reloader, Discount, CreditCard, GiftCard, Tips, Splitter, Inputter },
     data() {
         return {
             componentData: null,
@@ -421,6 +422,40 @@ export default {
                 this.component = "CreditCard";
             }).then((data) => { this.creditAccept(data) }).catch((reason) => { this.creditReject(reason) });
         },
+        chargeGift() {
+            if (parseFloat(this.paid) === 0) return;
+            if (this.paid > this.payment.due)
+                this.paid = (parseFloat(this.payment.due) - parseFloat(this.payment.paid)).toFixed(2);
+
+            if (this.giftCard.balance > this.paid) {
+                this.poleDisplay("Paid Gift Card", "Thank You");
+                this.payment.paid += parseFloat(this.paid);
+                let change = this.payment.change = Math.max(0, (this.paid - this.payment.balance)).toFixed(2);
+                let balance = this.payment.balance = Math.max(0, (this.payment.due - this.payment.paid)).toFixed(2);
+
+                this.payment.log.push({
+                    type: "GIFT",
+                    paid: this.paid,
+                    change: 0,
+                    balance: balance.toFixed(2)
+                });
+                let activity = {
+                    date: today(),
+                    time: +new Date,
+                    amount: this.paid,
+                    balance,
+                    type: 'GIFT',
+                    op: this.op.name
+                };
+                this.$socket.emit("[GIFTCARD] CARD_ACTIVITY", {
+                    _id: this.giftCard._id,
+                    value: balance,
+                    activity
+                });
+                this.payment.settled = true;
+                this.invoicePaid(this.paid, 0, 'GIFT');
+            }
+        },
         creditAccept(trans) {
             this.payment.paid += parseFloat(trans.amount.approve);
             this.payment.balance = Math.max(0, (this.payment.due - this.payment.paid)).toFixed(2);
@@ -552,75 +587,23 @@ export default {
             this.poleDisplay("Gift Card Balance:", ["", this.giftCard.balance.toFixed(2)])
             Printer.init(this.config).setJob("balance").print(this.giftCard);
         },
-        activateGiftCard() {
-            // new Promise((resolve, reject) => {
-            //     let title = "INIT_AMOUNT";
-            //     this.componentData = { title, resolve, reject };
-            //     this.component = "Inputter";
-            // }).then((initialAmount) => {
-            //     this.recordCashDrawerAction(parseFloat(initialAmount), 0);
-            //     let card = Preset.giftCard(number, this.op.name, initialAmount, 0);
-            //     if (this.customer._id) {
-            //         card = Object.assign(card, { customer: this.customer._id })
-            //     }
-            //     this.giftCard = card;
-            //     this.$socket.emit("[GIFTCARD] CARD_ACTIVATION", card);
-            //     Printer.init(this.config).setJob("activation").print(card);
-            //     this.$q();
-            // }).catch(() => { this.$q() })
-        },
-        chargeGift() {
-            if (parseFloat(this.paid) === 0) return;
-            if (this.giftCard.balance > this.paid) {
-                this.poleDisplay("PAID by Gift Card", "Thank You");
-                let balance = Math.max(0, (this.payment.due - this.paid)).toFixed(2);
-                this.payment.log.push({
-                    type: "GIFT",
-                    paid: this.paid,
-                    change: 0,
-                    balance
-                });
-                let activity = {
-                    date: today(),
-                    time: +new Date,
-                    amount: this.paid,
-                    balance,
-                    type: 'DEBET',
-                    op: this.op.name
-                };
-                let remain = this.giftCard.balance - this.paid;
-                this.$socket.emit("[GIFTCARD] CARD_ACTIVITY", {
-                    _id: this.giftCard._id,
-                    value: remain,
-                    activity
-                });
-                this.payment.settled = true;
-                this.summarize({ print: true });
-            } else {
-                //insufficient fund
-                let balance = (Math.abs(this.giftCard.balance - this.paid)).toFixed(2);
-                this.poleDisplay("Gift Card NSF", ["Due:", balance]);
-                this.payment.log.push({
-                    type: "GIFT",
-                    paid: this.paid,
-                    change: 0,
-                    balance
-                });
-                let activity = {
-                    date: today(),
-                    time: +new Date,
-                    amount: this.paid,
-                    balance,
-                    type: 'DEBET',
-                    op: this.op.name
-                };
-                let remain = Math.max(0, (this.giftCard.balance - this.paid));
-                this.$socket.emit("[GIFTCARD] CARD_ACTIVITY", {
-                    _id: this.giftCard._id,
-                    value: remain,
-                    activity
-                });
-            }
+        activateGiftCard(number) {
+            new Promise((resolve, reject) => {
+                let title = "text.initialAmount";
+                this.componentData = { title, resolve, reject };
+                this.component = "Inputter"
+            }).then((initialAmount) => {
+                this.recordCashDrawerAction(parseFloat(initialAmount), 0);
+                let card = Preset.giftCard(number, this.op.name, initialAmount, 0);
+                console.log(card)
+                if (this.customer._id) {
+                    card = Object.assign(card, { customer: this.customer._id })
+                }
+                this.giftCard = card;
+                this.$socket.emit("[GIFTCARD] CARD_ACTIVATION", card);
+                Printer.init(this.config).setJob("activation").print(card);
+                this.$q()
+            }).catch(() => { this.$q() })
         },
         setQuickInput(value) {
             this.paid = value.toFixed(2);
@@ -906,7 +889,7 @@ export default {
             array.push(preset.slice(index, index + 6));
             this.quickInput = [].concat.apply([], array);
         },
-        poleDisplay(line1,line2) {
+        poleDisplay(line1, line2) {
             if (!this.device.poleDisplay) return;
             poleDisplay.write('\f');
             poleDisplay.write(line(line1, line2));
@@ -928,6 +911,11 @@ export default {
         },
         ...mapGetters(['op', 'app', 'config', 'ticket', 'order', 'store', 'device', 'tables', 'station', 'customer', 'currentTable'])
     },
+    watch: {
+        'giftCard.number'(n) {
+            n && n.replace(/[^0-9]/g, '').length === 16 && this.$socket.emit("[GIFTCARD] QUERY_CARD", n.replace(/[^0-9]/g, ''));
+        }
+    },
     filters: {
         cc: {
             read(value) {
@@ -943,6 +931,25 @@ export default {
         },
         exp(date) {
             return date.replace(/(.{2})/, '$1 / ')
+        }
+    },
+    sockets: {
+        GIFT_CARD_RESULT(card) {
+            this.giftCard = card;
+            this.$q()
+        },
+        GIFT_CARD_NOT_FOUND(number) {
+            this.$dialog({
+                title: "card.activation",
+                msg: ["card.giftCardNumber", number.replace(/(.{4})(.{4})(.{4})(.{4})/g, '$1 $2 $3 $4')],
+                buttons: [{ text: "button.cancel", fn: "reject" }, { text: "button.activation", fn: "resolve" }]
+            }).then(resolve => {
+                this.activateGiftCard(number)
+            }).catch(() => {
+                this.giftCard.number = "";
+                this.giftCard.balance = "0.00";
+                this.$q();
+            })
         }
     }
 }

@@ -634,11 +634,9 @@ Printer.prototype.printGiftCard = function (type, card) {
     if (printers.hasOwnProperty(i))
       printer.push(i);
   }
-  let name = printer.findIndex(name => printers[name].print['PAYMENT'] === true);
-  printer = printer[name];
   this.printer.PRINT_INIT(this.job);
   this.printer.ADD_PRINT_HTM(0, 0, "100%", "100%", (html + style));
-  this.printer.SET_PRINTER_INDEX(printer);
+  this.printer.SET_PRINTER_INDEX(this.findPrinterFor('PAYMENT'));
   this.printer.PRINT();
 };
 Printer.prototype.printReport = function (data) {

@@ -330,6 +330,7 @@ export default {
         'giftCard': '礼物卡',
         'debitCard': '借记卡',
         'number': '卡号',
+        'giftCardNumber':'礼物卡号 ({i})',
         'securityCode': '安全号',
         'zipCode': '邮编',
         'expirationDate': '过期日期',

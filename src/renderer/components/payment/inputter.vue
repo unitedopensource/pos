@@ -2,7 +2,7 @@
     <div class="popupMask center dark" @click.self="init.reject">
         <div class="inputer window">
             <header class="title">
-                <span>{{$t('card.reload')}}</span>
+                <span>{{$t(init.title)}}</span>
                 <i class="fa fa-times" @click="init.reject"></i>
             </header>
             <div class="inner">
@@ -30,18 +30,12 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import Printer from '../../print'
 export default {
-    props: ['init'],
+    props:['init'],
     data() {
         return {
-            value: "",
-            giftCard: null
+            value: ""
         }
-    },
-    created() {
-        this.giftCard = Object.assign({}, this.init.giftCard)
     },
     methods: {
         input(string) {
@@ -51,40 +45,8 @@ export default {
             this.value = this.value.slice(0, -1);
         },
         done() {
-            if (!isNumber(this.value)) return;
-            let value = parseFloat(this.value)
-            this.recordCashDrawerAction(value, 0);
-            let activity = {
-                date: today(),
-                time: +new Date,
-                amount: value,
-                balance: (this.giftCard.balance + value),
-                type: 'RELOAD',
-                op: this.op.name,
-                ticket: this.ticket
-            };
-            this.giftCard.reload = value.toFixed(2);
-            this.giftCard.balance = (this.giftCard.balance + value).toFixed(2);
-            Printer.init(this.config).setJob("reload").print(this.giftCard);
-            this.$socket.emit("[GIFTCARD] RELOAD", { _id: this.giftCard._id, value, activity });
-            this.init.resolve();
-        },
-        recordCashDrawerAction(inflow, outflow) {
-            Printer.init(this.config).openCashDrawer();
-            let cashDrawer = this.store.stuffBank ? this.op.name : this.station.cashDrawer.name;
-            let activity = {
-                type: "CASHFLOW",
-                inflow,
-                outflow,
-                time: +new Date,
-                ticket: this.ticket,
-                operator: this.op.name
-            }
-            this.$socket.emit("[CASHFLOW] NEW_ACTIVITY", { cashDrawer, activity });
+            isNumber(this.value) && this.init.resolve(parseFloat(this.value));
         }
-    },
-    computed: {
-        ...mapGetters(['op', 'config', 'ticket', 'store', 'station'])
     }
 }
 </script>
