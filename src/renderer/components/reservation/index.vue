@@ -13,11 +13,11 @@
                     <nav class="tab">
                         <div>
                             <input type="radio" name="tab" v-model="tab" :value="0" id="reservation">
-                            <label for="reservation">{{$t('button.reservation')}}</label>
+                            <label for="reservation">{{$t('reservation.timeline')}}</label>
                         </div>
                         <div>
                             <input type="radio" name="tab" v-model="tab" :value="1" id="wait">
-                            <label for="wait">{{$t('button.viewList')}}</label>
+                            <label for="wait">{{$t('reservation.list')}}</label>
                         </div>
                     </nav>
                 </div>

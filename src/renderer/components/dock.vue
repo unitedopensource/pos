@@ -275,6 +275,7 @@ export default {
       'removeSpooler',
       'updateMenuItem',
       'removeMenuItem',
+      'newReservation',
       'updateTableInfo',
       'resetCurrentTable',
       'updateRequestItem',
@@ -346,6 +347,7 @@ export default {
     MENU_ITEM_REMOVE(data) { this.removeMenuItem(data) },
     UPDATE_TABLE_SECTION(data) { this.updateTableSection(data) },
     UPDATE_TABLE_INFO(data) { this.updateTableInfo(data) },
+    NEW_RESERVATION(data){ this.newReservation(data) },
     disconnect() {
       this.setApp({ database: false });
       this.$p("notifier")

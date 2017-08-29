@@ -47,7 +47,6 @@ export default {
             this.hours = hours
         },
         getOption(book, e) {
-            console.log(book, e)
             this.$p("contextMenu", { left: e.pageX, top: e.pageY - 20 })
         }
     },
@@ -61,6 +60,11 @@ export default {
     },
     computed: {
         ...mapGetters(['reservation'])
+    },
+    sockets:{
+        NEW_RESERVATION(){
+            this.initial()
+        }
     }
 }
 </script>
@@ -68,12 +72,14 @@ export default {
 <style scoped>
 .reservation {
     flex: 1;
+    overflow:hidden;
 }
 
 .frame {
     display: flex;
     flex-direction: row;
     height: 100%;
+    width: 3000px;
 }
 
 h3.hour {

@@ -6,7 +6,7 @@
                 <span class="text">{{$t('reservation.seat')}}</span>
             </li>
             <li>
-                <i class="fa fa-mobile"></i>
+                <i class="fa fa-commenting"></i>
                 <span class="text">{{$t('reservation.sentSMS')}}</span>
             </li>
             <li>
@@ -17,13 +17,17 @@
                 <i class="fa fa-pencil-square"></i>
                 <span class="text">{{$t('reservation.edit')}}</span>
             </li>
+            <!-- <li>
+                <i class="fa fa-paperclip"></i>
+                <span class="text">{{$t('reservation.arrival')}}</span>
+            </li> -->
             <li>
                 <i class="fa fa-paperclip"></i>
                 <span class="text">{{$t('reservation.inactive')}}</span>
             </li>
             <li>
                 <i class="fa fa-trash-o"></i>
-                <span class="text">{{$t('reservation.remove')}}</span>
+                <span class="text">{{$t('reservation.cancel')}}</span>
             </li>
         </ul>
     </div>
@@ -38,7 +42,6 @@ export default {
             top: top + 'px',
             left: left + 'px'
         }
-        console.log(this.pos)
     },
     data() {
         return {
@@ -48,6 +51,9 @@ export default {
             }
         }
     },
+    methods: {
+
+    }
 }
 </script>
 

@@ -44,7 +44,7 @@ export default {
         return {
             ui: null,
             icons: ['fa-user', 'fa-phone', 'fa-car', 'fa-cutlery', 'fa-list', 'fa-inbox', 'fa-cog', 'fa-lock'],
-            routes: ['sale', 'order', 'pickup', 'delivery', 'table', 'buffet', 'history', 'setting', 'cashDrawer', 'lock']
+            routes: ['sale', 'order', 'pickup', 'delivery', 'table', 'buffet', 'history','pickupList', 'setting', 'cashDrawer', 'lock']
         }
     },
     created() {

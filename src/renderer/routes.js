@@ -62,6 +62,11 @@ export default [{
     component: require('./components/lock')
   },
   {
+    path: 'list',
+    name: 'PickupList',
+    component: require('./components/pickup')
+  },
+  {
     path: 'setting',
     component: require('./components/setting'),
     children: [{

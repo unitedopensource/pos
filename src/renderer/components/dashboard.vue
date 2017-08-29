@@ -81,7 +81,8 @@ export default {
               buttons: [{ text: 'button.confirm', fn: 'resolve' }]
             }).then(() => { this.$q() })
           break;
-        case "pickup list":
+        case "pickupList":
+          this.$router.push({ path: '/main/list' })
           break;
         case "history":
           this.$router.push({ path: '/main/history' })

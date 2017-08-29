@@ -377,3 +377,8 @@ export const removeTable = ({
 }, data) => {
   commit(types.REMOVE_TABLE, data)
 }
+export const newReservation = ({
+  commit
+}, data) => {
+  commit(types.NEW_RESERVATION, data)
+}

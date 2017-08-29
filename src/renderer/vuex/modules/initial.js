@@ -199,6 +199,9 @@ const mutations = {
     [types.REMOVE_TABLE](state, data) {
         let { section, index } = data;
         state.config.layout.table[section].item.splice(index, 1)
+    },
+    [types.NEW_RESERVATION](state, data) {
+        state.reservation.push(data)
     }
 }
 

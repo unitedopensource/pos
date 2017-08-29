@@ -813,6 +813,12 @@ export default {
                     this.init.resolve();
                     this.clearTable(ticket);
                     break;
+                case "PickupList":
+                    this.resetMenu();
+                    this.init.resolve();
+                    break;
+                default:
+                    this.init.resolve();
             }
         },
         clearTable(ticket) {
