@@ -36,12 +36,11 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import dialoger from '../common/dialoger'
-import payment from '../payment/payment'
 import splitList from './splitList'
 import Printer from '../../print'
 export default {
     props: ['init'],
-    components: { splitList, payment, dialoger },
+    components: { splitList, dialoger },
     data() {
         return {
             page: 0,
@@ -57,6 +56,9 @@ export default {
     },
     created() {
         this.initial();
+    },
+    beforeCreate() {
+        this.$options.components.payment = require('../payment/payment');
     },
     methods: {
         initial() {
@@ -172,7 +174,7 @@ export default {
             new Promise((resolve, reject) => {
                 this.componentData = { payment, index: split - 1, resolve, reject };
                 this.component = "payment";
-            }).then(result => {
+            }).then((result) => {
                 this.$q();
                 this.splitPayment[split] = result;
                 this.$bus.emit("SPLIT_PAID", split);

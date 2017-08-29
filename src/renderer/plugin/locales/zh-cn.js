@@ -174,7 +174,8 @@ export default {
         'deleteOrder': '删除订单',
         'paidInFull':'合单付款',
         'splitPay':'分单付款',
-        'create':'创建'
+        'create':'创建',
+        'apply':'应用'
     },
     menu: {
         'course': '定时',

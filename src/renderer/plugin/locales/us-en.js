@@ -174,7 +174,8 @@ export default {
         'deleteOrder': 'Delete Order',
         'paidInFull': 'Paid In Full',
         'splitPay': 'Split Pay',
-        'create':'Create'
+        'create':'Create',
+        'apply':'Apply'
     },
     menu: {
         'course': 'Course',
