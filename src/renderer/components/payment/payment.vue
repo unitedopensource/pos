@@ -595,7 +595,6 @@ export default {
             }).then((initialAmount) => {
                 this.recordCashDrawerAction(parseFloat(initialAmount), 0);
                 let card = Preset.giftCard(number, this.op.name, initialAmount, 0);
-                console.log(card)
                 if (this.customer._id) {
                     card = Object.assign(card, { customer: this.customer._id })
                 }
@@ -614,21 +613,25 @@ export default {
             let paidCash = 0, paidCredit = 0, paidGift = 0;
             this.payment.settled = true;
             delete customer.extra;
-            Object.assign(order, {
-                payment: this.payment,
-                customer,
-                type: this.isNewTicket ? this.ticket.type : this.order.type,
-                number: this.isNewTicket ? this.ticket.number : this.order.number,
-                station: this.station.alies,
-                cashier: this.op.name,
-                source: "POS",
-                modify: this.isNewTicket ? 0 : this.order.modify + 1,
-                status: 1,
-                time: this.isNewTicket ? +new Date() : this.order.time,
-                date: today(),
-                settled: true,
-                print: true
-            });
+            this.isNewTicket ?
+                Object.assign(order, {
+                    payment: this.payment,
+                    customer,
+                    type: this.ticket.type,
+                    station: this.station.alies,
+                    cashier: this.op.name,
+                    source: "POS",
+                    modify: 0,
+                    status: 1,
+                    date: today(),
+                    settled: true,
+                    print: true
+                }) : Object.assign(order, {
+                    payment: this.payment,
+                    cashier: this.op.name,
+                    settled: true,
+                    print: true
+                });
 
             order.payment.log.forEach(trans => {
                 switch (trans.type) {
@@ -814,7 +817,6 @@ export default {
                     this.clearTable(ticket);
                     break;
                 case "PickupList":
-                    this.resetMenu();
                     this.init.resolve();
                     break;
                 default:

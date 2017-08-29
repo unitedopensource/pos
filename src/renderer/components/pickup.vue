@@ -73,7 +73,7 @@ export default {
     },
     methods: {
         display(ticket) {
-            this.setOrder(ticket)
+            this.setOrder(JSON.parse(JSON.stringify(ticket)))
         },
         edit() {
             this.setTicket({ type: this.order.type, number: this.order.number });
@@ -85,7 +85,7 @@ export default {
             this.$p("payment")
         },
         print() {
-            let order = Object.assign({}, this.order);
+            let order = JSON.parse(JSON.stringify(this.order))
             Printer.init(this.config).setJob("receipt").print(order);
             order.content.forEach(item => {
                 delete item.new;
@@ -119,7 +119,7 @@ export default {
     },
     computed: {
         invoices() {
-            return this.history.filter(ticket => ticket.status === 1 && !ticket.settled && ticket.type === 'WALK_IN' || ticket.type === 'PICK_UP')
+            return this.history.filter(ticket => ticket.status === 1 && !ticket.settled && (ticket.type === 'WALK_IN' || ticket.type === 'PICK_UP'))
         },
         ...mapGetters(['config', 'order', 'history'])
     }
