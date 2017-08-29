@@ -664,6 +664,11 @@ export default {
         'phone':'电话预约',
         'name':'名字',
         'guest':'人数',
-        'number':'当前等待号码'
+        'number':'当前等待号码',
+        'seat':'入座',
+        'sentSMS':'发送消息',
+        'reprint':'重新打印',
+        'remove':'移除',
+        'inactive':''
     }
 }

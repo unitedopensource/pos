@@ -18,7 +18,7 @@
                 <fieldset v-show="!manual">
                     <legend>{{$t('text.contain')}}</legend>
                     <div class="options">
-                        <checkbox :label="name" v-model="contain" v-for="(name,index) in categories" :multiple="true" :key="index"></checkbox>
+                        <checkbox :label="name" v-model="contain" :val="name" v-for="(name,index) in categories" :multiple="true" :key="index"></checkbox>
                     </div>
                 </fieldset>
             </div>
@@ -26,7 +26,7 @@
                 <div class="f1">
                     <checkbox label="text.manualInput" v-model="manual" @input="trigger"></checkbox>
                 </div>
-                <div class="btn" @click="exit" id="cancelEdit">{{$t('button.cancel')}}</div>
+                <div class="btn" @click="init.reject" id="cancelEdit">{{$t('button.cancel')}}</div>
                 <div class="btn" @click="confirm" id="confirmEdit">{{$t('button.confirm')}}</div>
             </footer>
         </div>
@@ -54,9 +54,6 @@ export default {
         }
     },
     methods: {
-        exit() {
-            this.init.reject();
-        },
         trigger() {
             this.contains = this.contain.join(",");
         },

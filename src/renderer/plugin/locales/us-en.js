@@ -664,6 +664,11 @@ export default {
         'phone':'Phone',
         'name':'Customer Name',
         'guest':'Party Size',
-        'number':'Current ticket number'
+        'number':'Current ticket number',
+        'seat':'Seat',
+        'sentSMS':'Sent SMS',
+        'reprint':'Reprint',
+        'remove':'Remove',
+        'inactive':'Set Inactive'
     }
 }
