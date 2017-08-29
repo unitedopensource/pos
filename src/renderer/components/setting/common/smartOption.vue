@@ -11,13 +11,18 @@
 export default {
     props: ['value', 'label', 'tip', 'options'],
     created() {
-        this.data = this.options.map(option => {
-            return typeof option === 'string' ? { label: option, value: option } : option;
-        });
+        this.data = this.options.map(option => typeof option === 'string' ? { label: option, value: option } : option)
     },
     data() {
         return {
             data: null
+        }
+    },
+    watch: {
+        'options': {
+            handler(n) {
+                this.data = this.options.map(option => typeof option === 'string' ? { label: option, value: option } : option)
+            }, deep: true
         }
     }
 }

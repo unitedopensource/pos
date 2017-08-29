@@ -542,7 +542,9 @@ export default {
         'recordDetail':'Record Detail',
         'date':'Date',
         'time':'Time',
-        'note':'Note'
+        'note':'Note',
+        'labelPrinter':'Label Printer',
+        'autoAdd':'Auto Add'
     },
     setting: {
         'softwareSetting': 'UnitedPOS Setting',
@@ -650,7 +652,8 @@ export default {
         'timeCardActivityTip': 'Employee time card activity record',
         'display': 'Display',
         'newItem':'New Item',
-        'editItem':'Edit Item'
+        'editItem':'Edit Item',
+        'newPrinter':'New Printer'
     },
     reservation: {
         'create':'Create Reservation',

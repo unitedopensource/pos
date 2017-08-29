@@ -109,9 +109,11 @@ var Preset = function () {
       },
       "control": {
         "printPrimary": true,
-        "primaryFont": "Qing Yuan",
+        "primaryFont": "QingYuan",
         "primaryFontSize": "19",
+        "printPrimaryPrice":false,
         "printSecondary": true,
+        "printSecondaryPrice":true,
         "secondaryFont": "Agency FB",
         "secondaryFontSize": "16",
         "sortItem": true,
@@ -190,10 +192,5 @@ var Preset = function () {
     }
   }
 };
-function today() {
-  let d = new Date();
-  d = d.setHours(d.getHours() - 4);
-  d = new Date(d);
-  return `${d.getFullYear()}-${("0" + (d.getMonth() + 1)).slice(-2)}-${("0" + d.getDate()).slice(-2)}`;
-}
+
 module.exports = new Preset();

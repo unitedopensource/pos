@@ -542,7 +542,9 @@ export default {
         'recordDetail':'详细记录',
         'date':'日期',
         'time':'时间',
-        'note':'备注'
+        'note':'备注',
+        'labelPrinter':'标签打印机',
+        'autoAdd':'自动添加'
     },
     setting: {
         'softwareSetting': 'UnitedPOS 后台设置',
@@ -650,7 +652,8 @@ export default {
         'timeCardActivityTip': '员工打卡记录列表',
         'display': '显示设置',
         'newItem':'新建物品',
-        'editItem':'编辑物品'
+        'editItem':'编辑物品',
+        'newPrinter':'添加打印机'
     },
     reservation: {
         'create':'创建预约',

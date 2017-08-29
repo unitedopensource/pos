@@ -178,7 +178,7 @@
                 </div>
             </div>
             <aside class="action">
-                <i class="fa fa-plus"></i>
+                <i class="fa fa-plus" @click="newPrinter"></i>
                 <i class="fa fa-trash" @click="removePrinterConfirm"></i>
                 <i class="fa fa-print"></i>
             </aside>
@@ -193,11 +193,12 @@ import smartOption from '../common/smartOption'
 import smartRange from '../common/smartRange'
 import dialoger from '../../common/dialoger'
 import checkbox from '../common/checkbox'
+import Preset from '../../../preset'
+import editor from './editor'
 export default {
-    components: { smartOption, smartRange, checkbox, dialoger },
+    components: { smartOption, smartRange, checkbox, dialoger, editor },
     created() {
-        this.printers = JSON.parse(JSON.stringify(this.config.printer));
-        this.devices = Object.keys(this.printers) || [""];
+        this.initial()
     },
     data() {
         return {
@@ -233,6 +234,10 @@ export default {
         }
     },
     methods: {
+        initial() {
+            this.printers = JSON.parse(JSON.stringify(this.config.printer));
+            this.devices = Object.keys(this.printers) || [""];
+        },
         back() {
             this.$router.push({ name: 'Setting.index' })
         },
@@ -273,8 +278,22 @@ export default {
         },
         save() {
             if (!this.device) return;
-            this.$socket.emit("[CMS] UPDATE_PRINTER", { [this.device]: this.profile });
+            this.$socket.emit("[CMS] SAVE_PRINTERS", { [this.device]: this.profile });
             this.setPrinter({ [this.device]: this.profile });
+        },
+        newPrinter() {
+            new Promise((resolve, reject) => {
+                this.componentData = { resolve, reject };
+                this.component = 'editor';
+            }).then(printer => {
+                this.$q();
+                let profile = Preset.printer();
+                printer.label && (profile.label = true);
+                let printers = Object.assign({}, this.config.printer, { [printer.name]: profile });
+                this.setPrinter(printers);
+                this.initial();
+                this.$socket.emit('[CMS] SAVE_PRINTERS', printers)
+            }).catch(() => { this.$q() })
         },
         ...mapActions(['setPrinter', 'removePrinter'])
     },
@@ -288,8 +307,8 @@ export default {
                 store: control.printStore,
                 type: control.printType,
                 customer: control.printCustomer,
-                primaryPrice: control.primaryPrice,
-                secondaryPrice: control.secondaryPrice,
+                primaryPrice: control.printPrimaryPrice,
+                secondaryPrice: control.printSecondaryPrice,
                 payment: control.printPayment,
                 tip: control.printSuggestion,
                 coupon: control.printCoupon
