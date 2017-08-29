@@ -23,7 +23,7 @@
                                 <div>
                                     <label>{{$t('reservation.name')}}</label>
                                     <div>
-                                        <input type="text" v-model="book.name">
+                                        <input type="text" v-model="book.name" ref="name">
                                     </div>
                                 </div>
                                 <div>
@@ -41,7 +41,7 @@
                             </div>
                             <aside>
                                 <div class="queue">
-                                    <span class="value">{{book.ticket}}</span>
+                                    <span class="value">{{book.queue}}</span>
                                     <span class="text">{{$t('reservation.number')}}</span>
                                 </div>
                                 <div></div>
@@ -49,7 +49,7 @@
                         </div>
 
                         <footer>
-                            <div class="btn" @click="placeQueue">{{$t('button.print')}}</div>
+                            <div class="btn" @click="placeQueue">{{$t('button.create')}}</div>
                         </footer>
                     </article>
                     <article v-if="book.type ==='phone'">
@@ -62,19 +62,30 @@
 </template>
 
 <script>
+import Printer from '../../print'
+import { mapAction, mapGetters } from 'vuex'
 export default {
     props: ['init'],
     data() {
         return {
             book: {
+                _id: ObjectId(),
                 type: '',
                 name: '',
                 phone: '',
+                note: '',
+                time: +new Date(),
+                date: today(),
                 size: 1,
-                ticket: 1
+                queue: 1,
+                status: 1,
+                request: []
             },
             step: 0
         }
+    },
+    created() {
+
     },
     methods: {
         setSource(type) {
@@ -82,9 +93,13 @@ export default {
             this.book.type = type;
         },
         placeQueue() {
-            Object.assign(this.book, { time: +new Date() });
-
+            Object.assign(this.book, { op: this.op.name });
+            this.$socket.emit("[RESV] CREATE", this.book);
+            this.init.resolve()
         }
+    },
+    computed: {
+        ...mapGetters(['op'])
     }
 }
 </script>
@@ -117,7 +132,9 @@ section.source {
     bottom: 0;
     width: 100%;
     text-align: center;
-    padding: 5px 0;
+    padding: 10px 0;
+    font-weight: bold;
+    color: #3c3c3c;
 }
 
 .source div:active {

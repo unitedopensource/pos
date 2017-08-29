@@ -5,7 +5,7 @@
                 <div class="top">
                     <div class="calendar">
                         <i class="fa fa-angle-left"></i>
-                        <span>{{date | moment('dddd, MMM D')}}</span>
+                        <span>{{date | moment('dddd MMM D')}}</span>
                         <i class="fa fa-angle-right"></i>
                     </div>
                 </div>
@@ -48,7 +48,8 @@ export default {
         }
     },
     created() {
-        this.checkSync()
+        this.checkSync();
+        console.log(this.reservation)
     },
     methods: {
         checkSync() {

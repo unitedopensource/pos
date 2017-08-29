@@ -169,7 +169,6 @@ export default {
         },
         settle(ticket) {
             let { split, payment } = ticket;
-
             new Promise((resolve, reject) => {
                 this.componentData = { payment, index: split - 1, resolve, reject };
                 this.component = "payment";
@@ -178,7 +177,9 @@ export default {
                 this.splitPayment[split] = result;
                 this.$bus.emit("SPLIT_PAID", split);
                 this.checkSettle();
-            }).catch(() => { this.$q() })
+            }).catch(() => {
+                this.$q()
+            })
         },
         checkSettle() {
             let settle = 0;
