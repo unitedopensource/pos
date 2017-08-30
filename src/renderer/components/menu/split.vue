@@ -138,11 +138,18 @@ export default {
             this.$bus.emit("SPLIT_ORDER");
         },
         printInvoice(index) {
-            this.print(index);
-            this.items.forEach(item => {
-                item.sort === index && (item.print = true);
-                delete item.new;
-            })
+            this.$dialog({
+                type: "question", title: "dialog.printReceiptConfirm", msg: "dialog.printReceiptConfirmTip",
+                buttons: [{ text: 'button.noReceipt', fn: 'reject' }, { text: 'button.printReceipt', fn: 'resolve' }]
+            }).then(() => {
+                this.$q();
+                this.print(index);
+                this.items.forEach(item => {
+                    item.sort === index && (item.print = true);
+                    delete item.new;
+                });
+                this.checkSettle();
+            }).catch(() => { this.$q(); this.checkSettle() })
         },
         printAllInvoices() {
             this.sort(1);
@@ -178,7 +185,7 @@ export default {
                 this.$q();
                 this.splitPayment[split] = result;
                 this.$bus.emit("SPLIT_PAID", split);
-                this.checkSettle();
+                //this.checkSettle();
             }).catch(() => {
                 this.$q()
             })
@@ -200,7 +207,7 @@ export default {
             });
             splitPayment.splice(0, 1);
             let payment = {};
-            splitPayment.forEach(pay => {
+            splitPayment.filter(ticket => typeof ticket === 'object').forEach(pay => {
                 Object.keys(pay).forEach(key => {
                     if (payment.hasOwnProperty(key)) {
                         isNumber(payment[key]) ?
@@ -261,8 +268,12 @@ export default {
             if (this.$route.name !== 'Menu') {
                 this.$socket.emit("[UPDATE] INVOICE", this.order);
                 this.init.resolve();
-            } else {
+            } else if (this.$route.name === 'Menu' && this.app.mode === 'create') {
                 this.$socket.emit("[SAVE] INVOICE", this.order);
+                this.resetAll();
+                this.$router.push({ path: '/main' });
+            } else {
+                this.$socket.emit("[UPDATE] INVOICE", this.order);
                 this.resetAll();
                 this.$router.push({ path: '/main' });
             }

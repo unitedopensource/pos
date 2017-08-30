@@ -618,6 +618,7 @@ export default {
                     payment: this.payment,
                     customer,
                     type: this.ticket.type,
+                    number: this.ticket.number,
                     station: this.station.alies,
                     cashier: this.op.name,
                     source: "POS",
@@ -632,7 +633,6 @@ export default {
                     settled: true,
                     print: true
                 });
-
             order.payment.log.forEach(trans => {
                 switch (trans.type) {
                     case "CASH":
