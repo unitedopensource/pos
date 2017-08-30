@@ -1,7 +1,7 @@
 <template>
     <div class="popupMask center dark" @click.self="init.reject(false)">
         <div class="editor">
-            <header>{{$('setting.tableEditor')}}</header>
+            <header>{{$t('setting.tableEditor')}}</header>
             <div class="inner">
                 <div class="input">
                     <label for="name">{{$t('text.name')}}</label>
@@ -12,7 +12,7 @@
                     <input v-model="table.zone" id="zone">
                 </div>
                 <div class="input">
-                    <label for="name">{{text('SHAPE')}}</label>
+                    <label for="name">{{$t('text.shape')}}</label>
                     <select v-model="table.shape">
                         <option v-for="shape in options">{{shape}}</option>
                     </select>

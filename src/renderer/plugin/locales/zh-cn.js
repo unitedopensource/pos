@@ -660,7 +660,8 @@ export default {
         'display': '显示设置',
         'newItem': '新建物品',
         'editItem': '编辑物品',
-        'newPrinter': '添加打印机'
+        'newPrinter': '添加打印机',
+        'tableEditor':'编辑座位'
     },
     reservation: {
         'create': '创建预约',

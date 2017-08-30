@@ -660,7 +660,8 @@ export default {
         'display': 'Display',
         'newItem': 'New Item',
         'editItem': 'Edit Item',
-        'newPrinter': 'New Printer'
+        'newPrinter': 'New Printer',
+        'tableEditor':'Table Editor'
     },
     reservation: {
         'create': 'Create Reservation',
