@@ -1,7 +1,7 @@
 <template>
     <div class="reservation">
         <div class="frame">
-            <div class="hourly" v-for="(value,key,index) in hours" :key="index">
+            <div class="hourly" v-for="(value,key,index) in hours" :key="index" :data-hour="key" :style="{}">
                 <h3 class="hour">{{key | hour}}</h3>
                 <div class="book" v-for="(book,index) in value" :key="index" @click="getOption(book,$event)" :class="{inactive:book.status === 0}">
                     <span class="queue">
@@ -33,22 +33,13 @@ export default {
             currentTimeFrame: moment().format('H'),
             componentData: null,
             component: null,
-            hours: {},
             book: null
         }
     },
-    created() {
-        this.initial();
+    mounted() {
+        this.checkSchedule();
     },
     methods: {
-        initial() {
-            let hours = {};
-            this.reservation.filter(book => book.status !== -1 && book.status !== 3).forEach(book => {
-                let frame = new Date(book.time).getHours();
-                hours.hasOwnProperty(frame) ? hours[frame].push(book) : hours[frame] = [book]
-            });
-            this.hours = hours
-        },
         getOption(book, e) {
             this.book = book;
             this.$p("contextMenu", { left: e.pageX, top: e.pageY - 20, book })
@@ -56,7 +47,6 @@ export default {
         seat() {
             this.$q();
             this.$emit('seat', this.book);
-            this.checkSchedule();
         },
         reprint() {
             this.$q();
@@ -71,7 +61,6 @@ export default {
             Object.assign(this.book, { status: 0 })
             this.$socket.emit("[RESV] UPDATE", this.book)
             this.$q();
-            this.checkSchedule();
         },
         cancel() {
             this.$dialog({
@@ -85,9 +74,7 @@ export default {
             }).catch(() => { this.$q() })
         },
         checkSchedule() {
-            this.currentTimeFrame = moment().format('H');
-            let remain = this.hours[this.currentTimeFrame].filter(book=>book.status !== -1 && book.status !== 3).length;
-            
+
         }
     },
     filters: {
@@ -108,11 +95,24 @@ export default {
             })
             return { available }
         },
+        hours() {
+            let hours = {};
+            this.reservation.filter(book => book.status !== -1 && book.status !== 3).forEach(book => {
+                let frame = new Date(book.time).getHours();
+                hours.hasOwnProperty(frame) ? hours[frame].push(book) : hours[frame] = [book]
+            });
+            return hours;
+        },
+        // offset() {
+        //     let width = this.split * 250;
+        //     let offset = this.page * 250;
+        //     return { transform: `translate3d(${offset}px,0,0)` }
+        // },
         ...mapGetters(['config', 'tables', 'reservation'])
     },
-    watch: {
-        reservation() {
-            this.initial()
+    watch:{
+        reservation(){
+            console.log('trigger update')
         }
     }
 }
@@ -129,6 +129,7 @@ export default {
     flex-direction: row;
     height: 100%;
     width: 3000px;
+    transition: transform 0.22s ease;
 }
 
 h3.hour {
