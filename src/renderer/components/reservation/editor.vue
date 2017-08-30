@@ -75,6 +75,7 @@ export default {
                 phone: '',
                 note: '',
                 time: +new Date(),
+                reserve: +new Date(),
                 date: today(),
                 size: 1,
                 queue: 1,
@@ -85,7 +86,7 @@ export default {
         }
     },
     created() {
-        this.$socket.emit("[RESV] GET_QUEUE",number=>{
+        this.$socket.emit("[RESV] GET_QUEUE", number => {
             this.book.queue = number;
         })
     },
@@ -97,11 +98,12 @@ export default {
         placeQueue() {
             Object.assign(this.book, { op: this.op.name });
             this.$socket.emit("[RESV] CREATE", this.book);
+            Printer.init(this.config).setJob('queue ticket').print(this.book);
             this.init.resolve()
         }
     },
     computed: {
-        ...mapGetters(['op'])
+        ...mapGetters(['op', 'config'])
     }
 }
 </script>

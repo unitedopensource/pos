@@ -192,7 +192,7 @@ export default {
             this.station.terminal.enable ?
                 this.$p("Terminal") :
                 this.$dialog({
-                    title: 'dialog.accessDenied', msg: 'dialog.stationNoTerminal',
+                    title: 'dialog.noTerminal', msg: 'dialog.stationNoTerminal',
                     buttons: [{ text: 'button.confirm', fn: 'resolve' }]
                 }).then(() => { this.$q() })
         },

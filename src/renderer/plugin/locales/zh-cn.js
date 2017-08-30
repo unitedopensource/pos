@@ -313,7 +313,8 @@ export default {
         'scheduleConfirm': '定时确定',
         'scheduleConfirmTip': '您设定的出餐时间 {i} ( {i} )',
         'printerRemoveConfirm': '删除打印机',
-        'printerRemoveConfirmTip': '您确定要从设置里面删除 {i} 打印机吗？'
+        'printerRemoveConfirmTip': '您确定要从设置里面删除 {i} 打印机吗？',
+        'noTerminal':'无信用卡终端',
     },
     terminal: {
         'initial': '正在初始化 {i}...',
@@ -325,7 +326,9 @@ export default {
         'paymentFailed': '无法支付信用卡',
         'paymentFailedTip': '此工作站没有设定信用卡终端机',
         'aborting': '正在取消操作...',
-        'error': '错误代码: {i}'
+        'error': '错误代码: {i}',
+        'connectError':'无法连接至终端',
+        'disableBatch':'过账功能被临时停用'
     },
     card: {
         'creditCard': '信用卡',

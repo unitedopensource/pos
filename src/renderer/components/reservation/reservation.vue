@@ -36,6 +36,7 @@ export default {
     },
     created() {
         this.initial();
+        this.checkAvailableTable();
     },
     methods: {
         initial() {
@@ -45,6 +46,16 @@ export default {
                 hours.hasOwnProperty(frame) ? hours[frame].push(book) : hours[frame] = [book]
             });
             this.hours = hours
+        },
+        checkAvailableTable(){
+            let seats = 0,tables = 0;
+            this.tables.forEach(table=>{
+                console.log(table)
+                if(table._id && table.status === 1){
+                    tables++;
+                }
+            })
+            console.log(tables)
         },
         getOption(book, e) {
             this.$p("contextMenu", { left: e.pageX, top: e.pageY - 20, name: book.name })
@@ -59,7 +70,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(['reservation'])
+        ...mapGetters(['tables','reservation'])
     },
     sockets: {
         NEW_RESERVATION() {

@@ -313,7 +313,8 @@ export default {
         'scheduleConfirm': 'Schedule Confirm',
         'scheduleConfirmTip': 'You have set cook time to {i} ( {i} )',
         'printerRemoveConfirm': 'Print Remove Confirm',
-        'printerRemoveConfirmTip': 'Are you sure you want to remove Printer {i} from the list?'
+        'printerRemoveConfirmTip': 'Are you sure you want to remove Printer {i} from the list?',
+        'noTerminal':'No Terminal'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',
@@ -325,7 +326,9 @@ export default {
         'paymentFailed': 'Payment Failed',
         'paymentFailedTip': 'There is no terminal device attach to current station',
         'aborting': 'Aborting...',
-        'error': 'Error Code: {i}'
+        'error': 'Error Code: {i}',
+        'connectError':'Unable Connect to Terminal',
+        'disableBatch':''
     },
     card: {
         'creditCard': 'Credit Card',

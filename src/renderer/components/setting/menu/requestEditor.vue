@@ -1,55 +1,33 @@
 <template>
-    <div class="popupMask center dark" @click.self="init.reject(false)">
-        <div class="editor">
-            <header>{{$t(init.title)}}</header>
-            <div class="inner" v-if="init.type === 'category'">
-                <div class="input">
-                    <label>{{$t('text.primary')}}</label>
-                    <input v-model="request.usEN">
-                </div>
-                <div class="input">
-                    <label>{{$t('text.secondary')}}</label>
-                    <input v-model="request.zhCN">
-                </div>
-                <div class="input">
-                    <label>{{$t('text.contain')}}</label>
-                    <input v-model="request.contain">
-                </div>
-            </div>
-            <div class="inner" v-else-if="init.type === 'action'">
-                <div class="input">
-                    <label>{{$t('text.primary')}}</label>
-                    <input v-model="request.usEN">
-                </div>
-                <div class="input">
-                    <label>{{$t('text.secondary')}}</label>
-                    <input v-model="request.zhCN">
-                </div>
+    <div class="popupMask center dark" @click.self="init.reject">
+        <div class="form">
+            <header>
+                <h2>{{$t(init.title)}}</h2>
+                <h4>{{$t(init.type)}}</h4>
+            </header>
+            <section class="data" v-if="init.type === 'category'">
+                <input type="text" v-model="request.usEN" :placeholder="$t('text.primary')">
+                <input type="text" v-model="request.zhCN" :placeholder="$t('text.secondary')">
+                <input type="text" v-model="request.contain" :placeholder="$t('text.contain')">
+            </section>
+            <section class="data" v-else-if="init.type === 'action'">
+                <input type="text" v-model="request.usEN" :placeholder="$t('text.primary')">
+                <input type="text" v-model="request.zhCN" :placeholder="$t('text.secondary')">
                 <div class="default">
                     <checkbox v-model="request.prefix" label="text.prefix"></checkbox>
                 </div>
-            </div>
-            <div class="inner" v-else-if="init.type === 'item'">
-                <div class="input">
-                    <label>{{$t('text.primary')}}</label>
-                    <input v-model="request.usEN">
-                </div>
-                <div class="input">
-                    <label>{{$t('text.secondary')}}</label>
-                    <input v-model="request.zhCN">
-                </div>
-
-                <div class="input">
+            </section>
+            <section class="data" v-else>
+                <input type="text" v-model="request.usEN" :placeholder="$t('text.primary')">
+                <input type="text" v-model="request.zhCN" :placeholder="$t('text.secondary')">
+                <input type="text" v-model.number="request.price" :placeholder="$t('text.price')"
+                <div class="option">
                     <label>{{$t('text.category')}}</label>
                     <select v-model="request.category">
                         <option v-for="(category,index) in init.category" :key="index">{{category}}</option>
                     </select>
                 </div>
-                <div class="input">
-                    <label>{{$t('text.price')}}</label>
-                    <input v-model.number="request.price">
-                </div>
-            </div>
+            </section>
             <footer>
                 <div class="f1">
                     <span class="del" @click="del" v-show="request._id">{{$t('button.delete')}}</span>
@@ -118,3 +96,105 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+.form {
+    width: 350px;
+    background: #fff;
+    box-sizing: border-box;
+    overflow: hidden;
+    border-top: 1px solid #599059;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+}
+
+.form header {
+    position: relative;
+    padding: 10px 15px;
+    background: #009688;
+    color: #fafafa;
+    box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12), 0px 3px 1px -2px rgba(0, 0, 0, 0.2);
+}
+
+.form header:before {
+    background: rgba(0, 0, 0, 0.156);
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: ' ';
+    width: 100%;
+    height: 15px;
+}
+
+.form header h2 {
+    margin: 35px 0 5px 0;
+    font-weight: normal;
+    text-shadow: 0 1px 1px #333;
+}
+
+.form header h4 {
+    font-size: 16px;
+    font-weight: normal;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.form .data {
+    padding: 20px 25px 30px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.data input {
+    width: 100%;
+    padding: 10px 0;
+    border: none;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.2);
+    background: #fafafa;
+    color: #636363;
+    outline: none;
+    font-weight: normal;
+    font-size: 20px;
+    font-family: 'Yuanti-SC';
+    transition: border-bottom 0.3s ease;
+}
+
+.data input:focus {
+    border-bottom: 2px solid #FF9800;
+}
+
+footer {
+    background: #e5e5e5;
+    display: flex;
+}
+
+.default {
+    margin: 30px 15px 0;
+    padding: 10px 10px 0;
+    text-align: center;
+    border: 1px dashed #CFD8DC;
+}
+
+.option {
+    padding: 10px 0;
+    font-size: 20px;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.2);
+}
+
+.option select {
+    border: none;
+    outline: none;
+    width: 275px;
+    font-size: 20px;
+}
+
+.f1 {
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+}
+
+.del {
+    color: red;
+    border-bottom: 1px dashed red;
+    cursor: pointer;
+}
+</style>

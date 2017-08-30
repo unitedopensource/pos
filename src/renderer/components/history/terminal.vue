@@ -208,6 +208,7 @@ export default {
                             .then((response) => {
                                 this.$q();
                                 record.status = 2;
+                                //bug here when split payment both add tip
                                 record.amount.tip = value.toFixed(2);
                                 this.$socket.emit("[TERM] UPDATE_TRANSACTION", record);
                                 this.adjustOrderTip(record.order, value);
@@ -346,13 +347,19 @@ export default {
             }).then(() => { this.$q() })
         },
         disableBatchFn() {
-            this.$dialog({ type: 'warning', title: 'TERM_NA', msg: 'TERM_BATCH_DISABLE', buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => {
+            this.$dialog({
+                type: 'warning', title: 'terminal.connectError', msg: 'terminal.disableBatch',
+                buttons: [{ text: 'button.confirm', fn: 'resolve' }]
+            }).then(() => {
                 this.device = null;
                 this.$q();
             })
         },
         missTerminal() {
-            this.$dialog({ type: 'warning', title: 'TERM_NA', msg: 'STA_TERM_NA', buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => {
+            this.$dialog({
+                type: 'warning', title: 'dialog.noTerminal', msg: 'dialog.stationNoTerminal',
+                buttons: [{ text: 'button.confirm', fn: 'resolve' }]
+            }).then(() => {
                 this.$q();
                 this.init.resolve();
             })

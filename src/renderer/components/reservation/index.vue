@@ -49,7 +49,6 @@ export default {
     },
     created() {
         this.checkSync();
-        console.log(this.reservation)
     },
     methods: {
         checkSync() {
