@@ -9,16 +9,16 @@
         <section class="content">
             <article>
                 <ul class="list">
-                    <li v-for="(invoice,index) in invoices" :key="index" @click="display(invoice,$event)">
+                    <li v-for="(ticket,index) in tickets" :key="index" @click="display(ticket,$event)">
                         <div class="ticket">
-                            <span class="number">{{invoice.number}}</span>
-                            <span class="time">{{invoice.time | moment('HH:mm')}}</span>
+                            <span class="number">{{ticket.number}}</span>
+                            <span class="time">{{ticket.time | moment('HH:mm')}}</span>
                         </div>
                         <div class="info">
-                            <span>{{invoice.customer.phone | phone}}</span>
-                            <span>{{invoice.customer.name}}</span>
+                            <span>{{ticket.customer.phone | phone}}</span>
+                            <span>{{ticket.customer.name}}</span>
                         </div>
-                        <span class="amount">$ {{invoice.payment.due}}</span>
+                        <span class="amount">$ {{ticket.payment.due}}</span>
                     </li>
                 </ul>
                 <div class="pagination" v-if="totalPage > 1">
@@ -66,13 +66,13 @@
 </template>
 
 <script>
-import orderList from './common/orderList'
-import payment from './payment/payment'
-import Printer from '../print'
-import split from './menu/split'
-import reason from './history/reason'
-import dialoger from './common/dialoger'
 import { mapGetters, mapActions } from 'vuex'
+import orderList from './common/orderList'
+import dialoger from './common/dialoger'
+import payment from './payment/payment'
+import reason from './history/reason'
+import split from './menu/split'
+import Printer from '../print'
 export default {
     components: { orderList, payment, split, reason, dialoger },
     data() {
@@ -139,9 +139,12 @@ export default {
     },
     computed: {
         invoices() {
+            return this.history.filter(ticket => ticket.status === 1 && !ticket.settled && (ticket.type === 'WALK_IN' || ticket.type === 'PICK_UP'))
+        },
+        tickets() {
             let min = this.page * 20;
             let max = this.page + 20;
-            return this.history.filter(ticket => ticket.status === 1 && !ticket.settled && (ticket.type === 'WALK_IN' || ticket.type === 'PICK_UP')).slice(min, max)
+            return this.invoices.slice(min, max)
         },
         totalPage() {
             return Math.ceil(this.invoices.length / 20)
