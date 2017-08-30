@@ -7,19 +7,30 @@
             </div>
         </header>
         <section class="content">
-            <ul class="list">
-                <li v-for="(invoice,index) in invoices" :key="index" @click="display(invoice)">
-                    <div class="ticket">
-                        <span class="number">{{invoice.number}}</span>
-                        <span class="time">{{invoice.time | moment('HH:mm')}}</span>
+            <article>
+                <ul class="list">
+                    <li v-for="(invoice,index) in invoices" :key="index" @click="display(invoice)">
+                        <div class="ticket">
+                            <span class="number">{{invoice.number}}</span>
+                            <span class="time">{{invoice.time | moment('HH:mm')}}</span>
+                        </div>
+                        <div class="info">
+                            <span>{{invoice.customer.phone | phone}}</span>
+                            <span>{{invoice.customer.name}}</span>
+                        </div>
+                        <span class="amount">$ {{invoice.payment.due}}</span>
+                    </li>
+                </ul>
+                <div class="pagination" v-if="totalPage > 1">
+                    <div class="page" @click="page = page > 0 ? page - 1 : 0">
+                        <i class="fa fa-angle-left"></i>
                     </div>
-                    <div class="info">
-                        <span>{{invoice.customer.phone | phone}}</span>
-                        <span>{{invoice.customer.name}}</span>
+                    <div class="page" v-for="i in totalPage" @click="page = (i-1)" :key="i" :class="{active:page === (i-1)}">{{i}}</div>
+                    <div class="page" @click="page = page === (totalPage-1) ? page : page + 1">
+                        <i class="fa fa-angle-right"></i>
                     </div>
-                    <span class="amount">$ {{invoice.payment.due}}</span>
-                </li>
-            </ul>
+                </div>
+            </article>
             <aside>
                 <order-list layout="display" :display="true"></order-list>
                 <div class="function">
@@ -121,6 +132,9 @@ export default {
         invoices() {
             return this.history.filter(ticket => ticket.status === 1 && !ticket.settled && (ticket.type === 'WALK_IN' || ticket.type === 'PICK_UP'))
         },
+        totalPage() {
+            return Math.ceil(this.invoices.length / 20)
+        },
         ...mapGetters(['config', 'order', 'history'])
     }
 }
@@ -141,18 +155,25 @@ header {
     background: #234c75;
     color: #fff;
 }
-header div{
-    margin:14px;
+
+header div {
+    margin: 14px;
 }
+
 .content {
     display: flex;
     flex: 1;
 }
 
-ul {
+article {
     flex: 1;
+}
+
+ul {
     display: flex;
     flex-direction: column;
+    flex-wrap: wrap;
+    height: 620px;
 }
 
 .function {
@@ -161,7 +182,7 @@ ul {
 
 li {
     display: flex;
-    width: 370px;
+    width: 360px;
     background: #fff;
     margin: 2px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
@@ -170,7 +191,7 @@ li {
 li>* {
     display: flex;
     flex-direction: column;
-    padding: 5px 10px;
+    padding: 1px 10px;
 }
 
 .ticket {
@@ -178,6 +199,7 @@ li>* {
     align-items: center;
     background: #009688;
     color: #fff;
+    text-shadow: 0 1px 1px #333;
 }
 
 ul.list .info {
@@ -194,5 +216,31 @@ span.number {
 
 .amount {
     justify-content: center;
+}
+
+.pagination {
+    justify-content: center;
+    margin: 0px 12px 0 6px;
+    display: flex;
+}
+
+.pagination .page {
+    margin: 5px 5px 10px;
+    width: 20px;
+    text-align: center;
+    cursor: pointer;
+    padding: 10px 10px;
+    border-radius: 4px;
+    text-shadow: 0 1px 1px #fff;
+    background: linear-gradient(#fefefe, #cfd0d3);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .7);
+}
+
+.page.active {
+    font-weight: bold;
+    background: #676767;
+    color: #fff;
+    text-shadow: 0 1px 1px #000;
+    box-shadow: rgba(0, 0, 0, 0.75) 0 0 0 0 inset;
 }
 </style>
