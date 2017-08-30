@@ -9,7 +9,7 @@
         <section class="content">
             <article>
                 <ul class="list">
-                    <li v-for="(invoice,index) in invoices" :key="index" @click="display(invoice)">
+                    <li v-for="(invoice,index) in invoices" :key="index" @click="display(invoice,$event)">
                         <div class="ticket">
                             <span class="number">{{invoice.number}}</span>
                             <span class="time">{{invoice.time | moment('HH:mm')}}</span>
@@ -82,8 +82,17 @@ export default {
             page: 0
         }
     },
+    mounted() {
+        if (this.invoices.length > 0) {
+            document.querySelector("li").classList.add("active");
+            this.setOrder(JSON.parse(JSON.stringify(this.invoices[0])))
+        }
+    },
     methods: {
-        display(ticket) {
+        display(ticket, e) {
+            let dom = document.querySelector("li.active");
+            dom && dom.classList.remove('active');
+            e.currentTarget.classList.add("active");
             this.setOrder(JSON.parse(JSON.stringify(ticket)))
         },
         edit() {
@@ -130,7 +139,9 @@ export default {
     },
     computed: {
         invoices() {
-            return this.history.filter(ticket => ticket.status === 1 && !ticket.settled && (ticket.type === 'WALK_IN' || ticket.type === 'PICK_UP'))
+            let min = this.page * 20;
+            let max = this.page + 20;
+            return this.history.filter(ticket => ticket.status === 1 && !ticket.settled && (ticket.type === 'WALK_IN' || ticket.type === 'PICK_UP')).slice(min, max)
         },
         totalPage() {
             return Math.ceil(this.invoices.length / 20)
@@ -186,6 +197,11 @@ li {
     background: #fff;
     margin: 2px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+    transition: background 0.3s ease;
+}
+
+li.active {
+    background: #ECEFF1;
 }
 
 li>* {
