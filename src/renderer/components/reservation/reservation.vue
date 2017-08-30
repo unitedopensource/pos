@@ -3,7 +3,7 @@
         <div class="frame">
             <div class="hourly" v-for="(value,key,index) in hours" :key="index">
                 <h3 class="hour">{{key | hour}}</h3>
-                <div class="book" v-for="(book,index) in value" :key="index" @click="getOption(book,$event)">
+                <div class="book" v-for="(book,index) in value" :key="index" @click="getOption(book,$event)" :class="{inactive:book.status === 0}">
                     <span class="queue">
                         <span class="symbol">#</span>{{book.queue}}</span>
                     <div class="info">
@@ -17,21 +17,24 @@
                 </div>
             </div>
         </div>
-        <div :is="component" :init="componentData"></div>
+        <div :is="component" :init="componentData" @reprint="reprint" @seat="seat" @active="active" @inactive="inactive" @cancel="cancel"></div>
     </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import contextMenu from './menu'
+import Printer from '../../print'
+import dialoger from '../common/dialoger'
 export default {
-    components: { contextMenu },
+    components: { contextMenu, dialoger },
     data() {
         return {
             currentTimeFrame: moment().format('H'),
             componentData: null,
             component: null,
-            hours: {}
+            hours: {},
+            book: null
         }
     },
     created() {
@@ -40,14 +43,51 @@ export default {
     methods: {
         initial() {
             let hours = {};
-            this.reservation.forEach(book => {
+            this.reservation.filter(book => book.status !== -1 && book.status !== 3).forEach(book => {
                 let frame = new Date(book.time).getHours();
                 hours.hasOwnProperty(frame) ? hours[frame].push(book) : hours[frame] = [book]
             });
             this.hours = hours
         },
         getOption(book, e) {
-            this.$p("contextMenu", { left: e.pageX, top: e.pageY - 20, name: book.name })
+            this.book = book;
+            this.$p("contextMenu", { left: e.pageX, top: e.pageY - 20, book })
+        },
+        seat() {
+            this.$q();
+            this.$emit('seat', this.book);
+            this.checkSchedule();
+        },
+        reprint() {
+            this.$q();
+            Printer.init(this.config).setJob('queue ticket').print(this.book);
+        },
+        active() {
+            Object.assign(this.book, { status: 1 })
+            this.$socket.emit("[RESV] UPDATE", this.book)
+            this.$q();
+        },
+        inactive() {
+            Object.assign(this.book, { status: 0 })
+            this.$socket.emit("[RESV] UPDATE", this.book)
+            this.$q();
+            this.checkSchedule();
+        },
+        cancel() {
+            this.$dialog({
+                title: 'dialog.reservationCancel',
+                msg: ['dialog.reservationCancelTip', this.book.name],
+                buttons: [{ text: 'button.cancel', fn: 'reject' }, { text: 'button.confirm', fn: 'resolve' }]
+            }).then(() => {
+                this.$q()
+                Object.assign(this.book, { status: -1 })
+                this.$socket.emit("[RESV] UPDATE", this.book)
+            }).catch(() => { this.$q() })
+        },
+        checkSchedule() {
+            this.currentTimeFrame = moment().format('H');
+            let remain = this.hours[this.currentTimeFrame].filter(book=>book.status !== -1 && book.status !== 3).length;
+            
         }
     },
     filters: {
@@ -68,10 +108,10 @@ export default {
             })
             return { available }
         },
-        ...mapGetters(['tables', 'reservation'])
+        ...mapGetters(['config', 'tables', 'reservation'])
     },
-    sockets: {
-        NEW_RESERVATION() {
+    watch: {
+        reservation() {
             this.initial()
         }
     }
@@ -100,6 +140,7 @@ h3.hour {
 .hourly {
     width: 240px;
     padding: 10px;
+    border-right: 1px dashed #E0E0E0;
 }
 
 .book {
@@ -154,5 +195,9 @@ h3.hour {
     font-weight: bold;
     font-size: 1.25em;
     background: #ECEFF1;
+}
+
+.inactive {
+    filter: opacity(0.5);
 }
 </style>

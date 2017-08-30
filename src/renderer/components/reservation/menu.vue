@@ -1,15 +1,15 @@
 <template>
     <div class="popupMask" @click.self="init.reject">
         <ul :style="pos">
-            <li class="divider">
+            <li class="divider" @click="$emit('seat')">
                 <i class="fa fa-cutlery"></i>
-                <span class="text">{{$t('reservation.seat')}}<span class="name" v-show="init.name">{{init.name}}</span></span>
+                <span class="text">{{$t('reservation.seat')}}<span class="name">{{init.book.name}}</span></span>
             </li>
             <li>
                 <i class="fa fa-commenting"></i>
                 <span class="text">{{$t('reservation.sentSMS')}}</span>
             </li>
-            <li>
+            <li @click="$emit('reprint')">
                 <i class="fa fa-print"></i>
                 <span class="text">{{$t('reservation.reprint')}}</span>
             </li>
@@ -19,13 +19,17 @@
             </li>
             <!-- <li>
                 <i class="fa fa-paperclip"></i>
-                <span class="text">{{$t('reservation.arrival')}}</span>
+                <span class="text">{{$t('reservation.checkIn')}}</span>
             </li> -->
-            <li>
-                <i class="fa fa-paperclip"></i>
+            <li @click="$emit('inactive')" v-if="init.book.status === 1">
+                <i class="fa fa-eye-slash"></i>
                 <span class="text">{{$t('reservation.inactive')}}</span>
             </li>
-            <li>
+            <li @click="$emit('active')" v-else-if="init.book.status === 0">
+                <i class="fa fa-eye-slash"></i>
+                <span class="text">{{$t('reservation.active')}}</span>
+            </li>
+            <li @click="$emit('cancel')">
                 <i class="fa fa-trash-o"></i>
                 <span class="text">{{$t('reservation.cancel')}}</span>
             </li>

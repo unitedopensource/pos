@@ -13,7 +13,7 @@
                 </div>
 
                 <div class="input">
-                    <label for="zone">{{$t('text.zone')}}</label>
+                    <label for="zone">{{$t('text.section')}}</label>
                     <input v-model="section.zone" id="zone">
                 </div>
             </div>

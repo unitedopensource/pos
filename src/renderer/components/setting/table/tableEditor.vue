@@ -8,11 +8,11 @@
                     <input v-model="table.name" id="name">
                 </div>
                 <div class="input">
-                    <label for="zone">{{$t('text.zone')}}</label>
+                    <label for="zone">{{$t('text.section')}}</label>
                     <input v-model="table.zone" id="zone">
                 </div>
                 <div class="input">
-                    <label for="name">{{$t('text.shape')}}</label>
+                    <label for="name">{{$t('text.icon')}}</label>
                     <select v-model="table.shape">
                         <option v-for="shape in options">{{shape}}</option>
                     </select>

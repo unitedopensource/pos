@@ -202,6 +202,11 @@ const mutations = {
     },
     [types.NEW_RESERVATION](state, data) {
         state.reservation.push(data)
+    },
+    [types.UPDATE_RESERVATION](state, data) {
+        let { _id } = data;
+        let index = state.reservation.findIndex(reservation => reservation._id === _id);
+        state.reservation.splice(index, 1, data)
     }
 }
 

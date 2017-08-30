@@ -382,3 +382,8 @@ export const newReservation = ({
 }, data) => {
   commit(types.NEW_RESERVATION, data)
 }
+export const updateReservation = ({
+  commit
+}, data) => {
+  commit(types.UPDATE_RESERVATION, data)
+}

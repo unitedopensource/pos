@@ -314,7 +314,9 @@ export default {
         'scheduleConfirmTip': 'You have set cook time to {i} ( {i} )',
         'printerRemoveConfirm': 'Print Remove Confirm',
         'printerRemoveConfirmTip': 'Are you sure you want to remove Printer {i} from the list?',
-        'noTerminal':'No Terminal'
+        'noTerminal': 'No Terminal',
+        'reservationCancel': 'Cancel Reservation',
+        'reservationCancelTip': "Are you sure you are going to cancel {i}'s reservation?"
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',
@@ -327,8 +329,8 @@ export default {
         'paymentFailedTip': 'There is no terminal device attach to current station',
         'aborting': 'Aborting...',
         'error': 'Error Code: {i}',
-        'connectError':'Unable Connect to Terminal',
-        'disableBatch':''
+        'connectError': 'Unable Connect to Terminal',
+        'disableBatch': ''
     },
     card: {
         'creditCard': 'Credit Card',
@@ -549,9 +551,11 @@ export default {
         'note': 'Note',
         'labelPrinter': 'Label Printer',
         'autoAdd': 'Auto Add',
-        'remainTicket':'{i} tickets remain',
-        'pickUpList':'Pick Up List',
-        'setGuest':'Set Guest'
+        'remainTicket': '{i} tickets remain',
+        'pickUpList': 'Pick Up List',
+        'setGuest': 'Set Guest',
+        'section': 'Section',
+        'icon': 'Icon'
     },
     setting: {
         'softwareSetting': 'UnitedPOS Setting',
@@ -661,7 +665,8 @@ export default {
         'newItem': 'New Item',
         'editItem': 'Edit Item',
         'newPrinter': 'New Printer',
-        'tableEditor':'Table Editor'
+        'sectionEditor': 'Section Editor',
+        'tableEditor': 'Table Editor'
     },
     reservation: {
         'create': 'Create Reservation',
@@ -677,7 +682,7 @@ export default {
         'reprint': 'Reprint',
         'cancel': 'Cancel',
         'remove': 'Remove',
-        'arrival': 'Set Arrival',
+        'checkIn': 'Check In',
         'inactive': 'Set Inactive',
         'timeline': 'Time Line',
         'list': 'View List'

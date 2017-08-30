@@ -23,7 +23,7 @@
                 </div>
                 <i class="fa fa-plus add" @click="create"></i>
             </header>
-            <reservation v-if="tab === 0"></reservation>
+            <reservation v-if="tab === 0" @seat="seat"></reservation>
             <wait-list v-else></wait-list>
         </div>
         <div :is="component" :init="componentData"></div>
@@ -59,6 +59,9 @@ export default {
         },
         create() {
             this.$p("editor")
+        },
+        seat(reservation) {
+            this.init.resolve(reservation)
         },
     },
     computed: {

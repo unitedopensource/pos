@@ -9,11 +9,11 @@
                 <split-list :invoice="items" @queue="setQueue" v-show="remain !==0"></split-list>
                 <div class="wrap">
                     <div class="inner">
-                        <i class="fa fa-3x fa-angle-left page" @click="page = page===(split-1) ? page : page+1" v-show="split > 2"></i>
+                        <i class="fa fa-2x fa-angle-left page" @click="page = page===(split-1) ? page : page+1" v-show="split > 2"></i>
                         <div class="extend" :style="offset">
                             <split-list :invoice="items" :done="lock" v-for="i in split" :split="i" :key="i" @queue="setQueue" @click.native="trigger(i)" @print="printInvoice" @pay="settle"></split-list>
                         </div>
-                        <i class="fa fa-3x fa-angle-right page" @click="page = page===0 ? 0 : page-1" v-show="split > 2"></i>
+                        <i class="fa fa-2x fa-angle-right page" @click="page = page===0 ? 0 : page-1" v-show="split > 2"></i>
                     </div>
                     <div class="spliter" @click="newSplit"></div>
                 </div>
@@ -329,22 +329,25 @@ i.page {
     border-radius: 50%;
     background: #fff;
     box-shadow: 0 3px 5px rgba(0, 0, 0, 0.4);
+    height: 50px;
+    width: 50px;
+    line-height: 50px;
     cursor: pointer;
     z-index: 1;
+    transition: all 0.1s ease;
 }
 
 i.page:active {
     background: #eee;
+    transform: translateY(1px);
 }
 
 .fa-angle-left {
     left: 10px;
-    padding: 0px 17px 0 16px;
 }
 
 .fa-angle-right {
     right: 10px;
-    padding: 0px 15px 0 17px;
 }
 
 .inner {
@@ -359,7 +362,7 @@ i.page:active {
     display: flex;
     justify-content: flex-start;
     flex-wrap: nowrap;
-    transition: transform 0.22s linear;
+    transition: transform 0.22s ease;
 }
 
 .spliter {

@@ -266,6 +266,7 @@ export default {
       'resetTable',
       'setCustomer',
       'insertOrder',
+      'setLastSync',
       'updateOrder',
       'updateTable',
       'newPhoneCall',
@@ -275,7 +276,9 @@ export default {
       'updateMenuItem',
       'removeMenuItem',
       'newReservation',
+      'setReservation',
       'updateTableInfo',
+      'updateReservation',
       'resetCurrentTable',
       'updateRequestItem',
       'removeRequestItem',
@@ -347,6 +350,12 @@ export default {
     UPDATE_TABLE_SECTION(data) { this.updateTableSection(data) },
     UPDATE_TABLE_INFO(data) { this.updateTableInfo(data) },
     NEW_RESERVATION(data) { this.newReservation(data) },
+    UPDATE_RESERVATION(data) { this.updateReservation(data) },
+    SYNC_RESERVATIONS(data) {
+      let { sync, reservations } = data;
+      this.setReservation(reservations);
+      this.setLastSync(sync);
+    },
     disconnect() {
       this.setApp({ database: false });
       this.$p("notifier")

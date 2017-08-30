@@ -1,7 +1,7 @@
 <template>
       <div class="popupMask center dark" @click.self="exit">
         <div class="setup window">
-          <header class="title">{{$t("table.setGuest")}}<span class="table">{{init.table.name}}</span></header>
+          <header class="title">{{$t("text.setGuest")}}<span class="table">{{init.table.name}}</span></header>
           <input type="text" v-model="guest">
           <div class="inner">
             <section class="numpad">

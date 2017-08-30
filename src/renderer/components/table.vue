@@ -273,7 +273,14 @@ export default {
       }).then(() => { this.$q() })
     },
     getReservation() {
-      this.$p("resv")
+      new Promise((resolve,reject)=>{
+        this.componentData = {resolve,reject};
+        this.component = 'resv';
+      }).then(reservation=>{
+        this.$q();
+        
+        console.log(reservation);
+      }).catch(()=>{ this.$q() })
     },
     split() {
       if (!this.order) return;
