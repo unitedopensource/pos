@@ -49,12 +49,11 @@ export default {
   },
   computed: {
     type() {
-      let type = 'type.' + this.ticket.type;
-      if (this.currentTable) {
-        let guest = this.currentTable.current.guest > 0 ? " - " + this.currentTable.current.guest : "";
-        return this.$t(type, this.app.language) + " - " + this.currentTable.name + guest;
-      }
-      return this.$t(type, this.app.language);
+      let type = this.app.mode === 'create' ? 'type.' + this.ticket.type : 'type.' + this.order.type;
+
+      return this.ticket.type === 'DINE_IN'
+        ? this.$t(type, this.app.language) + ' - ' + this.order.table + (this.order.guest > 0 ? ' - ' + this.order.guest : '')
+        : this.$t(type, this.app.language);
     },
     ...mapGetters(['op', 'app', 'time', 'ring', 'order', 'config', 'ticket', 'update', 'device', 'history', 'station', 'spooler', 'customer', 'language', 'currentTable'])
   },
@@ -347,7 +346,7 @@ export default {
     MENU_ITEM_REMOVE(data) { this.removeMenuItem(data) },
     UPDATE_TABLE_SECTION(data) { this.updateTableSection(data) },
     UPDATE_TABLE_INFO(data) { this.updateTableInfo(data) },
-    NEW_RESERVATION(data){ this.newReservation(data) },
+    NEW_RESERVATION(data) { this.newReservation(data) },
     disconnect() {
       this.setApp({ database: false });
       this.$p("notifier")

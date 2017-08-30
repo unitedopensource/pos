@@ -47,7 +47,7 @@ export default {
             this.hours = hours
         },
         getOption(book, e) {
-            this.$p("contextMenu", { left: e.pageX, top: e.pageY - 20 })
+            this.$p("contextMenu", { left: e.pageX, top: e.pageY - 20, name: book.name })
         }
     },
     filters: {
@@ -61,8 +61,8 @@ export default {
     computed: {
         ...mapGetters(['reservation'])
     },
-    sockets:{
-        NEW_RESERVATION(){
+    sockets: {
+        NEW_RESERVATION() {
             this.initial()
         }
     }
@@ -72,7 +72,7 @@ export default {
 <style scoped>
 .reservation {
     flex: 1;
-    overflow:hidden;
+    overflow: hidden;
 }
 
 .frame {

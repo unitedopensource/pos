@@ -547,7 +547,8 @@ export default {
         'labelPrinter': 'Label Printer',
         'autoAdd': 'Auto Add',
         'remainTicket':'{i} tickets remain',
-        'pickUpList':'Pick Up List'
+        'pickUpList':'Pick Up List',
+        'setGuest':'Set Guest'
     },
     setting: {
         'softwareSetting': 'UnitedPOS Setting',

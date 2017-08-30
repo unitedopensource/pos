@@ -106,7 +106,11 @@ export default {
                     date: today(),
                     schedule: +schedule,
                     source: this.op.role !== 'ThirdParty' ? "POS" : this.op.name,
-                    print: false
+                    print: false,
+                    content: this.order.content.map(item => {
+                        item.pending = true;
+                        return item
+                    })
                 });
                 this.$socket.emit("[SAVE] INVOICE", this.order);
             } else {

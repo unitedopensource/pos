@@ -85,7 +85,9 @@ export default {
         }
     },
     created() {
-
+        this.$socket.emit("[RESV] GET_QUEUE",number=>{
+            this.book.queue = number;
+        })
     },
     methods: {
         setSource(type) {

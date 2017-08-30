@@ -547,7 +547,8 @@ export default {
         'labelPrinter': '标签打印机',
         'autoAdd': '自动添加',
         'remainTicket':'{i}个订单',
-        'pickUpList':'来取订单列表'
+        'pickUpList':'来取订单列表',
+        'setGuest':'设定人数'
     },
     setting: {
         'softwareSetting': 'UnitedPOS 后台设置',

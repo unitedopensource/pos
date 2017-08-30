@@ -264,6 +264,7 @@ export default {
             }
         },
         openMarker() {
+            if(this.isEmptyTicket) return;
             this.$p("itemMarker")
         },
         addToSpooler(item) {
@@ -389,7 +390,7 @@ export default {
         voidItems() {
             return this.config.display.voidItem ? this.order.content.filter(item => item.void) : []
         },
-        ...mapGetters(['app', 'config', 'store', 'tax', 'order', 'item', 'ticket', 'language', 'isEmptyOrder'])
+        ...mapGetters(['app', 'config', 'store', 'tax', 'order', 'item', 'ticket', 'language', 'isEmptyTicket'])
     },
     filters: {
         mark(text) {

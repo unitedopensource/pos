@@ -3,7 +3,7 @@
         <ul :style="pos">
             <li class="divider">
                 <i class="fa fa-cutlery"></i>
-                <span class="text">{{$t('reservation.seat')}}</span>
+                <span class="text">{{$t('reservation.seat')}}<span class="name" v-show="init.name">{{init.name}}</span></span>
             </li>
             <li>
                 <i class="fa fa-commenting"></i>
@@ -60,7 +60,7 @@ export default {
 <style scoped>
 ul {
     position: absolute;
-    width: 160px;
+    min-width: 160px;
     background: #fff;
     box-shadow: 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12), 0 5px 5px -3px rgba(0, 0, 0, 0.2);
 }
@@ -84,5 +84,11 @@ li i {
 li:hover {
     background: #E0E0E0;
     border-left: 3px solid #37474F;
+}
+
+.name {
+    color: #FF5722;
+    margin-left: 5px;
+    text-transform: capitalize;
 }
 </style>
