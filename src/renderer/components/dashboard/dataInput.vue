@@ -8,7 +8,7 @@
             </transition-group>
         </label>
         <div class="field">
-            <input type="text" :id="id" :value="value" @change="$emit('input',$event.target.value)" @click="setAnchor($event)">
+            <input type="text" :id="id" :value="value" @input="input($event)" @click="setAnchor($event)">
             <i :class="icon"></i>
         </div>
         <dialog v-if="autoComplete">
@@ -40,6 +40,13 @@ export default {
             e.currentTarget.classList.add("active");
             let caret = e.currentTarget.selectionStart;
             let target = e.currentTarget.id;
+            this.$emit("focus", { target, caret });
+        },
+        input(e) {
+            let value = e.target.value;
+            let caret = e.currentTarget.selectionStart;
+            let target = e.currentTarget.id;
+            this.$emit('input', value);
             this.$emit("focus", { target, caret });
         },
         fill(data) {

@@ -451,19 +451,19 @@ export default {
                     amount: ""
                 },
                 {
-                    text: this.$t('type.walkIn'),
+                    text: this.$t('type.WALK_IN'),
                     count: walkin,
                     amount: walkinAmount
                 }, {
-                    text: this.$t('type.pickUp'),
+                    text: this.$t('type.PICK_UP'),
                     count: pickup,
                     amount: pickupAmount
                 }, {
-                    text: this.$t('type.delivery'),
+                    text: this.$t('type.DELIVERY'),
                     count: delivery,
                     amount: deliveryAmount
                 }, {
-                    text: this.$t('type.dineIn'),
+                    text: this.$t('type.DINE_IN'),
                     count: dinein,
                     amount: dineinAmount
                 },

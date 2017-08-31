@@ -1,7 +1,7 @@
 <template>
     <section>
         <form>
-            <data-input id="phone" label="dashboard.phone" v-model="customer.phone" :autoComplete="predict.phone" @focus="setInput" @fill="autoFill"></data-input>
+            <data-input id="phone" label="dashboard.phone" v-model="customer.phone" :autoComplete="predict.phone" @focus="setInput" @fill="autoFill" @input="autoComplete"></data-input>
             <data-input id="extension" label="dashboard.extension" v-model="customer.extension" :autoComplete="predict.extension" @focus="setInput"></data-input>
             <data-input id="name" label="dashboard.name" v-model="customer.name" :autoComplete="predict.name" @focus="setInput"></data-input>
             <data-input id="address" label="dashboard.address" v-model="customer.address" :autoComplete="predict.address" :distance="customer.distance" :duration="customer.duration" @focus="setInput" class="address" @fill="autoAddress"></data-input>
