@@ -174,6 +174,11 @@ header div {
     margin: 14px;
 }
 
+h3,
+h5 {
+    font-weight: normal;
+}
+
 .content {
     display: flex;
     flex: 1;

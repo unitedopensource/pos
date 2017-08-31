@@ -159,7 +159,7 @@ export default {
 .menu-enter,
 .menu-leave {
   opacity: 0;
-  transform: translate3d(0, -3px, 0);
+  transform: translate3d(0, 3px, 0);
 }
 
 .login {
@@ -221,20 +221,26 @@ section div:nth-child(3n+3) {
 .ctrl label {
   background: #fff;
   color: #274a5a;
-  padding: 10px 20px;
-  border-radius: 10px;
+  padding: 10px 15px;
+  border-radius: 6px;
   cursor: pointer;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.75);
+  transition: background 0.1s ease;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.75);
 }
 
-.ctrl.hide,.ctrl input {
+.ctrl label:active {
+  background: #E0E0E0;
+}
+
+.ctrl.hide,
+.ctrl input {
   display: none;
 }
 
 .ctrl ul {
   position: absolute;
   bottom: 42px;
-  left: -34px;
+  left: -33px;
   background: #fff;
   padding: 0px 10px;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
