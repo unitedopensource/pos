@@ -11,7 +11,7 @@
                 <div class="f1">
                     <span class="void" v-if="ticket.status === 0">{{text(ticket.void.note)}} ({{ticket.void.by}})</span>
                 </div>
-                <span class="price">$ {{ticket.payment.total}}</span>
+                <span class="price">$ {{ticket.payment.due.toFixed(2)}}</span>
             </div>
         </section>
     </div>

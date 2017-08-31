@@ -79,6 +79,9 @@ findHost.then(ip => {
         return phone;
     }
   });
+  Vue.filter('phone', number => {
+    return number.length === 10 ? number.replace(/^\D?(\d{3})\D?\D?(\d{3})\D?(\d{4})/, "($1) $2-$3") : number;
+  });
   Vue.filter('fromNow', (time, pass) => {
     if (!time) return;
     return moment(Number(time)).fromNow(pass);

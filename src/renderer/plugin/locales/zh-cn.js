@@ -316,7 +316,9 @@ export default {
         'printerRemoveConfirmTip': '您确定要从设置里面删除 {i} 打印机吗？',
         'noTerminal':'无信用卡终端',
         'reservationCancel':'取消预约',
-        'reservationCancelTip':'您确定要取消 {i} 的预约吗？'
+        'reservationCancelTip':'您确定要取消 {i} 的预约吗？',
+        'removeClient':'删除客户资料',
+        'removeClientTip':'您确定要删除 {i} 的所有资料吗？'
     },
     terminal: {
         'initial': '正在初始化 {i}...',
@@ -555,7 +557,9 @@ export default {
         'pickUpList':'来取订单列表',
         'setGuest':'设定人数',
         'section':'区域',
-        'icon':'图标'
+        'info':'资料',
+        'orderCount':'订单数',
+        'orderAmount':'总花销'
     },
     setting: {
         'softwareSetting': 'UnitedPOS 后台设置',
@@ -666,7 +670,9 @@ export default {
         'editItem': '编辑物品',
         'newPrinter': '添加打印机',
         'sectionEditor':'区域编辑',
-        'tableEditor':'编辑座位'
+        'tableEditor':'编辑座位',
+        'clientList':'客户列表',
+        'callLog':'来电记录'
     },
     reservation: {
         'create': '创建预约',

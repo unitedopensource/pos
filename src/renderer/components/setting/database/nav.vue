@@ -5,8 +5,8 @@
                 <i class="fa fa-chevron-left"></i>{{$t('button.back')}}</header>
             <router-link :to="{name:'Setting.database'}" tag="div" append>{{$t('setting.database')}}</router-link>
             <router-link :to="{name:'Setting.address'}" tag="div" append>{{$t('setting.address')}}</router-link>
-            <router-link :to="{name:'Setting.client'}" tag="div" append>{{$t('setting.clinet')}}</router-link>
-            <router-link :to="{name:'Setting.call'}" tag="div" append>{{$t('setting.call')}}</router-link>
+            <router-link :to="{name:'Setting.client'}" tag="div" append>{{$t('setting.clientList')}}</router-link>
+            <router-link :to="{name:'Setting.call'}" tag="div" append>{{$t('setting.callLog')}}</router-link>
         </nav>
         <div class="content">
             <router-view @change="onChange" @unchange="change = false" class="inner"></router-view>

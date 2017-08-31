@@ -3,20 +3,20 @@
         <div class="caller" v-show="this.$route.name === 'Dashboard'" @click="go">
             <header>
                 <span class="f1">{{$t('dock.incomingCall')}}</span>
-                <span class="time">{{init.extra.lastDate | fromNow}}</span>
+                <span class="time">{{customer.extra.lastDate | fromNow}}</span>
             </header>
             <div class="wrap">
                 <i class="fa fa-3x fa-phone icon"></i>
                 <div class="info">
-                    <div class="phone">{{init.phone | tel}}</div>
+                    <div class="phone">{{customer.phone | tel}}</div>
                     <div class="address">
-                        <span>{{init.address}}</span>
-                        <span>{{init.city}}</span>
+                        <span>{{customer.address}}</span>
+                        <span>{{customer.city}}</span>
                     </div>
                 </div>
             </div>
             <div class="tags">
-                <span class="tag" v-for="(tag,index) in init.extra.tag" :key="index">{{$t('tag.'+tag)}}</span>
+                <span class="tag" v-for="(tag,index) in customer.extra.tag" :key="index">{{$t('tag.'+tag)}}</span>
             </div>
         </div>
     </transition>
@@ -26,12 +26,21 @@
 import { mapActions } from 'vuex'
 export default {
     props: ['init'],
+    data() {
+        return {
+            customer: {}
+        }
+    },
+    created() {
+        console.log(this.init)
+        this.customer = this.init.customer;
+    },
     methods: {
         go() {
-            this.setCustomer(this.init);
+            this.setCustomer(this.customer);
             this.setTicket({ type: 'DELIVERY' });
             this.$router.push({ name: 'Information' });
-            this.$emit("exit")
+            this.init.resolve()
         },
         ...mapActions(['setCustomer', 'setTicket'])
     }

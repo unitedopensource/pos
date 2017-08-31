@@ -59,7 +59,7 @@ export default {
   },
   watch: {
     ring(n) {
-      n ? this.$socket.emit('INQUIRY_CUSTOMER_INFO', String(n.number)) : this.$q();
+      n ? this.$socket.emit('[RING] CALLER_ID', String(n.number)) : this.$q();
     },
     time(n) {
       this.app.autoLock && this.$route.name !== "Lock" && this.sectionTimeout(n);
@@ -300,14 +300,9 @@ export default {
     UPDATE_TABLE_STATUS(data) {
       this.updateTable(data)
     },
-    // LAST_UPDATE_TIME(update) {
-    //   this.update.table !== update.table && this.$socket.emit("INQUIRY_ALL_TABLES");
-    //   this.update.order !== update.order && this.$socket.emit("INQUIRY_TODAY_ORDER_LIST", today());
-    // },
-    CUSTOMER_ENQUIRE_RESULT(info) {
-      this.newPhoneCall(info);
-      this.componentData = info;
-      this.component = "caller";
+    CALLER_ID(customer) {
+      this.newPhoneCall(customer);
+      this.$p("caller", { customer })
     },
     TIMECARD_REPORT(data) {
       Printer.init(this.config).setJob("timeCard report").print(data);
@@ -338,7 +333,7 @@ export default {
     INSERT_ORDER(data) { this.insertOrder(data) },
     UPDATE_ORDER(data) { this.updateOrder(data) },
     SYNC_ORDERS(data) { this.setTodayOrder(data) },
-    SYNC_TABLES(data) { this.syncTables(table) },
+    SYNC_TABLES(data) { this.syncTables(data) },
     REQUEST_CATEGORY_UPDATE(data) { this.updateRequestCategory(data) },
     REQUEST_ACTION_UPDATE(data) { this.updateRequestAction(data) },
     REQUEST_ITEM_UPDATE(data) { this.updateRequestItem(data) },

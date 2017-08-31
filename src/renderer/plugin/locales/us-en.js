@@ -316,7 +316,9 @@ export default {
         'printerRemoveConfirmTip': 'Are you sure you want to remove Printer {i} from the list?',
         'noTerminal': 'No Terminal',
         'reservationCancel': 'Cancel Reservation',
-        'reservationCancelTip': "Are you sure you are going to cancel {i}'s reservation?"
+        'reservationCancelTip': "Are you sure you are going to cancel {i}'s reservation?",
+        'removeClient':'Remove Client Confirm',
+        'removeClientTip':'Are you sure you are going to delete {i} information?'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',
@@ -555,7 +557,9 @@ export default {
         'pickUpList': 'Pick Up List',
         'setGuest': 'Set Guest',
         'section': 'Section',
-        'icon': 'Icon'
+        'info':'Info.',
+        'orderCount':'Order Count',
+        'orderAmount':'Order Amount'
     },
     setting: {
         'softwareSetting': 'UnitedPOS Setting',
@@ -666,7 +670,9 @@ export default {
         'editItem': 'Edit Item',
         'newPrinter': 'New Printer',
         'sectionEditor': 'Section Editor',
-        'tableEditor': 'Table Editor'
+        'tableEditor': 'Table Editor',
+        'clientList':'Client List',
+        'callLog':'Call Log'
     },
     reservation: {
         'create': 'Create Reservation',
