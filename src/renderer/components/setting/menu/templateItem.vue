@@ -14,11 +14,11 @@
 
                 <div class="input">
                     <label>{{$t('text.price')}}</label>
-                    <input v-model="item.price" @keydown.enter="done">
+                    <input v-model.number="item.price" @keydown.enter="done">
                 </div>
                 <div class="printers">
-                    <div class="printer" v-for="printer in printers">
-                        <checkbox v-model="item.print" :multiple="true" :label="printer"></checkbox>
+                    <div class="printer" v-for="(printer,index) in printers" :key="printer">
+                        <checkbox v-model="item.print" :val="printer" :multiple="true" :label="printer"></checkbox>
                     </div>
                 </div>
             </div>
