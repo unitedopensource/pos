@@ -110,7 +110,7 @@ export default {
         addItem() {
             new Promise((resolve, reject) => {
                 let title = "setting.newItem";
-                this.componentData = { resolve, reject };
+                this.componentData = { resolve, reject, title };
                 this.component = "editor";
             }).then((item) => {
                 this.template.contain[this.index].contain.push(item);
