@@ -7,16 +7,16 @@
             </header>
             <div class="inner">
                 <section class="source" v-if="step === 0">
-                    <div @click="setSource('walkIn')">
+                    <div @click="current">
                         <i class="fa fa-3x fa-user"></i>
                         <span class="text">{{$t('reservation.walkIn')}}</span>
                     </div>
-                    <div @click="setSource('phone')">
+                    <div @click="future">
                         <i class="fa fa-3x fa-phone"></i>
                         <span class="text">{{$t('reservation.phone')}}</span>
                     </div>
                 </section>
-                <section class="" v-if="step === 1">
+                <section v-if="step === 1">
                     <article v-if="book.type ==='walkIn'">
                         <div class="content">
                             <div class="input">
@@ -39,21 +39,61 @@
                                     </div>
                                 </div>
                             </div>
-                            <aside>
+                            <aside class="ticket">
                                 <div class="queue">
                                     <span class="value">{{book.queue}}</span>
                                     <span class="text">{{$t('reservation.number')}}</span>
                                 </div>
-                                <div></div>
                             </aside>
                         </div>
-
                         <footer>
                             <div class="btn" @click="placeQueue">{{$t('button.create')}}</div>
                         </footer>
                     </article>
                     <article v-if="book.type ==='phone'">
-                        phone
+                        <div class="content">
+                            <div class="input">
+                                <div>
+                                    <label>{{$t('reservation.date')}}</label>
+                                    <div>
+                                        <input type="text" v-model="book.date" ref="date">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label>{{$t('reservation.name')}}</label>
+                                    <div>
+                                        <input type="text" v-model="book.name">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label>{{$t('text.phone')}}</label>
+                                    <div>
+                                        <input type="text" v-model="book.phone">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label>{{$t('reservation.guest')}}</label>
+                                    <div>
+                                        <input type="number" v-model.number="book.size">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label>{{$t('text.note')}}</label>
+                                    <div>
+                                        <textarea type="text" v-model.number="book.note"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <aside class="tables">
+                                <select v-model="section">
+                                    <option v-for="(section,index) in tables" :key="section" :value="section">{{section.usEN}}</option>
+                                </select>
+                                <seat :section="section" :status="scheduled"></seat>
+                            </aside>
+                        </div>
+                        <footer>
+                            <div class="btn" @click="reserve">{{$t('button.create')}}</div>
+                        </footer>
                     </article>
                 </section>
             </div>
@@ -62,10 +102,13 @@
 </template>
 
 <script>
-import Printer from '../../print'
 import { mapAction, mapGetters } from 'vuex'
+import Printer from '../../print'
+import seat from './seat'
+
 export default {
     props: ['init'],
+    components: { seat },
     data() {
         return {
             book: {
@@ -74,6 +117,7 @@ export default {
                 name: '',
                 phone: '',
                 note: '',
+                seats: [],
                 time: +new Date(),
                 reserve: +new Date(),
                 date: today(),
@@ -82,35 +126,45 @@ export default {
                 status: 1,
                 request: []
             },
+            section: null,
+            scheduled: [],
             step: 0
         }
     },
     created() {
         this.$socket.emit("[RESV] GET_QUEUE", number => {
-            this.book.queue = number;
+            this.book.queue = number
         })
+        this.section = this.tables[0];
     },
     methods: {
-        setSource(type) {
+        current() {
             this.step++;
-            this.book.type = type;
+            this.book.type = 'walkIn';
+        },
+        future() {
+            this.step++;
+            this.book.type = 'phone';
         },
         placeQueue() {
             Object.assign(this.book, { op: this.op.name });
             this.$socket.emit("[RESV] CREATE", this.book);
             Printer.init(this.config).setJob('queue ticket').print(this.book);
             this.init.resolve()
+        },
+        reserve(){
+            
         }
     },
     computed: {
-        ...mapGetters(['op', 'config'])
+        ...mapGetters(['op', 'config', 'tables'])
     }
 }
 </script>
 
 <style scoped>
 .window {
-    width: 600px;
+    min-width: 600px;
 }
 
 section.source {
@@ -154,8 +208,7 @@ article .content {
 article aside {
     flex: 1;
     border-left: 1px solid #fff;
-    display: flex;
-    justify-content: center;
+    text-align: center;
 }
 
 .input {
@@ -172,11 +225,18 @@ article aside {
     position: relative;
 }
 
-.input input {
+.input input,
+.input textarea {
     font-size: 25px;
     padding: 2px 5px;
     border: 2px solid #e5e5e5;
     width: 200px;
+}
+
+.input textarea {
+    height: 100px;
+    font-size: 16px;
+    resize: none;
 }
 
 .queue {
@@ -193,5 +253,13 @@ article aside {
 
 .queue .text {
     color: #757575;
+}
+
+aside.ticket {
+    width: 325px;
+}
+
+aside.tables {
+    width: 295px;
 }
 </style>
