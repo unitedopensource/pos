@@ -306,7 +306,7 @@ input[type="text"]:disabled {
   position: relative;
 }
 
-.title i {
+.title > i {
   color: #fff;
   font-style: normal;
   cursor: pointer;

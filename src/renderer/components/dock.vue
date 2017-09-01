@@ -52,7 +52,7 @@ export default {
       let type = this.app.mode === 'create' ? 'type.' + this.ticket.type : 'type.' + this.order.type;
 
       return this.ticket.type === 'DINE_IN'
-        ? this.$t(type, this.app.language) + ' - ' + this.order.table + (this.order.guest > 0 ? ' - ' + this.order.guest : '')
+        ? this.$t(type,this.app.language) + (this.order.table ? ' - ' + this.order.table + (this.order.guest > 0 ? ' - ' + this.order.guest : ''):'')
         : this.$t(type, this.app.language);
     },
     ...mapGetters(['op', 'app', 'time', 'ring', 'order', 'config', 'ticket', 'update', 'device', 'history', 'station', 'spooler', 'customer', 'language', 'currentTable'])

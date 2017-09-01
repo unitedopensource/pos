@@ -37,11 +37,11 @@
                         <div class="selection">
                             <checkbox v-model="profile.control.printPrimary" label="setting.printPrimary" @input="togglePrimary"></checkbox>
                             <checkbox v-model="profile.control.printPrimaryPrice" label="setting.printPrice" @input="togglePrimaryPrice"></checkbox>
-                            <smart-option v-model="profile.control.primaryFont" label="setting.font" :options="chineseFonts"></smart-option>
+                            <smart-option v-model="profile.control.primaryFont" label="setting.font" :options="fonts"></smart-option>
                             <smart-range v-model="profile.control.primaryFontSize" label="setting.fontSize" min="10" max="40" step="1"></smart-range>
                             <checkbox v-model="profile.control.printSecondary" label="setting.printSecondary" @input="toggleSecondary"></checkbox>
                             <checkbox v-model="profile.control.printSecondaryPrice" label="setting.printPrice" @input="toggleSecondaryPrice"></checkbox>
-                            <smart-option v-model="profile.control.secondaryFont" label="setting.font" :options="englishFonts"></smart-option>
+                            <smart-option v-model="profile.control.secondaryFont" label="setting.font" :options="fonts"></smart-option>
                             <smart-range v-model="profile.control.secondaryFontSize" label="setting.fontSize" min="10" max="40" step="1"></smart-range>
                             <checkbox v-model="profile.control.sortItem" label="setting.sortItem"></checkbox>
                             <checkbox v-model="profile.control.duplicate" label="setting.printDuplicate"></checkbox>
@@ -202,9 +202,37 @@ export default {
     },
     data() {
         return {
-            englishFonts: ["Agency FB", "Tahoma", "Tensentype RuiHeiJ-W2", "Trebuchet MS", "Noto Mono", "Futura LT Condensed", "Noto Sans SC Light", "PingFang SC Regular"],
-            chineseFonts: ["Noto Sans SC Light", "QingYuan", "PingFang SC Regular", 'PingFang Light'],
-            presets: ["cashier", "kitchen", "bar", "payment", "runner"],
+            fonts: [{
+                label: 'Agency FB (English)',
+                value: 'Agency FB'
+            }, {
+                label: 'Tahoma (English)',
+                value: 'Tahoma'
+            }, {
+                label: 'Tensentype RuiHeiJ-W2 (English)',
+                value: 'Tensentype RuiHeiJ-W2'
+            }, {
+                label: 'Trebuchet MS (English)',
+                value: 'Trebuchet MS'
+            }, {
+                label: 'Noto Mono (English)',
+                value: 'Noto Mono'
+            }, {
+                label: 'Futura LT Condensed (English)',
+                value: 'Futura LT Condensed'
+            }, {
+                label: 'Noto Sans SC Light (中文)',
+                value: 'Noto Sans SC Light'
+            }, {
+                label: 'PingFang SC Regular (中文)',
+                value: 'PingFang SC Regular'
+            }, {
+                label: 'QingYuan (中文)',
+                value: 'QingYuan'
+            }, {
+                label: 'PingFang Light (中文)',
+                value: 'PingFang Light'
+            }],
             time: moment().locale('en').format('hh:mm a'),
             date: moment().format('MM-DD-YYYY'),
             componentData: null,

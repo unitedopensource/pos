@@ -4,7 +4,11 @@
             <header class="title">
                 <div class="wrap">
                     <span>{{$t('history.terminalRecord')}}</span>
-                    <span class="date">{{date}}</span>
+                    <div class="dateWrap">
+                        <i class="fa fa-chevron-left" @click="prevDate"></i>
+                        <span class="date">{{date | moment('YYYY-MM-DD')}}</span>
+                        <i class="fa fa-chevron-right" @click="nextDate"></i>
+                    </div>
                 </div>
                 <i class="fa fa-times" @click="init.resolve"></i>
             </header>
@@ -82,7 +86,7 @@ export default {
             component: null,
             filter: "all",
             device: null,
-            date: today(),
+            date: moment().subtract(4, 'hours'),
             page: 0
         }
     },
@@ -98,7 +102,19 @@ export default {
                 this.device = this.terminal.check(device);
                 this.device.code !== '000000' && this.disableBatchFn();
             })
-            this.$socket.emit("[TERM] GET_ALL_TRANSACTION", this.date);
+            this.$socket.emit("[TERM] INITIAL", data => {
+                this.transactions = data;
+            });
+        },
+        prevDate() {
+            this.date = this.date.clone().subtract(1, 'days');
+            this.page = 0;
+            this.$socket.emit('[TERM] TRANSACTION_BY_DATE', this.date.format('YYYY-MM-DD'));
+        },
+        nextDate() {
+            this.date = this.date.clone().add(1, 'days');
+            this.page = 0;
+            this.$socket.emit('[TERM] TRANSACTION_BY_DATE', this.date.format('YYYY-MM-DD'));
         },
         getFile(device) {
             switch (device) {
@@ -154,7 +170,6 @@ export default {
             Printer.init(this.config).setJob('reprint creditCard').print(receipt);
         },
         voidSale(record) {
-            console.log(record)
             this.$dialog({
                 title: "dialog.voidCreditSale", msg: ["dialog.voidCreditSaleTip", record.order.number, 'type.' + record.order.type],
                 buttons: [{ text: 'button.cancel', fn: 'reject' }, { text: 'button.confirmPrint', fn: 'resolve' }]
@@ -378,7 +393,7 @@ export default {
         ...mapGetters(['op', 'config', 'language', 'history', 'station'])
     },
     sockets: {
-        TERM_TRANS_RESULT(data) {
+        TERM_TRANSACTION(data) {
             this.transactions = data;
         }
     }
@@ -570,7 +585,20 @@ li.void,
     color: #B3E5FC;
     text-shadow: 0 0 1px #0D47A1;
     font-weight: bold;
-    margin-left: 10px;
+    width: 90px;
+    text-align: center;
+}
+
+.dateWrap {
+    flex: 1;
+    align-items: center;
+    padding: 0 10px;
+    display: flex;
+}
+
+.dateWrap i {
+    padding: 0 10px;
+    cursor: pointer;
 }
 
 .pagination {
