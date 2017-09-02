@@ -318,7 +318,13 @@ export default {
         'reservationCancel':'取消预约',
         'reservationCancelTip':'您确定要取消 {i} 的预约吗？',
         'removeClient':'删除客户资料',
-        'removeClientTip':'您确定要删除 {i} 的所有资料吗？'
+        'removeClientTip':'您确定要删除 {i} 的所有资料吗？',
+        'unableSent':'无法发送',
+        'errorCode':'错误代码 {i}',
+        'remainPrintItem':'剩余 {i} 个物品未打印',
+        'noRemainItem':'已经全部打印完毕',
+        'itemSent':'物品发送',
+        'printResult':'已发送 {i} 个物品'
     },
     terminal: {
         'initial': '正在初始化 {i}...',

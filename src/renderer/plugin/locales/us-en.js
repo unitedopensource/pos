@@ -318,7 +318,13 @@ export default {
         'reservationCancel': 'Cancel Reservation',
         'reservationCancelTip': "Are you sure you are going to cancel {i}'s reservation?",
         'removeClient':'Remove Client Confirm',
-        'removeClientTip':'Are you sure you are going to delete {i} information?'
+        'removeClientTip':'Are you sure you are going to delete {i} information?',
+        'unableSent':'Unable Sent',
+        'errorCode':'Error Code {i}',
+        'remainPrintItem':'Remain {i} items unprint',
+        'noRemainItem':'All items are printed',
+        'itemSent':'Item Sent',
+        'printResult':'Send {i} items'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',
