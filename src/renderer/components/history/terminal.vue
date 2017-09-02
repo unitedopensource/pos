@@ -171,7 +171,7 @@ export default {
         },
         voidSale(record) {
             this.$dialog({
-                title: "dialog.voidCreditSale", msg: ["dialog.voidCreditSaleTip", record.order.number, 'type.' + record.order.type],
+                title: "dialog.voidCreditSale", msg: ["dialog.voidCreditSaleTip", record.order.number, this.$t('type.' + record.order.type)],
                 buttons: [{ text: 'button.cancel', fn: 'reject' }, { text: 'button.confirmPrint', fn: 'resolve' }]
             }).then((print) => {
                 let invoice = record.order.number;
