@@ -264,7 +264,7 @@ export default {
             }
         },
         openMarker() {
-            if(this.isEmptyTicket) return;
+            if (this.isEmptyTicket) return;
             this.$p("itemMarker")
         },
         addToSpooler(item) {
@@ -299,11 +299,17 @@ export default {
             } catch (e) {
                 error = true;
                 this.spooler = [];
-                this.$dialog({ type: 'warning', title: 'UNABLE_SEND', msg: e.toString(), buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$q() })
+                this.$dialog({
+                    type: 'warning', title: 'dialog.unableSent', msg: ['dialog.errorCode', e.toString()],
+                    buttons: [{ text: 'text.confirm', fn: 'resolve' }]
+                }).then(() => { this.$q() })
             }
             if (!error) {
-                let txt = remain > 0 ? this.text('TIP_REMAIN_ITEM', remain) : this.text('TIP_NO_REMAIN_ITEM');
-                this.$dialog({ type: 'info', title: 'ITEM_SEND', msg: this.text('TIP_PRINT_RESULT', sendItem) + ", " + txt, buttons: [{ text: 'CONFIRM', fn: 'resolve' }] }).then(() => { this.$q() })
+                let txt = remain > 0 ? this.$t('dialog.remainPrintItem', remain) : this.$t('dialog.noRemainItem');
+                this.$dialog({
+                    type: 'info', title: 'dialog.itemSent', msg: this.$t('printResult', sendItem) + ", " + txt,
+                    buttons: [{ text: 'dialog.confirm', fn: 'resolve' }]
+                }).then(() => { this.$q() })
                 this.spooler.forEach(item => { item.print = true })
                 this.spooler = [];
             }
@@ -385,7 +391,7 @@ export default {
             return { transform: `translate3d(0,${this.offset}px,0)` }
         },
         cart() {
-            return this.sort ? this.order.content.filter(item => item.sort === this.sort && !item.void) : this.order.content.filter(item=>!item.void)
+            return this.sort ? this.order.content.filter(item => item.sort === this.sort && !item.void) : this.order.content.filter(item => !item.void)
         },
         voidItems() {
             return this.config.display.voidItem ? this.order.content.filter(item => item.void) : []
@@ -398,6 +404,19 @@ export default {
         }
     },
     watch: {
+        'payment'() {
+            this.$nextTick(() => {
+                let height = 0;
+                let doms = document.querySelectorAll(".order .list");
+                doms.forEach(dom => {
+                    height += dom.offsetHeight;
+                });
+                height = 329 - height;
+                this.overflow = height < 0;
+                this.overflowIndex = this.overflow ? this.cart.length - 1 : null;
+                this.offset = this.overflow ? height : 0;
+            })
+        },
         'cart': {
             handler(n) {
                 this.display ? this.payment = this.order.payment : this.calculator(n);
@@ -412,7 +431,7 @@ export default {
 
 <style scoped>
 .overflow {
-    transition: transform .22s linear;
+    transition: transform .22s ease;
 }
 
 header.simple {
