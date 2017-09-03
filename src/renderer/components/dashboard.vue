@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard">
-    <div class="cardWrap" v-if="station">
+    <div class="cardWrap" v-if="station" :class="{enlarge:station.enlargeTitle}">
       <div class="card" v-for="(grid,index) in station.interface" @click="go(grid)" :class="{disable:!grid.enable}" :key="index">
         <i class="fa" :class="[grid.icon]"></i>
         <h1>{{grid.head}}</h1>
@@ -295,9 +295,12 @@ h4 {
 }
 
 h1 {
-  font-weight: 500;
-  font-size: 46px;
+  font-weight: normal;
   margin-top: 50px;
+}
+
+.enlarge h1 {
+  font-size: 46px;
 }
 
 .dashboard .clock {

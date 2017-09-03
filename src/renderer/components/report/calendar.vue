@@ -66,7 +66,7 @@
                     <div class="mask" v-show="allDay"></div>
                 </div>
                 <div class="option">
-                    <checkbox v-model="allDay" label="ALL_DAY"></checkbox>
+                    <checkbox v-model="allDay" label="text.allDay"></checkbox>
                 </div>
             </div>
         </main>

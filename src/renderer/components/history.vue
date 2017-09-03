@@ -10,7 +10,7 @@
             <grids :date="calendarDate || today" @change="setCalendar"></grids>
             <section class="tickets">
                 <div class="inner">
-                    <div v-for="(ticket,index) in orders" class="invoice" @click="getInvoice(ticket)" :data-number="ticket.number" :key="index" :class="{void:ticket.status === 0,settled:ticket.settled}">
+                    <div v-for="(ticket,index) in invoices" class="invoice" @click="getInvoice(ticket)" :data-number="ticket.number" :key="index" :class="{void:ticket.status === 0,settled:ticket.settled}">
                         <span class="type">{{$t('type.'+ticket.type)}}
                             <span v-if="ticket.type === 'DINE_IN'" class="table">{{ticket.table}}</span>
                         </span>
@@ -19,15 +19,7 @@
                         <span class="total">$ {{ticket.payment.due.toFixed(2)}}</span>
                     </div>
                 </div>
-                <div class="pagination" v-if="totalPage > 1">
-                    <div class="page" @click="page = page > 0 ? page - 1 : 0">
-                        <i class="fa fa-angle-left"></i>
-                    </div>
-                    <div class="page" v-for="i in totalPage" @click="page = (i-1)" :key="i" :class="{active:page === (i-1)}">{{i}}</div>
-                    <div class="page" @click="page = page === (totalPage-1) ? page : page + 1">
-                        <i class="fa fa-angle-right"></i>
-                    </div>
-                </div>
+                <pagination :of="orders" @page="setPage" :max="30"></pagination>
             </section>
             <section class="ticket">
                 <order-list layout="display" :display="true"></order-list>
@@ -39,6 +31,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import pagination from './common/pagination'
 import orderSummary from './history/summary'
 import Maintenance from './dock/maintenance'
 import orderList from './common/orderList'
@@ -46,7 +39,7 @@ import dialoger from './common/dialoger'
 import grids from './history/function'
 
 export default {
-    components: { grids, orderList, orderSummary, Maintenance, dialoger },
+    components: { grids, orderList, orderSummary, Maintenance, dialoger, pagination },
     data() {
         return {
             today: today(),
@@ -101,7 +94,9 @@ export default {
                 default:
                     this.filter = type;
             }
-            this.page = 0;
+        },
+        setPage(number) {
+            this.page = number
         },
         setSummary(data) {
             this.summary = data;
@@ -117,8 +112,6 @@ export default {
     },
     computed: {
         orders() {
-            let min = this.page * 30;
-            let max = min + 30;
             let operator = this.op.name;
             let approval = this.approval(this.op.view, "invoices");
             switch (this.filter) {
@@ -128,20 +121,20 @@ export default {
                 case "DINE_IN":
                 case "BAR":
                     return this.prevsHistory.length ?
-                        this.prevsHistory.filter(invoice => invoice.type === this.filter && view(invoice.server)).slice(min, max) :
-                        this.history.filter(invoice => invoice.type === this.filter && view(invoice.server)).slice(min, max);
+                        this.prevsHistory.filter(invoice => invoice.type === this.filter && view(invoice.server)) :
+                        this.history.filter(invoice => invoice.type === this.filter && view(invoice.server));
                 case "UNSETTLE":
                     return this.prevsHistory.length ?
-                        this.prevsHistory.filter(invoice => !invoice.settled && view(invoice.server)).slice(min, max) :
-                        this.history.filter(invoice => !invoice.settled && view(invoice.server)).slice(min, max);
+                        this.prevsHistory.filter(invoice => !invoice.settled && view(invoice.server)) :
+                        this.history.filter(invoice => !invoice.settled && view(invoice.server));
                 case "DRIVER":
                     return this.prevsHistory.length ?
-                        this.prevsHistory.filter(invoice => (this.driver ? invoice.driver === this.driver : invoice.type === 'DELIVERY') && view(invoice.server)).slice(min, max) :
-                        this.history.filter(invoice => (this.driver ? invoice.driver === this.driver : invoice.type === 'DELIVERY') && view(invoice.server)).slice(min, max);
+                        this.prevsHistory.filter(invoice => (this.driver ? invoice.driver === this.driver : invoice.type === 'DELIVERY') && view(invoice.server)) :
+                        this.history.filter(invoice => (this.driver ? invoice.driver === this.driver : invoice.type === 'DELIVERY') && view(invoice.server));
                 default:
                     return this.prevsHistory.length ?
-                        this.prevsHistory.filter((invoice) => view(invoice.server)).slice(min, max) :
-                        this.history.filter((invoice) => view(invoice.server)).slice(min, max);
+                        this.prevsHistory.filter((invoice) => view(invoice.server)) :
+                        this.history.filter((invoice) => view(invoice.server));
             }
 
             function view(server) {
@@ -150,10 +143,15 @@ export default {
                 return server === operator
             }
         },
-        totalPage() {
-            let length = this.prevsHistory.length || this.history.length;
-            return Math.ceil(length / 30)
+        invoices() {
+            let min = this.page * 30;
+            let max = min + 30;
+            return this.orders.slice(min, max)
         },
+        // totalPage() {
+        //     let length = this.prevsHistory.length || this.history.length;
+        //     return Math.ceil(length / 30)
+        // },
         ...mapGetters(['op', 'sync', 'ticket', 'order', 'history', 'store'])
     },
     filters: {
@@ -338,31 +336,5 @@ section.ticket {
 .total {
     display: block;
     text-align: center;
-}
-
-.pagination {
-    justify-content: center;
-    margin: 0px 12px 0 6px;
-    display: flex;
-}
-
-.pagination .page {
-    margin: 5px 5px 10px;
-    width: 20px;
-    text-align: center;
-    cursor: pointer;
-    padding: 10px 10px;
-    border-radius: 4px;
-    text-shadow: 0 1px 1px #fff;
-    background: linear-gradient(#fefefe, #cfd0d3);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, .7);
-}
-
-.page.active {
-    font-weight: bold;
-    background: #676767;
-    color: #fff;
-    text-shadow: 0 1px 1px #000;
-    box-shadow: rgba(0, 0, 0, 0.75) 0 0 0 0 inset;
 }
 </style>

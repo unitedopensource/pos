@@ -571,7 +571,9 @@ export default {
         'orderCount':'Order Count',
         'orderAmount':'Order Amount',
         'from':'From',
-        'to':'To'
+        'to':'To',
+        'allDay':'All Day',
+        'enlargeTitle':'Enlarge Title'
     },
     setting: {
         'softwareSetting': 'UnitedPOS Setting',

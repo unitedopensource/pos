@@ -283,7 +283,7 @@ export default {
         'cashChange': '请找 ${i}',
         'cashChangeTip': '客人支付现金 (${i})',
         'printReceiptConfirm': '打印收据',
-        'printReceiptConfirmTip': '是否需要打印收据给客？',
+        'printReceiptConfirmTip': '是否需要打印收据给客人？',
         'cashDrawerNotAvailable': '无法使用钱机',
         'cashDrawerNotAvailableTip': '需要先为此工作站配置一个钱机',
         'noInvoice': '没有任何订单',
@@ -572,7 +572,9 @@ export default {
         'orderCount':'订单数',
         'orderAmount':'总花销',
         'from':'从',
-        'to':'到'
+        'to':'到',
+        'allDay':'全天',
+        'enlargeTitle':'放大标题'
     },
     setting: {
         'softwareSetting': 'UnitedPOS 后台设置',

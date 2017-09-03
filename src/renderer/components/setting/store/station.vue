@@ -74,7 +74,10 @@
         </section>
         <section class="card">
             <header>{{$t('text.ui')}}</header>
-            <article class="grid">
+            <article>
+                <smart-switch v-model="workStation.enlargeTitle" label="text.enlargeTitle"></smart-switch>
+            </article>
+            <article class="grid" :class="{enlarge:workStation.enlargeTitle}">
                 <div v-for="(grid,index) in workStation.interface" :key="index" class="block" @click="edit(grid,index)" :class="{disable:!grid.enable}">
                     <i class="fa icon" :class="[grid.icon]"></i>
                     <h1>{{grid.head}}</h1>
@@ -173,7 +176,7 @@ export default {
 
 .block {
     width: 150px;
-    padding: 25px 20px;
+    padding: 35px 20px 15px;
     border-right: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
     color: #333;
@@ -190,6 +193,11 @@ export default {
     right: 0;
     top: 0px;
     padding: 10px 15px;
+}
+
+.enlarge h1{
+    font-size: 2em;
+    font-weight: normal;
 }
 
 .block h4 {
