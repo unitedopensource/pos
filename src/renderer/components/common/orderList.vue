@@ -371,18 +371,6 @@ export default {
                 due: due.toFixed(2),
             });
             this.setOrder({ payment: this.payment });
-
-            this.$nextTick(() => {
-                let height = 0;
-                let doms = document.querySelectorAll(".order .list");
-                doms.forEach(dom => {
-                    height += dom.offsetHeight;
-                });
-                height = 329 - height;
-                this.overflow = height < 0;
-                this.overflowIndex = this.overflow ? items.length - 1 : null;
-                this.offset = this.overflow ? height : 0;
-            })
         },
         ...mapActions(['setPointer', 'resetPointer', 'resetChoiceSet', 'setChoiceSetTarget', 'setOrder'])
     },
@@ -413,7 +401,7 @@ export default {
                 });
                 height = 329 - height;
                 this.overflow = height < 0;
-                this.overflowIndex = this.overflow ? this.cart.length - 1 : null;
+                this.overflowIndex = this.overflow ? this.cart.last() : null;
                 this.offset = this.overflow ? height : 0;
             })
         },

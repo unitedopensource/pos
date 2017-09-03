@@ -324,7 +324,12 @@ export default {
         'remainPrintItem':'剩余 {i} 个物品未打印',
         'noRemainItem':'已经全部打印完毕',
         'itemSent':'物品发送',
-        'printResult':'已发送 {i} 个物品'
+        'printResult':'已发送 {i} 个物品',
+        'tableSectionRemove':'区域移除',
+        'tableSectionRemoveTip':'您确定要移除这个区域吗？',
+        'tableRemoveConfirm':'删除座位',
+        'tableRemoveConfirmTip':'您确定要删除这个座位吗？'
+
     },
     terminal: {
         'initial': '正在初始化 {i}...',
@@ -565,7 +570,9 @@ export default {
         'section':'区域',
         'info':'资料',
         'orderCount':'订单数',
-        'orderAmount':'总花销'
+        'orderAmount':'总花销',
+        'from':'从',
+        'to':'到'
     },
     setting: {
         'softwareSetting': 'UnitedPOS 后台设置',

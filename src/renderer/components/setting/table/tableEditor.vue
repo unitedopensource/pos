@@ -14,7 +14,7 @@
                 <div class="input">
                     <label for="name">{{$t('text.icon')}}</label>
                     <select v-model="table.shape">
-                        <option v-for="shape in options">{{shape}}</option>
+                        <option v-for="(shape,index) in options" :key="index">{{shape}}</option>
                     </select>
                 </div>
             </div>

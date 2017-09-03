@@ -109,7 +109,7 @@ export default {
             ++index <= max ? this.sort(index) : (this.split = this.items.map(item => item.sort).filter((v, i, s) => s.indexOf(v) === i).length)
         },
         splitEvenly() {
-            this.split !== 0 && this.transfer([], true)
+            this.split > 1 && this.transfer([], true)
         },
         transfer(index, even) {
             let doms = document.querySelectorAll(".split .active");

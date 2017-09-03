@@ -1,6 +1,6 @@
 <template>
     <div class="window">
-        <header class="title">{{text('SET_DATE')}}</header>
+        <header class="title">{{$t('text.setDate')}}</header>
         <header class="tab">
             <div>
                 <input type="radio" v-model="tab" id="calendar" value="calendar">
@@ -23,13 +23,13 @@
                     <i class="fa fa-chevron-right" @click="next"></i>
                 </div>
                 <header>
-                    <span>{{text('MON')}}</span>
-                    <span>{{text('TUE')}}</span>
-                    <span>{{text('WEN')}}</span>
-                    <span>{{text('THU')}}</span>
-                    <span>{{text('FRI')}}</span>
-                    <span>{{text('SAT')}}</span>
-                    <span>{{text('SUN')}}</span>
+                    <span>{{$t('calendar.mon')}}</span>
+                    <span>{{$t('calendar.tue')}}</span>
+                    <span>{{$t('calendar.wen')}}</span>
+                    <span>{{$t('calendar.thu')}}</span>
+                    <span>{{$t('calendar.fri')}}</span>
+                    <span>{{$t('calendar.sat')}}</span>
+                    <span>{{$t('calendar.sun')}}</span>
                 </header>
                 <div class="dayWrap">
                     <div class="day" v-for="(calendar,index) in days" :class="{current:calendar.current,selected:selected.includes(calendar.date)}" :data-day="calendar.day" :key="index" @click="setDay(calendar.date)">{{calendar.day}}</div>
@@ -38,7 +38,7 @@
             <div v-else class="timer">
                 <div class="time">
                     <div class="picker">
-                        <h5>{{text('FROM')}} ({{range.from}})</h5>
+                        <h5>{{$t('text.from')}} ({{range.from}})</h5>
                         <div class="inner">
                             <div v-for="(n,i) in clock" :key="i">
                                 <input type="radio" v-model="from" :id="'from'+i" :value="n">
@@ -51,7 +51,7 @@
                         </div>
                     </div>
                     <div class="picker">
-                        <h5>{{text('TO')}} ({{range.to}})</h5>
+                        <h5>{{$t('text.to')}} ({{range.to}})</h5>
                         <div class="inner">
                             <div v-for="(n,i) in clock" :key="i">
                                 <input type="radio" v-model="to" :id="'to'+i" :value="n">
@@ -71,8 +71,8 @@
             </div>
         </main>
         <footer>
-            <div class="btn f1" @click="init.reject">{{text('CANCEL')}}</div>
-            <div class="btn f1" @click="confirm">{{text('CONFIRM')}}</div>
+            <div class="btn f1" @click="init.reject">{{$t('button.cancel')}}</div>
+            <div class="btn f1" @click="confirm">{{$t('button.confirm')}}</div>
         </footer>
         <div :is="component" :init="componentData"></div>
     </div>

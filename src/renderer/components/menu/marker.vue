@@ -20,9 +20,9 @@
         <span @click="markIt('P')">P</span>
         <span @click="markIt('K')">K</span>
         <span @click="markIt('H')">H</span>
-        <span @click="markIt('D')">G</span>
-        <span @click="markIt('E')">V</span>
-        <span @click="markIt('F')">N</span>
+        <span @click="markIt('G')">G</span>
+        <span @click="markIt('V')">V</span>
+        <span @click="markIt('N')">N</span>
         <span @click="markIt('M')">M</span>
       </section>
       <footer>

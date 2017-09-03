@@ -7,8 +7,8 @@
                     <i class="fa fa-plus"></i>
                 </div>
                 <div class="apply" :key="-2">
-                    <div class="btn" @click="applySectionSort" v-show="isSectionSort">{{text('APPLY')}}</div>
-                    <div class="btn" @click="applyTableSort" v-show="isTableSort">{{text('APPLY')}}</div>
+                    <div class="btn" @click="applySectionSort" v-show="isSectionSort">{{$t('button.apply')}}</div>
+                    <div class="btn" @click="applyTableSort" v-show="isTableSort">{{$t('button.apply')}}</div>
                 </div>
             </transition-group>
         </draggable>
@@ -69,7 +69,7 @@ export default {
                 this.$socket.emit("[CMS] EDIT_TABLE_SECTION", { section: result, index });
                 this.$q();
             }).catch((remove) => {
-                remove ? this.$dialog({ title: "TABLE_SECTION_REMOVE", msg: "TIP_REMOVE_TABLE_SECTION" }).then(() => {
+                remove ? this.$dialog({ title: "dialog.tableSectionRemove", msg: "dialog.tableSectionRemoveTip" }).then(() => {
                     this.removeSection(index);
                     this.$q()
                 }).catch(() => { this.$q() }) : this.$q()
@@ -85,7 +85,7 @@ export default {
                 this.$socket.emit("[CMS] TABLE_MODIFY", { table, index, section: this.currentSection });
                 this.$q()
             }).catch((remove) => {
-                remove ? this.$dialog({ title: "TABLE_REMOVE", msg: "TIP_TABLE_REMOVE" }).then(() => {
+                remove ? this.$dialog({ title: "dialog.tableRemoveConfirm", msg: "dialog.tableRemoveConfirmTip" }).then(() => {
                     this.removeTab(table, index);
                     this.$q()
                 }).catch(() => { this.$q() }) : this.$q()

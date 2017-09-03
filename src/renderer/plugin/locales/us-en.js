@@ -324,7 +324,11 @@ export default {
         'remainPrintItem':'Remain {i} items unprint',
         'noRemainItem':'All items are printed',
         'itemSent':'Item Sent',
-        'printResult':'Send {i} items'
+        'printResult':'Send {i} items',
+        'tableSectionRemove':'Table Section Remove',
+        'tableSectionRemoveTip':'Are you sure you are going to remove this table section?',
+        'tableRemoveConfirm':'Table Remove Confirm',
+        'tableRemoveConfirmTip':'Are you sure you are going to remove this table?'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',
@@ -565,7 +569,9 @@ export default {
         'section': 'Section',
         'info':'Info.',
         'orderCount':'Order Count',
-        'orderAmount':'Order Amount'
+        'orderAmount':'Order Amount',
+        'from':'From',
+        'to':'To'
     },
     setting: {
         'softwareSetting': 'UnitedPOS Setting',

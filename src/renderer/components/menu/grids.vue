@@ -178,6 +178,7 @@ export default {
 
     },
     timer() {
+      if (this.isEmptyTicket) return;
       this.callComponent("timer");
     },
     split() {
