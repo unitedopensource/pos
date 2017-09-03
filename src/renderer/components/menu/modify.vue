@@ -194,10 +194,19 @@ export default {
         single: -discount,
         price: -discount
       });
-      this.init.openFood ? this.addToOrder(item) : this.alterItem(item);
+      this.init.openFood ? (this.addToOrder(item), this.setSides(this.fillOption(item.option))) : this.alterItem(item);
       this.init.resolve();
     },
-    ...mapActions(['alterItem', 'addToOrder', 'setPriceForChoiceSet'])
+    fillOption(side) {
+      let length = side.length;
+      let array = side.slice();
+      for (let i = length; i < 11; i++) {
+        array.push({ zhCN: "", usEN: "", disable: true })
+      }
+      console.log(array)
+      return array;
+    },
+    ...mapActions(['setSides', 'alterItem', 'addToOrder', 'setPriceForChoiceSet'])
   },
   computed: {
     total() {

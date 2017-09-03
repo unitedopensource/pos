@@ -192,7 +192,7 @@ export default {
         delete item.clickable;
         let price = [];
         item.price.forEach(v => {
-            price.push(isNumber(v) ? v.toFixed(2) : "0.00");
+            price.push(isNumber(v) ? v.toFixed(2) : v ? "0.00" : "");
         })
         item.price = price.join(",");
         item.option.forEach(option => {
@@ -649,7 +649,7 @@ div.add {
     width: 60px;
 }
 
-.right{
+.right {
     text-align: right;
 }
 </style>
