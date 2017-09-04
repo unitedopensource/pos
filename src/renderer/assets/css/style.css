@@ -17,7 +17,7 @@ ul {
 }
 
 #app {
-  background: url(../image/2.jpg) center center;
+  background: url(../image/6.jpg) center center;
   background-size: cover;
   width: 1024px;
   height: 768px;
@@ -581,7 +581,7 @@ section.items {
   flex: 6
 }
 .items .disable {
-  background: rgba(166, 195, 201, 0.55);
+  background: rgba(207, 216, 220, 0.5);
 }
 .items div {
   display: inline-flex;
@@ -593,7 +593,7 @@ section.items {
   height: 62.5px;
   border: 1px solid #78909C;
   margin: 1px;
-  background: #92aaaf;
+  background: #B0BEC5;
   vertical-align: top;
   font-size: 1.05em;
   will-change: background;

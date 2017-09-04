@@ -116,7 +116,7 @@ ul {
 }
 
 li {
-    padding: 2px 10px;
+    padding: 5px;
     margin-bottom: 0px;
     background: #fff;
     border-bottom: 1px solid #ddd;

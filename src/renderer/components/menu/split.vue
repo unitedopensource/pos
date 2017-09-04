@@ -137,24 +137,21 @@ export default {
             this.transferItems = [];
             this.$bus.emit("SPLIT_ORDER");
         },
-        printInvoice(index) {
-            this.$dialog({
-                type: "question", title: "dialog.printReceiptConfirm", msg: "dialog.printReceiptConfirmTip",
-                buttons: [{ text: 'button.noReceipt', fn: 'reject' }, { text: 'button.printReceipt', fn: 'resolve' }]
-            }).then(() => {
-                this.$q();
-                this.print(index);
-                this.items.forEach(item => {
-                    item.sort === index && (item.print = true);
-                    delete item.new;
-                });
-                this.checkSettle();
-            }).catch(() => { this.$q(); this.checkSettle() })
+        printInvoice(index, skip) {
+            skip ? this.print(index) :
+                this.$dialog({
+                    type: "question", title: "dialog.printReceiptConfirm", msg: "dialog.printReceiptConfirmTip",
+                    buttons: [{ text: 'button.noReceipt', fn: 'reject' }, { text: 'button.printReceipt', fn: 'resolve' }]
+                }).then(() => {
+                    this.$q();
+                    this.print(index);
+                    this.checkSettle();
+                }).catch(() => { this.$q(); this.checkSettle() })
         },
         printAllInvoices() {
             this.sort(1);
             for (let i = 1; i < this.split + 1; i++) {
-                this.printInvoice(i);
+                this.printInvoice(i, true);
             }
             this.quit();
         },
@@ -170,6 +167,10 @@ export default {
                 time: +new Date
             });
             Printer.init(this.config).setJob("receipt").print(order);
+            this.items.forEach(item => {
+                item.sort === index && (item.print = true);
+                delete item.new;
+            });
         },
         save() {
             this.sort(1);

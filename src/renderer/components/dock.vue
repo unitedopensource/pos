@@ -11,8 +11,10 @@
     </div>
     <span class="op" @click="openPanel">
       <i class="fa fa-user"></i>{{op.name}}</span>
-    <span class="corner" v-if="$route.name !== 'Dashboard'">{{time | moment('hh:mm a')}}</span>
-    <span class="corner" v-else>
+    <span class="corner" v-show="$route.name !== 'Dashboard'">{{time | moment('hh:mm')}}
+      <span class="shift">{{time | moment('a')}}</span>
+    </span>
+    <span class="corner" v-show="$route.name === 'Dashboard'">
       <i class="fa fa-phone-square" :class="{NA:!device.callid}"></i>
       <i class="fa fa-globe NA"></i>
       <i class="fa fa-credit-card" :class="{NA:!device.terminal}"></i>
@@ -52,7 +54,7 @@ export default {
       let type = this.app.mode === 'create' ? 'type.' + this.ticket.type : 'type.' + this.order.type;
 
       return this.ticket.type === 'DINE_IN'
-        ? this.$t(type,this.app.language) + (this.order.table ? ' - ' + this.order.table + (this.order.guest > 0 ? ' - ' + this.order.guest : ''):'')
+        ? this.$t(type, this.app.language) + (this.order.table ? ' - ' + this.order.table + (this.order.guest > 0 ? ' - ' + this.order.guest : '') : '')
         : this.$t(type, this.app.language);
     },
     ...mapGetters(['op', 'app', 'time', 'ring', 'order', 'config', 'ticket', 'update', 'device', 'history', 'station', 'spooler', 'customer', 'language', 'currentTable'])
@@ -363,9 +365,8 @@ export default {
 .dock {
   width: 100%;
   height: 30px;
-  line-height: 30px;
-  background: #607D8B;
-  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.25), inset 0px 1px 0px rgba(255, 255, 255, 0.3);
+  background: linear-gradient(to bottom, rgb(255, 255, 255) 10%, #aba9a9 100%);
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.5), inset 0px 1px 0px rgba(255, 255, 255, 0.3);
   position: absolute;
   top: -35px;
   left: 0;
@@ -373,11 +374,14 @@ export default {
   font-size: 1.25em;
   display: flex;
   align-items: center;
+  color:#333;
 }
 
 .dock>span {
-  text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.33);
-  color: #fff;
+  font-family: 'Agency FB';
+  font-weight: bold;
+  text-shadow: 0 1px 1px #fff;
+  font-size: 18px;
 }
 
 .dock.slideDown {
@@ -386,17 +390,16 @@ export default {
 }
 
 span.orderNumber {
-  width: 80px;
+  width: 60px;
   text-align: center;
+  letter-spacing: 1px;
+  font-size: 25px;
 }
 
 span.orderType {
-  min-width: 140px;
-  padding: 0 10px;
+  min-width: 100px;
   text-align: center;
-  background: rgba(255, 255, 255, 0.1);
-  border-left: 1px solid #7994a0;
-  border-right: 1px solid #7994a0;
+  font-family: inherit;
 }
 
 .extra {
@@ -408,30 +411,28 @@ span.orderType {
   flex: 1;
   display: flex;
   justify-content: center;
-  color: #fff;
-  font-family: 'Agency FB';
 }
 
 .customer span {
   padding: 0 10px;
-  background: rgba(255, 255, 255, 0.1);
-  border-left: 1px solid #7994a0;
-  border-right: 1px solid #7994a0;
   margin: 0 5px;
 }
 
 span.op {
-  background: rgba(255, 255, 255, 0.1);
-  border-left: 1px solid #7994a0;
-  border-right: 1px solid #7994a0;
-  width: 150px;
+  min-width: 150px;
   text-align: center;
 }
 
 span.corner {
-  padding: 0 10px;
-  text-align: center;
+  padding: 0px 10px;
   min-width: 135px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.corner i {
+  margin-right: 5px;
 }
 
 span.op i {
@@ -444,7 +445,7 @@ span.table {
 }
 
 .NA {
-  color: #F4511E;
+  color: #9E9E9E;
 }
 
 .spooler {
@@ -453,13 +454,18 @@ span.table {
 
 .spooler:after {
   content: ' ';
-    color: #fff;
-    position: absolute;
-    right: -2px;
-    bottom: -1px;
-    background: #FF5722;
-    border-radius: 50%;
-    padding: 4px;
-    border: 1px solid #607d8b;
+  color: #fff;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  background: #FF5722;
+  border-radius: 50%;
+  padding: 4px;
+}
+
+.shift {
+  font-family: 'Yuanti-SC';
+  font-size: 16px;
+  margin: 5px;
 }
 </style>
