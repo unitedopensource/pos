@@ -600,7 +600,9 @@ export default {
         'from':'从',
         'to':'到',
         'allDay':'全天',
-        'enlargeTitle':'放大标题'
+        'enlargeTitle':'放大标题',
+        'message':'消息',
+        'queue':'队列'
     },
     setting: {
         'softwareSetting': 'UnitedPOS 后台设置',

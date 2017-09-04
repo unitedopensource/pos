@@ -452,20 +452,14 @@ span.table {
 }
 
 .spooler:after {
-  content: attr(data-queue);
-  color: #fff;
-  position: absolute;
-  right: -6px;
-  bottom: 10px;
-  display: block;
-  font-size: 0.7em;
-  background: #FF5722;
-  border-radius: 2px;
-  border-top: none;
-  min-width: 12px;
-  padding: 2px;
-  line-height: 12px;
-  text-align: center;
-  font-family: "Agency FB";
+  content: ' ';
+    color: #fff;
+    position: absolute;
+    right: -2px;
+    bottom: -1px;
+    background: #FF5722;
+    border-radius: 50%;
+    padding: 4px;
+    border: 1px solid #607d8b;
 }
 </style>
