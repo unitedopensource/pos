@@ -346,7 +346,7 @@ export default {
         'creditCard':{
             'timeout':'Transaction Timeout',
             'aborted':'Transaction Aborted',
-            'expInvalid':'Expiration Date Incorrect',
+            'errorCode':'An Error Occurred. Message: {i}',
             'declined':'Transaction Declined',
             'commError':'Communication Error',
             'duplicated':'Transaction Duplicated',

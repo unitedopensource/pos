@@ -26,13 +26,11 @@ const Pax = function () {
   };
   this.check = function (d) {
     let data = d.split(String.fromCharCode(28));
-    console.log(data)
     let sn = (data[5] && data[5].indexOf(String.fromCharCode(3)) !== -1) ? data[5].split(String.fromCharCode(3))[0] : data[5];
-
+    let msg = data[4].indexOf(String.fromCharCode(3) !== -1) ? data[4].split(String.fromCharCode(3))[0] : data[4];
     device = {
+      msg,sn,
       code: data[3],
-      msg: data[4],
-      sn: sn,
       model: data[6],
       mac: data[8]
     };
@@ -118,12 +116,13 @@ const Pax = function () {
       case "100002":
         return {
           code,
-          msg: 'terminal.creditCard.abort'
+          msg: 'terminal.creditCard.aborted'
         }
       case "100003":
+      let error = data[4].split(String.fromCharCode(3))[0];
         return {
           code,
-          msg: 'terminal.creditCard.expInvalid'
+          msg: 'terminal.creditCard.errorCode'
         }
       case "000100":
         return {

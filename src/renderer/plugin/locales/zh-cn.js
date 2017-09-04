@@ -332,7 +332,7 @@ export default {
     },
     terminal: {
         'initial': '正在初始化 {i}...',
-        'initialFailed': '初始化 {i} 失败。 错误代码: {i}',
+        'initialFailed': '初始化 {i} 失败。 信息: {i}',
         'ready': '请将信用卡插入 {i}',
         'transacting': '正在发送卡号信息到 {i}...',
         'timeout': '终端机连接超时',
@@ -346,7 +346,7 @@ export default {
         'creditCard':{
             'timeout':'交易超时',
             'aborted':'交易被取消',
-            'expInvalid':'过期日期不正确',
+            'errorCode':'交易中发生一个错误。信息: {i}',
             'declined':'信用卡交易被拒绝',
             'commError':'接口连接错误',
             'duplicated':'信用卡重单',

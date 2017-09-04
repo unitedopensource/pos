@@ -2,6 +2,7 @@
     <div class="creditCard">
         <i class="fa" :class="[icon]"></i>
         <h3>{{msg}}</h3>
+        <h5>{{tip}}</h5>
         <footer>
             <div class="btn" @click="exit">{{$t('button.cancelAction')}}</div>
         </footer>
@@ -14,9 +15,10 @@ export default {
     props: ['init'],
     data() {
         return {
-            msg: "",
+            msg: '',
+            tip:'',
             config: null,
-            icon: "info",
+            icon: 'info',
             timeout: null,
             transacting: false,
             terminal: null,
@@ -40,7 +42,7 @@ export default {
             this.terminal.initial(terminal.address, terminal.port, terminal.sn).then(response => response.text()).then((device) => {
                 this.device = this.terminal.check(device);
                 if (this.device.code !== "000000") {
-                    this.terminalError(this.$t("terminal.initialFailed", (this.device.model || terminal.model), this.device.code));
+                    this.terminalError(this.$t('terminal.initialFailed', (this.device.model || terminal.model), this.device.code),this.device.msg);
                     return;
                 }
                 clearTimeout(this.timeout);
@@ -54,7 +56,7 @@ export default {
                 this.transacting = true;
                 this.terminal.charge(this.init.card).then(response => response.text()).then(data => {
                     let result = this.terminal.explainTransaction(data);
-                    result.code === "000000" ? this.init.resolve(result) : this.terminalError(this.text(result.msg));
+                    result.code === "000000" ? this.init.resolve(result) : this.terminalError(this.$t(result.msg));
                 })
             });
             this.timeout = setTimeout(() => {
@@ -64,10 +66,11 @@ export default {
                 })
             }, 6000)
         },
-        terminalError(msg) {
+        terminalError(msg,tip) {
             this.icon = "error";
             this.msg = msg;
-            setTimeout(() => { this.init.reject(false) }, 1500);
+            this.tip = tip;
+            setTimeout(() => { this.init.reject(false) }, 2500);
         },
         getFile(device) {
             switch (device) {
@@ -105,6 +108,11 @@ export default {
     text-align: center;
     color: #3c3c3c;
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+}
+
+h5 {
+    color: #FF5722;
+    margin-top: 10px;
 }
 
 i {
