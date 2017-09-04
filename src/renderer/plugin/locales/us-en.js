@@ -342,7 +342,34 @@ export default {
         'aborting': 'Aborting...',
         'error': 'Error Code: {i}',
         'connectError': 'Unable Connect to Terminal',
-        'disableBatch': ''
+        'disableBatch': 'Temporary Disable Batch Function',
+        'creditCard':{
+            'timeout':'Transaction Timeout',
+            'aborted':'Transaction Aborted',
+            'expInvalid':'Expiration Date Incorrect',
+            'declined':'Transaction Declined',
+            'commError':'Communication Error',
+            'duplicated':'Transaction Duplicated',
+            'badTrack':'Bad Track',
+            'unknown':'An Unknown Error Occurred'
+        },
+        'batch':{
+            'declined':'Batch Declined',
+            'timeout':'Batch Timeout',
+            'aborted':'Batch Aborted',
+            'paramsInvalid':'Invalid Parameters',
+            'unsupported':'Unsupported Transaction Type',
+            'unsupportedEDC':'Unsupported EDC Type',
+            'failed':'Batch Failed',
+            'connectError':'Batch Connect Error',
+            'sendError':'Batch Info Send Error',
+            'receiveError':'Batch Info Received Error',
+            'commError':'Batch Communication Error',
+            'duplicated':'Batch Duplicated',
+            'noFound':'No Transaction Was Found',
+            'error':'An Error Occurred During Batch',
+            'unknown':'An Unknown Error Occurred During Batch'
+        }
     },
     card: {
         'creditCard': 'Credit Card',

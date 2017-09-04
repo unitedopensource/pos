@@ -19,7 +19,7 @@
                         <span class="total">$ {{ticket.payment.due.toFixed(2)}}</span>
                     </div>
                 </div>
-                <pagination :of="orders" @page="setPage" :max="30"></pagination>
+                <pagination :of="orders" @page="setPage" :contain="30" :max="12"></pagination>
             </section>
             <section class="ticket">
                 <order-list layout="display" :display="true"></order-list>

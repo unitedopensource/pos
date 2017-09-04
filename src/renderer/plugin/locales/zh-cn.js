@@ -329,7 +329,6 @@ export default {
         'tableSectionRemoveTip':'您确定要移除这个区域吗？',
         'tableRemoveConfirm':'删除座位',
         'tableRemoveConfirmTip':'您确定要删除这个座位吗？'
-
     },
     terminal: {
         'initial': '正在初始化 {i}...',
@@ -343,7 +342,34 @@ export default {
         'aborting': '正在取消操作...',
         'error': '错误代码: {i}',
         'connectError':'无法连接至终端',
-        'disableBatch':'过账功能被临时停用'
+        'disableBatch':'过账功能被临时停用',
+        'creditCard':{
+            'timeout':'交易超时',
+            'aborted':'交易被取消',
+            'expInvalid':'过期日期不正确',
+            'declined':'信用卡交易被拒绝',
+            'commError':'接口连接错误',
+            'duplicated':'信用卡重单',
+            'badTrack':'无法读取信用卡磁条信息',
+            'unknown':'发生一个未知的错误'
+        },
+        'batch':{
+            'declined':'过账被拒绝',
+            'timeout':'过账超时',
+            'aborted':'过账被取消',
+            'paramsInvalid':'过账参数不正确',
+            'unsupported':'不支持此过账的交易类型',
+            'unsupportedEDC':'不支持的 EDC 类型',
+            'failed':'过账失败',
+            'connectError':'连接错误',
+            'sendError':'发送错误',
+            'receiveError':'接受错误',
+            'commError':'接口连接错误',
+            'duplicated':'重复的过账信息',
+            'noFound':'没有需要过账的交易',
+            'error':'过账的过程中发生一个错误',
+            'unknown':'过账的过程中发生一个未知的错误'
+        }
     },
     card: {
         'creditCard': '信用卡',

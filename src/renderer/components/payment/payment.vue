@@ -625,6 +625,7 @@ export default {
                     modify: 0,
                     status: 1,
                     date: today(),
+                    time: +new Date(),
                     settled: true,
                     print: true
                 }) : Object.assign(order, {

@@ -307,8 +307,8 @@ export default {
             if (!error) {
                 let txt = remain > 0 ? this.$t('dialog.remainPrintItem', remain) : this.$t('dialog.noRemainItem');
                 this.$dialog({
-                    type: 'info', title: 'dialog.itemSent', msg: this.$t('printResult', sendItem) + ", " + txt,
-                    buttons: [{ text: 'dialog.confirm', fn: 'resolve' }]
+                    type: 'info', title: 'dialog.itemSent', msg: this.$t('dialog.printResult', sendItem) + ", " + txt,
+                    buttons: [{ text: 'button.confirm', fn: 'resolve' }]
                 }).then(() => { this.$q() })
                 this.spooler.forEach(item => { item.print = true })
                 this.spooler = [];

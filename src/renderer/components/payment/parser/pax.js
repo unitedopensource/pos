@@ -26,7 +26,9 @@ const Pax = function () {
   };
   this.check = function (d) {
     let data = d.split(String.fromCharCode(28));
-    let sn = data[5].indexOf(String.fromCharCode(3)) !== -1 ? data[5].split(String.fromCharCode(3))[0] : data[5];
+    console.log(data)
+    let sn = (data[5] && data[5].indexOf(String.fromCharCode(3)) !== -1) ? data[5].split(String.fromCharCode(3))[0] : data[5];
+
     device = {
       code: data[3],
       msg: data[4],
@@ -111,42 +113,42 @@ const Pax = function () {
       case "100001":
         return {
           code,
-          msg: 'CC_TIMEOUT'
+          msg: 'terminal.creditCard.timeout'
         }
       case "100002":
         return {
           code,
-          msg: 'CC_TRANS_ABORT'
+          msg: 'terminal.creditCard.abort'
         }
       case "100003":
         return {
           code,
-          msg: 'CC_EXP_INVALID'
+          msg: 'terminal.creditCard.expInvalid'
         }
       case "000100":
         return {
           code,
-          msg: 'CC_DECLINED'
+          msg: 'terminal.creditCard.declined'
         }
       case "100010":
         return {
           code,
-          msg: 'CC_COMM_ERROR'
+          msg: 'terminal.creditCard.commError'
         }
       case "100011":
         return {
           code,
-          msg: 'CC_DUP_TRANS'
+          msg: 'terminal.creditCard.duplicated'
         }
       case "100019":
         return {
           code,
-          msg: 'CC_BAD_TRACK'
+          msg: 'terminal.creditCard.badTrack'
         }
       default:
         return {
           code: "",
-          msg: "CC_UNKNOWN"
+          msg: "terminal.creditCard.unknown"
         }
     }
   }
@@ -188,77 +190,77 @@ const Pax = function () {
       case "000100":
         return {
           code,
-          msg: 'BATCH_DECLINE'
+          msg: 'terminal.batch.declined'
         }
       case "100001":
         return {
           code,
-          msg: 'BATCH_TIMEOUT'
+          msg: 'terminal.batch.timeout'
         }
       case "100002":
         return {
           code,
-          msg: 'BATCH_ABORTED'
+          msg: 'terminal.batch.aborted'
         }
       case "100003":
         return {
           code,
-          msg: 'BATCH_PARAMS_INVALID'
+          msg: 'terminal.batch.paramsInvalid'
         }
       case "100004":
         return {
           code,
-          msg: 'BATCH_UNSUPPORT_TRANS'
+          msg: 'terminal.batch.unsupported'
         }
       case "100005":
         return {
           code,
-          msg: 'BATCH_UNSUPPORT_EDC'
+          msg: 'terminal.batch.unsupportedEDC'
         }
       case "100006":
         return {
           code,
-          msg: 'BATCH_FAILED'
+          msg: 'terminal.batch.failed'
         }
       case "100007":
         return {
           code,
-          msg: 'BATCH_CONNECT_ERROR'
+          msg: 'terminal.batch.connectError'
         }
       case "100008":
         return {
           code,
-          msg: 'BATCH_SEND_ERROR'
+          msg: 'terminal.batch.sendError'
         }
       case "100009":
         return {
           code,
-          msg: 'BATCH_RECEIVE_ERROR'
+          msg: 'terminal.batch.receiveError'
         }
       case "100010":
         return {
           code,
-          msg: 'BATCH_COMM_ERROR'
+          msg: 'terminal.batch.commError'
         }
       case "100011":
         return {
           code,
-          msg: 'BATCH_DUP_TRANS'
+          msg: 'terminal.batch.duplicated'
         }
       case "100023":
         return {
           code,
-          msg: 'BATCH_NO_FOUND'
+          msg: 'terminal.batch.noFound'
         }
       case "199999":
         return {
           code,
-          msg: 'TERM_ERROR'
+          msg: 'terminal.batch.error'
         }
       default:
         return {
           code,
-          msg: 'BATCH_UNKNOWN_ERROR'
+          msg: 'terminal.batch.unknown'
         }
     }
   }

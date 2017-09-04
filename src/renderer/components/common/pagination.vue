@@ -1,5 +1,5 @@
 <template>
-    <div class="pagination">
+    <div class="pagination" v-show="totalPage > 1">
         <div class="page">
             <i class="fa fa-angle-left"></i>
         </div>
@@ -12,7 +12,7 @@
 
 <script>
 export default {
-    props: ['of', 'max'],
+    props: ['of', 'contain', 'max'],
     data() {
         return {
             pages: [],
@@ -25,7 +25,7 @@ export default {
     methods: {
         format(page) {
             let array;
-            if (this.totalPage <= 12) {
+            if (this.totalPage <= this.max) {
                 this.pages = [...Array(this.totalPage).keys()].map((e, i) => i + 1);
             } else if (page <= 4 || page >= this.totalPage - 6) {
                 array = [1, 2, 3, 4, 5, 6];
@@ -48,9 +48,7 @@ export default {
     },
     computed: {
         totalPage() {
-            let total = Math.ceil(this.of.length / this.max);
-            console.log(this.of.length,this.max)
-            return total
+            return Math.ceil(this.of.length / this.contain)
         }
     },
     watch: {
