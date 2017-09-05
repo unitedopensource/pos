@@ -47,8 +47,8 @@
           </ul>
         </transition>
       </div>
+      <div :is="component" :init="componentData"></div>
     </div>
-    <div :is="component" :init="componentData"></div>
   </transition>
 </template>
 
@@ -240,7 +240,7 @@ section div:nth-child(3n+3) {
   bottom: 35px;
   right: 55px;
   text-align: center;
-  width: 60px;
+  min-width: 60px;
 }
 
 .ctrl label {
