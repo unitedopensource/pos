@@ -1,36 +1,114 @@
 <template>
     <div class="popupMask center dark">
-        <div class="window">
+        <div class="window" v-show="!component">
             <header class="title">
-                <span>{{$t('text.selectPaymentType')}}</span>
+                <span>{{$t('title.markPaymentType')}}</span>
                 <i class="fa fa-times" @click="init.reject"></i>
             </header>
             <div class="inner">
-                <div v-for="(type,index) in options" :key="index">
-                    <input type="radio" name="type" v-model="payment" :value="type">
-                    <label>{{type}}</label>
+                <div v-for="(option,index) in options" :key="index">
+                    <input type="radio" name="type" v-model="type" :value="option" :id="'type'+index">
+                    <label class="type" :for="'type'+index">{{option}}</label>
                 </div>
             </div>
             <footer>
-                <div class="button">{{$t('button.confirm')}}</div>
+                <div class="btn" @click="confirm">{{$t('button.confirm')}}</div>
             </footer>
         </div>
+        <div :is="component" :init="componentData"></div>
     </div>
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex'
+import dialoger from '../common/dialoger'
 export default {
-    props:['init'],
-    data(){
-        return{
-            options:[],
-            payment:null
+    props: ['init'],
+    components: { dialoger },
+    data() {
+        return {
+            options: ['Seamless', 'GrubHub', 'Eat 24', 'Delivery.com', 'Simpon', 'UnionPay', 'Visa', 'Master', 'Discover', 'AE', 'CASH'],
+            type: 'CASH',
+            componentData: null,
+            component: null
         }
+    },
+    methods: {
+        confirm() {
+            Object.assign(this.order.payment, {
+                balance: '0.00',
+                paid: this.order.payment.due,
+                type: this.type,
+                settled: true
+            })
+            Object.assign(this.order, {
+                settled: true,
+                cashier: this.op
+            })
+            this.$socket.emit('[UPDATE] INVOICE', this.order);
+            this.init.resolve(this.type);
+        },
+        ...mapActions(['setOrder'])
+    },
+    computed: {
+        ...mapGetters(['op', 'order'])
     }
 
 }
 </script>
 
-<style>
+<style scoped>
+.inner {
+    display: flex;
+    flex-wrap: wrap;
+    width: 435px;
+    justify-content: center;
+}
 
+.inner>div {
+    display: flex;
+}
+
+input {
+    display: none;
+}
+
+label {
+    width: 90px;
+    padding: 20px 15px;
+    margin: 5px;
+    background: #fff;
+    border: 2px solid #e0e0e0;
+    position: relative;
+    text-align: center;
+    border-radius: 4px;
+    color: #bdbdbd;
+}
+
+input:checked+label {
+    background: #66bb6a;
+    color: #fafafa;
+    border: 2px solid #009688;
+    text-shadow: 0 2px 1px rgba(0, 0, 0, .5);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .3);
+}
+
+input:checked+label:before {
+    position: absolute;
+    content: ' ';
+    width: 23px;
+    height: 15px;
+    background: #009688;
+    bottom: 0;
+    right: 0;
+    border-top-left-radius: 4px;
+}
+
+input:checked+label:after {
+    position: absolute;
+    content: '\f00c';
+    font-family: fontAwesome;
+    bottom: 0;
+    right: 3px;
+}
 </style>

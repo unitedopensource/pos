@@ -332,7 +332,9 @@ export default {
         'tableSectionRemove': 'Table Section Remove',
         'tableSectionRemoveTip': 'Are you sure you are going to remove this table section?',
         'tableRemoveConfirm': 'Table Remove Confirm',
-        'tableRemoveConfirmTip': 'Are you sure you are going to remove this table?'
+        'tableRemoveConfirmTip': 'Are you sure you are going to remove this table?',
+        'thirdPartyInvoice':'Third Party Invoice',
+        'thirdPartyInvoiceTip':'How will you handle this third party invoice payment?'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',
@@ -419,6 +421,7 @@ export default {
         'salesCategory': 'Sales Category Report',
         'categorySales': 'Category Sales Report',
         'hourlyReport': 'Hourly Report',
+        'settleType':'Settle Type Report',
         'tipSummary': 'Tip Summary Report',
         'giftCardSummary': 'Gift Card Sales Report',
         'countItem': 'Item Sales Report',

@@ -351,6 +351,7 @@ export default {
             let tax = 0;
             let delivery = 0;
             let due = 0;
+            let balance = 0;
             let { tip, gratuity, discount } = this.payment;
             items.forEach(item => {
                 if (item.void) return;
@@ -364,11 +365,13 @@ export default {
             delivery = (this.ticket.type === 'DELIVERY' && this.store.delivery && !this.order.deliveryFree) ? this.store.deliveryCharge : 0;
             total = subtotal + tax + delivery + parseFloat(tip) + parseFloat(gratuity);
             due = total - parseFloat(discount);
+            balance = due - this.payment.paid;
             this.payment = Object.assign({}, this.payment, {
                 subtotal: subtotal.toFixed(2),
                 tax: tax.toFixed(2),
                 total: total.toFixed(2),
                 due: due.toFixed(2),
+                balance:balance.toFixed(2)
             });
             this.setOrder({ payment: this.payment });
         },

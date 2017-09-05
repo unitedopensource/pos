@@ -168,10 +168,11 @@ import Printer from '../../print'
 import Reloader from './Reloader'
 import Discount from './discount'
 import Inputter from './inputter'
+import paymentMark from './mark'
 import Tips from './tips'
 export default {
     props: ['init'],
-    components: { Dialoger, Reloader, Discount, CreditCard, GiftCard, Tips, Splitter, Inputter },
+    components: { Dialoger, Reloader, Discount, CreditCard, GiftCard, Tips, Splitter, Inputter, paymentMark },
     data() {
         return {
             componentData: null,
@@ -481,20 +482,27 @@ export default {
             }
         },
         creditReject(reason) {
-            reason ?
-                this.$dialog(reason).then(() => {
+            reason ? this.askSettleType(reason) : this.$q();
+        },
+        askSettleType(content) {
+            this.$dialog(content).then(() => {
+                new Promise((resolve, reject) => {
+                    this.componentData = { resolve, reject, callback: true };
+                    this.component = 'paymentMark'
+                }).then(type => {
                     this.$q();
-                    this.payment.balance = 0;
+                    this.payment.balance = "0.00";
                     this.payment.log.push({
                         id: "",
-                        type: "CREDIT",
+                        type,
                         paid: this.paid,
                         change: "0.00",
-                        balance: this.payment.balance,
-                        number: "####"
-                    });
-                    this.invoicePaid(this.payment.due, 0, "CREDIT");
-                }).catch(() => { this.$q() }) : this.$q();
+                        balance: "0.00",
+                        number: 'N/A'
+                    })
+                    this.invoicePaid(this.payment.due, 0, type)
+                })
+            }).catch(() => { this.$q() })
         },
         swipeGiftCard() {
             new Promise((resolve, reject) => {
@@ -611,7 +619,7 @@ export default {
             let order = JSON.parse(JSON.stringify(this.order));
             let customer = Object.assign({}, this.customer);
             let paidCash = 0, paidCredit = 0, paidGift = 0;
-            this.payment.settled = true;
+            Object.assign(this.payment, { settled: true, type });
             delete customer.extra;
             this.isNewTicket ?
                 Object.assign(order, {

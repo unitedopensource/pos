@@ -249,25 +249,30 @@ const mutations = {
     Object.assign(state.order, data)
   },
   [types.REMOVE_PAYMENT](state) {
+    let total = parseFloat(state.order.payment.total);
+
     delete state.order.payment.paidCash;
     delete state.order.payment.paidCredit;
     delete state.order.payment.paidGift;
     delete state.order.payment.type;
+    delete state.order.settled;
 
     if (state.order.payment.splitPayment) {
       delete state.order.payment.splitPayment;
       delete state.order.split;
     }
 
-    state.order.settled = false;
-    state.order.payment.settled = false;
-    state.order.payment.tip = 0;
-    state.order.payment.gratuity = 0;
-    state.order.payment.paid = 0;
-    state.order.payment.discount = 0;
-    state.order.payment.paid = 0;
-    state.order.payment.log = [];
-    state.order.payment.due = parseFloat(state.order.payment.total);
+    state.order.payment = Object.assign({},
+      state.order.payment, {
+        settled: false,
+        tip: 0,
+        gratuity: 0,
+        paid: 0,
+        discount: 0,
+        log: [],
+        balance: total,
+        due: total
+      })
   }
 }
 

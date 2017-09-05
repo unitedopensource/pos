@@ -10,7 +10,7 @@
             <grids :date="calendarDate || today" @change="setCalendar"></grids>
             <section class="tickets">
                 <div class="inner">
-                    <div v-for="(ticket,index) in invoices" class="invoice" @click="getInvoice(ticket)" :data-number="ticket.number" :key="index" :class="{void:ticket.status === 0,settled:ticket.settled}">
+                    <div v-for="(ticket,index) in invoices" class="invoice" @click="getInvoice(ticket)" :data-number="ticket.number" :key="index" :class="{void:ticket.status === 0,settled:ticket.settled,split:ticket.split}">
                         <span class="type">{{$t('type.'+ticket.type)}}
                             <span v-if="ticket.type === 'DINE_IN'" class="table">{{ticket.table}}</span>
                         </span>
@@ -300,6 +300,18 @@ section.ticket {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
     font-family: 'Agency FB';
     font-size: 30px;
+}
+.invoice.active.split:after{
+    display: none;
+}
+.invoice.split:after {
+    content: ' ';
+    position: absolute;
+    bottom: 0;
+    right: 0px;
+    width: 25px;
+    height: 25px;
+    background: url(../assets/image/corner.png) transparent;
 }
 
 .type {

@@ -49,6 +49,7 @@
                             <checkbox v-model="countCategory" label="report.categorySales"></checkbox>
                             <checkbox v-model="hourly" label="report.hourlyReport"></checkbox>
                             <!-- <checkbox v-model="tip" label="report.tipSummary"></checkbox> -->
+                            <checkbox v-model="settleType" label="report.settleType"></checkbox>
                             <checkbox v-model="giftCard" label="report.giftCardSummary"></checkbox>
                             <checkbox v-model="countItem" label="report.countItem"></checkbox>
                         </div>
@@ -77,9 +78,10 @@ import { mapGetters } from 'vuex'
 import Printer from '../../print'
 import calendar from './calendar'
 import checkbox from '../setting/common/checkbox'
+import processor from '../common/processor'
 export default {
     props: ['init'],
-    components: { checkbox, calendar },
+    components: { checkbox, calendar, processor },
     created() {
         this.getRange(this.range)
     },
@@ -97,6 +99,7 @@ export default {
             thirdParty: false,
             emailReport: false,
             reportRange: null,
+            settleType: false,
             component: null,
             componentData: null,
             countCategory: false,
@@ -106,6 +109,7 @@ export default {
     },
     methods: {
         confirm() {
+            this.$p('processor');
             if (this.daily) {
                 let { from, to } = this.reportRange;
                 from = moment(from);
@@ -215,12 +219,13 @@ export default {
             this.summarize(datas[0]);
             this.report["CREDIT CARD"] = this.creditCardReport(datas[1]);
             this.report["GIFT CARD"] = this.giftCard ? this.giftCardReport(datas[2]) : null;
-            this.report["EMPOLYEE"] = this.waitStaff ? this.employeeReport(datas[0]) : null;
+            this.report["EMPLOYEE"] = this.waitStaff ? this.employeeReport(datas[0]) : null;
             this.report["DRIVER"] = this.driver ? this.driverReport(datas[0]) : null;
             this.report["HOURLY REPORT"] = this.hourly ? this.hourlyReport(datas[0]) : null;
             this.report["ITEM SALES"] = this.countItem ? this.itemCounter(datas[0]) : null;
             this.report["CATEGORY SALES"] = this.countCategory ? this.categoryCounter(datas[0]) : null;
             this.report["SOURCE REPORT"] = this.thirdParty ? this.sourceReport(datas[0]) : null;
+            this.report["SETTLE TYPE"] = this.settleType ? this.settleTypeReport(datas[0]) : null;
         },
         employeeReport(data) {
             let staff = {};
@@ -268,6 +273,37 @@ export default {
 
             })
             return source;
+        },
+        settleTypeReport(data) {
+            let settle = {};
+            let total = 0;
+            data.forEach(invoice => {
+                let payment = invoice.payment;
+                let type = payment.type;
+
+                if (!payment.settled) return;
+                total += parseFloat(payment.due);
+
+                if (settle.hasOwnProperty(type)) {
+                    settle[type]["amount"] += parseFloat(payment.due);
+                    settle[type]["count"]++;
+                } else {
+                    settle[type] = {
+                        text: type,
+                        tip: parseFloat(invoice.payment.tip),
+                        amount: parseFloat(invoice.payment.due),
+                        count: 1
+                    }
+                }
+            });
+
+            Object.keys(settle).forEach(type => {
+                let amount = settle[type]['amount'];
+                let pct = (amount / total * 100).toFixed(2);
+                settle[type]['amount'] = [{ Total: settle[type]['amount'].toFixed(2) }, { Percentage: pct + ' %' }]
+            })
+
+            return settle;
         },
         driverReport(data) {
             let drivers = {};

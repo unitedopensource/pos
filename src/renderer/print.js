@@ -244,14 +244,6 @@ Printer.prototype.printReceipt = function (raw) {
       invoice.content.filter(item => item.printer[printer]) :
       invoice.content.filter(item => item.printer[printer] && !item.print);
 
-    //   invoice.modify > 0 && list.forEach(item => {
-    //   console.log(item)
-    //   if (item.new) {
-    //     item.zhCN = "✚ " + item.zhCN;
-    //     item.usEN = "✚ " + item.usEN;
-    //   }
-    // });
-
     if (list.length === 0) return null;
     let content = "";
     if (sortItem) {
@@ -419,6 +411,10 @@ Printer.prototype.printReceipt = function (raw) {
           <span class="value">$${payment.paidGift}</span>
         </p>
       </section>`: "";
+    let thirdParty = (payment.settled && payment.type !== 'CASH' && payment.type !== 'CREDIT' && payment.type !== 'GIFT') ?
+      `<section class="details">
+        <h3>Paid by ${payment.type} - Thank You</h3>
+      </section>`: "";
     let discount = parseFloat(payment.discount) > 0 ?
       `<p><span class="text">Disc.:</span><span class="value">- ${payment.discount}</span></p>` : "";
     let tip = parseFloat(payment.tip) > 0 ?
@@ -434,7 +430,7 @@ Printer.prototype.printReceipt = function (raw) {
         </p>
         <h3>Void by: ${ticket.void.by} @ ${moment(ticket.void.time).format('HH:mm:ss')}</h3>
       </section>`: "";
-    let details = (voidTicket + cash + credit + gift) || "";
+    let details = (voidTicket + cash + credit + gift + thirdParty) || "";
 
     return `<footer>
               <section class="column">
@@ -703,7 +699,7 @@ Printer.prototype.printReport = function (data) {
       for (let key in data) {
         html += `<div class="row">
                   <span class="text">${key}:</span>
-                  <span class="value">$${data[key]}</span>
+                  <span class="value">${isNumber(data[key]) ? '$ '+ data[key] : data[key]}</span>
                 </div>`
       }
     })
@@ -1059,7 +1055,7 @@ Printer.prototype.printCashOutReport = function (data, detail) {
 }
 Printer.prototype.printReservationTicket = function (data) {
   let store = this.config.store;
-  let {queue,name} = data;
+  let { queue, name } = data;
   let date = moment().format("MM/DD/YYYY");
   let time = moment().format("hh:mm:ss");
   let html = `<section class="header">

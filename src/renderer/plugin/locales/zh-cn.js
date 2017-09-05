@@ -332,7 +332,9 @@ export default {
         'tableSectionRemove': '区域移除',
         'tableSectionRemoveTip': '您确定要移除这个区域吗？',
         'tableRemoveConfirm': '删除座位',
-        'tableRemoveConfirmTip': '您确定要删除这个座位吗？'
+        'tableRemoveConfirmTip': '您确定要删除这个座位吗？',
+        'thirdPartyInvoice':'第三方订单',
+        'thirdPartyInvoiceTip':'您要如何处理这个第三方订单的付款方式？'
     },
     terminal: {
         'initial': '正在初始化 {i}...',
@@ -419,6 +421,7 @@ export default {
         'salesCategory': '统计类别销售',
         'categorySales': '销售总额类别',
         'hourlyReport': '按小时统计',
+        'settleType':'统计结账类别',
         'tipSummary': '统计小费',
         'giftCardSummary': '统计礼物卡',
         'countItem': '统计物品销售',
