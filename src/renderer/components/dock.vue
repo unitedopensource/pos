@@ -365,8 +365,8 @@ export default {
 .dock {
   width: 100%;
   height: 30px;
-  background: linear-gradient(to bottom, rgb(255, 255, 255) 10%, #aba9a9 100%);
-  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.5), inset 0px 1px 0px rgba(255, 255, 255, 0.3);
+  background: linear-gradient(to bottom, rgb(255, 255, 255) 20%, #aba9a9 100%);
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.85), inset 0px 1px 3px rgba(255, 255, 255,1);
   position: absolute;
   top: -35px;
   left: 0;
@@ -393,7 +393,7 @@ span.orderNumber {
   width: 60px;
   text-align: center;
   letter-spacing: 1px;
-  font-size: 25px;
+  font-size: 22px;
 }
 
 span.orderType {

@@ -50,6 +50,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import paymentMark from '../payment/mark'
 import Dialoger from '../common/dialoger'
 import Payment from '../payment/payment'
 import Report from '../report/report'
@@ -60,7 +61,7 @@ import Reason from './reason'
 import Search from './search'
 export default {
     props: ['date'],
-    components: { Calendar, Dialoger, Terminal, Payment, Reason, Report },
+    components: { Calendar, Dialoger, Terminal, Payment, Reason, Report, paymentMark },
     data() {
         return {
             today: today(),
@@ -98,12 +99,6 @@ export default {
         isVoidable() {
             !this.isEmptyTicket && this.approval(this.op.modify, "order") ?
                 this.order.settled ? this.confirmPaymentRemoval() : this.voidOrder() : this.$denyAccess();
-        },
-        handleSettledInvoice() {
-            this.$dialog({
-                title: "dialog.orderSettled", msg: "dialog.orderSettledTip",
-                buttons: [{ text: 'button.confirm', fn: 'resolve' }]
-            }).then(() => { this.$q() })
         },
         editOrder() {
             this.setTicket({ type: this.order.type, number: this.order.number });
@@ -176,7 +171,25 @@ export default {
                 }).then(() => { this.$q() })
                 return;
             }
-            this.order.settled ? this.handleSettledInvoice() : this.$p("Payment");
+            this.order.settled ? this.handleSettledInvoice() :
+                this.order.source === 'POS' ? this.$p("Payment") :
+                    this.askSettleType();
+        },
+        handleSettledInvoice() {
+            this.$dialog({
+                title: "dialog.orderSettled", msg: "dialog.orderSettledTip",
+                buttons: [{ text: 'button.confirm', fn: 'resolve' }]
+            }).then(() => { this.$q() })
+        },
+        askSettleType() {
+            this.$dialog({
+                type: 'question', title: 'dialog.thirdPartyInvoice', msg: 'dialog.thirdPartyInvoiceTip',
+                buttons: [{ text: 'button.pay', fn: 'reject' }, { text: 'button.markAsPaid', fn: 'resolve' }]
+            }).then(() => {
+                this.$p('paymentMark')
+            }).catch(() => {
+                this.$p('Payment')
+            })
         },
         print() {
             let order = Object.assign({}, this.order);

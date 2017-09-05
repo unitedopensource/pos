@@ -48,7 +48,7 @@
                             <checkbox v-model="salesCategory" label="report.salesCategory"></checkbox>
                             <checkbox v-model="countCategory" label="report.categorySales"></checkbox>
                             <checkbox v-model="hourly" label="report.hourlyReport"></checkbox>
-                            <checkbox v-model="tip" label="report.tipSummary"></checkbox>
+                            <!-- <checkbox v-model="tip" label="report.tipSummary"></checkbox> -->
                             <checkbox v-model="giftCard" label="report.giftCardSummary"></checkbox>
                             <checkbox v-model="countItem" label="report.countItem"></checkbox>
                         </div>

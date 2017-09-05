@@ -175,7 +175,11 @@ export default {
         'paidInFull': 'Paid In Full',
         'splitPay': 'Split Pay',
         'create': 'Create',
-        'apply': 'Apply'
+        'apply': 'Apply',
+        'pay': 'Pay'
+    },
+    title:{
+        'markPaymentType':'Mark Payment Type'
     },
     menu: {
         'course': 'Course',
@@ -601,8 +605,8 @@ export default {
         'to': 'To',
         'allDay': 'All Day',
         'enlargeTitle': 'Enlarge Title',
-        'message':'Message',
-        'queue':'Queue'
+        'message': 'Message',
+        'queue': 'Queue'
     },
     setting: {
         'softwareSetting': 'UnitedPOS Setting',
