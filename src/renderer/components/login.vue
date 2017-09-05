@@ -70,7 +70,7 @@ export default {
   },
   created() {
     let argv = remote.process.argv.slice(1);
-    this.host = argv.includes('server');
+    this.host = argv.indexOf('-server') !== -1;
   },
   mounted() {
     window.addEventListener("keydown", this.input, false);
@@ -290,10 +290,21 @@ section div:nth-child(3n+3) {
   padding: 15px 0;
   border-bottom: 1px solid #eee;
   cursor: pointer;
+  position: relative;
 }
 
 .ctrl li:last-child {
   border: none;
+}
+
+.ctrl li:after {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  content: ' ';
+  height: 1px;
+  background: -webkit-gradient(linear, 0 0, 100% 0, from(white), to(white), color-stop(50%, #03A9F4));
 }
 
 .ctrl li i {
