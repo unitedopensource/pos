@@ -74,6 +74,7 @@ const mutations = {
     },
     [types.REMOVE_PRINTER](state, data) {
         delete state.config.printer[data];
+        state.config.printer.splice();
     },
     [types.SET_TABLE](state, data) {
         let layout = state.config.layout.table;
