@@ -14,11 +14,10 @@ export default {
   },
   watch: {
     op(n) {
-      if (n) {
-        this.op.role === 'Admin' ?
-          document.getElementById("app").classList.add("admin") :
-          document.getElementById("app").classList.remove("admin");
-      }
+      n.role === 'Admin' ?
+        document.getElementById("app").classList.add("admin") :
+        document.getElementById("app").classList.remove("admin");
+
     }
   }
 }

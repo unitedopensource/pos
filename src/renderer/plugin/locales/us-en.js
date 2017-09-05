@@ -8,6 +8,7 @@ export default {
         'hardwareIssue': 'Critical Error: Hardware Malfunction'
     },
     login: {
+        'massiveShutdown':'Shutdown All',
         'shutdown': 'Shutdown',
         'restart': 'Restart',
         'exit': 'Exit'
@@ -334,7 +335,9 @@ export default {
         'tableRemoveConfirm': 'Table Remove Confirm',
         'tableRemoveConfirmTip': 'Are you sure you are going to remove this table?',
         'thirdPartyInvoice':'Third Party Invoice',
-        'thirdPartyInvoiceTip':'How will you handle this third party invoice payment?'
+        'thirdPartyInvoiceTip':'How will you handle this third party invoice payment?',
+        'massiveShutdownConfirm':'Shutdown All Stations',
+        'massiveShutdownConfirmTip':'Are you sure you are going to shutdown all stations at once?'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',

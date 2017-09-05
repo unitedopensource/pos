@@ -28,6 +28,10 @@
         </label>
         <transition name="menu">
           <ul v-show="toggleMenu">
+            <li @click="massiveShutdown" v-if="host">
+              <i class="fa fa-desktop"></i>
+              <span>{{$t('login.massiveShutdown')}}</span>
+            </li>
             <li @click="shutdown">
               <i class="fa fa-desktop"></i>
               <span>{{$t('login.shutdown')}}</span>
@@ -44,21 +48,29 @@
         </transition>
       </div>
     </div>
+    <div :is="component" :init="componentData"></div>
   </transition>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import dialoger from './common/dialoger'
 import _debounce from 'lodash.debounce'
-import Electron from 'electron'
+import { ipcRenderer, remote } from 'electron'
 export default {
+  components: { dialoger },
   data() {
     return {
+      host: false,
       reset: false,
       component: null,
       componentData: null,
       toggleMenu: false,
     }
+  },
+  created() {
+    let argv = remote.process.argv.slice(1);
+    this.host = argv.includes('server');
   },
   mounted() {
     window.addEventListener("keydown", this.input, false);
@@ -87,16 +99,26 @@ export default {
         this.reset = false;
       }
     }, 500),
+    massiveShutdown() {
+      this.$dialog({
+        type: 'question',
+        title: 'dialog.massiveShutdownConfirm',
+        msg: 'dialog.massiveShutdownConfirmTip'
+      }).then(() => {
+        this.$socket.emit("[CTRL] MASSIVE_SHUTDOWN");
+        this.$q()
+      }).catch(() => { this.$q() })
+    },
     shutdown() {
-      Electron.ipcRenderer.send("Shutdown");
+      ipcRenderer.send("Shutdown");
     },
     restart() {
-      Electron.ipcRenderer.send("Relaunch");
+      ipcRenderer.send("Relaunch");
     },
     exit() {
       //add flow control on next patch
       //Promise.all([this.checkTerminal(),this.checkSettlement()]).then()
-      Electron.ipcRenderer.send("Exit");
+      ipcRenderer.send("Exit");
     },
     checkTerminal() {
 
@@ -121,8 +143,11 @@ export default {
         this.setPin();
         this.$router.push({ path: '/main' });
       } else {
-        this.reset && this.setPin();
+        this.reset && this.setPin()
       }
+    },
+    SHUTDOWN() {
+      ipcRenderer.send("Shutdown")
     }
   },
   watch: {

@@ -8,6 +8,7 @@ export default {
         'hardwareIssue': '硬件发生错误'
     },
     login: {
+        'massiveShutdown':'集体关机',
         'shutdown': '关机',
         'restart': '重启软件',
         'exit': '退出'
@@ -334,7 +335,9 @@ export default {
         'tableRemoveConfirm': '删除座位',
         'tableRemoveConfirmTip': '您确定要删除这个座位吗？',
         'thirdPartyInvoice':'第三方订单',
-        'thirdPartyInvoiceTip':'您要如何处理这个第三方订单的付款方式？'
+        'thirdPartyInvoiceTip':'您要如何处理这个第三方订单的付款方式？',
+        'massiveShutdownConfirm':'集体关机',
+        'massiveShutdownConfirmTip':'您确定要一次性关闭所有工作站的电脑吗？'
     },
     terminal: {
         'initial': '正在初始化 {i}...',

@@ -34,6 +34,7 @@ import dialoger from './common/dialoger'
 import giftCard from './giftCard/index'
 import switcher from './dock/switcher'
 import notifier from './dock/notifier'
+import { ipcRenderer } from 'electron'
 import spooler from './dock/spooler'
 import opPanel from './dock/opPanel'
 import caller from './dock/caller'
@@ -352,6 +353,9 @@ export default {
       let { sync, reservations } = data;
       this.setReservation(reservations);
       this.setLastSync(sync);
+    },
+    SHUTDOWN(){
+      ipcRenderer.send("Shutdown")
     },
     disconnect() {
       this.setApp({ database: false });
