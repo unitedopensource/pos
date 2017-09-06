@@ -29,7 +29,7 @@
         <transition name="menu">
           <ul v-show="toggleMenu">
             <li @click="massiveShutdown" v-if="host">
-              <i class="fa fa-desktop"></i>
+              <i class="fa fa-plug"></i>
               <span>{{$t('login.massiveShutdown')}}</span>
             </li>
             <li @click="shutdown">
@@ -70,7 +70,8 @@ export default {
   },
   created() {
     let argv = remote.process.argv.slice(1);
-    this.host = argv.indexOf('-server') !== -1;
+    //this.host = argv.indexOf('-server') !== -1;
+    this.host = true;
   },
   mounted() {
     window.addEventListener("keydown", this.input, false);

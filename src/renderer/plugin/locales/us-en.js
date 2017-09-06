@@ -8,7 +8,7 @@ export default {
         'hardwareIssue': 'Critical Error: Hardware Malfunction'
     },
     login: {
-        'massiveShutdown':'Shutdown All',
+        'massiveShutdown':'SHDN All',
         'shutdown': 'Shutdown',
         'restart': 'Restart',
         'exit': 'Exit'

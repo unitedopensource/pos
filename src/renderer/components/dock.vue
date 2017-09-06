@@ -1,29 +1,31 @@
 <template>
-  <div class="dock">
-    <span class="orderNumber">{{ticket.number}}</span>
-    <span class="orderType" v-show="ticket.type" @click="toggleSwitcher">{{type}}</span>
-    <div class="extra">
-      <div class="customer" v-if="$route.name ==='Menu'" @click="modifyInfo">
-        <span class="phone" v-show="customer.phone">{{customer.phone | tel}}</span>
-        <span class="address" v-show="customer.address">{{customer.address}}</span>
-        <span class="name" v-show="customer.name">{{customer.name}}</span>
+  <transition name="slideDown" appear>
+    <div class="dock">
+      <span class="orderNumber">{{ticket.number}}</span>
+      <span class="orderType" v-show="ticket.type" @click="toggleSwitcher">{{type}}</span>
+      <div class="extra">
+        <div class="customer" v-if="$route.name ==='Menu'" @click="modifyInfo">
+          <span class="phone" v-show="customer.phone">{{customer.phone | tel}}</span>
+          <span class="address" v-show="customer.address">{{customer.address}}</span>
+          <span class="name" v-show="customer.name">{{customer.name}}</span>
+        </div>
       </div>
+      <span class="op" @click="openPanel">
+        <i class="fa fa-user"></i>{{op.name}}</span>
+      <span class="corner" v-show="$route.name !== 'Dashboard'">{{time | moment('hh:mm')}}
+        <span class="shift">{{time | moment('a')}}</span>
+      </span>
+      <span class="corner" v-show="$route.name === 'Dashboard'">
+        <i class="fa fa-phone-square" :class="{NA:!device.callid}"></i>
+        <i class="fa fa-globe NA"></i>
+        <i class="fa fa-credit-card" :class="{NA:!device.terminal}"></i>
+        <i class="fa fa-desktop" :class="{NA:!device.poleDisplay}"></i>
+        <i class="fa fa-print spooler" :data-queue="spooler.length" v-show="spooler.length" @click="openSpooler"></i>
+        <i class="fa fa-sitemap" :class="{NA:!app.database}"></i>
+      </span>
+      <div :is="component" :init="componentData" @exit="exitComponent" @print="printConfirm" @trigger="componentEvent"></div>
     </div>
-    <span class="op" @click="openPanel">
-      <i class="fa fa-user"></i>{{op.name}}</span>
-    <span class="corner" v-show="$route.name !== 'Dashboard'">{{time | moment('hh:mm')}}
-      <span class="shift">{{time | moment('a')}}</span>
-    </span>
-    <span class="corner" v-show="$route.name === 'Dashboard'">
-      <i class="fa fa-phone-square" :class="{NA:!device.callid}"></i>
-      <i class="fa fa-globe NA"></i>
-      <i class="fa fa-credit-card" :class="{NA:!device.terminal}"></i>
-      <i class="fa fa-desktop" :class="{NA:!device.poleDisplay}"></i>
-      <i class="fa fa-print spooler" :data-queue="spooler.length" v-show="spooler.length" @click="openSpooler"></i>
-      <i class="fa fa-sitemap" :class="{NA:!app.database}"></i>
-    </span>
-    <div :is="component" :init="componentData" @exit="exitComponent" @print="printConfirm" @trigger="componentEvent"></div>
-  </div>
+  </transition>
 </template>
 
 <script>
@@ -46,9 +48,6 @@ export default {
       component: null,
       componentData: null
     }
-  },
-  mounted() {
-    setTimeout(() => { toggleClass(".dock", "slideDown") }, 300);
   },
   computed: {
     type() {
@@ -354,7 +353,7 @@ export default {
       this.setReservation(reservations);
       this.setLastSync(sync);
     },
-    SHUTDOWN(){
+    SHUTDOWN() {
       ipcRenderer.send("Shutdown")
     },
     disconnect() {
@@ -370,15 +369,15 @@ export default {
   width: 100%;
   height: 30px;
   background: linear-gradient(to bottom, rgb(255, 255, 255) 20%, #aba9a9 100%);
-  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.85), inset 0px 1px 3px rgba(255, 255, 255,1);
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.85), inset 0px 1px 3px rgba(255, 255, 255, 1);
   position: absolute;
-  top: -35px;
+  top: 0;
   left: 0;
   z-index: 99;
   font-size: 1.25em;
   display: flex;
   align-items: center;
-  color:#333;
+  color: #333;
 }
 
 .dock>span {
@@ -388,10 +387,21 @@ export default {
   font-size: 18px;
 }
 
-.dock.slideDown {
+.slideDown-enter-active,
+.slideDown-leave-active {
+  transition: all .5s ease-in-out;
+}
+
+.slideDown-enter,
+.slideDown-leave-to {
+  opacity: 0;
+  transform: translateY(-35px);
+}
+
+/* .dock.slideDown {
   transform: translateY(35px);
   transition: transform 0.22s ease-out;
-}
+} */
 
 span.orderNumber {
   width: 60px;

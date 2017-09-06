@@ -47,7 +47,10 @@
         </div>
       </div>
     </div>
-    <div class="date">{{date}}</div>
+    <transition name="fadeUp" appear>
+      <div class="date">{{date}}</div>
+    </transition>
+
   </div>
 </template>
 
@@ -264,10 +267,22 @@ export default {
   right: 0;
   font-size: 3em;
   font-style: italic;
-  padding: 0px 37px;
-  font-family: fantasy;
-  color: #F5F5F5;
-  text-shadow: 0 1px 3px #000;
+  padding: 0px 20px;
+  font-family: 'Agency FB';
+  color: #fff;
+  font-weight: bold;
+  text-shadow: 1px 1px 1px rgb(25, 25, 25);
+}
+
+.fadeUp-enter-active,
+.fadeUp-leave-active {
+  transition: all .5s
+}
+
+.fadeUp-enter,
+.fadeUp-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
 }
 
 .drivers {

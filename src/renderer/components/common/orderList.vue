@@ -6,27 +6,38 @@
             <span class="price">{{$t('text.price')}}</span>
         </header>
         <header v-else class="info">
-            <div class="roundWrap">
-                <span class="round">{{order.table || order.number}}</span>
+            <div class="bar">
+                <span class="number">{{order.number}}</span>
+                <span class="type" v-show="order.type">{{$t('type.'+order.type)}}</span>
+                <span class="table">{{order.table}}</span>
+                <span class="timePass">
+                    <i class="fa fa-clock-o"></i>{{order.time | fromNow}}
+                </span>
             </div>
-            <div class="innerWrap">
-                <div v-if="order.type === 'DINE_IN'">
-                    <div>
-                        <i class="fa fa-user"></i>{{order.server}}</div>
-                    <div>
-                        <i class="fa fa-braille"></i>{{order.table}}</div>
-                </div>
-                <div v-else>
-                    <div>
-                        <i class="fa fa-clock-o"></i>{{order.time | moment('hh:mm:ss a')}}</div>
-                    <div>
-                        <i class="fa fa-phone"></i>{{order.customer && order.customer.phone}}</div>
-                    <div>
-                        <i class="fa fa-map-marker"></i>{{order.customer && order.customer.address}}</div>
-                </div>
+            <div class="content">
+
             </div>
-            <span class="timePass" v-show="order.time">
-                <i class="fa fa-clock-o"></i>{{order.time | fromNow}}</span>
+            <!-- <div class="roundWrap">
+                            <span class="round">{{order.table || order.number}}</span>
+                        </div>
+                        <div class="innerWrap">
+                            <div v-if="order.type === 'DINE_IN'">
+                                <div>
+                                    <i class="fa fa-user"></i>{{order.server}}</div>
+                                <div>
+                                    <i class="fa fa-braille"></i>{{order.table}}</div>
+                            </div>
+                            <div v-else>
+                                <div>
+                                    <i class="fa fa-clock-o"></i>{{order.time | moment('hh:mm:ss a')}}</div>
+                                <div>
+                                    <i class="fa fa-phone"></i>{{order.customer && order.customer.phone}}</div>
+                                <div>
+                                    <i class="fa fa-map-marker"></i>{{order.customer && order.customer.address}}</div>
+                            </div>
+                        </div> -->
+            <!-- <span class="timePass" v-show="order.time">
+                            <i class="fa fa-clock-o"></i>{{order.time | fromNow}}</span> -->
         </header>
         <div class="order" @click.self="resetHighlight" v-if="layout === 'order'">
             <div class="inner" :style="scrollStyle" :class="{overflow}">
@@ -371,7 +382,7 @@ export default {
                 tax: tax.toFixed(2),
                 total: total.toFixed(2),
                 due: due.toFixed(2),
-                balance:balance.toFixed(2)
+                balance: balance.toFixed(2)
             });
             this.setOrder({ payment: this.payment });
         },
@@ -440,38 +451,34 @@ header.info {
     color: #555;
     position: relative;
     height: 88px;
-    display: flex;
-    border-bottom: 1px solid #eee;
+}
+
+.number {
+    font-family: 'Agency FB';
+    width: 30px;
+    text-align: center;
+    font-weight: bold;
+    text-shadow: 0 1px 1px #333;
+    font-size: 22px;
 }
 
 header i {
     margin-right: 2px;
 }
 
-.roundWrap {
-    width: 94px;
-    overflow: hidden;
-}
-
-.round {
-    font-size: 3em;
-    width: 100px;
-    height: 236px;
-    line-height: 234px;
-    padding-left: 185px;
+.bar {
+    height:26px;
+    background: #03A9F4;
+    display: flex;
+    align-items: center;
     color: #fff;
-    background: #2196F3;
-    display: inline-block;
-    text-align: center;
-    border-radius: 100%;
-    text-shadow: 0 3px 3px rgba(0, 0, 0, 0.6);
-    box-shadow: 1px 1px 6px 0px rgba(15, 42, 72, 0.43);
-    transform: translate(-69%, -50%) translateY(46px);
+    position: relative;
+    padding: 0 5px;
+    box-shadow: inset 0px -1px 3px -1px rgb(17, 116, 160);
 }
 
-.info .innerWrap {
-    width: 191px;
-    margin-top: 3px;
+.table{
+    padding:0 10px;
 }
 
 .simple .qty {
@@ -681,19 +688,14 @@ i.flip {
 
 .timePass {
     position: absolute;
-    bottom: -1px;
+    bottom: 0px;
     right: 0px;
-    padding: 0 10px;
-    height: 22px;
+    padding: 3px 10px;
     color: #009688;
-    background: #fff;
+    background: #f5f5f5;
     text-align: center;
-    line-height: 22px;
-    font-size: 14px;
-    border: 1px solid #ddd;
-    border-bottom: 1px solid #fff;
-    border-right: none;
-    border-top-left-radius: 8px;
+    font-size: 12px;
+    border-top-left-radius: 6px;
 }
 
 .print .itemWrap {
