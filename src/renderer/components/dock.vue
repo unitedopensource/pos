@@ -427,34 +427,6 @@ export default {
   transform: translateY(-35px);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* .dock.slideDown {
-  transform: translateY(35px);
-  transition: transform 0.22s ease-out;
-} */
-
 span.orderNumber {
   width: 60px;
   text-align: center;
