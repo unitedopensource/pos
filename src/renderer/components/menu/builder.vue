@@ -21,7 +21,7 @@
                 <label v-for="(item,index) in content.contain" :key="index">
                   <input type="checkbox" :id="'option'+index" :value="index" v-model="selected" @change="onChange">
                   <label class="item" :for="'option'+index">{{item[language]}}</label>
-                  <span class="price" v-show="item.price">{{item.price | decimal}}</span>
+                  <span class="price" v-show="item.price > 0">{{item.price | decimal}}</span>
                 </label>
               </div>
             </fieldset>
@@ -182,7 +182,7 @@ export default {
   computed: {
     maxItem() {
       return this.template.contain[this.step].max ?
-        this.text('SELECT_QTY', this.template.contain[this.step].max) : this.text("ANY_QTY");
+        this.$t('text.selectQty', this.template.contain[this.step].max) : this.$t('text.anyQty');
     },
     ...mapGetters(['templates', 'language'])
   },

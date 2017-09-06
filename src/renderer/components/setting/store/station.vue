@@ -7,6 +7,7 @@
             <article>
                 <smart-input v-model="workStation.alies" reg="^[a-zA-Z0-9_. ]{2,10}$" label="text.name"></smart-input>
                 <smart-input v-model="workStation.mac" label="text.mac" :disable="true"></smart-input>
+                <smart-switch v-model="workStation.wol" label="text.autoAwake"></smart-switch>
                 <smart-switch v-model="workStation.receiveOnlineOrder" label="text.receiveOnlineOrder"></smart-switch>
             </article>
         </section>

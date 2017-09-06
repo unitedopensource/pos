@@ -119,7 +119,7 @@ export default {
       }).catch(() => { this.$q() })
     },
     sectionTimeout(current) {
-      let lapse = Math.round((current - this.app.opLastAction) / 1000);
+      let lapse = Math.round((current - this.app.lastActivity) / 1000);
       if (lapse >= this.station.timeout) {
         this.setApp({ autoLock: false });
         this.$dialog({
@@ -133,7 +133,7 @@ export default {
           this.$router.push({ path: '/main/lock' })
         }).catch(() => {
           this.$q();
-          this.setApp({ opLastAction: new Date().getTime(), autoLock: true });
+          this.setApp({ lastActivity: new Date().getTime(), autoLock: true });
         })
       }
     },
@@ -200,7 +200,8 @@ export default {
     },
     cashingOut(cashDrawer) {
       this.$socket.emit("[CASHFLOW] SETTLE", cashDrawer);
-      new Promise((resolve) => { this.$options.sockets["CASHFLOW_SETTLE"] = (cashflow) => { resolve(cashflow) } }).then((cashflow) => { this.reconciliation(cashflow) })
+      new Promise((resolve) => { this.$options.sockets["CASHFLOW_SETTLE"] = (cashflow) => { resolve(cashflow) } })
+        .then((cashflow) => { this.reconciliation(cashflow) })
     },
     reconciliation(cashflow) {
       this.recordCashDrawerAction();
@@ -210,16 +211,16 @@ export default {
         type: "question", title: ["cashOutSettle", cashflow.end], msg: ["cashOutSettleTip", cashflow.begin],
         buttons: [{ text: "button.printDetail", fn: "reject" }, { text: 'button.print', fn: 'resolve' }]
       }).then(() => {
-        Printer.setJob("cashout report").print(cashflow);
+        Printer.init(this.config).setJob("cashout report").print(cashflow);
         this.$router.push({ path: '/Login' });
       }).catch(() => {
-        Printer.setJob("detail cashout report").print(cashflow);
+        Printer.init(this.config).setJob("detail cashout report").print(cashflow);
         this.$router.push({ path: '/Login' });
       })
     },
     recordCashDrawerAction() {
-      Printer.init(this.config).openCashDrawer();
-      let cashDrawer = this.config.store.stuffBank ? this.op.name : this.station.cashDrawer.name;
+      this.op.cashCtrl === 'enable' && Printer.init(this.config).openCashDrawer();
+
       let activity = {
         type: "END",
         inflow: 0,
@@ -228,7 +229,7 @@ export default {
         ticket: null,
         operator: this.op.name
       }
-      this.$socket.emit("[CASHFLOW] NEW_ACTIVITY", { cashDrawer, activity });
+      this.$socket.emit("[CASHFLOW] ACTIVITY", { cashDrawer: this.op.cashCtrl === 'enable' ? this.station.cashDrawer.name : this.op.name, activity })
     },
     componentEvent(event) {
       this.component = null;
@@ -245,14 +246,42 @@ export default {
         case "station":
           break;
         case "cashOut":
-          let cashDrawer = this.config.store.stuffBank ? this.op.name : this.station.cashDrawer.name;
-          this.$dialog({ type: "question", title: "cashOut", msg: ["cashOutTip", cashDrawer] })
-            .then(() => { this.cashingOut(cashDrawer) }).catch(() => { this.$router.push({ path: '/Login' }) })
+          switch (this.op.cashCtrl) {
+            case "enable":
+              this.checkCashOut(this.station.cashDrawer.name, false)
+              break;
+            case "stuffBank":
+              this.checkCashOut(this.op.name, true)
+              break;
+            default:
+              this.$router.push({ path: '/Login' })
+          }
           break;
         case "creditCard":
           this.$p("terminal")
           break;
       }
+    },
+    checkCashOut(cashDrawer, stuffBank) {
+      new Promise((resolve, reject) => {
+        this.$socket.emit("[CASHFLOW] CHECK", { date: today(), cashDrawer, close: false });
+        this.$options.sockets["CASHFLOW_RESULT"] = (data) => {
+          let { name, initial } = data;
+          initial ? reject() : resolve(name)
+        }
+      }).then((name) => {
+        stuffBank ? this.askSelfCashOut(name) : this.askCashOut(name)
+      }).catch(() => {
+        this.$router.push({ path: '/Login' })
+      })
+    },
+    askCashOut(cashDrawer) {
+      this.$dialog({ type: "question", title: "dialog.cashOut", msg: ["dialog.cashOutTip", cashDrawer] })
+        .then(() => { this.cashingOut(cashDrawer) }).catch(() => { this.$router.push({ path: '/Login' }) })
+    },
+    askSelfCashOut(name) {
+      this.$dialog({ type: "question", title: "dialog.selfCashOut", msg: "dialog.selfCashOutTip" })
+        .then(() => { this.cashingOut(name) }).catch(() => { this.$router.push({ path: '/Login' }) })
     },
     exitComponent() {
       this.$q()
@@ -397,6 +426,29 @@ export default {
   opacity: 0;
   transform: translateY(-35px);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* .dock.slideDown {
   transform: translateY(35px);

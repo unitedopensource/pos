@@ -859,12 +859,6 @@ export default {
             }
         },
         recordCashDrawerAction(inflow, outflow) {
-            if (!this.station.cashDrawer.enable) {
-                this.missCashDrawer();
-                return;
-            }
-            Printer.init(this.config).openCashDrawer();
-            let cashDrawer = this.store.stuffBank ? this.op.name : this.station.cashDrawer.name;
             let activity = {
                 type: "CASHFLOW",
                 inflow: parseFloat(inflow),
@@ -873,11 +867,23 @@ export default {
                 ticket: this.ticket,
                 operator: this.op.name
             }
-            this.$socket.emit("[CASHFLOW] NEW_ACTIVITY", { cashDrawer, activity });
+            switch (this.op.cashCtrl) {
+                case "enable":
+                    this.station.cashDrawer.enable ?
+                        Printer.init(this.config).openCashDrawer() :
+                        this.cashDrawerUnavailable();
+                    this.$socket.emit("[CASHFLOW] ACTIVITY", { cashDrawer: this.station.cashDrawer.name, activity });
+                    break;
+                case "stuffBank":
+                    this.$socket.emit("[CASHFLOW] ACTIVITY", { cashDrawer: this.op.name, activity });
+                    break;
+                case "disable":
+                default:
+            }
         },
-        missCashDrawer() {
+        cashDrawerUnavailable() {
             this.$dialog({
-                title: "dialog.cashDrawerNotAvailable", msg: "dialog.cashDrawerNotAvailableTip",
+                title: "dialog.cashDrawerUnavailable", msg: "dialog.cashDrawerUnavailableTip",
                 buttons: [{ text: 'button.confirm', fn: 'resolve' }]
             }).then(() => { this.$q() });
         },

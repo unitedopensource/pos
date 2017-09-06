@@ -56,7 +56,7 @@
 import { mapActions, mapGetters } from 'vuex'
 import dialoger from './common/dialoger'
 import _debounce from 'lodash.debounce'
-import { ipcRenderer, remote } from 'electron'
+import { ipcRenderer } from 'electron'
 export default {
   components: { dialoger },
   data() {
@@ -69,9 +69,9 @@ export default {
     }
   },
   created() {
-    let argv = remote.process.argv.slice(1);
+    //let argv = remote.process.argv.slice(1);
     //this.host = argv.indexOf('-server') !== -1;
-    this.host = true;
+    this.host = window.server === true;
   },
   mounted() {
     window.addEventListener("keydown", this.input, false);

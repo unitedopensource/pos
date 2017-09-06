@@ -18,26 +18,26 @@
 
             </div>
             <!-- <div class="roundWrap">
-                            <span class="round">{{order.table || order.number}}</span>
-                        </div>
-                        <div class="innerWrap">
-                            <div v-if="order.type === 'DINE_IN'">
-                                <div>
-                                    <i class="fa fa-user"></i>{{order.server}}</div>
-                                <div>
-                                    <i class="fa fa-braille"></i>{{order.table}}</div>
+                                <span class="round">{{order.table || order.number}}</span>
                             </div>
-                            <div v-else>
-                                <div>
-                                    <i class="fa fa-clock-o"></i>{{order.time | moment('hh:mm:ss a')}}</div>
-                                <div>
-                                    <i class="fa fa-phone"></i>{{order.customer && order.customer.phone}}</div>
-                                <div>
-                                    <i class="fa fa-map-marker"></i>{{order.customer && order.customer.address}}</div>
-                            </div>
-                        </div> -->
+                            <div class="innerWrap">
+                                <div v-if="order.type === 'DINE_IN'">
+                                    <div>
+                                        <i class="fa fa-user"></i>{{order.server}}</div>
+                                    <div>
+                                        <i class="fa fa-braille"></i>{{order.table}}</div>
+                                </div>
+                                <div v-else>
+                                    <div>
+                                        <i class="fa fa-clock-o"></i>{{order.time | moment('hh:mm:ss a')}}</div>
+                                    <div>
+                                        <i class="fa fa-phone"></i>{{order.customer && order.customer.phone}}</div>
+                                    <div>
+                                        <i class="fa fa-map-marker"></i>{{order.customer && order.customer.address}}</div>
+                                </div>
+                            </div> -->
             <!-- <span class="timePass" v-show="order.time">
-                            <i class="fa fa-clock-o"></i>{{order.time | fromNow}}</span> -->
+                                <i class="fa fa-clock-o"></i>{{order.time | fromNow}}</span> -->
         </header>
         <div class="order" @click.self="resetHighlight" v-if="layout === 'order'">
             <div class="inner" :style="scrollStyle" :class="{overflow}">
@@ -406,6 +406,11 @@ export default {
         }
     },
     watch: {
+        'cart': {
+            handler(n) {
+                this.display ? this.payment = this.order.payment : this.calculator(n);
+            }, deep: true
+        },
         'payment'() {
             this.$nextTick(() => {
                 let height = 0;
@@ -415,14 +420,9 @@ export default {
                 });
                 height = 329 - height;
                 this.overflow = height < 0;
-                this.overflowIndex = this.overflow ? this.cart.last() : null;
+                this.overflowIndex = this.overflow ? this.cart.length - 1 : null;
                 this.offset = this.overflow ? height : 0;
             })
-        },
-        'cart': {
-            handler(n) {
-                this.display ? this.payment = this.order.payment : this.calculator(n);
-            }, deep: true
         },
         'ticket.type'(n) {
             this.calculator(this.cart)
@@ -467,7 +467,7 @@ header i {
 }
 
 .bar {
-    height:26px;
+    height: 26px;
     background: #03A9F4;
     display: flex;
     align-items: center;
@@ -477,8 +477,8 @@ header i {
     box-shadow: inset 0px -1px 3px -1px rgb(17, 116, 160);
 }
 
-.table{
-    padding:0 10px;
+.table {
+    padding: 0 10px;
 }
 
 .simple .qty {

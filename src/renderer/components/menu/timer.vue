@@ -7,25 +7,25 @@
             <div class="inner">
                 <div class="timer">
                     <div class="wrap">
-                        <i class="fa fa-angle-up" @click="add(0)"></i>
+                        <i class="fa fa-angle-up" @click="addHour(10)"></i>
                         <span class="time">{{time[0]}}</span>
-                        <i class="fa fa-angle-down" @click="sub(0)"></i>
+                        <i class="fa fa-angle-down" @click="subHour(10)"></i>
                     </div>
                     <div class="wrap">
-                        <i class="fa fa-angle-up" @click="add(1)"></i>
+                        <i class="fa fa-angle-up" @click="addHour(1)"></i>
                         <span class="time">{{time[1]}}</span>
-                        <i class="fa fa-angle-down" @click="sub(1)"></i>
+                        <i class="fa fa-angle-down" @click="subHour(1)"></i>
                     </div>
                     <div class="blink">:</div>
                     <div class="wrap">
-                        <i class="fa fa-angle-up" @click="add(2)"></i>
+                        <i class="fa fa-angle-up" @click="addMin(10)"></i>
                         <span class="time">{{time[2]}}</span>
-                        <i class="fa fa-angle-down" @click="sub(2)"></i>
+                        <i class="fa fa-angle-down" @click="subMin(10)"></i>
                     </div>
                     <div class="wrap">
-                        <i class="fa fa-angle-up" @click="add(3)"></i>
+                        <i class="fa fa-angle-up" @click="addMin(1)"></i>
                         <span class="time">{{time[3]}}</span>
-                        <i class="fa fa-angle-down" @click="sub(3)"></i>
+                        <i class="fa fa-angle-down" @click="subMin(1)"></i>
                     </div>
                 </div>
             </div>
@@ -51,25 +51,33 @@ export default {
     components: { dialoger, checkbox },
     data() {
         return {
-            time: moment().format('HHmm').split(""),
+            timer:moment(),
+            time: null,
             componentData: null,
             component: null,
             ahead: true,
             current: +new Date()
         }
     },
+    created(){
+        this.time = this.timer.format('HHmm').split("")
+    },
     methods: {
-        add(i) {
-            let num = ~~this.time[i];
-            num = num < 9 ? num + 1 : 0;
-            i === 0 && num > 2 && (num = 2);
-            i === 2 && num > 6 && (num = 6);
-            this.time.splice(i, 1, num);
+        addHour(t){
+            this.timer.add(t,'hours');
+            this.time = this.timer.format('HHmm').split("");
         },
-        sub(i) {
-            let num = ~~this.time[i];
-            num = num > 0 ? num - 1 : 9;
-            this.time.splice(i, 1, num);
+        subHour(t){
+            this.timer.subtract(t,'hours');
+            this.time = this.timer.format('HHmm').split("");
+        },
+        addMin(t){
+            this.timer.add(t,'minutes');
+            this.time = this.timer.format('HHmm').split("");
+        },
+        subMin(t){
+            this.timer.subtract(t,'minutes');
+            this.time = this.timer.format('HHmm').split("");
         },
         confirm() {
             let hour = Number(String(this.time[0]) + String(this.time[1]));

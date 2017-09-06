@@ -26,12 +26,12 @@ var Preset = function () {
       },
       print: {},
       printRedirect: false,
-      cashDrawer:{
-        enable:false,
-        name:alies,
-        bind:'',
-        cashFlowCtrl:false,
-        initialAmount:0
+      cashDrawer: {
+        enable: false,
+        name: alies,
+        bind: '',
+        cashFlowCtrl: false,
+        initialAmount: 0
       },
       timeout: 0,
       receiveOnlineOrder: false,
@@ -98,7 +98,7 @@ var Preset = function () {
         "RECEIPT": true,
         "PAYMENT": true,
         "REPORT": true,
-        'SALES':true
+        'SALES': true
       },
       "double": {
         "WALK_IN": false,
@@ -111,9 +111,9 @@ var Preset = function () {
         "printPrimary": true,
         "primaryFont": "QingYuan",
         "primaryFontSize": "19",
-        "printPrimaryPrice":false,
+        "printPrimaryPrice": false,
         "printSecondary": true,
-        "printSecondaryPrice":true,
+        "printSecondaryPrice": true,
         "secondaryFont": "Agency FB",
         "secondaryFontSize": "16",
         "sortItem": true,
@@ -190,7 +190,27 @@ var Preset = function () {
         }
       ]
     }
+  };
+  this.cashIn = function (op, name, amount) {
+    return {
+      date: today(),
+      cashDrawer: name,
+      operator: op,
+      begin: amount.toFixed(2),
+      beginTime: +new Date(),
+      end: null,
+      endTime: null,
+      close: false,
+      activity: [{
+        type: 'START',
+        inflow: parseFloat(amount),
+        outflow: 0,
+        time: +new Date(),
+        ticket: null,
+        operator: op
+      }]
+    }
   }
-};
+}
 
 module.exports = new Preset();

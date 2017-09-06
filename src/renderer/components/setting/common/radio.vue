@@ -1,6 +1,6 @@
 <template>
     <div class="radio">
-        <input :id="id" :value="val" type="radio" :name="name" @change="$emit('input',$event.target.value)">
+        <input :id="id" :checked="value === val" :value="val" type="radio" :name="name" @change="$emit('input',$event.target.value)">
         <label class="box" :for="id"></label>
         <label class="text" :for="id">{{$t(label)}}</label>
     </div>

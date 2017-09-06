@@ -18,7 +18,7 @@ export default {
   },
   methods: {
     record() {
-      this.setApp({ opLastAction: new Date().getTime() })
+      this.setApp({ lastActivity: new Date().getTime() })
     },
     ...mapActions(['setApp', 'toggleKeyboard'])
   }

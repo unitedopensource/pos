@@ -194,7 +194,7 @@ aside {
 
 .group {
     padding: 5px 10px;
-    height: 40px;
+    min-height: 40px;
     cursor: pointer;
     color: #9E9E9E;
     position: relative;
@@ -244,12 +244,13 @@ ul.item {
 }
 
 li {
-    width: 100px;
+    width: 110px;
     height: 60px;
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    padding: 0 15px;
+    text-align: center;
+    padding: 0 5px;
     border: 1px solid #eee;
     background: #fff;
     margin: 1px;

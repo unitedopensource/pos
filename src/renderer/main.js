@@ -19,7 +19,6 @@ Vue.use(i18n)
 
 Vue.config.debug = true
 window.moment = moment
-window.servers = [];
 const ip = Ip.address().split(".").splice(0, 3).join(".") + ".";
 let findHost = new Promise((resolve, reject) => {
   const args = require('electron').remote.process.argv.slice(1);
@@ -28,6 +27,7 @@ let findHost = new Promise((resolve, reject) => {
     return;
   }
   if (args.includes("-server")) {
+    window.server = true;
     resolve("127.0.0.1");
     return;
   }
