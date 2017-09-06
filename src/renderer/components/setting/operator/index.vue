@@ -13,9 +13,10 @@
             </div>
         </aside>
         <main class="form">
-            <div class="content" v-if="!op">
+            <!-- <div class="content" v-if="!op">
 
-            </div>
+                </div> -->
+            <stats v-if="!op"></stats>
             <div v-else class="content">
                 <section class="card">
                     <header>{{$t('setting.config')}}
@@ -46,7 +47,6 @@
                             <span class="name">{{$t('setting.access')}}</span>
                             <div class="f1">
                                 <checkbox v-model="op.access" val="setting" label="text.setting" :multiple="true"></checkbox>
-                                <checkbox v-model="op.access" val="cashdrawer" label="text.cashDrawer" :multiple="true"></checkbox>
                                 <checkbox v-model="op.access" val="report" label="text.report" :multiple="true"></checkbox>
                                 <checkbox v-model="op.access" val="terminal" label="text.terminal" :multiple="true"></checkbox>
                             </div>
@@ -67,6 +67,14 @@
                                 <checkbox v-model="op.view" val="summary" label="text.viewSummary" :multiple="true"></checkbox>
                                 <checkbox v-model="op.view" val="invoices" label="text.viewInvoices" :multiple="true"></checkbox>
                                 <checkbox v-model="op.view" val="tables" label="text.viewTables" :multiple="true"></checkbox>
+                            </div>
+                        </div>
+                        <div class="datalist">
+                            <span class="name">{{$t('text.cashDrawer')}}</span>
+                            <div class="f1">
+                                <radio v-model="op.cashCtrl" val="enable" label="text.enable" name="cashCtrl"></radio>
+                                <radio v-model="op.cashCtrl" val="stuffBank" label="text.stuffBank" name="cashCtrl"></radio>
+                                <radio v-model="op.cashCtrl" val="disable" label="text.disallow" name="cashCtrl"></radio>
                             </div>
                         </div>
                     </article>
@@ -114,8 +122,10 @@ import smartOption from '../common/smartOption'
 import smartSwitch from '../common/smartSwitch'
 import smartInput from '../common/smartInput'
 import checkbox from '../common/checkbox'
+import radio from '../common/radio'
+import stats from './stats'
 export default {
-    components: { dialoger, checkbox, smartInput, smartOption, smartSwitch },
+    components: { dialoger, checkbox, smartInput, smartOption, smartSwitch, stats, radio },
     created() {
         this.$socket.emit("INQUIRY_ALL_OPS");
     },

@@ -497,6 +497,8 @@ export default {
         'contactInfo': '联系信息',
         'storeType': '店面类型',
         'enable': '启用',
+        'stuffBank':'个人钱箱',
+        'disallow':'禁止',
         'api': '授权码',
         'timeCard': '打卡',
         'timeCardReport': '自动打印报告',

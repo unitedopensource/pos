@@ -497,6 +497,8 @@ export default {
         'contactInfo': 'Contact Info',
         'storeType': 'Store Type',
         'enable': 'Enable',
+        'stuffBank':'Stuff Bank',
+        'disallow':'Disallow',
         'api': 'API',
         'timeCard': 'Time Card',
         'timeCardReport': 'Auto Report',
