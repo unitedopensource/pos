@@ -7,7 +7,7 @@
 import { mapActions, mapGetters } from "vuex"
 import { ipcRenderer } from 'electron'
 import serialport from 'serialport'
-import awake from 'wake_on_lan'
+import wol from 'wake_on_lan'
 import MAC from 'getmac'
 
 export default {
@@ -48,7 +48,7 @@ export default {
       this.setReservation(reservation);
       this.setTodayOrder({ orders, sync });
       this.setLastSync(sync);
-      window.server && this.checkAwake(config.store.station);
+      this.checkAwake(config.store.station);
       MAC.getMac((err, mac) => {
         if (err) {
           ipcRenderer.send("Loading", this.$t('initial.hardwareIssue'))
@@ -131,7 +131,7 @@ export default {
     checkAwake(stations) {
       ipcRenderer.send("Loading", this.$t('initial.awakeClients'));
       Object.keys(stations).forEach(name => {
-        stations[name].wol && awake(stations[name].mac)
+        stations[name].wol && wol.wake(stations[name].mac)
       })
     },
     ...mapActions([
