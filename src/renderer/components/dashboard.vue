@@ -127,7 +127,9 @@ export default {
         cashDrawerAvailable() {
             switch (this.op.cashCtrl) {
                 case "enable":
-                    this.$socket.emit("[CASHFLOW] CHECK", { date: today(), cashDrawer: this.station.cashDrawer.name, close: false });
+                    this.station.cashDrawer.cashFlowCtrl ?
+                        this.$socket.emit("[CASHFLOW] CHECK", { date: today(), cashDrawer: this.station.cashDrawer.name, close: false }) :
+                        Printer.init(this.config).openCashDrawer();
                     break;
                 case "stuffBank":
                     this.$socket.emit("[CASHFLOW] CHECK", { date: today(), cashDrawer: this.op.name, close: false });

@@ -723,7 +723,10 @@ section.route .content .inner {
 footer.update {
     background: #445359;
     color: #F7F9F8;
-    padding: 20px 55px 20px 45px;
+    padding: 0 50px;
+    height: 58px;
+    display: flex;
+    align-items: center;
 }
 
 footer.update i {
@@ -731,14 +734,39 @@ footer.update i {
     margin-right: 5px;
 }
 
-footer.update span.save {
-    float: right;
+footer.update .save {
     color: #fdd333;
-    cursor: pointer;
 }
 
-footer.update span.cancel {
-    float: right;
+footer.update span {
     cursor: pointer;
-    margin: 0 15px;
+    padding: 20px 15px;
 }
+
+
+/* vue transition animation */
+
+.fadeDown-enter-active,
+.fadeDown-leave-active{
+  transition: all .5s
+}
+
+.fadeUp-enter-active,
+.fadeUp-leave-active{
+  transition:all 0.22s ease;
+}
+
+.fadeDown-enter,
+.fadeDown-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.fadeUp-enter,
+.fadeUp-leave-to {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+
+

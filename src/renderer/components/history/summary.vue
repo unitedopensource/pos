@@ -47,7 +47,7 @@
         </div>
       </div>
     </div>
-    <transition name="fadeUp" appear>
+    <transition name="fadeDown" appear>
       <div class="date">{{date}}</div>
     </transition>
 
@@ -272,17 +272,6 @@ export default {
   color: #fff;
   font-weight: bold;
   text-shadow: 1px 1px 1px rgb(25, 25, 25);
-}
-
-.fadeUp-enter-active,
-.fadeUp-leave-active {
-  transition: all .5s
-}
-
-.fadeUp-enter,
-.fadeUp-leave-to {
-  opacity: 0;
-  transform: translateY(-10px);
 }
 
 .drivers {

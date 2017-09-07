@@ -103,14 +103,16 @@
                     </article>
                 </section>
             </div>
-            <footer class="update" v-if="change">
-                <i class="fa fa-info-circle"></i>
-                <span>{{txt}}</span>
-                <span v-show="!send">
-                    <span @click="save" class="save">{{$t('button.save')}}</span>
-                    <span @click="cancel" class="cancel">{{$t('button.cancel')}}</span>
-                </span>
-            </footer>
+            <transition appear name="fadeUp">
+                <footer class="update" v-if="change">
+                    <i class="fa fa-info-circle"></i>
+                    <p class="f1">{{txt}}</p>
+                    <div v-show="!send">
+                        <span @click="cancel" class="cancel">{{$t('button.cancel')}}</span>
+                        <span @click="update" class="save">{{$t('button.save')}}</span>
+                    </div>
+                </footer>
+            </transition>
         </main>
         <div :is="component" :init="componentData"></div>
     </div>
