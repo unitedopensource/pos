@@ -48,7 +48,7 @@ export default {
       this.setReservation(reservation);
       this.setTodayOrder({ orders, sync });
       this.setLastSync(sync);
-      this.checkAwake(config.store.station);
+      window.server && this.checkAwake(config.store.station);
       MAC.getMac((err, mac) => {
         if (err) {
           ipcRenderer.send("Loading", this.$t('initial.hardwareIssue'))
