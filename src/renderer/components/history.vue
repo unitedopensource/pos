@@ -4,17 +4,16 @@
             <div class="logo" @click.ctrl="getConsole">
                 <span>U</span>
             </div>
-            <order-summary :data="prevsHistory.length ? prevsHistory : history" :date="calendarDate || today" @filter="setFilter"></order-summary>
+            <order-summary :data="prevHistory.length ? prevHistory : history" :date="calendarDate || today" @filter="setFilter"></order-summary>
         </header>
         <article>
             <grids :date="calendarDate || today" @change="setCalendar"></grids>
             <section class="tickets">
                 <div class="inner">
                     <div v-for="(ticket,index) in invoices" class="invoice" @click="getInvoice(ticket)" :data-number="ticket.number" :key="index" :class="{void:ticket.status === 0,settled:ticket.settled,split:ticket.split}">
-                        <span class="type">{{$t('type.'+ticket.type)}}
-                            <span v-if="ticket.type === 'DINE_IN'" class="table">{{ticket.table}}</span>
-                        </span>
-                        <span class="address">{{ticket.customer.address}}</span>
+                        <span class="type">{{$t('type.'+ticket.type)}}</span>
+                        <span v-if="ticket.type === 'DINE_IN'" class="address">{{ticket.table}}</span>
+                        <span v-else class="address">{{ticket.customer.address}}</span>
                         <span class="phone">{{ticket.customer.phone | dot}}</span>
                         <span class="total">$ {{ticket.payment.due.toFixed(2)}}</span>
                     </div>
@@ -46,7 +45,7 @@ export default {
             component: null,
             componentData: null,
             calendarDate: null,
-            prevsHistory: [],
+            prevHistory: [],
             summary: {},
             page: 0,
             view: "",
@@ -120,20 +119,20 @@ export default {
                 case "DELIVERY":
                 case "DINE_IN":
                 case "BAR":
-                    return this.prevsHistory.length ?
-                        this.prevsHistory.filter(invoice => invoice.type === this.filter && view(invoice.server)) :
+                    return this.prevHistory.length ?
+                        this.prevHistory.filter(invoice => invoice.type === this.filter && view(invoice.server)) :
                         this.history.filter(invoice => invoice.type === this.filter && view(invoice.server));
                 case "UNSETTLE":
-                    return this.prevsHistory.length ?
-                        this.prevsHistory.filter(invoice => !invoice.settled && view(invoice.server)) :
+                    return this.prevHistory.length ?
+                        this.prevHistory.filter(invoice => !invoice.settled && view(invoice.server)) :
                         this.history.filter(invoice => !invoice.settled && view(invoice.server));
                 case "DRIVER":
-                    return this.prevsHistory.length ?
-                        this.prevsHistory.filter(invoice => (this.driver ? invoice.driver === this.driver : invoice.type === 'DELIVERY') && view(invoice.server)) :
+                    return this.prevHistory.length ?
+                        this.prevHistory.filter(invoice => (this.driver ? invoice.driver === this.driver : invoice.type === 'DELIVERY') && view(invoice.server)) :
                         this.history.filter(invoice => (this.driver ? invoice.driver === this.driver : invoice.type === 'DELIVERY') && view(invoice.server));
                 default:
-                    return this.prevsHistory.length ?
-                        this.prevsHistory.filter((invoice) => view(invoice.server)) :
+                    return this.prevHistory.length ?
+                        this.prevHistory.filter((invoice) => view(invoice.server)) :
                         this.history.filter((invoice) => view(invoice.server));
             }
 
@@ -148,10 +147,6 @@ export default {
             let max = min + 30;
             return this.orders.slice(min, max)
         },
-        // totalPage() {
-        //     let length = this.prevsHistory.length || this.history.length;
-        //     return Math.ceil(length / 30)
-        // },
         ...mapGetters(['op', 'sync', 'ticket', 'order', 'history', 'store'])
     },
     filters: {
@@ -184,7 +179,7 @@ export default {
     },
     sockets: {
         HISTORY_ORDER(data) {
-            this.prevsHistory = data.orders;
+            this.prevHistory = data.orders;
             this.$q();
             data.orders.length === 0 && this.$dialog({
                 title: 'dialog.noInvoice',
@@ -342,6 +337,7 @@ section.ticket {
     margin-top: 5px;
     border-top: 1px dashed #eee;
     border-bottom: 1px dashed #eee;
+    text-transform: uppercase;
     width: 115px;
 }
 

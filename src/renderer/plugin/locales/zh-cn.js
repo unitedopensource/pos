@@ -178,7 +178,9 @@ export default {
         'splitPay': '分单付款',
         'create': '创建',
         'apply': '应用',
-        'pay': '支付'
+        'pay': '支付',
+        'combinePrint':'完整打印',
+        'splitPrint':'分单打印'
     },
     title:{
         'markPaymentType':'标记付款方式'
@@ -344,7 +346,9 @@ export default {
         'thirdPartyInvoice':'第三方订单',
         'thirdPartyInvoiceTip':'您要如何处理这个第三方订单的付款方式？',
         'massiveShutdownConfirm':'集体关机',
-        'massiveShutdownConfirmTip':'您确定要一次性关闭所有工作站的电脑吗？'
+        'massiveShutdownConfirmTip':'您确定要一次性关闭所有工作站的电脑吗？',
+        'printSplitTicket':'打印方式',
+        'printSplitTicketTip':'您要如何打印这份已经分单的订单？'
     },
     terminal: {
         'initial': '正在初始化 {i}...',
@@ -624,7 +628,8 @@ export default {
         'queue': '队列',
         'selectQty':'选择{i}个',
         'anyQty':'任意选择',
-        'autoAwake':'自动开机'
+        'autoAwake':'自动开机',
+        'handleItem':'{i} 个物品, {i} 未处理'
     },
     setting: {
         'softwareSetting': 'UnitedPOS 后台设置',

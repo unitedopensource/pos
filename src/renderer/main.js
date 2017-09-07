@@ -80,7 +80,7 @@ findHost.then(ip => {
     }
   });
   Vue.filter('phone', number => {
-    return number.length === 10 ? number.replace(/^\D?(\d{3})\D?\D?(\d{3})\D?(\d{4})/, "($1) $2-$3") : number;
+    return (number && number.length === 10) ? number.replace(/^\D?(\d{3})\D?\D?(\d{3})\D?(\d{4})/, "($1) $2-$3") : number;
   });
   Vue.filter('fromNow', (time, pass) => {
     if (!time) return;

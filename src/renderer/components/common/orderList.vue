@@ -14,30 +14,34 @@
                     <i class="fa fa-clock-o"></i>{{order.time | fromNow}}
                 </span>
             </div>
-            <div class="content">
-
+            <div class="content" v-if="order.type === 'DINE_IN'">
+                <div>
+                    <span class="text">{{$t('text.guest')}}</span>
+                    <span class="value">{{order.guest}}</span>
+                </div>
+                <div>
+                    <span class="text">{{$t('text.item')}}</span>
+                    <span class="value">{{$t('text.handleItem',...countItems(order.content))}}</span>
+                </div>
+                <div>
+                    <span class="text">{{$t('text.time')}}</span>
+                    <span class="value">{{order.time | moment('HH:mm:ss MM/DD/YY')}}</span>
+                </div>
             </div>
-            <!-- <div class="roundWrap">
-                                <span class="round">{{order.table || order.number}}</span>
-                            </div>
-                            <div class="innerWrap">
-                                <div v-if="order.type === 'DINE_IN'">
-                                    <div>
-                                        <i class="fa fa-user"></i>{{order.server}}</div>
-                                    <div>
-                                        <i class="fa fa-braille"></i>{{order.table}}</div>
-                                </div>
-                                <div v-else>
-                                    <div>
-                                        <i class="fa fa-clock-o"></i>{{order.time | moment('hh:mm:ss a')}}</div>
-                                    <div>
-                                        <i class="fa fa-phone"></i>{{order.customer && order.customer.phone}}</div>
-                                    <div>
-                                        <i class="fa fa-map-marker"></i>{{order.customer && order.customer.address}}</div>
-                                </div>
-                            </div> -->
-            <!-- <span class="timePass" v-show="order.time">
-                                <i class="fa fa-clock-o"></i>{{order.time | fromNow}}</span> -->
+            <div class="content" v-else>
+                <div>
+                    <span class="text">{{$t('text.phone')}}</span>
+                    <span class="value">{{order.customer && order.customer.phone}}</span>
+                </div>
+                <div>
+                    <span class="text">{{$t('text.address')}}</span>
+                    <span class="value">{{order.customer && order.customer.address}}</span>
+                </div>
+                <div>
+                    <span class="text">{{$t('text.time')}}</span>
+                    <span class="value">{{order.time | moment('HH:mm:ss MM/DD/YY')}}</span>
+                </div>
+            </div>
         </header>
         <div class="order" @click.self="resetHighlight" v-if="layout === 'order'">
             <div class="inner" :style="scrollStyle" :class="{overflow}">
@@ -337,6 +341,16 @@ export default {
         },
         setDriver() {
             this.$p("driver", { driver: this.order.driver, ticket: this.ticket.number })
+        },
+        countItems(content){
+            let count = 0;
+            let undone = 0;
+            content.forEach(item=>{
+                count += item.qty;
+                !item.print && undone++;
+            })
+
+            return [count,undone]
         },
         calculator(items) {
             if (items.length === 0) {
@@ -752,5 +766,24 @@ i.flip {
     margin: 5px;
     height: 40px;
     font-size: initial;
+}
+
+.content > div {
+    display: flex;
+}
+
+.content .text {
+    min-width: 80px;
+    text-align: right;
+    padding-right: 10px;
+    color: #607D8B;
+}
+
+.content {
+    padding: 3px;
+}
+
+.content .value {
+    color: #676767;
 }
 </style>

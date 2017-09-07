@@ -192,8 +192,33 @@ export default {
             })
         },
         print() {
-            let order = Object.assign({}, this.order);
+            let order = JSON.parse(JSON.stringify(this.order));
+            order.split ? this.askSplitPrint(order) : this.printTicket(order);
+        },
+        askSplitPrint(order) {
+            this.$dialog({
+                type: 'question', title: 'dialog.printSplitTicket', msg: 'dialog.printSplitTicketTip',
+                buttons: [{ text: 'button.combinePrint', fn: 'reject' }, { text: 'button.splitPrint', fn: 'resolve' }]
+            }).then(() => { this.$q(), this.splitPrint(order) }).catch(() => { this.$q(), this.printTicket(order) })
+        },
+        printTicket(order) {
             Printer.init(this.config).setJob("receipt").print(order);
+            order.content.forEach(item => {
+                delete item.new;
+                item.print = true;
+                item.pending = false;
+            })
+            this.updateInvoice(order);
+        },
+        splitPrint(order) {
+            let split = [].concat.apply([], order.content.map(item => item.sort)).filter((v, i, s) => s.indexOf(v) === i).length;
+            let ticket = JSON.parse(JSON.stringify(order));
+            for (let i = 1; i < split + 1; i++) {
+                ticket.content = order.content.filter(item => Array.isArray(item.sort) ? item.sort.includes(i) : item.sort === i);
+                ticket.payment = order.splitPayment[i - 1];
+                ticket.number = `${order.number}-${i}`;
+                Printer.init(this.config).setJob("receipt").print(ticket);
+            }
             order.content.forEach(item => {
                 delete item.new;
                 item.print = true;

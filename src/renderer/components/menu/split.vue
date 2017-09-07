@@ -83,7 +83,7 @@ export default {
             return flattened
         },
         check(items) {
-            return items.map(item => item.sort).filter((v, i, s) => s.indexOf(v) === i).length
+            return [].concat.apply([], items.map(item => item.sort)).filter((v, i, s) => s.indexOf(v) === i).length
         },
         newSplit() {
             this.transferItems.length ? this.transfer(++this.split) : this.split++;
@@ -98,7 +98,7 @@ export default {
             }
         },
         sort(index) {
-            let unique = this.items.map(item => item.sort).filter((v, i, s) => s.indexOf(v) === i);
+            let unique = [].concat.apply([], this.items.map(item => item.sort)).filter((v, i, s) => s.indexOf(v) === i);
             let max = Math.max(...unique);
             if (!unique.includes(index)) {
                 let origin = unique[index - 1];
@@ -106,7 +106,7 @@ export default {
                     item.sort = item.sort === origin ? index : item.sort
                 })
             }
-            ++index <= max ? this.sort(index) : (this.split = this.items.map(item => item.sort).filter((v, i, s) => s.indexOf(v) === i).length)
+            ++index <= max ? this.sort(index) : (this.split = [].concat.apply([], this.items.map(item => item.sort)).filter((v, i, s) => s.indexOf(v) === i).length)
         },
         splitEvenly() {
             this.split > 1 && this.transfer([], true)
@@ -156,7 +156,7 @@ export default {
             this.quit();
         },
         print(index) {
-            let content = this.items.filter(item => item.sort === index);
+            let content = this.items.filter(item => Array.isArray(item.sort) ? item.sort.includes(index) : item.sort === index)
             let order = JSON.parse(JSON.stringify(this.order));
             let customer = this.customer;
             Object.assign(order, {
@@ -168,9 +168,11 @@ export default {
             });
             Printer.init(this.config).setJob("receipt").print(order);
             this.items.forEach(item => {
-                item.sort === index && (item.print = true);
+                Array.isArray(item.sort) ?
+                    item.sort.includes(index) && (item.print = true) :
+                    item.sort === index && (item.print = true);
                 delete item.new;
-            });
+            })
         },
         save() {
             this.sort(1);
@@ -186,7 +188,6 @@ export default {
                 this.$q();
                 this.splitPayment[split] = result;
                 this.$bus.emit("SPLIT_PAID", split);
-                //this.checkSettle();
             }).catch(() => {
                 this.$q()
             })

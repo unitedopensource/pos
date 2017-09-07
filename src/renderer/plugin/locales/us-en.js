@@ -178,7 +178,9 @@ export default {
         'splitPay': 'Split Pay',
         'create': 'Create',
         'apply': 'Apply',
-        'pay': 'Pay'
+        'pay': 'Pay',
+        'combinePrint':'Combine Print',
+        'splitPrint':'Split Print'
     },
     title:{
         'markPaymentType':'Mark Payment Type'
@@ -344,7 +346,9 @@ export default {
         'thirdPartyInvoice':'Third Party Invoice',
         'thirdPartyInvoiceTip':'How will you handle this third party invoice payment?',
         'massiveShutdownConfirm':'Shutdown All Stations',
-        'massiveShutdownConfirmTip':'Are you sure you are going to shutdown all stations at once?'
+        'massiveShutdownConfirmTip':'Are you sure you are going to shutdown all stations at once?',
+        'printSplitTicket':'Print Ticket',
+        'printSplitTicketTip':'How would you like to print this split ticket'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',
@@ -624,7 +628,8 @@ export default {
         'queue': 'Queue',
         'selectQty':'Max {i} Items',
         'anyQty':'Any Items',
-        'autoAwake':'Auto Awake'
+        'autoAwake':'Auto Awake',
+        'handleItem':'Total {i} items. {i} items unhandled.'
     },
     setting: {
         'softwareSetting': 'UnitedPOS Setting',
