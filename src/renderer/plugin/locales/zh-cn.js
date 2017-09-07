@@ -183,7 +183,11 @@ export default {
         'splitPrint':'分单打印'
     },
     title:{
-        'markPaymentType':'标记付款方式'
+        'markPaymentType':'标记付款方式',
+        'terminalRecord': '刷卡记录',
+        'stats':'数据',
+        'voidNote': '删除原因',
+        'search': '搜索'
     },
     menu: {
         'course': '定时',
@@ -199,12 +203,6 @@ export default {
         'split': '分单',
         'temporary': '临时物品',
         'payment': '付款'
-    },
-    history: {
-        'search': '搜索',
-        'stats': '数据',
-        'terminalRecord': '刷卡记录',
-        'voidNote': '删除原因'
     },
     dialog: {
         'maintenance': '维护',
@@ -605,7 +603,7 @@ export default {
         'report': '报表',
         'order': '订单',
         'insert': '插入',
-        'queueItem': '{i} 个物品在队列中',
+        'queueItem': '{i} 个物品',
         'cashInCount': '起始现金',
         'recordDetail': '详细记录',
         'date': '日期',

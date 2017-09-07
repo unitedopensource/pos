@@ -3,7 +3,7 @@
         <div class="window" v-show="!component">
             <header class="title">
                 <div class="wrap">
-                    <span>{{$t('history.terminalRecord')}}</span>
+                    <span>{{$t('title.terminalRecord')}}</span>
                     <div class="dateWrap">
                         <i class="fa fa-chevron-left" @click="prevDate"></i>
                         <span class="date">{{date | moment('YYYY-MM-DD')}}</span>

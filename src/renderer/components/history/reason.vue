@@ -1,7 +1,7 @@
 <template>
   <div class="popupMask center dark">
     <div class="reason window">
-      <header class="title">{{$t('history.voidNote')}}</header>
+      <header class="title">{{$t('title.voidNote')}}</header>
       <div class="inner">
         <ul>
           <li class="flag" @click="setReason('Customer No-Show',$event)">{{$t('reason.Customer No-Show')}}</li>

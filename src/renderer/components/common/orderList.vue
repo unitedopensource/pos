@@ -773,7 +773,7 @@ i.flip {
 }
 
 .content .text {
-    min-width: 80px;
+    min-width: 65px;
     text-align: right;
     padding-right: 10px;
     color: #607D8B;

@@ -2,10 +2,10 @@
     <div class="popupMask center dark" @click.self="init.reject(false)">
         <div class="window">
             <header class="title">
-                <span>{{$t('history.stats')}}</span>
+                <span>{{$t('title.stats')}}</span>
             </header>
             <div class="inner">
-    
+    123
             </div>
             <footer>
                 <div class="btn">{{$t('button.confirm')}}</div>
@@ -25,4 +25,6 @@ export default {
 }
 </script>
 
-<style></style>
+<style scoped>
+
+</style>

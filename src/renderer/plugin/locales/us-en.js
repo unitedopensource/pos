@@ -183,7 +183,11 @@ export default {
         'splitPrint':'Split Print'
     },
     title:{
-        'markPaymentType':'Mark Payment Type'
+        'markPaymentType':'Mark Payment Type',
+        'search': 'Search',
+        'stats': 'Stats',
+        'terminalRecord': 'Terminal Records',
+        'voidNote': 'Void Note'
     },
     menu: {
         'course': 'Course',
@@ -199,12 +203,6 @@ export default {
         'split': 'Order Split',
         'temporary': 'Temporary Item',
         'payment': 'Payment'
-    },
-    history: {
-        'search': 'Search',
-        'stats': 'Stats',
-        'terminalRecord': 'Terminal Records',
-        'voidNote': 'Void Note'
     },
     dialog: {
         'maintenance': 'Maintenance',
@@ -605,7 +603,7 @@ export default {
         'report': 'Report',
         'order': 'Order',
         'insert': 'Insert',
-        'queueItem': '{i} Items in queue',
+        'queueItem': '{i} Items',
         'cashInCount': 'Cash In Count',
         'recordDetail': 'Record Detail',
         'date': 'Date',
