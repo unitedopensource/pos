@@ -163,6 +163,10 @@ export default {
         },
         isSettled() {
             if (this.isEmptyTicket) return;
+            if (this.op.cashCtrl !== 'enable' && this.op.cashCtrl !== 'stuffBank') {
+                this.$denyAccess();
+                return;
+            }
             if (this.order.status === 0) {
                 this.$dialog({
                     title: 'dialog.orderVoided',

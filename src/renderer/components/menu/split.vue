@@ -189,7 +189,6 @@ export default {
                         let nItem = JSON.parse(JSON.stringify(item));
                         Object.assign(nItem, {
                             sort: sort[i],
-                            total: item.single.toFixed(2),
                             unique: Math.random().toString(36).substr(2, 5)
                         })
                         clone.push(nItem)
@@ -281,8 +280,13 @@ export default {
             this.init.reject()
         },
         exit() {
-            this.$route.name !== 'Menu' && this.$socket.emit("[UPDATE] INVOICE", this.order);
-            this.init.resolve();
+            if (this.$route.name !== 'Menu') {
+                this.$socket.emit("[UPDATE] INVOICE", this.order)
+            } else {
+                this.resetChoiceSet()
+                this.resetPointer()
+            }
+            this.init.resolve()
         },
         quit() {
             this.combineInvoiceInfo();
@@ -299,7 +303,7 @@ export default {
                 this.$router.push({ path: '/main' });
             }
         },
-        ...mapActions(['setOrder', 'resetAll'])
+        ...mapActions(['setOrder', 'resetAll', 'resetChoiceSet', 'resetPointer'])
     },
     computed: {
         offset() {

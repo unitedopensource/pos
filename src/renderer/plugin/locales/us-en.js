@@ -629,7 +629,7 @@ export default {
         'selectQty':'Max {i} Items',
         'anyQty':'Any Items',
         'autoAwake':'Auto Awake',
-        'handleItem':'Total {i} items. {i} items unhandled.',
+        'handleItem':'{i} items. {i} unhandled.',
         'guest':'Guest'
     },
     setting: {

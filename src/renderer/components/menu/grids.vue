@@ -169,6 +169,7 @@ export default {
     },
     settle() {
       if (this.isEmptyTicket) return;
+      if (this.op.cashCtrl !== 'enable' && this.op.cashCtrl !== 'stuffBank') return;
       this.callComponent("settle")
     },
     request() {
