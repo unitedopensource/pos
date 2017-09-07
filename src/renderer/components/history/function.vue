@@ -59,6 +59,7 @@ import Printer from '../../print'
 import Terminal from './terminal'
 import Reason from './reason'
 import Search from './search'
+
 export default {
     props: ['date'],
     components: { Calendar, Dialoger, Terminal, Payment, Reason, Report, paymentMark },

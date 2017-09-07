@@ -629,7 +629,15 @@ export default {
         'autoAwake':'Auto Awake',
         'handleItem':'{i} items. {i} unhandled.',
         'guest':'Guest',
-        'delayTask':'{i} tasks delayed'
+        'delayTask':'{i} tasks delayed',
+        'sales':'Sales'
+    },
+    nav:{
+        'store':'Store',
+        'station':'station',
+        'tax':'tax',
+        'dineIn':'dine in',
+        'exit':'exit'
     },
     setting: {
         'softwareSetting': 'UnitedPOS Setting',

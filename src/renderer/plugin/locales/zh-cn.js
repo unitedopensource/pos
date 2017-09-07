@@ -629,7 +629,15 @@ export default {
         'autoAwake':'自动开机',
         'handleItem':'{i} 个物品, {i} 未处理',
         'guest':'人数',
-        'delayTask':'有{i}个打印任务'
+        'delayTask':'有{i}个打印任务',
+        'sales':'销售'
+    },
+    nav:{
+        'store':'店面',
+        'station':'工作站',
+        'tax':'税率',
+        'dineIn':'座位',
+        'exit':'退出'
     },
     setting: {
         'softwareSetting': 'UnitedPOS 后台设置',

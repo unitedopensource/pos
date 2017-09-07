@@ -146,6 +146,18 @@ export default [{
       name: 'Setting.operator',
       component: require('./components/setting/operator/index')
     }, {
+      path: 'sales',
+      component: require('./components/setting/sales/nav'),
+      children: [{
+        path: '/',
+        name: 'Setting.sales',
+        component: require('./components/setting/sales/index')
+      },{
+        path:'chart',
+        name:'Setting.chart',
+        component: require('./components/setting/sales/chart')
+      }]
+    }, {
       path: 'database',
       component: require('./components/setting/database/nav'),
       children: [{

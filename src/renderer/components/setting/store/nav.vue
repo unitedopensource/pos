@@ -1,5 +1,46 @@
 <template>
     <section class="route">
+        <ul class="nav">
+            <div class="wrap">
+                <router-link tag="li" :to="{name:'Setting.store'}">
+                    <i class="fa fa-home"></i>
+                    <span class="text">{{$t('nav.store')}}</span>
+                </router-link>
+                <router-link tag="li" :to="{name:'Setting.station'}">
+                    <i class="fa fa-desktop"></i>
+                    <span class="text">{{$t('nav.station')}}</span>
+                </router-link>
+                <router-link tag="li" :to="{name:'Setting.tax'}">
+                    <i class="fa fa-usd"></i>
+                    <span class="text">{{$t('nav.tax')}}</span>
+                </router-link>
+                <router-link tag="li" :to="{name:'Setting.dinein'}">
+                    <i class="fa fa-cutlery"></i>
+                    <span class="text">{{$t('nav.dineIn')}}</span>
+                </router-link>
+            </div>
+            <router-link tag="li" :to="{name:'Setting.index'}">
+                <i class="fa fa-arrow-circle-left"></i>
+                <span class="text">{{$t('nav.exit')}}</span>
+            </router-link>
+        </ul>
+        <section class="content">
+            <transition name="switch">
+                <router-view class="page" @change="onChange" @unchange="change = false"></router-view>
+            </transition>
+            <transition appear name="fadeUp">
+                <footer class="update" v-if="change">
+                    <i class="fa fa-info-circle"></i>
+                    <p class="f1">{{txt}}</p>
+                    <div v-show="!send">
+                        <span @click="cancel" class="cancel">{{$t('button.cancel')}}</span>
+                        <span @click="update" class="save">{{$t('button.save')}}</span>
+                    </div>
+                </footer>
+            </transition>
+        </section>
+    </section>
+    <!-- <section class="route">
         <nav class="route">
             <header @click="back">
                 <i class="fa fa-chevron-left"></i>{{$t('button.back')}}</header>
@@ -21,7 +62,7 @@
                 </footer>
             </transition>
         </div>
-    </section>
+    </section> -->
 </template>
 
 <script>

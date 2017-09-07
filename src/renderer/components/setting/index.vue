@@ -42,7 +42,7 @@
                 <figcaption>{{$t('setting.thirdParty')}}</figcaption>
                 <span class="intro">{{$t('setting.thirdPartyTip')}}</span>
             </figure>
-            <figure>
+            <figure @click="go('Setting.sales')">
                 <i class="fa fa-2x fa-money"></i>
                 <figcaption>{{$t('setting.sales')}}</figcaption>
                 <span class="intro">{{$t('setting.salesTip')}}</span>
