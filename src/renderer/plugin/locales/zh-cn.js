@@ -629,7 +629,8 @@ export default {
         'selectQty':'选择{i}个',
         'anyQty':'任意选择',
         'autoAwake':'自动开机',
-        'handleItem':'{i} 个物品, {i} 未处理'
+        'handleItem':'{i} 个物品, {i} 未处理',
+        'guest':'人数'
     },
     setting: {
         'softwareSetting': 'UnitedPOS 后台设置',

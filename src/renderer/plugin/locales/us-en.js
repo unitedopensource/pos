@@ -629,7 +629,8 @@ export default {
         'selectQty':'Max {i} Items',
         'anyQty':'Any Items',
         'autoAwake':'Auto Awake',
-        'handleItem':'Total {i} items. {i} items unhandled.'
+        'handleItem':'Total {i} items. {i} items unhandled.',
+        'guest':'Guest'
     },
     setting: {
         'softwareSetting': 'UnitedPOS Setting',

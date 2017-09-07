@@ -176,8 +176,27 @@ export default {
         },
         save() {
             this.sort(1);
+            this.verifyItem();
             this.combineInvoiceInfo();
             this.exit();
+        },
+        verifyItem() {
+            this.items.forEach((item, index) => {
+                if (Array.isArray(item.sort)) {
+                    let sort = item.sort;
+                    let clone = [];
+                    for (let i = 0; i < sort.length; i++) {
+                        let nItem = JSON.parse(JSON.stringify(item));
+                        Object.assign(nItem, {
+                            sort: sort[i],
+                            total: item.single.toFixed(2),
+                            unique: Math.random().toString(36).substr(2, 5)
+                        })
+                        clone.push(nItem)
+                    }
+                    this.items.splice.apply(this.items, [index, 1].concat(clone));
+                }
+            })
         },
         settle(ticket) {
             let { split, payment } = ticket;
