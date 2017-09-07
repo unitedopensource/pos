@@ -11,6 +11,13 @@
             <div class="time">{{time | moment('hh:mm')}}</div>
             <div class="date">{{time | moment('dddd, MMMM D')}}</div>
         </div>
+        <transition appear name="fadeUp">
+            <div class="note" v-show="tip" @click="tip = false">
+                <div>
+                    <span class="text">{{$t('text.delayTask',this.spooler.length)}}</span>
+                </div>
+            </div>
+        </transition>
         <div :is="component" :init="componentData"></div>
     </div>
 </template>
@@ -28,11 +35,13 @@ export default {
     data() {
         return {
             componentData: null,
-            component: null
+            component: null,
+            tip: false
         }
     },
     created() {
         this.$socket.emit('[INQUIRY] TICKET_NUMBER', number => { this.setTicket({ number }) })
+        this.tip = this.spooler.length > 0;
     },
     mounted() {
         this.station ? this.initial() : this.activation();
@@ -238,7 +247,12 @@ export default {
         ...mapActions(['setApp', 'setTicket', 'setCustomer', 'setStation', 'setStations', 'resetDashboard'])
     },
     computed: {
-        ...mapGetters(['op', 'time', 'ring', 'callLog', 'device', 'config', 'store', 'station', 'history'])
+        ...mapGetters(['op', 'time', 'ring', 'spooler', 'callLog', 'device', 'config', 'store', 'station', 'history'])
+    },
+    watch: {
+        'spooler'(n) {
+            this.tip = n.length > 0
+        }
     },
     sockets: {
         "CASHFLOW_RESULT"(data) {
@@ -341,5 +355,25 @@ h1 {
 .dashboard .date {
     font-size: 2em;
     margin-top: -10px;
+}
+
+.note {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    height: 35px;
+    min-width: 150px;
+    background: #FAFAFA;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-top-left-radius: 10px;
+    border-right: 2px solid #FF5722;
+    box-shadow: -5px 0px 7px rgba(0, 0, 0, 0.3);
+}
+
+.note .text {
+    font-weight: bold;
+    color: #009688;
 }
 </style>

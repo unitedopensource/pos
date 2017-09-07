@@ -628,7 +628,8 @@ export default {
         'anyQty':'任意选择',
         'autoAwake':'自动开机',
         'handleItem':'{i} 个物品, {i} 未处理',
-        'guest':'人数'
+        'guest':'人数',
+        'delayTask':'有{i}个打印任务'
     },
     setting: {
         'softwareSetting': 'UnitedPOS 后台设置',

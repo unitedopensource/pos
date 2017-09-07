@@ -24,7 +24,7 @@
                         <span>{{invoice.course}}</span>
                     </div>
                     <span class="items" :title="invoice.content | tooltip(language)">{{$t('text.queueItem',invoice.content.length)}}</span>
-                    <i class="fa fa-print" @click="print(index)"></i>
+                    <i class="fa fa-print print" @click="print(index)"></i>
                 </li>
             </ul>
         </div>
@@ -152,5 +152,9 @@ li.i {
     font-size: 11px;
     color: #FF9800;
     white-space: pre;
+}
+
+i.print {
+    padding: 0 5px;
 }
 </style>

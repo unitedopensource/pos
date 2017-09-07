@@ -628,7 +628,8 @@ export default {
         'anyQty':'Any Items',
         'autoAwake':'Auto Awake',
         'handleItem':'{i} items. {i} unhandled.',
-        'guest':'Guest'
+        'guest':'Guest',
+        'delayTask':'{i} tasks delayed'
     },
     setting: {
         'softwareSetting': 'UnitedPOS Setting',
