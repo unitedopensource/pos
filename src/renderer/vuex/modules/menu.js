@@ -142,7 +142,7 @@ const mutations = {
       } else {
         item.total = (--item.qty * item.single).toFixed(2);
         item = Object.assign({}, item);
-        item.id = Math.random().toString(36).substr(2, 5);
+        item.unique = Math.random().toString(36).substr(2, 5);
         item.qty = 1;
         item.side = {
           zhCN: `[${data.side.zhCN}]`,
@@ -157,7 +157,12 @@ const mutations = {
         }
         item.single = price;
         item.total = item.single.toFixed(2);
-        state.order.content.splice(state.order.content.getIndexOf(state.item) + 1, 0, item);
+
+        let dom = document.querySelector('.list.highlight');
+        dom && dom.classList.remove('highlight');
+        let index = state.order.content.findIndex(i => i.unique === state.item.unique);
+        document.querySelectorAll('div.list')[index].classList.add('highlight');
+        state.order.content.splice(index + 1, 0, item);
       }
     }
   },

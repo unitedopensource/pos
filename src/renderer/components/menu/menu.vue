@@ -199,12 +199,14 @@ export default {
             this.exit();
         },
         switchGuest() {
+            let guest = this.order.guest || 1
             new Promise((resolve, reject) => {
-                this.componentData = { resolve, reject }
+                this.componentData = { resolve, reject, guest }
                 this.component = "guests"
-            }).then(() => {
+            }).then((callback) => {
                 this.$q()
-
+                console.log(callback)
+                
             }).catch(() => { this.$q() })
         },
         exit() {
