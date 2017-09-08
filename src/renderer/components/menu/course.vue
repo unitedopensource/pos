@@ -56,7 +56,7 @@
         </div>
       </div>
       <footer>
-        <div class="btn" @click="changeDate">{{$t('button.changeDate')}}</div>
+        <!-- <div class="btn" @click="changeDate">{{$t('button.changeDate')}}</div> -->
         <div class="btn" @click="init.reject">{{$t('button.cancel')}}</div>
         <div class="btn" @click="confirm">{{text('button.confirm')}}</div>
       </footer>
@@ -76,22 +76,22 @@ export default {
       list: [],
       steps: [
         {
-          name: 'STARTER',
+          name: 'starter',
           delay: null,
           contain: []
         },
         {
-          name: 'APPETIZER',
+          name: 'appetizer',
           delay: null,
           contain: []
         },
         {
-          name: 'ENTREE',
+          name: 'entree',
           delay: null,
           contain: []
         },
         {
-          name: 'DESSERT',
+          name: 'dessert',
           delay: null,
           contain: []
         }

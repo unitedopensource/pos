@@ -15,7 +15,7 @@
       </div>
     </div>
     <div class="bottomLeft">
-      <div class="btn" @click="trigger('switchGuest')" v-if="store.table.seatOrder">
+      <div class="btn" @click="switchGuest" v-if="store.table.seatOrder">
         <i class="fa fa-users"></i>
         <span class="text">{{$t('button.switch')}}</span>
       </div>
@@ -173,18 +173,21 @@ export default {
       this.callComponent("settle")
     },
     request() {
-      this.callComponent("request");
+      this.callComponent("request")
     },
     search() {
 
     },
     timer() {
       if (this.isEmptyTicket) return;
-      this.callComponent("timer");
+      this.callComponent("timer")
     },
     split() {
       if (this.isEmptyTicket) return;
-      this.callComponent("split");
+      this.callComponent("split")
+    },
+    switchGuest() {
+      this.callComponent("guest")
     },
     save(print) {
       if (this.isEmptyTicket) return;

@@ -32,17 +32,18 @@ import orderList from '../common/orderList'
 import dialoger from '../common/dialoger'
 import payment from '../payment/payment'
 import Printer from '../../print'
+import tempItem from './tempItem'
 import request from './request'
 import scaleItem from './scale'
-import tempItem from './tempItem'
 import builder from './builder'
+import guests from './guests'
 import modify from './modify'
 import course from './course'
 import timer from './timer'
 import grids from './grids'
 import split from './split'
 export default {
-    components: { modify, course, request, orderList, dialoger, grids, payment, scaleItem, split, builder, tempItem, timer },
+    components: { modify, course, request, orderList, dialoger, grids, payment, scaleItem, split, builder, tempItem, timer, guests },
     data() {
         return {
             menuInstance: null,
@@ -169,6 +170,9 @@ export default {
                 case "split":
                     this.$p("split", { order: this.order });
                     break;
+                case "guest":
+                    this.switchGuest()
+                    break;
                 case "dineinExit":
                     this.isEmptyTicket ? this.resetTableExit() : this.$dialog({ title: 'dialog.exitConfirm', msg: 'dialog.exitConfirmTip' }).then(() => { this.resetTableExit() }).catch(() => { this.$q() });
                     break;
@@ -193,6 +197,15 @@ export default {
                 this.$socket.emit("TABLE_MODIFIED", this.currentTable);
             }
             this.exit();
+        },
+        switchGuest() {
+            new Promise((resolve, reject) => {
+                this.componentData = { resolve, reject }
+                this.component = "guests"
+            }).then(() => {
+                this.$q()
+
+            }).catch(() => { this.$q() })
         },
         exit() {
             this.resetAll();

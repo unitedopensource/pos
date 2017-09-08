@@ -490,7 +490,7 @@ export default {
                     this.componentData = { resolve, reject, callback: true };
                     this.component = 'paymentMark'
                 }).then(type => {
-                    this.$q();
+                    this.$q()
                     this.payment.balance = "0.00";
                     this.payment.log.push({
                         id: "",
@@ -501,7 +501,7 @@ export default {
                         number: 'N/A'
                     })
                     this.invoicePaid(this.payment.due, 0, type)
-                })
+                }).catch(() => { this.$q() })
             }).catch(() => { this.$q() })
         },
         swipeGiftCard() {
