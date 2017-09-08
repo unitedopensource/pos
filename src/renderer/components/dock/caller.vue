@@ -32,7 +32,6 @@ export default {
         }
     },
     created() {
-        console.log(this.init)
         this.customer = this.init.customer;
     },
     methods: {

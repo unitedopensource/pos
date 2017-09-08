@@ -9,7 +9,7 @@
         </div>
         <div class="clock">
             <div class="time">{{time | moment('hh:mm')}}</div>
-            <div class="date">{{time | moment('dddd, MMMM D')}}</div>
+            <div class="date">{{time | moment('dddd MMM D')}}</div>
         </div>
         <transition appear name="fadeUp">
             <div class="note" v-show="tip" @click="tip = false">

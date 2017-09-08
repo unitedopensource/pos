@@ -128,6 +128,7 @@ footer {
 footer .btn {
   flex: 1;
   margin: 10px;
+  font-size: initial;
 }
 
 h3 {

@@ -53,11 +53,11 @@ export default {
             }
         },
         cancel() {
+            this.resetMenu();
             this.resetDashboard();
-            this.setApp({ opLastAction: new Date });
             this.$router.push({ path: '/main' });
         },
-        ...mapActions(['setTicket', 'resetDashboard', 'setApp'])
+        ...mapActions(['resetMenu', 'setTicket', 'resetDashboard'])
     },
     computed: {
         ...mapGetters(['customer', 'ticket'])

@@ -13,9 +13,6 @@
             </div>
         </aside>
         <main class="form">
-            <!-- <div class="content" v-if="!op">
-
-                </div> -->
             <stats v-if="!op"></stats>
             <div v-else class="content">
                 <section class="card">
@@ -109,7 +106,7 @@
                     <p class="f1">{{txt}}</p>
                     <div v-show="!send">
                         <span @click="cancel" class="cancel">{{$t('button.cancel')}}</span>
-                        <span @click="update" class="save">{{$t('button.save')}}</span>
+                        <span @click="save" class="save">{{$t('button.save')}}</span>
                     </div>
                 </footer>
             </transition>

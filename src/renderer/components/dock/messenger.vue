@@ -1,6 +1,6 @@
 <template>
-    <div class="popupMask" @click.self="exit">
-        <div class="spooler">
+    <div class="popupMask" @click.self="init.reject">
+        <div class="spooler" v-show="!component">
             <header>
                 <nav>
                     <div>
@@ -21,32 +21,73 @@
                     <div class="f1">
                         <span class="invoice">{{invoice.number}}</span>
                         <span>{{$t('type.'+invoice.type)}}</span>
-                        <span>{{invoice.course}}</span>
+                        <span v-if="invoice.course">{{$t('type.'+invoice.course)}}</span>
                     </div>
                     <span class="items" :title="invoice.content | tooltip(language)">{{$t('text.queueItem',invoice.content.length)}}</span>
-                    <i class="fa fa-print print" @click="print(index)"></i>
+                    <i class="fa fa-print print" @click="printConfirm(index)"></i>
                 </li>
             </ul>
         </div>
+        <div :is="component" :init="componentData"></div>
     </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
+import Printer from '../../print'
+import dialoger from '../common/dialoger'
 export default {
     props: ['init'],
+    components: { dialoger },
     data() {
         return {
-            tab: 'queue'
+            componentData: null,
+            component: null,
+            tab: 'message'
         }
     },
+    created() {
+        this.init.view && (this.tab = 'queue')
+    },
     methods: {
-        exit() {
-            this.$emit("exit")
+        printConfirm(i) {
+            let time = this.spooler[i].delay;
+            let schedule = moment(time).format("hh:mm");
+            let toNow = moment(time).toNow(true);
+            this.$dialog({
+                type: "question", title: "dialog.printConfirm", msg: ["dialog.printSpoolerTip", schedule, toNow],
+                buttons: [{ text: "button.cancel", fn: 'reject' }, { text: "button.print", fn: 'resolve' }]
+            }).then(() => {
+                this.printFromSpooler(i)
+                this.$q()
+            }).catch(() => { this.$q() })
         },
-        print(index) {
-            this.$emit("print", index)
-        }
+        printFromSpooler(i) {
+            let _id = this.spooler[i]._id;
+            let items = [];
+            this.spooler[i].content.forEach(item => { items.push(item.unique) });
+            Printer.init(this.config).setJob("receipt").print(this.spooler[0]);
+            this.removeSpooler(i);
+            let index = this.history.findIndex(order => order._id === _id);
+            let order = Object.assign({}, this.history[index]);
+            items.forEach(unique => {
+                for (let i = 0; i < order.content.length; i++) {
+                    if (order.content[i].unique === unique) {
+                        order.content[i].print = true;
+                        order.content[i].pending = false;
+                        break;
+                    }
+                }
+            });
+            let isPrint = true;
+            order.content.forEach(item => {
+                delete item.new;
+                !item.print && (isPrint = false)
+            })
+            order.print = isPrint;
+            this.$socket.emit("[UPDATE] INVOICE", order);
+        },
+        ...mapActions(['removeSpooler'])
     },
     filters: {
         tooltip(data, lang) {
@@ -54,7 +95,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(['spooler', 'language'])
+        ...mapGetters(['config', 'history', 'spooler', 'language'])
     }
 }
 </script>
@@ -93,7 +134,7 @@ input {
     display: none;
 }
 
-header i {
+header>i {
     color: #bdebff;
     padding: 0 5px;
     cursor: pointer;

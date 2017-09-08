@@ -97,7 +97,7 @@ input:focus+.frame {
 .frame {
     position: absolute;
     display: none;
-    width: 460px;
+    width: 490px;
     min-height: 51px;
     top: -19px;
     right: 0px;

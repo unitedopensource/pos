@@ -28,13 +28,14 @@ export default {
       printer: true,
       database: true
     })
-    ipcRenderer.send("Loading", this.$t('initial.findHost'));
+    this.setDevice({ online: navigator.onLine })
+    ipcRenderer.send("Loading", this.$t('initial.findHost'))
   },
   sockets: {
     CONNECTED(text) {
-      ipcRenderer.send("Loading", this.$t('initial.hostConnected'));
-      this.$socket.emit("[INITIAL] POS");
-      ipcRenderer.send("Loading", this.$t('initial.initialApplication'));
+      ipcRenderer.send("Loading", this.$t('initial.hostConnected'))
+      this.$socket.emit("[INITIAL] POS")
+      ipcRenderer.send("Loading", this.$t('initial.initialApplication'))
     },
     APP_RUNTIME_ENVIRONMENT(data) {
       let { config, menu, request, orders, table, template, reservation, sync } = data;
@@ -53,10 +54,10 @@ export default {
         if (err) {
           ipcRenderer.send("Loading", this.$t('initial.hardwareIssue'))
         } else {
-          this.findStation(mac);
-          this.initDevices();
-          ipcRenderer.send("Initialized");
-          this.$router.push('Login');
+          this.findStation(mac)
+          this.initDevices()
+          ipcRenderer.send("Initialized")
+          this.$router.push('Login')
         }
       })
     }

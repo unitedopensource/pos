@@ -405,6 +405,7 @@ aside.intro {
 .itemEditor .inner {
     height: 512px;
     overflow-y: scroll;
+    overflow-x:hidden;
     background: url(../../../assets/image/grid.png) #fcfcfc;
 }
 
