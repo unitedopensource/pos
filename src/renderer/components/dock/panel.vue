@@ -122,19 +122,21 @@ export default {
                 .then(() => { this.cashOut(name) }).catch(() => { this.exit() })
         },
         regularCashOut(name) {
-            this.$dialog({ type: "question", title: "dialog.cashOut", msg: "dialog.cashOutTip" })
+            this.$dialog({ type: "question", title: "dialog.cashOut", msg: ["dialog.cashOutTip",name] })
                 .then(() => { this.cashOut(name) }).catch(() => { this.exit() })
         },
         cashOut(cashDrawer) {
+            this.$q();
             this.$socket.emit("[CASHFLOW] SETTLE", cashDrawer);
             new Promise((resolve) => { this.$options.sockets["CASHFLOW_SETTLE"] = (cashflow) => { resolve(cashflow) } })
                 .then((cashflow) => { this.reconciliation(cashflow) })
         },
-        reconciliation() {
+        reconciliation(cashflow) {
             this.recordCashDrawerAction();
             let diff = (parseFloat(cashflow.end) - parseFloat(cashflow.begin)).toFixed(2);
             this.$dialog({
-                type: "question", title: ["cashOutSettle", cashflow.end], msg: ["cashOutSettleTip", cashflow.begin, diff, cashflow.end],
+                type: "question", title: ["dialog.cashOutSettle", cashflow.end], 
+                msg: ["dialog.cashOutSettleTip", cashflow.begin, diff, cashflow.end],
                 buttons: [{ text: "button.printDetail", fn: "reject" }, { text: 'button.print', fn: 'resolve' }]
             }).then(() => {
                 Printer.init(this.config).setJob("cashout report").print(cashflow);
