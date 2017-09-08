@@ -51,6 +51,27 @@ export default {
     color: #E53935;
     text-shadow: 0 1px 3px #920707;
     font-size: 5em;
+    position: relative;
+}
+
+.icon:after {
+    content: ' ';
+    position: absolute;
+    left: 41px;
+    top: 10px;
+    width: 18px;
+    height: 70px;
+    background: #FFEB3B;
+    z-index: -1;
+}
+
+h3 {
+    font-family: 'Microsoft YaHei';
+}
+
+h5 {
+    padding: 5px;
+    font-family: 'Agency FB';
 }
 
 footer i {
