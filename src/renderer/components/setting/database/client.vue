@@ -32,7 +32,7 @@
                         </div>
                         <div>
                             <span class="text">{{$t('text.orderAmount')}}</span>
-                            <span class="value">$ {{customer.extra.orderAmount.toFixed(2)}}</span>
+                            <span class="value">$ {{customer.extra.orderAmount | decimal}}</span>
                         </div>
                         <div>
                             <span class="text">{{$t('dashboard.lastTime')}}</span>

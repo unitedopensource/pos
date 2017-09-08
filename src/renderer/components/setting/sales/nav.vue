@@ -13,7 +13,7 @@
             </div>
             <router-link tag="li" :to="{name:'Setting.index'}">
                 <i class="fa fa-arrow-circle-left"></i>
-                <span class="text">{{$t('nav.exit')}}</span>
+                <span class="text">{{$t('nav.back')}}</span>
             </router-link>
         </ul>
         <transition name="switch">

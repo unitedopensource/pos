@@ -21,7 +21,7 @@
             </div>
             <router-link tag="li" :to="{name:'Setting.index'}">
                 <i class="fa fa-arrow-circle-left"></i>
-                <span class="text">{{$t('nav.exit')}}</span>
+                <span class="text">{{$t('nav.back')}}</span>
             </router-link>
         </ul>
         <section class="content">
@@ -40,29 +40,6 @@
             </transition>
         </section>
     </section>
-    <!-- <section class="route">
-        <nav class="route">
-            <header @click="back">
-                <i class="fa fa-chevron-left"></i>{{$t('button.back')}}</header>
-            <router-link :to="{name:'Setting.store'}" tag="div" append>{{$t('setting.storeInfo')}}</router-link>
-            <router-link :to="{name:'Setting.station'}" tag="div" append>{{$t('setting.station')}}</router-link>
-            <router-link :to="{name:'Setting.tax'}" tag="div" append>{{$t('setting.tax')}}</router-link>
-            <router-link :to="{name:'Setting.dinein'}" tag="div" append>{{$t('setting.dineIn')}}</router-link>
-        </nav>
-        <div class="content">
-            <router-view @change="onChange" @unchange="change = false" class="inner"></router-view>
-            <transition appear name="fadeUp">
-                <footer class="update" v-if="change">
-                    <i class="fa fa-info-circle"></i>
-                    <p class="f1">{{txt}}</p>
-                    <div v-show="!send">
-                        <span @click="cancel" class="cancel">{{$t('button.cancel')}}</span>
-                        <span @click="update" class="save">{{$t('button.save')}}</span>
-                    </div>
-                </footer>
-            </transition>
-        </div>
-    </section> -->
 </template>
 
 <script>
@@ -113,5 +90,3 @@ export default {
     }
 }
 </script>
-
-<style></style>

@@ -136,6 +136,10 @@ export default [{
         path: 'menu',
         name: 'Setting.online.menu',
         component: require('./components/setting/online/menu')
+      },{
+        path:'tool',
+        name:'Setting.online.tool',
+        component: require('./components/setting/online/tool')
       }]
     }, {
       path: 'print',
@@ -162,20 +166,20 @@ export default [{
       component: require('./components/setting/database/nav'),
       children: [{
         path: '/',
-        name: 'Setting.database',
+        name: 'Setting.database.index',
         component: require('./components/setting/database/index')
       }, {
         path: 'Address',
-        name: 'Setting.address',
+        name: 'Setting.database.address',
         component: require('./components/setting/database/address')
       },
       {
         path: 'Client',
-        name: 'Setting.client',
+        name: 'Setting.database.client',
         component: require('./components/setting/database/client')
       }, {
         path: 'Call',
-        name: 'Setting.call',
+        name: 'Setting.database.call',
         component: require('./components/setting/database/call')
       }]
     }]

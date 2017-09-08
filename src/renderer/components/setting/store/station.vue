@@ -176,7 +176,7 @@ export default {
 }
 
 .block {
-    width: 150px;
+    width: 171px;
     padding: 35px 20px 15px;
     border-right: 1px solid #ccc;
     border-bottom: 1px solid #ccc;

@@ -32,7 +32,7 @@
                 <figcaption>{{$t('setting.operator')}}</figcaption>
                 <span class="intro">{{$t('setting.operatorTip')}}</span>
             </figure>
-            <figure @click="go('Setting.database')">
+            <figure @click="go('Setting.database.index')">
                 <i class="fa fa-2x fa-database"></i>
                 <figcaption>{{$t('setting.database')}}</figcaption>
                 <span class="intro">{{$t('setting.databaseTip')}}</span>

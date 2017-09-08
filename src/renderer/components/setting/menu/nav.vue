@@ -1,15 +1,33 @@
 <template>
     <section class="route">
-        <nav class="route">
-            <header @click="back">
-                <i class="fa fa-chevron-left"></i>{{$t('button.back')}}</header>
-            <router-link :to="{name:'Setting.menu'}" tag="div" append>{{$t('setting.menu')}}</router-link>
-            <router-link :to="{name:'Setting.request'}" tag="div" append>{{$t('setting.request')}}</router-link>
-            <router-link :to="{name:'Setting.template'}" tag="div" append>{{$t('setting.template')}}</router-link>
-            <router-link :to="{name:'Setting.display'}" tag="div" append>{{$t('setting.display')}}</router-link>
-        </nav>
-        <div class="content">
-            <router-view @change="onChange" @unchange="change = false" class="inner"></router-view>
+        <ul class="nav">
+            <div class="wrap">
+                <router-link tag="li" :to="{name:'Setting.menu'}">
+                    <i class="fa fa-braille"></i>
+                    <span class="text">{{$t('nav.menu')}}</span>
+                </router-link>
+                <router-link tag="li" :to="{name:'Setting.request'}">
+                    <i class="fa fa-commenting-o"></i>
+                    <span class="text">{{$t('nav.request')}}</span>
+                </router-link>
+                <router-link tag="li" :to="{name:'Setting.template'}">
+                    <i class="fa fa-clone"></i>
+                    <span class="text">{{$t('nav.template')}}</span>
+                </router-link>
+                <router-link tag="li" :to="{name:'Setting.display'}">
+                    <i class="fa fa-eye-slash"></i>
+                    <span class="text">{{$t('nav.display')}}</span>
+                </router-link>
+            </div>
+            <router-link tag="li" :to="{name:'Setting.index'}">
+                <i class="fa fa-arrow-circle-left"></i>
+                <span class="text">{{$t('nav.back')}}</span>
+            </router-link>
+        </ul>
+        <section class="content">
+            <transition name="switch">
+                <router-view class="page" @change="onChange" @unchange="change = false"></router-view>
+            </transition>
             <transition appear name="fadeUp">
                 <footer class="update" v-if="change">
                     <i class="fa fa-info-circle"></i>
@@ -20,7 +38,7 @@
                     </div>
                 </footer>
             </transition>
-        </div>
+        </section>
     </section>
 </template>
 

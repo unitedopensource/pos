@@ -1,24 +1,44 @@
 <template>
-    <section class="route">
-        <nav class="route">
-            <header @click="back">
-                <i class="fa fa-chevron-left"></i>{{$t('button.back')}}</header>
-            <router-link :to="{name:'Setting.database'}" tag="div" append>{{$t('setting.database')}}</router-link>
-            <router-link :to="{name:'Setting.address'}" tag="div" append>{{$t('setting.address')}}</router-link>
-            <router-link :to="{name:'Setting.client'}" tag="div" append>{{$t('setting.clientList')}}</router-link>
-            <router-link :to="{name:'Setting.call'}" tag="div" append>{{$t('setting.callLog')}}</router-link>
-        </nav>
-        <div class="content">
-            <router-view @change="onChange" @unchange="change = false" class="inner"></router-view>
-            <footer class="update" v-if="change">
-                <i class="fa fa-info-circle"></i>
-                <span>{{txt}}</span>
-                <span v-show="!send">
-                    <span @click="save" class="update">{{$t('button.save')}}</span>
-                    <span @click="cancel" class="cancel">{{$t('button.cancel')}}</span>
-                </span>
-            </footer>
-        </div>
+ <section class="route">
+        <ul class="nav">
+            <div class="wrap">
+                <router-link tag="li" :to="{name:'Setting.database.index'}">
+                    <i class="fa fa-database"></i>
+                    <span class="text">{{$t('nav.status')}}</span>
+                </router-link>
+                <router-link tag="li" :to="{name:'Setting.database.address'}">
+                    <i class="fa fa-location-arrow"></i>
+                    <span class="text">{{$t('nav.address')}}</span>
+                </router-link>
+                <router-link tag="li" :to="{name:'Setting.database.client'}">
+                    <i class="fa fa-users"></i>
+                    <span class="text">{{$t('nav.customer')}}</span>
+                </router-link>
+                <router-link tag="li" :to="{name:'Setting.database.call'}">
+                    <i class="fa fa-phone-square"></i>
+                    <span class="text">{{$t('nav.callLog')}}</span>
+                </router-link>
+            </div>
+            <router-link tag="li" :to="{name:'Setting.index'}">
+                <i class="fa fa-arrow-circle-left"></i>
+                <span class="text">{{$t('nav.back')}}</span>
+            </router-link>
+        </ul>
+        <section class="content">
+            <transition name="switch">
+                <router-view class="page" @change="onChange" @unchange="change = false"></router-view>
+            </transition>
+            <transition appear name="fadeUp">
+                <footer class="update" v-if="change">
+                    <i class="fa fa-info-circle"></i>
+                    <p class="f1">{{txt}}</p>
+                    <div v-show="!send">
+                        <span @click="cancel" class="cancel">{{$t('button.cancel')}}</span>
+                        <span @click="update" class="save">{{$t('button.save')}}</span>
+                    </div>
+                </footer>
+            </transition>
+        </section>
     </section>
 </template>
 

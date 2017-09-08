@@ -187,7 +187,8 @@ export default {
         'terminalRecord': '刷卡记录',
         'stats':'数据',
         'voidNote': '删除原因',
-        'search': '搜索'
+        'search': '搜索',
+        'databaseHealth':'关于 {i} 数据库健康报告'
     },
     menu: {
         'course': '定时',
@@ -637,7 +638,22 @@ export default {
         'station':'工作站',
         'tax':'税率',
         'dineIn':'座位',
-        'exit':'退出'
+        'back':'后退',
+        'exit':'退出',
+        'menu':'菜单',
+        'request':'要求',
+        'template':'模版',
+        'display':'显示',
+        'seat':'座位',
+        'config':'配置',
+        'tool':'工具',
+        'status':'状况',
+        'address':'街道',
+        'customer':'客户',
+        'callLog':'来电',
+        'sales':'销售',
+        'chart':'图表',
+        'excel':'表格'
     },
     setting: {
         'softwareSetting': 'UnitedPOS 后台设置',
@@ -770,5 +786,13 @@ export default {
         'checkIn': '登记',
         'timeline': '时间表',
         'list': '列表'
+    },
+    database:{
+        'dataSize':'数据库大小',
+        'collection':'集合',
+        'index':'索引',
+        'storageSize':'硬盘占用',
+        'objects':'数据行',
+        'averageSize':'平均大小'
     }
 }

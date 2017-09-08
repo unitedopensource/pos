@@ -1,13 +1,29 @@
 <template>
     <section class="route">
-        <nav class="route">
-            <header @click="back">
-                <i class="fa fa-chevron-left"></i>{{$t('button.back')}}</header>
-            <router-link :to="{name:'Setting.online.config'}" tag="div" append>{{$t('setting.config')}}</router-link>
-            <router-link :to="{name:'Setting.online.menu'}" tag="div" append>{{$t('setting.menu')}}</router-link>
-        </nav>
-        <div class="content">
-            <router-view @change="onChange" @unchange="change = false" class="inner"></router-view>
+        <ul class="nav">
+            <div class="wrap">
+                <router-link tag="li" :to="{name:'Setting.online.config'}">
+                    <i class="fa fa-cogs"></i>
+                    <span class="text">{{$t('nav.config')}}</span>
+                </router-link>
+                <router-link tag="li" :to="{name:'Setting.online.menu'}">
+                    <i class="fa fa-th"></i>
+                    <span class="text">{{$t('nav.menu')}}</span>
+                </router-link>
+                <router-link tag="li" :to="{name:'Setting.online.tool'}">
+                    <i class="fa fa-clone"></i>
+                    <span class="text">{{$t('nav.tool')}}</span>
+                </router-link>
+            </div>
+            <router-link tag="li" :to="{name:'Setting.index'}">
+                <i class="fa fa-arrow-circle-left"></i>
+                <span class="text">{{$t('nav.back')}}</span>
+            </router-link>
+        </ul>
+        <section class="content">
+            <transition name="switch">
+                <router-view class="page" @change="onChange" @unchange="change = false"></router-view>
+            </transition>
             <transition appear name="fadeUp">
                 <footer class="update" v-if="change">
                     <i class="fa fa-info-circle"></i>
@@ -18,7 +34,7 @@
                     </div>
                 </footer>
             </transition>
-        </div>
+        </section>
     </section>
 </template>
 
@@ -69,5 +85,3 @@ export default {
     }
 }
 </script>
-
-<style></style>

@@ -187,7 +187,8 @@ export default {
         'search': 'Search',
         'stats': 'Stats',
         'terminalRecord': 'Terminal Records',
-        'voidNote': 'Void Note'
+        'voidNote': 'Void Note',
+        'databaseHealth':'{i} Database Health Report'
     },
     menu: {
         'course': 'Course',
@@ -637,7 +638,22 @@ export default {
         'station':'station',
         'tax':'tax',
         'dineIn':'dine in',
-        'exit':'exit'
+        'back':'back',
+        'exit':'exit',
+        'menu':'menu',
+        'request':'request',
+        'template':'template',
+        'display':'display',
+        'seat':'seat',
+        'config':'config',
+        'tool':'tool',
+        'status':'status',
+        'address':'address',
+        'customer':'customer',
+        'callLog':'call log',
+        'sales':'sales',
+        'chart':'chart',
+        'excel':'excel'
     },
     setting: {
         'softwareSetting': 'UnitedPOS Setting',
@@ -770,5 +786,13 @@ export default {
         'inactive': 'Set Inactive',
         'timeline': 'Time Line',
         'list': 'View List'
+    },
+    database:{
+        'dataSize':'Data Size',
+        'collection':'Collection',
+        'index':'Index',
+        'storageSize':'Storage Size',
+        'objects':'Objects',
+        'averageSize':'Average Size'
     }
 }
