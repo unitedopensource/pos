@@ -134,6 +134,7 @@ export default {
             'insertOrder',
             'updateOrder',
             'setTodayOrder',
+            'setAddressDistance',
             'updateRequestCategory',
             'updateRequestAction',
             'updateRequestItem',

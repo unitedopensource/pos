@@ -61,14 +61,14 @@ header {
     background: #29B6F6;
     color: aliceblue;
     font-size: 18px;
-    padding: 0 10px;
+    padding: 2px 10px;
     display: flex;
     text-shadow: 0 1px 1px #555;
 }
 
 .wrap {
     position: relative;
-    padding: 3px 10px;
+    padding: 5px 10px;
     display: flex;
 }
 
@@ -104,9 +104,9 @@ header {
 .phone {
     font-family: "Agency FB";
     font-weight: bold;
-    font-size: 24px;
+    font-size: 22px;
     line-height: 22px;
-    color: #3c3c3c;
+    color: #616161;
     margin: 2px 0;
 }
 
@@ -119,13 +119,17 @@ header {
 .address span {
     height: 16px;
     line-height: 16px;
-    color: #757575;
-    font-size: 15px;
+    color: #b9b9b9;
+    font-size: 18px;
+    text-align: left;
 }
 
 .info {
     flex: 1;
+    display: flex;
     margin-left: 10px;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
 .tags {

@@ -74,12 +74,8 @@ export default {
     initCallerId(port) {
       this.setDevice({ callid: true });
 
-      let telephone = new serialport(port, {
-        autoOpen: false,
-        parser: serialport.parsers.raw
-      });
+      let telephone = new serialport(port, { autoOpen: false, parser: serialport.parsers.raw });
 
-      //window.telephone = telephone;
       telephone.open(err => { err ? this.setDevice({ callid: false }) : telephone.write(this.station.callid.command + String.fromCharCode(13)) });
 
       telephone.on('data', (data) => {
@@ -90,7 +86,7 @@ export default {
           let number = raw.find(arr => arr.indexOf("NMBR") !== -1);
           number = number.split("=")[1].replace(/\D/g, '').replace(/\+?1?(\d{3})\D?\D?(\d{3})\D?(\d{4})/, "$1$2$3");
           let time = +new Date();
-          this.phoneRing({ name, number, time });
+          this.phoneRing({ name, number, time })
         } else if (raw.length === 3) {
           let type = raw[1].replace(/[^a-zA-Z ]/g, "");
           switch (type) {

@@ -370,7 +370,7 @@ header.dock{
   min-width: 150px;
 }
 
-.dock .info{
+.dock > .info{
   flex:1;
   display: flex;
 }
