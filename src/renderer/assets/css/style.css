@@ -397,6 +397,7 @@ header.dock{
 .dock .status{
   padding: 0 10px;
   text-align: right;
+  text-shadow: 0 1px 1px #fff;
 }
 
 .dock .misc{
@@ -405,7 +406,6 @@ header.dock{
 
 .dock .na{
   color: #9E9E9E;
-  text-shadow: 0 1px 1px #fff;
 }
 
 .dock .status .spooler {
