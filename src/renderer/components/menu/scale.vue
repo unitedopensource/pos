@@ -12,7 +12,7 @@
                         <input type="text" v-model.number="scale" ref="scale" @keydown.enter="done" class="value">
                     </div>
                     <div>
-                        <h3>@ {{item.unitPrice}} / {{$t('text.perUnit')}}</h3>
+                        <h3>@ {{item.unitPrice.toFixed(2)}} / {{$t('text.perUnit')}}</h3>
                         <span class="value">{{total}}</span>
                     </div>
                 </div>
@@ -76,7 +76,7 @@ export default {
                 },
                 choiceSet: [{
                     qty: 1,
-                    zhCN: `${this.scale}@${this.item.unitPrice.toFixed(2)}/` + this.text('PER_UNIT'),
+                    zhCN: `${this.scale}@${this.item.unitPrice.toFixed(2)}/` + this.$t('text.perUnit'),
                     usEN: `${this.scale}@${this.item.unitPrice.toFixed(2)}/per Unit`,
                     single: price,
                     price: this.total
@@ -133,6 +133,7 @@ h3 {
     background: #607D8B;
     color: #fff;
     text-align: center;
+    font-weight: normal;
 }
 
 input {

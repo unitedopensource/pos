@@ -2,12 +2,12 @@
     <div class="popupMask center dark">
         <div class="window">
             <header class="title">
-                <span>{{text('BUFFET')}}</span>
+                <span>{{$t('type.BUFFET')}}</span>
                 <i class="fa fa-times" @click.self="init.reject(false)"></i>
             </header>
             <div class="inner"></div>
             <footer>
-                <div class="btn f1">{{text('confirm')}}</div>
+                <div class="btn f1">{{$t('button.confirm')}}</div>
             </footer>
         </div>
     </div>
