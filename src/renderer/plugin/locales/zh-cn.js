@@ -189,7 +189,8 @@ export default {
         'stats':'数据',
         'voidNote': '删除原因',
         'search': '搜索',
-        'databaseHealth':'关于 {i} 数据库健康报告'
+        'databaseHealth':'关于 {i} 数据库健康报告',
+        'softwareOperator':'软件用户管理',
     },
     menu: {
         'course': '定时',
@@ -636,7 +637,10 @@ export default {
         'handleItem':'{i} 个物品, {i} 未处理',
         'guest':'人数',
         'delayTask':'有{i}个打印任务',
-        'sales':'销售'
+        'sales':'销售',
+        'managerCount':'经理 {i} 名',
+        'stuffCount':'职员 {i} 名',
+        'thirdPartyCount':'第三方 {i} 名'
     },
     nav:{
         'store':'店面',

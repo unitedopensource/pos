@@ -136,9 +136,9 @@ export default [{
         path: 'menu',
         name: 'Setting.online.menu',
         component: require('./components/setting/online/menu')
-      },{
-        path:'tool',
-        name:'Setting.online.tool',
+      }, {
+        path: 'tool',
+        name: 'Setting.online.tool',
         component: require('./components/setting/online/tool')
       }]
     }, {
@@ -147,8 +147,20 @@ export default [{
       component: require('./components/setting/print/index')
     }, {
       path: 'operator',
-      name: 'Setting.operator',
-      component: require('./components/setting/operator/index')
+      component: require('./components/setting/operator/nav'),
+      children: [{
+        path: '/',
+        name: 'Setting.operator.index',
+        component: require('./components/setting/operator/index'),
+      }, {
+        path: 'profile',
+        name: 'Setting.operator.profile',
+        component: require('./components/setting/operator/profile')
+      }, {
+        path: 'event',
+        name: 'Setting.operator.event',
+        component: require('./components/setting/operator/event')
+      }]
     }, {
       path: 'sales',
       component: require('./components/setting/sales/nav'),
@@ -156,9 +168,9 @@ export default [{
         path: '/',
         name: 'Setting.sales',
         component: require('./components/setting/sales/index')
-      },{
-        path:'chart',
-        name:'Setting.chart',
+      }, {
+        path: 'chart',
+        name: 'Setting.chart',
         component: require('./components/setting/sales/chart')
       }]
     }, {

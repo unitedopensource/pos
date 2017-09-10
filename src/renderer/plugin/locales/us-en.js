@@ -189,7 +189,8 @@ export default {
         'stats': 'Stats',
         'terminalRecord': 'Terminal Records',
         'voidNote': 'Void Note',
-        'databaseHealth':'{i} Database Health Report'
+        'databaseHealth':'{i} Database Health Report',
+        'softwareOperator':'Software Users Management',
     },
     menu: {
         'course': 'Course',
@@ -636,7 +637,11 @@ export default {
         'handleItem':'{i} items. {i} unhandled.',
         'guest':'Guest',
         'delayTask':'{i} tasks delayed',
-        'sales':'Sales'
+        'sales':'Sales',
+        'managerCount':'User Count',
+        'managerCount':'Manager: {i}',
+        'stuffCount':'Stuff: {i}',
+        'thirdPartyCount':'Third Party: {i}'
     },
     nav:{
         'store':'Store',

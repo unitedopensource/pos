@@ -27,7 +27,7 @@
                 <figcaption>{{$t('setting.print')}}</figcaption>
                 <span class="intro">{{$t('setting.printTip')}}</span>
             </figure>
-            <figure @click="go('Setting.operator')">
+            <figure @click="go('Setting.operator.index')">
                 <i class="fa fa-2x fa-users"></i>
                 <figcaption>{{$t('setting.operator')}}</figcaption>
                 <span class="intro">{{$t('setting.operatorTip')}}</span>

@@ -178,7 +178,7 @@ export default {
     },
     settle() {
       if (this.isEmptyTicket) return;
-      if(this.op.cashCtrl !== 'enable' && this.op.cashCtrl !== 'stuffBank') {
+      if (this.op.cashCtrl !== 'enable' && this.op.cashCtrl !== 'stuffBank') {
         this.$denyAccess();
         return;
       }
@@ -277,14 +277,14 @@ export default {
       }).then(() => { this.$q() })
     },
     getReservation() {
-      new Promise((resolve,reject)=>{
-        this.componentData = {resolve,reject};
+      new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject };
         this.component = 'resv';
-      }).then(reservation=>{
+      }).then(reservation => {
         this.$q();
-        
+
         console.log(reservation);
-      }).catch(()=>{ this.$q() })
+      }).catch(() => { this.$q() })
     },
     split() {
       if (!this.order) return;
@@ -497,19 +497,19 @@ span.server {
 }
 
 .paid {
-  color: #FFB74D;
+  color: #FF9800;
+  text-shadow: 0 2px 1px rgba(51, 51, 51, 0.69);
   position: relative;
 }
 
 .prePay::after {
   font-family: fontAwesome;
-  content: '\f0d6';
+  content: '\f02f';
   position: absolute;
-  font-size: 21px;
-  left: 29px;
-  top: 29px;
-  transform: rotate(45deg);
-  color: #66BB6A;
+  font-size: 18px;
+  right: -5px;
+  top: 0px;
+  color: #4CAF50;
 }
 
 .paid::after {
