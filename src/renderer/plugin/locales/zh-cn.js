@@ -641,7 +641,8 @@ export default {
         'managerCount':'经理 {i} 名',
         'staffCount':'职员 {i} 名',
         'thirdPartyCount':'第三方 {i} 名',
-        'passwordRequire':'需要密码'
+        'passwordRequire':'需要密码',
+        'newOperator':'新建用户'
     },
     nav:{
         'store':'店面',

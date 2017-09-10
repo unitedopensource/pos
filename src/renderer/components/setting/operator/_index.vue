@@ -226,7 +226,7 @@ export default {
                 modify: [],
                 assign: [],
                 view: []
-            });
+            }); 
         },
         workHour(clockIn, clockOut) {
             if (!clockOut) return;

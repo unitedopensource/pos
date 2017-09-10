@@ -14,11 +14,16 @@
                 <h3>{{operator.name}}</h3>
                 <h5>{{operator.role}}</h5>
             </li>
+            <li class="add" @click="newProfile">
+                <i class="fa fa-plus-square"></i>
+                <h3>{{$t('text.newOperator')}}</h3>
+            </li>
         </ul>
     </div>
 </template>
 
 <script>
+import Preset from '../../../preset'
 export default {
     data() {
         return {
@@ -35,7 +40,12 @@ export default {
         getProfile(operator) {
             this.$emit("profile", operator)
             this.$router.push({ name: 'Setting.operator.profile' })
-        }
+        },
+        newProfile() {
+            let operator = Preset.operator()
+            this.$emit("profile", operator)
+            this.$router.push({ name: 'Setting.operator.profile' })
+        },
     },
     computed: {
         count() {
@@ -91,6 +101,7 @@ li {
     width: 140px;
     border-radius: 4px;
     cursor: pointer;
+    text-shadow: 0 1px 1px #fff;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 

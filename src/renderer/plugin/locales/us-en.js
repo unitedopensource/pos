@@ -642,7 +642,8 @@ export default {
         'managerCount':'Manager: {i}',
         'staffCount':'Staff: {i}',
         'thirdPartyCount':'Third Party: {i}',
-        'passwordRequire':'Password Req.'
+        'passwordRequire':'Password Req.',
+        'newOperator':'New User'
     },
     nav:{
         'store':'Store',

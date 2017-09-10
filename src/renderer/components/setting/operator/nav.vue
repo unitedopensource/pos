@@ -30,23 +30,28 @@
                     <p class="f1">{{txt}}</p>
                     <div v-show="!send">
                         <span @click="cancel" class="cancel">{{$t('button.cancel')}}</span>
-                        <span @click="update" class="save">{{$t('button.save')}}</span>
+                        <span @click="verify" class="save">{{$t('button.save')}}</span>
                     </div>
                 </footer>
             </transition>
         </section>
+        <div :is="component" :init="componentData"></div>
     </section>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import dialoger from '../../common/dialoger'
 export default {
+    components: { dialoger },
     data() {
         return {
+            componentData: null,
+            component: null,
             profile: null,
             change: false,
             send: false,
-            temp:null,
+            temp: null,
         }
     },
     methods: {
@@ -61,6 +66,27 @@ export default {
         },
         setProfile(operator) {
             this.profile = operator
+        },
+        verify() {
+            let pin = this.temp.pin;
+            if (!pin) {
+                this.$dialog({
+                    title: 'dialog.saveOperatorFailed', msg: 'dialog.operatorNoPin',
+                    buttons: [{ text: 'button.confirm', fn: 'resolve' }]
+                }).then(() => { this.$q() })
+                return;
+            };
+            this.$socket.emit("[INQUIRY] OPERATORS", operators => {
+                operators = operators.filter((op, index) => (index !== this.index && op.pin)).map(op => op.pin);
+                if (operators.includes(pin)) {
+                    this.$dialog({
+                        title: 'dialog.saveOperatorFailed', msg: 'dialog.operatorPinDuplicate',
+                        buttons: [{ text: 'button.confirm', fn: 'resolve' }]
+                    }).then(() => { this.$q() })
+                    return;
+                }
+                this.update()
+            })
         },
         update() {
             this.send = true;

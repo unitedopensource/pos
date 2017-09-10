@@ -170,6 +170,19 @@ var Preset = function () {
       distance: ""
     }
   };
+  this.operator = function () {
+    return {
+      name: 'New User',
+      role: 'Waitstaff',
+      pin: '',
+      language: 'usEN',
+      timeCard: false,
+      cashCtrl: 'disable',
+      access: [],
+      modify: [],
+      view: []
+    }
+  };
   this.giftCard = function (number, seller, amount, bouns) {
     return {
       _id: ObjectId(),
