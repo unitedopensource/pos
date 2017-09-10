@@ -664,7 +664,10 @@ export default {
         'callLog':'call log',
         'sales':'sales',
         'chart':'chart',
-        'excel':'excel'
+        'excel':'excel',
+        'index':'index',
+        'user':'user',
+        'event':'event',
     },
     setting: {
         'softwareSetting': 'UnitedPOS Setting',

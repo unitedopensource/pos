@@ -663,7 +663,10 @@ export default {
         'callLog':'来电',
         'sales':'销售',
         'chart':'图表',
-        'excel':'表格'
+        'excel':'表格',
+        'index':'主页',
+        'user':'用户',
+        'event':'事件',
     },
     setting: {
         'softwareSetting': 'UnitedPOS 后台设置',

@@ -39,20 +39,23 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
     data() {
         return {
             profile: null,
             change: false,
-            send: false
+            send: false,
+            temp:null,
         }
     },
     methods: {
         back() {
             this.$router.push({ name: 'Setting.index' })
         },
-        onChange(store) {
+        onChange(operator) {
             this.txt = this.$t("text.saveSetting");
+            this.temp = operator;
             this.change = true;
             this.send = false;
         },
@@ -62,13 +65,17 @@ export default {
         update() {
             this.send = true;
             this.txt = this.$t('text.settingUpdated')
-            this.$socket.emit("[CMS] UPDATE_USER", this.profile)
+            this.$socket.emit("[CMS] UPDATE_USER", this.temp)
+            this.profile._id === this.op._id && Object.assign(this.op, this.temp)
             setTimeout(() => { this.cancel() }, 1000)
         },
         cancel() {
             this.change = false;
             this.send = false;
         }
+    },
+    computed: {
+        ...mapGetters(['op'])
     }
 }
 </script>

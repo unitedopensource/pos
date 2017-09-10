@@ -89,11 +89,20 @@ export default {
             handler(n) {
                 let keys = Object.keys(n);
                 let isChange = keys.some(key => {
-                    return typeof n[key] === 'string' ?
-                        n[key] !== this.profile[key] :
-                        JSON.stringify(n[key]) !== JSON.stringify(this.profile[key]);
+                    
+                    switch(typeof n[key]){
+                        case 'string':
+                            return n[key] !== this.profile[key]
+                        case 'object':
+                            if(Array.isArray(n[key])){
+                                return n[key].length !== this.profile[key].length && n[key].every((v,i)=>v!==this.profile[i])
+                            }else{
+                                return JSON.stringify(n[key]) !== JSON.stringify(this.profile[key])
+                            }
+                            break;
+                    }
                 })
-                isChange ? this.$emit("change", n) : this.$emit("unchanged");
+                isChange ? this.$emit("change", n) : this.$emit("unchanged")
             }, deep: true
         }
     }
