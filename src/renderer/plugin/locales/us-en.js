@@ -781,7 +781,9 @@ export default {
         'sectionEditor': 'Section Editor',
         'tableEditor': 'Table Editor',
         'clientList': 'Client List',
-        'callLog': 'Call Log'
+        'callLog': 'Call Log',
+        'userRemoval':'User Remove',
+        'userRemovalTip':'Permanent remove user account'
     },
     reservation: {
         'create': 'Create Reservation',

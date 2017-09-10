@@ -12,7 +12,6 @@
                 <smart-option v-model="operator.language" label="text.defaultLanguage" :options="languages"></smart-option>
                 <smart-switch v-model="operator.timeCard" label="text.timeCard"></smart-switch>
                 <smart-input v-model="operator.employeeCard" label="text.employeeCard" type="password"></smart-input>
-
             </article>
         </section>
         <section class="card list">
@@ -60,6 +59,16 @@
                 </div>
             </article>
         </section>
+        <section class="card">
+            <header>
+                <span>{{$t('setting.userRemoval')}}</span>
+                <span class="tip">{{$t('setting.userRemovalTip')}}</span>
+            </header>
+            <div>
+                <div class="btn" @click="removeUser">{{$t('button.delete')}}</div>
+            </div>
+        </section>
+        <div :is="component" :init="componentData"></div>
     </div>
 </template>
 
@@ -67,13 +76,16 @@
 import smartOption from '../common/smartOption'
 import smartSwitch from '../common/smartSwitch'
 import smartInput from '../common/smartInput'
+import dialoger from '../../common/dialoger'
 import checkbox from '../common/checkbox'
 import radio from '../common/radio'
 export default {
     props: ['profile'],
-    components: { smartOption, smartSwitch, smartInput, checkbox, radio },
+    components: { smartOption, smartSwitch, smartInput, checkbox, radio, dialoger },
     data() {
         return {
+            componentData:null,
+            component:null,
             languages: [
                 { label: this.$t("text.primary") + ' us-en', value: "usEN" },
                 { label: this.$t("text.secondary") + ' zh-cn', value: "zhCN" }],
@@ -84,19 +96,32 @@ export default {
     created() {
         this.operator = JSON.parse(JSON.stringify(this.profile))
     },
+    methods: {
+        removeUser() {
+            this.$dialog({
+                title: "dialog.deleteOperatorConfirm", msg: ['dialog.deleteOperatorConfirmTip', this.operator.name]
+            }).then(() => {
+                this.$socket.emit("[CMS] REMOVE_USER", this.operator._id)
+                this.$q()
+                this.$nextTick(() => {
+                    this.$router.push({ name: 'Setting.operator.index' })
+                })
+            }).catch(() => { this.$q() })
+        }
+    },
     watch: {
         operator: {
             handler(n) {
                 let keys = Object.keys(n);
                 let isChange = keys.some(key => {
-                    
-                    switch(typeof n[key]){
+
+                    switch (typeof n[key]) {
                         case 'string':
                             return n[key] !== this.profile[key]
                         case 'object':
-                            if(Array.isArray(n[key])){
-                                return n[key].length !== this.profile[key].length && n[key].every((v,i)=>v!==this.profile[i])
-                            }else{
+                            if (Array.isArray(n[key])) {
+                                return n[key].length !== this.profile[key].length && n[key].every((v, i) => v !== this.profile[i])
+                            } else {
                                 return JSON.stringify(n[key]) !== JSON.stringify(this.profile[key])
                             }
                             break;
@@ -131,7 +156,7 @@ export default {
     text-align: center;
 }
 
-.datalist .f1{
+.datalist .f1 {
     margin-left: 2em;
 }
 </style>

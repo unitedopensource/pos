@@ -780,7 +780,9 @@ export default {
         'sectionEditor': '区域编辑',
         'tableEditor': '编辑座位',
         'clientList': '客户列表',
-        'callLog': '来电记录'
+        'callLog': '来电记录',
+        'userRemoval':'删除用户',
+        'userRemovalTip':'永久的删除这个账户'
     },
     reservation: {
         'create': '创建预约',

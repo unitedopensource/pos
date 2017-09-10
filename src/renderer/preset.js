@@ -172,6 +172,7 @@ var Preset = function () {
   };
   this.operator = function () {
     return {
+      _id: ObjectId(),
       name: 'New User',
       role: 'Waitstaff',
       pin: '',
