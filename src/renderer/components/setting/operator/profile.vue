@@ -54,7 +54,7 @@
                     <span class="name">{{$t('text.cashDrawer')}}</span>
                     <div class="f1">
                         <radio v-model="operator.cashCtrl" val="enable" label="text.enable" name="cashCtrl"></radio>
-                        <radio v-model="operator.cashCtrl" val="stuffBank" label="text.stuffBank" name="cashCtrl"></radio>
+                        <radio v-model="operator.cashCtrl" val="staffBank" label="text.staffBank" name="cashCtrl"></radio>
                         <radio v-model="operator.cashCtrl" val="disable" label="text.disallow" name="cashCtrl"></radio>
                     </div>
                 </div>

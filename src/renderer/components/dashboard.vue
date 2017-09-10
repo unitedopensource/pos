@@ -140,7 +140,7 @@ export default {
                         this.$socket.emit("[CASHFLOW] CHECK", { date: today(), cashDrawer: this.station.cashDrawer.name, close: false }) :
                         Printer.init(this.config).openCashDrawer();
                     break;
-                case "stuffBank":
+                case "staffBank":
                     this.$socket.emit("[CASHFLOW] CHECK", { date: today(), cashDrawer: this.op.name, close: false });
                     break;
                 case "disable":
@@ -214,7 +214,7 @@ export default {
                 this.$socket.emit("[CASHFLOW] ACTIVITY", { cashDrawer, activity })
             } else {
                 this.$dialog({
-                    title: 'dialog.stuffBankMode', msg: 'dialog.stuffBankModeTip', buttons: [{ text: 'button.confirm', fn: 'resolve' }]
+                    title: 'dialog.staffBankMode', msg: 'dialog.staffBankModeTip', buttons: [{ text: 'button.confirm', fn: 'resolve' }]
                 }).then(() => { this.$q() })
             }
         },

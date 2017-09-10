@@ -233,10 +233,9 @@ section.card {
   border-bottom: 1px solid #ccc;
   display: flex;
   font-size: 1.05em;
-  align-items: center;
 }
 
-.card span.tip {
+.card header .tip {
   font-size: 16px;
   font-weight: lighter;
   margin-left: 5px;

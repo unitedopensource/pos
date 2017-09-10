@@ -236,14 +236,14 @@ export default {
         'cashInConfirmTip': '请确认钱箱内有现金 $ {i}',
         'selfCashInConfirm':'起始现金',
         'selfCashInConfirmTip':'请确认您身上拥有现金 $ {i}',
-        'stuffBankMode':'虚拟钱箱模式',
-        'stuffBankModeTip':'您正在处于虚拟钱箱模式下，您不能动用钱机内的现金',
+        'staffBankMode':'虚拟钱箱模式',
+        'staffBankModeTip':'您正在处于虚拟钱箱模式下，您不能动用钱机内的现金',
         'cashOut': '结算钱箱',
         'cashOutTip': '您是否要对 {i}钱箱 进行结算',
         'cashOutSettle': '结算现金 $ {i}',
         'cashOutSettleTip': '(初始金额 $ {i} + 结算 $ {i} = 总数 $ {i})',
-        'stuffCashOut':'结算虚拟钱箱',
-        'stuffCashOutTip':'您是否要进行结算？',
+        'staffCashOut':'结算虚拟钱箱',
+        'staffCashOutTip':'您是否要进行结算？',
         'dineInDisabled': '堂吃功能无法使用',
         'dineInEnableTip': '若想使用此功能，请去 设置->餐馆->堂吃->座位 选择开启',
         'cashDrawerUnavailable': '钱箱无法使用',
@@ -513,7 +513,7 @@ export default {
         'contactInfo': '联系信息',
         'storeType': '店面类型',
         'enable': '启用',
-        'stuffBank':'个人钱箱',
+        'staffBank':'个人钱箱',
         'disallow':'禁止',
         'api': '授权码',
         'timeCard': '打卡',
@@ -525,7 +525,7 @@ export default {
         'settingUpdated': '设置已保存',
         'guestCount': '统计客人数量',
         'orderBySeat': '按位点餐',
-        'autoCleanTable': '自动清除桌子',
+        'autoClear': '自动清除',
         'initialAmount': '起始金额',
         'autoChargeAbove': '(N)客人以上',
         'mac': '物理地址',
@@ -639,8 +639,9 @@ export default {
         'delayTask':'有{i}个打印任务',
         'sales':'销售',
         'managerCount':'经理 {i} 名',
-        'stuffCount':'职员 {i} 名',
-        'thirdPartyCount':'第三方 {i} 名'
+        'staffCount':'职员 {i} 名',
+        'thirdPartyCount':'第三方 {i} 名',
+        'passwordRequire':'需要密码'
     },
     nav:{
         'store':'店面',
@@ -703,7 +704,7 @@ export default {
         'tax': '税率设定',
         'dineIn': '座位设定',
         'station': '工作站设定',
-        'stuffBank': '虚拟钱箱设定',
+        'staffBank': '虚拟钱箱设定',
         'autoCharge': '自动收费',
         'autoChargeTip': '设置自动收取服务费',
         'terminal': '信用卡终端',
@@ -803,5 +804,11 @@ export default {
         'storageSize':'硬盘占用',
         'objects':'数据行',
         'averageSize':'平均大小'
+    },
+    tip:{
+        'table':{
+            'passwordRequire':'创建座位之前需要输入密码',
+            'autoClearTable':'客人付款之后自动还原桌子状态'
+        }
     }
 }

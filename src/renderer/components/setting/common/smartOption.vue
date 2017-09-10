@@ -31,6 +31,7 @@ export default {
 <style scoped>
 .input {
     display: flex;
+    align-items: center;
 }
 
 label {

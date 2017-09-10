@@ -230,20 +230,20 @@ export default {
         'clockOutTip': 'You were lock in at {i}. Total work length: {i}',
         'cashIn': 'Cash In Required',
         'cashInTip': 'Do you want to cash in right now?',
-        'selfCashIn':'Stuff Bank Check-In',
-        'selfCashInTip':'System will record all transaction under stuff bank mode',
+        'selfCashIn':'Staff Bank Check-In',
+        'selfCashInTip':'System will record all transaction under staff bank mode',
         'cashInConfirm': 'Cash-In Confirm',
         'cashInConfirmTip': 'Please Check if Cash Drawer has cash amount: $ {i}',
         'selfCashInConfirm':'Initial Cash',
         'selfCashInConfirmTip':'Please Confirm if You are having cash amount: $ {i}',
-        'stuffBankMode':'Stuff Bank Mode',
-        'stuffBankModeTip':'You are under stuff bank mode. You do not have right to operate this cash drawer',
+        'staffBankMode':'Staff Bank Mode',
+        'staffBankModeTip':'You are under staff bank mode. You do not have right to operate this cash drawer',
         'cashOut': 'Cash Out',
         'cashOutTip': 'Are you sure to cash out (Cash drawer:{i})',
         'cashOutSettle': 'Cash Out Total: $ {i}',
         'cashOutSettleTip': '(Deposit $ {i} + Collected $ {i} = Total $ {i})',
-        'stuffCashOut':'Self Cash Out',
-        'stuffCashOutTip':'Are you sure to settle?',
+        'staffCashOut':'Self Cash Out',
+        'staffCashOutTip':'Are you sure to settle?',
         'dineInDisabled': 'Dine In Disabled',
         'dineInEnableTip': 'To turn on, please go to Setting->Restaurant->Dine In->Seat',
         'cashDrawerUnavailable': 'Cash Drawer Not Available',
@@ -513,7 +513,7 @@ export default {
         'contactInfo': 'Contact Info',
         'storeType': 'Store Type',
         'enable': 'Enable',
-        'stuffBank':'Stuff Bank',
+        'staffBank':'Staff Bank',
         'disallow':'Disallow',
         'api': 'API',
         'timeCard': 'Time Card',
@@ -525,7 +525,7 @@ export default {
         'settingUpdated': 'Setting is Updated',
         'guestCount': 'Guest Count',
         'orderBySeat': 'Order By Seat',
-        'autoCleanTable': 'Auto Clean',
+        'autoClear': 'Auto Clear',
         'initialAmount': 'Initial Amount',
         'autoChargeAbove': '(N)Cust. Above',
         'mac': 'MAC',
@@ -640,8 +640,9 @@ export default {
         'sales':'Sales',
         'managerCount':'User Count',
         'managerCount':'Manager: {i}',
-        'stuffCount':'Stuff: {i}',
-        'thirdPartyCount':'Third Party: {i}'
+        'staffCount':'Staff: {i}',
+        'thirdPartyCount':'Third Party: {i}',
+        'passwordRequire':'Password Req.'
     },
     nav:{
         'store':'Store',
@@ -704,7 +705,7 @@ export default {
         'tax': 'Tax Setting',
         'dineIn': 'Dine In',
         'station': 'Station Setting',
-        'stuffBank': 'Stuff Bank',
+        'staffBank': 'Staff Bank',
         'autoCharge': 'Auto Charge',
         'autoChargeTip': 'Auto charge gratuity',
         'terminal': 'Terminal',
@@ -804,5 +805,11 @@ export default {
         'storageSize':'Storage Size',
         'objects':'Objects',
         'averageSize':'Average Size'
+    },
+    tip:{
+        'table':{
+            'passwordRequire':'Password input required before create a new table.',
+            'autoClearTable':'Auto restore table status after settlement.'
+        }
     }
 }

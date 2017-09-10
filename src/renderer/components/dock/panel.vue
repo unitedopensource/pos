@@ -99,14 +99,14 @@ export default {
                 case "enable":
                     this.checkCashOut(this.station.cashDrawer.name, false)
                     break;
-                case "stuffBank":
+                case "staffBank":
                     this.checkCashOut(this.op.name, true)
                     break;
                 default:
                     this.exit()
             }
         },
-        checkCashOut(cashDrawer, stuffBank) {
+        checkCashOut(cashDrawer, staffBank) {
             new Promise((resolve, reject) => {
                 this.$socket.emit('[CASHFLOW] CHECK', { date: today(), cashDrawer, close: false })
                 this.$options.sockets['CASHFLOW_RESULT'] = (data) => {
@@ -114,11 +114,11 @@ export default {
                     initial ? reject() : resolve(name)
                 }
             }).then(name => {
-                stuffBank ? this.stuffCashOut(name) : this.regularCashOut(name)
+                staffBank ? this.staffCashOut(name) : this.regularCashOut(name)
             }).catch(() => { this.exit() })
         },
-        stuffCashOut(name) {
-            this.$dialog({ type: "question", title: "dialog.stuffCashOut", msg: "dialog.stuffCashOutTip" })
+        staffCashOut(name) {
+            this.$dialog({ type: "question", title: "dialog.staffCashOut", msg: "dialog.staffCashOutTip" })
                 .then(() => { this.cashOut(name) }).catch(() => { this.exit() })
         },
         regularCashOut(name) {

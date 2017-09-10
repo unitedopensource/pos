@@ -1,10 +1,16 @@
 <template>
     <div class="input">
-        <label class="label">{{$t(label)}}</label>
-        <label class="input-toggle">
-            <input type="checkbox" :checked="value" @change="$emit('input',$event.target.checked)">
-            <span></span>
-        </label>
+        <div class="wrap">
+            <label class="label">{{$t(label)}}</label>
+            <label class="input-toggle">
+                <input type="checkbox" :checked="value" @change="$emit('input',$event.target.checked)">
+                <span></span>
+            </label>
+        </div>
+        <div class="tip" v-show="tip">
+            <i class="fa fa-exclamation-circle"></i>
+            <span>{{$t(tip)}}</span>
+        </div>
     </div>
 </template>
 
@@ -13,7 +19,7 @@ export default {
     props: {
         value: {
             type: Boolean,
-            default:false
+            default: false
         },
         label: String,
         tip: String,
@@ -24,6 +30,11 @@ export default {
 <style scoped>
 .input {
     display: flex;
+    flex-direction: column;
+}
+
+.wrap {
+    display: flex;
 }
 
 .label {
@@ -31,5 +42,17 @@ export default {
     text-align: right;
     color: #666;
     padding: 8px 20px 8px 0;
+}
+
+.tip {
+    color: #4DB6AC;
+    background: #EEEEEE;
+    padding: 0 5px;
+    display: flex;
+    align-items: center;
+}
+
+.tip i{
+    margin-right:5px;
 }
 </style>

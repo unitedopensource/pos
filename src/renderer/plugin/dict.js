@@ -10,6 +10,7 @@ const dict = {
                     return text.split('.').reduce((p, c) => p && p[c] || c, Vue.locales);
                 },
                 $t(text, ...d) {
+                    if (!text) return '';
                     let i = 0;
                     let string = text.split('.').reduce((p, c) => p && p[c] || c, Vue.locales);
                     return d ? string.replace(/\{i\}/g, () => d[i++]) : string;

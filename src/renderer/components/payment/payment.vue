@@ -874,7 +874,7 @@ export default {
                         this.cashDrawerUnavailable();
                     this.$socket.emit("[CASHFLOW] ACTIVITY", { cashDrawer: this.station.cashDrawer.name, activity });
                     break;
-                case "stuffBank":
+                case "staffBank":
                     this.$socket.emit("[CASHFLOW] ACTIVITY", { cashDrawer: this.op.name, activity });
                     break;
                 case "disable":

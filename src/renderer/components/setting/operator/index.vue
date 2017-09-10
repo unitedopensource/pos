@@ -4,7 +4,7 @@
             <h1>{{$t('title.softwareOperator')}}</h1>
             <div class="summary">
                 <div>{{$t('text.managerCount',count.manager)}}</div>
-                <div>{{$t('text.stuffCount',count.stuff)}}</div>
+                <div>{{$t('text.staffCount',count.staff)}}</div>
                 <div>{{$t('text.thirdPartyCount',count.thirdParty)}}</div>
             </div>
         </header>
@@ -39,7 +39,7 @@ export default {
     },
     computed: {
         count() {
-            let manager = 0, stuff = 0, thirdParty = 0;
+            let manager = 0, staff = 0, thirdParty = 0;
             this.operators.forEach(operator => {
                 switch (operator.role) {
                     case 'Manager':
@@ -49,10 +49,10 @@ export default {
                         thirdParty++;
                         break;
                     default:
-                        stuff++;
+                        staff++;
                 }
             })
-            return { manager, stuff, thirdParty }
+            return { manager, staff, thirdParty }
         }
     }
 }
