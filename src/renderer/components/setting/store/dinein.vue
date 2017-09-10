@@ -13,12 +13,12 @@
             </article>
         </section>
         <section class="card">
-            <header>{{$t('setting.stuffBank')}}
+            <header>{{$t('setting.staffBank')}}
                 <span class="tip"></span>
             </header>
             <article>
-                <smart-switch v-model="table.stuffBank" label="text.enable"></smart-switch>
-                <smart-input v-model.number="table.initialAmount" label="text.initialAmount" :disable="!table.stuffBank"></smart-input>
+                <smart-switch v-model="table.staffBank" label="text.enable"></smart-switch>
+                <smart-input v-model.number="table.initialAmount" label="text.initialAmount" :disable="!table.staffBank"></smart-input>
             </article>
         </section>
         <section class="card">
