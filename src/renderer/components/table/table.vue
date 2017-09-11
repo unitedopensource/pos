@@ -65,6 +65,7 @@ export default {
             this.view = index;
         },
         selectTable(table, e) {
+            this.setCurrentTable(table);
             switch (table.status) {
                 case 0:
 
@@ -73,7 +74,6 @@ export default {
                 case 3:
                 case 4:
                     if (table.current.invoice.length) {
-                        this.setCurrentTable(table)
                         let invoice = this.history.find(ticket => ticket._id === table.current.invoice[0])
                         this.setViewOrder(JSON.parse(JSON.stringify(invoice)))
                     } else {
@@ -81,12 +81,10 @@ export default {
                     }
                     break;
                 default:
-                    this.setCurrentTable(table);
                     this.store.table.passwordRequire ? this.$p("unlock") :
                         this.store.table.guestCount ? this.$p("setup") :
                             this.createTable(0)
             }
-            console.log(table)
         },
         createTable(guest) {
             this.setTicket({ type: 'DINE_IN' })
@@ -115,7 +113,7 @@ export default {
         viewSection() {
             return this.tables[this.view].item
         },
-        ...mapGetters(['op', 'store', 'tables', 'language', 'history', 'currentTable'])
+        ...mapGetters(['op','sync', 'store', 'tables', 'language', 'history', 'currentTable'])
     }
 }
 </script>

@@ -903,7 +903,7 @@ export default {
             this.getQuickInput(rounded);
         },
         getQuickInput(amount) {
-            let preset = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 100, 120, 140, 150, 200, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000];
+            let preset = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 100, 120, 140, 150, 200, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1100, 1500, 2000, 3000, 4000, 5000];
             let array = [];
             let round = Math.ceil(isNumber(amount) ? amount : 0);
             array.push(amount.toFixed(2));

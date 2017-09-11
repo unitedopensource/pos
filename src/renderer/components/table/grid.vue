@@ -47,7 +47,7 @@ import payment from '../payment/payment'
 import Printer from '../../print'
 import split from '../menu/split'
 export default {
-    components: { dialoger, payment },
+    components: { dialoger, payment, split },
     data() {
         return {
             componentData: null,
@@ -81,6 +81,8 @@ export default {
                 this.$q();
                 this.removePayment();
                 this.$socket.emit("[UPDATE] INVOICE", this.order);
+                this.setTableInfo({ status: 3 });
+                this.$socket.emit("TABLE_MODIFIED", this.currentTable);
                 this.askEditOrder();
             }).catch(() => { this.$q() })
         },
