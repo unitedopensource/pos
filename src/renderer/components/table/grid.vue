@@ -127,7 +127,7 @@ export default {
                     this.setTableInfo({ status: 3 });
                     this.$socket.emit("TABLE_MODIFIED", this.currentTable);
                     this.$q();
-                })
+                }).catch(()=>{ this.$q() })
             } else {
                 let remain = this.order.content.filter(item => !item.print).length;
                 this.$dialog({

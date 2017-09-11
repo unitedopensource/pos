@@ -476,8 +476,6 @@ Printer.prototype.printLabel = function (name, order) {
       this.printer.SET_PRINTER_INDEX(name);
       this.printer.PRINT();
     })
-
-
 };
 Printer.prototype.printCreditCard = function (trans, reprint) {
   let store = this.config.store;
@@ -487,7 +485,6 @@ Printer.prototype.printCreditCard = function (trans, reprint) {
   let html = createHtml();
   let style = createStyle();
   let name = this.findPrinterFor('CREDITCARD');
-
   if (!name) return;
   this.printer.PRINT_INIT(this.job);
   this.printer.ADD_PRINT_HTM(0, 0, "100%", "100%", html + style);
@@ -1094,14 +1091,15 @@ Printer.prototype.printReservationTicket = function (data) {
   this.printer.PRINT();
 }
 Printer.prototype.findPrinterFor = function (type) {
-  let printers = this.config.printer;
+  let config = this.config.printer;
   let printer = [];
-  for (let i in printers) {
-    printers.hasOwnProperty(i) && printer.push(i);
+  for (let name in config) {
+    config.hasOwnProperty(name) && printer.push(name);
   }
-  let name = printer.findIndex(name => printers[name].print[type] === true);
+  let name = printer.findIndex(name => config[name].print[type] === true);
+  let device = printer[name];
   let redirect = this.config.station.printRedirect;
-  redirect && (name = this.config.station.print[name] || name);
-  return printer[name];
+  redirect && (device = this.config.station.print[device] || device);
+  return device;
 }
 module.exports = new Printer();

@@ -104,8 +104,28 @@ export default {
             this.$socket.emit("TABLE_MODIFIED", this.currentTable);
             this.$router.push({ path: '/main/menu' });
         },
-        tableOption() {
-
+        tableOption(table) {
+            if (this.op.role === 'Manager' || this.op.role === 'Admin') {
+                this.$dialog({
+                    type: "alert", title: "dialog.forceClearTable", msg: ["dialog.forceClearTableTip", table.current.server, table.name],
+                    buttons: [{ text: 'button.cancel', fn: 'reject' }, { text: 'button.clear', fn: 'resolve' }]
+                }).then(() => {
+                    let _table = Object.assign({}, table, {
+                        status: 1,
+                        current: {
+                            color: "",
+                            group: "",
+                            guest: 0,
+                            invoice: [],
+                            server: "",
+                            time: ""
+                        }
+                    });
+                    this.$socket.emit("TABLE_MODIFIED", _table);
+                    this.resetMenu();
+                    this.$q();
+                }).catch(() => { this.$q() })
+            }
         },
         ...mapActions(['setApp', 'resetMenu', 'setTicket', 'setViewOrder', 'setCurrentTable', 'setTableInfo'])
     },
@@ -148,6 +168,7 @@ aside {
 .sections {
     display: flex;
     flex-direction: column;
+    text-align: center;
     flex: 1;
 }
 
