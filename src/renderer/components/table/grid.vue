@@ -169,6 +169,7 @@ export default {
             this.$router.push({ path: "/main" });
         },
         clearTable() {
+            if (!this.currentTable) return;
             if (this.currentTable.status === 4 || this.currentTable.current.invoice.length === 0) {
                 this.$dialog({
                     title: "dialog.tableClear", msg: ["dialog.tableClearTip", this.currentTable.name],

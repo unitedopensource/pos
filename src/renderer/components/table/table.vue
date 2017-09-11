@@ -107,13 +107,13 @@ export default {
         tableOption() {
 
         },
-        ...mapActions(['setApp', 'resetMenu', 'setViewOrder', 'setCurrentTable', 'setTableInfo'])
+        ...mapActions(['setApp', 'resetMenu', 'setTicket', 'setViewOrder', 'setCurrentTable', 'setTableInfo'])
     },
     computed: {
         viewSection() {
             return this.tables[this.view].item
         },
-        ...mapGetters(['op','sync', 'store', 'tables', 'language', 'history', 'currentTable'])
+        ...mapGetters(['op', 'sync', 'store', 'tables', 'language', 'history', 'currentTable'])
     }
 }
 </script>
