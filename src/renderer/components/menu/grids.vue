@@ -161,7 +161,7 @@ export default {
     },
     modify() {
       if (this.isEmptyTicket) return;
-      this.approval(this.op.modify, "price") ? this.callComponent("modify") : this.$denyAccess();
+      this.callComponent("modify")
     },
     course() {
       if (this.isEmptyTicket) return;

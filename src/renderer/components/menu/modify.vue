@@ -7,20 +7,20 @@
         <span class="price">${{total}}</span>
       </header>
       <section class="display">
-        <div class="column target" @click="setPointer('single',$event)">
+        <div class="column target" @click="setPointer('single',$event)" ref="price">
           <h5>{{$t("text.single")}}</h5>
           <div>
             <span>$</span>
             <span class="value">{{item.single | decimal}}</span>
           </div>
         </div>
-        <div class="column" @click="setPointer('qty',$event)">
+        <div class="column" @click="setPointer('qty',$event)" ref="qty">
           <h5>{{$t("text.qty")}}</h5>
           <div>
             <span class="value">{{item.qty}}</span>
           </div>
         </div>
-        <div class="column discount" @click="setPointer('discount',$event)">
+        <div class="column discount" @click="setPointer('discount',$event)" ref="discount">
           <div class="unit">
             <input type="radio" name="unit" v-model="unit" id="cash" :value="true" @change="switchUnit">
             <label for="cash">$</label>
@@ -76,6 +76,10 @@ export default {
   created() {
     this.initial();
   },
+  mounted() {
+    !this.approval(this.op.modify, 'price') && this.banPrice();
+    !this.approval(this.op.modify, 'discount') && this.banModify();
+  },
   methods: {
     initial() {
       this.item = JSON.parse(JSON.stringify(this.init.item));
@@ -95,6 +99,16 @@ export default {
           side: ""
         })
       }
+    },
+    banPrice() {
+      let dom = document.querySelector(".column.target");
+      dom && dom.classList.remove('target');
+      this.$refs.price.classList.add('ban');
+      this.$refs.qty.classList.add('target');
+      this.target = 'qty';
+    },
+    banModify() {
+      this.$refs.discount.classList.add('ban');
     },
     input(num) {
       switch (this.target) {
@@ -215,7 +229,7 @@ export default {
       let discount = this.unit ? this.discount : single * qty * (this.discount / 100);
       return (single * qty - discount).toFixed(2)
     },
-    ...mapGetters(['language'])
+    ...mapGetters(['op', 'language'])
   }
 }
 </script>
@@ -332,6 +346,10 @@ section.numpad div:last-child {
 
 .discount {
   position: relative;
+}
+
+.ban {
+  pointer-events: none;
 }
 
 .unit label {
