@@ -105,13 +105,13 @@ export default {
         tax: {
             handler(n) {
                 let keys = Object.keys(n);
-                this.change = keys.some(key => {
+                let isChanged = keys.some(key => {
                     return typeof n[key] === 'string' ?
                         n[key] !== this.store.tax[key] :
                         JSON.stringify(n[key]) !== JSON.stringify(this.store.tax[key]);
                 })
-                this.change ?
-                    this.$emit("change", Object.assign({}, this.store, { tax: n })) : this.$emit("unchange");
+                isChanged ?
+                    this.$emit("change", Object.assign({}, this.store, { tax: n })) : this.$emit("unchanged");
             }, deep: true
         }
     },

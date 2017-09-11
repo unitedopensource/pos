@@ -144,12 +144,12 @@ export default {
         workStation: {
             handler(n) {
                 let keys = Object.keys(n);
-                this.change = keys.some(key => {
+                let isChanged = keys.some(key => {
                     return typeof n[key] === 'string' ?
                         n[key] !== this.station[key] :
                         JSON.stringify(n[key]) !== JSON.stringify(this.station[key]);
                 })
-                if (this.change) {
+                if (isChanged) {
                     let stations = Object.keys(this.store.station);
                     let index = stations.findIndex(key => this.store.station[key].mac === n.mac);
                     let name = stations[index];
@@ -157,7 +157,7 @@ export default {
                     store.station[name] = n;
                     this.$emit("change", store)
                 } else {
-                    this.$emit("unchange");
+                    this.$emit("unchanged");
                 }
             }, deep: true
         }

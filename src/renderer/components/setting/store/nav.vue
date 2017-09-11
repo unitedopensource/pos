@@ -26,7 +26,7 @@
         </ul>
         <section class="content">
             <transition name="switch">
-                <router-view class="page" @change="onChange" @unchange="change = false"></router-view>
+                <router-view class="page" @change="onChange" @unchanged="change = false"></router-view>
             </transition>
             <transition appear name="fadeUp">
                 <footer class="update" v-if="change">

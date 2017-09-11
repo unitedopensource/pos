@@ -643,7 +643,8 @@ export default {
         'staffCount':'Staff: {i}',
         'thirdPartyCount':'Third Party: {i}',
         'passwordRequire':'Password Req.',
-        'newOperator':'New User'
+        'newOperator':'New User',
+        'enterPin':'Please Enter Your Pin'
     },
     nav:{
         'store':'Store',

@@ -26,7 +26,6 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import _debounce from 'lodash.debounce'
-import moment from 'moment'
 export default {
   data() {
     return {

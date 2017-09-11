@@ -274,7 +274,7 @@ input[type="text"]:disabled {
   border-bottom: 1px solid #E0E0E0;
   display: flex;
   color: #455A64;
-  padding: 5px 0;
+  padding: 7px 0 3px;
 }
 
 .datalist:nth-child(2n) {

@@ -93,12 +93,12 @@ export default {
         store: {
             handler(n) {
                 let keys = Object.keys(n);
-                this.change = keys.some(key => {
+                let isChanged = keys.some(key => {
                     return typeof n[key] === 'string' ?
                         n[key] !== this.config.store[key] :
                         JSON.stringify(n[key]) !== JSON.stringify(this.config.store[key]);
                 })
-                this.change ? this.$emit("change", n) : this.$emit("unchange");
+                isChanged ? this.$emit("change", n) : this.$emit("unchanged");
             }, deep: true
         }
     }

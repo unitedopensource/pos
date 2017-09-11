@@ -103,7 +103,8 @@ export default {
                 this.device.code !== '000000' && this.disableBatchFn();
             })
             this.$socket.emit("[TERM] INITIAL", data => {
-                this.transactions = data;
+                let sn = this.device ? this.device.sn : this.station.terminal.sn;
+                this.transactions = data.filter(trans => trans.device.sn === sn);
             });
         },
         prevDate() {
@@ -173,7 +174,7 @@ export default {
             this.$dialog({
                 title: "dialog.voidCreditSale", msg: ["dialog.voidCreditSaleTip", record.order.number, this.$t('type.' + record.order.type)],
                 buttons: [{ text: 'button.cancel', fn: 'reject' }, { text: 'button.confirmPrint', fn: 'resolve' }]
-            }).then((print) => {
+            }).then(() => {
                 let invoice = record.order.number;
                 let trans = record.trace.trans;
                 this.terminal.voidSale(invoice, trans).then((response) => response.text()).then((response) => {
@@ -181,30 +182,42 @@ export default {
                     record = Object.assign(record, transaction, { status: 0 });
                     this.$socket.emit("[TERM] UPDATE_TRANSACTION", record);
                     Printer.init(this.config).setJob('creditCard').print(transaction);
-                    let ticket = record.order.number;
                     let order = this.history.find(ticket => ticket._id === record.order._id);
-                    this.removePayment(order);
+                    this.removePayment(order)
                 });
-                this.$q();
+                this.$q()
             }).catch(() => { this.$q() })
         },
         removePayment(ticket) {
-            ticket.settled = false;
-            ticket.payment.settled = false;
-            ticket.payment.log = [];
-            ticket.payment.tip = 0;
-            ticket.payment.gratuity = 0;
-            ticket.payment.paid = 0;
-            ticket.payment.discount = 0;
+            let total = parseFloat(ticket.payment.total);
+
             delete ticket.payment.paidCash;
             delete ticket.payment.paidCredit;
             delete ticket.payment.paidGift;
-            ticket.payment.due = parseFloat(ticket.payment.total);
-            this.$socket.emit("[SAVE] INVOICE", ticket);
+            delete ticket.payment.type;
+            delete ticket.settled;
+
+            if (ticket.payment.splitPayment) {
+                delete ticket.payment.splitPayment;
+                delete ticket.split;
+            }
+
+            Object.assign(ticket.payment, {
+                settled: false,
+                tip: 0,
+                gratuity: 0,
+                paid: 0,
+                discount: 0,
+                log: [],
+                balance: total,
+                due: total
+            })
+
+            this.$socket.emit("[UPDATE] INVOICE", ticket)
         },
         adjustTip(record) {
             let tip = record.amount.tip;
-            this.approval(this.op.modify, "terminal") ?
+            this.approval(this.op.modify, "transaction") ?
                 new Promise((resolve, reject) => {
                     this.componentData = { tip, resolve, reject };
                     this.component = "tipper";
@@ -229,8 +242,7 @@ export default {
                                 this.adjustOrderTip(record.order, value);
                             });
                     }).catch(() => { this.$q() })
-                }).catch(() => { this.$q() }) :
-                this.$denyAccess();
+                }).catch(() => { this.$q() }) : this.$denyAccess();
         },
         adjustOrderTip(order, tip) {
             let invoice = this.history.find(ticket => order._id === ticket._id);
@@ -394,7 +406,8 @@ export default {
     },
     sockets: {
         TERM_TRANSACTION(data) {
-            this.transactions = data;
+            let sn = this.device ? this.device.sn : this.station.terminal.sn;
+            this.transactions = data.filter(trans => trans.device.sn === sn);
         }
     }
 }

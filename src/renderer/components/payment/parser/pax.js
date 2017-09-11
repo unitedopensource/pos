@@ -26,7 +26,7 @@ const Pax = function () {
   };
   this.check = function (d) {
     let data = d.split(String.fromCharCode(28));
-    let sn = (data[5] && data[5].indexOf(String.fromCharCode(3)) !== -1) ? data[5].split(String.fromCharCode(3))[0] : data[5];
+    let sn = data[5].replace(/[^a-z0-9]/gi,'');
     let msg = data[4].indexOf(String.fromCharCode(3) !== -1) ? data[4].split(String.fromCharCode(3))[0] : data[4];
     device = {
       msg,sn,

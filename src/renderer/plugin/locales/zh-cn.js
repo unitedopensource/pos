@@ -642,7 +642,8 @@ export default {
         'staffCount':'职员 {i} 名',
         'thirdPartyCount':'第三方 {i} 名',
         'passwordRequire':'需要密码',
-        'newOperator':'新建用户'
+        'newOperator':'新建用户',
+        'enterPin':'输入密码'
     },
     nav:{
         'store':'店面',

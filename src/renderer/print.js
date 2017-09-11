@@ -486,17 +486,18 @@ Printer.prototype.printCreditCard = function (trans, reprint) {
   let time = timestamp.format("HH:mm:ss");
   let html = createHtml();
   let style = createStyle();
-  let printer = this.findPrinterFor('CREDITCARD');
-  if (!printer) return;
+  let name = this.findPrinterFor('CREDITCARD');
+
+  if (!name) return;
   this.printer.PRINT_INIT(this.job);
   this.printer.ADD_PRINT_HTM(0, 0, "100%", "100%", html + style);
-  this.printer.SET_PRINTER_INDEX(printer);
+  this.printer.SET_PRINTER_INDEX(name);
   this.printer.PRINT();
 
   this.printer.PRINT_INIT(this.job);
   html = html.replace("MERCHANT COPY", "CUSTOMER COPY");
   this.printer.ADD_PRINT_HTM(0, 0, "100%", "100%", html + style);
-  this.printer.SET_PRINTER_INDEX(printer);
+  this.printer.SET_PRINTER_INDEX(name);
   this.printer.PRINT();
 
   function createHtml() {
@@ -699,7 +700,7 @@ Printer.prototype.printReport = function (data) {
       for (let key in data) {
         html += `<div class="row">
                   <span class="text">${key}:</span>
-                  <span class="value">${isNumber(data[key]) ? '$ '+ data[key] : data[key]}</span>
+                  <span class="value">${isNumber(data[key]) ? '$ ' + data[key] : data[key]}</span>
                 </div>`
       }
     })
@@ -811,18 +812,21 @@ Printer.prototype.printPrebatch = function (data) {
 }
 Printer.prototype.printBatchReport = function (data) {
   let store = this.config.store;
-  let date = moment().format("MM/DD/YYYY");
-  let time = moment().format("hh:mm:ss");
+  let batchTime = moment(Number(data.time), 'YYYYMMDDHHmmss')
+  let date = batchTime.format("MM/DD/YYYY");
+  let time = batchTime.format("hh:mm:ss");
+  let { credit, debit, ebt } = data.amount;
+  let total = (parseFloat(credit) + parseFloat(debit) + parseFloat(ebt)).toFixed(2);
 
   let html = `<article>
               <section class="data">
               <h3>Batch Report</h3>
                 <p class="time"><span class="text">${date}</span><span class="value">${time}</span></p>
-                <p><span class="text">Result</span><span class="value">${data.batchResult}</span></p>
-                <p><span class="text">Batch #</span><span class="value">${data.batchNumber}</span></p>
+                <p><span class="text">MID</span><span class="value">${data.mid}</span></p>
                 <p><span class="text">Device</span><span class="value">${data.tid}</span></p>
-                <p><span class="text">Machine</span><span class="value">${data.mid}</span></p>
-                <p><span class="text">Total</span><span class="value">$ ${data.settled}</span></p>
+                <p><span class="text">Batch #</span><span class="value">${data.batchNumber}</span></p>
+                <p><span class="text">Result</span><span class="value">${data.resMsg}</span></p>
+                <p><span class="text">Total</span><span class="value">$ ${total}</span></p>
               </section>
               <section class="data">
                 <h3>Overview</h3>
@@ -1096,6 +1100,8 @@ Printer.prototype.findPrinterFor = function (type) {
     printers.hasOwnProperty(i) && printer.push(i);
   }
   let name = printer.findIndex(name => printers[name].print[type] === true);
+  let redirect = this.config.station.printRedirect;
+  redirect && (name = this.config.station.print[name] || name);
   return printer[name];
 }
 module.exports = new Printer();

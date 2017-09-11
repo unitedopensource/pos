@@ -12,7 +12,7 @@
                 <smart-switch v-model="table.passwordRequire" label="text.passwordRequire" tip="tip.table.passwordRequire"></smart-switch>
             </article>
         </section>
-        <section class="card">
+        <!-- <section class="card">
             <header>{{$t('setting.staffBank')}}
                 <span class="tip"></span>
             </header>
@@ -20,7 +20,7 @@
                 <smart-switch v-model="table.staffBank" label="text.enable"></smart-switch>
                 <smart-input v-model.number="table.initialAmount" label="text.initialAmount" :disable="!table.staffBank"></smart-input>
             </article>
-        </section>
+        </section> -->
         <section class="card">
             <header>{{$t('setting.autoCharge')}}
                 <span class="tip">{{$t('setting.autoChargeTip')}}</span>
@@ -40,23 +40,23 @@ import smartSwitch from '../common/smartSwitch'
 export default {
     components: { smartSwitch, smartInput },
     created() {
-        this.table = Object.assign({}, this.store.table)
+        this.table = JSON.parse(JSON.stringify(this.store.table))
     },
     data() {
         return {
-            table: null
+            table: {}
         }
     },
     watch: {
         table: {
             handler(n) {
                 let keys = Object.keys(n);
-                this.change = keys.some(key => {
+                let isChanged = keys.some(key => {
                     return typeof n[key] === 'string' ?
                         n[key] !== this.store.table[key] :
                         JSON.stringify(n[key]) !== JSON.stringify(this.store.table[key]);
                 })
-                this.change ? this.$emit("change", Object.assign({}, this.store, { table: n })) : this.$emit("unchange");
+                isChanged ? this.$emit("change", Object.assign({}, this.store, { table: n })) : this.$emit("unchanged");
             }, deep: true
         }
     },
