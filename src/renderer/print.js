@@ -211,11 +211,11 @@ Printer.prototype.printReceipt = function (raw) {
         if (set.hasOwnProperty('print') && Array.isArray(set.print) && !set.print.includes(printer)) return;
         setCN += `<p class="list choiceSet zhCN">
                       <span class="set">${set.zhCN}<span class="qty">${set.qty === 1 ? " " : '×' + set.qty}</span></span>
-                      <span class="price">${parseFloat(set.price) > 0 ? set.price.toFixed(2) : ""}</span>
+                      <span class="price">${parseFloat(set.price) !== 0 ? set.price.toFixed(2) : ""}</span>
                     </p>`;
         setEN += `<p class="list choiceSet usEN">
                       <span class="set">${set.usEN}<span class="qty">${set.qty === 1 ? " " : '×' + set.qty}</span></span>
-                      <span class="price">${parseFloat(set.price) > 0 ? set.price.toFixed(2) : ""}</span>
+                      <span class="price">${parseFloat(set.price) !== 0 ? set.price.toFixed(2) : ""}</span>
                     </p>`;
       });
       let name = (item[printer] && item[printer].hasOwnProperty("zhCN")) ? item[printer].zhCN : printMenuID ? item.menuID + " " + item.zhCN : item.zhCN;
@@ -415,7 +415,7 @@ Printer.prototype.printReceipt = function (raw) {
       `<section class="details">
         <h3>Paid by ${payment.type} - Thank You</h3>
       </section>`: "";
-    let discount = parseFloat(payment.discount) > 0 ?
+    let discount = parseFloat(payment.discount) !== 0 ?
       `<p><span class="text">Disc.:</span><span class="value">- ${payment.discount}</span></p>` : "";
     let tip = parseFloat(payment.tip) > 0 ?
       `<p><span class="text">Tip:</span><span class="value">- ${payment.tip}</span></p>` : "";

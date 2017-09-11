@@ -26,10 +26,11 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import dialoger from '../common/dialoger'
 import setup from './setup'
 export default {
     props: ['init'],
-    components: { setup },
+    components: { setup, dialoger },
     data() {
         return {
             componentData: null,
@@ -64,8 +65,7 @@ export default {
             }
         },
         access() {
-            console.log(this.pin.join(""), this.op.pin)
-            this.pin.join("") == this.op.pin ? this.authorized() : this.askLogin()
+            this.pin.join("") == this.op.pin ? this.authorized() : this.checkUser()
         },
         authorized() {
             this.pin = [];
@@ -76,7 +76,7 @@ export default {
             this.setTableInfo({
                 status: 2,
                 current: {
-                    guest: 0,
+                    guest: 1,
                     server: this.op.name,
                     time: +new Date,
                     color: "",
@@ -89,16 +89,40 @@ export default {
             this.$socket.emit("TABLE_MODIFIED", this.currentTable);
             this.$router.push({ path: '/main/menu' });
         },
-        askLogin() {
-
+        checkUser() {
+            this.$socket.emit("INQUIRY_LOGIN", this.pin.join(''));
         },
-        ...mapActions(['setApp', 'resetMenu', 'setTicket', 'setTableInfo'])
+        ...mapActions(['setOp', 'setApp', 'resetMenu', 'setTicket', 'setTableInfo'])
     },
     beforeDestroy() {
         window.removeEventListener("keydown", this.input, false);
     },
     computed: {
         ...mapGetters(['op', 'store', 'currentTable'])
+    },
+    sockets: {
+        LOGIN_AUTH(result) {
+            if (result.auth) {
+                this.$dialog({
+                    type: 'question', title: 'dialog.switchOperator', msg: ['dialog.switchCurrentOperator', this.op.name, result.op.name]
+                }).then(() => {
+                    let language = result.op.language || "usEN";
+                    moment.locale(language === 'usEN' ? 'en' : 'zh-cn');
+                    this.$setLanguage(language);
+                    this.setApp({ language, mode: 'create' });
+                    this.setOp(result.op);
+                    this.createTable();
+                }).catch(() => { this.$q() })
+            } else {
+                this.$dialog({
+                    title: 'dialog.tableCreateFailed', msg: 'dialog.tableCreateFailedTip',
+                    buttons: [{ text: 'button.confirm', fn: 'resolve' }]
+                }).then(() => {
+                    this.reset()
+                    this.$q()
+                })
+            }
+        }
     }
 }
 </script>

@@ -192,7 +192,8 @@ export default {
             toggleClass(".category div", "active");
         },
         resetTableExit() {
-            if (this.currentTable && this.currentTable.current.invoice.length === 0) {
+            //if (this.currentTable && this.currentTable.current.invoice.length === 0) {
+            if (this.app.mode === 'create') {
                 this.resetCurrentTable();
                 this.$socket.emit("TABLE_MODIFIED", this.currentTable);
             }
@@ -206,7 +207,7 @@ export default {
             }).then((callback) => {
                 this.$q()
                 console.log(callback)
-                
+
             }).catch(() => { this.$q() })
         },
         exit() {

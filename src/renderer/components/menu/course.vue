@@ -56,7 +56,6 @@
         </div>
       </div>
       <footer>
-        <!-- <div class="btn" @click="changeDate">{{$t('button.changeDate')}}</div> -->
         <div class="btn" @click="init.reject">{{$t('button.cancel')}}</div>
         <div class="btn" @click="confirm">{{text('button.confirm')}}</div>
       </footer>

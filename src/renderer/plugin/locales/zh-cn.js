@@ -181,7 +181,10 @@ export default {
         'apply': '应用',
         'pay': '支付',
         'combinePrint':'完整打印',
-        'splitPrint':'分单打印'
+        'splitPrint':'分单打印',
+        'discount':'折扣',
+        'thirdParty':'第三方',
+        'driver':'司机',
     },
     title:{
         'markPaymentType':'标记付款方式',
@@ -191,6 +194,7 @@ export default {
         'search': '搜索',
         'databaseHealth':'关于 {i} 数据库健康报告',
         'softwareOperator':'软件用户管理',
+        'setDriver':'设定司机'
     },
     menu: {
         'course': '定时',
@@ -351,7 +355,11 @@ export default {
         'printSplitTicket':'打印方式',
         'printSplitTicketTip':'您要如何打印这份已经分单的订单？',
         'cannotModify':'无法修改',
-        'noRightToModify':'您无权修改由 {i} 创建的订单'
+        'noRightToModify':'您无权修改由 {i} 创建的订单',
+        'switchOperator':'切换服务员',
+        'switchCurrentOperator':'您确定要从 {i} 切换成 {i} 吗？',
+        'tableCreateFailed':'无法开桌',
+        'tableCreateFailedTip':'您输入的密码不正确'
     },
     terminal: {
         'initial': '正在初始化 {i}...',
@@ -817,7 +825,7 @@ export default {
     tip:{
         'table':{
             'passwordRequire':'创建座位之前需要输入密码',
-            'autoClearTable':'客人付款之后自动还原桌子状态'
+            'autoClearTable':'客人付款之后自动还原座位状态'
         }
     }
 }

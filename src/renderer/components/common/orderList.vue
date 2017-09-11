@@ -134,7 +134,6 @@
                 </div>
             </div>
         </div>
-        <div class="driver btn" v-if="order.type ==='DELIVERY' && $route.name ==='History'" @click="setDriver">{{$t('button.setDriver')}}</div>
         <div :is="component" :init="componentData" @trigger="update"></div>
     </div>
 </template>
@@ -142,11 +141,10 @@
 import { mapGetters, mapActions } from 'vuex'
 import dialoger from '../common/dialoger'
 import itemMarker from '../menu/marker'
-import driver from '../history/driver'
 import Printer from '../../print'
 import config from './config'
 export default {
-    components: { config, driver, itemMarker, dialoger },
+    components: { config, itemMarker, dialoger },
     props: ['layout', 'group', 'display', 'sort'],
     data() {
         return {
@@ -338,9 +336,6 @@ export default {
         update(config) {
             this.setOrder(config);
             this.calculator(this.cart);
-        },
-        setDriver() {
-            this.$p("driver", { driver: this.order.driver, ticket: this.ticket.number })
         },
         countItems(content){
             let count = 0;

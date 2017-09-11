@@ -88,12 +88,23 @@ export default {
                     timeout: { fn: 'resolve', duration: 10000 }, buttons: [{ text: 'button.extend', fn: 'reject' }]
                 }).then(() => {
                     this.$q();
+                    this.doubleCheck();
                     this.resetAll();
                     this.$router.push({ path: '/main/lock' })
                 }).catch(() => {
                     this.$q();
                     this.setApp({ lastActivity: +new Date(), autoLock: true })
                 })
+            }
+        },
+        doubleCheck() {
+            if (this.$route.name === 'Menu' && this.app.mode === 'create' && this.ticket.type === 'DINE_IN') {
+                this.resetCurrentTable();
+                this.$socket.emit("TABLE_MODIFIED", this.currentTable);
+            }
+            if (this.order.pending) {
+                Object.assign(this.order, { pending: false })
+                this.$socket.emit("[UPDATE] INVOICE", this.order)
             }
         },
         printFromSpooler(i) {
@@ -125,6 +136,7 @@ export default {
             this.$route.name === 'Menu' && this.$router.push({ name: 'Information' })
         },
         ...mapActions(['setApp',
+            'resetAll',
             'setTicket',
             'setCustomer',
             'updateTable',
@@ -147,6 +159,7 @@ export default {
             'updateTableInfo',
             'newReservation',
             'updateReservation',
+            'resetCurrentTable',
             'setReservation',
             'setLastSync'])
     },

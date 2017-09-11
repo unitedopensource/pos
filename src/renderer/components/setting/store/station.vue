@@ -52,7 +52,7 @@
         <section class="card">
             <header>{{$t('setting.security')}}</header>
             <article>
-                <smart-range v-model="workStation.timeout" label="text.autoLock" min="0" max="600" step="30"></smart-range>
+                <smart-range v-model.number="workStation.timeout" label="text.autoLock" min="0" max="600" step="30"></smart-range>
             </article>
         </section>
         <section class="card">

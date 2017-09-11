@@ -7,7 +7,7 @@
             <order-summary :data="prevHistory.length ? prevHistory : history" :date="calendarDate || today" @filter="setFilter"></order-summary>
         </header>
         <article>
-            <grids :date="calendarDate || today" @change="setCalendar"></grids>
+            <side-function :date="calendarDate || today" @change="setCalendar"></side-function>
             <section class="tickets">
                 <div class="inner">
                     <div v-for="(ticket,index) in invoices" class="invoice" @click="getInvoice(ticket)" :data-number="ticket.number" :key="index" :class="{void:ticket.status === 0,settled:ticket.settled,split:ticket.split}">
@@ -22,6 +22,7 @@
             </section>
             <section class="ticket">
                 <order-list layout="display" :display="true"></order-list>
+                <order-function></order-function>
             </section>
         </article>
         <div :is="component" :init="componentData"></div>
@@ -35,10 +36,11 @@ import orderSummary from './history/summary'
 import Maintenance from './dock/maintenance'
 import orderList from './common/orderList'
 import dialoger from './common/dialoger'
-import grids from './history/function'
+import sideFunction from './history/sideFunction'
+import orderFunction from './history/orderFunction'
 
 export default {
-    components: { grids, orderList, orderSummary, Maintenance, dialoger, pagination },
+    components: { sideFunction, orderFunction, orderList, orderSummary, Maintenance, dialoger, pagination },
     data() {
         return {
             today: today(),
@@ -296,9 +298,11 @@ section.ticket {
     font-family: 'Agency FB';
     font-size: 30px;
 }
-.invoice.active.split:after{
+
+.invoice.active.split:after {
     display: none;
 }
+
 .invoice.split:after {
     content: ' ';
     position: absolute;

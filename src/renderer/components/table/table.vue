@@ -115,7 +115,7 @@ export default {
                         current: {
                             color: "",
                             group: "",
-                            guest: 0,
+                            guest: 1,
                             invoice: [],
                             server: "",
                             time: ""

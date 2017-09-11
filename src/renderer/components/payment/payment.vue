@@ -197,18 +197,29 @@ export default {
         }
     },
     created() {
-        this.init.hasOwnProperty("payment") ? this.payIndividual() :
-            this.order.split ? this.askSplitPay() : this.initial();
+        if (!this.order.pending) {
+            this.init.hasOwnProperty("payment") ? this.payIndividual() :
+                this.order.split ? this.askSplitPay() : this.initial();
+        } else {
+            this.orderPending()
+        }
     },
     mounted() {
         this.setPaymentType(this.payment.type || 'CASH');
     },
     methods: {
+        orderPending() {
+            this.$dialog({
+                title: 'dialog.pending', msg: 'dialog.pendingOrderAccessDenied', buttons: [{ text: 'button.confirm', fn: 'resolve' }]
+            }).then(() => { this.init.resolve() })
+        },
         initial() {
             this.payment = JSON.parse(JSON.stringify(this.order.payment));
             this.payment.balance = Math.max(0, (this.payment.due - this.payment.paid));
             this.getQuickInput(this.payment.balance);
             this.poleDisplay(["TOTAL DUE:", ""], ["", this.payment.due.toFixed(2)]);
+            this.setOrder({ pending: true });
+            this.$socket.emit("[UPDATE] INVOICE", this.order)
         },
         payIndividual() {
             this.payMode = false;
@@ -680,7 +691,7 @@ export default {
                         buttons: [{ text: 'button.noReceipt', fn: 'reject' }, { text: 'button.printReceipt', fn: 'resolve' }]
                     }).then(() => { this.printSplitReceipt() }).catch(() => { this.nextSplit() });
                 } else {
-                    this.init.resolve(this.payment)
+                    this.exit(this.payment)
                 }
             }
         },
@@ -707,7 +718,7 @@ export default {
                 return;
             };
             let index = this.order.splitPayment.findIndex(ticket => !ticket.settled);
-            index === -1 ? this.saveSplitPayment() && this.init.resolve() : this.switchInvoice(index);
+            index === -1 ? this.saveSplitPayment() && this.exit() : this.switchInvoice(index);
         },
         saveSplitPayment() {
             let customer = Object.assign({}, this.customer);
@@ -727,6 +738,7 @@ export default {
                             status: 1,
                             settled: true,
                             time: +new Date,
+                            pending: false,
                             date: today()
                         });
                         this.$socket.emit("[SAVE] INVOICE", this.order);
@@ -737,6 +749,7 @@ export default {
                             modify: this.order.modify + 1,
                             cashier: this.op.name,
                             payment: this.combineSplitPayment(),
+                            pending: false,
                             settled: true
                         });
                         this.$socket.emit("[UPDATE] INVOICE", this.order)
@@ -748,6 +761,7 @@ export default {
                     this.setOrder({
                         cashier: this.op.name,
                         payment: this.combineSplitPayment(),
+                        pending: false,
                         settled: true
                     });
                     this.$socket.emit("[UPDATE] INVOICE", this.order);
@@ -758,6 +772,7 @@ export default {
                     this.setOrder({
                         cashier: this.op.name,
                         payment: this.combineSplitPayment(),
+                        pending: false,
                         settled: true
                     });
                     this.$socket.emit("[UPDATE] INVOICE", this.order);
@@ -788,9 +803,9 @@ export default {
             if (this.payMode) {
                 this.setOrder({ cashier: this.op.name, payment: this.payment });
                 (this.$route.name === 'History' || this.$route.name === 'Table') && this.$socket.emit("[UPDATE] INVOICE", this.order);
-                this.init.resolve();
+                this.exit()
             } else {
-                this.init.resolve(this.payment);
+                this.exit(this.payment)
             }
         },
         invoiceSettled(ticket, print) {
@@ -801,6 +816,7 @@ export default {
                     item.print = true;
                     item.pending = false;
                 });
+                ticket.pending = false;
                 this.$socket.emit("[UPDATE] INVOICE", ticket);
             }
 
@@ -916,6 +932,13 @@ export default {
             if (!this.device.poleDisplay) return;
             poleDisplay.write('\f');
             poleDisplay.write(line(line1, line2));
+        },
+        exit(payment) {
+            this.$nextTick(() => {
+                this.setOrder({ pending: false })
+                this.$socket.emit("[UPDATE] INVOICE", this.order)
+                this.init.resolve(payment)
+            })
         },
         ...mapActions(['setOrder', 'resetMenu', 'resetAll', 'setTableInfo', 'resetCurrentTable'])
     },

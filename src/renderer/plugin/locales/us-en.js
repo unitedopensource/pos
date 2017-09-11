@@ -181,7 +181,10 @@ export default {
         'apply': 'Apply',
         'pay': 'Pay',
         'combinePrint':'Combine Print',
-        'splitPrint':'Split Print'
+        'splitPrint':'Split Print',
+        'discount':'Discount',
+        'thirdParty':'Third Party',
+        'driver':'Driver',
     },
     title:{
         'markPaymentType':'Mark Payment Type',
@@ -191,6 +194,7 @@ export default {
         'voidNote': 'Void Note',
         'databaseHealth':'{i} Database Health Report',
         'softwareOperator':'Software Users Management',
+        'setDriver':'Set Driver'
     },
     menu: {
         'course': 'Course',
@@ -351,7 +355,11 @@ export default {
         'printSplitTicket':'Print Ticket',
         'printSplitTicketTip':'How would you like to print this split ticket',
         'cannotModify':'Modify Denied',
-        'noRightToModify':'You can not modify this ticket created by {i}'
+        'noRightToModify':'You can not modify this ticket created by {i}',
+        'switchOperator':'Switch Staff',
+        'switchCurrentOperator':'Are you sure to switch staff from {i} to {i}?',
+        'tableCreateFailed':'Table Create Failed',
+        'tableCreateFailedTip':'The pin you have entered does not match any record'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',
@@ -818,7 +826,7 @@ export default {
     tip:{
         'table':{
             'passwordRequire':'Password input required before create a new table.',
-            'autoClearTable':'Auto restore table status after settlement.'
+            'autoClearTable':'Auto restore table status after settling ticket.'
         }
     }
 }

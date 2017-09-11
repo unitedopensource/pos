@@ -15,10 +15,10 @@
                     <span class="text">{{$t('nav.event')}}</span>
                 </router-link>
             </div>
-            <router-link tag="li" :to="{name:'Setting.index'}">
+            <li @click="back">
                 <i class="fa fa-arrow-circle-left"></i>
                 <span class="text">{{$t('nav.back')}}</span>
-            </router-link>
+            </li>
         </ul>
         <section class="content">
             <transition name="switch">
@@ -56,7 +56,9 @@ export default {
     },
     methods: {
         back() {
-            this.$router.push({ name: 'Setting.index' })
+            this.$route.name === 'Setting.operator.index' ?
+                this.$router.push({ name: 'Setting.index' }) :
+                this.$router.push({ name: 'Setting.operator.index' })
         },
         onChange(operator) {
             this.txt = this.$t("text.saveSetting");
@@ -77,7 +79,7 @@ export default {
                 return;
             };
             this.$socket.emit("[INQUIRY] OPERATORS", operators => {
-                operators = operators.map(operator=>operator._id !== this.temp._id).filter((op, index) => (index !== this.index && op.pin)).map(op => op.pin);
+                operators = operators.map(operator => operator._id !== this.temp._id).filter((op, index) => (index !== this.index && op.pin)).map(op => op.pin);
                 if (operators.includes(pin)) {
                     this.$dialog({
                         title: 'dialog.saveOperatorFailed', msg: 'dialog.operatorPinDuplicate',
