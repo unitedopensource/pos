@@ -56,6 +56,10 @@ export default {
     },
     methods: {
         editOrder() {
+            if (!this.approval(this.op.view, 'tables') && this.currentTable.current.server !== this.op.name) {
+                this.editDenied();
+                return
+            }
             if (!this.order.settled) {
                 this.setApp({ mode: 'edit' })
                 this.setTicket({ type: 'DINE_IN', number: this.order.number })
@@ -63,6 +67,11 @@ export default {
             } else {
                 this.handleSettledOrder()
             }
+        },
+        editDenied() {
+            this.$dialog({
+                title: 'dialog.cannotModify', msg: ['dialog.noRightToModify', this.order.server], buttons: [{ text: 'button.confirm', fn: 'resolve' }]
+            }).then(() => { this.$q() })
         },
         handleSettledOrder() {
             this.$dialog({

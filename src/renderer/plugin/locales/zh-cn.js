@@ -349,7 +349,9 @@ export default {
         'massiveShutdownConfirm':'集体关机',
         'massiveShutdownConfirmTip':'您确定要一次性关闭所有工作站的电脑吗？',
         'printSplitTicket':'打印方式',
-        'printSplitTicketTip':'您要如何打印这份已经分单的订单？'
+        'printSplitTicketTip':'您要如何打印这份已经分单的订单？',
+        'cannotModify':'无法修改',
+        'noRightToModify':'您无权修改由 {i} 创建的订单'
     },
     terminal: {
         'initial': '正在初始化 {i}...',

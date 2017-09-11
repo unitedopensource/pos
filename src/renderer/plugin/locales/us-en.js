@@ -349,7 +349,9 @@ export default {
         'massiveShutdownConfirm':'Shutdown All Stations',
         'massiveShutdownConfirmTip':'Are you sure you are going to shutdown all stations at once?',
         'printSplitTicket':'Print Ticket',
-        'printSplitTicketTip':'How would you like to print this split ticket'
+        'printSplitTicketTip':'How would you like to print this split ticket',
+        'cannotModify':'Modify Denied',
+        'noRightToModify':'You can not modify this ticket created by {i}'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',
