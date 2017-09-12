@@ -38,15 +38,20 @@ export default {
             })
             Object.assign(this.order, {
                 settled: true,
-                cashier: this.op
+                cashier: this.op.name
             })
+            if (this.order.tableID) {
+                let table = this.order.tableID;
+                let status = this.store.table.autoClean ? 1 : 4;
+                this.$socket.emit("[UPDATE] TABLE_SETTLED", { table, status })
+            }
             this.$socket.emit('[UPDATE] INVOICE', this.order);
             this.init.resolve(this.type);
         },
         ...mapActions(['setOrder'])
     },
     computed: {
-        ...mapGetters(['op', 'order'])
+        ...mapGetters(['op', 'store', 'order'])
     }
 
 }

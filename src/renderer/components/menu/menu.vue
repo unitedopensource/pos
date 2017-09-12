@@ -70,7 +70,8 @@ export default {
             this.app.mode === 'create' && this.setOrder({
                 _id: ObjectId(),
                 server: this.op.name,
-                station: this.station.alies
+                station: this.station.alies,
+                type: this.ticket.type
             });
         },
         flatten(items) {
@@ -98,7 +99,8 @@ export default {
             this.setOrder({
                 table: this.currentTable.name,
                 tableID: this.currentTable._id,
-                guest: this.currentTable.current.guest
+                guest: this.currentTable.current.guest,
+                type: this.ticket.type
             })
         },
         poleDisplay(line1, line2) {

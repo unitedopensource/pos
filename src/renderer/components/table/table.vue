@@ -131,7 +131,7 @@ export default {
     },
     computed: {
         viewSection() {
-            return this.tables[this.view].item
+            return this.tables[this.view].item;
         },
         ...mapGetters(['op', 'sync', 'store', 'tables', 'language', 'history', 'currentTable'])
     }

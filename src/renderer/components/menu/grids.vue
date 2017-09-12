@@ -224,7 +224,7 @@ export default {
       } else {
         order = this.combineOrderInfo({});
       }
-      print && this.station.printOnDone && Printer.init(this.config).setJob("receipt").print(order);
+      print && Printer.init(this.config).setJob("receipt").print(order,true);
       print && order.content.forEach(item => {
         delete item.new;
         item.print = true;

@@ -363,7 +363,9 @@ export default {
         'tableCreateFailed': 'Table Create Failed',
         'tableCreateFailedTip': 'The pin you have entered does not match any record',
         'reprintBatchReport': 'Reprint Batch Report',
-        'reprintBatchReportTip': 'Do you want to reprint this batch report?'
+        'reprintBatchReportTip': 'Do you want to reprint this batch report?',
+        'pending':'Access Denied',
+        'pendingOrderAccessDenied':'Other cashier is processing...'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',

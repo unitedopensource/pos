@@ -9,7 +9,7 @@
                         <label :for="'split_'+index" class="tag">#{{index + 1}}</label>
                     </label>
                 </div>
-                <i class="fa fa-times" @click="init.reject"></i>
+                <i class="fa fa-times" @click="exit"></i>
             </header>
             <nav>
                 <div class="typeWrap">
@@ -702,6 +702,7 @@ export default {
             order.payment = order.splitPayment[this.current];
             order.cashier = this.op.name;
             order.customer = this.customer;
+            order.content = order.content.filter(item=>item.sort === index);
             Printer.init(this.config).setJob("receipt").print(order);
             order.content.filter(item => item.sort === this.payment.sort).forEach(item => {
                 delete item.new;

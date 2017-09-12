@@ -20,7 +20,7 @@
             </section>
             <footer>
                 <div class="f1">
-                    <div class="btn confirm" @click="settleInvoice($event)">{{$t('button.payment')}}</div>
+                    <!-- <div class="btn confirm" @click="settleInvoice($event)">{{$t('button.payment')}}</div> -->
                     <div class="btn" @click="printAllInvoices">{{$t('button.printAll')}}</div>
                     <div class="btn" @click="splitEvenly">{{$t('button.evenSplit')}}</div>
                 </div>
@@ -216,8 +216,13 @@ export default {
                 this.splitPayment[split].settled && settle++
             });
             if (settle === this.split) {
-                this.setOrder({ settled: true });
-                this.quit();
+                this.setOrder({ settled: true })
+                // if (this.order.tableID) {
+                //     let table = this.order.tableID;
+                //     let status = this.config.store.table.autoClean ? 1 : 4;
+                //     this.$socket.emit("[UPDATE] TABLE_SETTLED", { table, status })
+                // }
+                this.quit()
             }
         },
         gatherPayment() {
@@ -294,16 +299,36 @@ export default {
                 this.$socket.emit("[UPDATE] INVOICE", this.order);
                 this.init.resolve();
             } else if (this.$route.name === 'Menu' && this.app.mode === 'create') {
-                this.$socket.emit("[SAVE] INVOICE", this.order);
-                this.resetAll();
-                this.$router.push({ path: '/main' });
+                if (this.ticket.type === 'DINE_IN') {
+                    let current = Object.assign({}, this.currentTable.current, {
+                        invoice: [this.order._id],
+                        color: "",
+                        group: "",
+                        guest: this.currentTable.current.guest || 0,
+                        server: this.op.name,
+                        time: +new Date()
+                    });
+                    this.setTableInfo({ current });
+                    this.$socket.emit("[SAVE] DINE_IN_INVOICE", { table: this.currentTable, order: this.order });
+                    this.$socket.emit("INQUIRY_TICKET_NUMBER");
+                    this.$router.push({ name: "Table" });
+                } else {
+                    this.$socket.emit("[SAVE] INVOICE", this.order);
+                    this.resetAll();
+                    this.$router.push({ path: '/main' });
+                }
             } else {
                 this.$socket.emit("[UPDATE] INVOICE", this.order);
-                this.resetAll();
-                this.$router.push({ path: '/main' });
+                if (this.ticket.type === 'DINE_IN') {
+                    this.$router.push({ name: "Table" });
+                } else {
+                    this.resetAll();
+                    this.$router.push({ path: '/main' });
+                }
+
             }
         },
-        ...mapActions(['setOrder', 'resetAll', 'resetChoiceSet', 'resetPointer'])
+        ...mapActions(['setOrder', 'resetAll', 'resetChoiceSet', 'resetPointer', 'setTableInfo'])
     },
     computed: {
         offset() {
@@ -314,7 +339,7 @@ export default {
         remain() {
             return this.items.filter(item => item.sort === 0).length
         },
-        ...mapGetters(['op', 'app', 'config', 'order', 'ticket', 'customer', 'station'])
+        ...mapGetters(['op', 'app', 'config', 'order', 'ticket', 'customer', 'station', 'currentTable'])
     }
 }
 </script>

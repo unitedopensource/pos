@@ -362,7 +362,9 @@ export default {
         'tableCreateFailed':'无法开桌',
         'tableCreateFailedTip':'您输入的密码不正确',
         'reprintBatchReport':'重新打印',
-        'reprintBatchReportTip':'您是否需要重新打印结账信息？'
+        'reprintBatchReportTip':'您是否需要重新打印结账信息？',
+        'pending':'处理中',
+        'pendingOrderAccessDenied':'这单正在付款中...'
     },
     terminal: {
         'initial': '正在初始化 {i}...',

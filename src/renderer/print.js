@@ -10,11 +10,11 @@ Printer.prototype.setJob = function (job) {
   this.job = job || "Receipt";
   return this;
 };
-Printer.prototype.print = function (data) {
+Printer.prototype.print = function (data, done) {
   if (!this.job) this.init();
   switch (this.job) {
     case "receipt":
-      this.printReceipt(data);
+      this.printReceipt(data, done);
       break;
     case "activation":
       this.printGiftCard("Activation", data);
@@ -72,37 +72,53 @@ Printer.prototype.buzzer = function (name) {
   name && this.printer.SET_PRINTER_INDEX(name);
   CLODOP.SEND_PRINT_RAWDATA(String.fromCharCode(27) + String.fromCharCode(67) + String.fromCharCode(4) + String.fromCharCode(2) + String.fromCharCode(3));
 }
-Printer.prototype.printReceipt = function (raw) {
+Printer.prototype.printReceipt = function (raw, done) {
 
-  let printers = this.config.printer;
+  let devices = this.config.printer;
+  let printers = [];
+  for (let name in devices) {
+    devices.hasOwnProperty(name) && printers.push(name)
+  }
+  if (done && !this.config.store.table.printOnDone) {
+    let index = printers.indexOf('cashier')
+    printers.splice(index, 1)
+  }
   let redirect = this.config.station.printRedirect;
 
-  for (let name in printers) {
-    if (printers.hasOwnProperty(name)) {
-      if (printers[name]['labelPrinter']) {
+
+  //for (let name in printers) {
+  printers.forEach(name => {
+    if (devices.hasOwnProperty(name)) {
+      if (devices[name]['labelPrinter']) {
         this.printLabel(name, raw);
         return;
       }
-      let ctrl = printers[name]['control'];
-      let isPrint = printers[name]['print'][raw.type];
+      let ctrl = devices[name]['control'];
+      let isPrint = devices[name]['print'][raw.type];
       let header = createHeader(this.config.store, raw);
       let list = isPrint ? createList(name, ctrl, raw) : [];
-      console.log(raw.type)
       if (list && list.length) {
-        let style = createStyle(printers[name]['control']);
-        let footer = createFooter(printers[name]['control'], raw);
+        let style = createStyle(devices[name]['control']);
+        let footer = createFooter(devices[name]['control'], raw);
 
         let html = header + list + footer + style;
 
-        printers[name].control.buzzer && this.buzzer(name);
+        devices[name].control.buzzer && this.buzzer(name);
 
         this.printer.PRINT_INIT(this.job);
         this.printer.ADD_PRINT_HTM(0, 0, "100%", "100%", html);
-        redirect && (name = this.config.station.print[name] || name);
+        if (redirect) {
+          let to = this.config.station.print[name];
+          if (printers[name]) {
+            name = to
+          } else {
+            return
+          }
+        }
         this.printer.SET_PRINTER_INDEX(name);
         this.printer.PRINT();
 
-        if (printers[name].double[raw.type]) {
+        if (devices[name].double[raw.type]) {
           this.printer.PRINT_INIT('Reprint receipt');
           this.printer.ADD_PRINT_HTM(0, 0, "100%", "100%", html);
           this.printer.SET_PRINTER_INDEX(name);
@@ -110,9 +126,9 @@ Printer.prototype.printReceipt = function (raw) {
         }
       }
     }
-  };
+  });
   function createHeader(store, data) {
-    let { type, time, number, server, cashier, station, table, customer } = data;
+    let { type, time, number, server, cashier, station, table, guest, customer } = data;
     let ticket = {};
     let phone = null;
     try {
@@ -168,9 +184,11 @@ Printer.prototype.printReceipt = function (raw) {
                           <span class="text">Station:</span><span class="value">${station || ""}</span>
                         </span></p>`;
 
+    let hasCashier = cashier ? `<span class="text">Cashier:</span><span class="value">${cashier}</span>` :
+      `<span class="text">Guest:</span><span class="value">${guest}</span>`
     ticketInfo += (type === 'DINE_IN' || type === 'BAR' || type === 'PRE_PAYMENT' || type === 'PAYMENT') ?
       `<p><span class="wrap">
-              <span class="text">Cashier:</span><span class="value">${cashier || ""}</span>
+              ${hasCashier}
               <span class="text">Table:</span><span class="value">${table || ""}</span>
             </span></p>`: "";
 

@@ -261,6 +261,7 @@ const mutations = {
     delete state.order.payment.paidGift;
     delete state.order.payment.type;
     delete state.order.settled;
+    delete state.order.pending;
 
     if (state.order.payment.splitPayment) {
       delete state.order.payment.splitPayment;
