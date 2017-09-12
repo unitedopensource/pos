@@ -107,18 +107,17 @@ Printer.prototype.printReceipt = function (raw, done) {
 
         this.printer.PRINT_INIT(this.job);
         this.printer.ADD_PRINT_HTM(0, 0, "100%", "100%", html);
+
+
         if (redirect) {
-          let to = this.config.station.print[name];
-          if (printers[name]) {
-            name = to
-          } else {
-            return
-          }
+          let to = this.config.station.print[name] || name;
+          name = to;
         }
+
         this.printer.SET_PRINTER_INDEX(name);
         this.printer.PRINT();
 
-        if (devices[name].double[raw.type]) {
+        if (devices[name] && devices[name].double[raw.type]) {
           this.printer.PRINT_INIT('Reprint receipt');
           this.printer.ADD_PRINT_HTM(0, 0, "100%", "100%", html);
           this.printer.SET_PRINTER_INDEX(name);

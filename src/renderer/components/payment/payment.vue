@@ -197,12 +197,12 @@ export default {
         }
     },
     created() {
-        if (!this.order.pending) {
-            this.init.hasOwnProperty("payment") ? this.payIndividual() :
-                this.order.split ? this.askSplitPay() : this.initial();
-        } else {
-            this.orderPending()
-        }
+        //if (!this.order.pending) {
+        this.init.hasOwnProperty("payment") ? this.payIndividual() :
+            this.order.split ? this.askSplitPay() : this.initial();
+        // } else {
+        //     this.orderPending()
+        // }
     },
     mounted() {
         this.setPaymentType(this.payment.type || 'CASH');
@@ -702,7 +702,7 @@ export default {
             order.payment = order.splitPayment[this.current];
             order.cashier = this.op.name;
             order.customer = this.customer;
-            order.content = order.content.filter(item=>item.sort === index);
+            order.content = order.content.filter(item => item.sort === index);
             Printer.init(this.config).setJob("receipt").print(order);
             order.content.filter(item => item.sort === this.payment.sort).forEach(item => {
                 delete item.new;
@@ -783,7 +783,7 @@ export default {
         },
         combineSplitPayment() {
             let payment = { tip: 0, gratuity: 0, discount: 0, delivery: 0, subtotal: 0, tax: 0, total: 0, paid: 0, due: 0, log: [], paidCash: 0, paidCredit: 0, paidGift: 0 };
-            this.order.splitPayment.forEach(settle => {
+            this.order.splitPayment.forEach((settle) => {
                 payment.tip += parseFloat(settle.tip);
                 payment.gratuity += parseFloat(settle.gratuity);
                 payment.discount += parseFloat(settle.discount);
@@ -846,24 +846,15 @@ export default {
                     this.init.resolve();
                     break;
                 default:
+                    this.clearTable(ticket);
                     this.init.resolve();
             }
         },
         clearTable(ticket) {
-            if (ticket.type === 'DINE_IN' && ticket.hasOwnProperty("tableID")) {
-                let table = this.getTable(ticket.tableID);
-                this.store.table.autoClean ? Object.assign(table, {
-                    current: {
-                        invoice: [],
-                        color: "",
-                        group: "",
-                        guest: 0,
-                        server: "",
-                        time: ""
-                    },
-                    status: 1,
-                }) : table.status = 4;
-                this.$socket.emit("TABLE_MODIFIED", table);
+            if (ticket.type === 'DINE_IN' && ticket.tableID) {
+                let table = ticket.tableID;
+                let status = this.config.store.table.autoClean ? 1 : 4;
+                this.$socket.emit("[UPDATE] TABLE_SETTLED", { table, status })
             }
         },
         getTable(id) {
