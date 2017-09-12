@@ -218,8 +218,6 @@ export default {
             this.payment.balance = Math.max(0, (this.payment.due - this.payment.paid));
             this.getQuickInput(this.payment.balance);
             this.poleDisplay(["TOTAL DUE:", ""], ["", this.payment.due.toFixed(2)]);
-            this.setOrder({ pending: true });
-            this.$socket.emit("[UPDATE] INVOICE", this.order)
         },
         payIndividual() {
             this.payMode = false;

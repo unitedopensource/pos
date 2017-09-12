@@ -27,6 +27,7 @@ export default {
         'BUFFET': '自助餐',
         'REPORT': '报表',
         'PAYMENT': '收据',
+        'DELAY':'延迟',
         'other': '其它',
         'allInvoice': '所有订单',
         'walkInInvoice': '外等订单',

@@ -27,6 +27,7 @@ export default {
         'BUFFET': 'Buffet',
         'REPORT': 'Report',
         'PAYMENT': 'Payment',
+        'DELAY':'Delay',
         'other': 'Other',
         'allInvoice': 'All Invoices',
         'walkInInvoice': 'WalkIn Inv.',

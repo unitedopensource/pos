@@ -18,6 +18,7 @@
                             <checkbox v-model="profile.print.SALES" label="type.SALES"></checkbox>
                             <checkbox v-model="profile.print.BUFFET" label="type.BUFFET"></checkbox>
                             <checkbox v-model="profile.print.CREDITCARD" label="type.CREDIT_CARD"></checkbox>
+                            <checkbox v-model="profile.print.DELAY" label="type.DELAY"></checkbox>
                         </div>
                     </fieldset>
                     <fieldset class="section">
@@ -405,7 +406,7 @@ legend {
 
 section.setting {
     background: rgba(238, 238, 238, 0.57);
-    width: 350px;
+    width: 360px;
 }
 
 .selection .input {

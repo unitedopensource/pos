@@ -305,6 +305,7 @@ export default {
             let remain = items.filter(item => !item.print).length;
             try {
                 order.content = this.spooler;
+                order.delay = +new Date();
                 Printer.init(this.config).setJob("receipt").print(order);
                 order.content = items;
                 if (remain === 0) order.print = true;

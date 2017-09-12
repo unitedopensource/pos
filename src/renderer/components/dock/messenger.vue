@@ -17,7 +17,8 @@
             </header>
             <ul>
                 <li v-for="(invoice,index) in spooler" :key="index">
-                    <span class="timer">{{invoice.delay | moment('hh:mm')}}</span>
+                    <span class="timer" v-if="index === 0">{{invoice.delay | countDown(time)}}</span>
+                    <span class="timer" v-else>{{invoice.delay | moment('HH:mm')}}</span>
                     <div class="f1">
                         <span class="invoice">{{invoice.number}}</span>
                         <span>{{$t('type.'+invoice.type)}}</span>
@@ -92,17 +93,24 @@ export default {
     filters: {
         tooltip(data, lang) {
             return data.map(item => (item.qty + ' ' + item[lang])).join("\n")
+        },
+        countDown(schedule, current) {
+            let duration = schedule - current;
+            let hh = ('00' + Math.floor((duration % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).slice(-2);
+            let mm = ('00' + Math.floor((duration % (1000 * 60 * 60)) / (1000 * 60))).slice(-2);
+            let ss = ('00' + Math.floor((duration % (1000 * 60)) / 1000)).slice(-2);
+            return `${hh}:${mm}:${ss}`
         }
     },
     computed: {
-        ...mapGetters(['config', 'history', 'spooler', 'language'])
+        ...mapGetters(['time', 'config', 'history', 'spooler', 'language'])
     }
 }
 </script>
 
 <style scoped>
 .spooler {
-    min-width: 302px;
+    min-width: 330px;
     font-size: 16px;
     position: absolute;
     right: 10px;
@@ -171,7 +179,7 @@ li {
     color: #fff;
     padding: 0px 3px;
     border-radius: 4px;
-    width: 30px;
+    width: 50px;
     display: inline-block;
     font-family: 'Agency FB';
     text-align: center;

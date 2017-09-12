@@ -94,7 +94,7 @@ Printer.prototype.printReceipt = function (raw, done) {
         return;
       }
       let ctrl = devices[name]['control'];
-      let isPrint = devices[name]['print'][raw.type];
+      let isPrint = raw.delay ? devices[name]['print']['DELAY'] : devices[name]['print'][raw.type];
       let header = createHeader(this.config.store, raw);
       let list = isPrint ? createList(name, ctrl, raw) : [];
       if (list && list.length) {
@@ -165,6 +165,9 @@ Printer.prototype.printReceipt = function (raw, done) {
         ticket.zhCN = "自助餐";
         ticket.usEN = "Buffet";
         break;
+      case "DELAY":
+        ticket.zhCN = "Delay";
+        ticket.usEN = 'Delay';
       default:
         ticket.zhCN = '\u8054\u5408\u5546\u4E1A\u7535\u8111\u516C\u53F8';
         ticket.usEN = "United POS Demo";

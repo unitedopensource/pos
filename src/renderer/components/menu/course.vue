@@ -166,6 +166,7 @@ export default {
             return item
           })
         });
+        console.log(order)
         return order
       }).forEach(task => {
         this.delayPrint(task)
