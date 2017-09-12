@@ -386,36 +386,38 @@ export default {
                 voided = 0, voidedAmount = 0,
                 cash = 0, cashAmount = 0,
                 credit = 0, creditAmount = 0,
+                creditTip = 0, creditTipAmount = 0,
                 gift = 0, giftAmount = 0;
 
             data.forEach(ticket => {
                 let due = parseFloat(ticket.payment.due);
-                switch (ticket.type) {
-                    case "WALK_IN":
-                        walkin++;
-                        walkinAmount += due;
-                        break;
-                    case "PICK_UP":
-                        pickup++;
-                        pickupAmount += due;
-                        break;
-                    case "DELIVERY":
-                        delivery++;
-                        deliveryAmount += due;
-                        break;
-                    case "DINE_IN":
-                        dinein++;
-                        dineinAmount += due;
-                        break;
-                    case "BAR":
-                        bar++;
-                        barAmount += due;
-                        break;
-                    default:
-                        other++;
-                        otherAmount += due;
-                }
+
                 if (ticket.status === 1) {
+                    switch (ticket.type) {
+                        case "WALK_IN":
+                            walkin++;
+                            walkinAmount += due;
+                            break;
+                        case "PICK_UP":
+                            pickup++;
+                            pickupAmount += due;
+                            break;
+                        case "DELIVERY":
+                            delivery++;
+                            deliveryAmount += due;
+                            break;
+                        case "DINE_IN":
+                            dinein++;
+                            dineinAmount += due;
+                            break;
+                        case "BAR":
+                            bar++;
+                            barAmount += due;
+                            break;
+                        default:
+                            other++;
+                            otherAmount += due;
+                    }
                     gross++;
                     grossAmount += parseFloat(ticket.payment.total);
                     netAmount += due;
@@ -423,30 +425,35 @@ export default {
                         discount++;
                         discountAmount += parseFloat(ticket.payment.discount)
                     }
+                    if (ticket.settled) {
+                        settle++;
+                        settleAmount += due;
+                        switch (ticket.payment.type) {
+                            case "CASH":
+                                cash++;
+                                cashAmount += due;
+                                break;
+                            case "CREDIT":
+                                credit++;
+                                creditAmount += due;
+                                if (ticket.payment.tip > 0) {
+                                    creditTip++;
+                                    creditTipAmount += parseFloat(ticket.payment.tip)
+                                }
+                                break;
+                            case "GIFT":
+                                gift++;
+                                giftAmount += due;
+                                break;
+                        }
+
+                    } else if (!ticket.payment.settled) {
+                        unsettle++;
+                        unsettleAmount += due;
+                    }
                 } else {
                     voided++;
                     voidedAmount += parseFloat(ticket.payment.total);
-                }
-                if (ticket.settled) {
-                    settle++;
-                    settleAmount += due;
-                    switch (ticket.payment.type) {
-                        case "CASH":
-                            cash++;
-                            cashAmount += due;
-                            break;
-                        case "CREDIT":
-                            credit++;
-                            creditAmount += due;
-                            break;
-                        case "GIFT":
-                            gift++;
-                            giftAmount += due;
-                            break;
-                    }
-                } else {
-                    unsettle++;
-                    unsettleAmount += due;
                 }
             })
             this.report["SUMMARY"] = this.summary ? [{
@@ -475,6 +482,11 @@ export default {
                     text: this.$t('report.creditCard'),
                     count: credit,
                     amount: creditAmount
+                },
+                {
+                    text: this.$t('report.creditCardTip'),
+                    count: creditTip,
+                    amount: creditTipAmount
                 },
                 {
                     text: this.$t('report.giftCard'),
@@ -520,6 +532,10 @@ export default {
                     text: this.$t("type.unsettled"),
                     count: unsettle,
                     amount: unsettleAmount
+                }, {
+                    text: this.$t('type.voided'),
+                    count: voided,
+                    amount: voidedAmount
                 }] : null;
         },
         hourlyReport(data) {

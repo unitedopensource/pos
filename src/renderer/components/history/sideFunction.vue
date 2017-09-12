@@ -131,12 +131,15 @@ export default {
                 type: "warning", title: 'dialog.paymentRemoveConfirm',
                 msg: ['dialog.paymentRemoveConfirmTip', this.$t('type.' + this.order.payment.type)]
             }).then(() => {
+                this.$q();
                 this.removePayment();
                 this.updateInvoice(this.order);
-                this.$dialog({
-                    title: "dialog.paymentRemoved", msg: ["dialog.paymentRemovedTip", this.order.number],
-                    buttons: [{ text: 'button.done', fn: 'reject' }, { text: 'button.edit', fn: 'resolve' }]
-                }).then(() => { this.editOrder() }).catch(() => { this.$q() });
+                this.$nextTick(() => {
+                    this.$dialog({
+                        title: "dialog.paymentRemoved", msg: ["dialog.paymentRemovedTip", this.order.number],
+                        buttons: [{ text: 'button.done', fn: 'reject' }, { text: 'button.edit', fn: 'resolve' }]
+                    }).then(() => { this.editOrder() }).catch(() => { this.$q() })
+                })
             }).catch(() => { this.$q() })
         },
         reOpenOrder() {

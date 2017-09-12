@@ -1,6 +1,6 @@
 <template>
     <div class="popupMask center dark">
-        <div class="window" v-show="!component">
+        <div class="window">
             <header class="title">
                 <span>{{$t('title.markPaymentType')}}</span>
                 <i class="fa fa-times" @click="init.reject"></i>
@@ -15,22 +15,17 @@
                 <div class="btn" @click="confirm">{{$t('button.confirm')}}</div>
             </footer>
         </div>
-        <div :is="component" :init="componentData"></div>
     </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import dialoger from '../common/dialoger'
 export default {
     props: ['init'],
-    components: { dialoger },
     data() {
         return {
-            options: ['Seamless', 'GrubHub', 'Eat 24', 'Delivery.com', 'Simpon', 'UnionPay', 'Visa', 'Master', 'Discover', 'AE', 'CASH'],
-            type: 'CASH',
-            componentData: null,
-            component: null
+            options: ['Seamless', 'GrubHub', 'Eat 24', 'Uber Eat', 'Delivery.com', 'Simpon', 'UnionPay', 'Visa', 'Master', 'Discover', 'AE', 'CASH'],
+            type: 'CASH'
         }
     },
     methods: {
@@ -61,7 +56,7 @@ export default {
 .inner {
     display: flex;
     flex-wrap: wrap;
-    width: 435px;
+    width: 540px;
     justify-content: center;
 }
 

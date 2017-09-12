@@ -35,9 +35,11 @@ export default {
         'dineInInvoice': 'DineIn Inv.',
         'buffetInvoice': 'Buffet Inv.',
         'unpaidInvoice': 'Unpaid Inv.',
+        'voidedInvoice':'Voided Inv.',
         'driverInvoice': 'Driver Inv.',
         'settled': 'Settled',
         'unsettled': 'Unsettled',
+        'voided':'Voided',
         'chineseTakeOut': 'Chinese Take-out Restaurant',
         'chineseDineIn': 'Chinese Dine-in Restaurant',
         'japaneseDineIn': 'Japanese Dine-in Restaurant',
@@ -461,7 +463,8 @@ export default {
         'cash': 'Cash',
         'creditCard': 'Credit Card',
         'debitCard': 'Debit Card',
-        'giftCard': 'Gift Card'
+        'giftCard': 'Gift Card',
+        'creditCardTip':'Credit Card Tips'
     },
     text: {
         'starter':'Starter',
@@ -539,7 +542,7 @@ export default {
         'initialAmount': 'Initial Amount',
         'autoChargeAbove': '(N)Cust. Above',
         'mac': 'MAC',
-        'receiveOnlineOrder': 'Receive Online Order',
+        'receiveOnlineOrder': 'Online Order',
         'model': 'Model',
         'ipAddress': 'IP Address',
         'port': 'Port',
@@ -654,7 +657,8 @@ export default {
         'thirdPartyCount':'Third Party: {i}',
         'passwordRequire':'Password Req.',
         'newOperator':'New User',
-        'enterPin':'Please Enter Your Pin'
+        'enterPin':'Please Enter Your Pin',
+        'printReceipt':'Print Receipt'
     },
     nav:{
         'store':'Store',
@@ -826,7 +830,8 @@ export default {
     tip:{
         'table':{
             'passwordRequire':'Password input required before create a new table.',
-            'autoClearTable':'Auto restore table status after settling ticket.'
+            'autoClearTable':'Auto restore table status after settling ticket.',
+            'printReceiptOnDone':'Print receipt after Done'
         }
     }
 }

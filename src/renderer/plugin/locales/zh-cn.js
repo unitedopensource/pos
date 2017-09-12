@@ -38,6 +38,7 @@ export default {
         'driverInvoice': '司机订单',
         'settled': '已结账',
         'unsettled': '未结账',
+        'voided':'删除',
         'chineseTakeOut': '中餐外卖',
         'chineseDineIn': '中餐堂吃',
         'japaneseDineIn': '日餐堂吃',
@@ -461,7 +462,8 @@ export default {
         'cash': '现金',
         'creditCard': '信用卡',
         'debitCard': '借记卡',
-        'giftCard': '礼物卡'
+        'giftCard': '礼物卡',
+        'creditCardTip':'信用卡小费'
     },
     text: {
         'starter':'起始',
@@ -539,7 +541,7 @@ export default {
         'initialAmount': '起始金额',
         'autoChargeAbove': '(N)客人以上',
         'mac': '物理地址',
-        'receiveOnlineOrder': '接收网络订餐',
+        'receiveOnlineOrder': '网络订餐',
         'model': '型号',
         'ipAddress': 'IP地址',
         'port': '端口',
@@ -653,7 +655,8 @@ export default {
         'thirdPartyCount':'第三方 {i} 名',
         'passwordRequire':'需要密码',
         'newOperator':'新建用户',
-        'enterPin':'输入密码'
+        'enterPin':'输入密码',
+        'printReceipt':'打印收据'
     },
     nav:{
         'store':'店面',
@@ -825,7 +828,8 @@ export default {
     tip:{
         'table':{
             'passwordRequire':'创建座位之前需要输入密码',
-            'autoClearTable':'客人付款之后自动还原座位状态'
+            'autoClearTable':'客人付款之后自动还原座位状态',
+            'printReceiptOnDone':'是否在完成后打印收据'
         }
     }
 }
