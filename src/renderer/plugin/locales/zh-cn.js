@@ -360,7 +360,9 @@ export default {
         'switchOperator':'切换服务员',
         'switchCurrentOperator':'您确定要从 {i} 切换成 {i} 吗？',
         'tableCreateFailed':'无法开桌',
-        'tableCreateFailedTip':'您输入的密码不正确'
+        'tableCreateFailedTip':'您输入的密码不正确',
+        'reprintBatchReport':'重新打印',
+        'reprintBatchReportTip':'您是否需要重新打印结账信息？'
     },
     terminal: {
         'initial': '正在初始化 {i}...',

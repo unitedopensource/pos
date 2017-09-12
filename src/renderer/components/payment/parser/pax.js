@@ -26,10 +26,10 @@ const Pax = function () {
   };
   this.check = function (d) {
     let data = d.split(String.fromCharCode(28));
-    let sn = data[5].replace(/[^a-z0-9]/gi,'');
+    let sn = data[5].replace(/[^a-z0-9]/gi, '');
     let msg = data[4].indexOf(String.fromCharCode(3) !== -1) ? data[4].split(String.fromCharCode(3))[0] : data[4];
     device = {
-      msg,sn,
+      msg, sn,
       code: data[3],
       model: data[6],
       mac: data[8]
@@ -119,7 +119,7 @@ const Pax = function () {
           msg: 'terminal.creditCard.aborted'
         }
       case "100003":
-      let error = data[4].split(String.fromCharCode(3))[0];
+        let error = data[4].split(String.fromCharCode(3))[0];
         return {
           code,
           msg: 'terminal.creditCard.errorCode'
@@ -170,7 +170,7 @@ const Pax = function () {
           code,
           resMsg: data[4],
           date: today(),
-          time, tid, mid,
+          time, tid, mid, device,
           count: {
             credit: count[0],
             debit: count[1],

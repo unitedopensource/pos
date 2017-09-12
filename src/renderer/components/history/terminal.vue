@@ -245,6 +245,7 @@ export default {
                 }).catch(() => { this.$q() }) : this.$denyAccess();
         },
         adjustOrderTip(order, tip) {
+            //bug here split payment
             let invoice = this.history.find(ticket => order._id === ticket._id);
             invoice.payment.tip = parseFloat(tip);
             this.$socket.emit("[UPDATE] INVOICE", invoice);
@@ -361,17 +362,35 @@ export default {
                 }
             });
             if (content.length === 0) {
-                this.noRecord();
+                this.checkBatchRecord();
                 return false;
             }
             Printer.init(this.config).setJob("prebatch").print({ content, summary });
             return true;
         },
-        noRecord() {
-            this.$dialog({
-                title: "dialog.batchFailed", msg: this.$t('terminal.error', 100023),
-                buttons: [{ text: 'button.confirm', fn: 'resolve' }]
-            }).then(() => { this.$q() })
+        checkBatchRecord() {
+            new Promise((resolve, reject) => {
+                this.$socket.emit('[TERM] BATCH_RECORD_BY_DATE', this.date.format("YYYY-MM-DD"));
+                this.$options.sockets['BATCH_RECORDS'] = (results) => {
+                    results.length > 0 ? resolve(results) : reject()
+                }
+            }).then(results => {
+                this.$dialog({
+                    type: 'question', title: 'dialog.reprintBatchReport', msg: 'dialog.reprintBatchReportTip'
+                }).then(() => {
+                    this.$q();
+                    results.forEach(result => {
+                        Printer.init(this.config).setJob("batch").print(result);
+                    })
+                }).catch(() => { this.$q() })
+            }).catch(() => {
+                this.$dialog({
+                    title: "dialog.batchFailed", msg: this.$t('terminal.error', 100023),
+                    buttons: [{ text: 'button.confirm', fn: 'resolve' }]
+                }).then(() => { this.$q() })
+            })
+
+
         },
         disableBatchFn() {
             this.$dialog({
