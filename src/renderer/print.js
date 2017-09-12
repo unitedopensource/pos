@@ -87,6 +87,7 @@ Printer.prototype.printReceipt = function (raw) {
       let isPrint = printers[name]['print'][raw.type];
       let header = createHeader(this.config.store, raw);
       let list = isPrint ? createList(name, ctrl, raw) : [];
+      console.log(raw.type)
       if (list && list.length) {
         let style = createStyle(printers[name]['control']);
         let footer = createFooter(printers[name]['control'], raw);

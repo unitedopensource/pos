@@ -60,6 +60,7 @@
             <article>
                 <smart-switch v-model="workStation.printRedirect" label="text.redirect"></smart-switch>
                 <redirector :options="printers" @update="update" :init="workStation.print"></redirector>
+                <smart-option v-model="workStation.stationPrinter" label="text.printer" :options="printers"></smart-option>
             </article>
         </section>
         <section class="card">

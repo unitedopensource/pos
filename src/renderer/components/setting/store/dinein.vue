@@ -12,15 +12,12 @@
                 <smart-switch v-model="table.passwordRequire" label="text.passwordRequire" tip="tip.table.passwordRequire"></smart-switch>
             </article>
         </section>
-        <!-- <section class="card">
-            <header>{{$t('setting.staffBank')}}
-                <span class="tip"></span>
-            </header>
+        <section class="card">
+            <header>{{$t('setting.print')}}</header>
             <article>
-                <smart-switch v-model="table.staffBank" label="text.enable"></smart-switch>
-                <smart-input v-model.number="table.initialAmount" label="text.initialAmount" :disable="!table.staffBank"></smart-input>
+                <smart-switch v-model="table.printOnDone" label="text.printReceipt" tip="tip.table.printReceiptOnDone"></smart-switch>
             </article>
-        </section> -->
+        </section>
         <section class="card">
             <header>{{$t('setting.autoCharge')}}
                 <span class="tip">{{$t('setting.autoChargeTip')}}</span>

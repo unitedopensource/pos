@@ -90,6 +90,10 @@ export default {
 
 <style scoped>
 div {
-    padding: 6px 0px 0px 4px;
+    padding: 4px 0px 0px 4px;
+}
+
+div button{
+    margin: 3px 0;
 }
 </style>
