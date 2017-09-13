@@ -6,14 +6,20 @@
                     <i class="fa fa-users"></i>
                     <span class="text">{{$t('nav.index')}}</span>
                 </router-link>
-                <router-link tag="li" :to="{name:'Setting.operator.profile'}" v-show="profile">
-                    <i class="fa fa-user-circle-o"></i>
-                    <span class="text">{{$t('nav.user')}}</span>
-                </router-link>
-                <router-link tag="li" :to="{name:'Setting.operator.event'}" v-show="profile">
-                    <i class="fa fa-file-text"></i>
-                    <span class="text">{{$t('nav.event')}}</span>
-                </router-link>
+                <div v-show="profile">
+                    <router-link tag="li" :to="{name:'Setting.operator.profile'}">
+                        <i class="fa fa-user-circle-o"></i>
+                        <span class="text">{{$t('nav.user')}}</span>
+                    </router-link>
+                    <router-link tag="li" :to="{name:'Setting.operator.timecard'}">
+                        <i class="fa fa-file-text"></i>
+                        <span class="text">{{$t('nav.timecard')}}</span>
+                    </router-link>
+                    <router-link tag="li" :to="{name:'Setting.operator.event'}">
+                        <i class="fa fa-file-text"></i>
+                        <span class="text">{{$t('nav.event')}}</span>
+                    </router-link>
+                </div>
             </div>
             <li @click="back">
                 <i class="fa fa-arrow-circle-left"></i>

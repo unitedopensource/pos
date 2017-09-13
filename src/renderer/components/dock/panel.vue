@@ -1,26 +1,28 @@
 <template>
     <div class="popupMask dark" @click.self="init.resolve">
         <transition appear name="fadeDown">
-            <ul>
-                <li v-if="op.clockIn" @click="askClockOut">
-                    <i class="fa fa-2x fa-clock-o"></i>
-                    <div>
-                        <h3>{{$t('dock.clockOut')}}</h3>
-                        <h5>
-                            <span class="pass">{{time | moment('HH:mm:ss')}}</span>
-                            <span class="pass">{{op.clockIn | fromNow(true)}}</span>
-                        </h5>
-                    </div>
-                </li>
-                <li v-else @click="askClockIn">
-                    <i class="fa fa-2x fa-clock-o"></i>
-                    <div>
-                        <h3>{{$t('dock.clockIn')}}</h3>
-                        <h5>
-                            <span class="pass">{{time | moment('HH:mm:ss')}}</span>
-                        </h5>
-                    </div>
-                </li>
+            <ul class="panel">
+                <div v-if="op.timeCard">
+                    <li v-if="op.clockIn" @click="askClockOut">
+                        <i class="fa fa-2x fa-clock-o"></i>
+                        <div>
+                            <h3>{{$t('dock.clockOut')}}</h3>
+                            <h5>
+                                <span class="pass">{{time | moment('HH:mm:ss')}}</span>
+                                <span class="pass">{{op.clockIn | fromNow(true)}}</span>
+                            </h5>
+                        </div>
+                    </li>
+                    <li v-else @click="askClockIn">
+                        <i class="fa fa-2x fa-clock-o"></i>
+                        <div>
+                            <h3>{{$t('dock.clockIn')}}</h3>
+                            <h5>
+                                <span class="pass">{{time | moment('HH:mm:ss')}}</span>
+                            </h5>
+                        </div>
+                    </li>
+                </div>
                 <li @click="getTerminal" v-show="station.terminal.enable">
                     <i class="fa fa-2x fa-credit-card"></i>
                     <div>
@@ -42,9 +44,9 @@
                         <h5>{{$t('dock.logoutTip')}}</h5>
                     </div>
                 </li>
+                <div :is="component" :init="componentData"></div>
             </ul>
         </transition>
-        <div :is="component" :init="componentData"></div>
     </div>
 </template>
 
@@ -74,7 +76,7 @@ export default {
                 type: "question", title: "dialog.clockInConfirm",
                 msg: ["dialog.clockInTip", moment(this.time).format("hh:mm:ss a")]
             }).then(() => {
-                this.setOp({ clockIn: this.time, timeCard: ObjectId() })
+                this.setOp({ clockIn: this.time, section: ObjectId() })
                 this.$socket.emit("[TIMECARD] CLOCK_IN", this.op)
                 this.$q()
             }).catch(() => { this.$q() })
@@ -122,7 +124,7 @@ export default {
                 .then(() => { this.cashOut(name) }).catch(() => { this.exit() })
         },
         regularCashOut(name) {
-            this.$dialog({ type: "question", title: "dialog.cashOut", msg: ["dialog.cashOutTip",name] })
+            this.$dialog({ type: "question", title: "dialog.cashOut", msg: ["dialog.cashOutTip", name] })
                 .then(() => { this.cashOut(name) }).catch(() => { this.exit() })
         },
         cashOut(cashDrawer) {
@@ -135,7 +137,7 @@ export default {
             this.recordCashDrawerAction();
             let diff = (parseFloat(cashflow.end) - parseFloat(cashflow.begin)).toFixed(2);
             this.$dialog({
-                type: "question", title: ["dialog.cashOutSettle", cashflow.end], 
+                type: "question", title: ["dialog.cashOutSettle", cashflow.end],
                 msg: ["dialog.cashOutSettleTip", cashflow.begin, diff, cashflow.end],
                 buttons: [{ text: "button.printDetail", fn: "reject" }, { text: 'button.print', fn: 'resolve' }]
             }).then(() => {
@@ -177,7 +179,8 @@ export default {
 </script>
 
 <style scoped>
-ul {
+ul.panel {
+    font-size: initial;
     width: 250px;
     position: absolute;
     top: 10px;

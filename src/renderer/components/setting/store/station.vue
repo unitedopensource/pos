@@ -132,8 +132,16 @@ export default {
             new Promise((resolve, reject) => {
                 this.componentData = { resolve, reject };
                 this.component = "search";
-            }).then(ip => {
-                this.workStation.terminal.address = ip;
+            }).then(data => {
+                let { address, port, model, sn } = data;
+                this.workStation.terminal = Object.assign({}, this.workStation.terminal, {
+                    enable: true,
+                    address,
+                    model,
+                    port,
+                    sn
+                })
+                //this.workStation.terminal.address = ip;
                 this.$q()
             }).catch(() => { this.$q() })
         },
@@ -197,7 +205,7 @@ export default {
     padding: 10px 15px;
 }
 
-.enlarge h1{
+.enlarge h1 {
     font-size: 2em;
     font-weight: normal;
 }

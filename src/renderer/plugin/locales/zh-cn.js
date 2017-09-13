@@ -196,7 +196,9 @@ export default {
         'search': '搜索',
         'databaseHealth':'关于 {i} 数据库健康报告',
         'softwareOperator':'软件用户管理',
-        'setDriver':'设定司机'
+        'setDriver':'设定司机',
+        'timecard':'打卡记录',
+        'scanner':'扫描器'
     },
     menu: {
         'course': '定时',
@@ -687,6 +689,7 @@ export default {
         'index':'主页',
         'user':'用户',
         'event':'事件',
+        'timecard':'打卡'
     },
     setting: {
         'softwareSetting': 'UnitedPOS 后台设置',

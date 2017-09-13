@@ -156,7 +156,13 @@ export default [{
         path: 'profile',
         name: 'Setting.operator.profile',
         component: require('./components/setting/operator/profile')
-      }, {
+      },
+      {
+        path: 'timecard',
+        name: 'Setting.operator.timecard',
+        component: require('./components/setting/operator/timecard')
+      }
+        , {
         path: 'event',
         name: 'Setting.operator.event',
         component: require('./components/setting/operator/event')

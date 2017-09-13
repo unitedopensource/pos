@@ -217,11 +217,6 @@ export default {
             });
             if (settle === this.split) {
                 this.setOrder({ settled: true })
-                // if (this.order.tableID) {
-                //     let table = this.order.tableID;
-                //     let status = this.config.store.table.autoClean ? 1 : 4;
-                //     this.$socket.emit("[UPDATE] TABLE_SETTLED", { table, status })
-                // }
                 this.quit()
             }
         },

@@ -10,8 +10,8 @@
                 <smart-option v-model="operator.role" label="text.role" :options="roles"></smart-option>
                 <smart-input v-model="operator.pin" label="text.password" type="password"></smart-input>
                 <smart-option v-model="operator.language" label="text.defaultLanguage" :options="languages"></smart-option>
-                <smart-switch v-model="operator.timeCard" label="text.timeCard"></smart-switch>
-                <smart-input v-model="operator.employeeCard" label="text.employeeCard" type="password"></smart-input>
+                <smart-switch v-model="operator.timecard" label="text.timeCard"></smart-switch>
+                <!-- <smart-input v-model="operator.entryString" label="text.employeeCard" type="password"></smart-input> -->
             </article>
         </section>
         <section class="card list">
@@ -125,6 +125,8 @@ export default {
                                 return JSON.stringify(n[key]) !== JSON.stringify(this.profile[key])
                             }
                             break;
+                        case 'boolean':
+                            return n[key] !== this.profile[key]
                     }
                 })
                 isChange ? this.$emit("change", n) : this.$emit("unchanged")

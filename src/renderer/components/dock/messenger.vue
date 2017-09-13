@@ -99,7 +99,8 @@ export default {
             let hh = ('00' + Math.floor((duration % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).slice(-2);
             let mm = ('00' + Math.floor((duration % (1000 * 60 * 60)) / (1000 * 60))).slice(-2);
             let ss = ('00' + Math.floor((duration % (1000 * 60)) / 1000)).slice(-2);
-            return `${hh}:${mm}:${ss}`
+            duration = hh > 0 ? `${hh}:${mm}:${ss}` : `${mm}:${ss}`;
+            return duration
         }
     },
     computed: {
@@ -179,9 +180,9 @@ li {
     color: #fff;
     padding: 0px 3px;
     border-radius: 4px;
-    width: 50px;
-    display: inline-block;
+    min-width: 35px;
     font-family: 'Agency FB';
+    font-weight: bold;
     text-align: center;
     height: 20px;
     line-height: 20px;
