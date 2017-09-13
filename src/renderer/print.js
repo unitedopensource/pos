@@ -94,7 +94,7 @@ Printer.prototype.printReceipt = function (raw, done) {
         return;
       }
       let ctrl = devices[name]['control'];
-      let isPrint = raw.delay ? devices[name]['print']['DELAY'] : devices[name]['print'][raw.type];
+      let isPrint = raw.course ? devices[name]['print']['DELAY'] : devices[name]['print'][raw.type];
       let header = createHeader(this.config.store, raw);
       let list = isPrint ? createList(name, ctrl, raw) : [];
       if (list && list.length) {
@@ -369,6 +369,7 @@ Printer.prototype.printReceipt = function (raw, done) {
               .payment p{display:flex;font-family:'Tensentype RuiHeiJ-W2';}
               .payment .text{width:calc(60% - 5px);text-align:right;}
               .payment .value{width:40%;text-align:right;padding-right:5px;}
+              .settle{${printPayment ? '' : 'display:none;'}}
               p.bold{font-weight:bold;font-size:22px;}
               section.details{border:1px dashed #000;margin-top:5px;text-align:center;}
               .details p{display:flex;}
@@ -463,7 +464,9 @@ Printer.prototype.printReceipt = function (raw, done) {
                   <p class="bold"><span class="text">TOTAL:</span><span class="value">${payment.due.toFixed(2)}</span></p>
                 </div>
               </section>
+              <div class="settle">
               ${details}
+              </div>
               <section class="note">${note}</section>
               <p class="printTime">Print @ ${moment().format('hh:mm:ss')}</p>
             </footer>`
@@ -545,6 +548,7 @@ Printer.prototype.printCreditCard = function (trans, reprint) {
               <p class="bold"><span class="text">Total:</span><span class="value ul">$</span></p>
               <p><span class="text">Auth Code</span><span class="value">${trans.host.auth}</span></p>
               <p><span class="text">Response</span><span class="value">${trans.host.msg}</span></p>
+              <p><span class="text">Station</span><span class="value">${trans.station}</span></p>
             </article>
             <footer>
               <div class="agreement">
@@ -842,6 +846,7 @@ Printer.prototype.printBatchReport = function (data) {
                 <p class="time"><span class="text">${date}</span><span class="value">${time}</span></p>
                 <p><span class="text">MID</span><span class="value">${data.mid}</span></p>
                 <p><span class="text">Device</span><span class="value">${data.tid}</span></p>
+                <p><span class="text">Station</span><span class="value">${data.station}</span></p>
                 <p><span class="text">Batch #</span><span class="value">${data.batchNumber}</span></p>
                 <p><span class="text">Result</span><span class="value">${data.resMsg}</span></p>
                 <p><span class="text">Total</span><span class="value">$ ${total}</span></p>

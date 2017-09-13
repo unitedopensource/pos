@@ -112,6 +112,7 @@ export default {
                     delay: +schedule,
                     status: 1,
                     date: today(),
+                    timer:true,
                     schedule: +schedule,
                     source: this.op.role !== 'ThirdParty' ? "POS" : this.op.name,
                     print: false,

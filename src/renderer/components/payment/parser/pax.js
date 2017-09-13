@@ -1,5 +1,6 @@
 const Pax = function () {
   let url = null;
+  let station = '';
   let device = {};
   let cardType = ['',
     'Visa',
@@ -19,8 +20,9 @@ const Pax = function () {
     'Voyager',
     'WrightExpress'];
 
-  this.initial = function (ip, port) {
+  this.initial = function (ip, port, sn, alies) {
     url = `http://${ip}:${port}?`;
+    station = alies || '';
     let command = this.parser("A00_1.38");
     return fetch(command);
   };
@@ -103,6 +105,7 @@ const Pax = function () {
             time: trace[2]
           },
           device,
+          station,
           addition,
           unique: Math.random().toString(36).substring(3, 8),
           time: +new Date,
@@ -170,7 +173,7 @@ const Pax = function () {
           code,
           resMsg: data[4],
           date: today(),
-          time, tid, mid, device,
+          time, tid, mid, device,station,
           count: {
             credit: count[0],
             debit: count[1],

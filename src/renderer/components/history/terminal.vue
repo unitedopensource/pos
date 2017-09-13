@@ -98,10 +98,11 @@ export default {
             let terminal = this.station.terminal;
             this.msg = this.$t('terminal.initial', terminal.model);
             this.terminal = this.getFile(terminal.model);
-            this.terminal.initial(terminal.address, terminal.port).then(response => response.text()).then((device) => {
-                this.device = this.terminal.check(device);
-                this.device.code !== '000000' && this.disableBatchFn();
-            })
+            this.terminal.initial(terminal.address, terminal.port, terminal.sn, this.station.alies)
+                .then(r => r.text()).then((device) => {
+                    this.device = this.terminal.check(device);
+                    this.device.code !== '000000' && this.disableBatchFn();
+                })
             this.$socket.emit("[TERM] INITIAL", data => {
                 let sn = this.device ? this.device.sn : this.station.terminal.sn;
                 this.transactions = data.filter(trans => trans.device.sn === sn);
@@ -177,7 +178,7 @@ export default {
             }).then(() => {
                 let invoice = record.order.number;
                 let trans = record.trace.trans;
-                this.terminal.voidSale(invoice, trans).then((response) => response.text()).then((response) => {
+                this.terminal.voidSale(invoice, trans).then((r) => r.text()).then((response) => {
                     let transaction = this.terminal.explainTransaction(response);
                     record = Object.assign(record, transaction, { status: 0 });
                     this.$socket.emit("[TERM] UPDATE_TRANSACTION", record);
@@ -250,9 +251,7 @@ export default {
                                     this.$socket.emit("[TERM] UPDATE_TRANSACTION", record);
                                     this.adjustOrderTip(record.order, result.amount.approve);
                                 }
-
-
-                            });
+                            })
                     }).catch(() => { this.$q() })
                 }).catch(() => { this.$q() }) : this.$denyAccess();
         },
@@ -270,7 +269,7 @@ export default {
         },
         processBatch() {
             this.$p("processor");
-            this.terminal.batch().then(response => response.text()).then(response => {
+            this.terminal.batch().then(r => r.text()).then(response => {
                 let result = this.terminal.explainBatch(response);
                 if (result.code === '000000') {
                     let { sn } = this.device;

@@ -39,7 +39,7 @@ export default {
             let terminal = this.station.terminal;
             this.msg = this.$t('terminal.initial', terminal.model);
             this.terminal = this.getFile(terminal.model);
-            this.terminal.initial(terminal.address, terminal.port, terminal.sn).then(response => response.text()).then((device) => {
+            this.terminal.initial(terminal.address, terminal.port, terminal.sn,this.station.alies).then(r => r.text()).then((device) => {
                 this.device = this.terminal.check(device);
                 if (this.device.code !== "000000") {
                     this.terminalError(this.$t('terminal.initialFailed', (this.device.model || terminal.model), this.device.code),this.device.msg);
@@ -54,7 +54,7 @@ export default {
 
                 }, 2000)
                 this.transacting = true;
-                this.terminal.charge(this.init.card).then(response => response.text()).then(data => {
+                this.terminal.charge(this.init.card).then(r => r.text()).then(data => {
                     let result = this.terminal.explainTransaction(data);
                     result.code === "000000" ? this.init.resolve(result) : this.terminalError(this.$t(result.msg));
                 })
