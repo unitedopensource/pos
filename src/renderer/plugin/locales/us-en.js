@@ -368,7 +368,9 @@ export default {
         'reprintBatchReport': 'Reprint Batch Report',
         'reprintBatchReportTip': 'Do you want to reprint this batch report?',
         'pending': 'Access Denied',
-        'pendingOrderAccessDenied': 'Other cashier is processing...'
+        'pendingOrderAccessDenied': 'Other cashier is processing...',
+        'tipAdjustNotMatch':'Tip Adjust Not Match',
+        'tipApproveNotMatchInput':'Tip Entered {i} but only approve {i}'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',

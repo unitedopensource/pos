@@ -232,14 +232,26 @@ export default {
                         let amount = Math.round(value * 100);
                         let invoice = record.order.number;
                         let trans = record.trace.trans;
-                        this.terminal.adjust(invoice, trans, amount).then(response => response.text())
+                        this.terminal.adjust(invoice, trans, amount).then(r => r.text())
                             .then((response) => {
                                 this.$q();
-                                record.status = 2;
-                                //bug here when split payment both add tip
-                                record.amount.tip = value.toFixed(2);
-                                this.$socket.emit("[TERM] UPDATE_TRANSACTION", record);
-                                this.adjustOrderTip(record.order, value);
+                                let result = this.terminal.explainTransaction(response);
+                                if (parseFloat(value) !== parseFloat(result.amount.approve)) {
+                                    this.$dialog({ title: 'dialog.tipAdjustNotMatch', msg: ['dialog.tipApproveNotMatchInput', value, result.amount.approve], buttons: [{ text: 'button.confirm', fn: 'resolve' }] })
+                                        .then(() => {
+                                            record.status = 2;
+                                            record.amount.tip = result.amount.approve;
+                                            this.$socket.emit("[TERM] UPDATE_TRANSACTION", record);
+                                            this.adjustOrderTip(record.order, result.amount.approve);
+                                        })
+                                } else {
+                                    record.status = 2;
+                                    record.amount.tip = result.amount.approve;
+                                    this.$socket.emit("[TERM] UPDATE_TRANSACTION", record);
+                                    this.adjustOrderTip(record.order, result.amount.approve);
+                                }
+
+
                             });
                     }).catch(() => { this.$q() })
                 }).catch(() => { this.$q() }) : this.$denyAccess();

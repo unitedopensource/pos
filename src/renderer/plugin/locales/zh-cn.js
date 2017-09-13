@@ -367,7 +367,9 @@ export default {
         'reprintBatchReport':'重新打印',
         'reprintBatchReportTip':'您是否需要重新打印结账信息？',
         'pending':'处理中',
-        'pendingOrderAccessDenied':'这单正在付款中...'
+        'pendingOrderAccessDenied':'这单正在付款中...',
+        'tipAdjustNotMatch':'小费调整错误',
+        'tipApproveNotMatchInput':'输入的小费为 {i} 交易中心返回为 {i}'
     },
     terminal: {
         'initial': '正在初始化 {i}...',
