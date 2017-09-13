@@ -62,7 +62,7 @@
             </div>
             <footer>
                 <div class="btn" @click="back">{{$t('button.back')}}</div>
-                <div class="btn f1" @click="save">{{$t('button.save')}}</div>
+                <button class="btn f1" @click="save" :disabled="unchanged">{{$t('button.save')}}</button>
             </footer>
         </section>
         <section class="preview">
@@ -242,6 +242,7 @@ export default {
             printers: null,
             devices: [],
             device: null,
+            unchanged:true,
             preset: "",
             receipt: {
                 zhCN: true,
@@ -307,6 +308,7 @@ export default {
         },
         save() {
             if (!this.device) return;
+            this.unchanged = true;
             this.$socket.emit("[CMS] SAVE_PRINTERS", { [this.device]: this.profile });
             this.setPrinter({ [this.device]: this.profile });
         },
@@ -364,6 +366,7 @@ export default {
                         }
                     }
                 }
+                this.unchanged = false;
             }, deep: true
         }
 

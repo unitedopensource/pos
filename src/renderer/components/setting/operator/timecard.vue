@@ -9,7 +9,7 @@
                 <span class="hour">{{$t('text.workHour')}}</span>
             </div>
             <article>
-                <div class="datalist" v-for="(log,index) in activities" :key="index">
+                <div class="datalist" v-for="(log,index) in logs" :key="index">
                     <span class="approve">{{log.valid}}</span>
                     <span class="time">{{log.clockIn | moment('M/D/YY HH:mm:ss')}}</span>
                     <span class="time">{{log.clockOut | moment('M/D/YY HH:mm:ss')}}</span>
@@ -29,8 +29,12 @@ export default {
     props: ['profile'],
     data() {
         return {
-            activities: []
+            logs: []
         }
+    },
+    created() {
+        console.log(this.profile)
+        //this.$socket.emit("[TIMECARD] RECORDS")
     },
     methods: {
         calc(clockIn, clockOut) {

@@ -18,7 +18,7 @@
                     <!-- <checkbox v-model="all" label="text.autoAdd"></checkbox> -->
                 </div>
                 <div class="btn" @click="init.reject">{{$t('button.cancel')}}</div>
-                <div class="btn" @click="confirm">{{$t('button.confirm')}}</div>
+                <button class="btn" @click="confirm">{{$t('button.confirm')}}</button>
             </footer>
         </div>
     </div>

@@ -51,7 +51,7 @@
                 </section>
             </div>
             <footer>
-                <button class="btn" @click="batch" :disabled="!device">{{$t('button.batch')}}</button>
+                <button class="btn" @click="batch">{{$t('button.batch')}}</button>
                 <div class="pagination">
                     <div class="page" @click="page = page > 0 ? page - 1 : 0">
                         <i class="fa fa-angle-left"></i>
@@ -338,14 +338,14 @@ export default {
                         break;
                     case "American Express":
                         if (trans.status === 1 || trans.status === 2) {
-                            summary.other++;
-                            summary.otherAmount += approve + tip;
+                            summary.amex++;
+                            summary.amexAmount += approve + tip;
                         }
                         break;
                     default:
                         if (trans.status === 1 || trans.status === 2) {
-                            summary.amex++;
-                            summary.amexAmount += approve + tip;
+                            summary.other++;
+                            summary.otherAmount += approve + tip;
                         }
                 }
                 return trans.status !== 0
@@ -426,7 +426,7 @@ export default {
     sockets: {
         TERM_TRANSACTION(data) {
             let sn = this.device ? this.device.sn : this.station.terminal.sn;
-            this.transactions = data.filter(trans => trans.device.sn === sn);
+            this.transactions = this.op.role === 'Admin' ? data : data.filter(trans => trans.device.sn === sn)
         }
     }
 }
@@ -445,7 +445,7 @@ ul.content {
     height: 515px;
 }
 
-li {
+.content li {
     display: flex;
     padding: 10px 0 10px 5px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
@@ -538,11 +538,6 @@ span.tip {
     color: #797575;
     text-shadow: 0 0px 1px #fff;
     font-family: 'Microsoft YaHei';
-}
-
-header .trans {
-    width: 260px;
-    padding: 0 15px;
 }
 
 header .record {

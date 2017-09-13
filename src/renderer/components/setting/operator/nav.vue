@@ -12,7 +12,7 @@
                         <span class="text">{{$t('nav.user')}}</span>
                     </router-link>
                     <router-link tag="li" :to="{name:'Setting.operator.timecard'}">
-                        <i class="fa fa-file-text"></i>
+                        <i class="fa fa-address-card"></i>
                         <span class="text">{{$t('nav.timecard')}}</span>
                     </router-link>
                     <router-link tag="li" :to="{name:'Setting.operator.event'}">

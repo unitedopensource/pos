@@ -141,7 +141,6 @@ export default {
                     port,
                     sn
                 })
-                //this.workStation.terminal.address = ip;
                 this.$q()
             }).catch(() => { this.$q() })
         },

@@ -34,8 +34,9 @@ import paymentMark from '../payment/mark'
 import dialoger from '../common/dialoger'
 import payment from '../payment/payment'
 import driver from '../history/driver'
+import split from '../menu/split'
 export default {
-    components: { driver, dialoger, payment, paymentMark },
+    components: { driver, dialoger, payment, paymentMark, split },
     data() {
         return {
             componentData: null,
@@ -50,7 +51,7 @@ export default {
             this.$p('paymentMark')
         },
         split() {
-
+            this.$p('split')
         },
         discount() {
 
