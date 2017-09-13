@@ -188,6 +188,7 @@ export default {
         'discount': 'Discount',
         'thirdParty': 'ThirdParty',
         'driver': 'Driver',
+        'scan': 'Scan'
     },
     title: {
         'markPaymentType': 'Mark Payment Type',
@@ -199,7 +200,8 @@ export default {
         'softwareOperator': 'Software Users Management',
         'setDriver': 'Set Driver',
         'timecard': 'Timecard Records',
-        'scanner': 'Scanner'
+        'scanner': 'Scanner',
+        'split': 'Split Ticket'
     },
     menu: {
         'course': 'Course',
@@ -369,8 +371,10 @@ export default {
         'reprintBatchReportTip': 'Do you want to reprint this batch report?',
         'pending': 'Access Denied',
         'pendingOrderAccessDenied': 'Other cashier is processing...',
-        'tipAdjustNotMatch':'Tip Adjust Not Match',
-        'tipApproveNotMatchInput':'Tip Entered {i} but only approve {i}'
+        'tipAdjusted': 'Tip Adjusted',
+        'tipAdjustedTip': 'Tip adjusted to {i},Terminal return total {i}',
+        'tipAdjustDenied': 'Tip Adjust Denied',
+        'tipAdjustDeniedTip': 'Tip adjust failed. Error code {i}'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',
@@ -473,7 +477,8 @@ export default {
         'creditCard': 'Credit Card',
         'debitCard': 'Debit Card',
         'giftCard': 'Gift Card',
-        'creditCardTip': 'Credit Card Tips'
+        'creditCardTip': 'Credit Card Tips',
+        'tax':'Tax'
     },
     text: {
         'starter': 'Starter',
@@ -538,7 +543,7 @@ export default {
         'staffBank': 'Staff Bank',
         'disallow': 'Disallow',
         'api': 'API',
-        'timeCard': 'Time Card',
+        'timeCard': 'TimeCard',
         'timeCardReport': 'Auto Report',
         'password': 'Password',
         'email': 'Email',

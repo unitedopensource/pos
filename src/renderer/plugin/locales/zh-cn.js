@@ -187,6 +187,7 @@ export default {
         'discount':'折扣',
         'thirdParty':'第三方',
         'driver':'司机',
+        'scan':'扫描'
     },
     title:{
         'markPaymentType':'标记付款方式',
@@ -198,7 +199,8 @@ export default {
         'softwareOperator':'软件用户管理',
         'setDriver':'设定司机',
         'timecard':'打卡记录',
-        'scanner':'扫描器'
+        'scanner':'扫描器',
+        'split':'分单'
     },
     menu: {
         'course': '定时',
@@ -368,8 +370,10 @@ export default {
         'reprintBatchReportTip':'您是否需要重新打印结账信息？',
         'pending':'处理中',
         'pendingOrderAccessDenied':'这单正在付款中...',
-        'tipAdjustNotMatch':'小费调整错误',
-        'tipApproveNotMatchInput':'输入的小费为 {i} 交易中心返回为 {i}'
+        'tipAdjusted':'小费调整完成',
+        'tipAdjustedTip':'小费修改为 {i}，交易中心返回总数 {i}',
+        'tipAdjustDenied':'无法调整小费',
+        'tipAdjustDeniedTip':'调整小费失败，错误代码 {i}'
     },
     terminal: {
         'initial': '正在初始化 {i}...',
@@ -472,7 +476,8 @@ export default {
         'creditCard': '信用卡',
         'debitCard': '借记卡',
         'giftCard': '礼物卡',
-        'creditCardTip':'信用卡小费'
+        'creditCardTip':'信用卡小费',
+        'tax':'税'
     },
     text: {
         'starter':'起始',

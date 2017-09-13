@@ -338,15 +338,15 @@ export default {
             this.setOrder(config);
             this.calculator(this.cart);
         },
-        countItems(content){
+        countItems(content) {
             let count = 0;
             let undone = 0;
-            content.forEach(item=>{
+            content.forEach(item => {
                 count += item.qty;
                 !item.print && undone++;
             })
 
-            return [count,undone]
+            return [count, undone]
         },
         calculator(items) {
             if (items.length === 0) {
@@ -385,13 +385,14 @@ export default {
 
             delivery = (this.ticket.type === 'DELIVERY' && this.store.delivery && !this.order.deliveryFree) ? this.store.deliveryCharge : 0;
             total = subtotal + tax + delivery + parseFloat(tip) + parseFloat(gratuity);
-            due = total - parseFloat(discount);
+            due = Math.max(0, total - parseFloat(discount));
             balance = due - this.payment.paid;
             this.payment = Object.assign({}, this.payment, {
                 subtotal: subtotal.toFixed(2),
                 tax: tax.toFixed(2),
                 total: total.toFixed(2),
                 due: due.toFixed(2),
+                discount: discount.toFixed(2),
                 balance: balance.toFixed(2)
             });
             this.setOrder({ payment: this.payment });
@@ -416,12 +417,12 @@ export default {
         }
     },
     watch: {
-        'cart': {
+        cart: {
             handler(n) {
                 this.display ? this.payment = this.order.payment : this.calculator(n);
             }, deep: true
         },
-        'payment'() {
+        payment() {
             this.$nextTick(() => {
                 let height = 0;
                 let doms = document.querySelectorAll(".order .list");
@@ -436,6 +437,11 @@ export default {
         },
         'ticket.type'(n) {
             this.calculator(this.cart)
+        },
+        order: {
+            handler(n) {
+                n.content.length > 0 && (this.payment = n.payment)
+            }, deep: true
         }
     }
 }
@@ -764,7 +770,7 @@ i.flip {
     font-size: initial;
 }
 
-.content > div {
+.content>div {
     display: flex;
 }
 

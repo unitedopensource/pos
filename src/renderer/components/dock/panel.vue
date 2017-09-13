@@ -169,6 +169,7 @@ export default {
             this.$setLanguage(language);
             this.setApp({ language });
             moment.locale(language === 'usEN' ? 'en' : 'zh-cn');
+            this.$forceUpdate();
         },
         exit() {
             this.$router.push({ name: 'Login' })

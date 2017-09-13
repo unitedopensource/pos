@@ -21,7 +21,7 @@
                     <span class="text">{{$t('text.balanceDue')}}:</span>
                     <div class="inner">
                         <span class="due">{{payment.balance | decimal}}</span>
-                        <div class="addition" v-show="payment.discount !== 0">
+                        <div class="addition" v-show="parseFloat(payment.discount) !== 0">
                             <span class="text">{{$t('text.discount')}}</span>
                             <span class="value">-{{payment.discount | decimal}}</span>
                         </div>
@@ -924,11 +924,7 @@ export default {
             poleDisplay.write(line(line1, line2));
         },
         exit(payment) {
-            this.$nextTick(() => {
-                this.setOrder({ pending: false })
-                this.$socket.emit("[UPDATE] INVOICE", this.order)
-                this.init.resolve(payment)
-            })
+            this.init.resolve(payment)
         },
         ...mapActions(['setOrder', 'resetMenu', 'resetAll', 'setTableInfo', 'resetCurrentTable'])
     },

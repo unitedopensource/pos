@@ -149,7 +149,7 @@ const Pax = function () {
         }
       default:
         return {
-          code: "",
+          code,
           msg: "terminal.creditCard.unknown"
         }
     }

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <section class="card">
+        <!-- <section class="card">
             <header>{{$t('setting.taxCalculation')}}
                 <span class="tip">{{$t('setting.taxCalculationTip')}}</span>
             </header>
@@ -8,10 +8,11 @@
                 <smart-switch v-model="tax.beforeDisc" label="text.taxBeforeDiscount"></smart-switch>
                 <smart-switch v-model="tax.beforeCredit" label="text.taxBeforeCredit"></smart-switch>
             </article>
-        </section>
+        </section> -->
         <section class="card list">
-            <header>{{$t('text.taxClass')}}
-                <span class="tip"></span>
+            <header>
+                <span>{{$t('text.taxClass')}}</span>
+                <span class="tip">{{$t('setting.taxCalculationTip')}}</span>
             </header>
             <div class="header">
                 <span class="name">{{$t('text.name')}}</span>

@@ -237,27 +237,32 @@ export default {
                             .then((response) => {
                                 this.$q();
                                 let result = this.terminal.explainTransaction(response);
-                                if (parseFloat(value) !== parseFloat(result.amount.approve)) {
-                                    this.$dialog({ title: 'dialog.tipAdjustNotMatch', msg: ['dialog.tipApproveNotMatchInput', value, result.amount.approve], buttons: [{ text: 'button.confirm', fn: 'resolve' }] })
-                                        .then(() => {
-                                            record.status = 2;
-                                            record.amount.tip = result.amount.approve;
-                                            this.$socket.emit("[TERM] UPDATE_TRANSACTION", record);
-                                            this.adjustOrderTip(record.order, result.amount.approve);
-                                        })
-                                } else {
-                                    record.status = 2;
-                                    record.amount.tip = result.amount.approve;
-                                    this.$socket.emit("[TERM] UPDATE_TRANSACTION", record);
-                                    this.adjustOrderTip(record.order, result.amount.approve);
-                                }
+                                console.log(result)
+                                result.code === '000000' ? this.applyAdjustTip(record, result, value) : this.adjustTipFailed(result.code);
                             })
                     }).catch(() => { this.$q() })
                 }).catch(() => { this.$q() }) : this.$denyAccess();
         },
+        applyAdjustTip(record, result, value) {
+            this.$dialog({ title: 'dialog.tipAdjusted', msg: ['dialog.tipAdjustedTip', value, result.amount.approve], buttons: [{ text: 'button.confirm', fn: 'resolve' }] })
+                .then(() => {
+                    this.$q();
+                    record.status = 2;
+                    record.amount.tip = value;
+                    this.$socket.emit("[TERM] UPDATE_TRANSACTION", record);
+                    this.adjustOrderTip(record.order, value);
+                })
+        },
+        adjustTipFailed(code) {
+            this.$dialog({
+                type: 'error', title: 'dialog.tipAdjustDenied', msg: ['dialog.tipAdjustDeniedTip', code],
+                buttons: [{ text: 'button.confirm', fn: 'resolve' }]
+            }).then(() => { this.$q() })
+        },
         adjustOrderTip(order, tip) {
             //bug here split payment
             let invoice = this.history.find(ticket => order._id === ticket._id);
+                
             invoice.payment.tip = parseFloat(tip);
             this.$socket.emit("[UPDATE] INVOICE", invoice);
         },

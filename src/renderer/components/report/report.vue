@@ -373,10 +373,10 @@ export default {
             }];
         },
         summarize(data) {
-            let gross = 0, grossAmount = 0, netAmount = 0,
+            let gross = 0, grossAmount = 0, netAmount = 0, foodSalesAmount = 0, taxAmount = 0,
                 walkin = 0, walkinAmount = 0,
                 pickup = 0, pickupAmount = 0,
-                delivery = 0, deliveryAmount = 0,
+                delivery = 0, deliveryAmount = 0, deliveryTip = 0,
                 dinein = 0, dineinAmount = 0,
                 bar = 0, barAmount = 0,
                 other = 0, otherAmount = 0,
@@ -390,7 +390,14 @@ export default {
                 gift = 0, giftAmount = 0;
 
             data.forEach(ticket => {
+                let total = parseFloat(ticket.payment.total);
+                let subtotal = parseFloat(ticket.payment.subtotal);
                 let due = parseFloat(ticket.payment.due);
+                let tax = parseFloat(ticket.payment.tax);
+                let tip = parseFloat(ticket.payment.tip);
+                let gratuity = parseFloat(ticket.payment.gratuity);
+                let disc = parseFloat(ticket.payment.discount);
+
 
                 if (ticket.status === 1) {
                     switch (ticket.type) {
@@ -405,6 +412,7 @@ export default {
                         case "DELIVERY":
                             delivery++;
                             deliveryAmount += due;
+                            deliveryTip += tip;
                             break;
                         case "DINE_IN":
                             dinein++;
@@ -419,11 +427,14 @@ export default {
                             otherAmount += due;
                     }
                     gross++;
-                    grossAmount += parseFloat(ticket.payment.total);
+                    grossAmount += total;
                     netAmount += due;
+                    foodSalesAmount += subtotal;
+                    taxAmount += tax;
+
                     if (ticket.payment.discount > 0) {
                         discount++;
-                        discountAmount += parseFloat(ticket.payment.discount)
+                        discountAmount += disc
                     }
                     if (ticket.settled) {
                         settle++;
@@ -436,9 +447,9 @@ export default {
                             case "CREDIT":
                                 credit++;
                                 creditAmount += due;
-                                if (ticket.payment.tip > 0) {
+                                if (tip > 0) {
                                     creditTip++;
-                                    creditTipAmount += parseFloat(ticket.payment.tip)
+                                    creditTipAmount += tip
                                 }
                                 break;
                             case "GIFT":
@@ -465,6 +476,21 @@ export default {
                 text: this.$t('report.netSales'),
                 count: 0,
                 amount: netAmount
+            },
+            {
+                text: "&nbsp;",
+                count: 0,
+                amount: ""
+            },
+            {
+                text: this.$t('report.foodSales'),
+                count: 0,
+                amount: foodSalesAmount
+            },
+            {
+                text: this.$t('report.tax'),
+                count: 0,
+                amount: taxAmount
             },
             {
                 text: this.$t('report.discount'),
