@@ -53,6 +53,7 @@ export default {
         this.$bus.on("SPLIT_ORDER", this.reset);
         this.$bus.on("SPLIT_PAID", this.check);
         this.isChargeDelivery = this.ticket.type === 'DELIVERY';
+        this.settle && (this.paid = this.settle.settled);
     },
     methods: {
         pick(key) {

@@ -456,6 +456,24 @@ export default {
                                 gift++;
                                 giftAmount += due;
                                 break;
+                            default:
+                                if (ticket.payment.paidCash > 0) {
+                                    cash++;
+                                    cashAmount += parseFloat(ticket.payment.paidCash);
+                                }
+                                if (ticket.payment.paidCredit > 0) {
+                                    credit++;
+                                    console.log(ticket.payment.paidCredit)
+                                    creditAmount += parseFloat(ticket.payment.paidCredit);
+                                    if (tip > 0) {
+                                        creditTip++;
+                                        creditTipAmount += tip
+                                    }
+                                }
+                                if (ticket.payment.paidGift) {
+                                    gift++;
+                                    giftAmount += parseFloat(ticket.payment.paidGift);
+                                }
                         }
 
                     } else if (!ticket.payment.settled) {

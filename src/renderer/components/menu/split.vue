@@ -90,7 +90,8 @@ export default {
             this.transferItems.length ? this.transfer(++this.split) : this.split++;
         },
         trigger(i) {
-            this.transferItems.length && this.transfer(i);
+            let settled = this.splitPayment ? this.splitPayment[i-1] && this.splitPayment[i-1].settled : false;
+            this.transferItems.length && !settled && this.transfer(i);
         },
         setQueue(transfer) {
             if (transfer.items.length !== 0) {
