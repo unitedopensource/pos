@@ -165,7 +165,7 @@ export default {
                 content, customer,
                 number: `${this.ticket.number}-${index}`,
                 type: this.order.type,
-                payment: this.splitPayment[index] || this.$children[index].payment,
+                payment: this.$children[index].payment,
                 time: +new Date
             });
             Printer.init(this.config).setJob("receipt").print(order);

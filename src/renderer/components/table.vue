@@ -316,13 +316,9 @@ export default {
           type: "question", title: "dialog.prePayment", msg: ['dialog.prePaymentTip', this.order.table],
           buttons: [{ text: 'button.cancel', fn: "reject" }, { text: "button.print", fn: "resolve" }]
         }).then(() => {
-          let order = JSON.parse(JSON.stringify(this.order));
-          order.type = "PRE_PAYMENT";
-          order.cashier = this.op.name;
-          Printer.init(this.config).setJob("receipt").print(order);
-          this.setTableInfo({ status: 3 });
-          this.$socket.emit("TABLE_MODIFIED", this.currentTable);
           this.$q();
+          console.log(this.order.split)
+          this.order.split ? this.askSplitPrePayment() : this.printPrePayment();
         }).catch(() => { this.$q() })
       } else {
         let remain = this.order.content.filter(item => !item.print).length;
@@ -331,6 +327,32 @@ export default {
           buttons: [{ text: 'button.confirm', fn: 'resolve' }]
         }).then(() => { this.$q() })
       }
+    },
+    printPrePayment() {
+      let order = JSON.parse(JSON.stringify(this.order));
+      order.type = "PRE_PAYMENT";
+      order.cashier = this.op.name;
+      Printer.init(this.config).setJob("receipt").print(order);
+      this.setTableInfo({ status: 3 });
+      this.$socket.emit("TABLE_MODIFIED", this.currentTable);
+    },
+    askSplitPrePayment() {
+      this.$dialog({
+        type: 'question', title: 'dialog.printSplitTicket', msg: 'dialog.printSplitTicketTip',
+        buttons: [{ text: 'button.combinePrint', fn: 'reject' }, { text: 'button.splitPrint', fn: 'resolve' }]
+      }).then(() => { this.$q(), this.splitPrint() }).catch(() => { this.$q(), this.printPrePayment() })
+    },
+    splitPrint() {
+      let split = [].concat.apply([], order.content.map(item => item.sort)).filter((v, i, s) => s.indexOf(v) === i).length;
+      let ticket = JSON.parse(JSON.stringify(order));
+      for (let i = 1; i < split + 1; i++) {
+        ticket.content = order.content.filter(item => Array.isArray(item.sort) ? item.sort.includes(i) : item.sort === i);
+        ticket.payment = order.splitPayment[i - 1];
+        ticket.number = `${order.number}-${i}`;
+        Printer.init(this.config).setJob("receipt").print(ticket);
+      }
+      this.setTableInfo({ status: 3 });
+      this.$socket.emit("TABLE_MODIFIED", this.currentTable);
     },
     clearTable() {
       if (this.currentTable.status === 4 || this.order.settled) {

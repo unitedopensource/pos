@@ -64,10 +64,10 @@ input:checked+label:after {
   content: '';
   position: absolute;
   display: block;
-  height: 300%;
-  width: 300%;
-  top: -100%;
-  left: -100%;
+  height: 200%;
+  width: 200%;
+  top: -50%;
+  left: -50%;
   z-index: 0;
   border-radius: 50%;
   transition: .3s;

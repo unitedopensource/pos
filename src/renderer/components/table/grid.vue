@@ -110,30 +110,51 @@ export default {
         prePayment() {
             if (this.isEmptyTicket) return;
             if (this.order.settled) {
-                this.settledOrder();
-                return;
-            }
-            if (this.order.print) {
+                this.settledOrder()
+            } else if (this.order.print) {
                 this.$dialog({
-                    type: 'question', title: 'dialog.prePayment', msg: ['dialog.prePaymentTip', this.order.table],
-                    buttons: [{ text: 'button.cancel', fn: 'reject' }, { text: 'button.print', fn: 'resolve' }]
+                    type: "question", title: "dialog.prePayment", msg: ['dialog.prePaymentTip', this.order.table],
+                    buttons: [{ text: 'button.cancel', fn: "reject" }, { text: "button.print", fn: "resolve" }]
                 }).then(() => {
-                    let order = JSON.parse(JSON.stringify(this.order));
-                    Object.assign(order, {
-                        type: 'PRE_PAYMENT',
-                        cashier: this.op.name
-                    })
-                    Printer.init(this.config).setJob('receipt').print(order);
-                    this.setTableInfo({ status: 3 });
-                    this.$socket.emit("TABLE_MODIFIED", this.currentTable);
                     this.$q();
-                }).catch(()=>{ this.$q() })
+                    this.$nextTick(() => {
+                        this.order.split ? this.askSplitPrePayment() : this.printPrePayment();
+                    })
+                }).catch(() => { this.$q() })
             } else {
                 let remain = this.order.content.filter(item => !item.print).length;
                 this.$dialog({
                     title: 'dialog.prePaymentFailed', msg: ['dialog.prePaymentFailedTip', remain], buttons: [{ text: 'button.confirm', fn: 'resolve' }]
                 }).then(() => { this.$q() })
             }
+        },
+        printPrePayment() {
+            let order = JSON.parse(JSON.stringify(this.order));
+            Object.assign(order, {
+                type: 'PRE_PAYMENT',
+                cashier: this.op.name
+            })
+            Printer.init(this.config).setJob('receipt').print(order);
+            this.setTableInfo({ status: 3 });
+            this.$socket.emit("TABLE_MODIFIED", this.currentTable);
+        },
+        askSplitPrePayment() {
+            this.$dialog({
+                type: 'question', title: 'dialog.printSplitTicket', msg: 'dialog.printSplitTicketTip',
+                buttons: [{ text: 'button.combinePrint', fn: 'reject' }, { text: 'button.splitPrint', fn: 'resolve' }]
+            }).then(() => { this.$q(), this.splitPrint() }).catch(() => { this.$q(), this.printPrePayment() })
+        },
+        splitPrint() {
+            let split = [].concat.apply([], this.order.content.map(item => item.sort)).filter((v, i, s) => s.indexOf(v) === i).length;
+            let ticket = JSON.parse(JSON.stringify(this.order));
+            for (let i = 1; i < split + 1; i++) {
+                ticket.content = this.order.content.filter(item => Array.isArray(item.sort) ? item.sort.includes(i) : item.sort === i);
+                ticket.payment = this.order.splitPayment[i - 1];
+                ticket.number = `${this.order.number}-${i}`;
+                Printer.init(this.config).setJob("receipt").print(ticket);
+            }
+            this.setTableInfo({ status: 3 });
+            this.$socket.emit("TABLE_MODIFIED", this.currentTable);
         },
         settle() {
             if (this.isEmptyTicket) return;
