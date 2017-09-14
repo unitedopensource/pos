@@ -379,7 +379,7 @@ export default {
                 let taxClass = this.tax.class[item.taxClass];
                 let amount = item.single * item.qty;
                 item.choiceSet.forEach(set => { amount += set.single * set.qty });
-                if (!this.order.taxFree) tax += taxClass.apply[type] ? Math.floatMul(taxClass.rate / 100, amount) : tax;
+                if (!this.order.taxFree) tax += taxClass.apply[type] ? (taxClass.rate / 100 * amount) : tax;
                 subtotal += amount;
             });
 
