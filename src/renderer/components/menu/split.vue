@@ -11,7 +11,7 @@
                     <div class="inner">
                         <i class="fa fa-2x fa-angle-left page" @click="page = page===(split-1) ? page : page+1" v-show="split > 2"></i>
                         <div class="extend" :style="offset">
-                            <split-list :invoice="items" :done="lock" v-for="i in split" :split="i" :key="i" @queue="setQueue" @click.native="trigger(i)" @print="printInvoice" @pay="settle"></split-list>
+                            <split-list :invoice="items" :done="lock" :settle="splitPayment[i-1]" v-for="i in split" :split="i" :key="i" @queue="setQueue" @click.native="trigger(i)" @print="printInvoice" @pay="settle"></split-list>
                         </div>
                         <i class="fa fa-2x fa-angle-right page" @click="page = page===0 ? 0 : page-1" v-show="split > 2"></i>
                     </div>
@@ -51,7 +51,7 @@ export default {
             component: null,
             componentData: null,
             transferItems: [],
-            splitPayment: {}
+            splitPayment: []
         }
     },
     created() {
@@ -64,6 +64,7 @@ export default {
         initial() {
             this.items = this.flatten(this.order.content);
             this.split = this.check(this.items);
+            this.splitPayment = this.order.split ? this.order.splitPayment : [];
         },
         flatten(items) {
             let flattened = [];

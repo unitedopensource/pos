@@ -243,7 +243,8 @@ export default {
         },
         paySplit() {
             this.payMode = false;
-            this.switchInvoice();
+            let index = this.order.splitPayment.findIndex(payment => !payment.settled)
+            this.switchInvoice(index);
         },
         setPaymentType(type) {
             let dom = document.querySelector('.type.set');
@@ -684,10 +685,15 @@ export default {
                 this.payment.settled = true;
                 if (this.order.hasOwnProperty('splitPayment')) {
                     this.order.splitPayment[this.current] = this.payment;
-                    this.$dialog({
-                        type: "question", title: "dialog.printReceiptConfirm", msg: "dialog.printReceiptConfirmTip",
-                        buttons: [{ text: 'button.noReceipt', fn: 'reject' }, { text: 'button.printReceipt', fn: 'resolve' }]
-                    }).then(() => { this.printSplitReceipt() }).catch(() => { this.nextSplit() });
+                    type === 'CASH' ?
+                        this.$dialog({
+                            title: ["dialog.cashChange", change], msg: ["dialog.cashChangeTip", paid.toFixed(2)],
+                            buttons: [{ text: 'button.noReceipt', fn: 'reject' }, { text: 'button.printReceipt', fn: 'resolve' }]
+                        }).then(() => { this.printSplitReceipt() }).catch(() => { this.this.nextSplit() }) :
+                        this.$dialog({
+                            type: "question", title: "dialog.printReceiptConfirm", msg: "dialog.printReceiptConfirmTip",
+                            buttons: [{ text: 'button.noReceipt', fn: 'reject' }, { text: 'button.printReceipt', fn: 'resolve' }]
+                        }).then(() => { this.printSplitReceipt() }).catch(() => { this.nextSplit() });
                 } else {
                     this.exit(this.payment)
                 }

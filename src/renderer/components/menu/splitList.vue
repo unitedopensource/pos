@@ -39,7 +39,7 @@ import { mapGetters } from 'vuex'
 import checkbox from '../setting/common/checkbox'
 export default {
     components: { checkbox },
-    props: ['invoice', 'split', 'done'],
+    props: ['invoice', 'split', 'done', 'settle'],
     data() {
         return {
             queue: [],
@@ -104,7 +104,7 @@ export default {
             tax = parseFloat(tax.toFixed(2));
             total = (subtotal + tax + tip + gratuity + delivery).toFixed(2);
             due = (parseFloat(total) - parseFloat(discount)).toFixed(2);
-            return { tip, gratuity, discount, delivery, subtotal, total, tax, paid, log, due, sort: this.split }
+            return (this.settle && this.settle.settled) ? this.settle : { tip, gratuity, discount, delivery, subtotal, total, tax, paid, log, due, sort: this.split }
         },
         ...mapGetters(['tax', 'ticket', 'store', 'order', 'language'])
     },
