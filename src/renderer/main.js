@@ -128,6 +128,9 @@ String.prototype.toFixed = function (places) {
 String.prototype.toCapitalCase = function () {
   return this.replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); });
 };
+window.toFixed = function (number, fractionSize) {
+  return +(Math.round(+(number.toString() + 'e' + fractionSize)).toString() + 'e' + -fractionSize);
+}
 // Math.floatMul = function(arg1, arg2) {      
 //   var m=0, s1=arg1.toString(), s2=arg2.toString();  
 //   if(s1.indexOf('.') != -1)  

@@ -384,12 +384,12 @@ export default {
             });
 
             delivery = (this.ticket.type === 'DELIVERY' && this.store.delivery && !this.order.deliveryFree) ? this.store.deliveryCharge : 0;
-            total = subtotal + tax + delivery + parseFloat(tip) + parseFloat(gratuity);
+            total = toFixed(subtotal + tax + delivery + parseFloat(tip) + parseFloat(gratuity),2);
             due = Math.max(0, total - parseFloat(discount));
             balance = due - this.payment.paid;
             this.payment = Object.assign({}, this.payment, {
                 subtotal: subtotal.toFixed(2),
-                tax: tax.toFixed(2),
+                tax: toFixed(tax, 2),
                 total: total.toFixed(2),
                 due: due.toFixed(2),
                 discount: discount.toFixed(2),
