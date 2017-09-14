@@ -373,7 +373,7 @@ export default {
             }];
         },
         summarize(data) {
-            let gross = 0, grossAmount = 0, netAmount = 0, foodSalesAmount = 0, taxAmount = 0,
+            let gross = 0, grossAmount = 0, netAmount = 0, itemSalesAmount = 0, taxAmount = 0,
                 walkin = 0, walkinAmount = 0,
                 pickup = 0, pickupAmount = 0,
                 delivery = 0, deliveryAmount = 0, deliveryTip = 0,
@@ -429,7 +429,7 @@ export default {
                     gross++;
                     grossAmount += total;
                     netAmount += due;
-                    foodSalesAmount += subtotal;
+                    itemSalesAmount += subtotal;
                     taxAmount += tax;
 
                     if (ticket.payment.discount > 0) {
@@ -483,9 +483,9 @@ export default {
                 amount: ""
             },
             {
-                text: this.$t('report.foodSales'),
+                text: this.$t('report.itemSales'),
                 count: 0,
-                amount: foodSalesAmount
+                amount: itemSalesAmount
             },
             {
                 text: this.$t('report.tax'),

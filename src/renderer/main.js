@@ -128,6 +128,52 @@ String.prototype.toFixed = function (places) {
 String.prototype.toCapitalCase = function () {
   return this.replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); });
 };
+Math.floatMul = function(arg1, arg2) {      
+  var m=0, s1=arg1.toString(), s2=arg2.toString();  
+  if(s1.indexOf('.') != -1)  
+            m += s1.split('.')[1].length;  
+  if(s2.indexOf('.') != -1)  
+            m += s2.split('.')[1].length;  
+  return Number(s1.replace('.', '')) * Number(s2.replace('.', '')) / Math.pow(10, m);  
+};  
+Math.floatDiv = function(arg1, arg2) {      
+  var t1=0, t2=0, r1, r2, s1=arg1.toString(), s2=arg2.toString();      
+  if(s1.indexOf('.') != -1)  
+            t1 = s1.split('.')[1].length;  
+  if(s2.indexOf('.') != -1)  
+            t2 = s2.split('.')[1].length;  
+
+  r1 = Number(s1.replace('.', ''));  
+  r2 = Number(s2.replace('.', ''));  
+  return (r1 / r2) / Math.pow(10, t1 - t2);  
+}; 
+Math.floatSub = function(arg1, arg2) {     
+  var r1, r2, m, n;     
+  try{ r1 = arg1.toString().split('.')[1].length; } catch(e) { r1 = 0; }  
+  try{ r2 = arg2.toString().split('.')[1].length; } catch(e) { r2 = 0; }  
+  m = Math.pow(10, Math.max(r1, r2));     
+  n = (r1 >= r2) ? r1 : r2;     
+  return (((arg1 * m) - (arg2 * m)) / m).toFixed(n);     
+};  
+Math.floatAdd = function(arg1, arg2) {        
+  var r1, r2, m;        
+  try{ r1 = arg1.toString().split(".")[1].length; } catch(e) { r1 = 0; }     
+  try{ r2 = arg2.toString().split(".")[1].length; } catch(e) { r2 = 0; }     
+  m = Math.pow(10, Math.max(r1, r2));     
+  return ((arg1 * m) + (arg2 * m)) / m;     
+}; 
+Number.prototype.toFixed = function(n) {  
+  var power = Math.pow(10, n);  
+  var fixed = (Math.round(Math.floatMul(this, power)) / power).toString();  
+  if (n == 0)  
+      return fixed;  
+  if (fixed.indexOf('.') < 0)  
+      fixed += '.';  
+  var padding = n + 1 - (fixed.length - fixed.indexOf('.'));  
+  for (var i = 0; i < padding; i++)  
+      fixed += '0';  
+  return fixed;  
+};  
 window.ObjectId = (m = Math, d = Date, h = 16, s = s => m.floor(s).toString(h)) => s(d.now() / 1000) + ' '.repeat(h).replace(/./g, () => s(m.random() * h));
 window.isNumber = (n => (/^-?[\d.]+(?:e-?\d+)?$/.test(n)));
 window.today = function (offset = 0) {

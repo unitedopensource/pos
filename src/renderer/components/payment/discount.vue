@@ -8,7 +8,7 @@
       <div class="inner">
         <div class="display">
           <div class="total">
-            <span class="due">{{init.payment.due | decimal}}</span>
+            <span class="due">{{(init.payment.total) | decimal}}</span>
             <span class="formula">{{formula}}</span>
           </div>
           <div class="wrap">
@@ -70,7 +70,7 @@ export default {
       this.formula = null;
     },
     getFormula(value) {
-      let total = this.init.payment.due.toFixed(2);
+      let total = this.init.payment.total.toFixed(2);
       if (value.includes('%')) {
         let result = (total * (parseFloat(value.replace(/D+/, "")) / 100)).toFixed(2);
         this.formula = `${total} * ${value} = ${result}`;
@@ -102,7 +102,7 @@ export default {
     },
     enter() {
       let discount = this.discount.includes("%") ?
-        (this.discount.replace(/\D+/, "") / 100 * this.init.payment.due).toFixed(2) :
+        (this.discount.replace(/\D+/, "") / 100 * this.init.payment.total).toFixed(2) :
         this.discount.replace(/\D+/, "");
       this.init.resolve({ discount });
     }

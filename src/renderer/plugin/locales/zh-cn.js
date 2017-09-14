@@ -477,7 +477,8 @@ export default {
         'debitCard': '借记卡',
         'giftCard': '礼物卡',
         'creditCardTip':'信用卡小费',
-        'tax':'税'
+        'tax':'税',
+        'itemSales':'物品销售'
     },
     text: {
         'starter':'起始',

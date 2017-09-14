@@ -478,7 +478,8 @@ export default {
         'debitCard': 'Debit Card',
         'giftCard': 'Gift Card',
         'creditCardTip': 'Credit Card Tips',
-        'tax':'Tax'
+        'tax':'Tax',
+        'itemSales':'Item Sales'
     },
     text: {
         'starter': 'Starter',
