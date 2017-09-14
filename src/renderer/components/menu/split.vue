@@ -6,7 +6,7 @@
                 <i class="fa fa-times" @click="cancel"></i>
             </header>
             <section>
-                <split-list :invoice="items" @queue="setQueue" v-show="remain !==0"></split-list>
+                <split-list :invoice="items" @queue="setQueue" v-show="remain !==0" :hide="true"></split-list>
                 <div class="wrap">
                     <div class="inner">
                         <i class="fa fa-2x fa-angle-left page" @click="page = page===(split-1) ? page : page+1" v-show="split > 2"></i>
@@ -57,9 +57,9 @@ export default {
     created() {
         this.initial();
     },
-    beforeCreate() {
-        this.$options.components.payment = require('../payment/payment');
-    },
+    // beforeCreate() {
+    //     this.$options.components.payment = require('../payment/payment');
+    // },
     methods: {
         initial() {
             this.items = this.flatten(this.order.content);

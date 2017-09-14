@@ -15,7 +15,7 @@
             </div>
             <div class="space" v-if="instance.length > 7"></div>
         </div>
-        <div class="summary">
+        <div class="summary" v-show="!hide">
             <div class="total">
                 <span class="text">{{$t('text.total')}}:</span>
                 <span>${{payment.total | decimal}}
@@ -39,7 +39,7 @@ import { mapGetters } from 'vuex'
 import checkbox from '../setting/common/checkbox'
 export default {
     components: { checkbox },
-    props: ['invoice', 'split', 'done', 'settle'],
+    props: ['invoice', 'split', 'done', 'settle', 'hide'],
     data() {
         return {
             queue: [],

@@ -699,7 +699,7 @@ export default {
         'index': 'Index',
         'user': 'User',
         'event': 'Event',
-        'timecard': 'Time Card'
+        'timecard': 'TimeCard'
     },
     setting: {
         'softwareSetting': 'UnitedPOS Setting',
