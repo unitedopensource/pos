@@ -42,8 +42,9 @@ export default {
             }
         },
         setPage(number) {
+            this.$emit('page', number - 1);
             this.page = number;
-            this.$emit('page', this.page - 1);
+            this.format(number);
         }
     },
     computed: {
@@ -53,10 +54,8 @@ export default {
     },
     watch: {
         of() {
-            this.page = 1
-        },
-        page(n) {
-            this.format(n)
+            this.page = 1;
+            this.format(0)
         }
     }
 }

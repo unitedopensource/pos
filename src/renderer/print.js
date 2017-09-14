@@ -675,7 +675,7 @@ Printer.prototype.printReport = function (data) {
         if (Array.isArray(report[key])) {
           section += report[key].map(record => {
             let { text, count, amount } = record;
-            amount = isNumber(amount) ? "$ " + amount.toFixed(2) : amount ? flatten(amount) : "";
+            amount = isNumber(amount) ? "$ " + toFixed(amount,2) : amount ? flatten(amount) : "";
             count = count > 0 ? count : "";
             return `<div class="data">
                   <div class="text">${text}</div>
@@ -686,7 +686,7 @@ Printer.prototype.printReport = function (data) {
         } else {
           for (let value in report[key]) {
             let { text, count, amount } = report[key][value];
-            amount = isNumber(amount) ? "$ " + amount.toFixed(2) : amount ? flatten(amount) : "";
+            amount = isNumber(amount) ? "$ " + toFixed(amount,2) : amount ? flatten(amount) : "";
             count = count > 0 ? count : "";
             section += `<div class="data">
                          <div class="text">${text}</div>

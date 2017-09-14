@@ -1,18 +1,18 @@
 <template>
     <div>
-        <button class="btn" @click="settle" :disabled="order.settled">
+        <button class="btn" @click="settle" :disabled="disable">
             <i class="fa fa-money"></i>
             <span class="text">{{$t('button.payment')}}</span>
         </button>
-        <button class="btn" @click="thirdParty" :disabled="order.settled">
+        <button class="btn" @click="thirdParty" :disabled="disable">
             <i class="fa fa-google-wallet"></i>
             <span class="text">{{$t('button.thirdParty')}}</span>
         </button>
-        <button class="btn" @click="split" :disabled="order.settled">
+        <button class="btn" @click="split" :disabled="disable">
             <i class="fa fa-clone"></i>
             <span class="text">{{$t('button.split')}}</span>
         </button>
-        <button class="btn" @click="discount" :disabled="order.settled">
+        <button class="btn" @click="discount" :disabled="disable">
             <i class="fa fa-tag"></i>
             <span class="text">{{$t('button.discount')}}</span>
         </button>
@@ -36,11 +36,13 @@ import payment from '../payment/payment'
 import driver from '../history/driver'
 import split from '../menu/split'
 export default {
+    props: ['date'],
     components: { driver, dialoger, payment, paymentMark, split },
     data() {
         return {
             componentData: null,
-            component: null
+            component: null,
+            today: today()
         }
     },
     methods: {
@@ -69,6 +71,9 @@ export default {
         ...mapActions(['resetMenu'])
     },
     computed: {
+        disable() {
+            return this.order.settled || this.today !== this.date || this.order.status === 0
+        },
         ...mapGetters(['order', 'ticket'])
     }
 }

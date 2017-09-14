@@ -22,7 +22,7 @@
             </section>
             <section class="ticket">
                 <order-list layout="display" :display="true"></order-list>
-                <order-function></order-function>
+                <order-function :date="calendarDate || today"></order-function>
             </section>
         </article>
         <div :is="component" :init="componentData"></div>
@@ -77,6 +77,7 @@ export default {
         },
         setFilter(type, id) {
             this.driver = null;
+            this.page = 0;
             switch (type) {
                 case "WALK_IN":
                 case "PICK_UP":
