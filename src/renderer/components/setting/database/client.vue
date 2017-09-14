@@ -12,32 +12,26 @@
             <div class="listHeader">
                 <span class="number">{{$t('text.phone')}}</span>
                 <span class="address">{{$t('text.address')}}</span>
-                <span class="info">{{$t('text.info')}}</span>
-                <span class="action">{{$t('text.action')}}</span>
+                <div class="info">
+                    <span class="name">{{$t('text.name')}}</span>
+                    <span class="count">{{$t('text.count')}}</span>
+                    <span class="total">{{$t('text.total')}}</span>
+                    <span class="time">{{$t('text.lastDate')}}</span>
+                </div>
             </div>
             <article>
                 <div v-for="(customer,index) in customers" class="datalist" :key="index">
-                    <div class="number">
-                        <span class="phone">{{customer.phone | phone}}</span>
-                        <span class="name">{{customer.name}}</span>
-                    </div>
+                    <span class="number">{{customer.phone | phone}}</span>
                     <div class="address">
-                        <span class="street">{{customer.address}}</span>
-                        <span class="city">{{customer.city}}</span>
+                        <span class="street">{{customer.address}}
+                            <span class="city">{{customer.city}}</span>
+                        </span>
                     </div>
                     <div class="info">
-                        <div>
-                            <span class="text">{{$t('text.orderCount')}}</span>
-                            <span class="value">{{customer.extra.orderCount}}</span>
-                        </div>
-                        <div>
-                            <span class="text">{{$t('text.orderAmount')}}</span>
-                            <span class="value">$ {{customer.extra.orderAmount | decimal}}</span>
-                        </div>
-                        <div>
-                            <span class="text">{{$t('dashboard.lastTime')}}</span>
-                            <span class="value">{{customer.extra.lastDate | fromNow}}</span>
-                        </div>
+                        <span class="name">{{customer.name}}</span>
+                        <span class="count">{{customer.extra.orderCount}}</span>
+                        <span class="total">$ {{customer.extra.orderAmount | decimal}}</span>
+                        <span class="time">{{customer.extra.lastDate | fromNow}}</span>
                     </div>
                     <i class="fa fa-times" @click="removeClient(customer)"></i>
                 </div>
@@ -79,6 +73,7 @@ export default {
                 this.$socket.emit("[CMS] DELETE_CUSTOMER", customer._id);
                 let index = this.customers.findIndex(client => client._id === customer._id);
                 index !== 1 && this.customers.splice(index, 1);
+                this.$q();
             }).catch(() => { this.$q() })
         },
         more() {
@@ -112,50 +107,46 @@ export default {
     width: 100px;
 }
 
+.datalist {
+    padding: 10px 0;
+}
+
 .number {
-    width: 150px;
-    text-indent: 1em;
-    display: flex;
-    flex-direction: column;
+    width: 120px;
+    padding: 0 5px 0 15px;
 }
 
 .address {
-    display: flex;
-    flex-direction: column;
-    width: 250px;
+    min-width: 270px;
+    padding: 0 10px;
 }
 
 .city {
+    margin-left: 5px;
     color: #9E9E9E;
 }
 
+.name {
+    min-width: 150px;
+    padding: 0 10px;
+}
+
 .info {
-    flex: 1;
     display: flex;
-    flex-direction: row;
 }
 
-.info div {
-    display: flex;
-    flex-direction: column;
-}
-
-.datalist i {
-    padding: 10px 15px;
-    cursor: pointer;
-}
-
-span.phone {
-    font-weight: bold;
-}
-
-.info div {
-    margin: 0 10px;
+.count {
+    min-width: 60px;
     text-align: center;
 }
 
-.action {
-    width: 50px;
+.total {
+    min-width: 60px;
+    padding: 0 10px;
+}
+
+.time{
+    width: 120px;
 }
 
 .more {

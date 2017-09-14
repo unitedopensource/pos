@@ -451,8 +451,8 @@ export default {
         'range': 'Report Range',
         'dailyReport': 'Daily Report',
         'today': 'Today',
-        'currentWeek': 'Current Week',
-        'currentMonth': 'Current Month',
+        'currentWeek': 'Cur. Week',
+        'currentMonth': 'Cur. Month',
         'lastMonth': 'Last Month',
         'setDate': 'Set Date',
         'details': 'Report Details',
@@ -673,7 +673,9 @@ export default {
         'passwordRequire': 'Password Req.',
         'newOperator': 'New User',
         'enterPin': 'Please Enter Your Pin',
-        'printReceipt': 'Print Receipt'
+        'printReceipt': 'Print Receipt',
+        'count':'Count',
+        'lastDate':'Last Date'
     },
     nav: {
         'store': 'Store',

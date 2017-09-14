@@ -12,6 +12,7 @@
                 </div>
             </div>
             <footer>
+                <div class="btn" @click="init.reject">{{$t('button.cancel')}}</div>
                 <div class="btn" @click="confirm">{{$t('button.confirm')}}</div>
             </footer>
         </div>

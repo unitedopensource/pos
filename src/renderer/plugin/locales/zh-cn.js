@@ -671,7 +671,9 @@ export default {
         'passwordRequire':'需要密码',
         'newOperator':'新建用户',
         'enterPin':'输入密码',
-        'printReceipt':'打印收据'
+        'printReceipt':'打印收据',
+        'count':'计数',
+        'lastDate':'最后日期'
     },
     nav:{
         'store':'店面',
