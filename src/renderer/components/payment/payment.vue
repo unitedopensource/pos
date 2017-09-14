@@ -689,7 +689,7 @@ export default {
                         this.$dialog({
                             title: ["dialog.cashChange", change], msg: ["dialog.cashChangeTip", paid.toFixed(2)],
                             buttons: [{ text: 'button.noReceipt', fn: 'reject' }, { text: 'button.printReceipt', fn: 'resolve' }]
-                        }).then(() => { this.printSplitReceipt() }).catch(() => { this.this.nextSplit() }) :
+                        }).then(() => { this.printSplitReceipt() }).catch(() => { this.nextSplit() }) :
                         this.$dialog({
                             type: "question", title: "dialog.printReceiptConfirm", msg: "dialog.printReceiptConfirmTip",
                             buttons: [{ text: 'button.noReceipt', fn: 'reject' }, { text: 'button.printReceipt', fn: 'resolve' }]
