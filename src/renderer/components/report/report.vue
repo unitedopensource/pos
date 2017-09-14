@@ -457,22 +457,27 @@ export default {
                                 giftAmount += due;
                                 break;
                             default:
-                                if (ticket.payment.paidCash > 0) {
-                                    cash++;
-                                    cashAmount += parseFloat(ticket.payment.paidCash);
-                                }
-                                if (ticket.payment.paidCredit > 0) {
-                                    credit++;
-                                    console.log(ticket.payment.paidCredit)
-                                    creditAmount += parseFloat(ticket.payment.paidCredit);
-                                    if (tip > 0) {
-                                        creditTip++;
-                                        creditTipAmount += tip
-                                    }
-                                }
-                                if (ticket.payment.paidGift) {
-                                    gift++;
-                                    giftAmount += parseFloat(ticket.payment.paidGift);
+                                if (ticket.splitPayment) {
+                                    ticket.splitPayment.forEach(split => {
+                                        switch (split.type) {
+                                            case "CASH":
+                                                cash++;
+                                                cashAmount += parseFloat(split.due);
+                                                break;
+                                            case "CREDIT":
+                                                credit++;
+                                                creditAmount += parseFloat(split.due);
+                                                if (tip > 0) {
+                                                    creditTip++;
+                                                    creditTipAmount += parseFloat(split.tip)
+                                                }
+                                                break;
+                                            case "GIFT":
+                                                gift++;
+                                                giftAmount += parseFloat(split.due);
+                                                break;
+                                        }
+                                    })
                                 }
                         }
 
