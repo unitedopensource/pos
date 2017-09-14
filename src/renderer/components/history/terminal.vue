@@ -250,7 +250,7 @@ export default {
                     record.status = 2;
                     record.amount.tip = value;
                     this.$socket.emit("[TERM] UPDATE_TRANSACTION", record);
-                    this.adjustOrderTip(record.order, value);
+                    this.adjustOrderTip(record, value);
                 })
         },
         adjustTipFailed(code) {
@@ -259,11 +259,26 @@ export default {
                 buttons: [{ text: 'button.confirm', fn: 'resolve' }]
             }).then(() => { this.$q() })
         },
-        adjustOrderTip(order, tip) {
+        adjustOrderTip(record, tip) {
             //bug here split payment
+            let { order, amount } = record;
             let invoice = this.history.find(ticket => order._id === ticket._id);
-                
-            invoice.payment.tip = parseFloat(tip);
+            if (invoice.split) {
+                let unique = record.unique;
+                invoice.splitPayment.forEach(payment => {
+                    payment.log.forEach(log => {
+                        if (log.id === unique) {
+                            payment.tip = parseFloat(tip)
+                        }
+                    })
+                })
+                invoice.payment.tip = 0;
+                invoice.splitPayment.forEach(payment=>{
+                    invoice.payment.tip += parseFloat(payment.tip)
+                })
+            } else {
+                invoice.payment.tip = parseFloat(tip);
+            }
             this.$socket.emit("[UPDATE] INVOICE", invoice);
         },
         batch() {
