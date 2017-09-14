@@ -6,6 +6,7 @@
 <script>
 import { mapActions, mapGetters } from "vuex"
 import { ipcRenderer } from 'electron'
+//import Printer from '../plugin/print'
 import serialport from 'serialport'
 import wol from 'wake_on_lan'
 import MAC from 'getmac'
@@ -147,7 +148,7 @@ export default {
       'setReservation'])
   },
   computed: {
-    ...mapGetters(['station'])
+    ...mapGetters(['config', 'station'])
   }
 }
 </script>

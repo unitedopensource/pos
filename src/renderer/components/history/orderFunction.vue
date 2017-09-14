@@ -56,7 +56,10 @@ export default {
             this.$p('split')
         },
         discount() {
-
+            console.log('trigger')
+            //this.$popup({title:'dialog.unableEdit',msg:'dialog.unableEditTip'})
+            let p = this.$popup();
+            p({title:'dialog.unableEdit',msg:'dialog.unableEditTip'}).then(()=>{console.log('outside')})
         },
         driver() {
             this.$p("driver", { driver: this.order.driver, ticket: this.ticket.number })

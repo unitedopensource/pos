@@ -54,6 +54,7 @@
         <span class="text">{{$t('button.language')}}</span>
       </div>
     </div>
+    <div :is="component" :init="componentData"></div>
   </div>
   <div class="grid" v-else-if="layout === 'BUFFET'">
     <div class="btn" @click="less">
@@ -138,17 +139,23 @@
       <i class="fa fa-language"></i>
       <span class="text">{{$t("button.language")}}</span>
     </div>
+    <div :is="component" :init="componentData"></div>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import dialoger from '../common/dialoger'
+import unlock from '../common/unlock'
 import Printer from '../../print'
 export default {
   props: ['layout'],
+  components: { dialoger, unlock },
   data() {
     return {
-      isDisplayGuests: false
+      isDisplayGuests: false,
+      componentData: null,
+      component: null
     }
   },
   methods: {
@@ -156,8 +163,33 @@ export default {
       this.$emit("open", name);
     },
     less() {
-      let dom = document.querySelector('div.request');
-      this.lessQty(dom !== null);
+      let item = !!document.querySelector('div.request');
+      if (this.app.mode === 'create' || this.item.new) {
+        this.lessQty(item);
+      } else {
+        this.approval(this.op.modify, 'item') ?
+          this.lessQty(item) :
+          this.requestAccess().then(op => {
+            console.log(this.approval(op.modify, 'item'))
+            if (this.approval(op.modify, 'item')) {
+              this.$q()
+              this.lessQty(item)
+            } else {
+              this.accessDenied()
+            }
+          }).catch(() => { this.accessDenied() })
+      }
+    },
+    requestAccess() {
+      return new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject };
+        this.component = 'unlock'
+      })
+    },
+    accessDenied() {
+      this.$dialog({
+        title: 'dialog.accessDenied', msg: 'dialog.accessDeniedTip', buttons: [{ text: 'button.confirm', fn: 'resolve' }]
+      }).then(() => { this.$q() })
     },
     modify() {
       if (this.isEmptyTicket) return;
@@ -224,7 +256,7 @@ export default {
       } else {
         order = this.combineOrderInfo({});
       }
-      print && Printer.init(this.config).setJob("receipt").print(order,true);
+      print && Printer.init(this.config).setJob("receipt").print(order, true);
       print && order.content.forEach(item => {
         delete item.new;
         item.print = true;
@@ -280,7 +312,7 @@ export default {
     ...mapActions(['setApp', 'lessQty', 'moreQty', 'resetAll', 'setOrder', 'setTableInfo'])
   },
   computed: {
-    ...mapGetters(['op', 'app', 'config', 'order', 'ticket', 'store', 'customer', 'station', 'isEmptyTicket', 'currentTable'])
+    ...mapGetters(['op', 'app', 'config', 'item', 'order', 'ticket', 'store', 'customer', 'station', 'isEmptyTicket', 'currentTable'])
   }
 }
 </script>
