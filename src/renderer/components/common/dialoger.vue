@@ -1,6 +1,7 @@
 <template>
   <div class="popupMask center dark" @dblclick.self="exit">
-    <div class="dialog" :class="[init.type]">
+    <div class="dialog" :class="[init.type,loader]">
+      <header class="progress" :style="bar"></header>
       <i class="fa"></i>
       <h3>{{title}}</h3>
       <h5>{{msg}}</h5>
@@ -12,37 +13,52 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   props: ['init'],
   data() {
     return {
-      title: "",
-      msg: ""
+      loader: '',
+      title: '',
+      msg: '',
+      bar: null,
+      pct: 90,
+      step: 0
     }
   },
   created() {
     this.title = typeof this.init.title === 'string' ? this.$t(this.init.title) : this.$t(...this.init.title);
     this.msg = typeof this.init.msg === 'string' ? this.$t(this.init.msg) : this.$t(...this.init.msg);
-  },
-  mounted() {
     if (this.init.timeout) {
       this.timeout = setTimeout(() => {
-        typeof this.init.timeout.fn === 'function'
-          ? this.init.timeout.fn()
-          : eval(this.init.timeout.fn);
-      }, this.init.timeout.duration)
+        typeof this.init.timeout.fn === 'function' ? this.init.timeout.fn() : eval(this.init.timeout.fn);
+      }, this.init.timeout.duration);
+      this.loader = 'loader';
+      this.step = this.init.timeout.duration / 1000;
+      this.bar = {
+        transform: `translate3d(-100%,0,0)`
+      }
     }
   },
   methods: {
     trigger(button) {
       clearTimeout(this.timeout);
-      typeof button.fn === "function" ?
-        button.fn() :
-        eval(button.fn);
+      typeof button.fn === "function" ? button.fn() : eval(button.fn);
     },
     exit() {
       clearTimeout(this.timeout);
       this.init.resolve() || this.$parent.$q();
+    }
+  },
+  computed: {
+    ...mapGetters(['time'])
+  },
+  watch: {
+    time(n) {
+      if (this.init.timeout && this.pct > 0) {
+        this.pct = this.pct - this.step;
+        this.bar = { transform: `translate3d(${-this.pct}%,0,0)` }
+      }
     }
   }
 }
@@ -55,11 +71,55 @@ export default {
   background: #fff;
   position: relative;
   text-align: center;
+  overflow: hidden;
 }
 
-.dialog.alert {
-  border-top: 2px solid #FF9800;
+.progress {
+  width: 100%;
+  height: 2px;
+  position: relative;
+  transition: transform 1s ease;
+  /* transform: translate3d(0%,0,0); */
 }
+
+.progress:after {
+  position: absolute;
+  right: 0;
+  top: -7px;
+  width: 50px;
+  height: 2px;
+  content: ' ';
+  z-index: 0;
+  transform: rotate(3deg) translate(0, 4px);
+}
+
+.alert .progress {
+  background: #FF9800;
+}
+
+.alert .progress:after {
+  box-shadow: 0 0 10px #EF6C00, 0 0 5px #FB8C00;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* .dialog.alert {
+  border-top: 2px solid #FF9800;
+} */
 
 .dialog.warning {
   border-top: 2px solid #F44336;
@@ -143,5 +203,30 @@ h5 {
   font-size: 13.3px;
   text-shadow: none;
   font-weight: normal;
+}
+
+.loader:after {
+  width: 18px;
+  height: 18px;
+  box-sizing: border-box;
+  border: 2px solid transparent;
+  border-top-color: #FF9800;
+  border-left-color: #FF9800;
+  border-radius: 50%;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  content: ' ';
+  animation: spinner 400ms linear infinite;
+}
+
+@keyframes spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>
