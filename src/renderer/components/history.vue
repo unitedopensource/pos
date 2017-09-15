@@ -96,9 +96,20 @@ export default {
                 default:
                     this.filter = type;
             }
+            this.resetViewOrder()
+        },
+        resetViewOrder() {
+            this.$nextTick(() => {
+                let dom = document.querySelector(".invoice.active");
+                dom && dom.classList.remove("active");
+                this.orders.length && this.getInvoice(this.orders[0]);
+                dom = document.querySelector(".invoice");
+                dom && dom.classList.add("active");
+            })
         },
         setPage(number) {
             this.page = number
+            this.resetViewOrder()
         },
         setSummary(data) {
             this.summary = data;
@@ -158,15 +169,9 @@ export default {
         }
     },
     watch: {
-        // orders(list) {
-        //     if (!this.component) {
-        //         let dom = document.querySelector(".invoice.active");
-        //         dom && dom.classList.remove("active");
-        //         list.length && this.getInvoice(list[0]);
-        //         dom = document.querySelector(".invoice");
-        //         dom && dom.classList.add("active");
-        //     }
-        // },
+        orders(n){
+            console.log(n)
+        },
         order(ticket) {
             this.$nextTick(() => {
                 let dom = document.querySelector(".invoice.active");
