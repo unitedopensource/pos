@@ -19,6 +19,7 @@
         </header>
         <nav>
             <div class="tab active" @click="tap('form',$event)">{{$t('dashboard.customerInfo')}}</div>
+            <div class="tab" @click="tap('note',$event)">{{$t('dashboard.note')}}</div>
             <div class="tab" @click="tap('history',$event)">{{$t('dashboard.history')}}</div>
             <div class="tab" @click="tap('log',$event)">{{$t('dashboard.callLog')}}</div>
             <div class="tab" @click="tap('giftCard',$event)">{{$t('dashboard.giftCard')}}</div>
@@ -37,6 +38,9 @@ export default {
             switch (tab) {
                 case "form":
                     this.$router.push({ name: 'Information' });
+                    break;
+                case "note":
+                    this.$router.push({ name: 'Note' });
                     break;
                 case "customer":
                     this.customer.phone.length === 10 && this.$router.push({ name: 'Customer' });

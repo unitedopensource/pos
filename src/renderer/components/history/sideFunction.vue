@@ -10,7 +10,7 @@
         </div>
         <div class="btn" @click="isVoidable" v-else>
             <i class="fa fa-ban"></i>
-            <span class="text">{{$t('button.delete')}}</span>
+            <span class="text">{{$t('button.void')}}</span>
         </div>
         <div class="btn" @click="isSettled">
             <i class="fa fa-money"></i>
@@ -112,7 +112,7 @@ export default {
                 type: "warning",
                 title: ['dialog.voidOrderConfirm', this.order.number, this.$t('type.' + this.order.type)],
                 msg: 'dialog.voidOrderConfirmTip',
-                buttons: [{ text: 'button.cancel', fn: 'reject' }, { text: 'button.delete', fn: 'resolve' }]
+                buttons: [{ text: 'button.cancel', fn: 'reject' }, { text: 'button.void', fn: 'resolve' }]
             }).then(confirm => { this.$p("Reason") }).catch(() => { this.$q() })
         },
         confirmPaymentRemoval() {

@@ -13,7 +13,7 @@
                 </span>
                 <span>{{item.total}}</span>
             </div>
-            <div class="space" v-if="instance.length > 7"></div>
+            <div class="space" v-if="instance.length > 7 && !hide"></div>
         </div>
         <div class="summary" v-show="!hide">
             <div class="total">

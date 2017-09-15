@@ -24,6 +24,10 @@ export default [{
       name: 'Information',
       component: require('./components/dashboard/form')
     }, {
+      path: 'note',
+      name: 'Note',
+      component: require('./components/dashboard/note')
+    }, {
       path: 'customer',
       name: 'Customer',
       component: require('./components/dashboard/customer')

@@ -11,7 +11,7 @@
             <div class="time">{{time | moment('hh:mm')}}</div>
             <div class="date">{{time | moment('dddd MMM D')}}</div>
         </div>
-        <note></note>
+        <toast></toast>
         <div :is="component" :init="componentData"></div>
     </div>
 </template>
@@ -20,13 +20,13 @@
 import { mapActions, mapGetters } from 'vuex'
 import dialoger from './common/dialoger'
 import counter from './common/counter'
-import note from './dashboard/note'
+import toast from './dashboard/toast'
 import Printer from '../print'
 import Preset from '../preset'
 import MAC from 'getmac'
 
 export default {
-    components: { dialoger, counter, note },
+    components: { dialoger, counter, toast },
     data() {
         return {
             componentData: null,
