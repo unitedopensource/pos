@@ -197,6 +197,9 @@ export default {
         }
     },
     created() {
+        this.init.hasOwnProperty("payment") ? this.payIndividual() :
+            this.order.split ? this.askSplitPay() : this.initial();
+
         let data = {
             component: 'payment',
             operator: this.op.name,
@@ -204,14 +207,9 @@ export default {
             time: +new Date,
             exp: +new Date + 1000 * 30
         }
-        console.log(data)
-        this.$socket.emit('[COMPONENT] LOCK', data, status => {
-            if (status) {
-                this.init.hasOwnProperty("payment") ? this.payIndividual() :
-                    this.order.split ? this.askSplitPay() : this.initial();
-            } else {
-                this.ticketSettling()
-            }
+        this.$socket.emit('[COMPONENT] LOCK', data, settling => {
+            console.log(settling)
+            settling && this.ticketSettling()
         })
     },
     mounted() {
