@@ -210,7 +210,7 @@ export default {
                 this.init.hasOwnProperty("payment") ? this.payIndividual() :
                     this.order.split ? this.askSplitPay() : this.initial();
             } else {
-                this.paymentPending()
+                this.ticketSettling()
             }
         })
     },
@@ -221,7 +221,7 @@ export default {
         this.$socket.emit('[COMPONENT] UNLOCK', { component: 'payment', lock: this.order._id })
     },
     methods: {
-        paymentPending() {
+        ticketSettling() {
             this.$dialog({
                 title: 'dialog.pending', msg: 'dialog.pendingOrderAccessDenied', timeout: { duration: 30000, fn: 'resolve' },
                 buttons: [{ text: 'button.confirm', fn: 'resolve' }]
@@ -757,7 +757,6 @@ export default {
                             status: 1,
                             settled: true,
                             time: +new Date,
-                            pending: false,
                             date: today()
                         });
                         this.$socket.emit("[SAVE] INVOICE", this.order);
@@ -768,7 +767,6 @@ export default {
                             modify: this.order.modify + 1,
                             cashier: this.op.name,
                             payment: this.combineSplitPayment(),
-                            pending: false,
                             settled: true
                         });
                         this.$socket.emit("[UPDATE] INVOICE", this.order)
@@ -780,7 +778,6 @@ export default {
                     this.setOrder({
                         cashier: this.op.name,
                         payment: this.combineSplitPayment(),
-                        pending: false,
                         settled: true
                     });
                     this.$socket.emit("[UPDATE] INVOICE", this.order);
@@ -791,7 +788,6 @@ export default {
                     this.setOrder({
                         cashier: this.op.name,
                         payment: this.combineSplitPayment(),
-                        pending: false,
                         settled: true
                     });
                     this.$socket.emit("[UPDATE] INVOICE", this.order);
@@ -835,7 +831,6 @@ export default {
                     item.print = true;
                     item.pending = false;
                 });
-                ticket.pending = false;
                 this.$socket.emit("[UPDATE] INVOICE", ticket);
             }
 
