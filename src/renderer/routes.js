@@ -26,7 +26,7 @@ export default [{
     }, {
       path: 'note',
       name: 'Note',
-      component: require('./components/dashboard/note')
+      component: require('./components/dashboard/notes')
     }, {
       path: 'customer',
       name: 'Customer',

@@ -6,6 +6,7 @@
 html {
   overflow: hidden;
   font-family: "Yuanti-SC", "Microsoft YaHei";
+  touch-action: manipulation;
 }
 
 /*:lang(zhCN) {
@@ -22,7 +23,6 @@ ul {
   width: 1024px;
   height: 768px;
   user-select: none;
-  touch-action: none;
 }
 
 #app.admin{

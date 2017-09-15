@@ -15,7 +15,7 @@ const mutations = {
     state.password.pop()
   },
   [types.SET_OP](state, data) {
-    state.op = Object.assign({}, state.op, data);
+    state.op = data ? Object.assign({}, state.op, data) : {};
   }
 }
 

@@ -10,7 +10,7 @@
                     <span class="name" v-show="customer.name">{{customer.name}}</span>
                 </div>
             </div>
-            <div class="op" @click="openPanel">
+            <div class="op" @click="openPanel" v-show="op._id">
                 <i class="fa fa-user-circle"></i>
                 <span>{{op.name}}</span>
             </div>

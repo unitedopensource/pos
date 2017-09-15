@@ -122,6 +122,7 @@ export default {
                     break;
                 case "lock":
                     this.resetDashboard();
+                    this.setOp(null);
                     this.$router.push({ path: '/main/lock' });
                     break;
                 default:
@@ -238,7 +239,7 @@ export default {
                 })
             })
         },
-        ...mapActions(['setApp', 'setTicket', 'setCustomer', 'setStation', 'setStations', 'resetDashboard'])
+        ...mapActions(['setOp','setApp', 'setTicket', 'setCustomer', 'setStation', 'setStations', 'resetDashboard'])
     },
     computed: {
         ...mapGetters(['op', 'time', 'ring', 'callLog', 'device', 'config', 'store', 'station', 'history'])
