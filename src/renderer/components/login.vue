@@ -1,7 +1,7 @@
 <template>
   <transition name="fade" appear>
     <div class="container">
-      <div class="login shadow">
+      <div class="accessor shadow">
         <h2>{{store.name}}</h2>
         <div class="input">
           <span v-for="(circle,index) in password" :key="index"></span>
@@ -163,79 +163,6 @@ export default {
 </script>
 
 <style scoped>
-.fade-enter-active,
-.fade-leave-active {
-  opacity: 1;
-  transition: opacity .5s;
-  transition-delay: 0.3s;
-}
-
-.fade-enter,
-.fade-leave {
-  opacity: 0;
-}
-
-.menu-enter-active,
-.menu-leave-active {
-  opacity: 1;
-  transform: translate3d(0, 0, 0);
-  transition: all .3s ease;
-}
-
-.menu-enter,
-.menu-leave {
-  opacity: 0;
-  transform: translate3d(0, 3px, 0);
-}
-
-.login {
-  width: 337px;
-  background-color: #f9f9f9;
-  border-radius: 4px;
-  color: rgba(0, 0, 0, 0.87);
-  text-align: center;
-  padding: 10px 9px 4px;
-}
-
-.input {
-  background: lightgray;
-  text-align: center;
-  color: #fff;
-  width: 275px;
-  height: 40px;
-  overflow: hidden;
-  margin: auto;
-  display: flex;
-  justify-content: center;
-  flex-shrink: 0;
-  flex-wrap: wrap;
-  box-shadow: inset 0px 0px 6px rgba(105, 81, 81, 0.285);
-}
-
-.input span {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: #fff;
-  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3);
-  margin: 5px;
-}
-
-h2 {
-  padding: 20px 10px;
-}
-
-section {
-  margin-top: 15px;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-}
-
-section div:nth-child(3n+3) {
-  margin-right: 0;
-}
-
 .ctrl {
   position: fixed;
   bottom: 35px;

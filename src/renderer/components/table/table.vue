@@ -81,10 +81,17 @@ export default {
                     }
                     break;
                 default:
-                    this.store.table.passwordRequire ? this.$p("unlock") :
+                    this.store.table.passwordRequire ? this.access() : //this.$p("unlock") :
                         this.store.table.guestCount ? this.$p("setup") :
                             this.createTable(0)
             }
+        },
+        access(){
+            // new Promise((resolve,reject)=>{
+            //     this.componentData = {resolve,reject};
+            //     this.component = 'unlock'
+            // })
+            //this.$p('unlock').then()
         },
         createTable(guest) {
             this.setTicket({ type: 'DINE_IN' })

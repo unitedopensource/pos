@@ -24,9 +24,11 @@ ul {
   user-select: none;
   touch-action: none;
 }
+
 #app.admin{
   background: url(../image/9.jpg) center center;
 }
+
 div {
   --shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
 }
@@ -65,6 +67,10 @@ i.warning::before {
 
 .relative {
   position: relative;
+}
+
+input[type='radio']{
+  display: none;
 }
 
 .boxCenter {
@@ -781,6 +787,55 @@ section.cart {
   padding: 3px 0 0 3px;
 }
 
+/* Pin input */
+.accessor {
+  width: 337px;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+  color: rgba(0, 0, 0, 0.87);
+  text-align: center;
+  padding: 10px 9px 4px;
+}
+
+.accessor .input {
+  background: lightgray;
+  text-align: center;
+  color: #fff;
+  width: 275px;
+  height: 40px;
+  overflow: hidden;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  box-shadow: inset 0px 0px 6px rgba(105, 81, 81, 0.285);
+}
+
+.accessor .input span {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3);
+  margin: 5px;
+}
+
+.accessor h2 {
+  padding: 20px 10px;
+}
+
+.accessor section {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.accessor section div:nth-child(3n+3) {
+  margin-right: 0;
+}
+
 /* setting style */
 section.route {
   display: flex;
@@ -861,6 +916,30 @@ footer.update span {
 
 
 /* vue transition animation */
+.fade-enter-active,
+.fade-leave-active {
+  opacity: 1;
+  transition: opacity .5s;
+  transition-delay: 0.3s;
+}
+
+.fade-enter,
+.fade-leave {
+  opacity: 0;
+}
+
+.menu-enter-active,
+.menu-leave-active {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition: all .3s ease;
+}
+
+.menu-enter,
+.menu-leave {
+  opacity: 0;
+  transform: translate3d(0, 3px, 0);
+}
 
 .slideDown-enter-active,
 .slideDown-leave-active {

@@ -19,6 +19,25 @@ const dialog = {
         this.$q();
       });
     }
+    // Vue.prototype._p = function (component, args) {
+    //   let vm = this;
+    //   let promise = new Promise((resolve, reject) => {
+    //     this.componentData = Object.assign({ resolve, reject }, args);
+    //     this.component = component;
+    //   })
+    //   let proxy = new Proxy(promise, {
+    //     get: (target, prop, receiver) => {
+    //       console.log(prop)
+    //       if (prop === 'then') {
+    //         console.log(target,prop)
+    //         return target.then.bind(target)
+    //       } else {
+    //         return target.catch.bind(target)
+    //       }
+    //     }
+    //   })
+    //   return proxy
+    // }
     Vue.prototype.$dialog = function (args) {
       return new Promise((resolve, reject) => {
         this.componentData = {
