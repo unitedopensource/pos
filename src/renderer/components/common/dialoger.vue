@@ -79,7 +79,6 @@ export default {
   height: 2px;
   position: relative;
   transition: transform 1s ease;
-  /* transform: translate3d(0%,0,0); */
 }
 
 .progress:after {
@@ -93,6 +92,19 @@ export default {
   transform: rotate(3deg) translate(0, 4px);
 }
 
+.loader:after {
+  width: 18px;
+  height: 18px;
+  box-sizing: border-box;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  content: ' ';
+  animation: spinner 400ms linear infinite;
+}
+
 .alert .progress {
   background: #FF9800;
 }
@@ -101,29 +113,23 @@ export default {
   box-shadow: 0 0 10px #EF6C00, 0 0 5px #FB8C00;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* .dialog.alert {
-  border-top: 2px solid #FF9800;
-} */
-
-.dialog.warning {
-  border-top: 2px solid #F44336;
+.alert.loader:after {
+  border-top-color: #FF9800;
+  border-left-color: #FF9800;
 }
+
+.warning .progress {
+  background: #F44336
+}
+
+.warning.loader:after{
+  border-top-color: #F44336;
+  border-left-color: #F44336;
+}
+
+
+
+
 
 .dialog.success {
   border-top: 2px solid #13ce66;
@@ -203,21 +209,6 @@ h5 {
   font-size: 13.3px;
   text-shadow: none;
   font-weight: normal;
-}
-
-.loader:after {
-  width: 18px;
-  height: 18px;
-  box-sizing: border-box;
-  border: 2px solid transparent;
-  border-top-color: #FF9800;
-  border-left-color: #FF9800;
-  border-radius: 50%;
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  content: ' ';
-  animation: spinner 400ms linear infinite;
 }
 
 @keyframes spinner {

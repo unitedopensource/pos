@@ -45,6 +45,12 @@ article {
 
 .wrap {
     height: 350px;
+    display: flex;
+    padding: 10px;
+}
+
+label {
+    display: flex;
 }
 
 footer {

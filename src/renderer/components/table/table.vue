@@ -39,7 +39,7 @@
 import { mapGetters, mapActions } from 'vuex'
 import orderList from '../common/orderList'
 import dialoger from '../common/dialoger'
-import unlock from './unlock'
+import unlock from '../common/unlock'
 import setup from './setup'
 import grid from './grid'
 export default {
@@ -81,17 +81,32 @@ export default {
                     }
                     break;
                 default:
-                    this.store.table.passwordRequire ? this.access() : //this.$p("unlock") :
+                    this.store.table.passwordRequire ? this.access() :
                         this.store.table.guestCount ? this.$p("setup") :
                             this.createTable(0)
             }
         },
-        access(){
-            // new Promise((resolve,reject)=>{
-            //     this.componentData = {resolve,reject};
-            //     this.component = 'unlock'
-            // })
-            //this.$p('unlock').then()
+        access() {
+            new Promise((resolve, reject) => {
+                this.componentData = { resolve, reject };
+                this.component = 'unlock'
+            }).then((op) => {
+                op._id === this.op._id ?
+                    this.createTable(1) :
+                    this.switchUser(op);
+            }).catch(() => { this.$q() })
+        },
+        switchUser(op) {
+            this.$dialog({
+                type: 'question', title: 'dialog.switchOperator', msg: ['dialog.switchCurrentOperator', this.op.name, op.name]
+            }).then(() => {
+                let language = op.language || "usEN";
+                moment.locale(language === 'usEN' ? 'en' : 'zh-cn');
+                this.$setLanguage(language);
+                this.setApp({ language, mode: 'create' });
+                this.setOp(op);
+                this.createTable(1);
+            }).catch(() => { this.$q() })
         },
         createTable(guest) {
             this.setTicket({ type: 'DINE_IN' })
@@ -134,7 +149,7 @@ export default {
                 }).catch(() => { this.$q() })
             }
         },
-        ...mapActions(['setApp', 'resetMenu', 'setTicket', 'setViewOrder', 'setCurrentTable', 'setTableInfo'])
+        ...mapActions(['setOp', 'setApp', 'resetMenu', 'setTicket', 'setViewOrder', 'setCurrentTable', 'setTableInfo'])
     },
     computed: {
         viewSection() {
