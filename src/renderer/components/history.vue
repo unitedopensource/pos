@@ -158,13 +158,15 @@ export default {
         }
     },
     watch: {
-        orders(list) {
-            let dom = document.querySelector(".invoice.active");
-            dom && dom.classList.remove("active");
-            list.length && this.getInvoice(list[0]);
-            dom = document.querySelector(".invoice");
-            dom && dom.classList.add("active");
-        },
+        // orders(list) {
+        //     if (!this.component) {
+        //         let dom = document.querySelector(".invoice.active");
+        //         dom && dom.classList.remove("active");
+        //         list.length && this.getInvoice(list[0]);
+        //         dom = document.querySelector(".invoice");
+        //         dom && dom.classList.add("active");
+        //     }
+        // },
         order(ticket) {
             this.$nextTick(() => {
                 let dom = document.querySelector(".invoice.active");

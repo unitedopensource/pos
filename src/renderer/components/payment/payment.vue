@@ -9,7 +9,7 @@
                         <label :for="'split_'+index" class="tag">#{{index + 1}}</label>
                     </label>
                 </div>
-                <i class="fa fa-times" @click="exit"></i>
+                <i class="fa fa-times" @click="init.reject"></i>
             </header>
             <nav>
                 <div class="typeWrap">
@@ -175,6 +175,7 @@ export default {
     components: { Dialoger, Reloader, Discount, CreditCard, GiftCard, Tips, Splitter, Inputter, paymentMark },
     data() {
         return {
+            componentLock: true,
             componentData: null,
             component: null,
             quickInput: [],
@@ -197,7 +198,7 @@ export default {
         }
     },
     created() {
-        this.init.hasOwnProperty("payment") ? this.payIndividual() :
+        this.init.hasOwnProperty("index") ? this.paySplit(this.init.index) :
             this.order.split ? this.askSplitPay() : this.initial();
 
         let data = {
@@ -205,38 +206,31 @@ export default {
             operator: this.op.name,
             lock: this.order._id,
             time: +new Date,
-            exp: +new Date + 1000 * 30
+            exp: +new Date + 1000 * 120
         }
-        this.$socket.emit('[COMPONENT] LOCK', data, settling => {
-            console.log(settling)
-            settling && this.ticketSettling()
-        })
+        this.$socket.emit('[COMPONENT] LOCK', data, settling => { settling && this.ticketSettling() })
     },
     mounted() {
         this.setPaymentType(this.payment.type || 'CASH');
     },
     beforeDestroy() {
-        this.$socket.emit('[COMPONENT] UNLOCK', { component: 'payment', lock: this.order._id })
+        this.componentLock && this.$socket.emit('[COMPONENT] UNLOCK', { component: 'payment', lock: this.order._id })
     },
     methods: {
         ticketSettling() {
             this.$dialog({
                 title: 'dialog.pending', msg: 'dialog.pendingOrderAccessDenied', timeout: { duration: 30000, fn: 'resolve' },
                 buttons: [{ text: 'button.confirm', fn: 'resolve' }]
-            }).then(() => { this.init.resolve() })
+            }).then(() => {
+                this.componentLock = false;
+                this.init.resolve()
+            })
         },
         initial() {
             this.payment = JSON.parse(JSON.stringify(this.order.payment));
             this.payment.balance = Math.max(0, (this.payment.due - this.payment.paid));
             this.getQuickInput(this.payment.balance);
             this.poleDisplay(["TOTAL DUE:", ""], ["", this.payment.due.toFixed(2)]);
-        },
-        payIndividual() {
-            this.payMode = false;
-            this.current = isNumber(this.init.index)
-            this.payment = JSON.parse(JSON.stringify(this.init.payment));
-            this.payment.balance = Math.max(0, (this.payment.due - this.payment.paid));
-            this.getQuickInput(this.payment.balance);
         },
         askSplitPay() {
             this.$dialog({
@@ -253,9 +247,9 @@ export default {
                 this.$q()
             })
         },
-        paySplit() {
+        paySplit(index) {
             this.payMode = false;
-            let index = this.order.splitPayment.findIndex(payment => !payment.settled)
+            index = isNumber(index) ? index : this.order.splitPayment.findIndex(payment => !payment.settled)
             this.switchInvoice(index);
         },
         setPaymentType(type) {

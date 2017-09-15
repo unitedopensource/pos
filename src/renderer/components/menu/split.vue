@@ -20,7 +20,7 @@
             </section>
             <footer>
                 <div class="f1">
-                    <!-- <div class="btn confirm" @click="settleInvoice($event)">{{$t('button.payment')}}</div> -->
+                    <div class="btn confirm" @click="settleInvoice($event)">{{$t('button.payment')}}</div>
                     <div class="btn" @click="printAllInvoices">{{$t('button.printAll')}}</div>
                     <div class="btn" @click="splitEvenly">{{$t('button.evenSplit')}}</div>
                 </div>
@@ -57,9 +57,9 @@ export default {
     created() {
         this.initial();
     },
-    // beforeCreate() {
-    //     this.$options.components.payment = require('../payment/payment');
-    // },
+    beforeCreate() {
+        this.$options.components.payment = require('../payment/payment');
+    },
     methods: {
         initial() {
             this.items = this.flatten(this.order.content);
@@ -90,7 +90,7 @@ export default {
             this.transferItems.length ? this.transfer(++this.split) : this.split++;
         },
         trigger(i) {
-            let settled = this.splitPayment ? this.splitPayment[i-1] && this.splitPayment[i-1].settled : false;
+            let settled = this.splitPayment ? this.splitPayment[i - 1] && this.splitPayment[i - 1].settled : false;
             this.transferItems.length && !settled && this.transfer(i);
         },
         setQueue(transfer) {
@@ -202,15 +202,13 @@ export default {
         settle(ticket) {
             let { split, payment } = ticket;
             new Promise((resolve, reject) => {
-                this.componentData = { payment, index: split - 1, resolve, reject };
+                this.componentData = { index: split - 1, resolve, reject };
                 this.component = "payment";
             }).then((result) => {
                 this.$q();
                 this.splitPayment[split] = result;
                 this.$bus.emit("SPLIT_PAID", split);
-            }).catch(() => {
-                this.$q()
-            })
+            }).catch(() => { this.$q() })
         },
         checkSettle() {
             let settle = 0;

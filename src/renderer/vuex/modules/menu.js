@@ -263,8 +263,8 @@ const mutations = {
     delete state.order.settled;
     delete state.order.pending;
 
-    if (state.order.payment.splitPayment) {
-      delete state.order.payment.splitPayment;
+    if (state.order.splitPayment) {
+      delete state.order.splitPayment;
       delete state.order.split;
     }
 
