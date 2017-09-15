@@ -65,10 +65,10 @@ export default {
             this.view = index;
         },
         selectTable(table, e) {
+            if(!table._id)return;
             this.setCurrentTable(table);
             switch (table.status) {
                 case 0:
-
                     break;
                 case 2:
                 case 3:

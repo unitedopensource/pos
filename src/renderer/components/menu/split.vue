@@ -163,7 +163,7 @@ export default {
             let customer = this.customer;
             Object.assign(order, {
                 content, customer,
-                number: `${this.ticket.number}-${index}`,
+                number: `${this.order.number}-${index}`,
                 type: this.order.type,
                 payment: this.$children[index].payment,
                 time: +new Date

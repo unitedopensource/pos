@@ -440,9 +440,9 @@ Printer.prototype.printReceipt = function (raw, done) {
     let discount = parseFloat(payment.discount) !== 0 ?
       `<p><span class="text">Disc.:</span><span class="value">- ${payment.discount}</span></p>` : "";
     let tip = parseFloat(payment.tip) > 0 ?
-      `<p><span class="text">Tip:</span><span class="value">- ${payment.tip}</span></p>` : "";
+      `<p><span class="text">Tip:</span><span class="value">${payment.tip}</span></p>` : "";
     let gratuity = parseFloat(payment.gratuity) > 0 ?
-      `<p><span class="text">Gratuity:</span><span class="value">- ${payment.gratuity}</span></p>` : "";
+      `<p><span class="text">Gratuity:</span><span class="value">${payment.gratuity}</span></p>` : "";
     let voidTicket = ticket.status === 0 ?
       `<section class="details">
         <h3>*** Ticket Voided ***</h3>

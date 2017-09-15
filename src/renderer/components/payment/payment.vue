@@ -197,20 +197,34 @@ export default {
         }
     },
     created() {
-        //if (!this.order.pending) {
-        this.init.hasOwnProperty("payment") ? this.payIndividual() :
-            this.order.split ? this.askSplitPay() : this.initial();
-        // } else {
-        //     this.orderPending()
-        // }
+        let data = {
+            component: 'payment',
+            operator: this.op.name,
+            lock: this.order._id,
+            time: +new Date,
+            exp: +new Date + 1000 * 30
+        }
+        console.log(data)
+        this.$socket.emit('[COMPONENT] LOCK', data, status => {
+            if (status) {
+                this.init.hasOwnProperty("payment") ? this.payIndividual() :
+                    this.order.split ? this.askSplitPay() : this.initial();
+            } else {
+                this.paymentPending()
+            }
+        })
     },
     mounted() {
         this.setPaymentType(this.payment.type || 'CASH');
     },
+    beforeDestroy() {
+        this.$socket.emit('[COMPONENT] UNLOCK', { component: 'payment', lock: this.order._id })
+    },
     methods: {
-        orderPending() {
+        paymentPending() {
             this.$dialog({
-                title: 'dialog.pending', msg: 'dialog.pendingOrderAccessDenied', buttons: [{ text: 'button.confirm', fn: 'resolve' }]
+                title: 'dialog.pending', msg: 'dialog.pendingOrderAccessDenied', timeout: { duration: 30000, fn: 'resolve' },
+                buttons: [{ text: 'button.confirm', fn: 'resolve' }]
             }).then(() => { this.init.resolve() })
         },
         initial() {

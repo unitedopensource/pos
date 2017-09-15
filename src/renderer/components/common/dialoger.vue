@@ -34,7 +34,7 @@ export default {
         typeof this.init.timeout.fn === 'function' ? this.init.timeout.fn() : eval(this.init.timeout.fn);
       }, this.init.timeout.duration);
       this.loader = 'loader';
-      this.step = this.init.timeout.duration / 1000;
+      this.step = this.init.timeout.duration / 1000 / 10;
       this.bar = {
         transform: `translate3d(-100%,0,0)`
       }

@@ -40,7 +40,7 @@ export default {
 
     },
     computed: {
-        ...mapGetters(['app', 'ticket', 'order'])
+        ...mapGetters(['app', 'ticket', 'order','currentTable'])
     },
     methods: {
         change(type) {

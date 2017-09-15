@@ -2,7 +2,7 @@
     <div class="popupMask dark" @click.self="init.resolve">
         <transition appear name="fadeDown">
             <ul class="panel">
-                <div v-if="op.timeCard">
+                <div v-if="op.timecard">
                     <li v-if="op.clockIn" @click="askClockOut">
                         <i class="fa fa-2x fa-clock-o"></i>
                         <div>

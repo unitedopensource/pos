@@ -103,7 +103,7 @@ export default {
     enter() {
       let discount = this.discount.includes("%") ?
         (this.discount.replace(/\D+/, "") / 100 * this.init.payment.total).toFixed(2) :
-        this.discount.replace(/\D+/, "");
+        parseFloat(this.discount.replace(/\D+/, ""));
       this.init.resolve({ discount });
     }
   }

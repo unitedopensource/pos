@@ -97,7 +97,6 @@
           value = (value ? value+num : num) / 100;
           this[this.target] = "$ " + value.toFixed(2);
         }
-
       },
       del(){
         let value = this[this.target];
@@ -113,11 +112,11 @@
       enter(){
         let tip = this.tip.includes("%") ?
         (this.tip.replace(/\D+/,"") / 100 * this.init.payment.due).toFixed(2):
-        ~~this.tip.replace(/\D+/,"");
+        parseFloat(this.tip.replace(/\D+/,""));
 
         let gratuity = this.gratuity.includes("%") ?
         (this.gratuity.replace(/\D+/,"") / 100 * this.init.payment.due).toFixed(2):
-        ~~this.gratuity.replace(/\D+/,"");
+        parseFloat(this.gratuity.replace(/\D+/,""));
 
         this.init.resolve({tip,gratuity});
       }

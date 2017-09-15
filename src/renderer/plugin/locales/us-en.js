@@ -116,6 +116,7 @@ export default {
         'logoutTip': 'Settle & Logout POS'
     },
     button: {
+        'new': 'New',
         'less': 'Less',
         'more': 'More',
         'request': 'Request',
@@ -478,8 +479,8 @@ export default {
         'debitCard': 'Debit Card',
         'giftCard': 'Gift Card',
         'creditCardTip': 'Credit Card Tips',
-        'tax':'Tax',
-        'itemSales':'Item Sales'
+        'tax': 'Tax',
+        'itemSales': 'Item Sales'
     },
     text: {
         'starter': 'Starter',
@@ -674,8 +675,8 @@ export default {
         'newOperator': 'New User',
         'enterPin': 'Please Enter Your Pin',
         'printReceipt': 'Print Receipt',
-        'count':'Count',
-        'lastDate':'Last Date'
+        'count': 'Count',
+        'lastDate': 'Last Date'
     },
     nav: {
         'store': 'Store',

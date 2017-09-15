@@ -1,19 +1,12 @@
 <template>
-    <div class="paper">
-        <div class="wrap">
-            <span>{{note.name}}</span>
-        </div>
-    </div>
+    <label class="paper" :for="'note'+index">
+        <div class="wrap">{{note.name}}</div>
+    </label>
 </template>
 
 <script>
 export default {
-    props: ['note'],
-    data() {
-        return {
-
-        }
-    }
+    props: ['note', 'index']
 }
 </script>
 
@@ -28,19 +21,11 @@ export default {
     justify-content: center;
     align-items: center;
     background: #fff;
+    color: lightgray;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
     cursor: pointer;
     border-radius: 4px;
     border-left: 4px solid transparent;
     transition: border 0.22s ease;
 }
-.paper .wrap {
-    font-weight: bold;
-    color: #666;
-}
-
-input[type='radio']:checked+label >div {
-    border-left: 4px solid #009688;
-}
-
 </style>

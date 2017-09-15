@@ -115,6 +115,7 @@ export default {
         'logoutTip': '结算并登出系统'
     },
     button: {
+        'new':'新增',
         'less': '减少',
         'more': '增加',
         'request': '要求',
