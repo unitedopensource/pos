@@ -1,9 +1,9 @@
 <template>
     <div class="popupMask center dark">
-        <div class="window" v-show="!component">
+        <div class="window" v-show="!component && appear">
             <header class="title">
                 <span>{{$t('menu.payment')}}</span>
-                <div v-if="!payMode && order.hasOwnProperty('splitPayment')" class="splitter">
+                <div v-if="!payInFull && order.hasOwnProperty('splitPayment')" class="splitter">
                     <label v-for="(split,index) in order.splitPayment" :key="index">
                         <input type="radio" name="split" :id="'split_'+index" :value="index" v-model="current" @change="switchInvoice">
                         <label :for="'split_'+index" class="tag">#{{index + 1}}</label>
@@ -13,9 +13,18 @@
             </header>
             <nav>
                 <div class="typeWrap">
-                    <div class="type" @click="setPaymentType('CASH')">{{$t('text.cash')}}</div>
-                    <div class="type" @click="setPaymentType('CREDIT')">{{$t('text.creditCard')}}</div>
-                    <div class="type" @click="setPaymentType('GIFT')">{{$t('text.giftCard')}}</div>
+                    <div class="type">
+                        <input type="radio" v-model="payment.type" name="paymentType" value="CASH" id="CASH" @change="setPaymentType('CASH')">
+                        <label for="CASH">{{$t('type.CASH')}}</label>
+                    </div>
+                    <div class="type">
+                        <input type="radio" v-model="payment.type" name="paymentType" value="CREDIT" id="CREDIT" @change="setPaymentType('CREDIT')">
+                        <label for="CREDIT">{{$t('type.CREDIT')}}</label>
+                    </div>
+                    <div class="type">
+                        <input type="radio" v-model="payment.type" name="paymentType" value="GIFT" id="GIFT" @change="setPaymentType('GIFT')">
+                        <label for="GIFT">{{$t('type.GIFT')}}</label>
+                    </div>
                 </div>
                 <div class="totalDue" @dblclick="roundUp">
                     <span class="text">{{$t('text.balanceDue')}}:</span>
@@ -57,7 +66,7 @@
                 </section>
                 <section class="field" v-if="payment.type ==='CASH'">
                     <div class="display">
-                        <div class="data" @click="setInputAnchor('paid',$event)">
+                        <div class="data" @click="setInput('paid',$event)">
                             <span class="text">{{$t('text.paid')}}</span>
                             <span class="value">{{paid | decimal}}</span>
                         </div>
@@ -69,7 +78,7 @@
                             <span class="text">{{$t('text.balance')}}</span>
                             <span class="value">{{due.balance}}</span>
                         </div>
-                        <div class="data" @click="setInputAnchor('evenPay',$event)">
+                        <div class="data" @click="setInput('evenPay',$event)">
                             <span class="text">{{$t('text.separate')}}
                                 <span class="people">${{(payment.due / evenPay) | decimal}}</span>
                             </span>
@@ -84,19 +93,19 @@
                 </section>
                 <section class="field" v-else-if="payment.type === 'CREDIT'">
                     <div class="display">
-                        <div class="data" @click="setInputAnchor('paid',$event)">
+                        <div class="data" @click="setInput('paid',$event)">
                             <span class="text">{{$t('text.paid')}}</span>
                             <span class="value">{{paid | decimal}}</span>
                         </div>
-                        <div class="data" @click="setInputAnchor('number',$event)">
+                        <div class="data" @click="setInput('number',$event)">
                             <span class="text">{{$t('card.number')}}</span>
                             <input v-model="creditCard.number">
                         </div>
-                        <div class="data" @click="setInputAnchor('date',$event)">
+                        <div class="data" @click="setInput('date',$event)">
                             <span class="text">{{$t('card.expirationDate')}}</span>
                             <span class="value">{{creditCard.date | exp}}</span>
                         </div>
-                        <div class="data" @click="setInputAnchor('code',$event)">
+                        <div class="data" @click="setInput('code',$event)">
                             <span class="text">{{$t('card.securityCode')}}</span>
                             <span class="value">{{creditCard.code}}</span>
                         </div>
@@ -109,11 +118,11 @@
                 </section>
                 <section class="field" v-else>
                     <div class="display">
-                        <div class="data" @click="setInputAnchor('paid',$event)">
+                        <div class="data" @click="setInput('paid',$event)">
                             <span class="text">{{$t('text.paid')}}</span>
                             <span class="value">{{paid}}</span>
                         </div>
-                        <div class="data" @click="setInputAnchor('number',$event)" v-if="giftCard.number.length !== 16">
+                        <div class="data" @click="setInput('number',$event)" v-if="giftCard.number.length !== 16">
                             <span class="text">{{$t('card.number')}}</span>
                             <input v-model="giftCard.number">
                         </div>
@@ -175,11 +184,12 @@ export default {
     components: { Dialoger, Reloader, Discount, CreditCard, GiftCard, Tips, Splitter, Inputter, paymentMark },
     data() {
         return {
-            componentLock: true,
+            releaseComponentLock: true,
             componentData: null,
             component: null,
             quickInput: [],
             payment: {},
+            order: null,
             anchor: "paid",
             paid: "0.00",
             reset: true,
@@ -194,100 +204,96 @@ export default {
             },
             evenPay: 1,
             current: 0,
-            payMode: true //true pay in whole , false pay in split
+            appear: false,
+            payInFull: true
         }
     },
     created() {
-        this.init.hasOwnProperty("index") ? this.paySplit(this.init.index) :
-            this.order.split ? this.askSplitPay() : this.initial();
-
-        let data = {
-            component: 'payment',
-            operator: this.op.name,
-            lock: this.order._id,
-            time: +new Date,
-            exp: +new Date + 1000 * 120
-        }
-        this.$socket.emit('[COMPONENT] LOCK', data, settling => { settling && this.ticketSettling() })
-    },
-    mounted() {
-        this.setPaymentType(this.payment.type || 'CASH');
+        this.order = JSON.parse(JSON.stringify(this.$store.getters.order));
+        this.payment = Object.assign(this.order.payment, { type: 'CASH' });
+        this.checkComponentUsage();
+        this.setPaymentType('CASH');
     },
     beforeDestroy() {
-        this.componentLock && this.$socket.emit('[COMPONENT] UNLOCK', { component: 'payment', lock: this.order._id })
+        this.releaseComponentLock && this.$socket.emit('[COMPONENT] UNLOCK', { component: 'payment', lock: this.order._id })
     },
     methods: {
-        ticketSettling() {
+        checkComponentUsage() {
+            let data = {
+                component: 'payment',
+                operator: this.op.name,
+                lock: this.order._id,
+                time: +new Date,
+                exp: +new Date + 1000 * 120
+            }
+            this.$socket.emit('[COMPONENT] LOCK', data, settling => {
+                if (settling) {
+                    this.paymentPending()
+                } else {
+                    this.init.hasOwnProperty("index") ? this.paySplit(this.init.index) :
+                        this.order.split ? this.askPayMode() : this.initial();
+                }
+            })
+        },
+        paymentPending() {
+            this.appear = true;
+            this.releaseComponentLock = false;
             this.$dialog({
                 title: 'dialog.pending', msg: 'dialog.pendingOrderAccessDenied', timeout: { duration: 30000, fn: 'resolve' },
                 buttons: [{ text: 'button.confirm', fn: 'resolve' }]
             }).then(() => {
-                this.componentLock = false;
                 this.init.reject()
             })
         },
         initial() {
-            this.payment = JSON.parse(JSON.stringify(this.order.payment));
+            this.appear = true;
             this.payment.balance = Math.max(0, (this.payment.due - this.payment.paid));
             this.getQuickInput(this.payment.balance);
             this.poleDisplay(["TOTAL DUE:", ""], ["", this.payment.due.toFixed(2)]);
         },
-        askSplitPay() {
-            this.$dialog({
-                type: "question",
-                title: "dialog.splitPayment",
-                msg: "dialog.splitPaymentTip",
-                buttons: [{ text: 'button.paidInFull', fn: "reject" }, { text: "button.splitPay", fn: "resolve" }]
-            }).then(() => {
-                this.paySplit();
-                this.$q();
-            }).catch(() => {
-                this.initial();
-                this.setPaymentType(this.payment.type || 'CASH');
-                this.$q()
-            })
+        askPayMode() {
+            if (this.releaseComponentLock) {
+                this.$dialog({
+                    type: "question", title: "dialog.splitPayment", msg: "dialog.splitPaymentTip",
+                    buttons: [{ text: 'button.paidInFull', fn: "reject" }, { text: "button.splitPay", fn: "resolve" }]
+                }).then(() => {
+                    this.paySplit();
+                    this.$q();
+                }).catch(() => {
+                    this.initial();
+                    this.setPaymentType('CASH');
+                    this.$q()
+                })
+            }
         },
         paySplit(index) {
-            this.payMode = false;
+            this.appear = true;
+            this.payInFull = false;
             index = isNumber(index) ? index : this.order.splitPayment.findIndex(payment => !payment.settled)
             this.switchInvoice(index);
         },
         setPaymentType(type) {
-            let dom = document.querySelector('.type.set');
-            let doms = document.querySelectorAll(".typeWrap > div");
-            dom && dom.classList.remove('set');
-            dom = document.querySelector('.data.anchor');
-            dom && dom.classList.remove("anchor");
-            try {
-                console.log(doms)
-                switch (type) {
-                    case "CASH":
-                        doms[0].classList.add("set");
-                        this.paid = '0.00';
-                        break;
-                    case "CREDIT":
-                        doms[1].classList.add("set");
-                        this.paid = (parseFloat(this.payment.due) - parseFloat(this.payment.paid)).toFixed(2);
-                        break;
-                    case "GIFT":
-                        doms[2].classList.add("set");
-                        this.paid = (parseFloat(this.payment.due) - parseFloat(this.payment.paid)).toFixed(2);
-                        this.giftCard = {
-                            number: "",
-                            balance: "0.00"
-                        }
-                        this.swipeGiftCard();
-                        break;
-                }
-            } catch (e) {
-                console.log(e)
+            switch (type) {
+                case "CASH":
+                    this.paid = '0.00';
+                    break;
+                case "CREDIT":
+                    this.paid = (parseFloat(this.payment.due) - parseFloat(this.payment.paid)).toFixed(2);
+                    break;
+                case "GIFT":
+                    this.paid = (parseFloat(this.payment.due) - parseFloat(this.payment.paid)).toFixed(2);
+                    this.giftCard = {
+                        number: "",
+                        balance: "0.00"
+                    }
+                    this.swipeGiftCard();
+                    break;
             }
-            this.$nextTick(() => { document.querySelector('.display .data').classList.add('anchor') });
-            this.setInputAnchor("paid");
+            this.setInput("paid");
             this.payment = Object.assign({}, this.payment, { type });
             this.reset = true;
         },
-        setInputAnchor(target, e) {
+        setInput(target, e) {
             this.$nextTick(() => {
                 let dom = document.querySelector('.data.anchor');
                 dom && dom.classList.remove('anchor');
@@ -426,7 +432,7 @@ export default {
             this.paid = "0.00";
             this.reset = true;
             this.getQuickInput(this.payment.balance);
-            this.setInputAnchor("paid");
+            this.setInput("paid");
         },
         chargeCredit() {
             if (parseFloat(this.paid) === 0) return;
@@ -678,7 +684,7 @@ export default {
             if (paidCash) order.payment.paidCash = paidCash.toFixed(2);
             if (paidCredit) order.payment.paidCredit = paidCredit.toFixed(2);
             if (paidGift) order.payment.paidGift = paidGift.toFixed(2);
-            if (this.payMode) {
+            if (this.payInFull) {
                 this.isNewTicket ?
                     this.$socket.emit("[SAVE] INVOICE", order) : this.$socket.emit("[UPDATE] INVOICE", order);
 
@@ -693,20 +699,17 @@ export default {
                     }).then(() => { this.invoiceSettled(order, true) }).catch(() => { this.invoiceSettled(order, false) })
             } else {
                 this.payment.settled = true;
-                if (this.order.hasOwnProperty('splitPayment')) {
-                    this.order.splitPayment[this.current] = this.payment;
-                    type === 'CASH' ?
-                        this.$dialog({
-                            title: ["dialog.cashChange", change], msg: ["dialog.cashChangeTip", paid.toFixed(2)],
-                            buttons: [{ text: 'button.noReceipt', fn: 'reject' }, { text: 'button.printReceipt', fn: 'resolve' }]
-                        }).then(() => { this.printSplitReceipt() }).catch(() => { this.nextSplit() }) :
-                        this.$dialog({
-                            type: "question", title: "dialog.printReceiptConfirm", msg: "dialog.printReceiptConfirmTip",
-                            buttons: [{ text: 'button.noReceipt', fn: 'reject' }, { text: 'button.printReceipt', fn: 'resolve' }]
-                        }).then(() => { this.printSplitReceipt() }).catch(() => { this.nextSplit() });
-                } else {
-                    this.exit(this.payment)
-                }
+                this.order.splitPayment[this.current] = this.payment;
+                type === 'CASH' ?
+                    this.$dialog({
+                        title: ["dialog.cashChange", change], msg: ["dialog.cashChangeTip", paid.toFixed(2)],
+                        buttons: [{ text: 'button.noReceipt', fn: 'reject' }, { text: 'button.printReceipt', fn: 'resolve' }]
+                    }).then(() => { this.printSplitReceipt() }).catch(() => { this.nextSplit() }) :
+                    this.$dialog({
+                        type: "question", title: "dialog.printReceiptConfirm", msg: "dialog.printReceiptConfirmTip",
+                        buttons: [{ text: 'button.noReceipt', fn: 'reject' }, { text: 'button.printReceipt', fn: 'resolve' }]
+                    }).then(() => { this.printSplitReceipt() }).catch(() => { this.nextSplit() });
+
             }
         },
         printSplitReceipt() {
@@ -741,7 +744,7 @@ export default {
             switch (this.$route.name) {
                 case "Menu":
                     if (this.app.mode === 'create') {
-                        this.setOrder({
+                        Object.assign(this.order, {
                             customer,
                             payment: this.combineSplitPayment(),
                             type: this.ticket.type,
@@ -757,7 +760,7 @@ export default {
                         });
                         this.$socket.emit("[SAVE] INVOICE", this.order);
                     } else {
-                        this.setOrder({
+                        Object.assign(this.order, {
                             lastEdit: +new Date,
                             editor: this.op.name,
                             modify: this.order.modify + 1,
@@ -771,7 +774,7 @@ export default {
                     this.$router.push({ path: "/main" });
                     break;
                 case "Table":
-                    this.setOrder({
+                    Object.assign(this.order, {
                         cashier: this.op.name,
                         payment: this.combineSplitPayment(),
                         settled: true
@@ -781,7 +784,7 @@ export default {
                     this.init.resolve();
                     break;
                 case "History":
-                    this.setOrder({
+                    Object.assign(this.order, {
                         cashier: this.op.name,
                         payment: this.combineSplitPayment(),
                         settled: true
@@ -792,7 +795,7 @@ export default {
             }
         },
         combineSplitPayment() {
-            let payment = { tip: 0, gratuity: 0, discount: 0, delivery: 0, subtotal: 0, tax: 0, total: 0, paid: 0, due: 0, log: [], paidCash: 0, paidCredit: 0, paidGift: 0 };
+            let payment = { tip: 0, gratuity: 0, discount: 0, delivery: 0, subtotal: 0, tax: 0, total: 0, paid: 0, due: 0, log: [], paidCash: 0, paidCredit: 0, paidGift: 0, settled: true };
             this.order.splitPayment.forEach((settle) => {
                 payment.tip += parseFloat(settle.tip);
                 payment.gratuity += parseFloat(settle.gratuity);
@@ -804,6 +807,7 @@ export default {
                 payment.paid += parseFloat(settle.paid);
                 payment.due += parseFloat(settle.due);
                 payment.log.push(...settle.log);
+                !settle.settled && (payment.settled = false);
                 settle.hasOwnProperty('paidCash') && (payment.paidCash += parseFloat(settle.paidCash));
                 settle.hasOwnProperty('paidCredit') && (payment.paidCredit += parseFloat(settle.paidCredit));
                 settle.hasOwnProperty('paidGift') && (payment.paidGift += parseFloat(settle.paidGift));
@@ -811,15 +815,12 @@ export default {
             return payment
         },
         savePayment() {
-            if (this.payMode) {
-                this.setOrder({ cashier: this.op.name, payment: this.payment });
+                this.setOrder(Object.assign(this.order, { cashier: this.op.name, payment: this.payment }));
                 (this.$route.name === 'History' || this.$route.name === 'Table') && this.$socket.emit("[UPDATE] INVOICE", this.order);
                 this.exit()
-            } else {
-                this.exit(this.payment)
-            }
         },
         invoiceSettled(ticket, print) {
+            this.clearTable(ticket);
             if (print) {
                 Printer.init(this.config).setJob("receipt").print(ticket);
                 ticket.content.forEach(item => {
@@ -832,7 +833,6 @@ export default {
 
             switch (this.$route.name) {
                 case "Menu":
-                    this.clearTable(ticket);
                     if (ticket.type !== 'BUFFET') {
                         this.resetAll();
                         this.init.resolve();
@@ -844,18 +844,15 @@ export default {
                     break;
                 case "History":
                     this.init.resolve();
-                    this.clearTable(ticket);
                     break;
                 case "Table":
                     this.resetMenu();
                     this.init.resolve();
-                    this.clearTable(ticket);
                     break;
                 case "PickupList":
                     this.init.resolve();
                     break;
                 default:
-                    this.clearTable(ticket);
                     this.init.resolve();
             }
         },
@@ -864,15 +861,6 @@ export default {
                 let table = ticket.tableID;
                 let status = this.config.store.table.autoClean ? 1 : 4;
                 this.$socket.emit("[UPDATE] TABLE_SETTLED", { table, status })
-            }
-        },
-        getTable(id) {
-            let length = this.tables.length;
-            for (let i = 0; i < length; i++) {
-                let items = this.tables[i].item;
-                for (let i = 0; i < items.length; i++) {
-                    if (items[i]._id === id) return items[i];
-                }
             }
         },
         recordCashDrawerAction(inflow, outflow) {
@@ -952,7 +940,7 @@ export default {
                 balance: Math.max(0, balance).toFixed(2)
             }
         },
-        ...mapGetters(['op', 'app', 'config', 'ticket', 'order', 'store', 'device', 'tables', 'station', 'customer', 'currentTable'])
+        ...mapGetters(['op', 'app', 'config', 'ticket', 'store', 'device', 'tables', 'station', 'customer', 'currentTable'])
     },
     watch: {
         'giftCard.number'(n) {
@@ -1013,7 +1001,8 @@ nav {
     height: 60px;
 }
 
-.type {
+.type label {
+    display: block;
     width: 104px;
     margin: 4px 6px 4px 0;
     background: #fff;
@@ -1025,7 +1014,7 @@ nav {
     color: #bdbdbd;
 }
 
-.type.set {
+.type input:checked+label {
     background: #66bb6a;
     color: #fafafa;
     border: 2px solid #009688;
@@ -1033,7 +1022,7 @@ nav {
     box-shadow: 0 1px 2px rgba(0, 0, 0, .3);
 }
 
-.type.set:before {
+.type input:checked+label:before {
     position: absolute;
     content: ' ';
     width: 23px;
@@ -1044,12 +1033,12 @@ nav {
     border-top-left-radius: 4px;
 }
 
-.type.set:after {
+.type input:checked+label:after {
     position: absolute;
     content: '\f00c';
     font-family: fontAwesome;
     bottom: -17px;
-    right: 2px;
+    right: 3px;
 }
 
 .totalDue {

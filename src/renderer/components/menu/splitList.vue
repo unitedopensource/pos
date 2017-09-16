@@ -15,7 +15,7 @@
             </div>
             <div class="space" v-if="instance.length > 7 && !hide"></div>
         </div>
-        <div class="summary" v-show="!hide">
+        <div class="summary" v-if="!hide">
             <div class="total">
                 <span class="text">{{$t('text.total')}}:</span>
                 <span>${{payment.total | decimal}}
@@ -27,9 +27,16 @@
                 <checkbox v-model="isChargeDelivery" label="text.deliveryFee"></checkbox>
             </div>
         </div>
+        <div class="selector" v-else @click="selectAll">
+            <div class="total">
+                <i class="fa fa-bars"></i>
+                <span class="text">{{$t('text.selectAll')}}</span>
+            </div>
+        </div>
         <div class="done" v-show="done">
             <div class="btn print" @click="print">{{$t('button.print')}}</div>
-            <div class="btn pay" @click="pay" v-show="!paid">{{$t('button.payment')}}</div>
+            <div class="btn" @click="setDiscount">{{$t('button.setDiscount')}}</div>
+            <!-- <div class="btn pay" @click="pay" v-show="!paid">{{$t('button.payment')}}</div> -->
         </div>
     </div>
 </template>
@@ -72,6 +79,12 @@ export default {
         print() {
             this.$emit("print", this.split);
             document.querySelector(`.ticket_${this.split} .done .print`).classList.add("active")
+        },
+        setDiscount() { },
+        selectAll() {
+            this.instance.forEach(item => {
+                this.pick(item.unique)
+            })
         },
         pay() {
             if (this.paid) return;
@@ -191,10 +204,16 @@ header {
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.8);
 }
 
-.summary {
+.summary,
+.selector {
     display: flex;
     align-items: center;
     border-top: 1px solid #eee;
+}
+
+.selector {
+    padding: 14px 0;
+    cursor: pointer;
 }
 
 .total {

@@ -21,7 +21,7 @@
             <footer>
                 <div class="f1">
                     <!-- <div class="btn" @click="unlockSplit" v-if="unlock">{{$t('button.unlock')}}</div>
-                    <div class="btn confirm" @click="lockSplit($event)" v-else>{{$t('button.lock')}}</div> -->
+                        <div class="btn confirm" @click="lockSplit($event)" v-else>{{$t('button.lock')}}</div> -->
                     <div class="btn" @click="printAllInvoices">{{$t('button.printAll')}}</div>
                     <div class="btn" @click="splitEvenly">{{$t('button.evenSplit')}}</div>
                 </div>
@@ -60,7 +60,7 @@ export default {
         this.initial();
     },
     beforeCreate() {
-        this.$options.components.payment = require('../payment/payment');
+        //this.$options.components.payment = require('../payment/payment');
     },
     methods: {
         initial() {
@@ -281,7 +281,7 @@ export default {
                 this.combineInvoiceInfo();
             }
         },
-        unlockSplit(){
+        unlockSplit() {
             this.unlock = this.lock = false;
         },
         cancel() {

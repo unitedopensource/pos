@@ -116,7 +116,7 @@ export default {
             this.tableSorted = null;
         },
         removeSection(index) {
-            this.tables.sections.splice(index, 1)
+            this.tables.splice(index, 1)
             this.sections.splice(index, 1);
             this.$socket.emit("[CMS] REMOVE_TABLE_SECTION", index);
         },

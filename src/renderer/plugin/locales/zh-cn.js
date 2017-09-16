@@ -203,7 +203,8 @@ export default {
         'setDriver': '设定司机',
         'timecard': '打卡记录',
         'scanner': '扫描器',
-        'split': '分单'
+        'split': '分单',
+        'payment':'付款'
     },
     menu: {
         'course': '定时',

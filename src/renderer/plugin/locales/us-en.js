@@ -204,7 +204,8 @@ export default {
         'setDriver': 'Set Driver',
         'timecard': 'Timecard Records',
         'scanner': 'Scanner',
-        'split': 'Split Ticket'
+        'split': 'Split Ticket',
+        'payment':'Payment'
     },
     menu: {
         'course': 'Course',

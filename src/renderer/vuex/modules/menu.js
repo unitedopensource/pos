@@ -266,6 +266,7 @@ const mutations = {
     if (state.order.splitPayment) {
       delete state.order.splitPayment;
       delete state.order.split;
+      state.order.content.forEach(item => item.sort = 0)
     }
 
     state.order.payment = Object.assign({},

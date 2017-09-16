@@ -135,8 +135,9 @@ export default {
                 cashier: this.op.name
             })
             Printer.init(this.config).setJob('receipt').print(order);
-            this.setTableInfo({ status: 3 });
-            this.$socket.emit("TABLE_MODIFIED", this.currentTable);
+            this.$socket.emit("[UPDATE] TABLE_SETTLED", { table: order.tableID, status: 3 })
+            // this.setTableInfo({ status: 3 });
+            // this.$socket.emit("TABLE_MODIFIED", this.currentTable);
         },
         askSplitPrePayment() {
             this.$dialog({
