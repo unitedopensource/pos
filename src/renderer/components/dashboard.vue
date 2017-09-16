@@ -132,11 +132,17 @@ export default {
             switch (this.op.cashCtrl) {
                 case "enable":
                     this.station.cashDrawer.cashFlowCtrl ?
-                        this.$socket.emit("[CASHFLOW] CHECK", { date: today(), cashDrawer: this.station.cashDrawer.name, close: false }) :
+                        this.$socket.emit("[CASHFLOW] CHECK", { date: today(), cashDrawer: this.station.cashDrawer.name, close: false }, (data) => {
+                            let { name, initial } = data;
+                            initial ? this.initialCashFlow(name) : this.recordCashFlow(name);
+                        }) :
                         Printer.init(this.config).openCashDrawer();
                     break;
                 case "staffBank":
-                    this.$socket.emit("[CASHFLOW] CHECK", { date: today(), cashDrawer: this.op.name, close: false });
+                    this.$socket.emit("[CASHFLOW] CHECK", { date: today(), cashDrawer: this.op.name, close: false }, (data) => {
+                        let { name, initial } = data;
+                        initial ? this.initialCashFlow(name) : this.recordCashFlow(name);
+                    });
                     break;
                 case "disable":
                     this.$denyAccess()
@@ -239,16 +245,10 @@ export default {
                 })
             })
         },
-        ...mapActions(['setOp','setApp', 'setTicket', 'setCustomer', 'setStation', 'setStations', 'resetDashboard'])
+        ...mapActions(['setOp', 'setApp', 'setTicket', 'setCustomer', 'setStation', 'setStations', 'resetDashboard'])
     },
     computed: {
         ...mapGetters(['op', 'time', 'ring', 'callLog', 'device', 'config', 'store', 'station', 'history'])
-    },
-    sockets: {
-        "CASHFLOW_RESULT"(data) {
-            let { name, initial } = data;
-            initial ? this.initialCashFlow(name) : this.recordCashFlow(name);
-        }
     }
 }
 </script>

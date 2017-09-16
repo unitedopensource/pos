@@ -65,7 +65,7 @@ export default {
             this.view = index;
         },
         selectTable(table, e) {
-            if(!table._id)return;
+            if (!table._id) return;
             this.setCurrentTable(table);
             switch (table.status) {
                 case 0:

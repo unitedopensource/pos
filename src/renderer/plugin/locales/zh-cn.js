@@ -379,7 +379,9 @@ export default {
         'tipAdjustDenied': '无法调整小费',
         'tipAdjustDeniedTip': '调整小费失败，错误代码 {i}',
         'saveFailed':'保存失败',
-        'splitItemNotComplete':'您需要将剩下的物品全部分单后才能保存'
+        'splitItemNotComplete':'您需要将剩下的物品全部分单后才能保存',
+        'cashInRequired':'首次开启钱箱',
+        'cashInRequiredTip':'您需要先执行 CASH IN 才可以使用钱箱'
     },
     terminal: {
         'initial': '正在初始化 {i}...',

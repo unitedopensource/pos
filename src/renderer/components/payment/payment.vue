@@ -411,17 +411,46 @@ export default {
         },
         chargeCash() {
             if (parseFloat(this.paid) === 0) return;
-            this.payment.paid += parseFloat(this.paid);
+            if (this.checkCashInStatus()) {
+                this.payment.paid += parseFloat(this.paid);
 
-            let change = this.payment.change = Math.max(0, (this.paid - this.payment.balance)).toFixed(2);
-            let balance = this.payment.balance = Math.max(0, (this.payment.due - this.payment.paid)).toFixed(2);
+                let change = this.payment.change = Math.max(0, (this.paid - this.payment.balance)).toFixed(2);
+                let balance = this.payment.balance = Math.max(0, (this.payment.due - this.payment.paid)).toFixed(2);
 
-            this.payment.log.push({
-                type: "CASH",
-                paid: this.paid,
-                change, balance
-            });
-            this.changeDue(this.paid, change, balance);
+                this.payment.log.push({
+                    type: "CASH",
+                    paid: this.paid,
+                    change, balance
+                });
+                this.changeDue(this.paid, change, balance);
+            }
+        },
+        checkCashInStatus() {
+            let status = true;
+            switch (this.op.cashCtrl) {
+                case "enable":
+                    this.station.cashDrawer.cashFlowCtrl ?
+                        this.$socket.emit("[CASHFLOW] CHECK", { date: today(), cashDrawer: this.station.cashDrawer.name, close: false },
+                            (data) => {
+                                let { name, initial } = data;
+                                initial ? this.initialCashFlow(name) : this.recordCashDrawerAction(name);
+                            }) : Printer.init(this.config).openCashDrawer();
+                    break;
+                case "staffBank":
+                    this.$socket.emit("[CASHFLOW] CHECK", { date: today(), cashDrawer: this.op.name, close: false });
+                    break;
+                case "disable":
+                    this.$denyAccess()
+                    break;
+                default:
+                    this.$denyAccess()
+            }
+            return status;
+        },
+        initialCashFlow(){
+            this.$dialog({
+                title:'dialog.'
+            })
         },
         changeDue(paid, change, balance) {
             this.recordCashDrawerAction(paid, change);
@@ -818,9 +847,15 @@ export default {
             return payment
         },
         savePayment() {
+            if (this.payInFull) {
                 this.setOrder(Object.assign(this.order, { cashier: this.op.name, payment: this.payment }));
                 (this.$route.name === 'History' || this.$route.name === 'Table') && this.$socket.emit("[UPDATE] INVOICE", this.order);
                 this.exit()
+            } else {
+                let payment = this.combineSplitPayment();
+                this.setOrder(Object.assign(this.order, { payment }));
+                this.init.resolve();
+            }
         },
         invoiceSettled(ticket, print) {
             this.clearTable(ticket);

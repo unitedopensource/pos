@@ -380,7 +380,9 @@ export default {
         'tipAdjustDenied': 'Tip Adjust Denied',
         'tipAdjustDeniedTip': 'Tip adjust failed. Error code {i}',
         'saveFailed':'Save Failed',
-        'splitItemNotComplete':'You need to split the rest of item before you can save'
+        'splitItemNotComplete':'You need to split the rest of item before you can save',
+        'cashInRequired':'Cash In Required',
+        'cashInRequiredTip':'You need to Cash-In First before you can use the cash drawer'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',
