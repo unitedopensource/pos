@@ -697,6 +697,8 @@ export default {
         'sales': '销售',
         'chart': '图表',
         'excel': '表格',
+        'coupon':'促销',
+        'overview':'概览',
         'index': '主页',
         'user': '用户',
         'event': '事件',

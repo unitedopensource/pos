@@ -118,6 +118,18 @@ export default {
             this.calendarDate = date;
             this.$socket.emit('[INQUIRY] HISTORY_ORDER', date);
         },
+        highlightTicket(number) {
+            this.$nextTick(() => {
+                let dom = document.querySelector(".invoice.active");
+                dom && dom.classList.remove("active");
+                let i = 0;
+                dom = document.querySelectorAll(".invoice");
+                for (; i < dom.length; i++) {
+                    if (dom[i].dataset.number == number) break;
+                }
+                dom[i].classList.add("active");
+            })
+        },
         getConsole() {
             this.$p("Maintenance");
         },
@@ -169,22 +181,8 @@ export default {
         }
     },
     watch: {
-        orders(n){
-            console.log(n)
-        },
         order(ticket) {
-            this.$nextTick(() => {
-                let dom = document.querySelector(".invoice.active");
-                dom && dom.classList.remove("active");
-                let i = 0;
-
-                let number = ticket.number;
-                dom = document.querySelectorAll(".invoice");
-                for (; i < dom.length; i++) {
-                    if (dom[i].dataset.number == number) break;
-                }
-                dom[i].classList.add("active");
-            })
+            this.highlightTicket(ticket.number)
         }
     },
     sockets: {

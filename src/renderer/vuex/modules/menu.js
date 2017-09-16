@@ -279,6 +279,19 @@ const mutations = {
         balance: total,
         due: total
       })
+  },
+  [types.REFRESH_CURRENT_ORDER](state, orders) {
+    if (state.order.hasOwnProperty('status')) {
+      let _id = state.order._id;
+      let length = orders.length;
+
+      for (let i = 0; i < length; i++) {
+        if (orders[i]._id === _id) {
+          state.order = Object.assign({}, orders[i]);
+          break;
+        }
+      }
+    }
   }
 }
 

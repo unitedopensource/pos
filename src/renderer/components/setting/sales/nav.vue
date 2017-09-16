@@ -6,9 +6,9 @@
                     <i class="fa fa-industry"></i>
                     <span class="text">{{$t('nav.sales')}}</span>
                 </router-link>
-                <router-link tag="li" :to="{name:'Setting.chart'}">
-                    <i class="fa fa-table"></i>
-                    <span class="text">{{$t('nav.chart')}}</span>
+                <router-link tag="li" :to="{name:'Setting.coupon'}">
+                    <i class="fa fa-tags"></i>
+                    <span class="text">{{$t('nav.coupon')}}</span>
                 </router-link>
             </div>
             <router-link tag="li" :to="{name:'Setting.index'}">

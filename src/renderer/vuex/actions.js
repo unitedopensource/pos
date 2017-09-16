@@ -286,19 +286,21 @@ export const updateTable = ({
   commit(types.UPDATE_TABLE_STATUS, table)
 }
 export const insertOrder = ({
-  commit
+  commit, rootState
 }, data) => {
   let { number, sync, order } = data;
   commit(types.SET_TICKET, { number });
   commit(types.SET_LASTSYNC, sync);
-  commit(types.INSERT_ORDER, order)
+  commit(types.INSERT_ORDER, order);
+  commit(types.REFRESH_CURRENT_ORDER, rootState.initial.orders);
 }
 export const updateOrder = ({
-  commit
+  commit, rootState
 }, data) => {
   let { sync, order } = data;
   commit(types.SET_LASTSYNC, sync);
-  commit(types.UPDATE_ORDER, order)
+  commit(types.UPDATE_ORDER, order);
+  commit(types.REFRESH_CURRENT_ORDER, rootState.initial.orders);
 }
 export const updateMenuCategory = ({
   commit

@@ -34,7 +34,7 @@ export default {
         typeof this.init.timeout.fn === 'function' ? this.init.timeout.fn() : eval(this.init.timeout.fn);
       }, this.init.timeout.duration);
       this.loader = 'loader';
-      this.step = this.init.timeout.duration / 1000 / 10;
+      this.step = 90 / (this.init.timeout.duration / 1000);
       this.bar = {
         transform: `translate3d(-100%,0,0)`
       }
@@ -120,6 +120,9 @@ export default {
 
 .warning .progress {
   background: #F44336
+}
+.warning .progress:after {
+  box-shadow: 0 0 10px #F44336, 0 0 5px #F44336;
 }
 
 .warning.loader:after{

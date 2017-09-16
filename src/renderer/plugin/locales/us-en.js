@@ -699,6 +699,8 @@ export default {
         'sales': 'Sales',
         'chart': 'Chart',
         'excel': 'Excel',
+        'coupon':'Coupon',
+        'overview':'Overview',
         'index': 'Index',
         'user': 'User',
         'event': 'Event',

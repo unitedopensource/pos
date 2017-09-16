@@ -180,8 +180,8 @@ export default [{
         component: require('./components/setting/sales/index')
       }, {
         path: 'chart',
-        name: 'Setting.chart',
-        component: require('./components/setting/sales/chart')
+        name: 'Setting.coupon',
+        component: require('./components/setting/sales/coupon')
       }]
     }, {
       path: 'database',

@@ -56,9 +56,9 @@ export default {
             this.$p('split')
         },
         discount() {
-            this._p('driver',{ driver: this.order.driver, ticket: this.ticket.number }).then(()=>{
+            this._p('driver', { driver: this.order.driver, ticket: this.ticket.number }).then(() => {
                 console.log('resolve')
-            }).catch(()=>{
+            }).catch(() => {
                 console.log('reject')
             })
         },
