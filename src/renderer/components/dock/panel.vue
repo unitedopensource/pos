@@ -111,7 +111,7 @@ export default {
         checkCashOut(cashDrawer, staffBank) {
             this.$socket.emit('[CASHFLOW] CHECK', { date: today(), cashDrawer, close: false }, (data) => {
                 let { name, initial } = data;
-                initial ? staffBank ? this.staffCashOut(name) : this.regularCashOut(name) : this.exit();
+                initial ? this.exit() : staffBank ? this.staffCashOut(name) : this.regularCashOut(name);
             })
         },
         staffCashOut(name) {
