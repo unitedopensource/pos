@@ -189,7 +189,9 @@ export default {
         'discount': 'Discount',
         'thirdParty': 'ThirdParty',
         'driver': 'Driver',
-        'scan': 'Scan'
+        'scan': 'Scan',
+        'lock':'Lock',
+        'unlock':'Unlock'
     },
     title: {
         'markPaymentType': 'Mark Payment Type',

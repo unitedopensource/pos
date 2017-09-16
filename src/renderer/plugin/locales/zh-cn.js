@@ -188,7 +188,9 @@ export default {
         'discount': '折扣',
         'thirdParty': '第三方',
         'driver': '司机',
-        'scan': '扫描'
+        'scan': '扫描',
+        'lock':'锁定',
+        'unlock':'解锁'
     },
     title: {
         'markPaymentType': '标记付款方式',

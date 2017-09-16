@@ -9,7 +9,7 @@
                         <label :for="'split_'+index" class="tag">#{{index + 1}}</label>
                     </label>
                 </div>
-                <i class="fa fa-times" @click="init.reject"></i>
+                <i class="fa fa-times" @click="init.reject(false)"></i>
             </header>
             <nav>
                 <div class="typeWrap">
@@ -223,7 +223,7 @@ export default {
                 buttons: [{ text: 'button.confirm', fn: 'resolve' }]
             }).then(() => {
                 this.componentLock = false;
-                this.init.resolve()
+                this.init.reject()
             })
         },
         initial() {
@@ -258,25 +258,29 @@ export default {
             dom && dom.classList.remove('set');
             dom = document.querySelector('.data.anchor');
             dom && dom.classList.remove("anchor");
-
-            switch (type) {
-                case "CASH":
-                    doms[0].classList.add("set");
-                    this.paid = '0.00';
-                    break;
-                case "CREDIT":
-                    doms[1].classList.add("set");
-                    this.paid = (parseFloat(this.payment.due) - parseFloat(this.payment.paid)).toFixed(2);
-                    break;
-                case "GIFT":
-                    doms[2].classList.add("set");
-                    this.paid = (parseFloat(this.payment.due) - parseFloat(this.payment.paid)).toFixed(2);
-                    this.giftCard = {
-                        number: "",
-                        balance: "0.00"
-                    }
-                    this.swipeGiftCard();
-                    break;
+            try {
+                console.log(doms)
+                switch (type) {
+                    case "CASH":
+                        doms[0].classList.add("set");
+                        this.paid = '0.00';
+                        break;
+                    case "CREDIT":
+                        doms[1].classList.add("set");
+                        this.paid = (parseFloat(this.payment.due) - parseFloat(this.payment.paid)).toFixed(2);
+                        break;
+                    case "GIFT":
+                        doms[2].classList.add("set");
+                        this.paid = (parseFloat(this.payment.due) - parseFloat(this.payment.paid)).toFixed(2);
+                        this.giftCard = {
+                            number: "",
+                            balance: "0.00"
+                        }
+                        this.swipeGiftCard();
+                        break;
+                }
+            } catch (e) {
+                console.log(e)
             }
             this.$nextTick(() => { document.querySelector('.display .data').classList.add('anchor') });
             this.setInputAnchor("paid");

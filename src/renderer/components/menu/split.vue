@@ -20,7 +20,8 @@
             </section>
             <footer>
                 <div class="f1">
-                    <div class="btn confirm" @click="settleInvoice($event)">{{$t('button.payment')}}</div>
+                    <!-- <div class="btn" @click="unlockSplit" v-if="unlock">{{$t('button.unlock')}}</div>
+                    <div class="btn confirm" @click="lockSplit($event)" v-else>{{$t('button.lock')}}</div> -->
                     <div class="btn" @click="printAllInvoices">{{$t('button.printAll')}}</div>
                     <div class="btn" @click="splitEvenly">{{$t('button.evenSplit')}}</div>
                 </div>
@@ -48,6 +49,7 @@ export default {
             items: [],
             lock: false,
             origin: null,
+            unlock: false,
             component: null,
             componentData: null,
             transferItems: [],
@@ -65,6 +67,7 @@ export default {
             this.items = this.flatten(this.order.content);
             this.split = this.check(this.items);
             this.splitPayment = this.order.split ? this.order.splitPayment : [];
+            this.unlock = this.lock = !!this.order.split;
         },
         flatten(items) {
             let flattened = [];
@@ -269,12 +272,17 @@ export default {
             }
             this.gatherPayment();
         },
-        settleInvoice(e) {
-            this.sort(1);
-            this.lock ?
-                e.currentTarget.classList.remove("active") :
+        lockSplit(e) {
+            if (!this.lock) {
+                this.sort(1);
+                this.lock = true;
                 e.currentTarget.classList.add("active");
-            this.lock = !this.lock;
+                this.verifyItem();
+                this.combineInvoiceInfo();
+            }
+        },
+        unlockSplit(){
+            this.unlock = this.lock = false;
         },
         cancel() {
             this.init.reject()
