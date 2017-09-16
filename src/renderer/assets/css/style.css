@@ -916,6 +916,7 @@ footer.update span {
 
 
 /* vue transition animation */
+
 .fade-enter-active,
 .fade-leave-active {
   opacity: 1;
@@ -923,8 +924,15 @@ footer.update span {
   transition-delay: 0.3s;
 }
 
+.payment-enter-active{
+  opacity: 1;
+  transition:opacity 0.3s ease;
+}
+
 .fade-enter,
-.fade-leave {
+.fade-leave,
+.payment-enter,
+.payment-leave {
   opacity: 0;
 }
 
@@ -939,6 +947,11 @@ footer.update span {
 .menu-leave {
   opacity: 0;
   transform: translate3d(0, 3px, 0);
+}
+
+.menu-enter,
+.menu-leave{
+  opacity:0;
 }
 
 .slideDown-enter-active,
