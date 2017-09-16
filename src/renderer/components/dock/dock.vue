@@ -169,7 +169,7 @@ export default {
             this.setApp({ database: true })
             this.$socket.emit('[INQUIRY] TICKET_NUMBER', number => { this.setTicket({ number }) })
         },
-        TICKET_NUMBER(number) { this.app.mode !== 'edit' && this.setTicket({ number }) },
+        TICKET_NUMBER(number) { this.app.mode !== 'edit' && this.setTicket({ number });console.log('receipt number') },
         UPDATE_TABLE_STATUS(data) { this.updateTable(data) },
         INSERT_ORDER(data) { this.insertOrder(data) },
         UPDATE_ORDER(data) { this.updateOrder(data) },

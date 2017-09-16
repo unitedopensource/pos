@@ -265,11 +265,11 @@ export default {
       this.app.mode === 'create'
         ? this.$socket.emit("[SAVE] DINE_IN_INVOICE", { table: this.currentTable, order })
         : this.$socket.emit("[UPDATE] INVOICE", order);
-      this.$socket.emit("INQUIRY_TICKET_NUMBER");
       this.setOrder(order);
       this.$router.push({ name: "Table" });
     },
     combineOrderInfo(extra) {
+      this.$socket.emit("INQUIRY_TICKET_NUMBER");
       let customer = Object.assign({}, this.customer);
       let print = extra.hasOwnProperty("print") ? extra.print : true;
       let order = Object.assign({}, this.order);
@@ -285,6 +285,7 @@ export default {
           time: +new Date(),
           date: today()
         });
+
       } else {
         Object.assign(order, {
           customer,

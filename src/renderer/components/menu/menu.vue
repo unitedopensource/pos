@@ -66,6 +66,7 @@ export default {
             this.menuInstance = JSON.parse(JSON.stringify(this.menu));
             this.flatten(this.menuInstance[0].item);
             this.setSides(this.fillOption([]));
+            this.$socket.emit('[INQUIRY] TICKET_NUMBER', number => { this.setTicket({ number }) });
             this.app.mode === 'create' && this.ticket.type === 'DINE_IN' && this.configDineIn();
             this.app.mode === 'create' && this.setOrder({
                 _id: ObjectId(),
@@ -194,7 +195,6 @@ export default {
             toggleClass(".category div", "active");
         },
         resetTableExit() {
-            //if (this.currentTable && this.currentTable.current.invoice.length === 0) {
             if (this.app.mode === 'create') {
                 this.resetCurrentTable();
                 this.$socket.emit("TABLE_MODIFIED", this.currentTable);
@@ -217,7 +217,7 @@ export default {
             this.setApp({ mode: "create" });
             this.$router.push({ path: "/main" });
         },
-        ...mapActions(['setApp', 'setOrder', 'setSides', 'addToOrder', 'resetPointer', 'resetMenu', 'resetAll', 'alterItemOption', 'resetCurrentTable'])
+        ...mapActions(['setApp', 'setOrder', 'setTicket', 'setSides', 'addToOrder', 'resetPointer', 'resetMenu', 'resetAll', 'alterItemOption', 'resetCurrentTable'])
     },
     computed: {
         page() {

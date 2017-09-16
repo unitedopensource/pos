@@ -34,7 +34,7 @@ export default {
         typeof this.init.timeout.fn === 'function' ? this.init.timeout.fn() : eval(this.init.timeout.fn);
       }, this.init.timeout.duration);
       this.loader = 'loader';
-      this.step = 90 / (this.init.timeout.duration / 1000);
+      this.step = 95 / (this.init.timeout.duration / 1000);
       this.bar = {
         transform: `translate3d(-100%,0,0)`
       }
@@ -110,7 +110,7 @@ export default {
 }
 
 .alert .progress:after {
-  box-shadow: 0 0 10px #EF6C00, 0 0 5px #FB8C00;
+  box-shadow: 0 0 10px #EF6C00, 0 0 7px #FB8C00;
 }
 
 .alert.loader:after {
@@ -122,7 +122,7 @@ export default {
   background: #F44336
 }
 .warning .progress:after {
-  box-shadow: 0 0 10px #F44336, 0 0 5px #F44336;
+  box-shadow: 0 0px 10px #F44336, 0 0 7px #E64A19;
 }
 
 .warning.loader:after{
