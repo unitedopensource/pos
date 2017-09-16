@@ -5,12 +5,29 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import store from './vuex/store'
 export default {
   store,
   computed: {
     ...mapGetters(['op'])
+  },
+  mounted() {
+    window.addEventListener('click', this.record, false)
+    window.addEventListener('online', this.online, false)
+    window.addEventListener('offline', this.offline, false)
+  },
+  methods: {
+    record() {
+      this.setApp({ lastActivity: new Date().getTime() })
+    },
+    online() {
+      this.setDevice({ online: true })
+    },
+    offline() {
+      this.setDevice({ online: true })
+    },
+    ...mapActions(['setApp','setDevice'])
   },
   watch: {
     op(n) {

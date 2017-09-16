@@ -377,7 +377,9 @@ export default {
         'tipAdjusted': '小费调整完成',
         'tipAdjustedTip': '小费修改为 {i}，交易中心返回总数 {i}',
         'tipAdjustDenied': '无法调整小费',
-        'tipAdjustDeniedTip': '调整小费失败，错误代码 {i}'
+        'tipAdjustDeniedTip': '调整小费失败，错误代码 {i}',
+        'saveFailed':'保存失败',
+        'splitItemNotComplete':'您需要将剩下的物品全部分单后才能保存'
     },
     terminal: {
         'initial': '正在初始化 {i}...',

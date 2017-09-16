@@ -226,20 +226,23 @@ export default {
                 time: +new Date,
                 exp: +new Date + 1000 * 120
             }
-            this.$socket.emit('[COMPONENT] LOCK', data, settling => {
-                if (settling) {
-                    this.paymentPending()
+            this.$socket.emit('[COMPONENT] LOCK', data, result => {
+                if (result) {
+                    this.paymentPending(result)
                 } else {
                     this.init.hasOwnProperty("index") ? this.paySplit(this.init.index) :
                         this.order.split ? this.askPayMode() : this.initial();
                 }
             })
         },
-        paymentPending() {
+        paymentPending(result) {
+            let current = +new Date();
+            let exp = result.exp;
+            let duration = exp - current;
             this.appear = true;
             this.releaseComponentLock = false;
             this.$dialog({
-                title: 'dialog.pending', msg: 'dialog.pendingOrderAccessDenied', timeout: { duration: 30000, fn: 'resolve' },
+                title: 'dialog.pending', msg: 'dialog.pendingOrderAccessDenied', timeout: { duration, fn: 'resolve' },
                 buttons: [{ text: 'button.confirm', fn: 'resolve' }]
             }).then(() => {
                 this.init.reject()

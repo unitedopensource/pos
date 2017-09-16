@@ -21,7 +21,7 @@
             <footer>
                 <div class="f1">
                     <!-- <div class="btn" @click="unlockSplit" v-if="unlock">{{$t('button.unlock')}}</div>
-                        <div class="btn confirm" @click="lockSplit($event)" v-else>{{$t('button.lock')}}</div> -->
+                                    <div class="btn confirm" @click="lockSplit($event)" v-else>{{$t('button.lock')}}</div> -->
                     <div class="btn" @click="printAllInvoices">{{$t('button.printAll')}}</div>
                     <div class="btn" @click="splitEvenly">{{$t('button.evenSplit')}}</div>
                 </div>
@@ -58,9 +58,6 @@ export default {
     },
     created() {
         this.initial();
-    },
-    beforeCreate() {
-        //this.$options.components.payment = require('../payment/payment');
     },
     methods: {
         initial() {
@@ -163,10 +160,10 @@ export default {
         print(index) {
             let content = this.items.filter(item => Array.isArray(item.sort) ? item.sort.includes(index) : item.sort === index)
             let order = JSON.parse(JSON.stringify(this.order));
+            let number = this.order.number ? `${this.order.number}-${index}` : `${this.ticket.number}-${index}`
             let customer = this.customer;
             Object.assign(order, {
-                content, customer,
-                number: `${this.order.number}-${index}`,
+                content, customer, number,
                 type: this.order.type,
                 payment: this.$children[index].payment,
                 time: +new Date
@@ -180,10 +177,18 @@ export default {
             })
         },
         save() {
-            this.sort(1);
-            this.verifyItem();
-            this.combineInvoiceInfo();
-            this.exit();
+            if (this.items.filter(item => item.sort === 0).length > 0) {
+                this.$dialog({
+                    title: 'dialog.saveFailed',
+                    msg: 'dialog.splitItemNotComplete',
+                    buttons: [{ text: 'button.confirm', fn: 'resolve' }]
+                }).then(() => { this.$q() })
+            } else {
+                this.sort(1);
+                this.verifyItem();
+                this.combineInvoiceInfo();
+                this.exit();
+            }
         },
         verifyItem() {
             this.items.forEach((item, index) => {

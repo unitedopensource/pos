@@ -35,7 +35,7 @@
         </div>
         <div class="done" v-show="done">
             <div class="btn print" @click="print">{{$t('button.print')}}</div>
-            <div class="btn" @click="setDiscount">{{$t('button.setDiscount')}}</div>
+            <!-- <div class="btn" @click="setDiscount">{{$t('button.setDiscount')}}</div> -->
             <!-- <div class="btn pay" @click="pay" v-show="!paid">{{$t('button.payment')}}</div> -->
         </div>
     </div>

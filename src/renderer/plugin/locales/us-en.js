@@ -378,7 +378,9 @@ export default {
         'tipAdjusted': 'Tip Adjusted',
         'tipAdjustedTip': 'Tip adjusted to {i},Terminal return total {i}',
         'tipAdjustDenied': 'Tip Adjust Denied',
-        'tipAdjustDeniedTip': 'Tip adjust failed. Error code {i}'
+        'tipAdjustDeniedTip': 'Tip adjust failed. Error code {i}',
+        'saveFailed':'Save Failed',
+        'splitItemNotComplete':'You need to split the rest of item before you can save'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',
