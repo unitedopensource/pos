@@ -6,8 +6,8 @@
 <script>
 import { mapActions, mapGetters } from "vuex"
 import { ipcRenderer } from 'electron'
-//import Printer from '../plugin/print'
 import serialport from 'serialport'
+import Printer from '../plugin/print'
 import wol from 'wake_on_lan'
 import MAC from 'getmac'
 
@@ -57,6 +57,7 @@ export default {
         } else {
           this.findStation(mac)
           this.initDevices()
+          this.initPrinter()
           ipcRenderer.send("Initialized")
           this.$router.push('Login')
         }
@@ -126,6 +127,13 @@ export default {
     initWeightScale(port) {
 
     },
+    initPrinter() {
+      let config = this.config
+      CLODOP ? (window.Printer = new Printer(CLODOP, config)) :
+        setTimeout(function() {
+          window.Printer = new Printer(CLODOP, config)
+        }, 20000, CLODOP, config)
+    },
     checkAwake(stations) {
       ipcRenderer.send("Loading", this.$t('initial.awakeClients'));
       Object.keys(stations).forEach(name => {
@@ -152,5 +160,3 @@ export default {
   }
 }
 </script>
-
-<style></style>

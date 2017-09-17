@@ -75,7 +75,16 @@ export default {
                 case 4:
                     if (table.current.invoice.length) {
                         let invoice = this.history.find(ticket => ticket._id === table.current.invoice[0])
-                        this.setViewOrder(JSON.parse(JSON.stringify(invoice)))
+                        invoice ? this.setViewOrder(JSON.parse(JSON.stringify(invoice))) :
+                            this.$dialog({
+                                title: 'dialog.invoiceNotFound', msg: 'dialog.resetTableStatus',
+                                buttons: [{ text: 'button.cancel', fn: 'reject' }, { text: 'button.confirm', fn: 'resolve' }]
+                            }).then(() => {
+                                this.$socket.emit("[UPDATE] TABLE_SETTLED", { table: table._id, status: 1 })
+                                this.$q()
+                            }).catch(() => {
+                                this.$q()
+                            })
                     } else {
                         this.resetMenu()
                     }
@@ -83,7 +92,7 @@ export default {
                 default:
                     this.store.table.passwordRequire ? this.access() :
                         this.store.table.guestCount ? this.$p("setup") :
-                            this.createTable(0)
+                            this.createTable(1)
             }
         },
         access() {
