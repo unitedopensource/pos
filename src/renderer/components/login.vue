@@ -248,7 +248,4 @@ export default {
   height: 50px;
   -webkit-app-region: drag;
 }
-#drag:hover{
-  background: rgba(255,255,255,0.2)
-}
 </style>
