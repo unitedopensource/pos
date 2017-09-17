@@ -47,6 +47,7 @@
           </ul>
         </transition>
       </div>
+      <div id="drag"></div>
       <div :is="component" :init="componentData"></div>
     </div>
   </transition>
@@ -237,5 +238,17 @@ export default {
 
 .ctrl li i {
   width: 30px;
+}
+
+#drag{
+  position: fixed;
+  bottom:0;
+  left:0;
+  width: 50px;
+  height: 50px;
+  -webkit-app-region: drag;
+}
+#drag:hover{
+  background: rgba(255,255,255,0.2)
 }
 </style>

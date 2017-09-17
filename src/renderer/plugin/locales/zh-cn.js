@@ -190,7 +190,8 @@ export default {
         'driver': '司机',
         'scan': '扫描',
         'lock':'锁定',
-        'unlock':'解锁'
+        'unlock':'解锁',
+        'selectAll':'全选'
     },
     title: {
         'markPaymentType': '标记付款方式',
@@ -373,7 +374,7 @@ export default {
         'reprintBatchReport': '重新打印',
         'reprintBatchReportTip': '您是否需要重新打印结账信息？',
         'pending': '处理中',
-        'pendingOrderAccessDenied': '这单正在付款中...',
+        'pendingOrderAccessDenied': '订单正在付款中...',
         'tipAdjusted': '小费调整完成',
         'tipAdjustedTip': '小费修改为 {i}，交易中心返回总数 {i}',
         'tipAdjustDenied': '无法调整小费',

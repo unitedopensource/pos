@@ -30,7 +30,7 @@
         <div class="selector" v-else @click="selectAll">
             <div class="total">
                 <i class="fa fa-bars"></i>
-                <span class="text">{{$t('text.selectAll')}}</span>
+                <span class="text">{{$t('button.selectAll')}}</span>
             </div>
         </div>
         <div class="done" v-show="done">

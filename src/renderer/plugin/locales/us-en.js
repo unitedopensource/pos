@@ -191,7 +191,8 @@ export default {
         'driver': 'Driver',
         'scan': 'Scan',
         'lock':'Lock',
-        'unlock':'Unlock'
+        'unlock':'Unlock',
+        'selectAll':'Select All'
     },
     title: {
         'markPaymentType': 'Mark Payment Type',

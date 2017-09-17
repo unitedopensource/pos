@@ -34,7 +34,7 @@ export default {
         typeof this.init.timeout.fn === 'function' ? this.init.timeout.fn() : eval(this.init.timeout.fn);
       }, this.init.timeout.duration);
       this.loader = 'loader';
-      this.step = 95 / (this.init.timeout.duration / 1000);
+      this.step = 90 / (this.init.timeout.duration / 1000);
       this.bar = {
         transform: `translate3d(-100%,0,0)`
       }
@@ -132,8 +132,6 @@ export default {
 
 
 
-
-
 .dialog.success {
   border-top: 2px solid #13ce66;
 }
@@ -150,7 +148,7 @@ export default {
   border-top: 2px solid #f51900;
 }
 
-i {
+i.fa {
   font-size: 96px;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
   margin: 20px 0 35px;
