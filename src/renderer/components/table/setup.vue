@@ -54,6 +54,7 @@ export default {
       this.setTicket({ type: 'DINE_IN' })
       this.setTableInfo({
         status: 2,
+        session: ObjectId(),
         current: {
           guest: ~~this.guest,
           server: this.op.name,

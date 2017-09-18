@@ -128,11 +128,11 @@ export default {
 
     },
     initPrinter() {
-      let config = this.config
-      CLODOP ? (window.Printer = new Printer(CLODOP, config)) :
-        setTimeout(function() {
-          window.Printer = new Printer(CLODOP, config)
-        }, 20000, CLODOP, config)
+      // let config = this.config
+      // CLODOP ? (window.Printer = new Printer(CLODOP, config)) :
+      //   setTimeout(function() {
+      //     window.Printer = new Printer(CLODOP, config)
+      //   }, 20000, CLODOP, config)
     },
     checkAwake(stations) {
       ipcRenderer.send("Loading", this.$t('initial.awakeClients'));

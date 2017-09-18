@@ -147,6 +147,7 @@
 import { mapGetters, mapActions } from 'vuex'
 import dialoger from '../common/dialoger'
 import unlock from '../common/unlock'
+//import Printer from '../../plugin/print'
 import Printer from '../../print'
 export default {
   props: ['layout'],
@@ -219,11 +220,17 @@ export default {
       this.callComponent("split")
     },
     switchGuest() {
+      R
       this.callComponent("guest")
     },
     save(print) {
       if (this.isEmptyTicket) return;
       let order = this.combineOrderInfo({ print });
+      // let p = new Printer(CLODOP,this.config);
+      // window.p = p.setTarget('Receipt')
+      // console.log(order)
+      // p.print(order)
+
       print && Printer.init(this.config).setJob("receipt").print(order);
       print && order.content.forEach(item => {
         delete item.new;
@@ -242,6 +249,7 @@ export default {
           server: this.op.name, print,
           table: this.currentTable.name,
           tableID: this.currentTable._id,
+          session: this.currentTable.session,
           guest: isNumber(this.order.guest) ? this.order.guest : this.currentTable
         });
         let current = Object.assign({}, this.currentTable.current, {
