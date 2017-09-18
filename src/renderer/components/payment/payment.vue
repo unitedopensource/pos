@@ -729,8 +729,14 @@ export default {
                         buttons: [{ text: 'button.noReceipt', fn: 'reject' }, { text: 'button.printReceipt', fn: 'resolve' }]
                     }).then(() => { this.invoiceSettled(order, true) }).catch(() => { this.invoiceSettled(order, false) })
             } else {
+                //invoice not save here
                 this.payment.settled = true;
-                this.order.splitPayment[this.current] = this.payment;
+                order.splitPayment[this.current] = this.payment;
+                Object.assign(this.order, order);
+
+                // this.isNewTicket ?
+                //     this.$socket.emit("[SAVE] INVOICE", order) : this.$socket.emit("[UPDATE] INVOICE", order);
+
                 type === 'CASH' ?
                     this.$dialog({
                         title: ["dialog.cashChange", change], msg: ["dialog.cashChangeTip", paid.toFixed(2)],
@@ -740,7 +746,6 @@ export default {
                         type: "question", title: "dialog.printReceiptConfirm", msg: "dialog.printReceiptConfirmTip",
                         buttons: [{ text: 'button.noReceipt', fn: 'reject' }, { text: 'button.printReceipt', fn: 'resolve' }]
                     }).then(() => { this.printSplitReceipt() }).catch(() => { this.nextSplit() });
-
             }
         },
         printSplitReceipt() {
@@ -788,8 +793,8 @@ export default {
                             settled: true,
                             time: +new Date,
                             date: today()
-                        });
-                        this.$socket.emit("[SAVE] INVOICE", this.order);
+                        })
+                        this.$socket.emit("[SAVE] INVOICE", this.order)
                     } else {
                         Object.assign(this.order, {
                             lastEdit: +new Date,
@@ -798,9 +803,10 @@ export default {
                             cashier: this.op.name,
                             payment: this.combineSplitPayment(),
                             settled: true
-                        });
+                        })
                         this.$socket.emit("[UPDATE] INVOICE", this.order)
                     }
+                    
                     this.resetAll();
                     this.$router.push({ path: "/main" });
                     break;
@@ -824,6 +830,7 @@ export default {
                     this.init.resolve();
                     break;
             }
+            return true
         },
         combineSplitPayment() {
             let payment = { tip: 0, gratuity: 0, discount: 0, delivery: 0, subtotal: 0, tax: 0, total: 0, paid: 0, due: 0, log: [], paidCash: 0, paidCredit: 0, paidGift: 0, settled: true };
@@ -1275,7 +1282,7 @@ span.card {
     }
 }
 
-.delay{
+.delay {
     animation-delay: 0.3s;
 }
 </style>
