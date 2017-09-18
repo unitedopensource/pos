@@ -48,8 +48,7 @@
 export default {
   props: ['init'],
   mounted() {
-    this.discount = this.init.payment.discount ? '$ ' + this.init.payment.discount : '0 %';
-    if (this.discount) this.currentUnit = '$';
+    this.currentUnit = this.discount = this.init.payment.discount > 0 ? '$ ' + this.init.payment.discount : '0 %';
   },
   data() {
     return {

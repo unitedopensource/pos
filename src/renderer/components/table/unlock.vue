@@ -76,18 +76,14 @@ export default {
             this.setTableInfo({
                 status: 2,
                 session: ObjectId(),
-                current: {
-                    guest: 1,
-                    server: this.op.name,
-                    time: +new Date,
-                    color: "",
-                    group: "",
-                    invoice: []
-                }
+                guest: 1,
+                server: this.op.name,
+                time: +new Date,
+                invoice: []
             })
             this.resetMenu();
             this.setApp({ mode: 'create' });
-            this.$socket.emit("TABLE_MODIFIED", this.currentTable);
+            this.$socket.emit("[TABLE] SETUP", this.currentTable);
             this.$router.push({ path: '/main/menu' });
         },
         checkUser() {

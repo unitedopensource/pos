@@ -22,6 +22,7 @@
                 <div class="table" v-for="(table,index) in viewSection" @click="selectTable(table,$event)" @contextmenu="tableOption(table,$event)" :key="index" :class="{occupy:table.status === 2,prePay:table.status === 3,paid:table.status === 4}">
                     <span :class="[table.shape]" class="icon"></span>
                     <span class="name">{{table.name}}</span>
+                    <span class="staff" v-show="table.server">{{table.server}}</span>
                 </div>
             </div>
         </div>
@@ -73,18 +74,16 @@ export default {
                 case 2:
                 case 3:
                 case 4:
-                    if (table.current.invoice.length) {
-                        let invoice = this.history.find(ticket => ticket._id === table.current.invoice[0])
+                    if (table.invoice.length) {
+                        let invoice = this.history.find(ticket => ticket._id === table.invoice[0]);
                         invoice ? this.setViewOrder(JSON.parse(JSON.stringify(invoice))) :
                             this.$dialog({
                                 title: 'dialog.invoiceNotFound', msg: 'dialog.resetTableStatus',
                                 buttons: [{ text: 'button.cancel', fn: 'reject' }, { text: 'button.confirm', fn: 'resolve' }]
                             }).then(() => {
-                                this.$socket.emit("[UPDATE] TABLE_SETTLED", { table: table._id, status: 1 })
+                                this.$socket.emit("[TABLE] RESET", { _id: table._id })
                                 this.$q()
-                            }).catch(() => {
-                                this.$q()
-                            })
+                            }).catch(() => { this.$q() })
                     } else {
                         this.resetMenu()
                     }
@@ -120,11 +119,11 @@ export default {
         createTable(guest) {
             this.setTicket({ type: 'DINE_IN' })
             this.setTableInfo({
-                status:2,
-                session:ObjectId(),
+                status: 2,
+                session: ObjectId(),
                 guest,
-                server:this.op.name,
-                time:+new Date
+                server: this.op.name,
+                time: +new Date
             })
             this.resetMenu();
             this.setApp({ mode: 'create' });
@@ -134,21 +133,10 @@ export default {
         tableOption(table) {
             if (this.op.role === 'Manager' || this.op.role === 'Admin') {
                 this.$dialog({
-                    type: "alert", title: "dialog.forceClearTable", msg: ["dialog.forceClearTableTip", table.current.server, table.name],
+                    type: "alert", title: "dialog.forceClearTable", msg: ["dialog.forceClearTableTip", table.server, table.name],
                     buttons: [{ text: 'button.cancel', fn: 'reject' }, { text: 'button.clear', fn: 'resolve' }]
                 }).then(() => {
-                    let _table = Object.assign({}, table, {
-                        status: 1,
-                        current: {
-                            color: "",
-                            group: "",
-                            guest: 1,
-                            invoice: [],
-                            server: "",
-                            time: ""
-                        }
-                    });
-                    this.$socket.emit("TABLE_MODIFIED", _table);
+                    this.$socket.emit("[TABLE] RESET", { _id: table._id });
                     this.resetMenu();
                     this.$q();
                 }).catch(() => { this.$q() })
@@ -281,5 +269,15 @@ aside {
     bottom: 15px;
     right: 5px;
     color: #4CAF50;
+}
+
+span.staff {
+    position: absolute;
+    background: #03A9F4;
+    color: #fff;
+    text-shadow: 0 1px 1px #333;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    text-align: center;
 }
 </style>

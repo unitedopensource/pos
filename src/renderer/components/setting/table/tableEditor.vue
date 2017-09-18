@@ -5,7 +5,7 @@
             <div class="inner">
                 <div class="input">
                     <label for="name">{{$t('text.name')}}</label>
-                    <input v-model="table.name" id="name">
+                    <input v-model="table.name" id="name" ref="name">
                 </div>
                 <div class="input">
                     <label for="zone">{{$t('text.section')}}</label>
@@ -14,7 +14,7 @@
                 <div class="input">
                     <label for="name">{{$t('text.icon')}}</label>
                     <select v-model="table.shape">
-                        <option v-for="(shape,index) in options" :key="index">{{shape}}</option>
+                        <option v-for="(shape,index) in options" :key="index" :value="shape">{{shape}}</option>
                     </select>
                 </div>
             </div>
@@ -35,15 +35,16 @@ export default {
         return {
             table: {},
             options: [
+                "",
                 "icon-table-set",
                 "icon-round-couple",
                 "icon-square-couple"
             ]
         }
     },
-    mounted() {
-        this.table = JSON.parse(JSON.stringify(this.init.table));
+    created() {
         this.table = Object.assign({}, {
+            _id: ObjectId(),
             feature: [],
             guest: 0,
             server: "",
@@ -51,10 +52,12 @@ export default {
             grid: this.init.index,
             status: 1,
             name: "",
-            shape: "",
-        }, this.table)
+            shape: "icon-table-set",
+        }, JSON.parse(JSON.stringify(this.init.table)))
     },
-
+    mounted() {
+        this.$refs.name.focus();
+    },
     methods: {
         confirm() {
             this.init.resolve(this.table)

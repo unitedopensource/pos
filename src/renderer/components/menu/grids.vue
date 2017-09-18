@@ -250,17 +250,11 @@ export default {
           table: this.currentTable.name,
           tableID: this.currentTable._id,
           session: this.currentTable.session,
-          guest: isNumber(this.order.guest) ? this.order.guest : this.currentTable
+          guest: isNumber(this.order.guest) ? this.order.guest : this.currentTable.guest
         });
-        let current = Object.assign({}, this.currentTable.current, {
-          invoice: [order._id],
-          color: "",
-          group: "",
-          guest: this.currentTable.current.guest || 0,
-          server: this.op.name,
-          time: +new Date()
-        });
-        this.setTableInfo({ current });
+
+        Object.assign(this.currentTable, { invoice: [order._id] })
+        this.$socket.emit("[TABLE] SETUP", this.currentTable);
       } else {
         order = this.combineOrderInfo({});
       }
@@ -271,7 +265,7 @@ export default {
         item.pending = false;
       });
       this.app.mode === 'create'
-        ? this.$socket.emit("[SAVE] DINE_IN_INVOICE", { table: this.currentTable, order })
+        ? this.$socket.emit("[SAVE] INVOICE", order )
         : this.$socket.emit("[UPDATE] INVOICE", order);
       this.setOrder(order);
       this.$router.push({ name: "Table" });

@@ -55,18 +55,14 @@ export default {
       this.setTableInfo({
         status: 2,
         session: ObjectId(),
-        current: {
-          guest: ~~this.guest,
-          server: this.op.name,
-          time: +new Date,
-          color: "",
-          group: "",
-          invoice: []
-        }
+        guest: ~~this.guest,
+        server: this.op.name,
+        time: +new Date,
+        invoice: []
       })
       this.resetMenu();
       this.setApp({ mode: 'create' });
-      this.$socket.emit("TABLE_MODIFIED", this.currentTable);
+      this.$socket.emit("[TABLE] SETUP", this.currentTable);
       this.$router.push({ path: '/main/menu' });
     },
     ...mapActions(['setApp', 'resetMenu', 'setTicket', 'setTableInfo'])

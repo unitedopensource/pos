@@ -348,7 +348,7 @@ export default {
                             this.reset ?
                                 this.tip = (num / 100).toFixed(2) :
                                 this.tip = (tip / 100).toFixed(2);
-                            this.tip = this.tip > 9999 ? "9999.00" : this.tip;
+                            this.payment.tip = this.tip = this.tip > 9999 ? "9999.00" : this.tip;
                             break;
                     }
                     break;
@@ -403,8 +403,7 @@ export default {
                     this.creditCard[this.anchor] = "";
                     break;
                 case "tip":
-                    this.tip = '0.00'
-                    this.payment.tip = '0.00'
+                    this.payment.tip = this.tip = '0.00'
                     break;
                 default:
                     this.paid = "0.00"
@@ -428,7 +427,6 @@ export default {
                 change, balance
             });
             this.changeDue(this.paid, change, balance);
-
         },
         // checkCashInStatus() {
         //     let status = true;
@@ -840,7 +838,6 @@ export default {
                         settled: true
                     });
                     this.$socket.emit("[UPDATE] INVOICE", this.order);
-                    this.clearTable(this.order);
                     this.init.resolve();
                     break;
                 case "History":
@@ -857,21 +854,21 @@ export default {
         },
         combineSplitPayment() {
             let payment = { tip: 0, gratuity: 0, discount: 0, delivery: 0, subtotal: 0, tax: 0, total: 0, paid: 0, due: 0, log: [], paidCash: 0, paidCredit: 0, paidGift: 0, settled: true, type: 'MULTIPLE' };
-            this.order.splitPayment.forEach((settle) => {
-                payment.tip += parseFloat(settle.tip);
-                payment.gratuity += parseFloat(settle.gratuity);
-                payment.discount += parseFloat(settle.discount);
-                payment.delivery += parseFloat(settle.delivery);
-                payment.subtotal += parseFloat(settle.subtotal);
-                payment.tax += parseFloat(settle.tax);
-                payment.total += parseFloat(settle.total);
-                payment.paid += parseFloat(settle.paid);
-                payment.due += parseFloat(settle.due);
-                payment.log.push(...settle.log);
-                !settle.settled && (payment.settled = false);
-                settle.hasOwnProperty('paidCash') && (payment.paidCash += parseFloat(settle.paidCash));
-                settle.hasOwnProperty('paidCredit') && (payment.paidCredit += parseFloat(settle.paidCredit));
-                settle.hasOwnProperty('paidGift') && (payment.paidGift += parseFloat(settle.paidGift));
+            this.order.splitPayment.forEach((split) => {
+                payment.tip += parseFloat(split.tip);
+                payment.gratuity += parseFloat(split.gratuity);
+                payment.discount += parseFloat(split.discount);
+                payment.delivery += parseFloat(split.delivery);
+                payment.subtotal += parseFloat(split.subtotal);
+                payment.tax += parseFloat(split.tax);
+                payment.total += parseFloat(split.total);
+                payment.paid += parseFloat(split.paid);
+                payment.due += parseFloat(split.due);
+                payment.log.push(...split.log);
+                !split.settled && (payment.settled = false);
+                split.hasOwnProperty('paidCash') && (payment.paidCash += parseFloat(split.paidCash));
+                split.hasOwnProperty('paidCredit') && (payment.paidCredit += parseFloat(split.paidCredit));
+                split.hasOwnProperty('paidGift') && (payment.paidGift += parseFloat(split.paidGift));
             })
             return payment
         },
@@ -883,11 +880,11 @@ export default {
             } else {
                 let payment = this.combineSplitPayment();
                 this.setOrder(Object.assign(this.order, { payment }));
+                (this.$route.name === 'History' || this.$route.name === 'Table') && this.$socket.emit("[UPDATE] INVOICE", this.order);
                 this.init.resolve();
             }
         },
         invoiceSettled(ticket, print) {
-            this.clearTable(ticket);
             if (print) {
                 Printer.init(this.config).setJob("receipt").print(ticket);
                 ticket.content.forEach(item => {
@@ -921,13 +918,6 @@ export default {
                     break;
                 default:
                     this.init.resolve();
-            }
-        },
-        clearTable(ticket) {
-            if (ticket.type === 'DINE_IN' && ticket.tableID) {
-                let table = ticket.tableID;
-                let status = this.config.store.table.autoClean ? 1 : 4;
-                this.$socket.emit("[UPDATE] TABLE_SETTLED", { table, status })
             }
         },
         recordCashDrawerAction(inflow, outflow) {

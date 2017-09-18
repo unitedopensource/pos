@@ -100,7 +100,8 @@ export default {
             this.setOrder({
                 table: this.currentTable.name,
                 tableID: this.currentTable._id,
-                guest: this.currentTable.current.guest,
+                guest: this.currentTable.guest,
+                session: this.currentTable.session,
                 type: this.ticket.type
             })
         },
@@ -195,10 +196,7 @@ export default {
             toggleClass(".category div", "active");
         },
         resetTableExit() {
-            if (this.app.mode === 'create') {
-                this.resetCurrentTable();
-                this.$socket.emit("TABLE_MODIFIED", this.currentTable);
-            }
+            this.app.mode === 'create' && this.$socket.emit("[TABLE] RESET", { _id: this.currentTable._id });
             this.exit();
         },
         switchGuest() {
