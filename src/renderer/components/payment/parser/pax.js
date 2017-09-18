@@ -39,13 +39,13 @@ const Pax = function () {
     return device;
   };
   this.charge = function (data, ticket) {
-    let { number, date, code } = data.creditCard;
+    let { number, date } = data.creditCard;
     let amount = (data.amount * 100).toFixed(0);
     if (!number && !date) {
       let command = this.parser(`T00_1.38_01_${amount}__1_____`);
       return fetch(command)
     } else {
-      let info = `${number}|${date}|${code}`;
+      let info = `${number}|${date}|`;
       let command = this.parser(`T00_1.38_01_${amount}_${info}_1_____`);
       return fetch(command)
     }

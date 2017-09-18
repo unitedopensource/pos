@@ -123,8 +123,7 @@ export default {
         removeTab(table, index) {
             table._id && this.$socket.emit("[CMS] REMOVE_TABLE", table._id);
             this.tabs.splice(index, 1, {
-                current: {},
-                feature: {},
+                feature: [],
                 grid: index,
                 name: "",
                 shape: "",

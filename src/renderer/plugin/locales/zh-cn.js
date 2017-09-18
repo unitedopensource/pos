@@ -382,7 +382,9 @@ export default {
         'saveFailed':'保存失败',
         'splitItemNotComplete':'您需要将剩下的物品全部分单后才能保存',
         'cashInRequired':'首次开启钱箱',
-        'cashInRequiredTip':'您需要先执行 CASH IN 才可以使用钱箱'
+        'cashInRequiredTip':'您需要先执行 CASH IN 才可以使用钱箱',
+        'paidAmountGreaterThanDue':'额外支付',
+        'extraAmountSetAsTip':'您是否需要将余出的款项 ( ${i} ) 设为小费？'
     },
     terminal: {
         'initial': '正在初始化 {i}...',

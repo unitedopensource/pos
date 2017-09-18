@@ -44,15 +44,10 @@ export default {
     mounted() {
         this.table = JSON.parse(JSON.stringify(this.init.table));
         this.table = Object.assign({}, {
-            current: {
-                color: "",
-                group: "",
-                guest: 0,
-                invoice: [],
-                server: "",
-                time: ""
-            },
-            feature: {},
+            feature: [],
+            guest: 0,
+            server: "",
+            time: null,
             grid: this.init.index,
             status: 1,
             name: "",

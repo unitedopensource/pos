@@ -120,20 +120,15 @@ export default {
         createTable(guest) {
             this.setTicket({ type: 'DINE_IN' })
             this.setTableInfo({
-                status: 2,
-                session: ObjectId(),
-                current: {
-                    guest,
-                    server: this.op.name,
-                    time: +new Date,
-                    color: "",
-                    group: "",
-                    invoice: []
-                }
+                status:2,
+                session:ObjectId(),
+                guest,
+                server:this.op.name,
+                time:+new Date
             })
             this.resetMenu();
             this.setApp({ mode: 'create' });
-            this.$socket.emit("TABLE_MODIFIED", this.currentTable);
+            this.$socket.emit("[TABLE] SETUP", this.currentTable);
             this.$router.push({ path: '/main/menu' });
         },
         tableOption(table) {

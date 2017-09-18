@@ -383,7 +383,9 @@ export default {
         'saveFailed':'Save Failed',
         'splitItemNotComplete':'You need to split the rest of item before you can save',
         'cashInRequired':'Cash In Required',
-        'cashInRequiredTip':'You need to Cash-In First before you can use the cash drawer'
+        'cashInRequiredTip':'You need to Cash-In First before you can use the cash drawer',
+        'paidAmountGreaterThanDue':'Extra Tender Amount',
+        'extraAmountSetAsTip':'Are you going to set the Extra ( ${i} ) as Tip?'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',

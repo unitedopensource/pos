@@ -98,6 +98,10 @@
                                 <span class="text">{{$t('text.paid')}}</span>
                                 <span class="value">{{paid | decimal}}</span>
                             </div>
+                            <div class="data" @click="setInput('tip',$event)">
+                                <span class="text">{{$t('button.setTip')}}</span>
+                                <span class="value">{{tip}}</span>
+                            </div>
                             <div class="data" @click="setInput('number',$event)">
                                 <span class="text">{{$t('card.number')}}</span>
                                 <input v-model="creditCard.number">
@@ -105,10 +109,6 @@
                             <div class="data" @click="setInput('date',$event)">
                                 <span class="text">{{$t('card.expirationDate')}}</span>
                                 <span class="value">{{creditCard.date | exp}}</span>
-                            </div>
-                            <div class="data" @click="setInput('code',$event)">
-                                <span class="text">{{$t('card.securityCode')}}</span>
-                                <span class="value">{{creditCard.code}}</span>
                             </div>
                         </div>
                         <aside class="numpad">
@@ -194,11 +194,11 @@ export default {
             order: null,
             anchor: "paid",
             paid: "0.00",
+            tip: '0.00',
             reset: true,
             creditCard: {
                 number: "",
-                date: "",
-                code: ""
+                date: ""
             },
             giftCard: {
                 number: "",
@@ -293,6 +293,7 @@ export default {
             }
             this.setInput("paid");
             this.payment = Object.assign({}, this.payment, { type });
+            this.tip = '0.00';
             this.reset = true;
         },
         setInput(target, e) {
@@ -342,10 +343,12 @@ export default {
                                 this.creditCard.date = num :
                                 this.creditCard.date = (this.creditCard.date.replace(/[^0-9]/g, '') + num).slice(0, 4);
                             break;
-                        case "code":
+                        case "tip":
+                            let tip = (this.tip * 100).toFixed(0).toString() + num;
                             this.reset ?
-                                this.creditCard.code = num :
-                                this.creditCard.code = (this.creditCard.code + num).slice(0, 4);
+                                this.tip = (num / 100).toFixed(2) :
+                                this.tip = (tip / 100).toFixed(2);
+                            this.tip = this.tip > 9999 ? "9999.00" : this.tip;
                             break;
                     }
                     break;
@@ -397,8 +400,11 @@ export default {
             switch (this.anchor) {
                 case "number":
                 case "date":
-                case "code":
                     this.creditCard[this.anchor] = "";
+                    break;
+                case "tip":
+                    this.tip = '0.00'
+                    this.payment.tip = '0.00'
                     break;
                 default:
                     this.paid = "0.00"
@@ -467,12 +473,27 @@ export default {
         },
         chargeCredit() {
             if (parseFloat(this.paid) === 0) return;
-            if (this.paid > this.payment.due)
-                this.paid = (parseFloat(this.payment.due) - parseFloat(this.payment.paid)).toFixed(2);
-
+            if (this.paid > this.payment.due) {
+                let extra = this.paid - this.payment.due;
+                this.$dialog({
+                    title: 'dialog.paidAmountGreaterThanDue', msg: ['dialog.extraAmountSetAsTip', extra],
+                    buttons: [{ text: 'button.cancel', fn: 'reject' }, { text: 'button.setTip', fn: 'resolve' }]
+                }).then(() => {
+                    this.paid = (parseFloat(this.payment.due) - parseFloat(this.payment.paid)).toFixed(2);
+                    this.payment.tip = this.tip = extra.toFixed(2)
+                    this.processing();
+                }).catch(() => {
+                    this.processing();
+                })
+            } else {
+                this.processing();
+            }
+        },
+        processing() {
             let card = Object.assign({}, {
                 creditCard: this.creditCard,
-                amount: this.paid
+                amount: this.paid,
+                tip: this.tip
             });
 
             new Promise((resolve, reject) => {
@@ -596,6 +617,8 @@ export default {
                     gratuity: parseFloat(result.gratuity),
                     due, balance: due
                 });
+                this.tip = result.tip;
+                this.payment.type === 'CREDIT' && (this.paid = due)
                 this.getQuickInput(due);
                 this.poleDisplay(["Tip Adjust:", result.tip.toFixed(2)], ["Total:", due.toFixed(2)]);
                 this.$q();
@@ -806,7 +829,7 @@ export default {
                         })
                         this.$socket.emit("[UPDATE] INVOICE", this.order)
                     }
-                    
+
                     this.resetAll();
                     this.$router.push({ path: "/main" });
                     break;
@@ -833,7 +856,7 @@ export default {
             return true
         },
         combineSplitPayment() {
-            let payment = { tip: 0, gratuity: 0, discount: 0, delivery: 0, subtotal: 0, tax: 0, total: 0, paid: 0, due: 0, log: [], paidCash: 0, paidCredit: 0, paidGift: 0, settled: true };
+            let payment = { tip: 0, gratuity: 0, discount: 0, delivery: 0, subtotal: 0, tax: 0, total: 0, paid: 0, due: 0, log: [], paidCash: 0, paidCredit: 0, paidGift: 0, settled: true, type: 'MULTIPLE' };
             this.order.splitPayment.forEach((settle) => {
                 payment.tip += parseFloat(settle.tip);
                 payment.gratuity += parseFloat(settle.gratuity);
