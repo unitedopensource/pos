@@ -366,36 +366,38 @@ export default {
                 };
                 return;
             }
-            let { type } = this.ticket;
-            let total = 0;
-            let subtotal = 0;
-            let tax = 0;
-            let delivery = 0;
-            let due = 0;
-            let balance = 0;
-            let { tip, gratuity, discount } = this.payment;
-            items.forEach(item => {
-                if (item.void) return;
-                let taxClass = this.tax.class[item.taxClass];
-                let amount = item.single * item.qty;
-                item.choiceSet.forEach(set => { amount += set.single * set.qty });
-                if (!this.order.taxFree) tax += taxClass.apply[type] ? (taxClass.rate / 100 * amount) : tax;
-                subtotal += amount;
-            });
+            this.$nextTick(() => {
+                let { type } = this.ticket;
+                let total = 0;
+                let subtotal = 0;
+                let tax = 0;
+                let delivery = 0;
+                let due = 0;
+                let balance = 0;
+                let { tip, gratuity, discount } = this.payment;
+                items.forEach(item => {
+                    if (item.void) return;
+                    let taxClass = this.tax.class[item.taxClass];
+                    let amount = item.single * item.qty;
+                    item.choiceSet.forEach(set => { amount += set.single * set.qty });
+                    if (!this.order.taxFree) tax += taxClass.apply[type] ? (taxClass.rate / 100 * amount) : tax;
+                    subtotal += amount;
+                });
 
-            delivery = (this.ticket.type === 'DELIVERY' && this.store.delivery && !this.order.deliveryFree) ? this.store.deliveryCharge : 0;
-            total = toFixed(subtotal + tax + delivery + parseFloat(tip) + parseFloat(gratuity),2);
-            due = Math.max(0, total - parseFloat(discount));
-            balance = due - this.payment.paid;
-            this.payment = Object.assign({}, this.payment, {
-                subtotal: subtotal.toFixed(2),
-                tax: toFixed(tax, 2),
-                total: total.toFixed(2),
-                due: due.toFixed(2),
-                discount: discount.toFixed(2),
-                balance: balance.toFixed(2)
-            });
-            this.setOrder({ payment: this.payment });
+                delivery = (this.ticket.type === 'DELIVERY' && this.store.delivery && !this.order.deliveryFree) ? this.store.deliveryCharge : 0;
+                total = toFixed(subtotal + tax + delivery + parseFloat(tip) + parseFloat(gratuity), 2);
+                due = Math.max(0, total - parseFloat(discount));
+                balance = due - this.payment.paid;
+                this.payment = Object.assign({}, this.payment, {
+                    subtotal: subtotal.toFixed(2),
+                    tax: toFixed(tax, 2),
+                    total: total.toFixed(2),
+                    due: due.toFixed(2),
+                    discount: discount.toFixed(2),
+                    balance: balance.toFixed(2)
+                });
+                this.setOrder({ payment: this.payment });
+            })
         },
         ...mapActions(['setPointer', 'resetPointer', 'resetChoiceSet', 'setChoiceSetTarget', 'setOrder'])
     },
@@ -422,7 +424,7 @@ export default {
                 this.display ? this.payment = this.order.payment : this.calculator(n);
             }, deep: true
         },
-        payment() {
+        payment(n) {
             this.$nextTick(() => {
                 let height = 0;
                 let doms = document.querySelectorAll(".order .list");
