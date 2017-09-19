@@ -443,6 +443,10 @@ Printer.prototype.printReceipt = function (raw, done) {
       `<p><span class="text">Tip:</span><span class="value">${payment.tip}</span></p>` : "";
     let gratuity = parseFloat(payment.gratuity) > 0 ?
       `<p><span class="text">Gratuity:</span><span class="value">${payment.gratuity}</span></p>` : "";
+    let coupon = ticket.coupon ?
+      `<section class="details">
+        <h3>${ticket.coupon.for} - ${ticket.coupon.discount} OFF</h3>
+      </section>`: "";
     let voidTicket = ticket.status === 0 ?
       `<section class="details">
         <h3>*** Ticket Voided ***</h3>
@@ -452,7 +456,7 @@ Printer.prototype.printReceipt = function (raw, done) {
         </p>
         <h3>Void by: ${ticket.void.by} @ ${moment(ticket.void.time).format('HH:mm:ss')}</h3>
       </section>`: "";
-    let details = (voidTicket + cash + credit + gift + thirdParty) || "";
+    let details = (voidTicket + coupon + cash + credit + gift + thirdParty) || "";
 
     return `<footer>
               <section class="column">
@@ -675,7 +679,7 @@ Printer.prototype.printReport = function (data) {
         if (Array.isArray(report[key])) {
           section += report[key].map(record => {
             let { text, count, amount } = record;
-            amount = isNumber(amount) ? "$ " + toFixed(amount,2) : amount ? flatten(amount) : "";
+            amount = isNumber(amount) ? "$ " + toFixed(amount, 2) : amount ? flatten(amount) : "";
             count = count > 0 ? count : "";
             return `<div class="data">
                   <div class="text">${text}</div>
@@ -686,7 +690,7 @@ Printer.prototype.printReport = function (data) {
         } else {
           for (let value in report[key]) {
             let { text, count, amount } = report[key][value];
-            amount = isNumber(amount) ? "$ " + toFixed(amount,2) : amount ? flatten(amount) : "";
+            amount = isNumber(amount) ? "$ " + toFixed(amount, 2) : amount ? flatten(amount) : "";
             count = count > 0 ? count : "";
             section += `<div class="data">
                          <div class="text">${text}</div>

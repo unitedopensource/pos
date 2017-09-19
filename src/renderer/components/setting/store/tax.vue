@@ -6,7 +6,7 @@
             </header>
             <article>
                 <smart-switch v-model="tax.beforeDisc" label="text.taxBeforeDiscount"></smart-switch>
-                <smart-switch v-model="tax.beforeCredit" label="text.taxBeforeCredit"></smart-switch>
+                <smart-switch v-model="tax.beforeCredit" label="text.taxBeforeCredit"></smart-switch> -->
             </article>
         </section> -->
         <section class="card list">

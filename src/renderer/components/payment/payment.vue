@@ -640,10 +640,19 @@ export default {
                 this.component = "Discount";
             }).then(result => {
                 let due = parseFloat(this.payment.total) + parseFloat(this.payment.tip) + parseFloat(this.payment.gratuity) - parseFloat(result.discount);
+
+                if (result.coupon) {
+                    this.setOrder({ coupon: result.coupon })
+                    Object.assign(this.order, { coupon: result.coupon })
+                } else {
+                    this.setOrder({ coupon: null })
+                    Object.assign(this.order, { coupon: null })
+                }
                 this.payment = Object.assign({}, this.payment, {
                     discount: parseFloat(result.discount),
                     due, balance: due
                 });
+                console.log(this.order)
                 this.getQuickInput(due);
                 this.poleDisplay(["Discount:", -result.discount.toFixed(2)], ["Total:", due.toFixed(2)]);
                 this.$q();

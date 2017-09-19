@@ -375,6 +375,7 @@ export default {
                 let due = 0;
                 let balance = 0;
                 let { tip, gratuity, discount } = this.payment;
+                let coupon = this.order.coupon;
                 items.forEach(item => {
                     if (item.void) return;
                     let taxClass = this.tax.class[item.taxClass];
@@ -386,6 +387,23 @@ export default {
 
                 delivery = (this.ticket.type === 'DELIVERY' && this.store.delivery && !this.order.deliveryFree) ? this.store.deliveryCharge : 0;
                 total = toFixed(subtotal + tax + delivery + parseFloat(tip) + parseFloat(gratuity), 2);
+
+                if (coupon) {
+                    /**
+                     * Tax apply Before Discount (For Example: 10% Tax Rate, 20% Discount)
+                     * 
+                     * Subtotal: 10.00
+                     * Tax:       1.00  
+                     * Discount:  2.00
+                     * Total:     9.00
+                     * ------------------------------------------------------------------
+                     */
+                    if (coupon.discount.includes("%")) {
+                        discount = toFixed((coupon.discount.replace(/\D+/, "") / 100) * (subtotal), 2);
+                    } else {
+                        discount = subtotal - (coupon.discount.replace(/\D+/, ''))
+                    }
+                }
                 due = Math.max(0, total - parseFloat(discount));
                 balance = due - this.payment.paid;
                 this.payment = Object.assign({}, this.payment, {
