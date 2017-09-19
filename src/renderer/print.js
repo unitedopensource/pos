@@ -564,7 +564,7 @@ Printer.prototype.printCreditCard = function (trans, reprint) {
               <p><span class="text">Present</span><span class="value">${trans.account.present}</span></p>
               <p class="bold amount"><span class="text">Amount:</span><span class="value">$${trans.amount.approve}</span></p>
               ${due}
-              <p class="bold"><span class="text">Tip:</span><span class="value ul">$</span></p>
+              <p class="bold"><span class="text">Tip:</span><span class="value ul">$${parseFloat(trans.amount.tip) > 0 ? trans.amount.tip : ''}</span></p>
               <p class="bold"><span class="text">Total:</span><span class="value ul">$</span></p>
               <p><span class="text">Auth Code</span><span class="value">${trans.host.auth}</span></p>
               <p><span class="text">Response</span><span class="value">${trans.host.msg}</span></p>

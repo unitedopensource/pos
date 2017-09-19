@@ -35,11 +35,11 @@
                                 <span class="text">{{$t('text.discount')}}</span>
                                 <span class="value">-{{payment.discount | decimal}}</span>
                             </div>
-                            <div class="addition" v-show="payment.tip !== 0">
+                            <div class="addition" v-show="parseFloat(payment.tip) !== 0">
                                 <span class="text">{{$t('text.tip')}}</span>
                                 <span class="value">+{{payment.tip | decimal}}</span>
                             </div>
-                            <div class="addition" v-show="payment.gratuity !== 0">
+                            <div class="addition" v-show="parseFloat(payment.gratuity) !== 0">
                                 <span class="text">{{$t('text.gratuity')}}</span>
                                 <span class="value">+{{payment.gratuity | decimal}}</span>
                             </div>
@@ -293,7 +293,7 @@ export default {
             }
             this.setInput("paid");
             this.payment = Object.assign({}, this.payment, { type });
-            this.tip = '0.00';
+            this.payment.tip = this.tip = '0.00';
             this.reset = true;
         },
         setInput(target, e) {
@@ -472,7 +472,7 @@ export default {
         chargeCredit() {
             if (parseFloat(this.paid) === 0) return;
             if (this.paid > this.payment.due) {
-                let extra = this.paid - this.payment.due;
+                let extra = toFixed(this.paid - this.payment.due,2);
                 this.$dialog({
                     title: 'dialog.paidAmountGreaterThanDue', msg: ['dialog.extraAmountSetAsTip', extra],
                     buttons: [{ text: 'button.cancel', fn: 'reject' }, { text: 'button.setTip', fn: 'resolve' }]
@@ -557,7 +557,11 @@ export default {
                 number: trans.account.number
             });
             Object.assign(trans, { order: this.assignOrder() });
+            // if(parseFloat(trans.amount.approve) === parseFloat(this.payment.due) + parseFloat(this.payment.tip) ){
+
+            // }
             this.$socket.emit("[TERM] SAVE_TRANSACTION", trans);
+            console.log(trans)
             Printer.init(this.config).setJob("creditCard").print(trans);
             if (parseFloat(this.payment.balance) === 0) {
                 this.payment.settled = true;

@@ -41,8 +41,10 @@ const Pax = function () {
   this.charge = function (data, ticket) {
     let { number, date } = data.creditCard;
     let amount = (data.amount * 100).toFixed(0);
+    let tip = (data.tip * 100).toFixed(0);
+    console.log(amount,tip)
     if (!number && !date) {
-      let command = this.parser(`T00_1.38_01_${amount}__1_____`);
+      let command = this.parser(`T00_1.38_01_${amount|tip}__1_____`);
       return fetch(command)
     } else {
       let info = `${number}|${date}|`;
