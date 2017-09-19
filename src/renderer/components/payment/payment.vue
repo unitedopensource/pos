@@ -477,9 +477,12 @@ export default {
                     title: 'dialog.paidAmountGreaterThanDue', msg: ['dialog.extraAmountSetAsTip', extra],
                     buttons: [{ text: 'button.cancel', fn: 'reject' }, { text: 'button.setTip', fn: 'resolve' }]
                 }).then(() => {
+                    this.payment.tip = this.tip = extra.toFixed(2);
+                    this.payment.total = (parseFloat(this.payment.subtotal) + parseFloat(this.payment.tax) + parseFloat(this.payment.tip) + parseFloat(this.payment.gratuity)).toFixed(2);
+                    this.payment.due = (parseFloat(this.payment.total) - parseFloat(this.payment.discount)).toFixed(2)
                     this.paid = (parseFloat(this.payment.due) - parseFloat(this.payment.paid)).toFixed(2);
-                    this.payment.tip = this.tip = extra.toFixed(2)
-                    this.processing();
+
+                    this.processing({ amount: (this.paid - extra).toFixed(2), tip: extra.toFixed(2) });
                 }).catch(() => {
                     this.processing();
                 })
@@ -487,12 +490,21 @@ export default {
                 this.processing();
             }
         },
-        processing() {
-            let card = Object.assign({}, {
-                creditCard: this.creditCard,
-                amount: this.paid,
-                tip: this.tip
-            });
+        processing(trans) {
+            let card;
+            if (trans) {
+                card = Object.assign({}, {
+                    creditCard: this.creditCard,
+                    amount: trans.amount,
+                    tip: trans.tip
+                })
+            } else {
+                card = Object.assign({}, {
+                    creditCard: this.creditCard,
+                    amount: this.paid,
+                    tip: this.tip
+                });
+            }
 
             new Promise((resolve, reject) => {
                 this.componentData = { card, resolve, reject };

@@ -107,7 +107,7 @@ export default {
             }).then(() => { this.editOrder() }).catch(() => { this.$q() })
         },
         switchTable() {
-            if(!this.currentTable) return;
+            if (!this.currentTable) return;
             this.$dialog({ title: 'dialog.switchTable', msg: 'dialog.switchTableTip' }).then(() => {
                 this.$emit("switch", this.currentTable)
                 this.$q()
@@ -208,8 +208,7 @@ export default {
                     buttons: [{ text: 'button.cancel', fn: 'reject' }, { text: 'button.clear', fn: 'resolve' }]
                 }).then(() => {
                     this.resetMenu();
-                    this.resetCurrentTable();
-                    this.$socket.emit("TABLE_MODIFIED", this.currentTable);
+                    this.$socket.emit("[TABLE] RESET", { _id: this.currentTable._id });
                     this.$q();
                 }).catch(() => { this.$q() })
             } else {
@@ -219,7 +218,7 @@ export default {
                 }).then(() => { this.$q() })
             }
         },
-        ...mapActions(['setApp', 'resetMenu', 'resetAll', 'setTicket', 'removePayment', 'setTableInfo', 'resetCurrentTable'])
+        ...mapActions(['setApp', 'resetMenu', 'resetAll', 'setTicket', 'removePayment', 'setTableInfo'])
     },
     computed: {
         ...mapGetters(['op', 'config', 'order', 'isEmptyTicket', 'currentTable'])
