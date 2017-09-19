@@ -29,7 +29,7 @@
         <div class="side">
             <div class="wrap">
                 <order-list layout="display" :display="true"></order-list>
-                <grid class="grid"></grid>
+                <grid class="grid" @switch="switchTable"></grid>
             </div>
         </div>
         <div :is="component" :init="componentData"></div>
@@ -49,6 +49,7 @@ export default {
         return {
             componentData: null,
             component: null,
+            queue: [],
             view: 0
         }
     },
@@ -67,6 +68,10 @@ export default {
         },
         selectTable(table, e) {
             if (!table._id) return;
+            if (this.queue.length === 1) {
+                this.addToQueue(table)
+                return
+            }
             this.setCurrentTable(table);
             switch (table.status) {
                 case 0:
@@ -141,6 +146,50 @@ export default {
                     this.$q();
                 }).catch(() => { this.$q() })
             }
+        },
+        switchTable(table) {
+            table ?
+                table !== this.queue[0] ? this.queue.push(table) : this.queue = []
+                : this.queue = [];
+        },
+        addToQueue(table) {
+            if (table.status === 1) {
+                this.queue.push(table)
+                this.switchTableConfirm()
+            } else {
+                this.$dialog({ title: 'dialog.tableSwitchFailed', msg: 'dialog.tableSwitchFailedTip', buttons: [{ text: 'button.confirm', fn: 'resolve' }] }).then(() => { this.$q() })
+            }
+        },
+        switchTableConfirm() {
+            this.$dialog({
+                title: 'dialog.tableSwitchConfirm', msg: ['dialog.tableSwitchConfirmTip', this.queue[0].name, this.queue[1].name],
+                buttons: [{ text: 'button.cancel', fn: 'reject' }, { text: 'button.switchTable', fn: 'resolve' }]
+            }).then(() => {
+                let t1 = this.queue[0];
+                let t2 = Object.assign({}, this.queue[1], {
+                    session: t1.session,
+                    guest: t1.guest,
+                    invoice: t1.invoice,
+                    status: t1.status,
+                    server: t1.server,
+                    time: t1.time
+                })
+                t1 = Object.assign({}, t1, {
+                    session: null,
+                    guest: 0,
+                    invoice: [],
+                    status: 1,
+                    server: null,
+                    time: null
+                })
+                console.log(t1, t2)
+                this.$socket.emit("[TABLE] SWAP", [t1, t2])
+                this.queue = [];
+                this.$q()
+            }).catch(() => {
+                this.queue.pop()
+                this.$q()
+            })
         },
         ...mapActions(['setOp', 'setApp', 'resetMenu', 'setTicket', 'setViewOrder', 'setCurrentTable', 'setTableInfo'])
     },
@@ -234,11 +283,11 @@ aside {
 
 .prePay .icon:after {
     font-family: fontAwesome;
-    content: '\f02f';
+    content: '\f298';
     font-size: 16px;
     position: absolute;
-    bottom: 15px;
-    right: 5px;
+    top: 3px;
+    right: 3px;
     color: #009688;
 }
 
@@ -256,8 +305,8 @@ aside {
     content: '\f0c0';
     font-size: 16px;
     position: absolute;
-    bottom: 15px;
-    right: 5px;
+    top: 3px;
+    right: 3px;
     color: #FF5722;
 }
 

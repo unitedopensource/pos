@@ -102,7 +102,13 @@ export default {
             }).then(() => { this.editOrder() }).catch(() => { this.$q() })
         },
         switchTable() {
-
+            this.$dialog({ title: 'dialog.switchTable', msg: 'dialog.switchTableTip' }).then(() => {
+                this.$emit("switch", this.currentTable)
+                this.$q()
+            }).catch(() => {
+                this.$emit("switch", false)
+                this.$q()
+            })
         },
         combineTable() {
 
@@ -135,9 +141,7 @@ export default {
                 cashier: this.op.name
             })
             Printer.init(this.config).setJob('receipt').print(order);
-            this.$socket.emit("[UPDATE] TABLE_SETTLED", { table: order.tableID, status: 3 })
-            // this.setTableInfo({ status: 3 });
-            // this.$socket.emit("TABLE_MODIFIED", this.currentTable);
+            this.$socket.emit("[TABLE] UPDATE", { _id: order.tableID, status: 3 })
         },
         askSplitPrePayment() {
             this.$dialog({
