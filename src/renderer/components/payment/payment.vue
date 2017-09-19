@@ -652,7 +652,6 @@ export default {
                     discount: parseFloat(result.discount),
                     due, balance: due
                 });
-                console.log(this.order)
                 this.getQuickInput(due);
                 this.poleDisplay(["Discount:", -result.discount.toFixed(2)], ["Total:", due.toFixed(2)]);
                 this.$q();
@@ -888,13 +887,17 @@ export default {
         },
         savePayment() {
             if (this.payInFull) {
-                this.setOrder(Object.assign(this.order, { cashier: this.op.name, payment: this.payment }));
-                (this.$route.name === 'History' || this.$route.name === 'Table') && this.$socket.emit("[UPDATE] INVOICE", this.order);
+                let order = Object.assign({}, this.order, { cashier: this.op.name, payment: this.payment })
+                order.settled = !!this.payment.settled;
+                this.setOrder(order);
+                (this.$route.name === 'History' || this.$route.name === 'Table') && this.$socket.emit("[UPDATE] INVOICE", order);
                 this.exit()
             } else {
                 let payment = this.combineSplitPayment();
-                this.setOrder(Object.assign(this.order, { payment }));
-                (this.$route.name === 'History' || this.$route.name === 'Table') && this.$socket.emit("[UPDATE] INVOICE", this.order);
+                let order = Object.assign({}, this.order, { payment });
+                order.settled = !!payment.settled;
+                this.setOrder(order);
+                (this.$route.name === 'History' || this.$route.name === 'Table') && this.$socket.emit("[UPDATE] INVOICE", order);
                 this.init.resolve();
             }
         },

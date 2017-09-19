@@ -47,7 +47,7 @@ export default {
             this.selected = null;
         },
         confirm() {
-            isNumber(this.selected) && Object.assign(order, {
+            isNumber(this.selected) && Object.assign(this.order, {
                 carryNote: this.notes[this.selected]
             })
             this.$router.push({ path: '/main/menu' });
