@@ -6,7 +6,7 @@
                 <span class="tip"></span>
             </header>
             <article>
-                <smart-input v-model="operator.name" label="text.name"></smart-input>
+                <smart-input v-model="operator.name" label="text.name" :maximum="10"></smart-input>
                 <smart-option v-model="operator.role" label="text.role" :options="roles"></smart-option>
                 <smart-input v-model="operator.pin" label="text.password" type="password"></smart-input>
                 <smart-option v-model="operator.language" label="text.defaultLanguage" :options="languages"></smart-option>

@@ -2,7 +2,7 @@
     <div class="input">
         <div class="wrap">
             <label :for="id">{{$t(label)}}</label>
-            <input :id="id" :value="value" :type="type" @input="$emit('input', $event.target.value)" :disabled="disable && !admin">
+            <input :id="id" :value="value" :type="type" @input="$emit('input', $event.target.value)" :disabled="disable && !admin" :maxlength="maximum">
             <i class="fa fa-level-down" v-if="more" @click="trigger"></i>
         </div>
         <span class="tip">{{$t(tip)}}</span>
@@ -28,7 +28,8 @@ export default {
         type: {
             type: String,
             default: 'text'
-        }
+        },
+        maximum: Number
     },
     created() {
         this.id = Math.random().toString(36).substr(2, 5);

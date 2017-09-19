@@ -4,9 +4,13 @@
             <i class="fa fa-list-alt"></i>
             <span class="text">{{$t('button.edit')}}</span>
         </button>
-        <button class="btn" @click="switchTable">
+        <button class="btn" @click="switchTable" v-if="transfer">
             <i class="fa fa-exchange"></i>
             <span class="text">{{$t("button.switchTable")}}</span>
+        </button>
+        <button class="btn" @click="$emit('switch',false)" v-else>
+            <i class="fa fa-ban"></i>
+            <span class="text">{{$t('button.cancel')}}</span>
         </button>
         <button class="btn" @click="combineTable">
             <i class="fa fa-hand-paper-o"></i>
@@ -47,6 +51,7 @@ import payment from '../payment/payment'
 import Printer from '../../print'
 import split from '../menu/split'
 export default {
+    props: ['transfer'],
     components: { dialoger, payment, split },
     data() {
         return {
@@ -102,6 +107,7 @@ export default {
             }).then(() => { this.editOrder() }).catch(() => { this.$q() })
         },
         switchTable() {
+            if(!this.currentTable) return;
             this.$dialog({ title: 'dialog.switchTable', msg: 'dialog.switchTableTip' }).then(() => {
                 this.$emit("switch", this.currentTable)
                 this.$q()

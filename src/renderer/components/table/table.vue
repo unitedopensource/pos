@@ -29,7 +29,7 @@
         <div class="side">
             <div class="wrap">
                 <order-list layout="display" :display="true"></order-list>
-                <grid class="grid" @switch="switchTable"></grid>
+                <grid class="grid" @switch="switchTable" :transfer="queue.length === 0"></grid>
             </div>
         </div>
         <div :is="component" :init="componentData"></div>
@@ -182,7 +182,6 @@ export default {
                     server: null,
                     time: null
                 })
-                console.log(t1, t2)
                 this.$socket.emit("[TABLE] SWAP", [t1, t2])
                 this.queue = [];
                 this.$q()
@@ -325,8 +324,11 @@ span.staff {
     background: #03A9F4;
     color: #fff;
     text-shadow: 0 1px 1px #333;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5), inset 0 1px 1px #badefb;
     width: 100%;
     text-align: center;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 }
 </style>
