@@ -58,9 +58,19 @@ const dialog = {
         this.component = "dialoger";
       });
     }
-    Vue.prototype.$denyAccess = function (manager) {
-      let buttons = manager ? [{ text: 'button.code', fn: 'resolve' }, { text: 'button.cancel', fn: 'reject' }] : [{ text: 'button.confirm', fn: 'reject' }];
-      this.$dialog({ type: 'warning', title: 'dialog.accessDenied', msg: 'dialog.accessDeniedTip', timeout: { duration: 10000 }, buttons }).then(() => { this.$q() }).catch(() => { this.$q() })
+    Vue.prototype.$denyAccess = function (login) {
+      if (login) {
+        //allow operator enter access pin
+        return new Promise((resolve, reject) => {
+          this.componentData = { resolve, reject };
+          this.component = 'unlock';
+        })
+      } else {
+        this.$dialog({
+          type: 'warning', title: 'dialog.accessDenied', msg: 'dialog.accessDeniedTip',
+          timeout: { duration: 10000 }, buttons: [{ text: 'button.confirm', fn: 'reject' }]
+        }).then(() => { this.$q() }).catch(() => { this.$q() })
+      }
     }
     Vue.prototype.$q = function () {
       this.component = null;

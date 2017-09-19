@@ -809,13 +809,15 @@ export default {
         },
         saveSplitPayment() {
             let customer = Object.assign({}, this.customer);
+            let payment = this.combineSplitPayment();
+            let settled = this.payment.settled;
             delete customer.extra;
             switch (this.$route.name) {
                 case "Menu":
                     if (this.app.mode === 'create') {
                         Object.assign(this.order, {
                             customer,
-                            payment: this.combineSplitPayment(),
+                            payment,
                             type: this.ticket.type,
                             number: this.ticket.number,
                             station: this.station.alies,
@@ -823,7 +825,7 @@ export default {
                             source: "POS",
                             modify: 0,
                             status: 1,
-                            settled: true,
+                            settled,
                             time: +new Date,
                             date: today()
                         })
@@ -834,8 +836,7 @@ export default {
                             editor: this.op.name,
                             modify: this.order.modify + 1,
                             cashier: this.op.name,
-                            payment: this.combineSplitPayment(),
-                            settled: true
+                            payment, settled
                         })
                         this.$socket.emit("[UPDATE] INVOICE", this.order)
                     }
@@ -844,20 +845,12 @@ export default {
                     this.$router.push({ path: "/main" });
                     break;
                 case "Table":
-                    Object.assign(this.order, {
-                        cashier: this.op.name,
-                        payment: this.combineSplitPayment(),
-                        settled: true
-                    });
+                    Object.assign(this.order, { cashier: this.op.name, payment, settled });
                     this.$socket.emit("[UPDATE] INVOICE", this.order);
                     this.init.resolve();
                     break;
                 case "History":
-                    Object.assign(this.order, {
-                        cashier: this.op.name,
-                        payment: this.combineSplitPayment(),
-                        settled: true
-                    });
+                    Object.assign(this.order, { cashier: this.op.name, payment, settled });
                     this.$socket.emit("[UPDATE] INVOICE", this.order);
                     this.init.resolve();
                     break;

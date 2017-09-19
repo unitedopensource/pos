@@ -48,11 +48,12 @@
 import { mapGetters, mapActions } from 'vuex'
 import dialoger from '../common/dialoger'
 import payment from '../payment/payment'
+import unlock from '../common/unlock'
 import Printer from '../../print'
 import split from '../menu/split'
 export default {
     props: ['transfer'],
-    components: { dialoger, payment, split },
+    components: { dialoger, unlock, payment, split },
     data() {
         return {
             componentData: null,
@@ -61,17 +62,46 @@ export default {
     },
     methods: {
         editOrder() {
-            if (!this.approval(this.op.view, 'tables') && this.currentTable.current.server !== this.op.name) {
-                this.editDenied();
-                return
+            if (this.order.settled) {
+                this.handleSettledOrder();
+                return;
             }
-            if (!this.order.settled) {
+
+            if (this.currentTable.server !== this.op.name) {
+                this.$denyAccess(true).then((op) => {
+                    if (this.approval(op.modify,'order')) {
+                        let language = op.language || "usEN";
+                        moment.locale(language === 'usEN' ? 'en' : 'zh-cn');
+                        this.$setLanguage(language);
+                        this.setOp(op);
+                        this.setApp({ mode: 'edit', language })
+                        this.setTicket({ type: 'DINE_IN', number: this.order.number })
+                        this.$router.push({ path: '/main/menu' })
+                    } else {
+                        throw new Error()
+                    }
+                }).catch(() => {
+                    this.editDenied()
+                    this.$q()
+                })
+            }else{
                 this.setApp({ mode: 'edit' })
                 this.setTicket({ type: 'DINE_IN', number: this.order.number })
                 this.$router.push({ path: '/main/menu' })
-            } else {
-                this.handleSettledOrder()
             }
+
+
+            // if (!this.approval(this.op.view, 'tables') && this.currentTable.server !== this.op.name) {
+            //     this.editDenied();
+            //     return
+            // }
+            // if (!this.order.settled) {
+            //     this.setApp({ mode: 'edit' })
+            //     this.setTicket({ type: 'DINE_IN', number: this.order.number })
+            //     this.$router.push({ path: '/main/menu' })
+            // } else {
+            //     this.handleSettledOrder()
+            // }
         },
         editDenied() {
             this.$dialog({
@@ -218,7 +248,7 @@ export default {
                 }).then(() => { this.$q() })
             }
         },
-        ...mapActions(['setApp', 'resetMenu', 'resetAll', 'setTicket', 'removePayment', 'setTableInfo'])
+        ...mapActions(['setOp', 'setApp', 'resetMenu', 'resetAll', 'setTicket', 'removePayment', 'setTableInfo'])
     },
     computed: {
         ...mapGetters(['op', 'config', 'order', 'isEmptyTicket', 'currentTable'])

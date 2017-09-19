@@ -66,7 +66,7 @@ export default {
             this.menuInstance = JSON.parse(JSON.stringify(this.menu));
             this.flatten(this.menuInstance[0].item);
             this.setSides(this.fillOption([]));
-            this.$socket.emit('[INQUIRY] TICKET_NUMBER', number => { this.setTicket({ number }) });
+            this.$socket.emit('[INQUIRY] TICKET_NUMBER', number => { this.app.mode === 'create' && this.setTicket({ number }) });
             this.app.mode === 'create' && this.ticket.type === 'DINE_IN' && this.configDineIn();
             this.app.mode === 'create' && this.setOrder({
                 _id: ObjectId(),

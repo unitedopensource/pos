@@ -94,10 +94,30 @@ export default {
                     }
                     break;
                 default:
-                    this.store.table.passwordRequire ? this.access() :
+                    this.store.table.passwordRequire ? this.unlockTable() :
                         this.store.table.guestCount ? this.$p("setup") :
                             this.createTable(1)
             }
+        },
+        unlockTable() {
+            this.$denyAccess(true).then(op => {
+                if (op._id === this.op._id) {
+                    this.store.table.guestCount ? this.$p("setup") : this.createTable(1);
+                } else {
+                    this.$dialog({
+                        type: 'question', title: 'dialog.switchOperator', msg: ['dialog.switchCurrentOperator', this.op.name, op.name]
+                    }).then(() => {
+                        let language = op.language || "usEN";
+                        moment.locale(language === 'usEN' ? 'en' : 'zh-cn');
+                        this.$setLanguage(language);
+                        this.setApp({ language, mode: 'create' });
+                        this.setOp(op);
+                        this.createTable(1);
+                    }).catch(() => { this.$q() })
+                }
+            }).catch(() => {
+                this.$denyAccess();
+            })
         },
         access() {
             new Promise((resolve, reject) => {
@@ -126,7 +146,7 @@ export default {
             this.setTableInfo({
                 status: 2,
                 session: ObjectId(),
-                guest,
+                guest: guest || 1,
                 server: this.op.name,
                 time: +new Date
             })
