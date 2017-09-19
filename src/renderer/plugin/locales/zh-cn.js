@@ -205,7 +205,8 @@ export default {
         'timecard': '打卡记录',
         'scanner': '扫描器',
         'split': '分单',
-        'payment':'付款'
+        'payment':'付款',
+        'note':'便签'
     },
     menu: {
         'course': '定时',
@@ -384,7 +385,9 @@ export default {
         'cashInRequired':'首次开启钱箱',
         'cashInRequiredTip':'您需要先执行 CASH IN 才可以使用钱箱',
         'paidAmountGreaterThanDue':'额外支付',
-        'extraAmountSetAsTip':'您是否需要将余出的款项 ( ${i} ) 设为小费？'
+        'extraAmountSetAsTip':'您是否需要将余出的款项 ( ${i} ) 设为小费？',
+        'removeCarryNote':'移除手抄',
+        'removeCarryNoteTip':'您确定要移除这份手抄吗？'
     },
     terminal: {
         'initial': '正在初始化 {i}...',
@@ -684,7 +687,8 @@ export default {
         'enterPin': '输入密码',
         'printReceipt': '打印收据',
         'count': '计数',
-        'lastDate': '最后日期'
+        'lastDate': '最后日期',
+        'content':'内容'
     },
     nav: {
         'store': '店面',

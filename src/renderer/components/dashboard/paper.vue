@@ -14,7 +14,7 @@ export default {
 .paper {
     margin: 5px;
     padding: 5px;
-    width: 170px;
+    width: 190px;
     position: relative;
     height: 50px;
     display: flex;

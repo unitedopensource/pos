@@ -8,7 +8,7 @@
       <div class="inner">
         <div class="display">
           <div class="total">
-            <span class="due">{{(init.payment.total) | decimal}}</span>
+            <span class="due">{{(init.payment.subtotal) | decimal}}</span>
             <span class="formula">{{formula}}</span>
           </div>
           <div class="wrap">
@@ -103,7 +103,7 @@ export default {
       this.redeem = null;
     },
     getFormula(value) {
-      let total = this.init.payment.total.toFixed(2);
+      let total = this.init.payment.subtotal.toFixed(2);
       if (value.includes('%')) {
         let result = (total * (parseFloat(value.replace(/D+/, "")) / 100)).toFixed(2);
         this.formula = `${total} * ${value} = ${result}`;
@@ -135,7 +135,7 @@ export default {
     },
     enter() {
       let discount = this.discount.includes("%") ?
-        (this.discount.replace(/\D+/, "") / 100 * this.init.payment.total).toFixed(2) :
+        (this.discount.replace(/\D+/, "") / 100 * this.init.payment.subtotal).toFixed(2) :
         parseFloat(this.discount.replace(/\D+/, ""));
       this.init.resolve({ discount, coupon: this.redeem });
     },
@@ -305,12 +305,26 @@ span.formula {
 }
 
 input:checked+label:after {
-  content: '\f058';
+  content: '\f0c4';
   position: absolute;
-  right: 15px;
-  bottom: 5px;
+  left: 18px;
+  bottom: -13px;
+  font-size: 28px;
   font-family: fontAwesome;
   color: #E0F2F1;
   text-shadow: 0 1px 1px #333;
+  z-index: 2;
+  animation:cut 0.3s linear;
+}
+
+@keyframes cut{
+  from{
+    opacity: 0;
+    transform: translateX(-10px)
+  }
+  to{
+    opacity: 1;
+    transform: translateX(0)
+  }
 }
 </style>

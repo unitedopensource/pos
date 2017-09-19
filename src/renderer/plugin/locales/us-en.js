@@ -206,7 +206,8 @@ export default {
         'timecard': 'Timecard Records',
         'scanner': 'Scanner',
         'split': 'Split Ticket',
-        'payment':'Payment'
+        'payment':'Payment',
+        'note':'Note'
     },
     menu: {
         'course': 'Course',
@@ -385,7 +386,9 @@ export default {
         'cashInRequired':'Cash In Required',
         'cashInRequiredTip':'You need to Cash-In First before you can use the cash drawer',
         'paidAmountGreaterThanDue':'Extra Tender Amount',
-        'extraAmountSetAsTip':'Are you going to set the Extra ( ${i} ) as Tip?'
+        'extraAmountSetAsTip':'Are you going to set the Extra ( ${i} ) as Tip?',
+        'removeCarryNote':'Remove Carry Note',
+        'removeCarryNoteTip':'Are you sure to remove this carry note?'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',
@@ -686,7 +689,8 @@ export default {
         'enterPin': 'Please Enter Your Pin',
         'printReceipt': 'Print Receipt',
         'count': 'Count',
-        'lastDate': 'Last Date'
+        'lastDate': 'Last Date',
+        'content':'Content'
     },
     nav: {
         'store': 'Store',

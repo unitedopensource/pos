@@ -117,6 +117,22 @@ Printer.prototype.printReceipt = function (raw, done) {
         this.printer.SET_PRINTER_INDEX(name);
         this.printer.PRINT();
 
+        if (raw.carryNote && (/cashier/i).test(name)) {
+          this.printer.PRINT_INIT('Reprint CarryNote');
+          this.printer.SET_PRINTER_INDEX(name);
+          this.printer.PRINT_INITA(0, 0, 270, 500, "");
+          let cursor = 0;
+          raw.carryNote.content.forEach(line => {
+            this.printer.ADD_PRINT_TEXT(cursor, 10, 260, 20, line);
+            this.printer.SET_PRINT_STYLEA(0, "FontName", "Tensentype RuiHeiJ-W2");
+            this.printer.SET_PRINT_STYLEA(0, "FontSize", 16);
+            this.printer.SET_PRINT_STYLEA(0, "Alignment", 2);
+            this.printer.SET_PRINT_STYLEA(0, "LetterSpacing", 1);
+            cursor += 22
+          })
+          this.printer.PRINT();
+        }
+
         if (devices[name] && devices[name].double[raw.type]) {
           this.printer.PRINT_INIT('Reprint receipt');
           this.printer.ADD_PRINT_HTM(0, 0, "100%", "100%", html);
