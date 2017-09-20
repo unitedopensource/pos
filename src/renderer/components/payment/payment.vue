@@ -404,6 +404,9 @@ export default {
                     break;
                 case "tip":
                     this.payment.tip = this.tip = '0.00'
+                    this.payment.total = (parseFloat(this.payment.subtotal) + parseFloat(this.payment.tax) + parseFloat(this.payment.tip) + parseFloat(this.payment.gratuity)).toFixed(2);
+                    this.payment.due = (parseFloat(this.payment.total) - parseFloat(this.payment.discount)).toFixed(2)
+                    this.paid = (parseFloat(this.payment.due) - parseFloat(this.payment.paid)).toFixed(2);
                     break;
                 default:
                     this.paid = "0.00"
@@ -472,17 +475,18 @@ export default {
         chargeCredit() {
             if (parseFloat(this.paid) === 0) return;
             if (this.paid > this.payment.due) {
-                let extra = toFixed(this.paid - this.payment.due,2);
+                let extra = (this.paid - this.payment.due).toFixed(2);
                 this.$dialog({
                     title: 'dialog.paidAmountGreaterThanDue', msg: ['dialog.extraAmountSetAsTip', extra],
                     buttons: [{ text: 'button.cancel', fn: 'reject' }, { text: 'button.setTip', fn: 'resolve' }]
                 }).then(() => {
-                    this.payment.tip = this.tip = extra.toFixed(2);
+                    this.payment.tip = this.tip = extra;
                     this.payment.total = (parseFloat(this.payment.subtotal) + parseFloat(this.payment.tax) + parseFloat(this.payment.tip) + parseFloat(this.payment.gratuity)).toFixed(2);
                     this.payment.due = (parseFloat(this.payment.total) - parseFloat(this.payment.discount)).toFixed(2)
                     this.paid = (parseFloat(this.payment.due) - parseFloat(this.payment.paid)).toFixed(2);
-
-                    this.processing({ amount: (this.paid - extra).toFixed(2), tip: extra.toFixed(2) });
+                    let amount = (this.paid - extra).toFixed(2);
+                    let tip = extra.toFixed(2);
+                    this.processing({ amount, tip });
                 }).catch(() => {
                     this.processing();
                 })
@@ -557,11 +561,10 @@ export default {
                 number: trans.account.number
             });
             Object.assign(trans, { order: this.assignOrder() });
-            // if(parseFloat(trans.amount.approve) === parseFloat(this.payment.due) + parseFloat(this.payment.tip) ){
-
-            // }
+            if (this.payment.tip > 0) {
+                trans.amount.approve = (trans.amount.approve - trans.amount.tip).toFixed(2);
+            }
             this.$socket.emit("[TERM] SAVE_TRANSACTION", trans);
-            console.log(trans)
             Printer.init(this.config).setJob("creditCard").print(trans);
             if (parseFloat(this.payment.balance) === 0) {
                 this.payment.settled = true;
