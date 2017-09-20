@@ -688,7 +688,8 @@ export default {
         'printReceipt': '打印收据',
         'count': '计数',
         'lastDate': '最后日期',
-        'content':'内容'
+        'content':'内容',
+        'coupon':'优惠'
     },
     nav: {
         'store': '店面',

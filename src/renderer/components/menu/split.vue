@@ -237,7 +237,7 @@ export default {
             let payment = {};
             splitPayment.filter(ticket => typeof ticket === 'object').forEach(pay => {
                 Object.keys(pay).forEach(key => {
-                    if (payment.hasOwnProperty(key)) {
+                    if (payment.hasOwnProperty(key) && key !== 'applyCoupon') {
                         isNumber(payment[key]) ?
                             payment[key] = parseFloat(payment[key]) + parseFloat(pay[key]) :
                             payment[key].push(...pay[key]);

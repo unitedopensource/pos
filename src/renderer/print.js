@@ -459,7 +459,8 @@ Printer.prototype.printReceipt = function (raw, done) {
       `<p><span class="text">Tip:</span><span class="value">${payment.tip}</span></p>` : "";
     let gratuity = parseFloat(payment.gratuity) > 0 ?
       `<p><span class="text">Gratuity:</span><span class="value">${payment.gratuity}</span></p>` : "";
-    let coupon = ticket.coupon ?
+    let applyCoupon = ticket.payment.hasOwnProperty('applyCoupon') ? ticket.payment.applyCoupon : true;
+    let coupon = (ticket.coupon && applyCoupon) ?
       `<section class="details">
         <h3>${ticket.coupon.for} - ${ticket.coupon.discount} OFF</h3>
       </section>`: "";

@@ -15,16 +15,19 @@
             </div>
             <div class="space" v-if="instance.length > 7 && !hide"></div>
         </div>
-        <div class="summary" v-if="!hide">
+        <div class="summary" v-if="!hide" @click="toggle = !toggle">
             <div class="total">
                 <span class="text">{{$t('text.total')}}:</span>
-                <span>${{payment.total | decimal}}
+                <span>${{payment.due | decimal}}
                     <span class="tax">({{payment.tax | decimal}})</span>
                 </span>
             </div>
             <div class="apply">
                 <checkbox v-model="isTax" label="text.tax"></checkbox>
-                <checkbox v-model="isChargeDelivery" label="text.deliveryFee"></checkbox>
+                <checkbox v-model="isApplyCoupon" label="text.coupon"></checkbox>
+                <div v-show="toggle">
+                    <checkbox v-model="isChargeDelivery" label="text.deliveryFee"></checkbox>
+                </div>
             </div>
         </div>
         <div class="selector" v-else @click="selectAll">
@@ -52,7 +55,9 @@ export default {
             queue: [],
             paid: false,
             isTax: true,
+            toggle: false,
             isDiscount: true,
+            isApplyCoupon: true,
             isChargeDelivery: true
         }
     },
@@ -103,6 +108,8 @@ export default {
         payment() {
             let tip = 0, gratuity = 0, discount = 0, delivery = 0, subtotal = 0, tax = 0, total = 0, paid = 0, due = 0, log = [];
             let type = this.$route.name === 'Menu' ? this.ticket.type : this.order.type;
+            let coupon = this.order.coupon;
+
             this.instance.forEach(item => {
                 let amount = item.single * item.qty;
                 item.choiceSet.forEach(set => { amount += parseFloat(set.price) })
@@ -115,10 +122,19 @@ export default {
                     this.store.deliveryCharge : 0;
                 subtotal += amount;
             });
-            tax = parseFloat(tax.toFixed(2));
+            tax = toFixed(tax, 2);
+            if (coupon && this.isApplyCoupon) {
+                if (coupon.discount.includes("%")) {
+                    discount = toFixed((coupon.discount.replace(/\D+/, "") / 100) * (subtotal), 2);
+                } else {
+                    discount = subtotal - (coupon.discount.replace(/\D+/, ''))
+                }
+            }
             total = (subtotal + tax + tip + gratuity + delivery).toFixed(2);
             due = (parseFloat(total) - parseFloat(discount)).toFixed(2);
-            return (this.settle && this.settle.settled) ? this.settle : { tip, gratuity, discount, delivery, subtotal, total, tax, paid, log, due, sort: this.split }
+            return (this.settle && this.settle.settled) ?
+                this.settle :
+                { tip, gratuity, discount, delivery, subtotal, total, tax, paid, log, due, sort: this.split, applyCoupon: this.isApplyCoupon }
         },
         ...mapGetters(['tax', 'ticket', 'store', 'order', 'language'])
     },

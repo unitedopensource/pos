@@ -690,7 +690,8 @@ export default {
         'printReceipt': 'Print Receipt',
         'count': 'Count',
         'lastDate': 'Last Date',
-        'content':'Content'
+        'content':'Content',
+        'coupon':'Coupon'
     },
     nav: {
         'store': 'Store',
