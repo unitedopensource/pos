@@ -226,10 +226,9 @@ export default {
     save(print) {
       if (this.isEmptyTicket) return;
       let order = this.combineOrderInfo({ print });
-      // let p = new Printer(CLODOP,this.config);
-      // window.p = p.setTarget('Receipt')
-      // console.log(order)
-      // p.print(order)
+
+      // let p = new Printer(CLODOP, this.config)
+      // print && p.print(order)
 
       print && Printer.init(this.config).setJob("receipt").print(order);
       print && order.content.forEach(item => {

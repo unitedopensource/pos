@@ -221,15 +221,14 @@ var Printer = function (plugin, config) {
     }
     this.body = function (cursor, style, items) {
         let { control } = style;
-        
+
         items.forEach(item => {
             if (control.printPrimary) {
-                this.plugin.ADD_PRINT_TEXT(cursor, 0, 30, 20, item.qty > 1 ? item.qty : '');
+                this.plugin.ADD_PRINT_TEXT(cursor, 0, 20, 20, item.qty > 1 ? item.qty : '');
                 this.plugin.SET_PRINT_STYLEA(0, "FontName", "Yuanti-SC Regular");
-                this.plugin.SET_PRINT_STYLEA(0, "Alignment", 2);
                 this.plugin.SET_PRINT_STYLEA(0, "FontSize", 14);
 
-                this.plugin.ADD_PRINT_TEXT(cursor, 30, 200, 20, item.zhCN + ' ' + (item.side.zhCN || ''));
+                this.plugin.ADD_PRINT_TEXT(cursor, 20, 200, 20, item.zhCN + ' ' + (item.side.zhCN || ''));
                 this.plugin.SET_PRINT_STYLEA(0, "FontName", "Yuanti-SC Regular");
                 this.plugin.SET_PRINT_STYLEA(0, "FontSize", 14);
 
@@ -261,9 +260,8 @@ var Printer = function (plugin, config) {
                 })
             }
             if (control.printSecondary) {
-                this.plugin.ADD_PRINT_TEXT(cursor, 0, 30, 20, item.qty > 1 ? item.qty : '');
+                this.plugin.ADD_PRINT_TEXT(cursor, 0, 20, 20, item.qty > 1 ? item.qty : '');
                 this.plugin.SET_PRINT_STYLEA(0, "FontName", "Yuanti-SC Regular");
-                this.plugin.SET_PRINT_STYLEA(0, "Alignment", 2);
                 this.plugin.SET_PRINT_STYLEA(0, "FontSize", 14);
 
                 this.plugin.ADD_PRINT_TEXT(cursor, 30, 200, 20, item.usEN + ' ' + (item.side.usEN || ''));
@@ -310,24 +308,24 @@ var Printer = function (plugin, config) {
         cursor += 20
 
         this.plugin.ADD_PRINT_TEXT(cursor, 50, 150, 20, 'Subtotal: ');
-        this.plugin.SET_PRINT_STYLEA(0, "FontName", "Yuanti-SC Regular");
+        this.plugin.SET_PRINT_STYLEA(0, "FontName", "Tensentype RuiHeiJ-W2");
         this.plugin.SET_PRINT_STYLEA(0, "FontSize", 12);
         this.plugin.SET_PRINT_STYLEA(0, "Alignment", 3);
 
         this.plugin.ADD_PRINT_TEXT(cursor, 190, 70, 20, subtotal.toFixed(2));
-        this.plugin.SET_PRINT_STYLEA(0, "FontName", "Yuanti-SC Regular");
+        this.plugin.SET_PRINT_STYLEA(0, "FontName", "Tensentype RuiHeiJ-W2");
         this.plugin.SET_PRINT_STYLEA(0, "Alignment", 3);
         this.plugin.SET_PRINT_STYLEA(0, "FontSize", 12);
 
         cursor += 20
 
         this.plugin.ADD_PRINT_TEXT(cursor, 50, 150, 20, 'Tax: ');
-        this.plugin.SET_PRINT_STYLEA(0, "FontName", "Yuanti-SC Regular");
+        this.plugin.SET_PRINT_STYLEA(0, "FontName", "Tensentype RuiHeiJ-W2");
         this.plugin.SET_PRINT_STYLEA(0, "FontSize", 12);
         this.plugin.SET_PRINT_STYLEA(0, "Alignment", 3);
 
         this.plugin.ADD_PRINT_TEXT(cursor, 190, 70, 20, tax.toFixed(2));
-        this.plugin.SET_PRINT_STYLEA(0, "FontName", "Yuanti-SC Regular");
+        this.plugin.SET_PRINT_STYLEA(0, "FontName", "Tensentype RuiHeiJ-W2");
         this.plugin.SET_PRINT_STYLEA(0, "Alignment", 3);
         this.plugin.SET_PRINT_STYLEA(0, "FontSize", 12);
 
@@ -335,12 +333,12 @@ var Printer = function (plugin, config) {
 
         if (delivery > 0) {
             this.plugin.ADD_PRINT_TEXT(cursor, 50, 150, 20, 'Delivery: ');
-            this.plugin.SET_PRINT_STYLEA(0, "FontName", "Yuanti-SC Regular");
+            this.plugin.SET_PRINT_STYLEA(0, "FontName", "Tensentype RuiHeiJ-W2");
             this.plugin.SET_PRINT_STYLEA(0, "FontSize", 12);
             this.plugin.SET_PRINT_STYLEA(0, "Alignment", 3);
 
             this.plugin.ADD_PRINT_TEXT(cursor, 190, 70, 20, delivery.toFixed(2));
-            this.plugin.SET_PRINT_STYLEA(0, "FontName", "Yuanti-SC Regular");
+            this.plugin.SET_PRINT_STYLEA(0, "FontName", "Tensentype RuiHeiJ-W2");
             this.plugin.SET_PRINT_STYLEA(0, "Alignment", 3);
             this.plugin.SET_PRINT_STYLEA(0, "FontSize", 12);
 
@@ -349,12 +347,12 @@ var Printer = function (plugin, config) {
 
         if (discount > 0) {
             this.plugin.ADD_PRINT_TEXT(cursor, 50, 150, 20, 'Discount: ');
-            this.plugin.SET_PRINT_STYLEA(0, "FontName", "Yuanti-SC Regular");
+            this.plugin.SET_PRINT_STYLEA(0, "FontName", "Tensentype RuiHeiJ-W2");
             this.plugin.SET_PRINT_STYLEA(0, "FontSize", 12);
             this.plugin.SET_PRINT_STYLEA(0, "Alignment", 3);
 
             this.plugin.ADD_PRINT_TEXT(cursor, 190, 70, 20, discount.toFixed(2));
-            this.plugin.SET_PRINT_STYLEA(0, "FontName", "Yuanti-SC Regular");
+            this.plugin.SET_PRINT_STYLEA(0, "FontName", "Tensentype RuiHeiJ-W2");
             this.plugin.SET_PRINT_STYLEA(0, "Alignment", 3);
             this.plugin.SET_PRINT_STYLEA(0, "FontSize", 12);
 
@@ -364,13 +362,13 @@ var Printer = function (plugin, config) {
         cursor += 2
 
         this.plugin.ADD_PRINT_TEXT(cursor, 50, 150, 20, 'TOTAL: ');
-        this.plugin.SET_PRINT_STYLEA(0, "FontName", "Yuanti-SC Regular");
+        this.plugin.SET_PRINT_STYLEA(0, "FontName", "Tensentype RuiHeiJ-W2");
         this.plugin.SET_PRINT_STYLEA(0, "FontSize", 14);
         this.plugin.SET_PRINT_STYLEA(0, "Alignment", 3);
         this.plugin.SET_PRINT_STYLEA(0, "Bold", 1);
 
         this.plugin.ADD_PRINT_TEXT(cursor, 190, 70, 20, due.toFixed(2));
-        this.plugin.SET_PRINT_STYLEA(0, "FontName", "Yuanti-SC Bold");
+        this.plugin.SET_PRINT_STYLEA(0, "FontName", "Tensentype RuiHeiJ-W2");
         this.plugin.SET_PRINT_STYLEA(0, "Alignment", 3);
         this.plugin.SET_PRINT_STYLEA(0, "FontSize", 14);
 
@@ -397,6 +395,8 @@ var Printer = function (plugin, config) {
     this.skip = function () {
 
     }
+
+    return this
 }
 
 Printer.prototype.setTarget = function (name) {

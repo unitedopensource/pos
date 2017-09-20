@@ -1,5 +1,8 @@
 <template>
     <div>
+        <section class="summary">
+
+        </section>
         <section class="card list">
             <header>{{$t('title.timecard')}}</header>
             <div class="header">
@@ -61,7 +64,7 @@ export default {
             }
 
         },
-        getIcon(status){
+        getIcon(status) {
             return status ? 'fa-check-circle green' : 'fa-times-circle red';
         },
         more() {
@@ -90,10 +93,12 @@ div.header {
     padding: 0 10px;
     text-align: center;
 }
-.week{
-    width:100px;
+
+.week {
+    width: 100px;
     text-align: center;
 }
+
 .time {
     padding: 0 10px;
     width: 150px;
@@ -102,5 +107,19 @@ div.header {
 .hour {
     width: 200px;
     padding: 0 10px;
+}
+
+.summary {
+    height: 157px;
+    background: #eee;
+    padding: 10px;
+}
+
+i.red {
+    color: var(--orange);
+}
+
+i.green {
+    color: var(--green);
 }
 </style>
