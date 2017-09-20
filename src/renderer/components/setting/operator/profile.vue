@@ -32,6 +32,12 @@
                     </div>
                 </div>
                 <div class="datalist">
+                    <span class="name">{{$t('setting.review')}}</span>
+                    <div class="f1">
+                        <checkbox v-model="operator.review" val="timecard" label="text.timecard" :multiple="true"></checkbox>
+                    </div>
+                </div>
+                <div class="datalist">
                     <span class="name">{{$t('setting.modify')}}</span>
                     <div class="f1">
                         <checkbox v-model="operator.modify" val="price" label="text.price" :multiple="true"></checkbox>
@@ -40,7 +46,7 @@
                         <checkbox v-model="operator.modify" val="discount" label="text.discount" :multiple="true"></checkbox>
                         <checkbox v-model="operator.modify" val="driver" label="text.driver" :multiple="true"></checkbox>
                         <checkbox v-model="operator.modify" val="transaction" label="text.transaction" :multiple="true"></checkbox>
-                        
+
                     </div>
                 </div>
                 <div class="datalist">
@@ -86,8 +92,8 @@ export default {
     components: { smartOption, smartSwitch, smartInput, checkbox, radio, dialoger },
     data() {
         return {
-            componentData:null,
-            component:null,
+            componentData: null,
+            component: null,
             languages: [
                 { label: this.$t("text.primary") + ' us-en', value: "usEN" },
                 { label: this.$t("text.secondary") + ' zh-cn', value: "zhCN" }],
@@ -96,7 +102,9 @@ export default {
         }
     },
     created() {
-        this.operator = JSON.parse(JSON.stringify(this.profile))
+        this.operator = JSON.parse(JSON.stringify(this.profile));
+        //patch 
+        !this.operator.hasOwnProperty('review') && (this.operator = Object.assign({},this.operator, { review: [] }));
     },
     methods: {
         removeUser() {

@@ -524,6 +524,7 @@ export default {
         'reservation': 'Reservation',
         'hour': 'Hour',
         'minute': 'Minute',
+        'second':'Second',
         'subtotal': 'Subtotal',
         'delivery': 'Delivery',
         'deliveryFee': 'Deli. Fee',
@@ -691,7 +692,8 @@ export default {
         'count': 'Count',
         'lastDate': 'Last Date',
         'content':'Content',
-        'coupon':'Coupon'
+        'coupon':'Coupon',
+        'timecard':'timecard session'
     },
     nav: {
         'store': 'Store',
@@ -834,7 +836,8 @@ export default {
         'clientList': 'Client List',
         'callLog': 'Call Log',
         'userRemoval': 'User Remove',
-        'userRemovalTip': 'Permanent remove user account'
+        'userRemovalTip': 'Permanent remove user account',
+        'review':'Approval'
     },
     reservation: {
         'create': 'Create Reservation',

@@ -36,7 +36,7 @@
                 <span class="text">{{$t('button.selectAll')}}</span>
             </div>
         </div>
-        <div class="done" v-show="done">
+        <div class="done" v-show="paid">
             <div class="btn print" @click="print">{{$t('button.print')}}</div>
             <!-- <div class="btn" @click="setDiscount">{{$t('button.setDiscount')}}</div> -->
             <!-- <div class="btn pay" @click="pay" v-show="!paid">{{$t('button.payment')}}</div> -->
@@ -49,10 +49,11 @@ import { mapGetters } from 'vuex'
 import checkbox from '../setting/common/checkbox'
 export default {
     components: { checkbox },
-    props: ['invoice', 'split', 'done', 'settle', 'hide'],
+    props: ['invoice', 'split', 'settle', 'hide'],
     data() {
         return {
             queue: [],
+            done:false,
             paid: false,
             isTax: true,
             toggle: false,
@@ -256,7 +257,7 @@ header {
     position: absolute;
     top: 18px;
     width: 100%;
-    height: calc(100% - 66px);
+    height: calc(100% - 18px);
     background: rgba(0, 0, 0, 0.4);
     display: flex;
     flex-direction: column;

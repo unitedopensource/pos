@@ -46,9 +46,9 @@
                         </div>
                     </div>
                     <div class="extra">
-                        <div class="btn" @click="setTips">{{$t('button.setTip')}}</div>
-                        <div class="btn" @click="setDiscount">{{$t('button.setDiscount')}}</div>
-                        <div class="btn" @click="savePayment">{{$t('button.save')}}</div>
+                        <button class="btn" @click="setTips">{{$t('button.setTip')}}</button>
+                        <button class="btn" @click="setDiscount" :disabled="!op.modify.includes('discount')">{{$t('button.setDiscount')}}</button>
+                        <button class="btn" @click="savePayment">{{$t('button.save')}}</button>
                     </div>
                 </nav>
                 <article>

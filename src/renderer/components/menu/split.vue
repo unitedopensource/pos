@@ -11,7 +11,7 @@
                     <div class="inner">
                         <i class="fa fa-2x fa-angle-left page" @click="page = page===(split-1) ? page : page+1" v-show="split > 2"></i>
                         <div class="extend" :style="offset">
-                            <split-list :invoice="items" :done="lock" :settle="splitPayment[i-1]" v-for="i in split" :split="i" :key="i" @queue="setQueue" @click.native="trigger(i)" @print="printInvoice" @pay="settle"></split-list>
+                            <split-list :invoice="items" :settle="splitPayment[i-1]" v-for="i in split" :split="i" :key="i" @queue="setQueue" @click.native="trigger(i)" @print="printInvoice" @pay="settle"></split-list>
                         </div>
                         <i class="fa fa-2x fa-angle-right page" @click="page = page===0 ? 0 : page-1" v-show="split > 2"></i>
                     </div>
@@ -21,7 +21,7 @@
             <footer>
                 <div class="f1">
                     <!-- <div class="btn" @click="unlockSplit" v-if="unlock">{{$t('button.unlock')}}</div>
-                                    <div class="btn confirm" @click="lockSplit($event)" v-else>{{$t('button.lock')}}</div> -->
+                                        <div class="btn confirm" @click="lockSplit($event)" v-else>{{$t('button.lock')}}</div> -->
                     <div class="btn" @click="printAllInvoices">{{$t('button.printAll')}}</div>
                     <div class="btn" @click="splitEvenly">{{$t('button.evenSplit')}}</div>
                 </div>
@@ -252,6 +252,8 @@ export default {
         combineInvoiceInfo() {
             let customer = Object.assign({}, this.customer);
             delete customer.extra;
+            let split = this.check(this.items) > 1;
+            console.log(split)
             if (this.app.mode === 'create' && this.$route.name === 'Menu') {
                 this.setOrder({
                     customer,
@@ -264,7 +266,7 @@ export default {
                     status: 1,
                     time: +new Date,
                     date: today(),
-                    split: true
+                    split
                 })
             } else {
                 this.setOrder({
@@ -272,7 +274,7 @@ export default {
                     lastEdit: +new Date,
                     editor: this.op.name,
                     modify: this.order.modify + 1,
-                    split: true
+                    split
                 })
             }
             this.gatherPayment();
@@ -293,7 +295,7 @@ export default {
             this.init.reject()
         },
         exit() {
-            if (this.$route.name !== 'Menu') {
+            if (this.$route.name !== 'Menu' || this.app.mode !== 'create') {
                 this.$socket.emit("[UPDATE] INVOICE", this.order)
             } else {
                 this.resetChoiceSet()

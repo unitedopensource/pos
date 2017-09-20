@@ -523,6 +523,7 @@ export default {
         'reservation': '预约',
         'hour': '小时',
         'minute': '分钟',
+        'second':'秒',
         'subtotal': '小计',
         'delivery': '送餐',
         'deliveryFee': '送餐费',
@@ -689,7 +690,8 @@ export default {
         'count': '计数',
         'lastDate': '最后日期',
         'content':'内容',
-        'coupon':'优惠'
+        'coupon':'优惠',
+        'timecard':'打卡时段'
     },
     nav: {
         'store': '店面',
@@ -832,7 +834,8 @@ export default {
         'clientList': '客户列表',
         'callLog': '来电记录',
         'userRemoval': '删除用户',
-        'userRemovalTip': '永久的删除这个账户'
+        'userRemovalTip': '永久的删除这个账户',
+        'review':'审核'
     },
     reservation: {
         'create': '创建预约',

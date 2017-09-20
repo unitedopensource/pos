@@ -48,7 +48,7 @@
           <label class="value" :for="'coupon'+index">
             <span class="discount">{{coupon.discount}}</span>
             <div class="change">
-              <span class="before">{{init.payment.total}}</span>
+              <span class="before">{{init.payment.total | decimal}}</span>
               <i class="fa fa-long-arrow-right"></i>
               <span class="after">{{init.payment.total | discount(coupon.discount)}}</span>
             </div>
@@ -105,7 +105,7 @@ export default {
     getFormula(value) {
       let total = this.init.payment.subtotal.toFixed(2);
       if (value.includes('%')) {
-        let result = (total * (parseFloat(value.replace(/D+/, "")) / 100)).toFixed(2);
+        let result = toFixed(total * (parseFloat(value.replace(/D+/, "")) / 100),2);
         this.formula = `${total} * ${value} = ${result}`;
       }
     },

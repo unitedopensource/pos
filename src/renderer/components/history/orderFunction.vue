@@ -31,13 +31,14 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import paymentMark from '../payment/mark'
+import discount from '../payment/discount'
 import dialoger from '../common/dialoger'
 import payment from '../payment/payment'
 import driver from '../history/driver'
 import split from '../menu/split'
 export default {
     props: ['date'],
-    components: { driver, dialoger, payment, paymentMark, split },
+    components: { driver, dialoger, payment, paymentMark, split, discount },
     data() {
         return {
             componentData: null,
@@ -56,25 +57,42 @@ export default {
             this.$p('split')
         },
         discount() {
-        },
-        driver() {
-            this.$p("driver", { driver: this.order.driver, ticket: this.ticket.number })
-        },
-        invalidOrder() {
+            new Promise((resolve, reject) => {
+                this.componentData = { payment: this.order.payment, resolve, reject };
+                this.component = "discount";
+            }).then(result => {
+                let due = parseFloat(this.order.payment.total) + parseFloat(this.order.payment.tip) + parseFloat(this.order.payment.gratuity) - parseFloat(result.discount);
+                let balance = (isNumber(this.order.payment.paid) && this.order.payment.paid > 0) ? Math.max(0, toFixed(due - this.order.payment.paid, 2)) : due;
+                result.coupon ?
+                    Object.assign(this.order, { coupon: result.coupon }) :
+                    Object.assign(this.order, { coupon: null });
 
-        },
-        exit() {
-            this.resetMenu();
-            this.$router.push({ path: "/main" });
-        },
-        ...mapActions(['resetMenu'])
+                Object.assign(this.order.payment,{
+                        due, balance,
+                        discount: parseFloat(result.discount)
+                    });
+            this.$socket.emit('[UPDATE] INVOICE', this.order)
+            this.$q();
+        }).catch(() => { this.$q() });
     },
-    computed: {
-        disable() {
-            return this.order.settled || this.today !== this.date || this.order.status === 0
-        },
+    driver() {
+        this.$p("driver", { driver: this.order.driver, ticket: this.ticket.number })
+    },
+    invalidOrder() {
+
+    },
+    exit() {
+        this.resetMenu();
+        this.$router.push({ path: "/main" });
+    },
+    ...mapActions(['resetMenu'])
+},
+computed: {
+    disable() {
+        return this.order.settled || this.today !== this.date || this.order.status === 0
+    },
         ...mapGetters(['order', 'ticket'])
-    }
+}
 }
 </script>
 
