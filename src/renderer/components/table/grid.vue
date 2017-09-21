@@ -69,7 +69,7 @@ export default {
 
             if (this.currentTable.server !== this.op.name) {
                 this.$denyAccess(true).then((op) => {
-                    if (this.approval(op.modify,'order')) {
+                    if (this.approval(op.modify, 'order')) {
                         let language = op.language || "usEN";
                         moment.locale(language === 'usEN' ? 'en' : 'zh-cn');
                         this.$setLanguage(language);
@@ -84,7 +84,7 @@ export default {
                     this.editDenied()
                     this.$q()
                 })
-            }else{
+            } else {
                 this.setApp({ mode: 'edit' })
                 this.setTicket({ type: 'DINE_IN', number: this.order.number })
                 this.$router.push({ path: '/main/menu' })
@@ -125,8 +125,6 @@ export default {
                 this.$q();
                 this.removePayment();
                 this.$socket.emit("[UPDATE] INVOICE", this.order);
-                this.setTableInfo({ status: 3 });
-                this.$socket.emit("TABLE_MODIFIED", this.currentTable);
                 this.askEditOrder();
             }).catch(() => { this.$q() })
         },
@@ -159,9 +157,7 @@ export default {
                     buttons: [{ text: 'button.cancel', fn: "reject" }, { text: "button.print", fn: "resolve" }]
                 }).then(() => {
                     this.$q();
-                    this.$nextTick(() => {
-                        this.order.split ? this.askSplitPrePayment() : this.printPrePayment();
-                    })
+                    this.$nextTick(() => { this.order.split ? this.askSplitPrePayment() : this.printPrePayment() })
                 }).catch(() => { this.$q() })
             } else {
                 let remain = this.order.content.filter(item => !item.print).length;
@@ -194,8 +190,7 @@ export default {
                 ticket.number = `${this.order.number}-${i}`;
                 Printer.init(this.config).setJob("receipt").print(ticket);
             }
-            this.setTableInfo({ status: 3 });
-            this.$socket.emit("TABLE_MODIFIED", this.currentTable);
+            this.$socket.emit("[TABLE] UPDATE", { _id: this.order.tableID, status: 3 });
         },
         settle() {
             if (this.isEmptyTicket) return;
