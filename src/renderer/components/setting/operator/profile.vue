@@ -46,7 +46,6 @@
                         <checkbox v-model="operator.modify" val="discount" label="text.discount" :multiple="true"></checkbox>
                         <checkbox v-model="operator.modify" val="driver" label="text.driver" :multiple="true"></checkbox>
                         <checkbox v-model="operator.modify" val="transaction" label="text.transaction" :multiple="true"></checkbox>
-
                     </div>
                 </div>
                 <div class="datalist">

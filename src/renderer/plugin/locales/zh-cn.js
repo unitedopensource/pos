@@ -191,7 +191,9 @@ export default {
         'scan': '扫描',
         'lock':'锁定',
         'unlock':'解锁',
-        'selectAll':'全选'
+        'selectAll':'全选',
+        'valid':'有效',
+        'invalid':'无效'
     },
     title: {
         'markPaymentType': '标记付款方式',

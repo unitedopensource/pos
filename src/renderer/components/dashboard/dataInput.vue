@@ -21,8 +21,7 @@
                     <span class="address">{{data.address}}</span>
                 </div>
                 <div v-else class="row">
-                    <span class="street">{{data.street}}</span>
-                    <span class="city">{{data.city}}</span>
+                    <span class="city">{{data}}</span>
                 </div>
             </div>
         </dialog>

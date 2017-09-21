@@ -62,9 +62,13 @@ export default {
                     lastUse: null
                 }
             }
+            let vm = this;
             this.$socket.emit("[NOTE] SAVE", note);
-            this.$emit('update');
-            this.init.resolve();
+            this.$nextTick(() => {
+                this.$emit("update");
+                this.init.resolve();
+            })
+
         }
     }
 }

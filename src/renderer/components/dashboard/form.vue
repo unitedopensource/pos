@@ -253,7 +253,6 @@ export default {
                 this.resetAutoComplete();
             }
             data.type === 'address' && this.highlight(data.results);
-
         }
     }
 }

@@ -1,8 +1,5 @@
 <template>
     <div>
-        <section class="summary">
-
-        </section>
         <section class="card list">
             <header>{{$t('title.timecard')}}</header>
             <div class="header">
@@ -13,16 +10,18 @@
                 <span class="approve">{{$t('text.approve')}}</span>
             </div>
             <article>
-                <div class="datalist" v-for="(log,index) in logs" :key="index">
+                <div class="list" v-for="(log,index) in logs" :key="index">
                     <span class="week">{{log.clockIn | moment('ddd')}}</span>
                     <span class="time">{{log.clockIn | moment('M/D/YY HH:mm:ss')}}</span>
                     <span class="time">{{log.clockOut | moment('M/D/YY HH:mm:ss')}}</span>
                     <span class="hour">{{calc(log.clockIn,log.clockOut)}}</span>
-                    <div class="approve">
-                        <div v-if="approval"></div>
-                        <div v-else>
-                            <i class="fa" :class="getIcon(log.valid)"></i>
-                        </div>
+                    <div class="approve" v-if="approval">
+                        <button class="btn">{{$t('button.valid')}}</button>
+                        <button class="btn">{{$t('button.invalid')}}</button>
+                        <button class="btn">{{$t('button.edit')}}</button>
+                    </div>
+                    <div class="approve" v-else>
+                        <i class="fa" :class="getIcon(log.valid)"></i>
                     </div>
                 </div>
                 <div class="more" @click="more">
@@ -54,6 +53,7 @@ export default {
     },
     methods: {
         calc(clockIn, clockOut) {
+            clockOut = clockOut || +new Date();
             let duration = clockOut - clockIn;
             if (isNumber(duration)) {
                 let hh = ('00' + Math.floor((duration % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).slice(-2);
@@ -89,30 +89,41 @@ div.header {
 }
 
 .approve {
-    width: 100px;
+    flex: 1;
     padding: 0 10px;
-    text-align: center;
 }
 
 .week {
-    width: 100px;
+    width: 80px;
     text-align: center;
 }
 
 .time {
     padding: 0 10px;
-    width: 150px;
+    width: 130px;
 }
 
 .hour {
-    width: 200px;
+    width: 210px;
     padding: 0 10px;
 }
 
-.summary {
-    height: 157px;
-    background: #eee;
-    padding: 10px;
+article .list {
+    display: flex;
+    align-items: center;
+    height: 40px;
+}
+
+.approve button {
+    height: 25px;
+    width: auto;
+    padding: 0 10px;
+    margin:0 2px;
+    cursor: pointer;
+}
+
+article .list:nth-child(even) {
+    background: #F5F5F5;
 }
 
 i.red {

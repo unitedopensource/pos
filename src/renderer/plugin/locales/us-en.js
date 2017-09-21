@@ -192,7 +192,9 @@ export default {
         'scan': 'Scan',
         'lock':'Lock',
         'unlock':'Unlock',
-        'selectAll':'Select All'
+        'selectAll':'Select All',
+        'valid':'Valid',
+        'invalid':'Invalid'
     },
     title: {
         'markPaymentType': 'Mark Payment Type',
