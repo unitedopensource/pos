@@ -1,4 +1,3 @@
-const moment = require('moment');
 var Printer = function () { };
 
 Printer.prototype.init = function (config) {
@@ -10,6 +9,7 @@ Printer.prototype.setJob = function (job) {
   this.job = job || "Receipt";
   return this;
 };
+// Printer.prototype.preview = function(data){}
 Printer.prototype.print = function (data, done) {
   if (!this.job) this.init();
   switch (this.job) {
@@ -107,7 +107,7 @@ Printer.prototype.printReceipt = function (raw, done) {
 
         this.printer.PRINT_INIT(this.job);
         this.printer.ADD_PRINT_HTM(0, 0, "100%", "100%", html);
-
+        console.log(html)
 
         if (redirect) {
           let to = this.config.station.print[name] || name;

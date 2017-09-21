@@ -49,7 +49,7 @@ import { mapGetters, mapActions } from 'vuex'
 import dialoger from '../common/dialoger'
 import payment from '../payment/payment'
 import unlock from '../common/unlock'
-import Printer from '../../print'
+//import Printer from '../../print'
 import split from '../menu/split'
 export default {
     props: ['transfer'],
@@ -172,7 +172,8 @@ export default {
                 type: 'PRE_PAYMENT',
                 cashier: this.op.name
             })
-            Printer.init(this.config).setJob('receipt').print(order);
+            //Printer.init(this.config).setJob('receipt').print(order);
+            Printer.setTarget('Receipt').print(order);
             this.$socket.emit("[TABLE] UPDATE", { _id: order.tableID, status: 3 })
         },
         askSplitPrePayment() {
@@ -188,7 +189,8 @@ export default {
                 ticket.content = this.order.content.filter(item => Array.isArray(item.sort) ? item.sort.includes(i) : item.sort === i);
                 ticket.payment = this.order.splitPayment[i - 1];
                 ticket.number = `${this.order.number}-${i}`;
-                Printer.init(this.config).setJob("receipt").print(ticket);
+                //Printer.init(this.config).setJob("receipt").print(ticket);
+                Printer.setTarget('Receipt').print(ticket)
             }
             this.$socket.emit("[TABLE] UPDATE", { _id: this.order.tableID, status: 3 });
         },

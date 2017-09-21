@@ -148,7 +148,7 @@ import { mapGetters, mapActions } from 'vuex'
 import dialoger from '../common/dialoger'
 import unlock from '../common/unlock'
 //import Printer from '../../plugin/print'
-import Printer from '../../print'
+//import Printer from '../../printer'
 export default {
   props: ['layout'],
   components: { dialoger, unlock },
@@ -220,17 +220,13 @@ export default {
       this.callComponent("split")
     },
     switchGuest() {
-      R
       this.callComponent("guest")
     },
     save(print) {
       if (this.isEmptyTicket) return;
       let order = this.combineOrderInfo({ print });
-
-      // let p = new Printer(CLODOP, this.config)
-      // print && p.print(order)
-
-      print && Printer.init(this.config).setJob("receipt").print(order);
+      print && Printer.setTarget('All').print(order);
+      //print && Printer.init(this.config).setJob("receipt").print(order);
       print && order.content.forEach(item => {
         delete item.new;
         item.print = true;
@@ -257,14 +253,17 @@ export default {
       } else {
         order = this.combineOrderInfo({});
       }
-      print && Printer.init(this.config).setJob("receipt").print(order, true);
+      let printOnDone = this.config.store.printOnDone;
+      if (print) {
+        printOnDone ? Printer.setTarget('All').print(order) : Printer.setTarget('Order').print(order)
+      }
       print && order.content.forEach(item => {
         delete item.new;
         item.print = true;
         item.pending = false;
       });
       this.app.mode === 'create'
-        ? this.$socket.emit("[SAVE] INVOICE", order )
+        ? this.$socket.emit("[SAVE] INVOICE", order)
         : this.$socket.emit("[UPDATE] INVOICE", order);
       this.setOrder(order);
       this.$router.push({ name: "Table" });

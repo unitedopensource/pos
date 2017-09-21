@@ -75,7 +75,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import Printer from '../../print'
+//import Printer from '../../print'
 import calendar from './calendar'
 import checkbox from '../setting/common/checkbox'
 import processor from '../common/processor'
@@ -140,7 +140,8 @@ export default {
             Promise.all([this.fetchData(), this.fetchCreditCard(), this.fetchGiftCard()]).then(datas => {
                 this.handler(datas);
                 if (!date) date = this.reportRange;
-                Printer.init(this.config).setJob("report").print({ date, report: this.report });
+                //Printer.init(this.config).setJob("report").print({ date, report: this.report });
+                Printer.printReport({ date, report: this.report })
                 callback && callback();
             })
         },

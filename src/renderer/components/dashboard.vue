@@ -21,7 +21,7 @@ import { mapActions, mapGetters } from 'vuex'
 import dialoger from './common/dialoger'
 import counter from './common/counter'
 import toast from './dashboard/toast'
-import Printer from '../print'
+//import Printer from '../print'
 import Preset from '../preset'
 import MAC from 'getmac'
 
@@ -136,7 +136,8 @@ export default {
                             let { name, initial } = data;
                             initial ? this.initialCashFlow(name) : this.recordCashFlow(name);
                         }) :
-                        Printer.init(this.config).openCashDrawer();
+                        //Printer.init(this.config).openCashDrawer();
+                        Printer.openCashDrawer();
                     break;
                 case "staffBank":
                     this.$socket.emit("[CASHFLOW] CHECK", { date: today(), cashDrawer: this.op.name, close: false }, (data) => {
@@ -172,7 +173,8 @@ export default {
         },
         countDrawerCash(amount) {
             if (isNumber(amount) && amount > 0) {
-                Printer.init(this.config).openCashDrawer();
+                //Printer.init(this.config).openCashDrawer();
+                Printer.openCashDrawer();
                 this.$dialog({ title: 'dialog.cashInConfirm', msg: ['dialog.cashInConfirmTip', amount.toFixed(2)] })
                     .then(() => { this.acceptCashIn(amount) }).catch(() => { this.countDrawerCash() })
             } else {
@@ -197,12 +199,14 @@ export default {
             let name = this.op.cashCtrl === 'enable' ? this.station.cashDrawer.name : this.op.name;
             let record = Preset.cashIn(this.op.name, name, amount);
             this.$socket.emit("[CASHFLOW] INITIAL", record);
-            Printer.init(this.config).setJob('cashin report').print(record);
+            //Printer.init(this.config).setJob('cashin report').print(record);
+            Printer.printCashInReport(record);
             this.$q()
         },
         recordCashFlow(cashDrawer) {
             if (this.op.cashCtrl === 'enable') {
-                Printer.init(this.config).openCashDrawer();
+               // Printer.init(this.config).openCashDrawer();
+               Printer.openCashDrawer();
 
                 let activity = {
                     type: "OPEN",

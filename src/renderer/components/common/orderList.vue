@@ -141,7 +141,7 @@
 import { mapGetters, mapActions } from 'vuex'
 import dialoger from '../common/dialoger'
 import itemMarker from '../menu/marker'
-import Printer from '../../print'
+//import Printer from '../../print'
 import config from './config'
 export default {
     components: { config, itemMarker, dialoger },
@@ -307,7 +307,7 @@ export default {
             try {
                 order.content = this.spooler;
                 order.delay = +new Date();
-                Printer.init(this.config).setJob("receipt").print(order);
+                Printer.setTarget('all').print(order)
                 order.content = items;
                 if (remain === 0) order.print = true;
                 this.$socket.emit("[UPDATE] INVOICE", order);

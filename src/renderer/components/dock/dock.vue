@@ -39,7 +39,7 @@ import dialoger from '../common/dialoger'
 import { ipcRenderer } from 'electron'
 import messenger from './messenger'
 import switcher from './switcher'
-import Printer from '../../print'
+//import Printer from '../../print'
 import caller from './caller'
 import panel from './panel'
 import disc from './disc'
@@ -111,7 +111,8 @@ export default {
             let _id = this.spooler[i]._id;
             let items = [];
             this.spooler[i].content.forEach(item => { items.push(item.unique) });
-            Printer.init(this.config).setJob("receipt").print(this.spooler[0]);
+            //Printer.init(this.config).setJob("receipt").print(this.spooler[0]);
+            Printer.setTarget('All').print(this.spooler[0])
             this.removeSpooler(i);
             let index = this.history.findIndex(order => order._id === _id);
             let order = Object.assign({}, this.history[index]);

@@ -38,7 +38,7 @@
 import { mapGetters, mapActions } from 'vuex'
 import dialoger from '../common/dialoger'
 import splitList from './splitList'
-import Printer from '../../print'
+//import Printer from '../../print'
 export default {
     props: ['init'],
     components: { splitList, dialoger },
@@ -168,7 +168,8 @@ export default {
                 payment: this.$children[index].payment,
                 time: +new Date
             });
-            Printer.init(this.config).setJob("receipt").print(order);
+            //Printer.init(this.config).setJob("receipt").print(order);
+            Printer.setTarget('All').print(order)
             this.items.forEach(item => {
                 Array.isArray(item.sort) ?
                     item.sort.includes(index) && (item.print = true) :

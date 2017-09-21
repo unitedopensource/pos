@@ -7,7 +7,7 @@
 import { mapActions, mapGetters } from "vuex"
 import { ipcRenderer } from 'electron'
 import serialport from 'serialport'
-import Printer from '../plugin/print'
+import Print from '../printer'
 import wol from 'wake_on_lan'
 import MAC from 'getmac'
 
@@ -128,11 +128,11 @@ export default {
 
     },
     initPrinter() {
-      // let config = this.config
-      // CLODOP ? (window.Printer = new Printer(CLODOP, config)) :
-      //   setTimeout(function() {
-      //     window.Printer = new Printer(CLODOP, config)
-      //   }, 20000, CLODOP, config)
+      let config = this.config
+      CLODOP ? window.Printer = new Print(CLODOP,config) : 
+        setTimeout(function() {
+          window.Printer = new Print(CLODOP, config)
+        }, 20000, CLODOP, config)
     },
     checkAwake(stations) {
       ipcRenderer.send("Loading", this.$t('initial.awakeClients'));

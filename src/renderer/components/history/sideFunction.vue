@@ -55,7 +55,7 @@ import Dialoger from '../common/dialoger'
 import Payment from '../payment/payment'
 import Report from '../report/report'
 import Calendar from './calendar'
-import Printer from '../../print'
+//import Printer from '../../print'
 import Terminal from './terminal'
 import Reason from './reason'
 import Search from './search'
@@ -105,6 +105,7 @@ export default {
             this.setTicket({ type: this.order.type, number: this.order.number });
             this.setApp({ mode: 'edit' });
             this.setCustomer(this.order.customer);
+            this.setOrder(JSON.parse(JSON.stringify(this.order)))
             this.$router.push({ path: '/main/menu' });
         },
         voidOrder() {
@@ -210,7 +211,8 @@ export default {
             }).then(() => { this.$q(), this.splitPrint(order) }).catch(() => { this.$q(), this.printTicket(order) })
         },
         printTicket(order) {
-            Printer.init(this.config).setJob("receipt").print(order);
+            //Printer.init(this.config).setJob("receipt").print(order);
+            Printer.setTarget('All').print(order);
             order.content.forEach(item => {
                 delete item.new;
                 item.print = true;
@@ -225,7 +227,8 @@ export default {
                 ticket.content = order.content.filter(item => Array.isArray(item.sort) ? item.sort.includes(i) : item.sort === i);
                 ticket.payment = order.splitPayment[i - 1];
                 ticket.number = `${order.number}-${i}`;
-                Printer.init(this.config).setJob("receipt").print(ticket);
+                //Printer.init(this.config).setJob("receipt").print(ticket);
+                Printer.setTarget('All').print(ticket)
             }
             order.content.forEach(item => {
                 delete item.new;
@@ -255,7 +258,7 @@ export default {
             this.resetMenu();
             this.$router.push({ path: "/main" });
         },
-        ...mapActions(['setApp', 'setTicket', 'resetMenu', 'setCustomer', 'removePayment'])
+        ...mapActions(['setApp','setOrder', 'setTicket', 'resetMenu', 'setCustomer', 'removePayment'])
     },
     computed: {
         ...mapGetters(['op', 'order', 'config', 'station', 'isEmptyTicket'])

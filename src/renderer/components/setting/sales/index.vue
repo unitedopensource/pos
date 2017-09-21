@@ -19,7 +19,7 @@ export default {
     },
     methods:{
         initial(){
-            let today = today();
+            let date = today();
             
         }
     }

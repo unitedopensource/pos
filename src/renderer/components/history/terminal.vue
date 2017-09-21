@@ -74,7 +74,7 @@
 import { mapGetters } from 'vuex'
 import dialoger from '../common/dialoger'
 import processor from '../common/processor'
-import Printer from '../../print'
+//import Printer from '../../print'
 import tipper from './tipper'
 export default {
     props: ['init'],
@@ -169,7 +169,8 @@ export default {
             }
         },
         print(receipt) {
-            Printer.init(this.config).setJob('reprint creditCard').print(receipt);
+            //Printer.init(this.config).setJob('reprint creditCard').print(receipt);
+            Printer.printCreditCard(receipt, true);
         },
         voidSale(record) {
             this.$dialog({
@@ -182,7 +183,8 @@ export default {
                     let transaction = this.terminal.explainTransaction(response);
                     record = Object.assign(record, transaction, { status: 0 });
                     this.$socket.emit("[TERM] UPDATE_TRANSACTION", record);
-                    Printer.init(this.config).setJob('creditCard').print(transaction);
+                    //Printer.init(this.config).setJob('creditCard').print(transaction);
+                    Printer.printCreditCard(transaction);
                     let order = this.history.find(ticket => ticket._id === record.order._id);
                     this.removePayment(order)
                 });
@@ -297,7 +299,8 @@ export default {
                         return trans;
                     })
                     this.$socket.emit("[TERM] BATCH_TRANS_CLOSE", updated);
-                    Printer.init(this.config).setJob("batch").print(result);
+                    //Printer.init(this.config).setJob("batch").print(result);
+                    Printer.printBatchReport(result);
                     this.$socket.emit('[TERM] SAVE_BATCH_RESULT', result);
                 } else {
                     this.$dialog({
@@ -392,7 +395,8 @@ export default {
                 this.checkBatchRecord();
                 return false;
             }
-            Printer.init(this.config).setJob("prebatch").print({ content, summary });
+            //Printer.init(this.config).setJob("prebatch").print({ content, summary });
+            Printer.printPreBatchReport({ content, summary })
             return true;
         },
         checkBatchRecord() {
@@ -406,8 +410,9 @@ export default {
                     type: 'question', title: 'dialog.reprintBatchReport', msg: 'dialog.reprintBatchReportTip'
                 }).then(() => {
                     this.$q();
-                    results.forEach(result => {
-                        Printer.init(this.config).setJob("batch").print(result);
+                    results.forEach(batch => {
+                        //Printer.init(this.config).setJob("batch").print(result);
+                        Printer.printBatchReport(batch)
                     })
                 }).catch(() => { this.$q() })
             }).catch(() => {

@@ -54,7 +54,7 @@
 import { mapGetters, mapActions } from 'vuex'
 import terminal from '../history/terminal'
 import dialoger from '../common/dialoger'
-import Printer from '../../print'
+//import Printer from '../../print'
 export default {
     props: ['init'],
     components: { dialoger, terminal },
@@ -136,10 +136,12 @@ export default {
                 msg: ["dialog.cashOutSettleTip", cashflow.begin, diff, cashflow.end],
                 buttons: [{ text: "button.printDetail", fn: "reject" }, { text: 'button.print', fn: 'resolve' }]
             }).then(() => {
-                Printer.init(this.config).setJob("cashout report").print(cashflow);
+                //Printer.init(this.config).setJob("cashout report").print(cashflow);
+                Printer.printCashOutReport(cashflow, false)
                 this.exit()
             }).catch(() => {
-                Printer.init(this.config).setJob("detail cashout report").print(cashflow);
+                //Printer.init(this.config).setJob("detail cashout report").print(cashflow);
+                Printer.printCashOutReport(cashflow, true)
                 this.exit()
             })
         },

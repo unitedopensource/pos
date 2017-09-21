@@ -175,7 +175,7 @@ import CreditCard from './creditCard'
 import Splitter from '../menu/split'
 import Preset from '../../preset'
 import GiftCard from './giftCard'
-import Printer from '../../print'
+//import Printer from '../../print'
 import Reloader from './Reloader'
 import Discount from './discount'
 import Inputter from './inputter'
@@ -565,7 +565,8 @@ export default {
                 trans.amount.approve = (trans.amount.approve - trans.amount.tip).toFixed(2);
             }
             this.$socket.emit("[TERM] SAVE_TRANSACTION", trans);
-            Printer.init(this.config).setJob("creditCard").print(trans);
+            //Printer.init(this.config).setJob("creditCard").print(trans);
+            Printer.printCreditCard(trans);
             if (parseFloat(this.payment.balance) === 0) {
                 this.payment.settled = true;
                 this.poleDisplay("PAID by Credit Card", "Thank You");
@@ -690,7 +691,8 @@ export default {
                 }).then(() => {
                     this.$socket.emit("[GIFTCARD] CARD_ADJUST_VALUE", { _id: this.giftCard._id, value, activity });
                     this.giftCard.balance = 0;
-                    Printer.init(this.config).setJob("cashout").print(this.giftCard);
+                    //Printer.init(this.config).setJob("cashout").print(this.giftCard);
+                    Printer.printGiftCard("cashout",this.giftCard)
                     this.$q();
                 })
             }).catch(() => { this.$q() })
@@ -698,7 +700,8 @@ export default {
         printBalance() {
             if (!this.giftCard._id) return;
             this.poleDisplay("Gift Card Balance:", ["", this.giftCard.balance.toFixed(2)])
-            Printer.init(this.config).setJob("balance").print(this.giftCard);
+            //Printer.init(this.config).setJob("balance").print(this.giftCard);
+            Printer.printGiftCard("balance",this.giftCard);
         },
         activateGiftCard(number) {
             new Promise((resolve, reject) => {
@@ -713,7 +716,8 @@ export default {
                 }
                 this.giftCard = card;
                 this.$socket.emit("[GIFTCARD] CARD_ACTIVATION", card);
-                Printer.init(this.config).setJob("activation").print(card);
+                //Printer.init(this.config).setJob("activation").print(card);
+                Printer.printGiftCard("activation",card)
                 this.$q()
             }).catch(() => { this.$q() })
         },
@@ -804,7 +808,8 @@ export default {
             order.cashier = this.op.name;
             order.customer = this.customer;
             order.content = order.content.filter(item => item.sort === index);
-            Printer.init(this.config).setJob("receipt").print(order);
+            Printer.setTarget('Receipt').print(order)
+            //Printer.init(this.config).setJob("receipt").print(order);
             order.content.filter(item => item.sort === this.payment.sort).forEach(item => {
                 delete item.new;
                 item.print = true;
@@ -910,7 +915,8 @@ export default {
         },
         invoiceSettled(ticket, print) {
             if (print) {
-                Printer.init(this.config).setJob("receipt").print(ticket);
+                //Printer.init(this.config).setJob("receipt").print(ticket);
+                Printer.setTarget('Receipt').print(ticket)
                 ticket.content.forEach(item => {
                     delete item.new;
                     item.print = true;
@@ -956,7 +962,8 @@ export default {
             switch (this.op.cashCtrl) {
                 case "enable":
                     this.station.cashDrawer.enable ?
-                        Printer.init(this.config).openCashDrawer() :
+                        //Printer.init(this.config).openCashDrawer() :
+                        Printer.openCashDrawer() :
                         this.cashDrawerUnavailable();
                     this.$socket.emit("[CASHFLOW] ACTIVITY", { cashDrawer: this.station.cashDrawer.name, activity });
                     break;
