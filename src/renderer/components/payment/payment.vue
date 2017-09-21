@@ -507,7 +507,7 @@ export default {
                     creditCard: this.creditCard,
                     amount: this.paid,
                     tip: this.tip
-                });
+                })
             }
 
             new Promise((resolve, reject) => {

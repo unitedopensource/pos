@@ -255,12 +255,10 @@ export default {
         },
         adjustTipFailed(code) {
             this.$dialog({
-                type: 'error', title: 'dialog.tipAdjustDenied', msg: ['dialog.tipAdjustDeniedTip', code],
-                buttons: [{ text: 'button.confirm', fn: 'resolve' }]
+                type: 'error', title: 'dialog.tipAdjustDenied', msg: ['dialog.tipAdjustDeniedTip', code], buttons: [{ text: 'button.confirm', fn: 'resolve' }]
             }).then(() => { this.$q() })
         },
         adjustOrderTip(record, tip) {
-            //bug here split payment
             let { order, amount } = record;
             let invoice = this.history.find(ticket => order._id === ticket._id);
             if (invoice.split) {
@@ -273,7 +271,7 @@ export default {
                     })
                 })
                 invoice.payment.tip = 0;
-                invoice.splitPayment.forEach(payment=>{
+                invoice.splitPayment.forEach(payment => {
                     invoice.payment.tip += parseFloat(payment.tip)
                 })
             } else {
@@ -290,19 +288,17 @@ export default {
         processBatch() {
             this.$p("processor");
             this.terminal.batch().then(r => r.text()).then(response => {
+                this.$q();
                 let result = this.terminal.explainBatch(response);
                 if (result.code === '000000') {
                     let { sn } = this.device;
                     let updated = this.transactions.filter(trans => !trans.close).map(trans => {
-                        if (trans.hasOwnProperty('device')) {
-                            trans.device.sn === sn && (trans.close = true);
-                        }
+                        trans.hasOwnProperty('device') && trans.device.sn === sn && (trans.close = true);
                         return trans;
                     })
                     this.$socket.emit("[TERM] BATCH_TRANS_CLOSE", updated);
                     Printer.init(this.config).setJob("batch").print(result);
                     this.$socket.emit('[TERM] SAVE_BATCH_RESULT', result);
-                    this.$q();
                 } else {
                     this.$dialog({
                         type: 'warning', title: result.msg, msg: ['terminal.error', result.code],
@@ -425,8 +421,7 @@ export default {
         },
         disableBatchFn() {
             this.$dialog({
-                type: 'warning', title: 'terminal.connectError', msg: 'terminal.disableBatch',
-                buttons: [{ text: 'button.confirm', fn: 'resolve' }]
+                type: 'warning', title: 'terminal.connectError', msg: 'terminal.disableBatch', buttons: [{ text: 'button.confirm', fn: 'resolve' }]
             }).then(() => {
                 this.device = null;
                 this.$q();
@@ -434,8 +429,7 @@ export default {
         },
         missTerminal() {
             this.$dialog({
-                type: 'warning', title: 'dialog.noTerminal', msg: 'dialog.stationNoTerminal',
-                buttons: [{ text: 'button.confirm', fn: 'resolve' }]
+                type: 'warning', title: 'dialog.noTerminal', msg: 'dialog.stationNoTerminal', buttons: [{ text: 'button.confirm', fn: 'resolve' }]
             }).then(() => {
                 this.$q();
                 this.init.resolve();

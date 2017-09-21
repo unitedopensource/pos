@@ -201,6 +201,7 @@ export default {
         },
         openConfig() {
             if (this.component === 'config') return;
+            if (this.$route.name !== 'Menu') return;
             let taxFree = this.order.taxFree || false;
             let deliveryFree = this.order.deliveryFree || false;
             let menuID = this.config.display.menuID;
