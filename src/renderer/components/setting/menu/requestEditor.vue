@@ -20,7 +20,7 @@
             <section class="data" v-else>
                 <input type="text" v-model="request.usEN" :placeholder="$t('text.primary')">
                 <input type="text" v-model="request.zhCN" :placeholder="$t('text.secondary')">
-                <input type="text" v-model.number="request.price" :placeholder="$t('text.price')">
+                <input type="text" v-model="request.price" :placeholder="$t('text.price')">
                 <div class="option">
                     <label>{{$t('text.category')}}</label>
                     <select v-model="request.category">
@@ -93,7 +93,20 @@ export default {
             this.init.resolve()
         },
         ...mapActions(['updateRequestCategory'])
-    }
+    },
+    // directives:{
+    //     dollar:{
+    //         inserted(el,binding){
+    //             el.value = binding.value.toFixed(2) || '0.00'
+    //         },
+    //         bind(el){
+    //             el.addEventListener('input',)
+    //         },
+    //         update(el,binding){
+    //             console.log(binding.oldValue)
+    //         }
+    //     }
+    // }
 }
 </script>
 
