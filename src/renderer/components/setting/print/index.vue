@@ -311,6 +311,7 @@ export default {
             this.unchanged = true;
             this.$socket.emit("[CMS] SAVE_PRINTERS", { [this.device]: this.profile });
             this.setPrinter({ [this.device]: this.profile });
+            Printer.initial(CLODOP,this.config)
         },
         newPrinter() {
             new Promise((resolve, reject) => {

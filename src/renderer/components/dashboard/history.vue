@@ -1,30 +1,33 @@
 <template>
     <div>
-        <header></header>
         <section class="inner">
-            <div class="invoice" v-for="(ticket,index) in history" :key="index">
+            <div class="invoice" v-for="(ticket,index) in history" :key="index" @click="view(ticket)">
                 <i :class="status(ticket.status)"></i>
                 <span class="ticket">#{{ticket.number}}</span>
                 <span class="type">{{$t('type.'+ticket.type)}}</span>
                 <span class="time">{{ticket.time | moment('MM/DD/YY HH:mm')}}</span>
-
                 <div class="f1">
                     <span class="void" v-if="ticket.status === 0">{{text(ticket.void.note)}} ({{ticket.void.by}})</span>
                 </div>
                 <span class="price">$ {{ticket.payment.due.toFixed(2)}}</span>
             </div>
         </section>
+        <div :is="component" :init="componentData"></div>
     </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import ticket from '../common/ticket'
 export default {
+    components: { ticket },
     created() {
         this.$socket.emit("[INQUIRY] CUSTOMER_HISTORY", { phone: this.customer.phone, page: this.page })
     },
     data() {
         return {
+            componentData: null,
+            component: null,
             history: [],
             page: 0
         }
@@ -39,6 +42,10 @@ export default {
                 default:
                     return "fa fa-question-circle-o"
             }
+        },
+        view(ticket) {
+            let order = Printer.preview(ticket);
+            this.$p('ticket', { order })
         }
     },
     computed: {

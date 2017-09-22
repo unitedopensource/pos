@@ -6,6 +6,7 @@
                 <smart-switch v-model="display.menuID" label="text.menuID"></smart-switch>
                 <smart-switch v-model="display.favorite" label="text.favoriteItem"></smart-switch>
                 <smart-switch v-model="display.voidItem" label="text.displayVoidItem"></smart-switch>
+                <smart-switch v-model="display.autoTemplate" label="text.autoTemplate" tip="tip.autoTemplate"></smart-switch>
             </article>
         </section>
     </div>
@@ -29,7 +30,8 @@ export default {
                 display: {
                     menuID: false,
                     favorite: false,
-                    voidItem: false
+                    voidItem: false,
+                    autoTemplate: false
                 }
             })
         } finally {

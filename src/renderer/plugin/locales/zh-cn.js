@@ -696,7 +696,8 @@ export default {
         'content':'内容',
         'coupon':'优惠',
         'timecard':'打卡时段',
-        'tipPercentage':'小费百分比'
+        'tipPercentage':'小费百分比',
+        'autoTemplate':'自动开启模板'
     },
     nav: {
         'store': '店面',
@@ -871,6 +872,7 @@ export default {
         'averageSize': '平均大小'
     },
     tip: {
+        'autoTemplate':'自动弹出模板选择页面',
         'table': {
             'passwordRequire': '创建座位之前需要输入密码',
             'autoClearTable': '客人付款之后自动还原座位状态',

@@ -129,6 +129,7 @@ export default {
             (item.hasOwnProperty("prices") && item.prices[this.ticket.type]) && (item.price = item.prices[this.ticket.type]);
             this.setSides(this.fillOption(item.option));
             this.addToOrder(item);
+            this.config.display.autoTemplate && this.sides[0].template && this.callTemplate(this.sides[0],0);
         },
         isTemporary(item) {
             if (!item.temporary) return false;

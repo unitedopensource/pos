@@ -342,6 +342,9 @@ input[type="text"]:disabled {
   justify-content: flex-end;
 }
 
+.receipt footer{
+  display: initial;
+}
 
 /* Define Dock Style */
 header.dock{

@@ -107,10 +107,10 @@ export default {
       this.editList = this.option[name];
     },
     addQty(item) {
-      item.qty++;
+      isNumber(item.qty) ? item.qty++ : item.qty = 2;
     },
     subQty(item) {
-      item.qty--;
+      isNumber(item.qty) ? item.qty-- : item.qty = 0;
       if (item.qty === 0) {
         let index = this.editList.findIndex(target => target.key === item.key);
         this.editList.splice(index, 1);

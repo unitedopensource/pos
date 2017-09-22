@@ -18,6 +18,13 @@ var Printer = function (plugin, config) {
      *         
      * @return 
      */
+    this.initial = function (plugin, config) {
+        this.plugin = plugin;
+        this.config = config;
+        this.station = config.station;
+        this.setting = config.printer;
+        this.devices = Object.keys(config.printer);
+    }
 
     this.setTarget = function (name) {
         this.target = name || 'All';
@@ -131,7 +138,7 @@ var Printer = function (plugin, config) {
         let header = createHeader(this.config.store, raw);
         let list = createList(printer, setting.control, raw);
         let style = createStyle(setting.control);
-        let footer = createFooter(setting.control, raw);
+        let footer = createFooter(this.config.store.table, setting.control, raw);
 
         let html = header + list + footer + style;
 

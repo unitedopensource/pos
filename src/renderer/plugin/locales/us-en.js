@@ -698,7 +698,8 @@ export default {
         'content':'Content',
         'coupon':'Coupon',
         'timecard':'timecard session',
-        'tipPercentage':'Tip Percentage'
+        'tipPercentage':'Tip Percentage',
+        'autoTemplate':'Auto Template'
     },
     nav: {
         'store': 'Store',
@@ -873,6 +874,7 @@ export default {
         'averageSize': 'Average Size'
     },
     tip: {
+        'autoTemplate':'Auto popup template page',
         'table': {
             'passwordRequire': 'Password input required before create a new table.',
             'autoClearTable': 'Auto restore table status after settling ticket.',
