@@ -79,15 +79,13 @@ var Printer = function (plugin, config) {
                 return;
             }
             let items = raw.content.filter(item => item.printer[printer]);
-            console.log(items)
             if (items.length === 0) return false;
             //change incoming
-            let cursor = 0;
             let { printStore, printType, printCustomer, enlargeDetail } = setting.control;
             let header = createHeader(this.config.store, raw);
             let list = createList(printer, setting.control, raw);
             let style = createStyle(setting.control);
-            let footer = createFooter(setting.control, raw);
+            let footer = createFooter(this.config.store.table, setting.control, raw);
 
             let html = header + list + footer + style;
 
@@ -123,6 +121,21 @@ var Printer = function (plugin, config) {
         })
 
         this.reset()
+    }
+
+    this.preview = function (raw) {
+        let printer = this.station.printer || 'cashier';
+        let setting = this.setting[printer];
+
+        let { printStore, printType, printCustomer, enlargeDetail } = setting.control;
+        let header = createHeader(this.config.store, raw);
+        let list = createList(printer, setting.control, raw);
+        let style = createStyle(setting.control);
+        let footer = createFooter(setting.control, raw);
+
+        let html = header + list + footer + style;
+
+        return html;
     }
 
     this.printLabel = function (name, order) {
@@ -937,7 +950,6 @@ function createStyle(ctrl) {
         printPrimaryPrice,
         printSecondaryPrice,
         printPayment,
-        printSuggestion,
         printCoupon,
         printActionTime,
         buzzer,
@@ -1002,33 +1014,49 @@ function createStyle(ctrl) {
               .details p{display:flex;}
               .details .text{text-align:right;padding-right:20px;flex:5;}
               .details .value{text-align:left;flex:6}
-              section.tip{font-family:'Agency FB'; margin:auto;width:90%;${printSuggestion ? '' : 'display:none;'}}
-              section.tip .text{text-align:left;display:inline-block;width:50%}
-              section.tip .value{text-align:right;display:inline-block;width:50%}
+              .suggestion{font-family:'Agency FB';border:1px dashed #000;padding:5px; margin:auto;width:90%;display:flex;}}
+              .symbol{margin-right:5px;width:50px;text-align:center;}
+              .suggestion .percentage{ flex:1;display:inline-flex; }
+              .gratuity{width:90px;display:inline-flex;}
+              .suggestion .text{flex:1}
+              .suggestion .value{padding-right:10px;}
               section.note{text-align:center;font-weight:lighter;margin-top:10px;border-top:1px solid #000;}
               .printTime{${printActionTime ? '' : 'display:none;'}font-weight:bold;text-align:center;}
               .zhCN{font-family:'${primaryFont}';font-size:${primaryFontSize};${printPrimary ? '' : 'display:none!important;'}}
               .usEN{font-family:'${secondaryFont}';font-size:${secondaryFontSize};${printSecondary ? '' : 'display:none!important;'}}
           </style>`
 }
-function createFooter(ctrl, ticket) {
+function createFooter(table, ctrl, ticket) {
     if (!ticket.hasOwnProperty('payment')) return "";
-    let { footer, printSuggestion } = ctrl;
+    let printSuggestion = table.tipSuggestion;
+    let percentage = table.tipPercentages.split(",");
+    let { footer } = ctrl;
     let { payment } = ticket;
     let suggestion = [{
         text: 'Good Service',
-        percentage: 15,
-        value: (payment.due * 0.15).toFixed(2)
+        percentage: percentage[0],
+        value: (payment.due * percentage[0] / 100).toFixed(2)
     }, {
         text: 'Great Service',
-        percentage: 20,
-        value: (payment.due * 0.20).toFixed(2)
+        percentage: percentage[1],
+        value: (payment.due * percentage[1] / 100).toFixed(2)
     }, {
         text: 'Excellent Service',
-        percentage: 25,
-        value: (payment.due * 0.25).toFixed(2)
+        percentage: percentage[2],
+        value: (payment.due * percentage[2] / 100).toFixed(2)
     }];
-    suggestion.map(kindness => `<p><span class="text">${kindness.text}</span><span class="value">${kindness.percentage}% Gratuity: $${kindness.value}</span></p>`).join("").toString();
+    suggestion = suggestion.map(kindness =>
+        `<section class="suggestion">
+            <span class="symbol">☐</span>
+            <div class="percentage">
+                <span class="text">${kindness.text}</span>
+                <span class="value">${kindness.percentage}%</span>
+            </div>
+            <div class="gratuity">
+                <span class="value">Gratuity:</span>
+                <span class="value">$${kindness.value}</span>
+            </div>
+        </section>`).join("").toString();
     let delivery = parseFloat(payment.delivery) > 0 ? `<p><span class="text">Delivery:</span><span class="value">${payment.delivery.toFixed(2)}</span></p>` : "";
     let note = footer ? footer.map(text => `<p>${text}</p>`).join("").toString() : "";
     let cash = payment.hasOwnProperty('paidCash') ?
@@ -1084,7 +1112,8 @@ function createFooter(ctrl, ticket) {
         </p>
         <h3>Void by: ${ticket.void.by} @ ${moment(ticket.void.time).format('HH:mm:ss')}</h3>
       </section>`: "";
-    let details = (voidTicket + coupon + cash + credit + gift + thirdParty) || "";
+    suggestion = printSuggestion && ticket.type === 'PRE_PAYMENT' ? suggestion : '';
+    let details = (suggestion + voidTicket + coupon + cash + credit + gift + thirdParty) || "";
 
     return `<footer>
               <section class="column">

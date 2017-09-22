@@ -695,7 +695,8 @@ export default {
         'lastDate': '最后日期',
         'content':'内容',
         'coupon':'优惠',
-        'timecard':'打卡时段'
+        'timecard':'打卡时段',
+        'tipPercentage':'小费百分比'
     },
     nav: {
         'store': '店面',
@@ -839,7 +840,8 @@ export default {
         'callLog': '来电记录',
         'userRemoval': '删除用户',
         'userRemovalTip': '永久的删除这个账户',
-        'review':'审核'
+        'review':'审核',
+        'tipsSuggestion':'小费建议'
     },
     reservation: {
         'create': '创建预约',
@@ -873,6 +875,10 @@ export default {
             'passwordRequire': '创建座位之前需要输入密码',
             'autoClearTable': '客人付款之后自动还原座位状态',
             'printReceiptOnDone': '是否在完成后打印收据'
+        },
+        'suggestion':{
+            'enable':'在预付单收据下面打印小费建议',
+            'percentage':'设置3个小费建议的百分比'
         }
     }
 }

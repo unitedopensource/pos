@@ -49,7 +49,6 @@ import { mapGetters, mapActions } from 'vuex'
 import dialoger from '../common/dialoger'
 import payment from '../payment/payment'
 import unlock from '../common/unlock'
-//import Printer from '../../print'
 import split from '../menu/split'
 export default {
     props: ['transfer'],
@@ -172,7 +171,6 @@ export default {
                 type: 'PRE_PAYMENT',
                 cashier: this.op.name
             })
-            //Printer.init(this.config).setJob('receipt').print(order);
             Printer.setTarget('Receipt').print(order);
             this.$socket.emit("[TABLE] UPDATE", { _id: order.tableID, status: 3 })
         },
@@ -189,7 +187,6 @@ export default {
                 ticket.content = this.order.content.filter(item => Array.isArray(item.sort) ? item.sort.includes(i) : item.sort === i);
                 ticket.payment = this.order.splitPayment[i - 1];
                 ticket.number = `${this.order.number}-${i}`;
-                //Printer.init(this.config).setJob("receipt").print(ticket);
                 Printer.setTarget('Receipt').print(ticket)
             }
             this.$socket.emit("[TABLE] UPDATE", { _id: this.order.tableID, status: 3 });
@@ -229,7 +226,7 @@ export default {
         },
         clearTable() {
             if (!this.currentTable) return;
-            if (this.currentTable.status === 4 || this.currentTable.current.invoice.length === 0) {
+            if (this.currentTable.status === 4 || this.currentTable.invoice.length === 0) {
                 this.$dialog({
                     title: "dialog.tableClear", msg: ["dialog.tableClearTip", this.currentTable.name],
                     buttons: [{ text: 'button.cancel', fn: 'reject' }, { text: 'button.clear', fn: 'resolve' }]
@@ -248,7 +245,7 @@ export default {
         ...mapActions(['setOp', 'setApp', 'resetMenu', 'resetAll', 'setTicket', 'removePayment', 'setTableInfo'])
     },
     computed: {
-        ...mapGetters(['op', 'config', 'order', 'isEmptyTicket', 'currentTable'])
+        ...mapGetters(['op', 'order', 'isEmptyTicket', 'currentTable'])
     }
 }
 </script>

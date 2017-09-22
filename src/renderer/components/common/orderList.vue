@@ -612,6 +612,7 @@ header i {
     text-align: center;
     font-weight: 700;
     color: #ff5722;
+    white-space: nowrap;
 }
 
 .list .price {

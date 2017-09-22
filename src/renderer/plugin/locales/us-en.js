@@ -697,7 +697,8 @@ export default {
         'lastDate': 'Last Date',
         'content':'Content',
         'coupon':'Coupon',
-        'timecard':'timecard session'
+        'timecard':'timecard session',
+        'tipPercentage':'Tip Percentage'
     },
     nav: {
         'store': 'Store',
@@ -860,7 +861,8 @@ export default {
         'checkIn': 'Check In',
         'inactive': 'Set Inactive',
         'timeline': 'Time Line',
-        'list': 'View List'
+        'list': 'View List',
+        'tipsSuggestion':'Tip Suggestions'
     },
     database: {
         'dataSize': 'Data Size',
@@ -875,6 +877,10 @@ export default {
             'passwordRequire': 'Password input required before create a new table.',
             'autoClearTable': 'Auto restore table status after settling ticket.',
             'printReceiptOnDone': 'Print receipt after Done'
+        },
+        'suggestion':{
+            'enable':'Print tip suggestion on pre-payment ticket',
+            'percentage':'Set 3 tip suggestions percentage' 
         }
     }
 }

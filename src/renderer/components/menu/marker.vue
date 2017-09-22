@@ -62,7 +62,8 @@ export default {
       this.init.resolve();
     },
     clear() {
-      this.item.mark = [[], []];
+     this.item.mark[0] = [];
+     this.item.mark[1] = [];
     },
     ...mapActions(['alterItem'])
   },

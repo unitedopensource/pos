@@ -2,7 +2,6 @@
     <div>
         <section class="card">
             <header>{{$t('setting.dineIn')}}
-                <span class="tip"></span>
             </header>
             <article>
                 <smart-switch v-model="table.layout" label="text.enable"></smart-switch>
@@ -25,6 +24,13 @@
             <article>
                 <smart-switch v-model="table.autoTip" label="text.enable"></smart-switch>
                 <smart-input v-model.number="table.AutoChargeAbove" label="text.autoChargeAbove" :disable="!table.autoTip"></smart-input>
+            </article>
+        </section>
+        <section class="card">
+            <header>{{$t('setting.tipsSuggestion')}}</header>
+            <article>
+                <smart-switch v-model="table.tipSuggestion" label="text.enable" tip="tip.suggestion.enable"></smart-switch>
+                <smart-input v-model="table.tipPercentages" label="text.tipPercentage" :disable="!table.tipSuggestion"></smart-input>
             </article>
         </section>
     </div>
