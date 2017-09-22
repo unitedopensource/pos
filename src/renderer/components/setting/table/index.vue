@@ -151,6 +151,7 @@ section.section {
     display: flex;
     flex-direction: column;
     height: 726px;
+    text-align: center;
 }
 
 .tables {

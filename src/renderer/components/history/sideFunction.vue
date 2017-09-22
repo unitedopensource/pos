@@ -211,7 +211,6 @@ export default {
             }).then(() => { this.$q(), this.splitPrint(order) }).catch(() => { this.$q(), this.printTicket(order) })
         },
         printTicket(order) {
-            //Printer.init(this.config).setJob("receipt").print(order);
             Printer.setTarget('All').print(order);
             order.content.forEach(item => {
                 delete item.new;
@@ -227,7 +226,6 @@ export default {
                 ticket.content = order.content.filter(item => Array.isArray(item.sort) ? item.sort.includes(i) : item.sort === i);
                 ticket.payment = order.splitPayment[i - 1];
                 ticket.number = `${order.number}-${i}`;
-                //Printer.init(this.config).setJob("receipt").print(ticket);
                 Printer.setTarget('All').print(ticket)
             }
             order.content.forEach(item => {
@@ -261,7 +259,7 @@ export default {
         ...mapActions(['setApp','setOrder', 'setTicket', 'resetMenu', 'setCustomer', 'removePayment'])
     },
     computed: {
-        ...mapGetters(['op', 'order', 'config', 'station', 'isEmptyTicket'])
+        ...mapGetters(['op', 'order', 'station', 'isEmptyTicket'])
     },
 
 }

@@ -103,7 +103,6 @@
 
 <script>
 import { mapAction, mapGetters } from 'vuex'
-import Printer from '../../print'
 import seat from './seat'
 
 export default {
@@ -149,7 +148,7 @@ export default {
         placeQueue() {
             Object.assign(this.book, { op: this.op.name });
             this.$socket.emit("[RESV] CREATE", this.book);
-            Printer.init(this.config).setJob('queue ticket').print(this.book);
+            Printer.printReservationTicket(this.book)
             this.init.resolve()
         },
         reserve(){

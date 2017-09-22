@@ -53,9 +53,6 @@ export default {
         }
     },
     methods: {
-        back() {
-            this.$router.push({ name: 'Setting.index' })
-        },
         onChange(store) {
             this.txt = this.$t("text.saveSetting");
             this.change = true;

@@ -16,9 +16,11 @@
                 <span class="text">{{$t('nav.back')}}</span>
             </router-link>
         </ul>
-        <transition name="switch">
-            <router-view class="page"></router-view>
-        </transition>
+        <section class="content">
+            <transition name="switch">
+                <router-view class="page"></router-view>
+            </transition>
+        </section>
     </section>
 </template>
 

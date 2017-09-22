@@ -148,10 +148,10 @@ var Printer = function (plugin, config) {
                     <div class="option">${choiceSet}</div>`
             }).forEach(item => {
                 let html = item + style;
-                this.printer.PRINT_INIT('Reprint Label');
-                this.printer.ADD_PRINT_HTM(0, 0, "100%", "100%", html);
-                this.printer.SET_PRINTER_INDEX(name);
-                this.printer.PRINT();
+                this.plugin.PRINT_INIT('Reprint Label');
+                this.plugin.ADD_PRINT_HTM(0, 0, "100%", "100%", html);
+                this.plugin.SET_PRINTER_INDEX(name);
+                this.plugin.PRINT();
             })
     }
 
@@ -163,16 +163,16 @@ var Printer = function (plugin, config) {
         let html = createHtml();
         let style = createStyle();
 
-        this.printer.PRINT_INIT('Credit Card - Store');
-        this.printer.ADD_PRINT_HTM(0, 0, "100%", "100%", html + style);
-        this.printer.SET_PRINTER_INDEX(this.station.printer || 'cashier');
-        this.printer.PRINT();
+        this.plugin.PRINT_INIT('Credit Card - Store');
+        this.plugin.ADD_PRINT_HTM(0, 0, "100%", "100%", html + style);
+        this.plugin.SET_PRINTER_INDEX(this.station.printer || 'cashier');
+        this.plugin.PRINT();
 
-        this.printer.PRINT_INIT('Credit Card - Customer');
+        this.plugin.PRINT_INIT('Credit Card - Customer');
         html = html.replace("MERCHANT COPY", "CUSTOMER COPY");
-        this.printer.ADD_PRINT_HTM(0, 0, "100%", "100%", html + style);
-        this.printer.SET_PRINTER_INDEX(this.station.printer || 'cashier');
-        this.printer.PRINT();
+        this.plugin.ADD_PRINT_HTM(0, 0, "100%", "100%", html + style);
+        this.plugin.SET_PRINTER_INDEX(this.station.printer || 'cashier');
+        this.plugin.PRINT();
 
         function createHtml() {
             let due = parseFloat(trans.amount.due) > 0 ? `<p class="due"><span class="text">Due:</span><span class="value">$${trans.amount.due}</span></p>` : "";
@@ -303,10 +303,10 @@ var Printer = function (plugin, config) {
                     footer{border-top:1px solid #000;text-align:center;}
                     </style>`;
 
-        this.printer.PRINT_INIT(this.job);
-        this.printer.ADD_PRINT_HTM(0, 0, "100%", "100%", (html + style));
-        this.printer.SET_PRINTER_INDEX(this.station.printer || 'cashier');
-        this.printer.PRINT();
+        this.plugin.PRINT_INIT('Gift Card');
+        this.plugin.ADD_PRINT_HTM(0, 0, "100%", "100%", (html + style));
+        this.plugin.SET_PRINTER_INDEX(this.station.printer || 'cashier');
+        this.plugin.PRINT();
     }
 
     this.printReport = function (data) {
@@ -317,10 +317,10 @@ var Printer = function (plugin, config) {
         let html = createReport();
         let style = createStyle();
 
-        this.printer.PRINT_INIT(this.job);
-        this.printer.ADD_PRINT_HTM(0, 0, "100%", "100%", html + style);
-        this.printer.SET_PRINTER_INDEX(this.station.printer || 'cashier');
-        this.printer.PRINT();
+        this.plugin.PRINT_INIT('Report');
+        this.plugin.ADD_PRINT_HTM(0, 0, "100%", "100%", html + style);
+        this.plugin.SET_PRINTER_INDEX(this.station.printer || 'cashier');
+        this.plugin.PRINT();
 
         function createReport() {
             let content = "";
@@ -482,10 +482,10 @@ var Printer = function (plugin, config) {
                       p .text{flex:1;}
                       footer{margin-top:25px;}
                     </style>`;
-        this.printer.PRINT_INIT('Prebatch report');
-        this.printer.ADD_PRINT_HTM(0, 0, "100%", "100%", html + style);
-        this.printer.SET_PRINTER_INDEX(this.findPrinterFor('REPORT'));
-        this.printer.PRINT();
+        this.plugin.PRINT_INIT('Prebatch report');
+        this.plugin.ADD_PRINT_HTM(0, 0, "100%", "100%", html + style);
+        this.plugin.SET_PRINTER_INDEX(this.station.printer || 'cashier');
+        this.plugin.PRINT();
     }
 
     this.printBatchReport = function (data) {
@@ -526,10 +526,10 @@ var Printer = function (plugin, config) {
                   .data h3{border-bottom:1px dashed #000;text-align:center;}
                   footer{text-align:center;}`;
 
-        this.printer.PRINT_INIT('Batch Report');
-        this.printer.ADD_PRINT_HTM(0, 0, "100%", "100%", html + style);
-        this.printer.SET_PRINTER_INDEX(this.station.printer || 'cashier');
-        this.printer.PRINT();
+        this.plugin.PRINT_INIT('Batch Report');
+        this.plugin.ADD_PRINT_HTM(0, 0, "100%", "100%", html + style);
+        this.plugin.SET_PRINTER_INDEX(this.station.printer || 'cashier');
+        this.plugin.PRINT();
     }
 
     this.printTimeCardReport = function (data) {
@@ -594,10 +594,10 @@ var Printer = function (plugin, config) {
                       .log.last{border-bottom:none;}
                       .diff{width:75px;text-align:right;}
                       footer{border-top:1px solid #000;text-align:center;}</style>`;
-        this.printer.PRINT_INIT('Time card report');
-        this.printer.ADD_PRINT_HTM(0, 0, "100%", "100%", html + style);
-        this.printer.SET_PRINTER_INDEX(this.station.printer || 'cashier');
-        this.printer.PRINT();
+        this.plugin.PRINT_INIT('Time card report');
+        this.plugin.ADD_PRINT_HTM(0, 0, "100%", "100%", html + style);
+        this.plugin.SET_PRINTER_INDEX(this.station.printer || 'cashier');
+        this.plugin.PRINT();
     }
 
     this.printCashInReport = function (data) {
@@ -651,10 +651,10 @@ var Printer = function (plugin, config) {
                       .log.last{border-bottom:none;}
                       .diff{width:75px;text-align:right;}
                       footer{border-top:1px solid #000;text-align:center;}</style>`;
-        this.printer.PRINT_INIT('Cash in report');
-        this.printer.ADD_PRINT_HTM(0, 0, "100%", "100%", html + style);
-        this.printer.SET_PRINTER_INDEX(this.station.printer || 'cashier');
-        this.printer.PRINT();
+        this.plugin.PRINT_INIT('Cash in report');
+        this.plugin.ADD_PRINT_HTM(0, 0, "100%", "100%", html + style);
+        this.plugin.SET_PRINTER_INDEX(this.station.printer || 'cashier');
+        this.plugin.PRINT();
     }
 
     this.printCashOutReport = function (data, detail) {
@@ -734,10 +734,10 @@ var Printer = function (plugin, config) {
                       .log.last{border-bottom:none;}
                       .diff{width:75px;text-align:right;}
                       footer{border-top:1px solid #000;text-align:center;}</style>`;
-        this.printer.PRINT_INIT(this.job);
-        this.printer.ADD_PRINT_HTM(0, 0, "100%", "100%", html + style);
-        this.printer.SET_PRINTER_INDEX(this.station.printer || 'cashier');
-        this.printer.PRINT();
+        this.plugin.PRINT_INIT('Cash out report');
+        this.plugin.ADD_PRINT_HTM(0, 0, "100%", "100%", html + style);
+        this.plugin.SET_PRINTER_INDEX(this.station.printer || 'cashier');
+        this.plugin.PRINT();
     }
 
     this.printReservationTicket = function (data) {
@@ -771,10 +771,10 @@ var Printer = function (plugin, config) {
         div.type h3{font-weight:lighter;font-size:1.3em;}
         .data{text-align:center;}h1{font-size:5em;}
         footer{border-top:1px solid #000;text-align:center;}.time{margin-left:10px;}</style>`;
-        this.printer.PRINT_INIT('Reservation Ticket');
-        this.printer.ADD_PRINT_HTM(0, 0, "100%", "100%", html + style);
-        this.printer.SET_PRINTER_INDEX(this.station.printer || 'cashier');
-        this.printer.PRINT();
+        this.plugin.PRINT_INIT('Reservation Ticket');
+        this.plugin.ADD_PRINT_HTM(0, 0, "100%", "100%", html + style);
+        this.plugin.SET_PRINTER_INDEX(this.station.printer || 'cashier');
+        this.plugin.PRINT();
     }
 
     this.skip = function () {

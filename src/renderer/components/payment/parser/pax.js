@@ -24,6 +24,7 @@ const Pax = function () {
     url = `http://${ip}:${port}?`;
     station = alies || '';
     let command = this.parser("A00_1.38");
+    console.log(command)
     return fetch(command);
   };
   this.check = function (d) {
@@ -44,7 +45,6 @@ const Pax = function () {
     let tip = toFixed(data.tip * 100,0);
     if (!number && !date) {
       let command = this.parser(`T00_1.38_01_${amount}|${tip}|__1_____`);
-      console.log(command)
       return fetch(command)
     } else {
       let info = `${number}|${date}|`;

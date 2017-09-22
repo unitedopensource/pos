@@ -389,7 +389,9 @@ export default {
         'paidAmountGreaterThanDue':'额外支付',
         'extraAmountSetAsTip':'您是否需要将余出的款项 ( ${i} ) 设为小费？',
         'removeCarryNote':'移除手抄',
-        'removeCarryNoteTip':'您确定要移除这份手抄吗？'
+        'removeCarryNoteTip':'您确定要移除这份手抄吗？',
+        'invoiceNotFound':'无法找到订单',
+        'resetTableStatus':'您是否需要还原座位状态?'
     },
     terminal: {
         'initial': '正在初始化 {i}...',

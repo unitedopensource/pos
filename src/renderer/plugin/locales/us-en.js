@@ -294,8 +294,8 @@ export default {
         'paymentRemoveConfirmTip': 'Are you sure you want to remove ({i}) record?',
         'paymentRemoved': 'Payment Removed',
         'paymentRemovedTip': "#{i} invoice 's payment record has been removed.",
-        'switchTable': 'Table Switch',
-        'switchTableTip': 'Please select an empty table to complete switch',
+        'switchTable': 'Select Table',
+        'switchTableTip': 'Please select an empty table to perform switch',
         'tableSwitchConfirm': 'Table Switch Confirm',
         'tableSwitchConfirmTip': 'Are you sure to transfer table from {i} to {i} ?',
         'tableSwitchFailed': 'Cannot Switch',
@@ -390,7 +390,9 @@ export default {
         'paidAmountGreaterThanDue':'Extra Tender Amount',
         'extraAmountSetAsTip':'Are you going to set the Extra ( ${i} ) as Tip?',
         'removeCarryNote':'Remove Carry Note',
-        'removeCarryNoteTip':'Are you sure to remove this carry note?'
+        'removeCarryNoteTip':'Are you sure to remove this carry note?',
+        'invoiceNotFound':'Invoice Not Found',
+        'resetTableStatus':'Do you want to reset this table?'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',

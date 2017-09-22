@@ -895,10 +895,6 @@ ul.nav .text {
   margin-top: 3px;
 }
 
-section.route {
-    display: flex;
-}
-
 .router-link-exact-active {
     border-left: 3px solid #FF5722;
     box-shadow: inset 1px 0 0px #358e86;

@@ -24,7 +24,6 @@
 <script>
 import { mapGetters } from 'vuex'
 import contextMenu from './menu'
-import Printer from '../../print'
 import dialoger from '../common/dialoger'
 export default {
     components: { contextMenu, dialoger },
@@ -50,7 +49,7 @@ export default {
         },
         reprint() {
             this.$q();
-            Printer.init(this.config).setJob('queue ticket').print(this.book);
+            Printer.printReservationTicket()
         },
         active() {
             Object.assign(this.book, { status: 1 })

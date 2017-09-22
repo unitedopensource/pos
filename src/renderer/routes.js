@@ -184,6 +184,14 @@ export default [{
         component: require('./components/setting/sales/coupon')
       }]
     }, {
+      path: 'develop',
+      component: require('./components/setting/develop/nav'),
+      children: [{
+        path: '/',
+        name: 'Setting.develop',
+        component: require('./components/setting/develop/index')
+      }]
+    }, {
       path: 'database',
       component: require('./components/setting/database/nav'),
       children: [{

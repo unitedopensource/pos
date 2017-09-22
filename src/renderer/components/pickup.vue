@@ -72,7 +72,6 @@ import dialoger from './common/dialoger'
 import payment from './payment/payment'
 import reason from './history/reason'
 import split from './menu/split'
-//import Printer from '../print'
 export default {
     components: { orderList, payment, split, reason, dialoger },
     data() {
@@ -106,7 +105,6 @@ export default {
         },
         print() {
             let order = JSON.parse(JSON.stringify(this.order))
-            //Printer.init(this.config).setJob("receipt").print(order);
             Printer.setTarget('Receipt').print(order)
             order.content.forEach(item => {
                 delete item.new;
@@ -150,7 +148,7 @@ export default {
         totalPage() {
             return Math.ceil(this.invoices.length / 20)
         },
-        ...mapGetters(['config', 'order', 'history'])
+        ...mapGetters(['order', 'history'])
     }
 }
 </script>

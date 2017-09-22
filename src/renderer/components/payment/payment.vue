@@ -175,7 +175,6 @@ import CreditCard from './creditCard'
 import Splitter from '../menu/split'
 import Preset from '../../preset'
 import GiftCard from './giftCard'
-//import Printer from '../../print'
 import Reloader from './Reloader'
 import Discount from './discount'
 import Inputter from './inputter'
@@ -565,7 +564,6 @@ export default {
                 trans.amount.approve = (trans.amount.approve - trans.amount.tip).toFixed(2);
             }
             this.$socket.emit("[TERM] SAVE_TRANSACTION", trans);
-            //Printer.init(this.config).setJob("creditCard").print(trans);
             Printer.printCreditCard(trans);
             if (parseFloat(this.payment.balance) === 0) {
                 this.payment.settled = true;

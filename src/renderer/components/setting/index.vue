@@ -47,8 +47,8 @@
                 <figcaption>{{$t('setting.sales')}}</figcaption>
                 <span class="intro">{{$t('setting.salesTip')}}</span>
             </figure>
-            <figure v-if="op.role === 'Admin'">
-                <i class="fa fa-2x fa-refresh"></i>
+            <figure v-if="op.role === 'Admin'" @click="go('Setting.develop')">
+                <i class="fa fa-2x fa-microchip"></i>
                 <figcaption>{{$t('setting.system')}}</figcaption>
                 <span class="intro">{{$t('setting.systemTip')}}</span>
             </figure>

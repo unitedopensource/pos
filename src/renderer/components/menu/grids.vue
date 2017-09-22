@@ -147,8 +147,6 @@
 import { mapGetters, mapActions } from 'vuex'
 import dialoger from '../common/dialoger'
 import unlock from '../common/unlock'
-//import Printer from '../../plugin/print'
-//import Printer from '../../printer'
 export default {
   props: ['layout'],
   components: { dialoger, unlock },
@@ -226,7 +224,6 @@ export default {
       if (this.isEmptyTicket) return;
       let order = this.combineOrderInfo({ print });
       print && Printer.setTarget('All').print(order);
-      //print && Printer.init(this.config).setJob("receipt").print(order);
       print && order.content.forEach(item => {
         delete item.new;
         item.print = true;
@@ -253,7 +250,7 @@ export default {
       } else {
         order = this.combineOrderInfo({});
       }
-      let printOnDone = this.config.store.printOnDone;
+      let printOnDone = this.store.printOnDone;
       if (print) {
         printOnDone ? Printer.setTarget('All').print(order) : Printer.setTarget('Order').print(order)
       }
@@ -313,7 +310,7 @@ export default {
     ...mapActions(['setApp', 'lessQty', 'moreQty', 'resetAll', 'setOrder', 'setTableInfo'])
   },
   computed: {
-    ...mapGetters(['op', 'app', 'config', 'item', 'order', 'ticket', 'store', 'customer', 'station', 'isEmptyTicket', 'currentTable'])
+    ...mapGetters(['op', 'app', 'item', 'order', 'ticket', 'store', 'customer', 'station', 'isEmptyTicket', 'currentTable'])
   }
 }
 </script>

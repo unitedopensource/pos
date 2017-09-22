@@ -64,7 +64,7 @@ export default {
                     type: "warning", title: "terminal.timeout", msg: ["terminal.timeoutTip", terminal.address],
                     buttons: [{ text: 'button.confirm', fn: 'reject' }]
                 })
-            }, 6000)
+            }, 10000)
         },
         terminalError(msg,tip) {
             this.icon = "error";
