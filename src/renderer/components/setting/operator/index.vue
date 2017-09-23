@@ -70,15 +70,14 @@ export default {
 
 <style scoped>
 header {
-    height: 140px;
-    padding: 45px;
+    padding: 25px 45px 0;
     background: #eee;
 }
 
 h1 {
     font-size: 34px;
     color: #37474F;
-    font-family: 'Microsoft YaHei';
+    font: bold 36px/50px "Microsoft Yahei";
 }
 
 .summary {

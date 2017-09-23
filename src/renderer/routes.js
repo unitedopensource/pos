@@ -179,6 +179,10 @@ export default [{
         name: 'Setting.sales',
         component: require('./components/setting/sales/index')
       }, {
+        path: 'giftCard',
+        name: 'Setting.giftCard',
+        component: require('./components/setting/sales/giftCard')
+      }, {
         path: 'chart',
         name: 'Setting.coupon',
         component: require('./components/setting/sales/coupon')

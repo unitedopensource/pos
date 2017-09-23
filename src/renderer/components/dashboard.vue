@@ -59,8 +59,7 @@ export default {
         },
         askClockIn() {
             this.$dialog({
-                title: 'dialog.clockInRequire', msg: 'dialog.clockInRequireTip',
-                buttons: [{ text: 'button.later', fn: 'reject' }, { txt: 'button.clockIn', fn: 'resolve' }]
+                title: 'dialog.clockInRequire', msg: 'dialog.clockInRequireTip', buttons: [{ text: 'button.later', fn: 'reject' }, { text: 'button.clockIn', fn: 'resolve' }]
             }).then(() => { this.clockIn() }).catch(() => { this.$q() })
         },
         clockIn() {
@@ -135,9 +134,7 @@ export default {
                         this.$socket.emit("[CASHFLOW] CHECK", { date: today(), cashDrawer: this.station.cashDrawer.name, close: false }, (data) => {
                             let { name, initial } = data;
                             initial ? this.initialCashFlow(name) : this.recordCashFlow(name);
-                        }) :
-                        //Printer.init(this.config).openCashDrawer();
-                        Printer.openCashDrawer();
+                        }) : Printer.openCashDrawer();
                     break;
                 case "staffBank":
                     this.$socket.emit("[CASHFLOW] CHECK", { date: today(), cashDrawer: this.op.name, close: false }, (data) => {
@@ -173,7 +170,6 @@ export default {
         },
         countDrawerCash(amount) {
             if (isNumber(amount) && amount > 0) {
-                //Printer.init(this.config).openCashDrawer();
                 Printer.openCashDrawer();
                 this.$dialog({ title: 'dialog.cashInConfirm', msg: ['dialog.cashInConfirmTip', amount.toFixed(2)] })
                     .then(() => { this.acceptCashIn(amount) }).catch(() => { this.countDrawerCash() })
@@ -187,7 +183,7 @@ export default {
         countSelfCash(amount) {
             if (isNumber(amount)) {
                 this.$dialog({ title: 'dialog.selfCashInConfirm', msg: ['dialog.selfCashInConfirmTip', amount.toFixed(2)] })
-                    .then(() => { this.acceptCashIn(amount) })//.catch(() => { this.countSelfCash() })
+                    .then(() => { this.acceptCashIn(amount) }).catch(() => { this.countSelfCash() })
             } else {
                 new Promise((resolve, reject) => {
                     this.componentData = { resolve, reject };
@@ -199,14 +195,12 @@ export default {
             let name = this.op.cashCtrl === 'enable' ? this.station.cashDrawer.name : this.op.name;
             let record = Preset.cashIn(this.op.name, name, amount);
             this.$socket.emit("[CASHFLOW] INITIAL", record);
-            //Printer.init(this.config).setJob('cashin report').print(record);
             Printer.printCashInReport(record);
             this.$q()
         },
         recordCashFlow(cashDrawer) {
             if (this.op.cashCtrl === 'enable') {
-               // Printer.init(this.config).openCashDrawer();
-               Printer.openCashDrawer();
+                Printer.openCashDrawer();
 
                 let activity = {
                     type: "OPEN",

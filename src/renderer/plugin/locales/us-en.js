@@ -194,7 +194,8 @@ export default {
         'unlock':'Unlock',
         'selectAll':'Select All',
         'valid':'Valid',
-        'invalid':'Invalid'
+        'invalid':'Invalid',
+        'clockIn':'Clock In'
     },
     title: {
         'markPaymentType': 'Mark Payment Type',

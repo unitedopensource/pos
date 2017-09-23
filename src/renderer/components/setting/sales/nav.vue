@@ -6,6 +6,10 @@
                     <i class="fa fa-industry"></i>
                     <span class="text">{{$t('nav.sales')}}</span>
                 </router-link>
+                <router-link tag="li" :to="{name:'Setting.giftCard'}">
+                    <i class="fa fa-credit-card-alt"></i>
+                    <span class="text">{{$t('nav.giftCard')}}</span>
+                </router-link>
                 <router-link tag="li" :to="{name:'Setting.coupon'}">
                     <i class="fa fa-tags"></i>
                     <span class="text">{{$t('nav.coupon')}}</span>

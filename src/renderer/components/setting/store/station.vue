@@ -58,8 +58,6 @@
         <section class="card">
             <header>{{$t('setting.printer')}}</header>
             <article>
-                <smart-switch v-model="workStation.printRedirect" label="text.redirect"></smart-switch>
-                <redirector :options="printers" @update="update" :init="workStation.print"></redirector>
                 <smart-option v-model="workStation.printer" label="text.printer" :options="printers"></smart-option>
             </article>
         </section>
@@ -71,7 +69,6 @@
                 <smart-option v-model="workStation.cashDrawer.bind" label="text.binding" :options="printers"></smart-option>
                 <smart-switch v-model="workStation.cashDrawer.cashFlowCtrl" label="text.cashFlowCtrl"></smart-switch>
                 <smart-input v-model="workStation.cashDrawer.initialAmount" label="text.initialAmount" :disable="!workStation.cashDrawer.cashFlowCtrl"></smart-input>
-                <!-- <smart-input v-model.number="workStation.cashDrawer.errors" label="errorsAllow" :disable="!workStation.cashDrawer.cashFlowCtrl"></smart-input> -->
             </article>
         </section>
         <section class="card">
@@ -97,11 +94,10 @@ import smartInput from '../common/smartInput'
 import smartRange from '../common/smartRange'
 import smartSwitch from '../common/smartSwitch'
 import smartOption from '../common/smartOption'
-import redirector from '../common/redirector'
 import search from './search'
 import editor from './uiEditor'
 export default {
-    components: { smartInput, smartRange, smartSwitch, smartOption, redirector, editor, search },
+    components: { smartInput, smartRange, smartSwitch, smartOption, editor, search },
     created() {
         this.workStation = JSON.parse(JSON.stringify(this.station));
         this.printers = Object.keys(this.config.printer);
@@ -184,7 +180,7 @@ export default {
 }
 
 .block {
-    width: 179px;
+    width: 178px;
     padding: 35px 20px 15px;
     border-right: 1px solid #ccc;
     border-bottom: 1px solid #ccc;

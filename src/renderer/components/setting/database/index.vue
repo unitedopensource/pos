@@ -1,6 +1,7 @@
 <template>
     <div>
         <header>
+            <p class="tip">Health Report</p>
             <h1>{{$t('title.databaseHealth',status.db)}}</h1>
             <div class="summary">
                 <div>
@@ -47,15 +48,18 @@ export default {
 
 <style scoped>
 header {
-    height: 140px;
-    padding: 45px;
+    padding: 25px 45px 0;
     background: #eee;
 }
 
+.tip {
+    font: 18px/1 "Microsoft Yahei";
+    color: #404040;
+}
+
 h1 {
-    font-size: 34px;
     color: #37474F;
-    font-family: 'Microsoft YaHei';
+    font: bold 36px/50px "Microsoft Yahei";
 }
 
 .summary {

@@ -193,7 +193,8 @@ export default {
         'unlock':'解锁',
         'selectAll':'全选',
         'valid':'有效',
-        'invalid':'无效'
+        'invalid':'无效',
+        'clockIn':'打卡'
     },
     title: {
         'markPaymentType': '标记付款方式',
