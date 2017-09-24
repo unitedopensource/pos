@@ -1035,35 +1035,39 @@ function createStyle(ctrl) {
 }
 function createFooter(table, ctrl, ticket) {
     if (!ticket.hasOwnProperty('payment')) return "";
-    let printSuggestion = table.tipSuggestion;
-    let percentage = table.tipPercentages.split(",");
+
     let { footer } = ctrl;
     let { payment } = ticket;
-    let suggestion = [{
-        text: 'Good Service',
-        percentage: percentage[0],
-        value: (payment.due * percentage[0] / 100).toFixed(2)
-    }, {
-        text: 'Great Service',
-        percentage: percentage[1],
-        value: (payment.due * percentage[1] / 100).toFixed(2)
-    }, {
-        text: 'Excellent Service',
-        percentage: percentage[2],
-        value: (payment.due * percentage[2] / 100).toFixed(2)
-    }];
-    suggestion = suggestion.map(kindness =>
-        `<section class="suggestion">
-            <span class="symbol">☐</span>
-            <div class="percentage">
-                <span class="text">${kindness.text}</span>
-                <span class="value">${kindness.percentage}%</span>
-            </div>
-            <div class="gratuity">
-                <span class="value">Gratuity:</span>
-                <span class="value">$${kindness.value}</span>
-            </div>
-        </section>`).join("").toString();
+    let suggestion = '';
+
+    if (table.tipSuggestion && ticket.type === 'PRE_PAYMENT') {
+        let percentage = Array.isArray(table.tipPercentages) ? table.tipPercentages.split(",") : [10, 15, 20];
+        suggestion = [{
+            text: 'Good Service',
+            percentage: percentage[0],
+            value: (payment.due * percentage[0] / 100).toFixed(2)
+        }, {
+            text: 'Great Service',
+            percentage: percentage[1],
+            value: (payment.due * percentage[1] / 100).toFixed(2)
+        }, {
+            text: 'Excellent Service',
+            percentage: percentage[2],
+            value: (payment.due * percentage[2] / 100).toFixed(2)
+        }].map(kindness =>
+            `<section class="suggestion">
+                <span class="symbol">☐</span>
+                <div class="percentage">
+                    <span class="text">${kindness.text}</span>
+                    <span class="value">${kindness.percentage}%</span>
+                </div>
+                <div class="gratuity">
+                    <span class="value">Gratuity:</span>
+                    <span class="value">$${kindness.value}</span>
+                </div>
+            </section>`).join("").toString();
+    }
+
     let delivery = parseFloat(payment.delivery) > 0 ? `<p><span class="text">Delivery:</span><span class="value">${payment.delivery.toFixed(2)}</span></p>` : "";
     let note = footer ? footer.map(text => `<p>${text}</p>`).join("").toString() : "";
     let cash = payment.hasOwnProperty('paidCash') ?
@@ -1119,7 +1123,6 @@ function createFooter(table, ctrl, ticket) {
         </p>
         <h3>Void by: ${ticket.void.by} @ ${moment(ticket.void.time).format('HH:mm:ss')}</h3>
       </section>`: "";
-    suggestion = printSuggestion && ticket.type === 'PRE_PAYMENT' ? suggestion : '';
     let details = (suggestion + voidTicket + coupon + cash + credit + gift + thirdParty) || "";
 
     return `<footer>
