@@ -82,7 +82,7 @@ const mutations = {
       mark: [[], []],
       choiceSet: item.choiceSet ? item.choiceSet : [],
       single: parseFloat(item.price[0]),
-      total: item.hasOwnProperty('total') ? item.total : parseFloat(item.price[0]).toFixed(2)
+      total: item.hasOwnProperty('total') ? item.total : item.price[0].toFixed(2)
     });
 
     if (state.item) {

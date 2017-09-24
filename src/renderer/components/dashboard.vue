@@ -238,6 +238,7 @@ export default {
                         this.$socket.emit("[CONFIG] UPDATE_STATION", stations)
                         this.setStation(station)
                         this.setStations(stations)
+                        Printer.initial(CLODOP, this.config)
                         this.$q()
                     }
                 })

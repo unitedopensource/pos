@@ -12,7 +12,9 @@
                 <span class="price">$ {{ticket.payment.due.toFixed(2)}}</span>
             </div>
         </section>
-        <div :is="component" :init="componentData"></div>
+        <div class="popupMask center dark" @click.self="component = null" v-if="component">
+            <div :is="component" :init="componentData"></div>
+        </div>
     </div>
 </template>
 
@@ -45,7 +47,7 @@ export default {
         },
         view(ticket) {
             let order = Printer.preview(ticket);
-            this.$p('ticket', { order })
+            this.$p('ticket', { render:order })
         }
     },
     computed: {

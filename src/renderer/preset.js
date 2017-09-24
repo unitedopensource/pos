@@ -24,8 +24,7 @@ var Preset = function () {
         enable: false,
         port: 'COM3'
       },
-      print: {},
-      printRedirect: false,
+      printer: null,
       cashDrawer: {
         enable: false,
         name: alies,
@@ -180,7 +179,7 @@ var Preset = function () {
       timeCard: false,
       cashCtrl: 'disable',
       access: [],
-      review:[],
+      review: [],
       modify: [],
       view: []
     }

@@ -43,16 +43,15 @@ var Printer = function (plugin, config) {
     }
 
     this.openCashDrawer = function () {
-        if (this.station.cashDrawer) {
+        if (this.station.cashDrawer && this.station.cashDrawer.bind) {
             this.setPrinter(this.station.cashDrawer.bind);
             this.plugin.SEND_PRINT_RAWDATA(String.fromCharCode(27) + String.fromCharCode(112) + String.fromCharCode(48) + String.fromCharCode(55) + String.fromCharCode(221));
         }
     }
 
     this.buzzer = function (name) {
-        name = name || this.station.printer;
         this.plugin.PRINT_INIT('Buzzer');
-        this.setPrinter(name);
+        this.plugin.SET_PRINTER_INDEX(name);
         this.plugin.SEND_PRINT_RAWDATA(String.fromCharCode(27) + String.fromCharCode(67) + String.fromCharCode(4) + String.fromCharCode(2) + String.fromCharCode(3));
         return this
     }
@@ -116,14 +115,14 @@ var Printer = function (plugin, config) {
                     this.plugin.SET_PRINT_STYLEA(0, "LetterSpacing", 1);
                     cursor += 22
                 })
-                this.plugin.PRINT();
+                this.plugin.PRINT()
             }
 
             if (setting.double[raw.type]) {
-                this.plugin.PRINT_INIT('Reprint ticket');
-                this.plugin.ADD_PRINT_HTM(0, 0, "100%", "100%", html);
-                this.plugin.SET_PRINTER_INDEX(printer);
-                this.plugin.PRINT();
+                this.plugin.PRINT_INIT('Reprint ticket')
+                this.plugin.ADD_PRINT_HTM(0, 0, "100%", "100%", html)
+                this.plugin.SET_PRINTER_INDEX(printer)
+                this.plugin.PRINT()
             }
         })
 
@@ -176,7 +175,11 @@ var Printer = function (plugin, config) {
     }
 
     this.printCreditCard = function (trans, reprint) {
-        let store = this.config.store;
+        let { store, print } = this.config;
+        let printer = this.station.printer || 'cashier';
+
+        if (!print[printer]['print']['CREDITCARD']) return;
+
         let timestamp = moment(Number(trans.trace.time), 'YYYYMMDDHHmmss');
         let date = timestamp.format("MM/DD/YYYY");
         let time = timestamp.format("HH:mm:ss");
