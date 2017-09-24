@@ -1,6 +1,6 @@
 <template>
     <div>
-        wizard of oz
+        
     </div>
 </template>
 

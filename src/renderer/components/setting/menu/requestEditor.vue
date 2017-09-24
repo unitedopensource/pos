@@ -6,21 +6,45 @@
                 <h4>{{$t(init.type)}}</h4>
             </header>
             <section class="data" v-if="init.type === 'category'">
-                <input type="text" v-model="request.usEN" :placeholder="$t('text.primary')">
-                <input type="text" v-model="request.zhCN" :placeholder="$t('text.secondary')">
-                <input type="text" v-model="request.contain" :placeholder="$t('text.contain')">
+                <div>
+                    <label>{{$t('text.primary')}}</label>
+                    <input type="text" v-model="request.usEN" :placeholder="$t('text.primary')">
+                </div>
+                <div>
+                    <label>{{$t('text.secondary')}}</label>
+                    <input type="text" v-model="request.zhCN" :placeholder="$t('text.secondary')">
+                </div>
+                <div>
+                    <label>{{$t('text.contain')}}</label>
+                    <input type="text" v-model="request.contain" :placeholder="$t('text.contain')">
+                </div>
             </section>
             <section class="data" v-else-if="init.type === 'action'">
-                <input type="text" v-model="request.usEN" :placeholder="$t('text.primary')">
-                <input type="text" v-model="request.zhCN" :placeholder="$t('text.secondary')">
+                <div>
+                    <label>{{$t('text.primary')}}</label>
+                    <input type="text" v-model="request.usEN" :placeholder="$t('text.primary')">
+                </div>
+                <div>
+                    <label>{{$t('text.secondary')}}</label>
+                    <input type="text" v-model="request.zhCN" :placeholder="$t('text.secondary')">
+                </div>
                 <div class="default">
                     <checkbox v-model="request.prefix" label="text.prefix"></checkbox>
                 </div>
             </section>
             <section class="data" v-else>
-                <input type="text" v-model="request.usEN" :placeholder="$t('text.primary')">
-                <input type="text" v-model="request.zhCN" :placeholder="$t('text.secondary')">
-                <input type="text" v-model="request.price" :placeholder="$t('text.price')">
+                <div>
+                    <label>{{$t( 'text.primary')}}</label>
+                    <input type="text" v-model="request.usEN" :placeholder="$t('text.primary')">
+                </div>
+                <div>
+                    <label>{{$t( 'text.secondary')}}</label>
+                    <input type="text" v-model="request.zhCN" :placeholder="$t('text.secondary')">
+                </div>
+                <div>
+                    <label>{{$t('text.price')}}</label>
+                    <input type="text" v-model="request.price" :placeholder="$t('text.price')">
+                </div>
                 <div class="option">
                     <label>{{$t('text.category')}}</label>
                     <select v-model="request.category">
@@ -151,17 +175,29 @@ export default {
 }
 
 .form .data {
-    padding: 20px 25px 30px;
+    padding: 20px 23px;
     box-sizing: border-box;
     width: 100%;
 }
 
+section.data>div {
+    position: relative;
+}
+
+label {
+    position: absolute;
+    left: 15px;
+    top: -3px;
+    background: white;
+    padding: 0 5px;
+}
+
 .data input {
-    width: 100%;
-    padding: 10px 0;
-    border: none;
-    border-bottom: 2px solid rgba(0, 0, 0, 0.2);
-    background: #fafafa;
+    width: 280px;
+    padding: 8px;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    margin: 6px 2px;
+    border-radius: 4px;
     color: #636363;
     outline: none;
     font-weight: normal;
@@ -171,7 +207,7 @@ export default {
 }
 
 .data input:focus {
-    border-bottom: 2px solid #FF9800;
+    border: 2px solid #FF9800;
 }
 
 footer {
@@ -180,23 +216,23 @@ footer {
 }
 
 .default {
-    margin: 30px 15px 0;
+    margin: 15px 15px 0;
     padding: 10px 10px 0;
     text-align: center;
     border: 1px dashed #CFD8DC;
 }
 
 .option {
-    padding: 10px 0;
-    font-size: 20px;
-    border-bottom: 2px solid rgba(0, 0, 0, 0.2);
+    padding: 6px 0;
 }
 
 .option select {
-    border: none;
+    border: 2px solid rgba(0, 0, 0, 0.2);
     outline: none;
-    width: 275px;
+    width: 302px;
     font-size: 20px;
+    padding: 8px;
+    border-radius: 4px;
 }
 
 .f1 {

@@ -726,7 +726,8 @@ export default {
         'index': '主页',
         'user': '用户',
         'event': '事件',
-        'timecard': '打卡'
+        'timecard': '打卡',
+        'giftCard':'礼物卡'
     },
     setting: {
         'softwareSetting': 'UnitedPOS 后台设置',

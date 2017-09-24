@@ -1,7 +1,7 @@
 <template>
     <div class="wrap">
         <aside>
-            <div v-for="(day,index) in days" :key="index">{{day}}</div>
+            <!-- <div v-for="(day,index) in days" :key="index">{{day}}</div> -->
         </aside>
         <article></article>
     </div>

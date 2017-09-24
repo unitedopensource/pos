@@ -728,7 +728,8 @@ export default {
         'index': 'Index',
         'user': 'User',
         'event': 'Event',
-        'timecard': 'TimeCard'
+        'timecard': 'TimeCard',
+        'giftCard':'GiftCard'
     },
     setting: {
         'softwareSetting': 'UnitedPOS Setting',
