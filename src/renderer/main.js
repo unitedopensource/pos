@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Electron from 'vue-electron'
 import Router from 'vue-router'
 import VueSocketio from 'vue-socket.io'
+import VueTouch from 'vue-touch'
 import moment from 'moment'
 import Net from 'net'
 import Ip from 'ip'
@@ -13,6 +14,7 @@ import VueBus from './plugin/bus'
 
 Vue.use(Electron)
 Vue.use(VueBus)
+Vue.use(VueTouch, { name: 'v-touch' })
 Vue.use(Router)
 Vue.use(dialog)
 Vue.use(i18n)

@@ -43,22 +43,9 @@
                 </div>
             </div>
         </header>
-        <div class="order" @click.self="resetHighlight" v-if="layout === 'order'">
-            <div class="inner" :style="scrollStyle" :class="{overflow}">
-                <div class="list void" v-for="(list,index) in voidItems" :key="index">
-                    <div class="itemOuter">
-                        <span class="qty">{{list.qty}}</span>
-                        <span class="itemWrap">
-                            <span class="item">{{list[language]}}
-                                <span class="mark">{{list.mark[0] | mark}}</span>
-                            </span>
-                            <span class="side">{{list.side[language]}}
-                                <span class="mark">{{list.mark[1] | mark}}</span>
-                            </span>
-                        </span>
-                        <span class="price">{{list.total}}</span>
-                    </div>
-                </div>
+        <v-touch class="order" @click.self="resetHighlight" v-if="layout === 'order'" @panup="panUp" @pandown="panDown" @panend="reset">
+            <!-- <v-touch class="inner" :style="scrollStyle" :class="{overflow}"> -->
+            <div class="inner" :style="scrollStyle">
                 <div class="list" v-for="(list,index) in cart" @click="setHighlight(list,$event)" :data-category="list.category" :key="index">
                     <div class="itemOuter">
                         <span class="qty">{{list.qty}}</span>
@@ -78,8 +65,9 @@
                         <span class="price" :class="{hide:set.price == 0}">{{set.price | decimal}}</span>
                     </div>
                 </div>
+
             </div>
-        </div>
+        </v-touch>
         <div class="order" v-else>
             <div class="inner" :style="scrollStyle" :class="{overflow}">
                 <div class="list" v-for="(list,index) in order.content" :class="{print:!list.print,pending:list.pending}" @click="addToSpooler(list,$event)" :key="index">
@@ -335,6 +323,19 @@ export default {
             event.currentTarget.classList.add("target");
             this.setChoiceSetTarget(choice);
         },
+        panUp(e) {
+            console.log('trigger', this.offset)
+            this.offset = e.deltaY;
+        },
+        panDown(e) {
+            console.log(e)
+            this.offset = e.deltaY;
+        },
+        reset(){
+            if(this.offset <= 150)
+            this.offset = 0;
+
+        },
         update(config) {
             this.setOrder(config);
             this.calculator(this.cart);
@@ -346,7 +347,6 @@ export default {
                 count += item.qty;
                 !item.print && undone++;
             })
-
             return [count, undone]
         },
         calculator(items) {
@@ -427,9 +427,9 @@ export default {
         cart() {
             return this.sort ? this.order.content.filter(item => item.sort === this.sort && !item.void) : this.order.content.filter(item => !item.void)
         },
-        voidItems() {
-            return this.config.display.voidItem ? this.order.content.filter(item => item.void) : []
-        },
+        // voidItems() {
+        //     return this.config.display.voidItem ? this.order.content.filter(item => item.void) : []
+        // },
         ...mapGetters(['app', 'config', 'store', 'tax', 'order', 'item', 'ticket', 'language', 'isEmptyTicket'])
     },
     filters: {
