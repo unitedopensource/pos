@@ -124,19 +124,6 @@ export default {
         this.app.mode === 'create' && this.order.content.length > 0 && this.calculator(this.order.content);
     },
     methods: {
-        setHighlight(item, e) {
-            if (e.currentTarget.className.indexOf('highlight') !== -1) {
-                this.resetHighlight();
-            } else {
-                let dom = document.querySelector('.list.highlight');
-                dom && dom.classList.remove('highlight');
-                dom = document.querySelector('.choiceSet.target');
-                dom && dom.classList.remove("target");
-                this.resetChoiceSet();
-                e.currentTarget.classList.add("highlight");
-                this.setPointer(item);
-            }
-        },
         resetHighlight() {
             let dom = document.querySelector('li.item.active');
             dom && dom.classList.remove('active');
@@ -214,8 +201,7 @@ export default {
                 this.offset = 0
             } else if (height < 350) {
                 this.offset = 0
-            }
-            else if (height > 350 && bottom < 335) {
+            } else if (height > 350 && bottom < 335) {
                 this.offset = - (height - 329)
             }
             this.lastDelta = this.offset;
