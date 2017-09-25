@@ -158,10 +158,10 @@ const mutations = {
         item.single = price;
         item.total = item.single.toFixed(2);
 
-        let dom = document.querySelector('.list.highlight');
-        dom && dom.classList.remove('highlight');
+        let dom = document.querySelector('li.item.active');
+        dom && dom.classList.remove('active');
         let index = state.order.content.findIndex(i => i.unique === state.item.unique);
-        document.querySelectorAll('div.list')[index].classList.add('highlight');
+        document.querySelectorAll('li.item')[index].classList.add('active');
         state.order.content.splice(index + 1, 0, item);
       }
     }

@@ -43,13 +43,45 @@
                 </div>
             </div>
         </header>
-        <div class="order" @click.self="resetHighlight">
-            <v-touch class="inner" :style="scroll" @panup="panUp" @pandown="panDown" @panstart="panStart" @panend="panEnd" tag="ul">
-                <list-item v-for="(item,index) in cart" :data-category="item.category" :key="index" :item="item"></list-item>
-            </v-touch>
+        <div class="order" @click.self="resetHighlight" v-if="layout === 'order'">
+            <div class="inner" :style="scrollStyle" :class="{overflow}">
+                <div class="list void" v-for="(list,index) in voidItems" :key="index">
+                    <div class="itemOuter">
+                        <span class="qty">{{list.qty}}</span>
+                        <span class="itemWrap">
+                            <span class="item">{{list[language]}}
+                                <span class="mark">{{list.mark[0] | mark}}</span>
+                            </span>
+                            <span class="side">{{list.side[language]}}
+                                <span class="mark">{{list.mark[1] | mark}}</span>
+                            </span>
+                        </span>
+                        <span class="price">{{list.total}}</span>
+                    </div>
+                </div>
+                <div class="list" v-for="(list,index) in cart" @click="setHighlight(list,$event)" :data-category="list.category" :key="index">
+                    <div class="itemOuter">
+                        <span class="qty">{{list.qty}}</span>
+                        <span class="itemWrap">
+                            <span class="item">{{list[language]}}
+                                <span class="mark">{{list.mark[0] | mark}}</span>
+                            </span>
+                            <span class="side">{{list.side[language]}}
+                                <span class="mark">{{list.mark[1] | mark}}</span>
+                            </span>
+                        </span>
+                        <span class="price">{{list.total}}</span>
+                    </div>
+                    <div class="choiceSet" v-for="(set,index) in list.choiceSet" @click.stop="adjustChoiceSet(set,$event)" :key="index">
+                        <span class="qty" :class="{hide:set.qty === 1}">{{set.qty}}</span>
+                        <span class="item">{{set[language]}}</span>
+                        <span class="price" :class="{hide:set.price == 0}">{{set.price | decimal}}</span>
+                    </div>
+                </div>
+            </div>
         </div>
-        <!-- <div class="order">
-            <div class="inner" :style="scroll" :class="{overflow}">
+        <div class="order" v-else>
+            <div class="inner" :style="scrollStyle" :class="{overflow}">
                 <div class="list" v-for="(list,index) in order.content" :class="{print:!list.print,pending:list.pending}" @click="addToSpooler(list,$event)" :key="index">
                     <div class="itemOuter">
                         <span class="qty">{{list.qty}}</span>
@@ -71,7 +103,7 @@
                     </div>
                 </div>
             </div>
-        </div> -->
+        </div>
         <div class="middle">
             <div class="page">
                 <i class="marker fa fa-shopping-basket" @click="openMarker" v-if="layout === 'order'"></i>
@@ -109,10 +141,10 @@
 import { mapGetters, mapActions } from 'vuex'
 import dialoger from '../common/dialoger'
 import itemMarker from '../menu/marker'
-import listItem from './listItem'
+//import Printer from '../../print'
 import config from './config'
 export default {
-    components: { config, itemMarker, dialoger, listItem },
+    components: { config, itemMarker, dialoger },
     props: ['layout', 'group', 'display', 'sort'],
     data() {
         return {
@@ -130,7 +162,6 @@ export default {
                 delivery: 0,
                 log: []
             },
-            lastDelta: 0,
             offset: 0,
             overflow: false,
             overflowIndex: null,
@@ -161,8 +192,8 @@ export default {
             }
         },
         resetHighlight() {
-            let dom = document.querySelector('li.item.active');
-            dom && dom.classList.remove('active');
+            let dom = document.querySelector('.list.highlight');
+            dom && dom.classList.remove('highlight');
             dom = document.querySelector('.choiceSet.target');
             dom && dom.classList.remove("target");
             this.resetChoiceSet();
@@ -175,6 +206,76 @@ export default {
             let deliveryFree = this.order.deliveryFree || false;
             let menuID = this.config.display.menuID;
             this.$p("config", { taxFree, deliveryFree, menuID });
+        },
+        scroll(direction) {
+            if (!this.overflow || this.offset > 0) return;
+            let doms = document.querySelectorAll(".order .list");
+            if (!doms[this.overflowIndex]) return;
+            let offset = doms[this.overflowIndex].offsetHeight;
+            let currentClickTime = +new Date;
+            if (direction === "up") {
+                if ((currentClickTime - this.lastClickTime) < 230) {
+                    this.scrollAllTheWay(direction, doms);
+                    return;
+                }
+                this.overflowIndex--;
+                this.offset += offset;
+                if (this.offset > 0) {
+                    setTimeout(() => {
+                        this.overflowIndex++;
+                        this.offset = 0;
+                    }, 300)
+                }
+            } else {
+                let height = 0;
+                let inView = this.overflowIndex + 1;
+                for (let i = 0; i < inView; i++) {
+                    height += doms[i].offsetHeight;
+                }
+                this.offset = 329 - height;
+                this.overflowIndex++;
+                if (doms.length < (this.overflowIndex + 1)) {
+                    this.overflowIndex--;
+                    this.offset = 288 - height;
+                    clearTimeout(this.timeout);
+                    this.timeout = setTimeout(() => {
+                        this.offset = 329 - height;
+                    }, 300)
+                }
+            }
+            this.lastClickTime = +new Date;
+        },
+        scrollAllTheWay(direction, doms) {
+            if (direction === "up") {
+                this.offset = 37;
+                setTimeout(() => {
+                    this.offset = 0;
+                }, 300);
+                let height = 0;
+                for (let i = 0; i < doms.length; i++) {
+                    height += doms[i].offsetHeight;
+                    if (height > 329) {
+                        this.overflowIndex = i;
+                        break;
+                    }
+                }
+            } else {
+                let height = 0;
+                let inView = this.overflowIndex + 1;
+                for (let i = 0; i < inView; i++) {
+                    height += doms[i].offsetHeight;
+                }
+                this.offset = 329 - height;
+                this.overflowIndex++;
+                if (doms.length < (this.overflowIndex + 1)) {
+                    this.overflowIndex--;
+                    this.offset = 288 - height;
+                    clearTimeout(this.timeout);
+                    this.timeout = setTimeout(() => {
+                        this.offset = 329 - height;
+                    }, 300)
+                }
+            }
         },
         openMarker() {
             if (this.isEmptyTicket) return;
@@ -234,34 +335,6 @@ export default {
             event.currentTarget.classList.add("target");
             this.setChoiceSetTarget(choice);
         },
-        panUp(e) {
-            this.offset = this.lastDelta + e.deltaY;
-        },
-        panDown(e) {
-            this.offset = this.lastDelta + e.deltaY;
-        },
-        panStart() {
-            let dom = document.querySelector('.order .scrollable');
-            dom && dom.classList.remove('scrollable')
-        },
-        panEnd() {
-            let dom = document.querySelector('.order .inner');
-            dom && dom.classList.add('scrollable')
-
-            let { top, bottom, height } = dom.getBoundingClientRect();
-            let offset = this.$route.name === 'Menu' ? 55 : 179;
-            top -= offset;
-            bottom -= offset;
-            if (top > 0) {
-                this.offset = 0
-            } else if (height < 350) {
-                this.offset = 0
-            }
-            else if (height > 350 && bottom < 335) {
-                this.offset = - (height - 329)
-            }
-            this.lastDelta = this.offset;
-        },
         update(config) {
             this.setOrder(config);
             this.calculator(this.cart);
@@ -273,6 +346,7 @@ export default {
                 count += item.qty;
                 !item.print && undone++;
             })
+
             return [count, undone]
         },
         calculator(items) {
@@ -347,16 +421,21 @@ export default {
         ...mapActions(['setPointer', 'resetPointer', 'resetChoiceSet', 'setChoiceSetTarget', 'setOrder'])
     },
     computed: {
-        scroll() {
+        scrollStyle() {
             return { transform: `translate3d(0,${this.offset}px,0)` }
         },
         cart() {
             return this.sort ? this.order.content.filter(item => item.sort === this.sort && !item.void) : this.order.content.filter(item => !item.void)
         },
-        // voidItems() {
-        //     return this.config.display.voidItem ? this.order.content.filter(item => item.void) : []
-        // },
+        voidItems() {
+            return this.config.display.voidItem ? this.order.content.filter(item => item.void) : []
+        },
         ...mapGetters(['app', 'config', 'store', 'tax', 'order', 'item', 'ticket', 'language', 'isEmptyTicket'])
+    },
+    filters: {
+        mark(text) {
+            return text.join(" ")
+        }
     },
     watch: {
         cart: {
@@ -365,17 +444,17 @@ export default {
             }, deep: true
         },
         payment(n) {
-            let dom = document.querySelector('.order .inner');
-            dom.classList.add("scrollable");
-            let { height } = dom.getBoundingClientRect();
-            let target = document.querySelector('.item.active');
-
-            if (target) {
-                // let top = target.getBoundingClientRect().top;
-                // this.offset = top;
-            } else {
-                this.offset = height > 329 ? 329 - height : 0;
-            }
+            this.$nextTick(() => {
+                let height = 0;
+                let doms = document.querySelectorAll(".order .list");
+                doms.forEach(dom => {
+                    height += dom.offsetHeight;
+                });
+                height = 329 - height;
+                this.overflow = height < 0;
+                this.overflowIndex = this.overflow ? this.cart.length - 1 : null;
+                this.offset = this.overflow ? height : 0;
+            })
         },
         'ticket.type'(n) {
             this.calculator(this.cart)
@@ -440,7 +519,7 @@ header i {
 }
 
 .simple .qty {
-    width: 40px;
+    width: 44px;
     text-align: center;
 }
 
@@ -449,36 +528,17 @@ header i {
 }
 
 .simple .price {
-    width: 45px;
+    width: 48px;
     text-align: center;
 }
 
 .order {
     height: 329px;
-    width: 285px;
     background: hsla(0, 9%, 66%, .15);
     overflow: hidden;
 }
 
-.scrollable {
-    transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* .list {
+.list {
     border-bottom: 1px solid #ddd;
     padding: 10px 0 8px;
     background: #fff;
@@ -533,13 +593,13 @@ header i {
 .itemWrap .item {
     text-overflow: ellipsis;
     padding-right: 5px;
-} 
+}
 
 .side {
     color: #666;
     font-size: 16px;
     padding: 1px 0;
-}*/
+}
 
 .mark {
     position: absolute;
@@ -613,7 +673,7 @@ i.flip {
 
 .settle .value {
     flex: 1;
-    padding-right: 5px;
+    padding-right: 10px;
     overflow: hidden;
     vertical-align: text-top;
     text-overflow: ellipsis;
