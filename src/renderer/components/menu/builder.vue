@@ -214,7 +214,7 @@ export default {
 
 .content {
   padding: 5px 10px;
-  width: 412px;
+  width: 538px;
 }
 
 .step {

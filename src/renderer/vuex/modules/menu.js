@@ -226,7 +226,7 @@ const mutations = {
     state.item.choiceSet.push(set);
     state.choiceSetTarget = set;
 
-    let dom = document.querySelector(".choiceSet.target");
+    let dom = document.querySelector(".sub.target");
     dom && dom.classList.remove("target");
   },
   [types.ALERT_CHOICE_SET](state, set) {

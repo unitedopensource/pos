@@ -359,7 +359,7 @@ export default {
         'remainPrintItem': 'Remain {i} items unprint',
         'noRemainItem': 'All items are printed',
         'itemSent': 'Item Sent',
-        'printResult': 'Send {i} items',
+        'printResult': 'Send {i} items, {i}',
         'tableSectionRemove': 'Table Section Remove',
         'tableSectionRemoveTip': 'Are you sure you are going to remove this table section?',
         'tableRemoveConfirm': 'Table Remove Confirm',

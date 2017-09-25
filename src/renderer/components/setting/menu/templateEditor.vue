@@ -189,7 +189,7 @@ aside {
     display: flex;
     background: #F5F5F5;
     min-height: 500px;
-    width: 600px;
+    width: 675px;
 }
 
 .group {
@@ -251,9 +251,9 @@ li {
     align-items: center;
     text-align: center;
     padding: 0 5px;
-    border: 1px solid #eee;
+    border: 1px solid #ddd;
     background: #fff;
-    margin: 1px;
+    margin: 2px;
 }
 
 .group i {

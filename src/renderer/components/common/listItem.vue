@@ -1,5 +1,5 @@
 <template>
-    <li class="item" @click="focus(item,$event)">
+    <li class="item" @click="select(item,$event)">
         <div class="main">
             <span class="qty">{{item.qty}}</span>
             <div class="wrap">
@@ -14,10 +14,10 @@
             </div>
             <span class="price" @click.stop>{{item.total}}</span>
         </div>
-        <div class="sub" v-for="(set,index) in item.choiceSet" @click.stop="adjustChoiceSet(set,$event)" :key="index">
+        <div class="sub" v-for="(set,index) in item.choiceSet" :key="index" @click.stop="adjustChoiceSet(set,$event)">
             <span class="qty" :class="{hide:set.qty === 1}">{{set.qty}}</span>
             <span class="item">{{set[language]}}</span>
-            <span class="price" :class="{hide:set.price == 0}">{{set.price | decimal}}</span>
+            <span class="price" :class="{hide:parseFloat(set.price) === 0}" @click.stop>{{set.price | decimal}}</span>
         </div>
     </li>
 </template>
@@ -27,7 +27,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
     props: ['item'],
     computed: {
-        ...mapGetters(['language'])
+        ...mapGetters(['language', 'choiceSet'])
     },
     data() {
         return {
@@ -35,6 +35,9 @@ export default {
         }
     },
     methods: {
+        select(item, e) {
+            this.$route.name === 'Menu' && this.focus(item, e);
+        },
         focus(item, e) {
             if (item === this.$store.getters.item) {
                 let dom = document.querySelector('li.item.active');
@@ -48,6 +51,17 @@ export default {
                 this.resetChoiceSet();
                 e.currentTarget.classList.add("active");
                 this.setPointer(item);
+            }
+        },
+        adjustChoiceSet(choice, e) {
+            let dom = document.querySelector('.sub.target');
+            dom && dom.classList.remove("target");
+
+            if (this.choiceSet === choice) {
+                this.setChoiceSetTarget(null);
+            } else {
+                e.currentTarget.classList.add("target");
+                this.setChoiceSetTarget(choice);
             }
 
         },
@@ -71,13 +85,14 @@ li {
     padding: 10px 5px;
 }
 
-.main {
+.main,
+.sub {
     display: flex;
     position: relative;
 }
 
 
-.main .qty {
+.qty {
     width: 30px;
     text-align: center;
 }
@@ -91,14 +106,40 @@ li {
 
 .main .price {
     position: absolute;
-    right: -5px;
-    padding: 10px;
+    right: -10px;
+    padding: 10px 10px 10px 20px;
     top: -10px;
 }
 
 .itemWrap {
     white-space: nowrap;
     position: relative;
+}
+
+.sub .item {
+    flex: 1;
+    color: #666;
+    text-indent: 10px;
+}
+
+.sub.target {
+    background: #BCAAA4;
+    border-radius: 2px;
+    color: #fff;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.8);
+}
+
+.sub.target .item {
+    color: #fff;
+}
+
+.active .sub .item {
+    color: #fff;
+}
+
+.sub .price {
+    min-width: 35px;
+    text-align: right;
 }
 
 .mark {
@@ -126,5 +167,30 @@ li {
 .active .sideWrap {
     color: #fff;
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.8);
+}
+
+.item.print .price {
+    visibility: hidden;
+}
+
+.item.print:after {
+    content: '\f256';
+    font-family: fontAwesome;
+    position: absolute;
+    right: 10px;
+    color: #FF9800;
+}
+
+.item.print.pending:after {
+    content: '\f02f'
+}
+
+.item.print.pending {
+    background: #ECEFF1;
+    border-bottom: 1px dashed #ddd;
+}
+
+.hide {
+    visibility: hidden;
 }
 </style>

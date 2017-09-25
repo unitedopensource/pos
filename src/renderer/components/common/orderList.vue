@@ -43,41 +43,22 @@
                 </div>
             </div>
         </header>
-        <div class="order" @click.self="resetHighlight">
-            <v-touch class="inner" :style="scroll" @panup="panUp" @pandown="panDown" @panstart="panStart" @panend="panEnd" tag="ul">
+        <div class="order" @click.self="resetHighlight" v-if="layout === 'order'">
+            <v-touch class="inner" :style="scroll" @panup="move" @pandown="move" @panstart="panStart" @panend="panEnd" tag="ul">
                 <list-item v-for="(item,index) in cart" :data-category="item.category" :key="index" :item="item"></list-item>
             </v-touch>
         </div>
-        <!-- <div class="order">
-            <div class="inner" :style="scroll" :class="{overflow}">
-                <div class="list" v-for="(list,index) in order.content" :class="{print:!list.print,pending:list.pending}" @click="addToSpooler(list,$event)" :key="index">
-                    <div class="itemOuter">
-                        <span class="qty">{{list.qty}}</span>
-                        <span class="itemWrap">
-                            <span class="item">{{list[language]}}
-                                <span class="mark">{{list.mark[0] | mark}}</span>
-                            </span>
-                            <span class="side">{{list.side[language]}}
-                                <span class="mark">{{list.mark[1] | mark}}</span>
-                            </span>
-                        </span>
-                        <span class="price">{{list.total}}</span>
-                        <i class="fa"></i>
-                    </div>
-                    <div class="choiceSet" v-for="(set,index) in list.choiceSet" :key="index">
-                        <span class="qty" :class="{hide:set.qty === 1}">{{set.qty}}</span>
-                        <span class="item">{{set[language]}}</span>
-                        <span class="price" :class="{hide:set.price == 0}">{{set.price | decimal}}</span>
-                    </div>
-                </div>
-            </div>
-        </div> -->
+        <div class="order" v-else>
+            <v-touch class="inner" :style="scroll" @panup="move" @pandown="move" @panstart="panStart" @panend="panEnd" tag="ul">
+                <list-item v-for="(item,index) in cart" :data-category="item.category" :key="index" :item="item" :class="{print:!item.print,pending:item.pending}" @click.native="addToSpooler(item)"></list-item>
+            </v-touch>
+        </div>
         <div class="middle">
             <div class="page">
                 <i class="marker fa fa-shopping-basket" @click="openMarker" v-if="layout === 'order'"></i>
                 <i class="marker fa fa-print" @click="directPrint" v-else></i>
-                <i class="flip fa fa-2x fa-angle-up" @click="scroll('up')"></i>
-                <i class="flip fa fa-2x fa-angle-down" @click="scroll('down')"></i>
+                <i class="flip fa fa-2x fa-angle-up"></i>
+                <i class="flip fa fa-2x fa-angle-down"></i>
             </div>
             <div class="settle" @click="openConfig">
                 <div>
@@ -132,13 +113,9 @@ export default {
             },
             lastDelta: 0,
             offset: 0,
-            overflow: false,
-            overflowIndex: null,
             component: null,
             componentData: null,
-            pointer: null,
-            spooler: [],
-            lastClickTime: +new Date
+            spooler: []
         }
     },
     mounted() {
@@ -182,8 +159,7 @@ export default {
         },
         addToSpooler(item) {
             if (item.print) return;
-            let i = 0;
-            for (; i < this.spooler.length; i++) {
+            for (let i = 0; i < this.spooler.length; i++) {
                 if (this.spooler[i].unique === item.unique) {
                     item.pending = false;
                     this.spooler.splice(i, 1);
@@ -203,41 +179,23 @@ export default {
                 return item;
             });
             let remain = items.filter(item => !item.print).length;
-            try {
-                order.content = this.spooler;
-                order.delay = +new Date();
-                Printer.setTarget('all').print(order)
-                order.content = items;
-                if (remain === 0) order.print = true;
-                this.$socket.emit("[UPDATE] INVOICE", order);
-            } catch (e) {
-                error = true;
-                this.spooler = [];
-                this.$dialog({
-                    type: 'warning', title: 'dialog.unableSent', msg: ['dialog.errorCode', e.toString()],
-                    buttons: [{ text: 'text.confirm', fn: 'resolve' }]
-                }).then(() => { this.$q() })
-            }
-            if (!error) {
+            order.content = this.spooler;
+            order.delay = +new Date;
+            Printer.setTarget('Order').print(order)
+            this.spooler.forEach(item => { item.print = true })
+            if (remain === 0) {
+                order.print = true;
+            } else {
                 let txt = remain > 0 ? this.$t('dialog.remainPrintItem', remain) : this.$t('dialog.noRemainItem');
                 this.$dialog({
-                    type: 'info', title: 'dialog.itemSent', msg: this.$t('dialog.printResult', sendItem) + ", " + txt,
+                    type: 'info', title: 'dialog.itemSent', msg: ['dialog.printResult', sendItem, txt],
                     buttons: [{ text: 'button.confirm', fn: 'resolve' }]
                 }).then(() => { this.$q() })
-                this.spooler.forEach(item => { item.print = true })
-                this.spooler = [];
             }
+            this.spooler = [];
+            this.$socket.emit("[UPDATE] INVOICE", this.order)
         },
-        adjustChoiceSet(choice, event) {
-            let dom = document.querySelector('.choiceSet.target');
-            dom && dom.classList.remove("target");
-            event.currentTarget.classList.add("target");
-            this.setChoiceSetTarget(choice);
-        },
-        panUp(e) {
-            this.offset = this.lastDelta + e.deltaY;
-        },
-        panDown(e) {
+        move(e) {
             this.offset = this.lastDelta + e.deltaY;
         },
         panStart() {
@@ -364,18 +322,20 @@ export default {
                 this.display ? this.payment = this.order.payment : this.calculator(n);
             }, deep: true
         },
-        payment(n) {
-            let dom = document.querySelector('.order .inner');
-            dom.classList.add("scrollable");
-            let { height } = dom.getBoundingClientRect();
-            let target = document.querySelector('.item.active');
+        payment() {
+            this.$nextTick(() => {
+                let dom = document.querySelector('.order .inner');
+                let { height } = dom.getBoundingClientRect();
+                height > 329 && dom.classList.add("scrollable");
+                let target = document.querySelector('.item.active');
 
-            if (target) {
-                // let top = target.getBoundingClientRect().top;
-                // this.offset = top;
-            } else {
-                this.offset = height > 329 ? 329 - height : 0;
-            }
+                if (target) {
+                    // let top = target.getBoundingClientRect().top;
+                    // this.offset = top;
+                } else {
+                    this.offset = height > 329 ? 329 - height : 0;
+                }
+            })
         },
         'ticket.type'(n) {
             this.calculator(this.cart)
@@ -390,10 +350,6 @@ export default {
 </script>
 
 <style scoped>
-.overflow {
-    transition: transform .22s ease;
-}
-
 header.simple {
     display: flex;
     flex-direction: row;
@@ -463,83 +419,6 @@ header i {
 .scrollable {
     transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* .list {
-    border-bottom: 1px solid #ddd;
-    padding: 10px 0 8px;
-    background: #fff;
-    font-size: 1.05em;
-    width: 100%;
-    display: flex;
-    min-height: 20px;
-    flex-direction: column;
-}
-
-.list.void {
-    color: red;
-    opacity: 0.5;
-}
-
-.list.highlight {
-    background: #A1887F;
-    color: #fff;
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.8);
-}
-
-.highlight .choiceSet .item {
-    color: #fff;
-}
-
-.list.highlight .side {
-    color: #fff;
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.8);
-}
-
-.qty {
-    text-align: center;
-    width: 35px;
-    vertical-align: top;
-}
-
-.itemOuter {
-    display: flex;
-}
-
-.itemWrap {
-    display: flex;
-    flex: 1;
-    align-items: center;
-}
-
-.itemWrap>span {
-    position: relative;
-    vertical-align: baseline;
-}
-
-.itemWrap .item {
-    text-overflow: ellipsis;
-    padding-right: 5px;
-} 
-
-.side {
-    color: #666;
-    font-size: 16px;
-    padding: 1px 0;
-}*/
 
 .mark {
     position: absolute;
@@ -630,40 +509,6 @@ i.flip {
     padding: 2.5px 0;
 }
 
-.choiceSet {
-    display: flex;
-    font-size: 16px;
-}
-
-.choiceSet .item {
-    margin-left: 5px;
-    color: #555;
-    border-bottom: 1px dashed #ccc;
-    vertical-align: top;
-    flex: 1;
-}
-
-.choiceSet:last-child .item {
-    border-bottom: none;
-}
-
-.choiceSet.target {
-    background: #9E9E9E;
-    border-radius: 8px;
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.8);
-}
-
-.choiceSet.target .qty,
-.choiceSet.target .item,
-.choiceSet.target .price {
-    color: #fff;
-    visibility: visible;
-}
-
-.hide {
-    visibility: hidden;
-}
-
 .timePass {
     position: absolute;
     bottom: 0px;
@@ -680,24 +525,6 @@ i.flip {
     width: 200px;
 }
 
-.list.print .price {
-    display: none;
-}
-
-.list.print i {
-    color: #555;
-    display: inline-block;
-}
-
-.print i::before {
-    content: '\F02F'
-}
-
-.print.pending i::before {
-    content: '\F017';
-    color: #FF9800;
-}
-
 .list.print.pending {
     background: #ECEFF1;
 }
@@ -707,20 +534,20 @@ i.flip {
     padding-right: 25px;
 }
 
-.order.showCategory .list {
+.showCategory .item {
     position: relative;
 }
 
-.showCategory .list:before {
+.showCategory .item:before {
     content: attr(data-category);
     position: absolute;
     top: 0px;
-    right: 10px;
+    right: 0px;
     font-size: 9px;
     font-family: 'Microsoft YaHei';
     background: #009688;
     color: #fff;
-    padding: 0 2px;
+    padding: 0 5px;
     -webkit-font-smoothing: antialiased;
     font-weight: lighter;
 }

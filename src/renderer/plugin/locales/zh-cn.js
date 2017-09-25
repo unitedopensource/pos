@@ -358,7 +358,7 @@ export default {
         'remainPrintItem': '剩余 {i} 个物品未打印',
         'noRemainItem': '已经全部打印完毕',
         'itemSent': '物品发送',
-        'printResult': '已发送 {i} 个物品',
+        'printResult': '已发送 {i} 个物品, {i}',
         'tableSectionRemove': '区域移除',
         'tableSectionRemoveTip': '您确定要移除这个区域吗？',
         'tableRemoveConfirm': '删除座位',
