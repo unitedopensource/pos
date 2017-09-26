@@ -49,6 +49,7 @@ export default {
             componentData: null,
             component: null,
             itemPage: 0,
+            saveItems: [],
             items: [],
             sort: 0
         }
@@ -124,12 +125,14 @@ export default {
 
             item = JSON.parse(JSON.stringify(item));
             this.app.mode === 'edit' && (item.new = true);
-            this.poleDisplay(item.usEN.slice(0, 20), ["Price:", (item.price[0]).toFixed(2)]);
             this.store.table.seatOrder && (item.sort = this.sort);
-            (item.hasOwnProperty("prices") && item.prices[this.ticket.type]) && (item.price = item.prices[this.ticket.type]);
+            item.hasOwnProperty("prices") && item.prices[this.ticket.type] && (item.price = item.prices[this.ticket.type]);
+
+            this.poleDisplay(item.usEN.slice(0, 20), ["Price:", (item.price[0]).toFixed(2)]);
             this.setSides(this.fillOption(item.option));
             this.addToOrder(item);
-            this.config.display.autoTemplate && this.sides[0].template && this.callTemplate(this.sides[0],0);
+
+            this.config.display.autoTemplate && this.sides[0].template && this.callTemplate(this.sides[0], 0);
         },
         isTemporary(item) {
             if (!item.temporary) return false;
@@ -147,7 +150,11 @@ export default {
             return true
         },
         setOption(side, index) {
-            side.template ? this.callTemplate(side, index) : this.alterItemOption({ side, index });
+            side.template ? this.callTemplate(side, index) :
+                side.subMenu ? this.getSubMenuItem(side.subMenu) : this.alterItemOption({ side, index });
+        },
+        getSubMenuItem(name) {
+            //console.log(this.menuInstance)
         },
         callTemplate(side, index) {
             this.$p("builder", { side, index });
