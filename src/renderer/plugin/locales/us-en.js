@@ -393,7 +393,9 @@ export default {
         'removeCarryNote':'Remove Carry Note',
         'removeCarryNoteTip':'Are you sure to remove this carry note?',
         'invoiceNotFound':'Invoice Not Found',
-        'resetTableStatus':'Do you want to reset this table?'
+        'resetTableStatus':'Do you want to reset this table?',
+        'templateRemove':'Template Remove',
+        'templateRemoveTip':'Are you sure to remove this template?'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',
@@ -700,7 +702,8 @@ export default {
         'coupon':'Coupon',
         'timecard':'timecard session',
         'tipPercentage':'Tip Percentage',
-        'autoTemplate':'Auto Template'
+        'autoTemplate':'Auto Template',
+        'openFood':'Open Food'
     },
     nav: {
         'store': 'Store',

@@ -3,10 +3,7 @@
         <div class="editor">
             <header>
                 <div>{{$t('setting.template')}}</div>
-                <div class="name">
-                    <i class="fa fa-pencil"></i>
-                    <input v-model="template.template">
-                </div>
+                <div class="name"><input v-model="template.template"></div>
                 <checkbox v-model="template.insert" label="text.insert"></checkbox>
             </header>
             <div class="includes">
@@ -41,7 +38,7 @@
                         <draggable v-model="container.contain" :options="{animation:300,group:'item',ghostClass:'itemGhost',draggable:'.draggable'}">
                             <transition-group tag="ul" class="item">
                                 <li v-for="(item,index) in container.contain" @contextmenu="editItem(item,index)" :key="index" class="draggable">{{item[language]}}</li>
-                                <li class="addItem" @click="addItem" :key="999" v-show="container.contain.length < 24">
+                                <li class="addItem" @click="addItem" :key="999" v-show="container.contain.length < 32">
                                     <i class="fa fa-plus"></i>
                                 </li>
                             </transition-group>
@@ -54,7 +51,7 @@
             </div>
             <footer>
                 <div class="f1">
-                    <span class="del" @click="del">{{$t('button.delete')}}</span>
+                    <span class="del" @click="deleteConfirm">{{$t('button.delete')}}</span>
                 </div>
                 <div class="btn" @click="init.reject(false)">{{$t('button.cancel')}}</div>
                 <div class="btn" @click="confirm">{{$t('button.confirm')}}</div>
@@ -67,10 +64,11 @@
 <script>
 import { mapGetters } from 'vuex'
 import checkbox from '../common/checkbox'
+import dialoger from '../../common/dialoger'
 import draggable from 'vuedraggable'
 import editor from './templateItem'
 export default {
-    components: { editor, checkbox, draggable },
+    components: { editor, checkbox, draggable, dialoger },
     props: ['init'],
     created() {
         this.template = JSON.parse(JSON.stringify(this.init.template));
@@ -130,8 +128,15 @@ export default {
                 this.$q();
             })
         },
-        del() {
-            this.init.reject(true);
+        deleteConfirm() {
+            this.$dialog({
+                type: 'question', title: 'dialog.templateRemove', msg: 'dialog.templateRemoveTip',
+                buttons: [{ text: 'button.cancel', fn: 'reject' }, { text: 'button.delete', fn: 'resolve' }]
+            }).then(() => {
+                this.init.reject(true);
+            }).catch(() => {
+                this.$q()
+            })
         },
         confirm() {
             this.init.resolve(this.template)
@@ -160,18 +165,21 @@ header .text {
 }
 
 .name input {
-    border: none;
-    background: transparent;
+    text-shadow: 0 1px 1px #000;
     color: #fff;
-    border-bottom: 1px solid #9ec8ca;
+    border: 1px solid #5f9ea0;
+    border-radius: 4px;
     font-size: 1em;
     width: 150px;
     padding: 0 5px;
     font-style: italic;
+    background: #74b1b3;
+    outline: none;
 }
 
 aside {
     width: 140px;
+    height: 100%;
     border-right: 1px solid #eee;
     background: #fff;
 }
@@ -240,7 +248,7 @@ aside {
 ul.item {
     display: flex;
     flex-wrap: wrap;
-    padding: 10px 28px;
+    padding: 10px 15px;
 }
 
 li {

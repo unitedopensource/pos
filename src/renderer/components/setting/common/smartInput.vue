@@ -81,8 +81,9 @@ label {
 
 i {
     position: absolute;
-    right: -37px;
-    padding: 8px 13px;
+    right: -30px;
+    top: 0px;
+    padding: 8px 10px;
     background: #fff;
     z-index: 0;
     border-top-right-radius: 4px;
