@@ -48,6 +48,7 @@
                         <smart-switch v-model="item.spicy" label="text.spicy"></smart-switch>
                         <smart-option v-model="item.taxClass" :options="taxOption" label="text.taxClass"></smart-option>
                         <div v-if="advance">
+                            <smart-input v-model="item.temporary" label="text.openFood"></smart-input>
                             <smart-input v-model="item.priority" label="text.priority"></smart-input>
                             <smart-input v-model="item.inventory" label="text.inventory"></smart-input>
                             <smart-input v-model="item.rewardPoint" label="text.rewardPoint"></smart-input>
@@ -79,7 +80,7 @@
                                             <label>{{$t('text.priceExtra')}}</label>
                                             <input type="text" v-model.number="side.extra">
                                         </div>
-                                        <div class="template right" v-if="advance">
+                                        <div class="template right">
                                             <label>{{$t('text.template')}}</label>
                                             <select v-model="side.template">
                                                 <option v-for="(name,index) in templateOption" :key="index">{{name}}</option>
@@ -491,7 +492,6 @@ footer .tip i {
     color: #B0BEC5;
     box-shadow: var(--shadow);
     text-indent: 15px;
-    text-transform: uppercase;
     display: flex;
     cursor: pointer;
 }
@@ -524,7 +524,7 @@ footer .tip i {
 
 .extra {
     display: none;
-    width: 589px;
+    width: 618px;
     padding: 10px 0;
     text-indent: 10px;
     background: #fff;
@@ -542,7 +542,7 @@ footer .tip i {
 }
 
 .extra input {
-    width: 150px;
+    width: 120px;
 }
 
 .show .extra {

@@ -67,6 +67,7 @@ export default {
 <style scoped>
 .input {
     display: flex;
+    align-items: center;
     position: relative;
 }
 

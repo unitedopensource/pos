@@ -118,8 +118,10 @@ article .list {
     height: 25px;
     width: auto;
     padding: 0 10px;
-    margin:0 2px;
+    margin-left: 5px;
     cursor: pointer;
+    font-size: initial;
+    color: #333;
 }
 
 article .list:nth-child(even) {

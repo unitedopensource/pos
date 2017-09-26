@@ -392,7 +392,9 @@ export default {
         'removeCarryNote':'移除手抄',
         'removeCarryNoteTip':'您确定要移除这份手抄吗？',
         'invoiceNotFound':'无法找到订单',
-        'resetTableStatus':'您是否需要还原座位状态?'
+        'resetTableStatus':'您是否需要还原座位状态?',
+        'templateRemove':'移除模版',
+        'templateRemoveTip':'您确定要移除这个模版吗?'
     },
     terminal: {
         'initial': '正在初始化 {i}...',
@@ -698,7 +700,8 @@ export default {
         'coupon':'优惠',
         'timecard':'打卡时段',
         'tipPercentage':'小费百分比',
-        'autoTemplate':'自动开启模板'
+        'autoTemplate':'自动开启模板',
+        'openFood':'临时物品'
     },
     nav: {
         'store': '店面',
