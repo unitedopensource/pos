@@ -88,19 +88,6 @@ export default {
                 this.setTicket({ type: 'DINE_IN', number: this.order.number })
                 this.$router.push({ path: '/main/menu' })
             }
-
-
-            // if (!this.approval(this.op.view, 'tables') && this.currentTable.server !== this.op.name) {
-            //     this.editDenied();
-            //     return
-            // }
-            // if (!this.order.settled) {
-            //     this.setApp({ mode: 'edit' })
-            //     this.setTicket({ type: 'DINE_IN', number: this.order.number })
-            //     this.$router.push({ path: '/main/menu' })
-            // } else {
-            //     this.handleSettledOrder()
-            // }
         },
         editDenied() {
             this.$dialog({
@@ -161,8 +148,12 @@ export default {
             } else {
                 let remain = this.order.content.filter(item => !item.print).length;
                 this.$dialog({
-                    title: 'dialog.prePaymentFailed', msg: ['dialog.prePaymentFailedTip', remain], buttons: [{ text: 'button.confirm', fn: 'resolve' }]
-                }).then(() => { this.$q() })
+                    title: 'dialog.prePaymentFailed', msg: ['dialog.prePaymentFailedTip', remain],
+                    buttons: [{ text: 'button.cancel', fn: 'reject' }, { text: 'button.printAnyway', fn: 'resolve' }]
+                }).then(() => {
+                    this.$q();
+                    this.printPrePayment();
+                }).catch(() => { this.$q() })
             }
         },
         printPrePayment() {

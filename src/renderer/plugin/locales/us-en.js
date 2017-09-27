@@ -195,7 +195,8 @@ export default {
         'selectAll':'Select All',
         'valid':'Valid',
         'invalid':'Invalid',
-        'clockIn':'Clock In'
+        'clockIn':'Clock In',
+        'printAnyway':'Print Anyway'
     },
     title: {
         'markPaymentType': 'Mark Payment Type',

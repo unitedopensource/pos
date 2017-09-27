@@ -735,6 +735,9 @@ section.items {
   will-change: background;
   position: relative;
 }
+.sub.items div {
+  border: 1px dashed #5a7f92;
+}
 .items div:before {
     position: absolute;
     bottom: 0;

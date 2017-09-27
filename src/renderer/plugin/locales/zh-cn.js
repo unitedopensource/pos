@@ -194,7 +194,8 @@ export default {
         'selectAll':'全选',
         'valid':'有效',
         'invalid':'无效',
-        'clockIn':'打卡'
+        'clockIn':'打卡',
+        'printAnyway':'依然打印'
     },
     title: {
         'markPaymentType': '标记付款方式',

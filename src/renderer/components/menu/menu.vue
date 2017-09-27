@@ -3,7 +3,13 @@
         <section class="category">
             <div v-for="(category,index) in menu" @click="setCategory(index,$event)" :key="index">{{category[language]}}</div>
         </section>
-        <section class="items" v-if="config.display.menuID">
+        <section class="items sub" v-if="saveItems">
+            <div v-for="(item,index) in page" @click="pick(item)" :class="{disable:!item.clickable,like:item.like}" :key="index" :data-menuID="item.menuID">{{item[language]}}</div>
+            <!-- <div @click="itemPage = 0" v-if="items.length >= 34" class="pageButton">{{$t("button.firstPage")}}</div>
+                <div @click="itemPage = 1" v-if="items.length >= 34" class="pageButton">{{$t("button.secondPage")}}</div>
+                <div @click="itemPage = 2" v-if="items.length >= 34" class="pageButton">{{$t("button.thirdPage")}}</div> -->
+        </section>
+        <section class="items" v-else-if="config.display.menuID">
             <div v-for="(item,index) in page" @click="pick(item)" :class="{disable:!item.clickable,like:item.like}" :key="index" :data-menuID="item.menuID">{{item[language]}}</div>
             <div @click="itemPage = 0" v-if="items.length >= 34" class="pageButton">{{$t("button.firstPage")}}</div>
             <div @click="itemPage = 1" v-if="items.length >= 34" class="pageButton">{{$t("button.secondPage")}}</div>
@@ -138,6 +144,7 @@ export default {
         },
         isSubMenu(item) {
             if (!item.sub) return false;
+            if (this.isEmptyTicket) return true;
             let { zhCN, usEN, print, price } = item;
             let content = {
                 qty: 1,
@@ -148,6 +155,16 @@ export default {
                 price: price.toFixed(2),
                 key: item._id.slice(-4)
             }
+            let subItemCount = Array.isArray(this.item.choiceSet) ? this.item.choiceSet.filter(item => item.subItem).length : 0;
+
+            if (this.item.hasOwnProperty('rules')) {
+                let max = this.item.rules.maxSubItem || Infinity;
+                let overCharge = this.item.rules.overCharge || 0;
+                if (subItemCount > max && overCharge === 0) return;
+                content.single += overCharge;
+                content.price = (content.single * content.qty).toFixed(2)
+            }
+
             let dom = document.querySelector(".choiceSet.target");
             dom ? this.alertChoiceSet(content) : this.setChoiceSet(content);
             return true
@@ -169,16 +186,25 @@ export default {
         },
         setOption(side, index) {
             side.template ? this.callTemplate(side, index) : this.alterItemOption({ side, index });
-            side.subMenu && this.getSubMenuItem(side.subMenu)
+            side.subMenu && this.getSubMenuItem(side)
         },
-        getSubMenuItem(group) {
+        getSubMenuItem(side) {
+            Object.assign(this.item, {
+                rules: {
+                    maxSubItem: side.maxSubItem,
+                    overCharge: side.overCharge
+                }
+            })
+
+            let group = side.subMenu;
+            //temporary solution will become locally in next patch
             this.saveItems ? this.resetItems() :
                 this.$socket.emit("[SUBMENU] GROUP", group, (items) => {
                     this.saveItems = this.items;
                     this.items = items
                 })
         },
-        resetItems(){
+        resetItems() {
             this.items = this.saveItems;
             this.saveItems = null;
         },
