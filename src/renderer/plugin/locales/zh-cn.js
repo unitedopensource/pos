@@ -730,7 +730,8 @@ export default {
         'user': '用户',
         'event': '事件',
         'timecard': '打卡',
-        'giftCard':'礼物卡'
+        'giftCard':'礼物卡',
+        'subMenu':'子菜单'
     },
     setting: {
         'softwareSetting': 'UnitedPOS 后台设置',

@@ -232,9 +232,16 @@ aside {
     cursor: pointer;
 }
 
+.config label {
+    width: 100px;
+    display: inline-block;
+    text-align: left;
+}
+
 .config input {
     border: 1px solid #ddd;
     width: 100px;
+    margin-right:10px;
 }
 
 .config {

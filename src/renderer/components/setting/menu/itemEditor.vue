@@ -406,7 +406,7 @@ aside.intro {
 .itemEditor .inner {
     height: 512px;
     overflow-y: scroll;
-    overflow-x:hidden;
+    overflow-x: hidden;
     background: url(../../../assets/image/grid.png) #fcfcfc;
 }
 
@@ -430,12 +430,12 @@ article.option {
 
 i.remove {
     position: absolute;
-    right: -36px;
+    right: -30px;
     top: calc(50% - 19px);
     color: #F44336;
     opacity: 0.2;
     z-index: 0;
-    padding: 10px;
+    padding: 10px 8px 10px 6px;
     background: #fff;
     font-size: 1.25em;
     border-top-right-radius: 5px;

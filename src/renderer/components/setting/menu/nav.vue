@@ -6,6 +6,10 @@
                     <i class="fa fa-braille"></i>
                     <span class="text">{{$t('nav.menu')}}</span>
                 </router-link>
+                <router-link tag="li" :to="{name:'Setting.subMenu'}">
+                    <i class="fa fa-list"></i>
+                    <span class="text">{{$t('nav.subMenu')}}</span>
+                </router-link>
                 <router-link tag="li" :to="{name:'Setting.request'}">
                     <i class="fa fa-commenting-o"></i>
                     <span class="text">{{$t('nav.request')}}</span>

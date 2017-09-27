@@ -732,7 +732,8 @@ export default {
         'user': 'User',
         'event': 'Event',
         'timecard': 'TimeCard',
-        'giftCard':'GiftCard'
+        'giftCard':'GiftCard',
+        'subMenu':'Sub Menu'
     },
     setting: {
         'softwareSetting': 'UnitedPOS Setting',

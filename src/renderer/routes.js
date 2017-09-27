@@ -105,6 +105,10 @@ export default [{
         name: 'Setting.menu',
         component: require('./components/setting/menu/index')
       }, {
+        path: 'subMenu',
+        name: 'Setting.subMenu',
+        component: require('./components/setting/menu/subMenu')
+      }, {
         path: 'request',
         name: 'Setting.request',
         component: require('./components/setting/menu/request')
