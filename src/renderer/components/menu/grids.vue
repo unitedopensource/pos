@@ -162,17 +162,17 @@ export default {
       this.$emit("open", name);
     },
     less() {
-      let item = !!document.querySelector('div.request');
+      let boolean = !!document.querySelector('div.request') || !!this.item.choiceSet.length;
       if (this.app.mode === 'create' || this.item.new) {
-        this.lessQty(item);
+        this.lessQty(boolean);
       } else {
         this.approval(this.op.modify, 'item') ?
-          this.lessQty(item) :
+          this.lessQty(boolean) :
           this.requestAccess().then(op => {
             console.log(this.approval(op.modify, 'item'))
             if (this.approval(op.modify, 'item')) {
               this.$q()
-              this.lessQty(item)
+              this.lessQty(boolean)
             } else {
               this.accessDenied()
             }

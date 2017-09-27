@@ -127,7 +127,7 @@ export default {
         resetHighlight() {
             let dom = document.querySelector('li.item.active');
             dom && dom.classList.remove('active');
-            dom = document.querySelector('.choiceSet.target');
+            dom = document.querySelector('.sub.target');
             dom && dom.classList.remove("target");
             this.resetChoiceSet();
             this.resetPointer();

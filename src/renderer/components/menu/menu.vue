@@ -115,10 +115,12 @@ export default {
             toggleClass(".category .active", "active");
             e.currentTarget.classList.add("active");
             this.itemPage = 0;
+            this.saveItems = [];
             this.flatten(this.menuInstance[i].item);
         },
         pick(item) {
             if (!item.clickable) return;
+            if (this.isSubMenu(item)) return;
             if (this.isTemporary(item)) return;
             if (this.isScalable(item)) return;
             if (this.isOpenFood(item)) return;
@@ -133,6 +135,22 @@ export default {
             this.addToOrder(item);
 
             this.config.display.autoTemplate && this.sides[0].template && this.callTemplate(this.sides[0], 0);
+        },
+        isSubMenu(item) {
+            if (!item.sub) return false;
+            let { zhCN, usEN, print, price } = item;
+            let content = {
+                qty: 1,
+                zhCN,
+                usEN,
+                print,
+                single: price,
+                price: price.toFixed(2),
+                key: item._id.slice(-4)
+            }
+            let dom = document.querySelector(".choiceSet.target");
+            dom ? this.alertChoiceSet(content) : this.setChoiceSet(content);
+            return true
         },
         isTemporary(item) {
             if (!item.temporary) return false;
@@ -150,11 +168,14 @@ export default {
             return true
         },
         setOption(side, index) {
-            side.template ? this.callTemplate(side, index) :
-                side.subMenu ? this.getSubMenuItem(side.subMenu) : this.alterItemOption({ side, index });
+            side.template ? this.callTemplate(side, index) : this.alterItemOption({ side, index });
+            side.subMenu && this.getSubMenuItem(side.subMenu)
         },
-        getSubMenuItem(name) {
-            //console.log(this.menuInstance)
+        getSubMenuItem(group) {
+            this.$socket.emit("[SUBMENU] GROUP", group, (items) => {
+                this.saveItems = this.items;
+                this.items = items
+            })
         },
         callTemplate(side, index) {
             this.$p("builder", { side, index });
@@ -222,7 +243,7 @@ export default {
             this.setApp({ mode: "create" });
             this.$router.push({ path: "/main" });
         },
-        ...mapActions(['setApp', 'setOrder', 'setTicket', 'setSides', 'addToOrder', 'resetPointer', 'resetMenu', 'resetAll', 'alterItemOption', 'resetCurrentTable'])
+        ...mapActions(['setApp', 'setOrder', 'setTicket', 'setSides', 'addToOrder', 'resetPointer', 'alertChoiceSet', 'setChoiceSet', 'resetMenu', 'resetAll', 'alterItemOption', 'resetCurrentTable'])
     },
     computed: {
         page() {
