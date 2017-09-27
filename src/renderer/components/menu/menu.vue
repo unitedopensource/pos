@@ -49,7 +49,7 @@ export default {
             componentData: null,
             component: null,
             itemPage: 0,
-            saveItems: [],
+            saveItems: null,
             items: [],
             sort: 0
         }
@@ -115,7 +115,7 @@ export default {
             toggleClass(".category .active", "active");
             e.currentTarget.classList.add("active");
             this.itemPage = 0;
-            this.saveItems = [];
+            this.saveItems = null;
             this.flatten(this.menuInstance[i].item);
         },
         pick(item) {
@@ -172,10 +172,15 @@ export default {
             side.subMenu && this.getSubMenuItem(side.subMenu)
         },
         getSubMenuItem(group) {
-            this.$socket.emit("[SUBMENU] GROUP", group, (items) => {
-                this.saveItems = this.items;
-                this.items = items
-            })
+            this.saveItems ? this.resetItems() :
+                this.$socket.emit("[SUBMENU] GROUP", group, (items) => {
+                    this.saveItems = this.items;
+                    this.items = items
+                })
+        },
+        resetItems(){
+            this.items = this.saveItems;
+            this.saveItems = null;
         },
         callTemplate(side, index) {
             this.$p("builder", { side, index });
