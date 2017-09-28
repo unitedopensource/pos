@@ -43,7 +43,7 @@
                 </div>
                 <div>
                     <label>{{$t('text.price')}}</label>
-                    <input type="text" v-model="request.price" :placeholder="$t('text.price')">
+                    <input type="text" v-model.number="request.price" placeholder="0.00">
                 </div>
                 <div class="option">
                     <label>{{$t('text.category')}}</label>
@@ -117,20 +117,7 @@ export default {
             this.init.resolve()
         },
         ...mapActions(['updateRequestCategory'])
-    },
-    // directives:{
-    //     dollar:{
-    //         inserted(el,binding){
-    //             el.value = binding.value.toFixed(2) || '0.00'
-    //         },
-    //         bind(el){
-    //             el.addEventListener('input',)
-    //         },
-    //         update(el,binding){
-    //             console.log(binding.oldValue)
-    //         }
-    //     }
-    // }
+    }
 }
 </script>
 

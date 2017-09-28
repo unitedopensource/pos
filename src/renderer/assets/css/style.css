@@ -731,21 +731,20 @@ section.items {
   margin: 1px;
   background: #B0BEC5;
   vertical-align: top;
-  font-size: 1.05em;
   will-change: background;
   position: relative;
 }
 .sub.items div {
-  border: 1px dashed #5a7f92;
+  border: 1px solid #FF9800;
 }
 .items div:before {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    content: attr(data-menuid);
-    background: #546E7A;
-    color: #F5F5F5;
-    min-width: 25px;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  content: attr(data-menuid);
+  background: #546E7A;
+  color: #F5F5F5;
+  min-width: 25px;
 }
 .items .like{
   position: relative;

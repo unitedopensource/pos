@@ -7,6 +7,7 @@
                 <smart-switch v-model="display.favorite" label="text.favoriteItem"></smart-switch>
                 <smart-switch v-model="display.voidItem" label="text.displayVoidItem"></smart-switch>
                 <smart-switch v-model="display.autoTemplate" label="text.autoTemplate" tip="tip.autoTemplate"></smart-switch>
+                <smart-switch v-model="display.alphabetical" label="text.alphabetical" tip="tip.alphabetical"></smart-switch>
             </article>
         </section>
     </div>

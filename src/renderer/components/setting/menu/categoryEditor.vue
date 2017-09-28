@@ -77,13 +77,13 @@ export default {
 .options {
     display: flex;
     flex-wrap: wrap;
-    width: 550px;
+    width: 575px;
     padding: 10px;
     justify-content: space-between;
 }
 
 .options .checkbox {
-    width: 150px;
+    width: 170px;
 }
 
 fieldset {

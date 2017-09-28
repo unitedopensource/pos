@@ -76,16 +76,16 @@ const mutations = {
                 submenu[item.group].push(item) :
                 submenu[item.group] = [item];
         })
-        Object.keys(submenu).forEach(key => {
-            let group = submenu[key];
-            let length = group.length;
-            let align = 6 - length % 3;
+        // Object.keys(submenu).forEach(key => {
+        //     let group = submenu[key];
+        //     let length = group.length;
+        //     let align = 6 - length % 3;
 
-            align === 6 && (align = 3);
-            group.sort((a, b) => a.num - b.num);
+        //     align === 6 && (align = 3);
+        //     group.sort((a, b) => a.num - b.num);
 
-            Array(align).fill().forEach(_ => { group.push({ zhCN: "", usEN: "", clickable: false, group: null }) });
-        })
+        //     Array(align).fill().forEach(_ => { group.push({ zhCN: "", usEN: "", clickable: false, group: null }) });
+        // })
         state.config.layout.submenu = submenu;
     },
     [types.SET_REQUEST](state, data) {

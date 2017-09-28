@@ -705,7 +705,8 @@ export default {
         'timecard': '打卡时段',
         'tipPercentage': '小费百分比',
         'autoTemplate': '自动开启模板',
-        'openFood': '临时物品'
+        'openFood': '临时物品',
+        'alphabetical':'按字母排列'
     },
     nav: {
         'store': '店面',
@@ -883,6 +884,7 @@ export default {
     },
     tip: {
         'autoTemplate': '自动弹出模板选择页面',
+        'alphabetical': '菜单按字母序列排序',
         'table': {
             'passwordRequire': '创建座位之前需要输入密码',
             'autoClearTable': '客人付款之后自动还原座位状态',

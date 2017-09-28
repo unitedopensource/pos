@@ -707,7 +707,8 @@ export default {
         'timecard': 'timecard session',
         'tipPercentage': 'Tip Percentage',
         'autoTemplate': 'Auto Template',
-        'openFood': 'Open Food'
+        'openFood': 'Open Food',
+        'alphabetical':'Alphabetical'
     },
     nav: {
         'store': 'Store',
@@ -885,6 +886,7 @@ export default {
     },
     tip: {
         'autoTemplate': 'Auto popup template page',
+        'alphabetical':'Sort menu item by alphabet',
         'table': {
             'passwordRequire': 'Password input required before create a new table.',
             'autoClearTable': 'Auto restore table status after settling ticket.',

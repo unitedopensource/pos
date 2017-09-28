@@ -90,6 +90,7 @@
                                     <div class="ctrl" v-if="advance">
                                         <checkbox v-model="side.sub" label="text.subItem"></checkbox>
                                         <checkbox v-model="side.overWrite" label="text.overWrite"></checkbox>
+                                        <checkbox v-model="side.skip" label="text.skip"></checkbox>
                                     </div>
                                     <i class="fa fa-trash remove" @click="removeOption(index)"></i>
                                 </div>

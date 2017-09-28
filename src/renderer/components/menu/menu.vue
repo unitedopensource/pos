@@ -162,8 +162,8 @@ export default {
                 printer[device] = {}
             })
             Object.assign(this.item.printer, printer)
-            let subItemCount = Array.isArray(this.item.choiceSet) ? 
-                this.item.choiceSet.filter(item => item.subItem).map(item=>item.qty).reduce((a,b)=>a+b,0) : 0;
+            let subItemCount = Array.isArray(this.item.choiceSet) ?
+                this.item.choiceSet.filter(item => item.subItem).map(item => item.qty).reduce((a, b) => a + b, 0) : 0;
 
             if (this.item.hasOwnProperty('rules')) {
                 let max = this.item.rules.maxSubItem || Infinity;
@@ -210,6 +210,7 @@ export default {
             side.subMenu && this.getSubMenuItem(side)
         },
         getSubMenuItem(side) {
+            console.time("sub menu")
             //if item change to subitem the item itself will depends on subitem printer config
             Object.assign(this.item, {
                 printer: {},
@@ -230,9 +231,17 @@ export default {
             this.saveItems = this.items;
             this.items = [];
             side.subMenu.forEach(group => {
-                let subItem = this.submenu[group];
+                let subItem = JSON.parse(JSON.stringify(this.submenu[group]));
+                let length = group.length;
+                let align = 6 - length % 3;
+                align === 6 && (align = 3);
+                Array(align).fill().forEach(_ => { subItem.push({ zhCN: "", usEN: "", clickable: false, group: null }) });
                 this.items.push(...subItem)
             })
+
+            let length = this.items.length;
+            length < 33 && Array(33 - length).fill().forEach(_ => { this.items.push({ zhCN: "", usEN: "", clickable: false, group: null }) });
+            console.timeEnd("sub menu")
         },
         resetItems() {
             this.items = this.saveItems;
