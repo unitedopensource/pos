@@ -305,8 +305,21 @@ section.ticket {
     font-size: 30px;
 }
 
-.invoice.active.split:after {
-    display: none;
+.invoice.split.active:after {
+    border-color: transparent #fff #fff transparent;
+    border-radius: 4px 0 0 0px;
+    border-style: solid;
+    position: absolute;
+    background: #6fc1e6;
+    height: 0;
+    width: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 1;
+    transition: border-width .15s ease-in, opacity 0ms ease-in 0ms;
+    border-width: 8px;
+    content: ' ';
+    display: block;
 }
 
 .invoice.split:after {
