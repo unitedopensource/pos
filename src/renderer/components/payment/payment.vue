@@ -912,8 +912,7 @@ export default {
             }
         },
         invoiceSettled(ticket, print) {
-            if (print) {
-                //Printer.init(this.config).setJob("receipt").print(ticket);
+            if (print) { 
                 Printer.setTarget('Receipt').print(ticket)
                 ticket.content.forEach(item => {
                     delete item.new;

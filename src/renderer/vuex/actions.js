@@ -65,6 +65,11 @@ export const setMenu = ({
 }, menu) => {
   commit(types.SET_MENU, menu)
 }
+export const setSubmenu = ({
+  commit
+}, submenu) => {
+  commit(types.SET_SUBMENU, submenu)
+}
 export const setTable = ({
   commit
 }, tables) => {

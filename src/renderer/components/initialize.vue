@@ -1,7 +1,4 @@
-<template>
-  <div>
-  </div>
-</template>
+<template></template>
 
 <script>
 import { mapActions, mapGetters } from "vuex"
@@ -39,10 +36,11 @@ export default {
       ipcRenderer.send("Loading", this.$t('initial.initialApplication'))
     },
     APP_RUNTIME_ENVIRONMENT(data) {
-      let { config, menu, request, orders, table, template, reservation, sync } = data;
+      let { config, menu, submenu, request, orders, table, template, reservation, sync } = data;
       ipcRenderer.send("Loading", this.$t('initial.loadConfiguration'));
       this.setConfig(config);
       this.setMenu(menu);
+      this.setSubmenu(submenu);
       this.setRequest(request);
       ipcRenderer.send("Loading", this.$t('initial.applyConfiguration'));
       this.setTable(table);
@@ -129,7 +127,7 @@ export default {
     },
     initPrinter() {
       let config = this.config
-      CLODOP ? window.Printer = new Print(CLODOP,config) : 
+      CLODOP ? window.Printer = new Print(CLODOP, config) :
         setTimeout(function() {
           window.Printer = new Print(CLODOP, config)
         }, 20000, CLODOP, config)
@@ -148,6 +146,7 @@ export default {
       'startTick',
       'setConfig',
       'setDevice',
+      'setSubmenu',
       'setRequest',
       'findStation',
       'setLastSync',

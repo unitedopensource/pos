@@ -5,9 +5,9 @@
         </section>
         <section class="items sub" v-if="saveItems">
             <div v-for="(item,index) in page" @click="pick(item)" :class="{disable:!item.clickable,like:item.like}" :key="index" :data-menuID="item.menuID">{{item[language]}}</div>
-            <!-- <div @click="itemPage = 0" v-if="items.length >= 34" class="pageButton">{{$t("button.firstPage")}}</div>
-                <div @click="itemPage = 1" v-if="items.length >= 34" class="pageButton">{{$t("button.secondPage")}}</div>
-                <div @click="itemPage = 2" v-if="items.length >= 34" class="pageButton">{{$t("button.thirdPage")}}</div> -->
+            <div @click="itemPage = 0" v-if="items.length >= 34" class="pageButton">{{$t("button.firstPage")}}</div>
+            <div @click="itemPage = 1" v-if="items.length >= 34" class="pageButton">{{$t("button.secondPage")}}</div>
+            <div @click="itemPage = 2" v-if="items.length >= 34" class="pageButton">{{$t("button.thirdPage")}}</div>
         </section>
         <section class="items" v-else-if="config.display.menuID">
             <div v-for="(item,index) in page" @click="pick(item)" :class="{disable:!item.clickable,like:item.like}" :key="index" :data-menuID="item.menuID">{{item[language]}}</div>
@@ -143,7 +143,7 @@ export default {
             this.config.display.autoTemplate && this.sides[0].template && this.callTemplate(this.sides[0], 0);
         },
         isSubMenu(item) {
-            if (!item.sub) return false;
+            if (!item.subItem) return false;
             if (this.isEmptyTicket) return true;
             let { zhCN, usEN, print, price } = item;
             let content = {
@@ -152,20 +152,41 @@ export default {
                 usEN,
                 print,
                 single: price,
+                subItem: item.subItem,
                 price: price.toFixed(2),
                 key: item._id.slice(-4)
             }
+            //apply this subitem print config to item
+            let printer = {};
+            print.forEach(device => {
+                printer[device] = {}
+            })
+            Object.assign(this.item.printer, printer)
             let subItemCount = Array.isArray(this.item.choiceSet) ? this.item.choiceSet.filter(item => item.subItem).length : 0;
+            //content.subItem && subItemCount++;
 
             if (this.item.hasOwnProperty('rules')) {
                 let max = this.item.rules.maxSubItem || Infinity;
                 let overCharge = this.item.rules.overCharge || 0;
-                if (subItemCount > max && overCharge === 0) return;
+                if (subItemCount >= max && overCharge === 0) {
+                    this.$dialog({
+                        title: 'dialog.unableAdd',
+                        msg: ['dialog.maxSubItem', this.item[this.language], max],
+                        timeout: {
+                            duration: 5000,
+                            fn: 'resolve'
+                        },
+                        buttons: [{ text: 'button.confirm', fn: 'resolve' }]
+                    }).then(() => {
+                        this.$q()
+                    })
+                    return true
+                }
                 content.single += overCharge;
                 content.price = (content.single * content.qty).toFixed(2)
             }
 
-            let dom = document.querySelector(".choiceSet.target");
+            let dom = document.querySelector(".sub.target");
             dom ? this.alertChoiceSet(content) : this.setChoiceSet(content);
             return true
         },
@@ -189,7 +210,9 @@ export default {
             side.subMenu && this.getSubMenuItem(side)
         },
         getSubMenuItem(side) {
+            //if item change to subitem the item itself will depends on subitem printer config
             Object.assign(this.item, {
+                printer: {},
                 rules: {
                     maxSubItem: side.maxSubItem,
                     overCharge: side.overCharge
@@ -198,11 +221,18 @@ export default {
 
             let group = side.subMenu;
             //temporary solution will become locally in next patch
-            this.saveItems ? this.resetItems() :
-                this.$socket.emit("[SUBMENU] GROUP", group, (items) => {
-                    this.saveItems = this.items;
-                    this.items = items
-                })
+            if (this.saveItems) {
+                this.resetItems();
+                return;
+            }
+
+            //save item first;
+            this.saveItems = this.items;
+            this.items = [];
+            side.subMenu.forEach(group => {
+                let subItem = this.submenu[group];
+                this.items.push(...subItem)
+            })
         },
         resetItems() {
             this.items = this.saveItems;
@@ -285,7 +315,7 @@ export default {
             }
             return this.items
         },
-        ...mapGetters(['op', 'app', 'config', 'menu', 'item', 'device', 'sides', 'store', 'ticket', 'order', 'course', 'customer', 'language', 'station', 'currentTable', 'isEmptyTicket'])
+        ...mapGetters(['op', 'app', 'config', 'menu', 'submenu', 'item', 'device', 'sides', 'store', 'ticket', 'order', 'course', 'customer', 'language', 'station', 'currentTable', 'isEmptyTicket'])
     }
 }
 </script>

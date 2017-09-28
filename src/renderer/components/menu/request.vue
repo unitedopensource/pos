@@ -76,7 +76,7 @@ export default {
         key: item._id.slice(-4)
       }
       this.action = null;
-      let dom = document.querySelector(".choiceSet.target");
+      let dom = document.querySelector(".sub.target");
       dom ? this.alertChoiceSet(content) : this.setChoiceSet(content);
       dom = document.querySelector('.acting');
       dom && dom.classList.remove('acting');

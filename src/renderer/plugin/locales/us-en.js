@@ -190,13 +190,13 @@ export default {
         'thirdParty': 'ThirdParty',
         'driver': 'Driver',
         'scan': 'Scan',
-        'lock':'Lock',
-        'unlock':'Unlock',
-        'selectAll':'Select All',
-        'valid':'Valid',
-        'invalid':'Invalid',
-        'clockIn':'Clock In',
-        'printAnyway':'Print Anyway'
+        'lock': 'Lock',
+        'unlock': 'Unlock',
+        'selectAll': 'Select All',
+        'valid': 'Valid',
+        'invalid': 'Invalid',
+        'clockIn': 'Clock In',
+        'printAnyway': 'Print Anyway'
     },
     title: {
         'markPaymentType': 'Mark Payment Type',
@@ -210,8 +210,8 @@ export default {
         'timecard': 'Timecard Records',
         'scanner': 'Scanner',
         'split': 'Split Ticket',
-        'payment':'Payment',
-        'note':'Note'
+        'payment': 'Payment',
+        'note': 'Note'
     },
     menu: {
         'course': 'Course',
@@ -385,18 +385,20 @@ export default {
         'tipAdjustedTip': 'Tip adjusted to {i},Terminal return total {i}',
         'tipAdjustDenied': 'Tip Adjust Denied',
         'tipAdjustDeniedTip': 'Tip adjust failed. Error code {i}',
-        'saveFailed':'Save Failed',
-        'splitItemNotComplete':'You need to split the rest of item before you can save',
-        'cashInRequired':'Cash In Required',
-        'cashInRequiredTip':'You need to Cash-In First before you can use the cash drawer',
-        'paidAmountGreaterThanDue':'Extra Tender Amount',
-        'extraAmountSetAsTip':'Are you going to set the Extra ( ${i} ) as Tip?',
-        'removeCarryNote':'Remove Carry Note',
-        'removeCarryNoteTip':'Are you sure to remove this carry note?',
-        'invoiceNotFound':'Invoice Not Found',
-        'resetTableStatus':'Do you want to reset this table?',
-        'templateRemove':'Template Remove',
-        'templateRemoveTip':'Are you sure to remove this template?'
+        'saveFailed': 'Save Failed',
+        'splitItemNotComplete': 'You need to split the rest of item before you can save',
+        'cashInRequired': 'Cash In Required',
+        'cashInRequiredTip': 'You need to Cash-In First before you can use the cash drawer',
+        'paidAmountGreaterThanDue': 'Extra Tender Amount',
+        'extraAmountSetAsTip': 'Are you going to set the Extra ( ${i} ) as Tip?',
+        'removeCarryNote': 'Remove Carry Note',
+        'removeCarryNoteTip': 'Are you sure to remove this carry note?',
+        'invoiceNotFound': 'Invoice Not Found',
+        'resetTableStatus': 'Do you want to reset this table?',
+        'templateRemove': 'Template Remove',
+        'templateRemoveTip': 'Are you sure to remove this template?',
+        'unableAdd': 'Unable to Add',
+        'maxSubItem': '{i} can only has {i} maximum subitems'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',
@@ -532,7 +534,7 @@ export default {
         'reservation': 'Reservation',
         'hour': 'Hour',
         'minute': 'Minute',
-        'second':'Second',
+        'second': 'Second',
         'subtotal': 'Subtotal',
         'delivery': 'Delivery',
         'deliveryFee': 'Deli. Fee',
@@ -699,12 +701,12 @@ export default {
         'printReceipt': 'Print Receipt',
         'count': 'Count',
         'lastDate': 'Last Date',
-        'content':'Content',
-        'coupon':'Coupon',
-        'timecard':'timecard session',
-        'tipPercentage':'Tip Percentage',
-        'autoTemplate':'Auto Template',
-        'openFood':'Open Food'
+        'content': 'Content',
+        'coupon': 'Coupon',
+        'timecard': 'timecard session',
+        'tipPercentage': 'Tip Percentage',
+        'autoTemplate': 'Auto Template',
+        'openFood': 'Open Food'
     },
     nav: {
         'store': 'Store',
@@ -727,14 +729,14 @@ export default {
         'sales': 'Sales',
         'chart': 'Chart',
         'excel': 'Excel',
-        'coupon':'Coupon',
-        'overview':'Overview',
+        'coupon': 'Coupon',
+        'overview': 'Overview',
         'index': 'Index',
         'user': 'User',
         'event': 'Event',
         'timecard': 'TimeCard',
-        'giftCard':'GiftCard',
-        'subMenu':'Sub Menu'
+        'giftCard': 'GiftCard',
+        'subMenu': 'Sub Menu'
     },
     setting: {
         'softwareSetting': 'UnitedPOS Setting',
@@ -850,7 +852,7 @@ export default {
         'callLog': 'Call Log',
         'userRemoval': 'User Remove',
         'userRemovalTip': 'Permanent remove user account',
-        'review':'Approval'
+        'review': 'Approval'
     },
     reservation: {
         'create': 'Create Reservation',
@@ -870,7 +872,7 @@ export default {
         'inactive': 'Set Inactive',
         'timeline': 'Time Line',
         'list': 'View List',
-        'tipsSuggestion':'Tip Suggestions'
+        'tipsSuggestion': 'Tip Suggestions'
     },
     database: {
         'dataSize': 'Data Size',
@@ -881,15 +883,15 @@ export default {
         'averageSize': 'Average Size'
     },
     tip: {
-        'autoTemplate':'Auto popup template page',
+        'autoTemplate': 'Auto popup template page',
         'table': {
             'passwordRequire': 'Password input required before create a new table.',
             'autoClearTable': 'Auto restore table status after settling ticket.',
             'printReceiptOnDone': 'Print receipt after Done'
         },
-        'suggestion':{
-            'enable':'Print tip suggestion on pre-payment ticket',
-            'percentage':'Set 3 tip suggestions percentage' 
+        'suggestion': {
+            'enable': 'Print tip suggestion on pre-payment ticket',
+            'percentage': 'Set 3 tip suggestions percentage'
         }
     }
 }

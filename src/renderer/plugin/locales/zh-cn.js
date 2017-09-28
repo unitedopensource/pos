@@ -115,7 +115,7 @@ export default {
         'logoutTip': '结算并登出系统'
     },
     button: {
-        'new':'新增',
+        'new': '新增',
         'less': '减少',
         'more': '增加',
         'request': '要求',
@@ -189,13 +189,13 @@ export default {
         'thirdParty': '第三方',
         'driver': '司机',
         'scan': '扫描',
-        'lock':'锁定',
-        'unlock':'解锁',
-        'selectAll':'全选',
-        'valid':'有效',
-        'invalid':'无效',
-        'clockIn':'打卡',
-        'printAnyway':'依然打印'
+        'lock': '锁定',
+        'unlock': '解锁',
+        'selectAll': '全选',
+        'valid': '有效',
+        'invalid': '无效',
+        'clockIn': '打卡',
+        'printAnyway': '依然打印'
     },
     title: {
         'markPaymentType': '标记付款方式',
@@ -209,8 +209,8 @@ export default {
         'timecard': '打卡记录',
         'scanner': '扫描器',
         'split': '分单',
-        'payment':'付款',
-        'note':'便签'
+        'payment': '付款',
+        'note': '便签'
     },
     menu: {
         'course': '定时',
@@ -384,18 +384,20 @@ export default {
         'tipAdjustedTip': '小费修改为 {i}，交易中心返回总数 {i}',
         'tipAdjustDenied': '无法调整小费',
         'tipAdjustDeniedTip': '调整小费失败，错误代码 {i}',
-        'saveFailed':'保存失败',
-        'splitItemNotComplete':'您需要将剩下的物品全部分单后才能保存',
-        'cashInRequired':'首次开启钱箱',
-        'cashInRequiredTip':'您需要先执行 CASH IN 才可以使用钱箱',
-        'paidAmountGreaterThanDue':'额外支付',
-        'extraAmountSetAsTip':'您是否需要将余出的款项 ( ${i} ) 设为小费？',
-        'removeCarryNote':'移除手抄',
-        'removeCarryNoteTip':'您确定要移除这份手抄吗？',
-        'invoiceNotFound':'无法找到订单',
-        'resetTableStatus':'您是否需要还原座位状态?',
-        'templateRemove':'移除模版',
-        'templateRemoveTip':'您确定要移除这个模版吗?'
+        'saveFailed': '保存失败',
+        'splitItemNotComplete': '您需要将剩下的物品全部分单后才能保存',
+        'cashInRequired': '首次开启钱箱',
+        'cashInRequiredTip': '您需要先执行 CASH IN 才可以使用钱箱',
+        'paidAmountGreaterThanDue': '额外支付',
+        'extraAmountSetAsTip': '您是否需要将余出的款项 ( ${i} ) 设为小费？',
+        'removeCarryNote': '移除手抄',
+        'removeCarryNoteTip': '您确定要移除这份手抄吗？',
+        'invoiceNotFound': '无法找到订单',
+        'resetTableStatus': '您是否需要还原座位状态?',
+        'templateRemove': '移除模版',
+        'templateRemoveTip': '您确定要移除这个模版吗?',
+        'unableAdd': '无法添加',
+        'maxSubItem': '{i} 无法添加多于 {i} 个子菜项'
     },
     terminal: {
         'initial': '正在初始化 {i}...',
@@ -531,7 +533,7 @@ export default {
         'reservation': '预约',
         'hour': '小时',
         'minute': '分钟',
-        'second':'秒',
+        'second': '秒',
         'subtotal': '小计',
         'delivery': '送餐',
         'deliveryFee': '送餐费',
@@ -697,12 +699,12 @@ export default {
         'printReceipt': '打印收据',
         'count': '计数',
         'lastDate': '最后日期',
-        'content':'内容',
-        'coupon':'优惠',
-        'timecard':'打卡时段',
-        'tipPercentage':'小费百分比',
-        'autoTemplate':'自动开启模板',
-        'openFood':'临时物品'
+        'content': '内容',
+        'coupon': '优惠',
+        'timecard': '打卡时段',
+        'tipPercentage': '小费百分比',
+        'autoTemplate': '自动开启模板',
+        'openFood': '临时物品'
     },
     nav: {
         'store': '店面',
@@ -725,14 +727,14 @@ export default {
         'sales': '销售',
         'chart': '图表',
         'excel': '表格',
-        'coupon':'促销',
-        'overview':'概览',
+        'coupon': '促销',
+        'overview': '概览',
         'index': '主页',
         'user': '用户',
         'event': '事件',
         'timecard': '打卡',
-        'giftCard':'礼物卡',
-        'subMenu':'子菜单'
+        'giftCard': '礼物卡',
+        'subMenu': '子菜单'
     },
     setting: {
         'softwareSetting': 'UnitedPOS 后台设置',
@@ -848,8 +850,8 @@ export default {
         'callLog': '来电记录',
         'userRemoval': '删除用户',
         'userRemovalTip': '永久的删除这个账户',
-        'review':'审核',
-        'tipsSuggestion':'小费建议'
+        'review': '审核',
+        'tipsSuggestion': '小费建议'
     },
     reservation: {
         'create': '创建预约',
@@ -879,15 +881,15 @@ export default {
         'averageSize': '平均大小'
     },
     tip: {
-        'autoTemplate':'自动弹出模板选择页面',
+        'autoTemplate': '自动弹出模板选择页面',
         'table': {
             'passwordRequire': '创建座位之前需要输入密码',
             'autoClearTable': '客人付款之后自动还原座位状态',
             'printReceiptOnDone': '是否在完成后打印收据'
         },
-        'suggestion':{
-            'enable':'在预付单收据下面打印小费建议',
-            'percentage':'设置3个小费建议的百分比'
+        'suggestion': {
+            'enable': '在预付单收据下面打印小费建议',
+            'percentage': '设置3个小费建议的百分比'
         }
     }
 }

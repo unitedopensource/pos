@@ -69,6 +69,25 @@ const mutations = {
     [types.SET_MENU](state, data) {
         state.config.layout.menu = flatten(state.config.layout.menu, data, true);
     },
+    [types.SET_SUBMENU](state, data) {
+        let submenu = {};
+        data.forEach(item => {
+            submenu.hasOwnProperty(item.group) ?
+                submenu[item.group].push(item) :
+                submenu[item.group] = [item];
+        })
+        Object.keys(submenu).forEach(key => {
+            let group = submenu[key];
+            let length = group.length;
+            let align = 6 - length % 3;
+
+            align === 6 && (align = 3);
+            group.sort((a, b) => a.num - b.num);
+
+            Array(align).fill().forEach(_ => { group.push({ zhCN: "", usEN: "", clickable: false, group: null }) });
+        })
+        state.config.layout.submenu = submenu;
+    },
     [types.SET_REQUEST](state, data) {
         state.config.layout.request = flatten(state.config.layout.request, data, false)
     },
@@ -200,11 +219,11 @@ const mutations = {
     [types.REMOVE_TABLE](state, data) {
         let { section, index } = data;
         let table = state.config.layout.table[section].item[index];
-            Object.assign(table,{
-                name:'',
-                shape:''
-            })
-        state.config.layout.table[section].item.splice(index, 1,table);
+        Object.assign(table, {
+            name: '',
+            shape: ''
+        })
+        state.config.layout.table[section].item.splice(index, 1, table);
     },
     [types.NEW_RESERVATION](state, data) {
         state.reservation.push(data)

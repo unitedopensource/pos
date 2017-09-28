@@ -26,6 +26,7 @@ export const sides = state => state.menu.sides
 export const order = state => state.menu.order
 export const choiceSet = state => state.menu.choiceSetTarget
 export const menu = state => state.initial.config.layout.menu
+export const submenu = state => state.initial.config.layout.submenu
 export const actions = state => state.initial.config.layout.action
 export const request = state => state.initial.config.layout.request
 export const isEmptyTicket = state => state.menu.order.content.length === 0

@@ -979,7 +979,7 @@ function createStyle(ctrl) {
               div.type{${printType ? '' : 'display:none;'}}
               div.type .zhCN{font-weight:lighter;font-size:1.3em;}
               div.type .usEN{margin-top:-5px;font-size:1.25em;}
-              div.number{position:absolute;right:10px;${printStore ? 'bottom:12px;' : 'bottom:-39px;'}font-size:2em;font-weight:bold;font-family:"Agency FB"}
+              div.number{position:absolute;right:10px;bottom:12px;font-size:2em;font-weight:bold;font-family:"Agency FB"}
               div.time span{display:inline-block;margin:0 10px;font-size:1em;}
               div.time{border-bottom:1px solid #000;position:relative;margin-top:10px;}
               .server{border-bottom:1px solid #000;padding-bottom:1px;text-align:left;}
