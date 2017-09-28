@@ -182,6 +182,7 @@
                 <i class="fa fa-plus" @click="newPrinter"></i>
                 <i class="fa fa-trash" @click="removePrinterConfirm"></i>
                 <i class="fa fa-print"></i>
+                <i class="fa fa-volume-up" @click="buzzer"></i>
             </aside>
         </section>
         <div :is="component" :init="componentData"></div>
@@ -242,7 +243,7 @@ export default {
             printers: null,
             devices: [],
             device: null,
-            unchanged:true,
+            unchanged: true,
             preset: "",
             receipt: {
                 zhCN: true,
@@ -267,6 +268,10 @@ export default {
         initial() {
             this.printers = JSON.parse(JSON.stringify(this.config.printer));
             this.devices = Object.keys(this.printers) || [""];
+        },
+        buzzer() {
+            if (!this.profile) return;
+            Printer.buzzer(this.profile)
         },
         back() {
             this.$router.push({ name: 'Setting.index' })
@@ -311,7 +316,7 @@ export default {
             this.unchanged = true;
             this.$socket.emit("[CMS] SAVE_PRINTERS", { [this.device]: this.profile });
             this.setPrinter({ [this.device]: this.profile });
-            Printer.initial(CLODOP,this.config)
+            Printer.initial(CLODOP, this.config)
         },
         newPrinter() {
             new Promise((resolve, reject) => {
