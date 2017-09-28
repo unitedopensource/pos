@@ -502,7 +502,8 @@ export default {
         'giftCard': '礼物卡',
         'creditCardTip': '信用卡小费',
         'tax': '税',
-        'itemSales': '物品销售'
+        'itemSales': '物品销售',
+        'tips':'小费'
     },
     text: {
         'starter': '起始',

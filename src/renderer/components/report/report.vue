@@ -75,10 +75,9 @@
 
 <script>
 import { mapGetters } from 'vuex'
-//import Printer from '../../print'
 import calendar from './calendar'
-import checkbox from '../setting/common/checkbox'
 import processor from '../common/processor'
+import checkbox from '../setting/common/checkbox'
 export default {
     props: ['init'],
     components: { checkbox, calendar, processor },
@@ -140,7 +139,6 @@ export default {
             Promise.all([this.fetchData(), this.fetchCreditCard(), this.fetchGiftCard()]).then(datas => {
                 this.handler(datas);
                 if (!date) date = this.reportRange;
-                //Printer.init(this.config).setJob("report").print({ date, report: this.report });
                 Printer.printReport({ date, report: this.report })
                 callback && callback();
             })
@@ -277,7 +275,7 @@ export default {
         },
         settleTypeReport(data) {
             let settle = {};
-            let total = 0;
+            let tip = 0;
             data.forEach(invoice => {
                 let payment = invoice.payment;
                 let type = payment.type;
@@ -285,31 +283,32 @@ export default {
                 if (!payment.settled) return;
                 if (type === 'MULTIPLE') {
                     invoice.splitPayment.forEach(split => {
-                        total += parseFloat(split.due);
-
+                        let amount = parseFloat(split.subtotal) + parseFloat(split.tax);
                         if (settle.hasOwnProperty(split.type)) {
-                            settle[split.type]["amount"] += parseFloat(split.due);
+                            settle[split.type]["amount"] += amount;
+                            settle[split.type]["tip"] += parseFloat(split.tip);
                             settle[split.type]["count"]++
                         } else {
                             settle[split.type] = {
                                 text: split.type,
                                 tip: parseFloat(split.tip),
-                                amount: parseFloat(split.due),
+                                amount: amount,
                                 count: 1
                             }
                         }
                     })
                 } else {
-                    total += parseFloat(payment.due);
+                    let amount = parseFloat(payment.subtotal) + parseFloat(payment.tax)
 
                     if (settle.hasOwnProperty(type)) {
-                        settle[type]["amount"] += parseFloat(payment.due);
+                        settle[type]["amount"] += amount;
+                        settle[type]["tip"] += parseFloat(payment.tip)
                         settle[type]["count"]++;
                     } else {
                         settle[type] = {
                             text: type,
                             tip: parseFloat(payment.tip),
-                            amount: parseFloat(payment.due),
+                            amount: amount,
                             count: 1
                         }
                     }
@@ -318,9 +317,7 @@ export default {
             });
 
             Object.keys(settle).forEach(type => {
-                let amount = settle[type]['amount'];
-                let pct = (amount / total * 100).toFixed(2);
-                settle[type]['amount'] = [{ Total: settle[type]['amount'].toFixed(2) }, { Percentage: pct + ' %' }]
+                settle[type]['amount'] = [{ Total: settle[type]['amount'].toFixed(2) }, { Tip: settle[type]['tip'].toFixed(2) }]
             })
 
             return settle;
@@ -399,6 +396,7 @@ export default {
                 delivery = 0, deliveryAmount = 0, deliveryTip = 0,
                 dinein = 0, dineinAmount = 0,
                 bar = 0, barAmount = 0,
+                tips = 0, tipsAmount = 0,
                 other = 0, otherAmount = 0,
                 settle = 0, settleAmount = 0,
                 discount = 0, discountAmount = 0,
@@ -432,7 +430,6 @@ export default {
                         case "DELIVERY":
                             delivery++;
                             deliveryAmount += due;
-                            deliveryTip += tip;
                             break;
                         case "DINE_IN":
                             dinein++;
@@ -456,9 +453,11 @@ export default {
                         discount++;
                         discountAmount += disc
                     }
+
                     if (ticket.settled) {
                         settle++;
                         settleAmount += due;
+                        tipsAmount += tip;
                         switch (ticket.payment.type) {
                             case "CASH":
                                 cash++;
@@ -539,6 +538,10 @@ export default {
                 text: this.$t('report.discount'),
                 count: discount,
                 amount: -discountAmount
+            }, {
+                text: this.$t('report.tips'),
+                count: 0,
+                amount: tipsAmount
             }] : null;
 
             this.report["SALES CATEGORY"] = this.salesCategory ?

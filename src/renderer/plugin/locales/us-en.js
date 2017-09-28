@@ -503,7 +503,8 @@ export default {
         'giftCard': 'Gift Card',
         'creditCardTip': 'Credit Card Tips',
         'tax': 'Tax',
-        'itemSales': 'Item Sales'
+        'itemSales': 'Item Sales',
+        'tips':'Tips'
     },
     text: {
         'starter': 'Starter',

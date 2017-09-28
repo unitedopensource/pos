@@ -70,7 +70,7 @@ const mutations = {
     delete item.clickable;
     let zhCN = !item.disableAutoOption ? item.option.length ? item.option[0].overWrite ? item.option[0].zhCN : item.zhCN : item.zhCN : item.zhCN;
     let usEN = !item.disableAutoOption ? item.option.length ? item.option[0].overWrite ? item.option[0].usEN : item.usEN : item.usEN : item.usEN;
-    let side = !item.disableAutoOption ? item.option.length ? item.option[0].overWrite ? "" : { zhCN: `[${item.option[0].zhCN}]`, usEN: `[${item.option[0].usEN}]` } : "" : "";
+    let side = !item.disableAutoOption ? item.option.length ? (item.option[0].overWrite || item.option[0].skip) ? "" : { zhCN: `[${item.option[0].zhCN}]`, usEN: `[${item.option[0].usEN}]` } : "" : "";
     Object.assign(item, {
       unique: Math.random().toString(36).substr(2, 5),
       zhCN, usEN, side,
@@ -131,10 +131,9 @@ const mutations = {
         if (data.side.overWrite) {
           item.zhCN = data.side.zhCN;
           item.usEN = data.side.usEN;
-        } else {
+        } else if(!data.side.skip) {
           item.side = { zhCN: `[${data.side.zhCN}]`, usEN: `[${data.side.usEN}]` }
         }
-
       }
     } else {
       if (item.side.zhCN === `[${data.side.zhCN}]` && item.side.usEN === `[${data.side.usEN}]`) {

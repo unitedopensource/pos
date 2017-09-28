@@ -5,7 +5,7 @@
         <i class="fa fa-minus-square"></i>
         <span class="text">{{$t('button.less')}}</span>
       </div>
-      <div class="btn" @click="moreQty">
+      <div class="btn" @click="more">
         <i class="fa fa-plus-square"></i>
         <span class="text">{{$t('button.more')}}</span>
       </div>
@@ -61,7 +61,7 @@
       <i class="fa fa-minus-square"></i>
       <span class="text">{{$t('button.less')}}</span>
     </div>
-    <div class="btn" @click="moreQty">
+    <div class="btn" @click="more">
       <i class="fa fa-plus-square"></i>
       <span class="text">{{$t('button.more')}}</span>
     </div>
@@ -95,7 +95,7 @@
       <i class="fa fa-minus-square"></i>
       <span class="text">{{$t('button.less')}}</span>
     </div>
-    <div class="btn" @click="moreQty">
+    <div class="btn" @click="more">
       <i class="fa fa-plus-square"></i>
       <span class="text">{{$t('button.more')}}</span>
     </div>
@@ -178,6 +178,30 @@ export default {
             }
           }).catch(() => { this.accessDenied() })
       }
+    },
+    more() {
+      let subItemCount = Array.isArray(this.item.choiceSet) ?
+        this.item.choiceSet.filter(item => item.subItem).map(item => item.qty).reduce((a, b) => a + b, 0) : 0;
+
+      if (this.item.hasOwnProperty('rules')) {
+        let max = this.item.rules.maxSubItem || Infinity;
+        let overCharge = this.item.rules.overCharge || 0;
+        if (subItemCount >= max && overCharge === 0) {
+          this.$dialog({
+            title: 'dialog.unableAdd',
+            msg: ['dialog.maxSubItem', this.item[this.language], max],
+            timeout: {
+              duration: 5000,
+              fn: 'resolve'
+            },
+            buttons: [{ text: 'button.confirm', fn: 'resolve' }]
+          }).then(() => {
+            this.$q()
+          })
+          return true
+        }
+      }
+      this.moreQty()
     },
     requestAccess() {
       return new Promise((resolve, reject) => {
@@ -310,7 +334,7 @@ export default {
     ...mapActions(['setApp', 'lessQty', 'moreQty', 'resetAll', 'setOrder', 'setTableInfo'])
   },
   computed: {
-    ...mapGetters(['op', 'app', 'item', 'order', 'ticket', 'store', 'customer', 'station', 'isEmptyTicket', 'currentTable'])
+    ...mapGetters(['op', 'app', 'item', 'language', 'order', 'ticket', 'store', 'customer', 'station', 'isEmptyTicket', 'currentTable'])
   }
 }
 </script>

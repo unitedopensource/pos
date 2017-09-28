@@ -162,8 +162,8 @@ export default {
                 printer[device] = {}
             })
             Object.assign(this.item.printer, printer)
-            let subItemCount = Array.isArray(this.item.choiceSet) ? this.item.choiceSet.filter(item => item.subItem).length : 0;
-            //content.subItem && subItemCount++;
+            let subItemCount = Array.isArray(this.item.choiceSet) ? 
+                this.item.choiceSet.filter(item => item.subItem).map(item=>item.qty).reduce((a,b)=>a+b,0) : 0;
 
             if (this.item.hasOwnProperty('rules')) {
                 let max = this.item.rules.maxSubItem || Infinity;

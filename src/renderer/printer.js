@@ -75,6 +75,7 @@ var Printer = function (plugin, config) {
 
     this.print = function (raw) {
         let printers = this.getPrinters();
+        console.log(printers)
         printers.forEach(printer => {
             let setting = this.setting[printer];
             let skip = setting.print.hasOwnProperty(raw.type) ? !setting.print[raw.type] : true;
@@ -90,8 +91,11 @@ var Printer = function (plugin, config) {
             let { printStore, printType, printCustomer, enlargeDetail } = setting.control;
             let header = createHeader(this.config.store, raw);
             let list = createList(printer, setting.control, raw);
+
+            if (!list) return;
+
             let style = createStyle(setting.control);
-            let footer = createFooter(this.config.store.table, setting.control, raw);
+            let footer = createFooter(this.config.store.table, setting.control, printer, raw);
 
             let html = header + list + footer + style;
 
@@ -1036,7 +1040,7 @@ function createStyle(ctrl) {
               .usEN{font-family:'${secondaryFont}';font-size:${secondaryFontSize};${printSecondary ? '' : 'display:none!important;'}}
           </style>`
 }
-function createFooter(table, ctrl, ticket) {
+function createFooter(table, ctrl, device, ticket) {
     if (!ticket.hasOwnProperty('payment')) return "";
 
     let { footer } = ctrl;
@@ -1142,7 +1146,7 @@ function createFooter(table, ctrl, ticket) {
               ${details}
               </div>
               <section class="note">${note}</section>
-              <p class="printTime">Print @ ${moment().format('hh:mm:ss')}</p>
+              <p class="printTime">${device} print @ ${moment().format('hh:mm:ss')}</p>
             </footer>`
 }
 
