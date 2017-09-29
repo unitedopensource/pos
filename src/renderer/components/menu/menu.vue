@@ -220,7 +220,7 @@ export default {
                 }
             })
 
-            let group = side.subMenu;
+            let groups = side.subMenu;
             //temporary solution will become locally in next patch
             if (this.saveItems) {
                 this.resetItems();
@@ -230,15 +230,15 @@ export default {
             //save item first;
             this.saveItems = this.items;
             this.items = [];
-            side.subMenu.forEach(group => {
+            let lastIndex = groups.length - 1;
+            groups.forEach((group, index) => {
                 let subItem = JSON.parse(JSON.stringify(this.submenu[group]));
-                let length = group.length;
+                let length = subItem.length;
                 let align = 6 - length % 3;
                 align === 6 && (align = 3);
-                Array(align).fill().forEach(_ => { subItem.push({ zhCN: "", usEN: "", clickable: false, group: null }) });
+                index !== lastIndex && Array(align).fill().forEach(_ => { subItem.push({ zhCN: "", usEN: "", clickable: false, group: null }) });
                 this.items.push(...subItem)
             })
-
             let length = this.items.length;
             length < 33 && Array(33 - length).fill().forEach(_ => { this.items.push({ zhCN: "", usEN: "", clickable: false, group: null }) });
             console.timeEnd("sub menu")

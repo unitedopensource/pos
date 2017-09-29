@@ -179,7 +179,6 @@ var Printer = function (plugin, config) {
 
     this.printCreditCard = function (trans, reprint) {
         let { store, printer } = this.config;
-        console.log(print)
         let device = this.station.printer || 'cashier';
 
         if (!printer[device]['print']['CREDITCARD']) return;
