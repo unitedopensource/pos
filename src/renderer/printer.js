@@ -75,7 +75,6 @@ var Printer = function (plugin, config) {
 
     this.print = function (raw) {
         let printers = this.getPrinters();
-        console.log(printers)
         printers.forEach(printer => {
             let setting = this.setting[printer];
             let skip = setting.print.hasOwnProperty(raw.type) ? !setting.print[raw.type] : true;
@@ -179,10 +178,11 @@ var Printer = function (plugin, config) {
     }
 
     this.printCreditCard = function (trans, reprint) {
-        let { store, print } = this.config;
-        let printer = this.station.printer || 'cashier';
+        let { store, printer } = this.config;
+        console.log(print)
+        let device = this.station.printer || 'cashier';
 
-        if (!print[printer]['print']['CREDITCARD']) return;
+        if (!printer[device]['print']['CREDITCARD']) return;
 
         let timestamp = moment(Number(trans.trace.time), 'YYYYMMDDHHmmss');
         let date = timestamp.format("MM/DD/YYYY");
@@ -192,13 +192,13 @@ var Printer = function (plugin, config) {
 
         this.plugin.PRINT_INIT('Credit Card - Store');
         this.plugin.ADD_PRINT_HTM(0, 0, "100%", "100%", html + style);
-        this.plugin.SET_PRINTER_INDEX(this.station.printer || 'cashier');
+        this.plugin.SET_PRINTER_INDEX(device);
         this.plugin.PRINT();
 
         this.plugin.PRINT_INIT('Credit Card - Customer');
         html = html.replace("MERCHANT COPY", "CUSTOMER COPY");
         this.plugin.ADD_PRINT_HTM(0, 0, "100%", "100%", html + style);
-        this.plugin.SET_PRINTER_INDEX(this.station.printer || 'cashier');
+        this.plugin.SET_PRINTER_INDEX(device);
         this.plugin.PRINT();
 
         function createHtml() {

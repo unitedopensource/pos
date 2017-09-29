@@ -24,7 +24,6 @@ const Pax = function () {
     url = `http://${ip}:${port}?`;
     station = alies || '';
     let command = this.parser("A00_1.38");
-    console.log(command)
     return fetch(command);
   };
   this.check = function (d) {
