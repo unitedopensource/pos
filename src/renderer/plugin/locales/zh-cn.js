@@ -213,7 +213,8 @@ export default {
         'payment': '付款',
         'note': '便签',
         'subMenuGroup': '子菜单组名',
-        'subMenuItem': '子菜单物品'
+        'subMenuItem': '子菜单物品',
+        'subMenuConfig':'子菜单设置'
     },
     menu: {
         'course': '定时',
@@ -709,7 +710,10 @@ export default {
         'tipPercentage': '小费百分比',
         'autoTemplate': '自动开启模板',
         'openFood': '临时物品',
-        'alphabetical': '按字母排列'
+        'alphabetical': '按字母排列',
+        'maxSubItem':'物品选择上限',
+        'overCharge':'额外价格',
+        'subItemGroup':'子菜单组'
     },
     nav: {
         'store': '店面',

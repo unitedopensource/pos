@@ -214,7 +214,8 @@ export default {
         'payment': 'Payment',
         'note': 'Note',
         'subMenuGroup': 'SubMenu Group',
-        'subMenuItem': 'SubMenu Item'
+        'subMenuItem': 'SubMenu Item',
+        'subMenuConfig':'SubMenu Config'
     },
     menu: {
         'course': 'Course',
@@ -711,7 +712,10 @@ export default {
         'tipPercentage': 'Tip Percentage',
         'autoTemplate': 'Auto Template',
         'openFood': 'Open Food',
-        'alphabetical': 'Alphabetical'
+        'alphabetical': 'Alphabetical',
+        'maxSubItem':'Max Sub Item',
+        'overCharge':'Extra Charge',
+        'subItemGroup':'SubMenu Group'
     },
     nav: {
         'store': 'Store',

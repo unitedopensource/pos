@@ -289,6 +289,8 @@ aside {
 
 .icon {
     font-size: 4em;
+    width: 64px;
+    height: 64px;
 }
 
 .prePay {

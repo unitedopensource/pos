@@ -112,23 +112,24 @@ export default {
 }
 
 .number {
-    width: 120px;
-    padding: 0 5px 0 15px;
+    width: 115px;
+    padding: 0 5px 0 10px;
 }
 
 .address {
-    min-width: 270px;
-    padding: 0 10px;
+    width: 265px;
+    padding: 0 5px;
 }
 
 .city {
     margin-left: 5px;
+    white-space: nowrap;
     color: #9E9E9E;
 }
 
 .name {
     min-width: 150px;
-    padding: 0 10px;
+    padding: 0 5px;
 }
 
 .info {
@@ -141,12 +142,12 @@ export default {
 }
 
 .total {
-    min-width: 60px;
-    padding: 0 10px;
+    min-width: 80px;
+    padding: 0 5px;
 }
 
-.time{
-    width: 120px;
+.time {
+    min-width: 120px;
 }
 
 .more {

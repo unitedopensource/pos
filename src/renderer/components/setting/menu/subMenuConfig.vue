@@ -3,7 +3,7 @@
         <div class="editor">
             <header>
                 <h2>{{$t('title.subMenuConfig')}}</h2>
-                <h4>{{$t('tip.configSubMenu')}}</h4>
+                <!-- <h4>{{$t('tip.configSubMenu')}}</h4> -->
             </header>
             <div class="inner">
                 <div class="input">
@@ -15,7 +15,7 @@
                     <input type="text" v-model.number="side.overCharge" placeholder="0.00">
                 </div>
                 <div class="options">
-                    <label>{{$t('text.group')}}</label>
+                    <label>{{$t('text.subItemGroup')}}</label>
                     <select v-model="side.subMenu" multiple>
                         <option v-for="(group,index) in groups" :key="index">{{group}}</option>
                     </select>
