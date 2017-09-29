@@ -82,4 +82,13 @@ input {
     display: flex;
     padding: 7px 0 3px;
 }
+.wrap .checkbox {
+    width: 120px;
+}
+
+.wrap {
+    width: 285px;
+    display: flex;
+    flex-wrap: wrap;
+}
 </style>

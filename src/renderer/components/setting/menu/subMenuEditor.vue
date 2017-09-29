@@ -81,3 +81,17 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+.fieldset {
+    width: 285px;
+    border-radius: 4px;
+    border: 2px solid #ccc;
+    padding: 5px;
+}
+
+.wrap {
+    width: 285px;
+    flex-wrap: wrap;
+}
+</style>

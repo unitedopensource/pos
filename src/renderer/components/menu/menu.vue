@@ -143,7 +143,7 @@ export default {
             this.config.display.autoTemplate && this.sides[0].template && this.callTemplate(this.sides[0], 0);
         },
         isSubMenu(item) {
-            if (!item.subItem) return false;
+            if (!item.subItem && !this.saveItems) return false;
             if (this.isEmptyTicket) return true;
             let { zhCN, usEN, print, price } = item;
             let content = {
