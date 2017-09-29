@@ -196,7 +196,8 @@ export default {
         'valid': 'Valid',
         'invalid': 'Invalid',
         'clockIn': 'Clock In',
-        'printAnyway': 'Print Anyway'
+        'printAnyway': 'Print Anyway',
+        'setSubMenu':'Set SubMenu'
     },
     title: {
         'markPaymentType': 'Mark Payment Type',

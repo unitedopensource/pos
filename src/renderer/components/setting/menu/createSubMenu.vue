@@ -8,7 +8,7 @@
             <div class="inner">
                 <div class="input">
                     <label>{{$t('text.name')}}</label>
-                    <input type="text" v-model="group" @keydown.enter="confirm">
+                    <input type="text" v-model="group" @keydown.enter="confirm" maxlength="10">
                 </div>
             </div>
             <footer>

@@ -195,7 +195,8 @@ export default {
         'valid': '有效',
         'invalid': '无效',
         'clockIn': '打卡',
-        'printAnyway': '依然打印'
+        'printAnyway': '依然打印',
+        'setSubMenu':'设置子菜单'
     },
     title: {
         'markPaymentType': '标记付款方式',

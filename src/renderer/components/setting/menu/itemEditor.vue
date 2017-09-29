@@ -95,7 +95,7 @@
                                         </div>
                                         <div class="btn" @click="configSubMenu(side,index)">
                                             <i class="fa fa-th-large"></i>
-                                            <span>{{$t('button.openSubMenu')}}</span>
+                                            <span>{{$t('button.setSubMenu')}}</span>
                                         </div>
                                     </div>
                                     <i class="fa fa-trash remove" @click="removeOption(index)"></i>

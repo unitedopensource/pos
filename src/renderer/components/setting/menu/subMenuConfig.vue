@@ -16,7 +16,7 @@
                 </div>
                 <div class="options">
                     <label>{{$t('text.group')}}</label>
-                    <select v-model="side.subMenu">
+                    <select v-model="side.subMenu" multiple>
                         <option v-for="(group,index) in groups" :key="index">{{group}}</option>
                     </select>
                 </div>
@@ -49,7 +49,7 @@ export default {
     },
     methods: {
         confirm() {
-            this.group && this.init.resolve(this.group);
+            this.init.resolve(this.side)
         }
     },
     computed: {
@@ -57,3 +57,14 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+option {
+    display: inline-flex;
+    padding: 2px;
+    margin: 2px;
+    border-radius: 4px;
+    min-width: 50px;
+    justify-content: center;
+}
+</style>
