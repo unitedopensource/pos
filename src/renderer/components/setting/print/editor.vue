@@ -2,7 +2,7 @@
     <div class="popupMask center dark">
         <div class="editor">
             <header class="title">
-                <span>{{$t('setting.newPrinter')}}</span>
+                <h2>{{$t('setting.newPrinter')}}</h2>
             </header>
             <div class="inner">
                 <div class="input">

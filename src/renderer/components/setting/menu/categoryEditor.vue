@@ -1,7 +1,9 @@
 <template>
     <div class="popupMask center dark" @click.self="init.reject">
         <div class="editor">
-            <header>{{$t('setting.categoryEditor')}}</header>
+            <header>
+                <h2>{{$t('setting.categoryEditor')}}</h2>
+            </header>
             <div class="inner">
                 <div class="input">
                     <label title="English">{{$t('text.primary')}}</label>
@@ -17,7 +19,7 @@
                 </div>
                 <fieldset v-show="!manual">
                     <legend>{{$t('text.contain')}}</legend>
-                    <div class="options">
+                    <div class="categories">
                         <checkbox :label="name" v-model="contain" :val="name" v-for="(name,index) in categories" :multiple="true" :key="index"></checkbox>
                     </div>
                 </fieldset>
@@ -74,7 +76,7 @@ export default {
 </script>
 
 <style scoped>
-.options {
+.categories {
     display: flex;
     flex-wrap: wrap;
     width: 575px;
@@ -82,13 +84,15 @@ export default {
     justify-content: space-between;
 }
 
-.options .checkbox {
+.categories .checkbox {
     width: 170px;
 }
 
 fieldset {
-    border: 1px solid #E0E0E0;
+    border: 2px solid #E0E0E0;
     background: #fff;
+    border-radius: 4px;
+    width: auto;
 }
 
 legend {

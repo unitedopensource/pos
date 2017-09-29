@@ -210,7 +210,9 @@ export default {
         'scanner': '扫描器',
         'split': '分单',
         'payment': '付款',
-        'note': '便签'
+        'note': '便签',
+        'subMenuGroup': '子菜单组名',
+        'subMenuItem': '子菜单物品'
     },
     menu: {
         'course': '定时',
@@ -503,7 +505,7 @@ export default {
         'creditCardTip': '信用卡小费',
         'tax': '税',
         'itemSales': '物品销售',
-        'tips':'小费'
+        'tips': '小费'
     },
     text: {
         'starter': '起始',
@@ -706,7 +708,7 @@ export default {
         'tipPercentage': '小费百分比',
         'autoTemplate': '自动开启模板',
         'openFood': '临时物品',
-        'alphabetical':'按字母排列'
+        'alphabetical': '按字母排列'
     },
     nav: {
         'store': '店面',
@@ -885,6 +887,7 @@ export default {
     tip: {
         'autoTemplate': '自动弹出模板选择页面',
         'alphabetical': '菜单按字母序列排序',
+        'createSubMenuGroup':'创建一个子菜单组',
         'table': {
             'passwordRequire': '创建座位之前需要输入密码',
             'autoClearTable': '客人付款之后自动还原座位状态',

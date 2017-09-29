@@ -88,9 +88,15 @@
                                         </div>
                                     </div>
                                     <div class="ctrl" v-if="advance">
-                                        <checkbox v-model="side.sub" label="text.subItem"></checkbox>
-                                        <checkbox v-model="side.overWrite" label="text.overWrite"></checkbox>
-                                        <checkbox v-model="side.skip" label="text.skip"></checkbox>
+                                        <div>
+                                            <checkbox v-model="side.sub" label="text.subItem"></checkbox>
+                                            <checkbox v-model="side.overWrite" label="text.overWrite"></checkbox>
+                                            <checkbox v-model="side.skip" label="text.skip"></checkbox>
+                                        </div>
+                                        <div class="btn" @click="configSubMenu(side,index)">
+                                            <i class="fa fa-th-large"></i>
+                                            <span>{{$t('button.openSubMenu')}}</span>
+                                        </div>
                                     </div>
                                     <i class="fa fa-trash remove" @click="removeOption(index)"></i>
                                 </div>
@@ -147,6 +153,7 @@
                 </aside>
             </div>
         </div>
+        <div :is="component" :init="componentData"></div>
     </div>
 </template>
 
@@ -158,10 +165,11 @@ import smartInput from '../common/smartInput'
 import smartSwitch from '../common/smartSwitch'
 import smartOption from '../common/smartOption'
 import instantInput from '../common/instantInput'
+import config from './subMenuConfig'
 import checkbox from '../common/checkbox'
 export default {
     props: ['init'],
-    components: { smartInput, smartSwitch, smartOption, draggable, checkbox, instantInput },
+    components: { smartInput, smartSwitch, smartOption, draggable, checkbox, instantInput, config },
     data() {
         return {
             item: {},
@@ -172,6 +180,8 @@ export default {
             errorLine: null,
             extraPrice: false,
             templateOption: [],
+            componentData: null,
+            component: null,
             taxOption: [],
             printers: [],
             dragtions: {
@@ -266,6 +276,17 @@ export default {
         },
         morePrice() {
             this.extraPrice = !this.extraPrice;
+        },
+        configSubMenu(side, index) {
+            new Promise((resolve, reject) => {
+                this.componentData = { resolve, reject, side };
+                this.component = 'config'
+            }).then((side) => {
+                this.$q()
+                this.item.option.splice(index, 1, side)
+            }).catch(() => {
+                this.$q()
+            })
         },
         hateCoding() {
             this.item = JSON.parse(this.code);
@@ -427,6 +448,23 @@ article.option {
     display: flex;
     position: relative;
     box-shadow: var(--shadow);
+}
+
+.ctrl {
+    display: flex;
+    flex-direction: column;
+}
+
+.ctrl .btn {
+    flex-direction: row;
+    width: 280px;
+    height: 40px;
+    margin: 5px 0 0 5px;
+    cursor: pointer;
+}
+
+.ctrl .btn i {
+    margin-right: 5px;
 }
 
 i.remove {
@@ -620,10 +658,6 @@ div.add {
     padding: 10px;
     flex: 1;
     background: #F5F5F5;
-}
-
-.ctrl {
-    display: flex;
 }
 
 .template {

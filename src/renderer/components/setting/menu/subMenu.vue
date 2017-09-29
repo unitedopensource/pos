@@ -6,28 +6,34 @@
                     <span>{{group}}</span>
                     <i class="fa fa-angle-right"></i>
                 </div>
-                <div class="add">
+                <div class="add" @click="create">
                     <i class="fa fa-plus"></i>
                     <span>{{$t('button.new')}}</span>
                 </div>
             </div>
         </div>
         <div class="items">
-            <div v-for="(item,index) in items" :key="index" :class="{disable:!item.clickable}" @contextmenu="edit(item)">
+            <div v-for="(item,index) in items" :key="index" :class="{disable:!item.clickable}" @contextmenu="edit(item,index)">
                 {{item[language]}}
             </div>
         </div>
+        <div :is="component" :init="componentData"></div>
     </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import creator from './createSubMenu'
+import editor from './subMenuEditor'
 export default {
     computed: {
         ...mapGetters(['submenu', 'language'])
     },
+    components: { creator, editor },
     data() {
         return {
+            component: null,
+            componentData: null,
             groups: [],
             items: []
         }
@@ -40,12 +46,37 @@ export default {
             let items = JSON.parse(JSON.stringify(this.submenu[group]));
             let length = items.length;
 
-            length < 33 && Array(33 - length).fill().forEach(_ => { items.push({ zhCN: "", usEN: "", clickable: false, group: null }) });
+            length < 33 && Array(33 - length).fill().forEach((_, i) => { items.push({ zhCN: "", usEN: "", num: i, clickable: false, group }) });
 
             this.items = items;
         },
-        edit(item){
-            console.log(item)
+        create() {
+            new Promise((resolve, reject) => {
+                this.componentData = { resolve, reject };
+                this.component = 'creator'
+            }).then((group) => {
+                this.$q();
+                Object.assign(this.submenu, { [group]: [] });
+                this.groups = Object.keys(this.submenu);
+                this.getItems(group)
+            }).catch(() => {
+                this.$q()
+            })
+        },
+        edit(item, index) {
+            new Promise((resolve, reject) => {
+                this.componentData = { resolve, reject, item };
+                this.component = 'editor'
+            }).then((item) => {
+                this.$q();
+                this.$socket.emit("[SUBMENU] ITEM", item, items => {
+                    let group = items[0].group;
+                    Object.assign(this.submenu, { [group]: items });
+                    this.getItems(group);
+                })
+            }).catch(() => {
+                this.$q()
+            })
         }
     }
 }

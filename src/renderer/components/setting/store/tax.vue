@@ -1,13 +1,5 @@
 <template>
     <div>
-        <!-- <section class="card">
-            <header>{{$t('setting.taxCalculation')}}
-                <span class="tip">{{$t('setting.taxCalculationTip')}}</span>
-            </header>
-            <article>
-                <smart-switch v-model="tax.beforeDisc" label="text.taxBeforeDiscount"></smart-switch>
-                <smart-switch v-model="tax.beforeCredit" label="text.taxBeforeCredit"></smart-switch>
-            </article> -->
         </section>
         <section class="card list">
             <header>
@@ -97,7 +89,7 @@ export default {
                     DELIVERY: false,
                     DINE_IN: false,
                     BAR: false,
-                    SALES:false
+                    SALES: false
                 }
             })
         }

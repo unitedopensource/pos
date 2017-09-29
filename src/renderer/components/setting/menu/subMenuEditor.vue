@@ -2,21 +2,21 @@
     <div class="popupMask center dark" @click.self="init.reject(false)">
         <div class="editor">
             <header>
-                <h2>{{$t(init.title)}}</h2>
+                <h2>{{$t('title.subMenuItem')}}</h2>
+                <h4></h4>
             </header>
-            <div class="form">
+            <div class="inner">
                 <div class="input">
                     <label>{{$t('text.primary')}}</label>
-                    <input v-model="item.usEN">
+                    <input type="text" v-model="item.usEN">
                 </div>
                 <div class="input">
                     <label>{{$t('text.secondary')}}</label>
-                    <input v-model="item.zhCN" @keydown.enter="done">
+                    <input type="text" v-model="item.zhCN">
                 </div>
-
                 <div class="input">
                     <label>{{$t('text.price')}}</label>
-                    <input v-model.number="item.price" @keydown.enter="done">
+                    <input type="text" v-model.number="item.price" placeholder="0.00">
                 </div>
                 <fieldset>
                     <legend>{{$t('text.printer')}}</legend>
@@ -24,13 +24,16 @@
                         <checkbox v-model="item.print" :val="printer" :multiple="true" :label="printer" class="printer" v-for="(printer,index) in printers" :key="printer"></checkbox>
                     </div>
                 </fieldset>
+                <div class="default">
+                    <checkbox v-model="item.subItem" label="text.subItem"></checkbox>
+                </div>
             </div>
             <footer>
                 <div class="f1">
-                    <span class="del" @click="del">{{$t('button.delete')}}</span>
+                    <span class="del" @click="init.reject(true)">{{$t('button.delete')}}</span>
                 </div>
                 <div class="btn" @click="init.reject(false)">{{$t('button.cancel')}}</div>
-                <div class="btn" @click="done">{{$t('button.confirm')}}</div>
+                <div class="btn" @click="confirm">{{$t('button.confirm')}}</div>
             </footer>
         </div>
     </div>
@@ -44,22 +47,32 @@ export default {
     components: { checkbox },
     data() {
         return {
-            item: {},
-            printers: []
+            item: null,
+            printers: null
         }
     },
     created() {
-        this.init.item && Object.assign(this.item, this.init.item);
+        let item = this.init.item;
+
         this.printers = Object.keys(this.config.printer);
-        !this.item.hasOwnProperty("print") && (this.item.print = [...this.printers]);
+        this.item = {
+            _id: item._id || ObjectId(),
+            zhCN: item.zhCN || '',
+            usEN: item.usEN || '',
+            price: item.price || 0,
+            subItem: item.subItem || true,
+            num: item.num || 0,
+            group: item.group || '',
+            print: item.print || []
+        }
     },
     methods: {
-        del() {
-            this.init.reject(true)
-        },
-        done() {
-            !isNumber(this.item.price) && (this.item.price = 0);
-            !this.item.hasOwnProperty("key") && (this.item.key = Math.random().toString(36).substring(3, 7));
+        confirm() {
+            if (!this.item.zhCN && !this.item.usEN) return;
+
+            this.item.zhCN = this.item.zhCN.toCapitalCase();
+            this.item.usEN = this.item.usEN.toCapitalCase();
+            this.item.price = isNumber(this.item.price) ? this.item.price : 0;
             this.init.resolve(this.item)
         }
     },
@@ -68,18 +81,3 @@ export default {
     }
 }
 </script>
-
-<style scoped>
-.form {
-    padding: 15px 20px;
-}
-
-input {
-    width: 100px;
-}
-
-.printers {
-    display: flex;
-    padding: 7px 0 3px;
-}
-</style>

@@ -1,22 +1,25 @@
 <template>
     <div class="popupMask center dark" @click.self="init.reject(false)">
         <div class="editor">
-            <header>{{$t('setting.taxEditor')}}</header>
+            <header>
+                <h2>{{$t('setting.taxEditor')}}</h2>
+                <h4>{{$t('setting.taxCalculationTip')}}</h4>
+            </header>
             <div class="inner">
                 <div class="input">
-                    <label>{{$t('setting.name')}}</label>
-                    <input v-model="tax.alies">
+                    <label>{{$t('text.name')}}</label>
+                    <input type="text" v-model="tax.alies" :placeholder="$t('text.name')">
                 </div>
                 <div class="input">
                     <label>{{$t('text.taxRate')}}</label>
                     <input v-model.number="tax.rate">
                 </div>
-                <div class="option">
+                <div class="options">
                     <div class="tip">
                         <h3>{{$t('text.apply')}}</h3>
                         <span>{{$t('setting.taxApplyTip')}}</span>
                     </div>
-                    <div>
+                    <div class="option">
                         <checkbox v-model="tax.apply.WALK_IN" label="type.WALK_IN"></checkbox>
                         <checkbox v-model="tax.apply.PICK_UP" label="type.PICK_UP"></checkbox>
                         <checkbox v-model="tax.apply.DELIVERY" label="type.DELIVERY"></checkbox>
@@ -65,13 +68,25 @@ export default {
 </script>
 
 <style scoped>
-.option {
+.options {
     display: flex;
     align-items: center;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    width: 285px;
+    margin:5px 0 0 2px;
+    padding: 5px;
 }
 
 .tip {
-    width: 113px;
+    width: 100px;
+    text-align: center;
+}
+
+.option {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 h3 {

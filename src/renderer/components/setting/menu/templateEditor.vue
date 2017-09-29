@@ -2,8 +2,8 @@
     <div class="popupMask center dark" @click.self="init.reject(false)">
         <div class="editor">
             <header>
-                <div>{{$t('setting.template')}}</div>
-                <div class="name"><input v-model="template.template"></div>
+                <h2>{{$t('setting.template')}}</h2>
+                <h4><input v-model="template.template"></h4>
                 <checkbox v-model="template.insert" label="text.insert"></checkbox>
             </header>
             <div class="includes">
@@ -149,32 +149,17 @@ export default {
 </script>
 
 <style scoped>
-header {
-    display: flex;
-    align-items: center;
-}
-
-header .name {
-    margin-left: 15px;
-    flex: 1;
-}
-
-header .text {
-    font-weight: initial;
-    font-family: 'Yuanti-SC';
-}
-
-.name input {
-    text-shadow: 0 1px 1px #000;
-    color: #fff;
-    border: 1px solid #5f9ea0;
-    border-radius: 4px;
-    font-size: 1em;
-    width: 150px;
-    padding: 0 5px;
+header input {
+    border: none;
+    background: transparent;
+    color: #CFD8DC;
     font-style: italic;
-    background: #74b1b3;
-    outline: none;
+}
+
+header .checkbox {
+    position: absolute;
+    top: 50px;
+    right: 0;
 }
 
 aside {
@@ -241,7 +226,7 @@ aside {
 .config input {
     border: 1px solid #ddd;
     width: 100px;
-    margin-right:10px;
+    margin-right: 10px;
 }
 
 .config {

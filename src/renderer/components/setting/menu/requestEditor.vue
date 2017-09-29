@@ -1,57 +1,59 @@
 <template>
     <div class="popupMask center dark" @click.self="init.reject">
-        <div class="form">
+        <div class="editor">
             <header>
                 <h2>{{$t(init.title)}}</h2>
                 <h4>{{$t(init.type)}}</h4>
             </header>
-            <section class="data" v-if="init.type === 'category'">
-                <div>
-                    <label>{{$t('text.primary')}}</label>
-                    <input type="text" v-model="request.usEN" :placeholder="$t('text.primary')">
-                </div>
-                <div>
-                    <label>{{$t('text.secondary')}}</label>
-                    <input type="text" v-model="request.zhCN" :placeholder="$t('text.secondary')">
-                </div>
-                <div>
-                    <label>{{$t('text.contain')}}</label>
-                    <input type="text" v-model="request.contain" :placeholder="$t('text.contain')">
-                </div>
-            </section>
-            <section class="data" v-else-if="init.type === 'action'">
-                <div>
-                    <label>{{$t('text.primary')}}</label>
-                    <input type="text" v-model="request.usEN" :placeholder="$t('text.primary')">
-                </div>
-                <div>
-                    <label>{{$t('text.secondary')}}</label>
-                    <input type="text" v-model="request.zhCN" :placeholder="$t('text.secondary')">
-                </div>
-                <div class="default">
-                    <checkbox v-model="request.prefix" label="text.prefix"></checkbox>
-                </div>
-            </section>
-            <section class="data" v-else>
-                <div>
-                    <label>{{$t( 'text.primary')}}</label>
-                    <input type="text" v-model="request.usEN" :placeholder="$t('text.primary')">
-                </div>
-                <div>
-                    <label>{{$t( 'text.secondary')}}</label>
-                    <input type="text" v-model="request.zhCN" :placeholder="$t('text.secondary')">
-                </div>
-                <div>
-                    <label>{{$t('text.price')}}</label>
-                    <input type="text" v-model.number="request.price" placeholder="0.00">
-                </div>
-                <div class="option">
-                    <label>{{$t('text.category')}}</label>
-                    <select v-model="request.category">
-                        <option v-for="(category,index) in init.category" :key="index">{{category}}</option>
-                    </select>
-                </div>
-            </section>
+            <div class="inner">
+                <section class="data" v-if="init.type === 'category'">
+                    <div class="input">
+                        <label>{{$t('text.primary')}}</label>
+                        <input type="text" v-model="request.usEN" :placeholder="$t('text.primary')">
+                    </div>
+                    <div class="input">
+                        <label>{{$t('text.secondary')}}</label>
+                        <input type="text" v-model="request.zhCN" :placeholder="$t('text.secondary')">
+                    </div>
+                    <div class="input">
+                        <label>{{$t('text.contain')}}</label>
+                        <input type="text" v-model="request.contain" :placeholder="$t('text.contain')">
+                    </div>
+                </section>
+                <section class="data" v-else-if="init.type === 'action'">
+                    <div class="input">
+                        <label>{{$t('text.primary')}}</label>
+                        <input type="text" v-model="request.usEN" :placeholder="$t('text.primary')">
+                    </div>
+                    <div class="input">
+                        <label>{{$t('text.secondary')}}</label>
+                        <input type="text" v-model="request.zhCN" :placeholder="$t('text.secondary')">
+                    </div>
+                    <div class="default">
+                        <checkbox v-model="request.prefix" label="text.prefix"></checkbox>
+                    </div>
+                </section>
+                <section class="data" v-else>
+                    <div class="input">
+                        <label>{{$t( 'text.primary')}}</label>
+                        <input type="text" v-model="request.usEN" :placeholder="$t('text.primary')">
+                    </div>
+                    <div class="input">
+                        <label>{{$t( 'text.secondary')}}</label>
+                        <input type="text" v-model="request.zhCN" :placeholder="$t('text.secondary')">
+                    </div>
+                    <div class="input">
+                        <label>{{$t('text.price')}}</label>
+                        <input type="text" v-model.number="request.price" placeholder="0.00">
+                    </div>
+                    <div class="options">
+                        <label>{{$t('text.category')}}</label>
+                        <select v-model="request.category">
+                            <option v-for="(category,index) in init.category" :key="index">{{category}}</option>
+                        </select>
+                    </div>
+                </section>
+            </div>
             <footer>
                 <div class="f1">
                     <span class="del" @click="del" v-show="request._id">{{$t('button.delete')}}</span>
@@ -122,12 +124,12 @@ export default {
 </script>
 
 <style scoped>
-.form {
+/* .form {
     width: 350px;
     background: #fff;
     box-sizing: border-box;
     overflow: hidden;
-    border-top: 1px solid #668a66;
+    border-top: 1px solid #3a948c;
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
 }
 
@@ -232,5 +234,5 @@ footer {
     color: red;
     border-bottom: 1px dashed red;
     cursor: pointer;
-}
+} */
 </style>

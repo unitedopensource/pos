@@ -71,6 +71,7 @@ const mutations = {
     },
     [types.SET_SUBMENU](state, data) {
         let submenu = {};
+        data = data || []
         data.forEach(item => {
             submenu.hasOwnProperty(item.group) ?
                 submenu[item.group].push(item) :

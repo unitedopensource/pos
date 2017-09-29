@@ -211,7 +211,9 @@ export default {
         'scanner': 'Scanner',
         'split': 'Split Ticket',
         'payment': 'Payment',
-        'note': 'Note'
+        'note': 'Note',
+        'subMenuGroup': 'SubMenu Group',
+        'subMenuItem': 'SubMenu Item'
     },
     menu: {
         'course': 'Course',
@@ -504,7 +506,7 @@ export default {
         'creditCardTip': 'Credit Card Tips',
         'tax': 'Tax',
         'itemSales': 'Item Sales',
-        'tips':'Tips'
+        'tips': 'Tips'
     },
     text: {
         'starter': 'Starter',
@@ -708,7 +710,7 @@ export default {
         'tipPercentage': 'Tip Percentage',
         'autoTemplate': 'Auto Template',
         'openFood': 'Open Food',
-        'alphabetical':'Alphabetical'
+        'alphabetical': 'Alphabetical'
     },
     nav: {
         'store': 'Store',
@@ -886,7 +888,8 @@ export default {
     },
     tip: {
         'autoTemplate': 'Auto popup template page',
-        'alphabetical':'Sort menu item by alphabet',
+        'alphabetical': 'Sort menu item by alphabet',
+        'createSubMenuGroup':'Create a sub menu group',
         'table': {
             'passwordRequire': 'Password input required before create a new table.',
             'autoClearTable': 'Auto restore table status after settling ticket.',

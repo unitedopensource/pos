@@ -1,7 +1,9 @@
 <template>
     <div class="popupMask center dark" @click.self="init.reject(false)">
         <div class="editor">
-            <header>{{$t('setting.uiEditor')}}</header>
+            <header>
+                <h2>{{$t('setting.uiEditor')}}</h2>
+            </header>
             <div class="inner">
                 <div class="input">
                     <label>{{$t('text.title')}}</label>
@@ -11,16 +13,16 @@
                     <label>{{$t('text.subtitle')}}</label>
                     <input v-model.trim="ui.subhead">
                 </div>
-                <div class="input">
+                <div class="options">
                     <label>{{$t('text.route')}}</label>
                     <select v-model="ui.route">
-                        <option :value="route" v-for="route in routes">{{route}}</option>
+                        <option :value="route" v-for="(route,index) in routes" :key="index">{{route}}</option>
                     </select>
                 </div>
-                <div class="input">
+                <div class="options">
                     <label>{{$t('text.icon')}}</label>
                     <select v-model="ui.icon">
-                        <option :value="icon" v-for="icon in icons">{{icon}}</option>
+                        <option :value="icon" v-for="(icon,index) in icons" :key="index">{{icon}}</option>
                     </select>
                 </div>
                 <div class="default">
@@ -44,7 +46,7 @@ export default {
         return {
             ui: null,
             icons: ['fa-user', 'fa-phone', 'fa-car', 'fa-cutlery', 'fa-list', 'fa-inbox', 'fa-cog', 'fa-lock'],
-            routes: ['sale', 'order', 'pickup', 'delivery', 'table', 'buffet', 'history','pickupList', 'setting', 'cashDrawer', 'lock']
+            routes: ['sale', 'order', 'pickup', 'delivery', 'table', 'buffet', 'history', 'pickupList', 'setting', 'cashDrawer', 'lock']
         }
     },
     created() {
@@ -57,12 +59,3 @@ export default {
     }
 }
 </script>
-
-<style scoped>
-.default {
-    border-top: 1px dashed #ccc;
-    margin-top: 25px;
-    padding-top: 15px;
-    text-align: center;
-}
-</style>
