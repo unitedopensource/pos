@@ -79,8 +79,13 @@ export default {
                     Object.assign(this.submenu, { [group]: items });
                     this.getItems(group);
                 })
-            }).catch(() => {
-                this.$q()
+            }).catch((del) => {
+                this.$q();
+                del && this.$socket.emit("[SUBMENU] REMOVE", item, items => {
+                    let group = items[0].group;
+                    Object.assign(this.submenu, { [group]: items });
+                    this.getItems(group);
+                })
             })
         },
         sortItems() {

@@ -1,7 +1,9 @@
 <template>
     <div class="popupMask center dark" @click.self="init.reject(false)">
         <div class="editor">
-            <header>{{$t('setting.address')}}</header>
+            <header>
+                <h2>{{$t('setting.address')}}</h2>
+            </header>
             <div class="inner">
                 <div class="input">
                     <label>{{$t('text.street')}}</label>
