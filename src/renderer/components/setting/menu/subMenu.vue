@@ -12,30 +12,35 @@
                 </div>
             </div>
         </div>
-        <div class="items">
-            <div v-for="(item,index) in items" :key="index" :class="{disable:!item.clickable}" @contextmenu="edit(item,index)">
-                {{item[language]}}
-            </div>
-        </div>
+        <draggable v-model="items" @sort="sortItems" :options="{animation:300,ghostClass:'itemGhost'}" class="f1">
+            <transition-group tag="div" class="items">
+                <div v-for="(item,index) in items" :key="index" :class="{disable:!item.clickable}" @contextmenu="edit(item,index)">
+                    {{item[language]}}
+                </div>
+            </transition-group>
+        </draggable>
+        <div class="btn" v-show="sorted" @click="applySortItem">{{$t('button.apply')}}</div>
         <div :is="component" :init="componentData"></div>
     </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import draggable from 'vuedraggable'
 import creator from './createSubMenu'
 import editor from './subMenuEditor'
 export default {
     computed: {
         ...mapGetters(['submenu', 'language'])
     },
-    components: { creator, editor },
+    components: { creator, editor, draggable },
     data() {
         return {
             component: null,
             componentData: null,
             groups: [],
-            items: []
+            items: [],
+            sorted: false
         }
     },
     created() {
@@ -77,6 +82,23 @@ export default {
             }).catch(() => {
                 this.$q()
             })
+        },
+        sortItems() {
+            this.sorted = true;
+        },
+        applySortItem() {
+            let items = this.items.filter(item => item._id).map((item, index) => {
+                return {
+                    _id: item._id,
+                    num: index
+                }
+            })
+            this.$socket.emit("[SUBMENU] SORT", items);
+
+            let group = this.items[0].group;
+            Object.assign(this.submenu, { [group]: this.items });
+            this.getItems(group);
+            this.sorted = false;
         }
     }
 }
@@ -126,5 +148,10 @@ export default {
 .items {
     flex: 1;
     max-width: 414px;
+}
+
+.itemGhost {
+    background: #607D8B;
+    border: 1px dashed #212121;
 }
 </style>

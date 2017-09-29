@@ -26,7 +26,8 @@ ul {
 }
 
 #app.admin{
-  background: url(../image/9.jpg) center center;
+  background: url(../image/20.png) center center;
+  background-size:cover; 
 }
 
 div {
