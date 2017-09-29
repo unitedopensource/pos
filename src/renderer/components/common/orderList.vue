@@ -285,7 +285,8 @@ export default {
                     total: total.toFixed(2),
                     due: due.toFixed(2),
                     discount: discount.toFixed(2),
-                    balance: balance.toFixed(2)
+                    balance: balance.toFixed(2),
+                    delivery:delivery.toFixed(2)
                 });
                 this.setOrder({ payment: this.payment });
             })
