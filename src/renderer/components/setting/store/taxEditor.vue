@@ -14,12 +14,9 @@
                     <label>{{$t('text.taxRate')}}</label>
                     <input v-model.number="tax.rate">
                 </div>
-                <div class="options">
-                    <div class="tip">
-                        <h3>{{$t('text.apply')}}</h3>
-                        <span>{{$t('setting.taxApplyTip')}}</span>
-                    </div>
-                    <div class="option">
+                <fieldset>
+                    <legend>{{$t('text.apply')}}</legend>
+                    <div class="trigger">
                         <checkbox v-model="tax.apply.WALK_IN" label="type.WALK_IN"></checkbox>
                         <checkbox v-model="tax.apply.PICK_UP" label="type.PICK_UP"></checkbox>
                         <checkbox v-model="tax.apply.DELIVERY" label="type.DELIVERY"></checkbox>
@@ -27,7 +24,7 @@
                         <checkbox v-model="tax.apply.BAR" label="type.BAR"></checkbox>
                         <checkbox v-model="tax.apply.SALES" label="type.SALES"></checkbox>
                     </div>
-                </div>
+                </fieldset>
                 <div class="default">
                     <checkbox label="text.setDefault" v-model="tax.default"></checkbox>
                 </div>
@@ -68,34 +65,9 @@ export default {
 </script>
 
 <style scoped>
-.options {
-    display: flex;
-    align-items: center;
-    border: 2px solid #ccc;
-    border-radius: 4px;
-    width: 285px;
-    margin:5px 0 0 2px;
-    padding: 5px;
-}
-
-.tip {
-    width: 100px;
-    text-align: center;
-}
-
-.option {
+.trigger {
     flex: 1;
     display: flex;
     flex-wrap: wrap;
-}
-
-h3 {
-    font-weight: normal;
-}
-
-.tip span {
-    font-size: 13px;
-    font-style: italic;
-    color: gray;
 }
 </style>

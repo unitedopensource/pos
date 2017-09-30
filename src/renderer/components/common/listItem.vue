@@ -39,7 +39,7 @@ export default {
             this.$route.name === 'Menu' && this.focus(item, e);
         },
         focus(item, e) {
-            if (item === this.$store.getters.item) {
+            if (item === this.$store.getters.item && item !== this.$store.getters.order.content.last()) {
                 let dom = document.querySelector('li.item.active');
                 dom && dom.classList.remove('active');
                 this.resetPointer()
