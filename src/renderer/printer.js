@@ -142,6 +142,7 @@ var Printer = function (plugin, config) {
 
             this.plugin.PRINT_INIT('Ticket Receipt');
             this.plugin.ADD_PRINT_HTM(0, 0, "100%", "100%", html);
+            console.log(html)
             this.plugin.SET_PRINTER_INDEX(printer);
             this.plugin.PRINT();
 
@@ -924,12 +925,12 @@ function createList(printer, ctrl, invoice) {
         item.choiceSet.forEach(set => {
             if (set.hasOwnProperty('print') && Array.isArray(set.print) && !set.print.includes(printer)) return;
             setCN += `<p class="list choiceSet zhCN">
-                      <span class="set">${set.zhCN}<span class="qty">${set.qty === 1 ? " " : '×' + set.qty}</span></span>
-                      <span class="price">${parseFloat(set.price) !== 0 ? set.price.toFixed(2) : ""}</span>
+                      <span class="qty">${set.qty === 1 ? " " : set.qty + ' ×'}</span>
+                      <span class="set">${set.zhCN}<span>${parseFloat(set.price) !== 0 ? '(' + set.price.toFixed(2) + ')' : ""}</span></span>
                     </p>`;
             setEN += `<p class="list choiceSet usEN">
-                      <span class="set">${set.usEN}<span class="qty">${set.qty === 1 ? " " : '×' + set.qty}</span></span>
-                      <span class="price">${parseFloat(set.price) !== 0 ? set.price.toFixed(2) : ""}</span>
+                      <span class="qty">${set.qty === 1 ? " " : set.qty + ' ×'}</span>
+                      <span class="set">${set.usEN}<span>${parseFloat(set.price) !== 0 ? '(' + set.price.toFixed(2) + ')' : ""}</span></span>
                     </p>`;
         });
         let name = (item[printer] && item[printer].hasOwnProperty("zhCN")) ? item[printer].zhCN : printMenuID ? item.menuID + " " + item.zhCN : item.zhCN;
@@ -1043,17 +1044,15 @@ function createStyle(ctrl) {
               .itemWrap.markItem{margin-top:5px;}
               span.item,span.side{position:relative;display:inline-block;}
               span.mark{position:absolute;top:-10px;left:0;font-size:10px;width:100%;text-align:center;display:inline-block;font-weight:bold;}
-              span.side{font-size:0.8em;vertical-align:middle;}
+              span.side{font-size:0.9em;vertical-align:middle;}
               span.price{min-width:30px;padding-right:5px;text-align:right;}
               div.category{border-bottom:1px dashed #000;margin-top:5px;${sortItem ? '' : 'display:none;'}}
               .list.zhCN{margin-top:5px;}
               .list.usEN{${printPrimary ? 'margin-top:-5px' : 'margin-bottom:8px'}}
               .zhCN .price{${printPrimaryPrice ? 'display:initial' : 'display:none'}}
               .usEN .price{${printSecondaryPrice ? 'display:initial' : 'display:none'}}
-              p.list.choiceSet{margin-top:0px;display:flex;}
-              .choiceSet .set{flex:1;padding:0 35px;font-size:0.8em;}
-              .choiceSet .price{font-size:0.8em;}
-              .set .qty{margin-left:1em;}
+              .list.choiceSet{margin-top: 0px; display: flex;font-size: 0.9em; margin-left: 35px;}
+              .choiceSet .set{flex:1;}
               footer{font-family:'Agency FB';}
               section.column{display:flex;}
               .payment{min-width:150px;${printPayment ? '' : 'display:none;'}}

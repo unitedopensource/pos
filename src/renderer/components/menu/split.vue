@@ -68,10 +68,15 @@ export default {
             items.forEach(item => {
                 let { qty, sort = 0, single } = item;
                 while (qty > 0) {
+                    let addition = 0;
+                    item.choiceSet.forEach(set => {
+                        addition += toFixed(set.qty * set.price, 2)
+                    })
+                    let single = (parseFloat(item.single) + addition).toFixed(2);
                     let clone = Object.assign({}, item, {
                         qty: 1,
-                        sort,
-                        total: single.toFixed(2),
+                        sort,single,
+                        total: single,
                         unique: Math.random().toString(36).substr(2, 5)
                     });
                     flattened.push(clone);
@@ -165,7 +170,6 @@ export default {
                 payment: this.$children[index].payment,
                 time: +new Date
             });
-            //Printer.init(this.config).setJob("receipt").print(order);
             Printer.setTarget('All').print(order)
             this.items.forEach(item => {
                 Array.isArray(item.sort) ?

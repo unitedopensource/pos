@@ -12,12 +12,12 @@
                     <span class="mark">{{item.mark[1] | mark}}</span>
                 </div>
             </div>
-            <span class="price" @click.stop>{{item.total}}</span>
+            <span class="price" @click.stop>{{item.total | decimal}}</span>
         </div>
         <div class="sub" v-for="(set,index) in item.choiceSet" :key="index" @click.stop="adjustChoiceSet(set,$event)">
             <span class="qty" :class="{hide:set.qty === 1}">{{set.qty}}</span>
             <span class="item">{{set[language]}}</span>
-            <span class="price" :class="{hide:parseFloat(set.price) === 0}" @click.stop>{{set.price | decimal}}</span>
+            <span class="price" :class="{hide:parseFloat(set.price) === 0}" @click.stop>({{set.price | decimal}})</span>
         </div>
     </li>
 </template>
@@ -27,12 +27,15 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
     props: ['item'],
     computed: {
+        // total() {
+        //     let item = toFixed(this.item.single * this.item.qty, 2);
+        //     let addition = 0;
+        //     this.item.choiceSet.forEach(set => {
+        //         addition += toFixed(set.qty * set.price, 2)
+        //     })
+        //     return (item + addition).toFixed(2)
+        // },
         ...mapGetters(['language', 'choiceSet'])
-    },
-    data() {
-        return {
-
-        }
     },
     methods: {
         select(item, e) {
@@ -117,9 +120,8 @@ li {
 }
 
 .sub .item {
-    flex: 1;
     color: #666;
-    text-indent: 10px;
+    text-indent: 8px;
 }
 
 .sub.target {
@@ -139,7 +141,13 @@ li {
 
 .sub .price {
     min-width: 35px;
-    text-align: right;
+    padding-left: 4px;
+    color: darkgray;
+}
+
+.active .price,
+.target .price {
+    color: #fff;
 }
 
 .mark {

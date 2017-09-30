@@ -38,8 +38,6 @@
         </div>
         <div class="done" v-show="paid">
             <div class="btn print" @click="print">{{$t('button.print')}}</div>
-            <!-- <div class="btn" @click="setDiscount">{{$t('button.setDiscount')}}</div> -->
-            <!-- <div class="btn pay" @click="pay" v-show="!paid">{{$t('button.payment')}}</div> -->
         </div>
     </div>
 </template>
@@ -113,7 +111,7 @@ export default {
 
             this.instance.forEach(item => {
                 let amount = item.single * item.qty;
-                item.choiceSet.forEach(set => { amount += parseFloat(set.price) })
+                //item.choiceSet.forEach(set => { amount += parseFloat(set.price) })
                 if (this.isTax) {
                     let taxClass = this.tax.class[item.taxClass];
                     tax += taxClass.apply[type] ? (taxClass.rate / 100 * amount) : tax;
