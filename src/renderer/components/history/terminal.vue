@@ -51,7 +51,7 @@
                 </section>
             </div>
             <footer>
-                <button class="btn" @click="batch">{{$t('button.batch')}}</button>
+                <button class="btn" @click="batch" :disabled="!ready">{{$t('button.batch')}}</button>
                 <div class="pagination">
                     <div class="page" @click="page = page > 0 ? page - 1 : 0">
                         <i class="fa fa-angle-left"></i>
@@ -74,7 +74,6 @@
 import { mapGetters } from 'vuex'
 import dialoger from '../common/dialoger'
 import processor from '../common/processor'
-//import Printer from '../../print'
 import tipper from './tipper'
 export default {
     props: ['init'],
@@ -87,7 +86,8 @@ export default {
             filter: "all",
             device: null,
             date: moment().subtract(4, 'hours'),
-            page: 0
+            page: 0,
+            ready: false
         }
     },
     created() {
@@ -101,7 +101,7 @@ export default {
             this.terminal.initial(terminal.address, terminal.port, terminal.sn, this.station.alies)
                 .then(r => r.text()).then((device) => {
                     this.device = this.terminal.check(device);
-                    this.device.code !== '000000' && this.disableBatchFn();
+                    this.device.code === '000000' ? this.ready = true : this.disableBatchFn();
                 })
             this.$socket.emit("[TERM] INITIAL", data => {
                 let sn = this.device ? this.device.sn : this.station.terminal.sn;
@@ -231,7 +231,7 @@ export default {
                     this.$dialog({
                         title: 'dialog.tipAdjustment', msg: ['dialog.tipAdjustmentTip', value.toFixed(2), total.toFixed(2)]
                     }).then(() => {
-                        this.$p("processor");
+                        this.$p("processor", { timeout: 30000 });
                         let amount = Math.round(value * 100);
                         let invoice = record.order.number;
                         let trans = record.trace.trans;
@@ -288,7 +288,7 @@ export default {
             }).then(() => { this.processBatch() }).catch(() => { this.$q() })
         },
         processBatch() {
-            this.$p("processor");
+            this.$p("processor", { timeout: 300000 });
             this.terminal.batch().then(r => r.text()).then(response => {
                 this.$q();
                 let result = this.terminal.explainBatch(response);
@@ -299,7 +299,6 @@ export default {
                         return trans;
                     })
                     this.$socket.emit("[TERM] BATCH_TRANS_CLOSE", updated);
-                    //Printer.init(this.config).setJob("batch").print(result);
                     Printer.printBatchReport(result);
                     this.$socket.emit('[TERM] SAVE_BATCH_RESULT', result);
                 } else {
@@ -421,8 +420,6 @@ export default {
                     buttons: [{ text: 'button.confirm', fn: 'resolve' }]
                 }).then(() => { this.$q() })
             })
-
-
         },
         disableBatchFn() {
             this.$dialog({

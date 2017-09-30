@@ -93,8 +93,8 @@ export default {
 <style scoped>
 .search {
     background: #fff;
-    border-radius: 15px;
-    padding: 1px 20px 5px;
+    border-radius: 2px;
+    padding: 3px 10px 5px;
     position: absolute;
     right: 0;
     top: -5px;
@@ -104,7 +104,8 @@ export default {
 .search input {
     border: none;
     outline: none;
-    width: 100px;
+    width: 130px;
+    font-size: 22px;
 }
 
 .datalist {

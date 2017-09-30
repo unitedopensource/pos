@@ -1,6 +1,6 @@
 <template>
     <div class="popupMask center dark">
-        <div class="loader">
+        <div class="loader" v-show="!component">
             <h3>{{$t('dialog.systemProcessing')}}</h3>
             <div class="wrap">
                 <div class="dots">
@@ -12,12 +12,32 @@
                 </div>
             </div>
         </div>
+        <div :is="component" :init="componentData"></div>
     </div>
 </template>
 
 <script>
+import dialoger from './dialoger'
 export default {
-    props: ['init']
+    props: ['init'],
+    components: { dialoger },
+    data() {
+        return {
+            componentData: null,
+            component: null
+        }
+    },
+    created() {
+        if (this.init.hasOwnProperty('timeout')) {
+            setTimeout(() => {
+                this.$dialog({
+                    title: 'dialog.timeout', msg: 'dialog.timeoutTip', buttons: [{ text: 'button.confirm', fn: 'resolve' }]
+                }).then(() => {
+                    this.init.reject()
+                })
+            }, this.init.timeout)
+        }
+    }
 }
 </script>
 

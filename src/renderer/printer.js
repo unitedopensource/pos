@@ -142,7 +142,7 @@ var Printer = function (plugin, config) {
 
             this.plugin.PRINT_INIT('Ticket Receipt');
             this.plugin.ADD_PRINT_HTM(0, 0, "100%", "100%", html);
-            console.log(html)
+
             this.plugin.SET_PRINTER_INDEX(printer);
             this.plugin.PRINT();
 
@@ -886,9 +886,9 @@ function createHeader(store, ticket) {
         `<span class="text">Guest:</span><span class="value">${guest}</span>`
     ticketInfo += (type === 'DINE_IN' || type === 'BAR' || type === 'PRE_PAYMENT' || type === 'PAYMENT') ?
         `<p><span class="wrap">
-                            ${hasCashier}
-                        <span class="text">Table:</span><span class="value">${table || ""}</span>
-                        </span></p>`: "";
+            ${hasCashier}
+            <span class="text">Table:</span><span class="value">${table || ""}</span>
+        </span></p>`: "";
     return `<section class="header">
             <div class="store">
                 <h3>${store.name}</h3>
@@ -896,9 +896,7 @@ function createHeader(store, ticket) {
                 <h5>${store.city} ${store.state} ${store.zipCode}</h5>
                 <h5>${store.contact}</h5>
             </div>
-            <div class="type">
-                <p class="zhCN">${title}</p>
-            </div>
+            <div class="type">${title}</div>
             <div class="time">
                 <span>Date: ${date}</span>
                 <span>Time: ${placeTime}</span>
@@ -1020,9 +1018,7 @@ function createStyle(ctrl) {
               div.store{margin-bottom:10px;${printStore ? '' : 'display:none;'}}
               .header h3{font-size:1.25em;}
               .header h5{font-size:16px;font-weight:lighter}
-              div.type{${printType ? '' : 'display:none;'}}
-              div.type .zhCN{font-weight:lighter;font-size:1.3em;}
-              div.type .usEN{margin-top:-5px;font-size:1.25em;}
+              div.type{${printType ? '' : 'display:none;'}font-size:1.3em;font-weight:bold;font-family:"Agency FB"}
               div.number{position:absolute;right:10px;bottom:12px;font-size:2em;font-weight:bold;font-family:"Agency FB"}
               div.time span{display:inline-block;margin:0 10px;font-size:1em;}
               div.time{border-bottom:1px solid #000;position:relative;margin-top:10px;}
@@ -1053,6 +1049,7 @@ function createStyle(ctrl) {
               .usEN .price{${printSecondaryPrice ? 'display:initial' : 'display:none'}}
               .list.choiceSet{margin-top: 0px; display: flex;font-size: 0.9em; margin-left: 35px;}
               .choiceSet .set{flex:1;}
+              .choiceSet .set > span {margin-left:4px;}
               footer{font-family:'Agency FB';}
               section.column{display:flex;}
               .payment{min-width:150px;${printPayment ? '' : 'display:none;'}}
