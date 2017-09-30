@@ -181,7 +181,7 @@
             <aside class="action">
                 <i class="fa fa-plus" @click="newPrinter"></i>
                 <i class="fa fa-trash" @click="removePrinterConfirm"></i>
-                <i class="fa fa-print"></i>
+                <i class="fa fa-print" @click="test"></i>
                 <i class="fa fa-volume-up" @click="buzzer"></i>
             </aside>
         </section>
@@ -270,8 +270,11 @@ export default {
             this.devices = Object.keys(this.printers) || [""];
         },
         buzzer() {
-            if (!this.profile) return;
-            Printer.buzzer(this.profile)
+            if (!this.device) return;
+            Printer.buzzer(this.device)
+        },
+        test() {
+            Printer.testPage(this.device);
         },
         back() {
             this.$router.push({ name: 'Setting.index' })

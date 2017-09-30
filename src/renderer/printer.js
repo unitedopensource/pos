@@ -49,11 +49,51 @@ var Printer = function (plugin, config) {
         }
     }
 
-    this.buzzer = function (name) {
+    this.buzzer = function (device) {
         this.plugin.PRINT_INIT('Buzzer');
-        this.plugin.SET_PRINTER_INDEX(name);
+        this.plugin.SET_PRINTER_INDEX(device);
         this.plugin.SEND_PRINT_RAWDATA(String.fromCharCode(27) + String.fromCharCode(67) + String.fromCharCode(4) + String.fromCharCode(2) + String.fromCharCode(3));
         return this
+    }
+
+    this.testPage = function (device) {
+        let { name, address, city, state, zipCode, contact } = this.config.store;
+
+        this.plugin.PRINT_INIT('Test Page');
+        this.plugin.PRINT_INITA(0, 0, 270, 2000, "");
+        this.plugin.ADD_PRINT_TEXT(3, 2, 262, 23, name);
+        this.plugin.SET_PRINT_STYLEA(0, "FontName", "Agency FB");
+        this.plugin.SET_PRINT_STYLEA(0, "FontSize", 14);
+        this.plugin.SET_PRINT_STYLEA(0, "Alignment", 2);
+        this.plugin.SET_PRINT_STYLEA(0, "Bold", 1);
+        this.plugin.SET_PRINT_STYLEA(0, "ItemType", 1);
+        this.plugin.SET_PRINT_STYLEA(0, "Horient", 2);
+        this.plugin.ADD_PRINT_TEXT(30, 2, 262, 20, address);
+        this.plugin.SET_PRINT_STYLEA(0, "FontName", "Yuanti-SC Regular");
+        this.plugin.SET_PRINT_STYLEA(0, "FontSize", 10);
+        this.plugin.SET_PRINT_STYLEA(0, "Alignment", 2);
+        this.plugin.SET_PRINT_STYLEA(0, "ItemType", 1);
+        this.plugin.SET_PRINT_STYLEA(0, "Horient", 2);
+        this.plugin.ADD_PRINT_TEXT(42, 2, 262, 20, `${city}, ${state} ${zipCode}`);
+        this.plugin.SET_PRINT_STYLEA(0, "FontName", "Yuanti-SC Regular");
+        this.plugin.SET_PRINT_STYLEA(0, "FontSize", 10);
+        this.plugin.SET_PRINT_STYLEA(0, "Alignment", 2);
+        this.plugin.SET_PRINT_STYLEA(0, "ItemType", 1);
+        this.plugin.SET_PRINT_STYLEA(0, "Horient", 2);
+        this.plugin.ADD_PRINT_TEXT(60, 2, 262, 20, contact);
+        this.plugin.SET_PRINT_STYLEA(0, "FontName", "Yuanti-SC Regular");
+        this.plugin.SET_PRINT_STYLEA(0, "FontSize", 10);
+        this.plugin.SET_PRINT_STYLEA(0, "Alignment", 2);
+        this.plugin.SET_PRINT_STYLEA(0, "ItemType", 1);
+        this.plugin.SET_PRINT_STYLEA(0, "Horient", 2);
+        this.plugin.ADD_PRINT_LINE(82, 6, 82, 266, 0, 1);
+        this.plugin.ADD_PRINT_TEXT(90, 10, 262, 20, device + ' printer');
+        this.plugin.SET_PRINT_STYLEA(0, "FontName", "Yuanti-SC Regular");
+        this.plugin.SET_PRINT_STYLEA(0, "FontSize", 12);
+        this.plugin.SET_PRINT_STYLEA(0, "Alignment", 2);
+        this.plugin.SET_PRINTER_INDEX(device);
+        this.plugin.PRINT();
+        this.reset();
     }
 
     this.getPrinters = function () {
