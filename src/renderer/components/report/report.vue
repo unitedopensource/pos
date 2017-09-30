@@ -283,7 +283,7 @@ export default {
                 if (!payment.settled) return;
                 if (type === 'MULTIPLE') {
                     invoice.splitPayment.forEach(split => {
-                        let amount = parseFloat(split.subtotal) + parseFloat(split.tax);
+                        let amount = parseFloat(split.subtotal) + parseFloat(split.tax) - parseFloat(split.discount);
                         if (settle.hasOwnProperty(split.type)) {
                             settle[split.type]["amount"] += amount;
                             settle[split.type]["tip"] += parseFloat(split.tip);
@@ -298,7 +298,7 @@ export default {
                         }
                     })
                 } else {
-                    let amount = parseFloat(payment.subtotal) + parseFloat(payment.tax)
+                    let amount = parseFloat(payment.subtotal) + parseFloat(payment.tax) - parseFloat(payment.discount);
 
                     if (settle.hasOwnProperty(type)) {
                         settle[type]["amount"] += amount;
