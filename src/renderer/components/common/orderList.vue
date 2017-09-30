@@ -69,11 +69,11 @@
                     <span class="text">{{$t("text.tax")}}:</span>
                     <span class="value">{{payment.tax | decimal}}</span>
                 </div>
-                <div>
+                <div :class="{hidden:parseFloat(payment.delivery) === 0}">
                     <span class="text">{{$t("text.deliveryFee")}}:</span>
                     <span class="value">{{payment.delivery | decimal}}</span>
                 </div>
-                <div>
+                <div :class="{hidden:parseFloat(payment.discount) === 0}">
                     <span class="text">{{$t("text.discount")}}:</span>
                     <span class="value">{{payment.discount | decimal}}</span>
                 </div>
@@ -565,5 +565,9 @@ i.flip {
 
 .content .value {
     color: #676767;
+}
+
+.hidden span{
+    visibility: hidden;
 }
 </style>
