@@ -635,6 +635,18 @@ section.dataList {
   height: 15px;
 }
 
+i.tip {
+  position: absolute;
+  top: 2px;
+  right: 6px;
+  height: 10px;
+  width: 13px;
+  background: #FFEB3B;
+  border-radius: 2px;
+  box-shadow: 0 1px 1px #00695C;
+  cursor: pointer;
+}
+
 .editor header h2 {
   margin: 35px 0 5px 0;
   font-weight: normal;

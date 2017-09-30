@@ -15,19 +15,17 @@
                         </div>
                         <i class="fa fa-2x fa-angle-right page" @click="page = page===0 ? 0 : page-1" v-show="split > 2"></i>
                     </div>
-                    <div class="spliter" @click="newSplit"></div>
+                    <div class="splitter" @click="newSplit"></div>
                 </div>
             </section>
             <footer>
                 <div class="f1">
-                    <!-- <div class="btn" @click="unlockSplit" v-if="unlock">{{$t('button.unlock')}}</div>
-                                        <div class="btn confirm" @click="lockSplit($event)" v-else>{{$t('button.lock')}}</div> -->
-                    <div class="btn" @click="printAllInvoices">{{$t('button.printAll')}}</div>
+                    <button class="btn" @click="printAllInvoices" :disabled="remain>0">{{$t('button.printAll')}}</button>
                     <div class="btn" @click="splitEvenly">{{$t('button.evenSplit')}}</div>
                 </div>
                 <div class="btn" @click="init.reject">{{$t('button.cancel')}}</div>
                 <div class="btn" @click="sort(1)">{{$t('button.sort')}}</div>
-                <div class="btn" @click="save">{{$t('button.save')}}</div>
+                <button class="btn" @click="save" :disabled="remain>0">{{$t('button.save')}}</button>
             </footer>
         </div>
         <div :is="component" :init="componentData"></div>
@@ -38,7 +36,6 @@
 import { mapGetters, mapActions } from 'vuex'
 import dialoger from '../common/dialoger'
 import splitList from './splitList'
-//import Printer from '../../print'
 export default {
     props: ['init'],
     components: { splitList, dialoger },
@@ -426,7 +423,7 @@ i.page:active {
     transition: transform 0.22s ease;
 }
 
-.spliter {
+.splitter {
     width: 150px;
     height: inherit;
     background: #fff;
@@ -436,7 +433,7 @@ i.page:active {
     position: relative;
 }
 
-.spliter:before {
+.splitter:before {
     font-family: fontAwesome;
     content: '\F067';
     position: absolute;

@@ -3,6 +3,7 @@
         <div class="editor">
             <header>
                 <h2>{{$t('setting.categoryEditor')}}</h2>
+                <i class="tip"></i>
             </header>
             <div class="inner">
                 <div class="input">

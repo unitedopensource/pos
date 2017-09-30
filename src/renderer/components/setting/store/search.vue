@@ -1,7 +1,9 @@
 <template>
     <div class="popupMask center dark" @click.self="init.reject">
         <div class="editor">
-            <header>{{$t('title.scanner')}}</header>
+            <header>
+                <h2>{{$t('title.scanner')}}</h2>
+            </header>
             <div class="wrap">
                 <div class="search">
                     <i class="fa fa-search"></i>
@@ -12,7 +14,10 @@
             <ul class="results">
                 <li v-for="(ip,index) in results" :key="index">
                     <input type="radio" name="ip" v-model="target" :id="'ip'+index" :value="ip">
-                    <label :for="'ip'+index">{{ip}}</label>
+                    <label :for="'ip'+index">
+                        <i class="fa fa-tablet"></i>
+                        <span>{{ip}}</span>
+                    </label>
                 </li>
             </ul>
             <footer>
@@ -62,11 +67,16 @@ export default {
 </script>
 
 <style scoped>
+.editor {
+    min-width: 350px;
+}
+
 .search {
-    padding: 5px;
+    padding: 10px;
     background: #fff;
     border-bottom: 1px solid #eee;
     display: flex;
+    justify-content: center;
     font-size: 1.25em;
     color: #333;
 }
