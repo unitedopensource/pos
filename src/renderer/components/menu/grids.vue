@@ -162,14 +162,14 @@ export default {
       this.$emit("open", name);
     },
     less() {
-      let boolean = !!document.querySelector('div.request') || !!this.item.choiceSet.length;
+      let boolean = !document.querySelector('.item.active') && (!!document.querySelector('div.request') || !!this.item.choiceSet.length);
+
       if (this.app.mode === 'create' || this.item.new) {
         this.lessQty(boolean);
       } else {
         this.approval(this.op.modify, 'item') ?
           this.lessQty(boolean) :
           this.requestAccess().then(op => {
-            console.log(this.approval(op.modify, 'item'))
             if (this.approval(op.modify, 'item')) {
               this.$q()
               this.lessQty(boolean)
@@ -180,10 +180,11 @@ export default {
       }
     },
     more() {
+      let focus = document.querySelector('.item.active');
       let subItemCount = Array.isArray(this.item.choiceSet) ?
         this.item.choiceSet.filter(item => item.subItem).map(item => item.qty).reduce((a, b) => a + b, 0) : 0;
-
-      if (this.item.hasOwnProperty('rules')) {
+      
+      if (!focus && this.item.hasOwnProperty('rules')) {
         let max = this.item.rules.maxSubItem || Infinity;
         let overCharge = this.item.rules.overCharge || 0;
         if (subItemCount >= max && overCharge === 0) {

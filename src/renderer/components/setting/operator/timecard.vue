@@ -1,32 +1,26 @@
 <template>
     <div>
+        <div class="period">
+            <div>
+                
+            </div>
+        </div>
         <section class="card list">
             <header>{{$t('title.timecard')}}</header>
             <div class="header">
+                <span class="approve">{{$t('text.approve')}}</span>
                 <span class="week">{{$t('text.date')}}</span>
                 <span class="time">{{$t('text.clockInTime')}}</span>
                 <span class="time">{{$t('text.clockOutTime')}}</span>
                 <span class="hour">{{$t('text.workHour')}}</span>
-                <span class="approve">{{$t('text.approve')}}</span>
             </div>
             <article>
                 <div class="list" v-for="(log,index) in logs" :key="index">
+                    <i class="approve fa" :class="getIcon(log.valid)"></i>
                     <span class="week">{{log.clockIn | moment('ddd')}}</span>
                     <span class="time">{{log.clockIn | moment('M/D/YY HH:mm:ss')}}</span>
                     <span class="time">{{log.clockOut | moment('M/D/YY HH:mm:ss')}}</span>
                     <span class="hour">{{calc(log.clockIn,log.clockOut)}}</span>
-                    <div class="approve" v-if="approval">
-                        <button class="btn">{{$t('button.valid')}}</button>
-                        <button class="btn">{{$t('button.invalid')}}</button>
-                        <button class="btn">{{$t('button.edit')}}</button>
-                    </div>
-                    <div class="approve" v-else>
-                        <i class="fa" :class="getIcon(log.valid)"></i>
-                    </div>
-                </div>
-                <div class="more" @click="more">
-                    <i class="fa fa-caret-down"></i>
-                    <span>{{$t('button.viewMore')}}</span>
                 </div>
             </article>
         </section>
@@ -89,23 +83,24 @@ div.header {
 }
 
 .approve {
-    flex: 1;
-    padding: 0 10px;
+    width: 40px;
+    text-align: center;
+    padding: 0 5px;
 }
 
 .week {
-    width: 80px;
+    width: 100px;
     text-align: center;
 }
 
 .time {
-    padding: 0 10px;
+    padding: 0 5px;
     width: 130px;
 }
 
 .hour {
     width: 210px;
-    padding: 0 10px;
+    padding: 0 5px;
 }
 
 article .list {

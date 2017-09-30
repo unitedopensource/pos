@@ -69,5 +69,7 @@ export default {
     flex: 1;
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
+    padding: 10px;
 }
 </style>

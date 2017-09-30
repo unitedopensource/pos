@@ -165,7 +165,7 @@ export default {
             let subItemCount = Array.isArray(this.item.choiceSet) ?
                 this.item.choiceSet.filter(item => item.subItem).map(item => item.qty).reduce((a, b) => a + b, 0) : 0;
 
-            if (this.item.hasOwnProperty('rules')) {
+            if (item.subItem && this.item.hasOwnProperty('rules')) {
                 let max = (this.item.rules.maxSubItem * this.item.qty) || Infinity;
                 let overCharge = this.item.rules.overCharge || 0;
                 if (subItemCount >= max && overCharge === 0) {

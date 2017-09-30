@@ -8,7 +8,7 @@
             <div class="inner">
                 <div class="input">
                     <label>{{$t('text.primary')}}</label>
-                    <input type="text" v-model="item.usEN">
+                    <input type="text" v-model="item.usEN" @keydown.enter="confirm" ref="entry">
                 </div>
                 <div class="input">
                     <label>{{$t('text.secondary')}}</label>
@@ -63,15 +63,18 @@ export default {
             subItem: item.subItem || true,
             num: item.num || 0,
             group: item.group || '',
-            print: item.print || []
+            print: item.print || Object.keys(this.config.printer)
         }
+    },
+    mounted(){
+        this.$refs.entry.focus()
     },
     methods: {
         confirm() {
             if (!this.item.zhCN && !this.item.usEN) return;
 
-            this.item.zhCN = this.item.zhCN.toCapitalCase();
             this.item.usEN = this.item.usEN.toCapitalCase();
+            this.item.zhCN = this.item.zhCN ? this.item.zhCN.toCapitalCase() : this.item.usEN;
             this.item.price = isNumber(this.item.price) ? this.item.price : 0;
             this.init.resolve(this.item)
         }
