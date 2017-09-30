@@ -42,7 +42,10 @@ let findHost = new Promise((resolve, reject) => {
   while (start <= end) {
     let target = ip + start;
     (function (target) {
-      let scanner = Net.connect({ host: target, port: 27017 }, () => { resolve(target) });
+      let scanner = Net.connect({ host: target, port: 8888 }, () => {
+        scanner.destroy();
+        resolve(target)
+      });
       setTimeout(() => { scanner.destroy() }, 2000);
       scanner.on("error", () => { scanner.destroy() });
     })(target);
