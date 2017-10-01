@@ -31,7 +31,6 @@
 
 <script>
 import { mapGetters } from 'vuex'
-//import Printer from '../../print'
 export default {
     props: ['init'],
     data() {
@@ -65,13 +64,11 @@ export default {
             };
             this.giftCard.reload = value.toFixed(2);
             this.giftCard.balance = (this.giftCard.balance + value).toFixed(2);
-            //Printer.init(this.config).setJob("reload").print(this.giftCard);
             Printer.printGiftCard("reload",this.giftCard);
             this.$socket.emit("[GIFTCARD] RELOAD", { _id: this.giftCard._id, value, activity });
             this.init.resolve();
         },
         recordCashDrawerAction(inflow, outflow) {
-            //Printer.init(this.config).openCashDrawer();
             Printer.openCashDrawer();
             let cashDrawer = this.store.stuffBank ? this.op.name : this.station.cashDrawer.name;
             let activity = {

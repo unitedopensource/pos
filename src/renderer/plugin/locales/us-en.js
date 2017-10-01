@@ -409,7 +409,11 @@ export default {
         'unableAdd': 'Unable to Add',
         'maxSubItem': '{i} can only has {i} maximum subitems',
         'timeout': 'Time Out',
-        'timeoutTip': 'An unknown error occured, please retry later'
+        'timeoutTip': 'An unknown error occured, please retry later',
+        'giftCardActivation': 'Gift Card Activation',
+        'giftCardActivationTip': 'Are you sure to activate this gift card?',
+        'giftCardRegistered': 'Gift Card Activated',
+        'giftCardRegisteredInfo': 'This gift card already activated.'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',
@@ -470,7 +474,8 @@ export default {
         'swipeGiftCard': 'Please Swipe Gift Card',
         'cantReadTack': 'Can not read tack',
         'history': 'History',
-        'printBalance': 'Print Bal.'
+        'printBalance': 'Print Bal.',
+        'readTrackFailed': 'Read Track Failed'
     },
     calendar: {
         'mon': 'MON',

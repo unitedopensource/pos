@@ -30,6 +30,13 @@
                         <h5>{{$t('dock.terminalTip')}}</h5>
                     </div>
                 </li>
+                <li @click="giftCardPanel">
+                    <i class="fa fa-2x fa-gift"></i>
+                    <div>
+                        <h3>{{$t('dock.giftCard')}}</h3>
+                        <h5>{{$t('dock.giftCardTip')}}</h5>
+                    </div>
+                </li>
                 <li @click="changeLanguage">
                     <i class="fa fa-2x fa-language"></i>
                     <div>
@@ -53,10 +60,11 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import terminal from '../history/terminal'
+import giftCard from '../giftCard/task'
 import dialoger from '../common/dialoger'
 export default {
     props: ['init'],
-    components: { dialoger, terminal },
+    components: { dialoger, terminal, giftCard },
     data() {
         return {
             componentData: null,
@@ -154,6 +162,9 @@ export default {
         },
         getTerminal() {
             this.$p("terminal")
+        },
+        giftCardPanel() {
+            this.$p("giftCard")
         },
         changeLanguage() {
             let language = this.app.language === "usEN" ? "zhCN" : "usEN";

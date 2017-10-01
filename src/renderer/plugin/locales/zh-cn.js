@@ -196,8 +196,8 @@ export default {
         'invalid': '无效',
         'clockIn': '打卡',
         'printAnyway': '依然打印',
-        'setSubMenu':'设置子菜单',
-        'reset':'重置'
+        'setSubMenu': '设置子菜单',
+        'reset': '重置'
     },
     title: {
         'markPaymentType': '标记付款方式',
@@ -215,7 +215,7 @@ export default {
         'note': '便签',
         'subMenuGroup': '子菜单组名',
         'subMenuItem': '子菜单物品',
-        'subMenuConfig':'子菜单设置'
+        'subMenuConfig': '子菜单设置'
     },
     menu: {
         'course': '定时',
@@ -403,8 +403,12 @@ export default {
         'templateRemoveTip': '您确定要移除这个模版吗?',
         'unableAdd': '无法添加',
         'maxSubItem': '{i} 无法添加多于 {i} 个子菜项',
-        'timeout':'操作超时',
-        'timeoutTip':'发生某个未知的错误导致操作超时，请重新尝试'
+        'timeout': '操作超时',
+        'timeoutTip': '发生某个未知的错误导致操作超时，请重新尝试',
+        'giftCardActivation': '激活礼物卡',
+        'giftCardActivationTip': '您确定要激活这个礼物卡吗？',
+        'giftCardRegistered':'礼物卡已激活',
+        'giftCardRegisteredInfo':'这个礼物卡已经激活过'
     },
     terminal: {
         'initial': '正在初始化 {i}...',
@@ -465,7 +469,8 @@ export default {
         'swipeGiftCard': '请刷礼物卡',
         'cantReadTack': '礼物卡读取失败',
         'history': '消费记录',
-        'printBalance': '打印余额'
+        'printBalance': '打印余额',
+        'readTrackFailed': '无法读取磁条信息'
     },
     calendar: {
         'mon': '周一',
@@ -512,9 +517,9 @@ export default {
         'itemSales': '物品销售',
         'tips': '小费'
     },
-    stats:{
-        'orderType':'订单种类',
-        'paymentType':'付款种类'
+    stats: {
+        'orderType': '订单种类',
+        'paymentType': '付款种类'
     },
     text: {
         'starter': '起始',
@@ -718,9 +723,9 @@ export default {
         'autoTemplate': '自动开启模板',
         'openFood': '临时物品',
         'alphabetical': '按字母排列',
-        'maxSubItem':'物品选择上限',
-        'overCharge':'额外价格',
-        'subItemGroup':'子菜单组'
+        'maxSubItem': '物品选择上限',
+        'overCharge': '额外价格',
+        'subItemGroup': '子菜单组'
     },
     nav: {
         'store': '店面',
@@ -899,7 +904,7 @@ export default {
     tip: {
         'autoTemplate': '自动弹出模板选择页面',
         'alphabetical': '菜单按字母序列排序',
-        'createSubMenuGroup':'创建一个子菜单组',
+        'createSubMenuGroup': '创建一个子菜单组',
         'table': {
             'passwordRequire': '创建座位之前需要输入密码',
             'autoClearTable': '客人付款之后自动还原座位状态',
