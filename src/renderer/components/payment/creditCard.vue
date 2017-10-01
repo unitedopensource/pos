@@ -1,6 +1,6 @@
 <template>
     <div class="creditCard">
-        <i class="fa" :class="[icon]"></i>
+        <i class="fa loader" :class="[icon]"></i>
         <h3>{{msg}}</h3>
         <h5>{{tip}}</h5>
         <footer>

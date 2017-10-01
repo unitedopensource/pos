@@ -9,22 +9,22 @@
                 <div>
                     <input type="radio" name="task" v-model="task" value="activation" id="activation">
                     <label for="activation">
-                        <i class="fa fa-credit-card"></i>{{$t('giftCard.activation')}}</label>
+                        <i class="fa fa-credit-card"></i>{{$t('card.activation')}}</label>
                 </div>
                 <div>
                     <input type="radio" name="task" v-model="task" value="reload" id="reload">
                     <label for="reload">
-                        <i class="fa fa-money"></i>{{$t('giftCard.reload')}}</label>
+                        <i class="fa fa-money"></i>{{$t('card.reload')}}</label>
                 </div>
                 <div>
                     <input type="radio" name="task" v-model="task" value="view" id="history">
                     <label for="history">
-                        <i class="fa fa-list-ol"></i>{{$t('giftCard.history')}}</label>
+                        <i class="fa fa-list-ol"></i>{{$t('card.history')}}</label>
                 </div>
                 <div>
                     <input type="radio" name="task" v-model="task" value="redemption" id="redemption">
                     <label for="redemption">
-                        <i class="fa fa-usd"></i>{{$t('giftCard.redemption')}}</label>
+                        <i class="fa fa-usd"></i>{{$t('card.redemption')}}</label>
                 </div>
             </div>
             <footer>
@@ -125,7 +125,8 @@ input:checked+label:after {
     color: #fff;
 }
 
-i.fa {
+label .fa {
     margin-right: 10px;
+    width: 20px;
 }
 </style>

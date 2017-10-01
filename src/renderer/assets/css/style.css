@@ -65,7 +65,22 @@ i.warning::before {
   content: '\F071';
   color: #f44336;
 }
-
+i.loader{
+  position: relative;
+}
+i.loader:after {
+  content: ' ';
+  position: absolute;
+  width: 82px;
+  height: 82px;
+  left: -2px;
+  top: 5px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  border-color: transparent #fff transparent #fff;
+  transform-origin: 50% 50%;
+  animation: rotate 1.5s linear 0s infinite normal;
+}
 .relative {
   position: relative;
 }
@@ -1003,6 +1018,14 @@ footer.update span {
     padding: 20px 15px;
 }
 
+@keyframes rotate {
+  0% {
+      transform: rotate(0deg);
+  }
+  100% {
+      transform: rotate(360deg);
+  }
+}
 
 /* vue transition animation */
 

@@ -1,7 +1,7 @@
 <template>
     <div class="popupMask center dark" @click.self="init.reject">
         <div class="capture">
-            <i class="fa info"></i>
+            <i class="fa info loader"></i>
             <h3>{{message}}</h3>
             <footer>
                 <button class="btn" @click="init.reject">{{$t('button.cancel')}}</button>
@@ -71,21 +71,6 @@ i {
     font-size: 6em;
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
     margin: 15px 0;
-    position: relative;
-}
-
-i:after {
-    content: ' ';
-    position: absolute;
-    width: 82px;
-    height: 82px;
-    left: -2px;
-    top: 5px;
-    border-radius: 50%;
-    border: 2px solid transparent;
-    border-color: transparent #fff transparent #fff;
-    transform-origin: 50% 50%;
-    animation: rotate 1.5s linear 0s infinite normal;
 }
 
 footer {
@@ -97,14 +82,5 @@ footer {
 footer .btn {
     margin: 10px;
     flex: 1;
-}
-
-@keyframes rotate {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
 }
 </style>
