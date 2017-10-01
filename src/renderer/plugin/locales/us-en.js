@@ -197,7 +197,12 @@ export default {
         'invalid': 'Invalid',
         'clockIn': 'Clock In',
         'printAnyway': 'Print Anyway',
-        'setSubMenu':'Set SubMenu'
+        'setSubMenu': 'Set SubMenu',
+        'reset': 'Reset'
+    },
+    stats: {
+        'orderType': '订单种类',
+        'paymentType': '付款种类'
     },
     title: {
         'markPaymentType': 'Mark Payment Type',
@@ -215,7 +220,7 @@ export default {
         'note': 'Note',
         'subMenuGroup': 'SubMenu Group',
         'subMenuItem': 'SubMenu Item',
-        'subMenuConfig':'SubMenu Config'
+        'subMenuConfig': 'SubMenu Config'
     },
     menu: {
         'course': 'Course',
@@ -403,8 +408,8 @@ export default {
         'templateRemoveTip': 'Are you sure to remove this template?',
         'unableAdd': 'Unable to Add',
         'maxSubItem': '{i} can only has {i} maximum subitems',
-        'timeout':'Time Out',
-        'timeoutTip':'An unknown error occured, please retry later'
+        'timeout': 'Time Out',
+        'timeoutTip': 'An unknown error occured, please retry later'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',
@@ -715,9 +720,9 @@ export default {
         'autoTemplate': 'Auto Template',
         'openFood': 'Open Food',
         'alphabetical': 'Alphabetical',
-        'maxSubItem':'Max Sub Item',
-        'overCharge':'Extra Charge',
-        'subItemGroup':'SubMenu Group'
+        'maxSubItem': 'Max Sub Item',
+        'overCharge': 'Extra Charge',
+        'subItemGroup': 'SubMenu Group'
     },
     nav: {
         'store': 'Store',
@@ -896,7 +901,7 @@ export default {
     tip: {
         'autoTemplate': 'Auto popup template page',
         'alphabetical': 'Sort menu item by alphabet',
-        'createSubMenuGroup':'Create a sub menu group',
+        'createSubMenuGroup': 'Create a sub menu group',
         'table': {
             'passwordRequire': 'Password input required before create a new table.',
             'autoClearTable': 'Auto restore table status after settling ticket.',

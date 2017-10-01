@@ -54,6 +54,7 @@ import paymentMark from '../payment/mark'
 import Dialoger from '../common/dialoger'
 import Payment from '../payment/payment'
 import Report from '../report/report'
+import statistic from './statistic'
 import Calendar from './calendar'
 import Terminal from './terminal'
 import Reason from './reason'
@@ -61,7 +62,7 @@ import Search from './search'
 
 export default {
     props: ['date'],
-    components: { Calendar, Dialoger, Terminal, Payment, Reason, Report, paymentMark },
+    components: { Calendar, Dialoger, Terminal, Payment, Reason, Report, paymentMark, statistic },
     data() {
         return {
             today: today(),
@@ -250,12 +251,13 @@ export default {
             this.$socket.emit("[UPDATE] INVOICE", ticket);
         },
         stats() {
+            this.$p('statistic')
         },
         exit() {
             this.resetMenu();
             this.$router.push({ path: "/main" });
         },
-        ...mapActions(['setApp','setOrder', 'setTicket', 'resetMenu', 'setCustomer', 'removePayment'])
+        ...mapActions(['setApp', 'setOrder', 'setTicket', 'resetMenu', 'setCustomer', 'removePayment'])
     },
     computed: {
         ...mapGetters(['op', 'order', 'station', 'isEmptyTicket'])

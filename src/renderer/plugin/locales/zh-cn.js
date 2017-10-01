@@ -196,7 +196,8 @@ export default {
         'invalid': '无效',
         'clockIn': '打卡',
         'printAnyway': '依然打印',
-        'setSubMenu':'设置子菜单'
+        'setSubMenu':'设置子菜单',
+        'reset':'重置'
     },
     title: {
         'markPaymentType': '标记付款方式',
@@ -510,6 +511,10 @@ export default {
         'tax': '税',
         'itemSales': '物品销售',
         'tips': '小费'
+    },
+    stats:{
+        'orderType':'订单种类',
+        'paymentType':'付款种类'
     },
     text: {
         'starter': '起始',
