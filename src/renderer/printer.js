@@ -44,7 +44,7 @@ var Printer = function (plugin, config) {
 
     this.openCashDrawer = function () {
         if (this.station.cashDrawer && this.station.cashDrawer.bind) {
-            this.SET_PRINTER_INDEX(this.station.cashDrawer.bind || this.station.printer);
+            this.plugin.SET_PRINTER_INDEX(this.station.cashDrawer.bind || this.station.printer);
             this.plugin.SEND_PRINT_RAWDATA(String.fromCharCode(27) + String.fromCharCode(112) + String.fromCharCode(48) + String.fromCharCode(55) + String.fromCharCode(221));
         }
     }
