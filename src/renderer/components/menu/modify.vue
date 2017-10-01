@@ -142,7 +142,7 @@ export default {
       this.reset = false;
     },
     setPointer(target, e) {
-      document.querySelector(".target").classList.remove("target");
+      document.querySelector(".column.target").classList.remove("target");
       e.currentTarget.classList.add("target");
       this.target = target;
       this.reset = true;
@@ -180,10 +180,10 @@ export default {
       this.discount = this.unit ? "0.00" : "0";
     },
     confirm() {
-      this.init.type === 'request' ?
-        this.adjustRequestItem() : this.adjustMenuItem();
+      this.init.type === 'choiceSet' ?
+        this.adjustChoiceSetItem() : this.adjustMenuItem();
     },
-    adjustRequestItem() {
+    adjustChoiceSetItem() {
       let single = parseFloat(this.item.single);
       this.setPriceForChoiceSet({
         single,

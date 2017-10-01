@@ -89,7 +89,7 @@ export default {
             qty: 1,
             single: 0,
             discount: 0
-          }, type: 'request'
+          }, type: 'choiceSet'
         });
     },
     ...mapActions(['setChoiceSet', 'alertChoiceSet', 'setPriceForChoiceSet', 'setChoiceSetTarget'])

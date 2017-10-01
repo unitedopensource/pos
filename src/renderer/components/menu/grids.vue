@@ -147,9 +147,10 @@
 import { mapGetters, mapActions } from 'vuex'
 import dialoger from '../common/dialoger'
 import unlock from '../common/unlock'
+import modify from './modify'
 export default {
   props: ['layout'],
-  components: { dialoger, unlock },
+  components: { dialoger, unlock, modify },
   data() {
     return {
       isDisplayGuests: false,
@@ -183,7 +184,7 @@ export default {
       let focus = document.querySelector('.item.active');
       let subItemCount = Array.isArray(this.item.choiceSet) ?
         this.item.choiceSet.filter(item => item.subItem).map(item => item.qty).reduce((a, b) => a + b, 0) : 0;
-      
+
       if (!focus && this.item.hasOwnProperty('rules')) {
         let max = this.item.rules.maxSubItem || Infinity;
         let overCharge = this.item.rules.overCharge || 0;
@@ -217,7 +218,14 @@ export default {
     },
     modify() {
       if (this.isEmptyTicket) return;
-      this.callComponent("modify")
+      let target = !!document.querySelector(".sub.target")
+      target ? this.$p("modify", {
+        item: {
+          qty: this.choiceSet ? this.choiceSet.qty : 1,
+          single: this.choiceSet ? this.choiceSet.single : 0,
+          discount: 0
+        }, type: 'choiceSet'
+      }) : this.$p("modify", { item: this.item })
     },
     course() {
       if (this.isEmptyTicket) return;
@@ -335,7 +343,7 @@ export default {
     ...mapActions(['setApp', 'lessQty', 'moreQty', 'resetAll', 'setOrder', 'setTableInfo'])
   },
   computed: {
-    ...mapGetters(['op', 'app', 'item', 'language', 'order', 'ticket', 'store', 'customer', 'station', 'isEmptyTicket', 'currentTable'])
+    ...mapGetters(['op', 'app', 'item', 'language', 'order', 'ticket', 'store', 'customer', 'station', 'isEmptyTicket', 'currentTable', 'choiceSet'])
   }
 }
 </script>
