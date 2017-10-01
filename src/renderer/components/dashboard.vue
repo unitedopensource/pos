@@ -21,7 +21,6 @@ import { mapActions, mapGetters } from 'vuex'
 import dialoger from './common/dialoger'
 import counter from './common/counter'
 import toast from './dashboard/toast'
-//import Printer from '../print'
 import Preset from '../preset'
 import MAC from 'getmac'
 

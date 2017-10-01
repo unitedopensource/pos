@@ -169,7 +169,7 @@ export default {
         'reservation': 'RESV',
         'viewList': 'View',
         'switchTable': 'Switch T.',
-        'combineTable': 'Comb. T.',
+        'combineTicket': 'Comb. T.',
         'receipt': 'Receipt',
         'clearTable': 'Clear T.',
         'removePayment': 'Remove Payment',
@@ -402,7 +402,9 @@ export default {
         'templateRemove': 'Template Remove',
         'templateRemoveTip': 'Are you sure to remove this template?',
         'unableAdd': 'Unable to Add',
-        'maxSubItem': '{i} can only has {i} maximum subitems'
+        'maxSubItem': '{i} can only has {i} maximum subitems',
+        'timeout':'Time Out',
+        'timeoutTip':'An unknown error occured, please retry later'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',

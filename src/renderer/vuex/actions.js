@@ -396,15 +396,3 @@ export const updateReservation = ({
 }, data) => {
   commit(types.UPDATE_RESERVATION, data)
 }
-export const setAddressDistance = ({
-  commit
-}, data) => {
-  if (data.statusCode === 200) {
-    let results = JSON.parse(data.body);
-    let result = results.rows[0].elements[0];
-    let city = results.destination_addresses[0].split(",")[1].trim().toUpperCase();
-    let distance = result.distance.text;
-    let duration = result.duration.text;
-    commit(types.SET_CUSTOMER, { distance, duration, city })
-  }
-}

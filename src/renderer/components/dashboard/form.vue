@@ -176,13 +176,37 @@ export default {
         calculateDistance(data) {
             if (!this.store.mapAPI) return;
             let api = this.store.mapAPI;
-            let { address, city, state } = this.store;
+            let { address, city, state, zipCode } = this.store;
             address = this.$options.filters.formatAddress(address).split(' ').join('+');
             city = city.split(' ').join('+');
-            let origin = `${address},${city}+${state}`;
+            let origin = `${address},${city}+${state}+${zipCode}`;
             let destination = this.$options.filters.formatAddress(data.address).split(' ').join('+');
             let url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${origin}&destinations=${destination},${data.city.split(' ').join('+')}+${this.store.state}&key=${api}&language=en&units=imperial`;
-            this.$socket.emit("[INQUIRY] GOOGLE_DISTANCE_MATRIX", url);
+            this.$socket.emit("[GOOGLE] ADDRESS", url, (raw) => {
+                let result = JSON.parse(raw);
+
+                if (result.status === 'OK') {
+                    let addresses = result.destination_addresses;
+                    if (addresses.length > 1) {
+                        let predict = []
+                        addresses.forEach(address => {
+                            let street = address.split(",")[0].toUpperCase();
+                            let city = address.split(",")[1].trim().toUpperCase();
+                            predict.push({ street, city })
+                        })
+                        this.predict.address = predict;
+                    } else if (addresses.length === 1) {
+                        let address = addresses[0].split(",")[0].toUpperCase();
+                        let city = addresses[0].split(",")[1].trim().toUpperCase();
+
+                        let matrix = result.rows[0].elements[0];
+                        let distance = matrix.distance.text;
+                        let duration = matrix.duration.text;
+
+                        this.setCustomer({ address, city, distance, duration })
+                    }
+                }
+            });
         },
         highlight(list) {
             let p = this.customer.address.replace(/ +/g, ' ').trim().split(" ").slice(1).join(" ").length;

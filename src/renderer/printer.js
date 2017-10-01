@@ -181,7 +181,7 @@ var Printer = function (plugin, config) {
         let header = createHeader(this.config.store, raw);
         let list = createList(printer, setting.control, raw);
         let style = createStyle(setting.control);
-        let footer = createFooter(this.config.store.table, setting.control, raw);
+        let footer = createFooter(this.config.store.table, setting.control, 'cashier', raw);
 
         let html = header + list + footer + style;
 

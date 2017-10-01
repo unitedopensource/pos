@@ -46,8 +46,7 @@ export default {
             }
         },
         view(ticket) {
-            let order = Printer.preview(ticket);
-            this.$p('ticket', { render:order })
+            this.$p('ticket', { ticket })
         }
     },
     computed: {

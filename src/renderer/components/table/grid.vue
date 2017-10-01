@@ -12,9 +12,9 @@
             <i class="fa fa-ban"></i>
             <span class="text">{{$t('button.cancel')}}</span>
         </button>
-        <button class="btn" @click="combineTable">
-            <i class="fa fa-hand-paper-o"></i>
-            <span class="text">{{$t('button.combineTable')}}</span>
+        <button class="btn" @click="combineTicket">
+            <i class="fa fa-link"></i>
+            <span class="text">{{$t('button.combineTicket')}}</span>
         </button>
         <button class="btn" @click="prePayment">
             <i class="fa fa-print"></i>
@@ -130,8 +130,15 @@ export default {
                 this.$q()
             })
         },
-        combineTable() {
-
+        combineTicket() {
+            if (!this.currentTable) return;
+            this.$dialog({
+                title: 'dialog.conbineTicket', msg: 'dialog.conbineTicketTip'
+            }).then(() => {
+                this.$p('combinePreview');
+            }).catch(() => {
+                this.$q()
+            })
         },
         prePayment() {
             if (this.isEmptyTicket) return;

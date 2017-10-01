@@ -168,7 +168,7 @@ export default {
         'reservation': '预约',
         'viewList': '查看列表',
         'switchTable': '换座',
-        'combineTable': '合桌',
+        'combineTicket': '合单',
         'receipt': '收据',
         'clearTable': '清桌',
         'removePayment': '移除付款',
@@ -401,7 +401,9 @@ export default {
         'templateRemove': '移除模版',
         'templateRemoveTip': '您确定要移除这个模版吗?',
         'unableAdd': '无法添加',
-        'maxSubItem': '{i} 无法添加多于 {i} 个子菜项'
+        'maxSubItem': '{i} 无法添加多于 {i} 个子菜项',
+        'timeout':'操作超时',
+        'timeoutTip':'发生某个未知的错误导致操作超时，请重新尝试'
     },
     terminal: {
         'initial': '正在初始化 {i}...',

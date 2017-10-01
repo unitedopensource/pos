@@ -8,7 +8,7 @@
 export default {
     props: ['init'],
     created() {
-        this.ticket = this.init.render
+        this.ticket = Printer.preview(this.init.ticket);
     },
     data() {
         return {

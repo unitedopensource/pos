@@ -111,7 +111,6 @@ export default {
             let _id = this.spooler[i]._id;
             let items = [];
             this.spooler[i].content.forEach(item => { items.push(item.unique) });
-            //Printer.init(this.config).setJob("receipt").print(this.spooler[0]);
             Printer.setTarget('All').print(this.spooler[0])
             this.removeSpooler(i);
             let index = this.history.findIndex(order => order._id === _id);
@@ -147,7 +146,6 @@ export default {
             'insertOrder',
             'updateOrder',
             'setTodayOrder',
-            'setAddressDistance',
             'updateRequestCategory',
             'updateRequestAction',
             'updateRequestItem',
@@ -189,7 +187,7 @@ export default {
         NEW_RESERVATION(data) { this.newReservation(data) },
         UPDATE_RESERVATION(data) { this.updateReservation(data) },
         SYNC_RESERVATIONS(data) { this.setReservation(data) },
-        GOOGLE_ADDRESS_DISTANCE(data) { this.setAddressDistance(data) },
+        // GOOGLE_ADDRESS_DISTANCE(data) { this.setAddressDistance(data) },
         SHUTDOWN() { ipcRenderer.send("Shutdown") },
         CALLER_ID(customer) {
             this.newPhoneCall(customer)
