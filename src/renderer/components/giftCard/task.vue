@@ -77,6 +77,7 @@ export default {
                 }).then((data) => {
                     this.$q()
                     let { number, result } = data;
+                    this.card = result;
                     this.doTask(result, number)
                 }).catch(() => { this.$q() })
         },
