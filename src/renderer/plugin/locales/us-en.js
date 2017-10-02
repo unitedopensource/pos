@@ -29,6 +29,7 @@ export default {
         'PAYMENT': 'Payment',
         'DELAY': 'Delay',
         'other': 'Other',
+        'all':'All',
         'allInvoice': 'All Invoices',
         'walkInInvoice': 'WalkIn Inv.',
         'pickUpInvoice': 'PickUp Inv.',
@@ -202,7 +203,16 @@ export default {
     },
     stats: {
         'orderType': 'Order Type',
-        'paymentType': 'Payment Type'
+        'paymentType': 'Payment Type',
+        'ticket': 'Ticket',
+        'type': 'Type',
+        'cashier': 'Cashier',
+        'placeTime': 'Place Time',
+        'subtotal': 'Subtotal',
+        'tax': 'Tax',
+        'tip': 'Tip',
+        'discount': 'Discount',
+        'total': 'Total'
     },
     title: {
         'markPaymentType': 'Mark Payment Type',

@@ -6,42 +6,35 @@
                 <i class="fa fa-times" @click="init.reject"></i>
             </header>
             <div class="inner">
-                <section class="filters">
-                    <div class="filter">
-                        <label>{{$t('stats.orderType')}}</label>
-                        <select v-model="typeFilter" @change="changeType">
-                            <option v-for="(type,index) in types" :key="index" :value="type">{{$t('type.'+type)}}</option>
-                        </select>
-                    </div>
-                    <div class="filter">
-                        <label>{{$t('stats.paymentType')}}</label>
-                        <select v-model="settleFilter" @change="changeSettle">
-                            <option v-for="(settle,index) in settles" :key="index">{{settle}}</option>
-                        </select>
-                    </div>
-                    <div>
-                        <button class="btn" @click="reset">{{$t('button.reset')}}</button>
-                    </div>
-                </section>
                 <table>
                     <tr>
-                        <th>Ticket</th>
-                        <th>Type</th>
-                        <th>Cashier</th>
-                        <th>Place Time</th>
-                        <th>Items</th>
-                        <th>Subtotal</th>
-                        <th>Tax</th>
-                        <th>Discount</th>
-                        <th>Tip</th>
-                        <th>Total</th>
+                        <th>{{$t('stats.ticket')}}</th>
+                        <th class="option">
+                            {{$t('stats.type')}}
+                            <ul>
+                                <li v-for="(type,index) in types" :key="index" @click="changeType(type)">{{$t('type.'+type)}}</li>
+                            </ul>
+                        </th>
+                        <th>{{$t('stats.cashier')}}</th>
+                        <th>{{$t('stats.placeTime')}}</th>
+                        <th class="option">
+                            {{$t('stats.paymentType')}}
+                            <ul>
+                                <li v-for="(settle,index) in settles" :key="index" @click="changeSettle(settle)">{{settle}}</li>
+                            </ul>
+                        </th>
+                        <th>{{$t('stats.subtotal')}}</th>
+                        <th>{{$t('stats.tax')}}</th>
+                        <th>{{$t('stats.discount')}}</th>
+                        <th>{{$t('stats.tip')}}</th>
+                        <th>{{$t('stats.total')}}</th>
                     </tr>
                     <tr v-for="(invoice,index) in invoices" :key="index" :class="{voided:invoice.status === 0}">
                         <td>{{invoice.number}}</td>
                         <td>{{$t('type.'+invoice.type)}}</td>
                         <td>{{invoice.cashier}}</td>
                         <td>{{invoice.time | moment('HH:mm:ss')}}</td>
-                        <td>{{countItem(invoice.content)}}</td>
+                        <td>{{invoice.payment.type}}</td>
                         <td>{{invoice.payment.subtotal}}</td>
                         <td>{{invoice.payment.tax}}</td>
                         <td>{{invoice.payment.discount}}</td>
@@ -90,9 +83,12 @@ export default {
         ...mapGetters(['history'])
     },
     created() {
-        this.types = [...new Set(this.history.map(invoice => invoice.type))];
-        this.settles = [...new Set(this.history.map(invoice => invoice.payment.type))]
-        this.invoices = this.history.map(invoice => invoice);
+        this.types = [...new Set(this.history.map(invoice => invoice.type))].reverse()
+        this.settles = [...new Set(this.history.map(invoice => invoice.payment.type))].reverse()
+        this.invoices = this.history.map(invoice => invoice)
+
+        this.types.splice(0, 0, "all")
+        this.settles.splice(0, 0, 'all')
     },
     data() {
         return {
@@ -104,38 +100,29 @@ export default {
         }
     },
     methods: {
-        reset() {
-            this.typeFilter = null;
-            this.settleFilter = null;
-        },
-        changeType() {
+        changeType(type) {
+            this.typeFilter = type;
             this.invoices = this.history.filter(invoice => {
-                let match1 = invoice.type === this.typeFilter;
-                let match2 = invoice.payment.type === this.settleFilter;
+                let match1 = type === 'all' ? true : invoice.type === this.typeFilter;
+                let match2 = this.settleFilter === 'all' ? true : invoice.payment.type === this.settleFilter;
 
                 if (this.settleFilter) return match1 && match2;
                 if (this.typeFilter) return match1;
 
                 return true;
-            });
+            })
         },
-        changeSettle() {
+        changeSettle(type) {
+            this.settleFilter = type;
             this.invoices = this.history.filter(invoice => {
-                let match1 = invoice.payment.type === this.settleFilter;
-                let match2 = invoice.type === this.typeFilter;
+                let match1 = this.settleFilter === 'all' ? true : invoice.payment.type === this.settleFilter;
+                let match2 = this.typeFilter === 'all' ? true : invoice.type === this.typeFilter;
 
                 if (this.typeFilter) return match1 && match2;
                 if (this.settleFilter) return match1;
 
                 return true;
-            });
-        },
-        countItem(list) {
-            let count = 0;
-            list.forEach(item => {
-                count += item.qty
             })
-            return count;
         }
     }
 }
@@ -166,16 +153,36 @@ section.filters {
 }
 
 table {
-    border-collapse: collapse;
+    box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.5);
+    border-spacing: 0;
     table-layout: auto;
     width: 99%;
-    margin: auto;
-    border: 1px solid #607D8B;
+    margin: 5px auto;
+}
+
+tr:first-child th:first-child {
+    border-top-left-radius: 6px;
+}
+
+tr:first-child th:last-child {
+    border-top-right-radius: 6px;
+}
+
+th.option {
+    cursor: pointer;
+    position: relative;
+}
+
+th.option:after {
+    content: '\f0d7';
+    position: absolute;
+    font-family: fontawesome;
+    right: 0px;
 }
 
 th {
     padding: 10px 6px;
-    background: #607D8B;
+    background: #434c5b;
     color: #fff;
     text-shadow: 0 1px 1px #333;
 }
@@ -197,10 +204,23 @@ tr:nth-child(odd) {
 tr:last-child {
     background: #E0E0E0;
     font-weight: bold;
-    color: #263238;
+    color: #333;
 }
 
-.btn {
-    height: 30px;
+.option ul {
+    position: absolute;
+    background: #434c5b;
+    padding: 5px 5px 10px 5px;
+    width: 80px;
+    border-radius: 4px;
+    display: none;
+}
+
+.option li {
+    padding-top: 10px;
+}
+
+th.option:hover ul {
+    display: block;
 }
 </style>

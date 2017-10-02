@@ -29,6 +29,7 @@ export default {
         'PAYMENT': '收据',
         'DELAY': '延迟',
         'other': '其它',
+        'all':'所有',
         'allInvoice': '所有订单',
         'walkInInvoice': '外等订单',
         'pickUpInvoice': '来取订单',
@@ -216,8 +217,8 @@ export default {
         'subMenuGroup': '子菜单组名',
         'subMenuItem': '子菜单物品',
         'subMenuConfig': '子菜单设置',
-        'selectTask':'选择一个任务',
-        'reload':'充值'
+        'selectTask': '选择一个任务',
+        'reload': '充值'
     },
     menu: {
         'course': '定时',
@@ -409,10 +410,10 @@ export default {
         'timeoutTip': '发生某个未知的错误导致操作超时，请重新尝试',
         'giftCardActivation': '激活礼物卡',
         'giftCardActivationTip': '您确定要激活这个礼物卡吗？',
-        'giftCardRegistered':'礼物卡已激活',
-        'giftCardRegisteredInfo':'这个礼物卡已经激活过',
-        'giftCardReload':'礼物卡充值',
-        'confirmEntryValue':'请确认要充值价格 $ {i} 到这张礼物卡上'
+        'giftCardRegistered': '礼物卡已激活',
+        'giftCardRegisteredInfo': '这个礼物卡已经激活过',
+        'giftCardReload': '礼物卡充值',
+        'confirmEntryValue': '请确认要充值价格 $ {i} 到这张礼物卡上'
     },
     terminal: {
         'initial': '正在初始化 {i}...',
@@ -523,7 +524,16 @@ export default {
     },
     stats: {
         'orderType': '订单种类',
-        'paymentType': '付款种类'
+        'paymentType': '付款种类',
+        'ticket': '订单号',
+        'type': '类别',
+        'cashier': '收银',
+        'placeTime': '订单时间',
+        'subtotal': '小计',
+        'tax': '税',
+        'tip': '小费',
+        'discount': '折扣',
+        'total': '总数'
     },
     text: {
         'starter': '起始',
@@ -730,7 +740,7 @@ export default {
         'maxSubItem': '物品选择上限',
         'overCharge': '额外价格',
         'subItemGroup': '子菜单组',
-        'records':'{i} 笔'
+        'records': '{i} 笔'
     },
     nav: {
         'store': '店面',

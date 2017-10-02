@@ -198,7 +198,8 @@ label {
 }
 
 input:checked+label {
-    background: #009688;
+    /* background: #009688; */
+    background: url('../../assets/image/mis.png') #009688;
     color: #fff;
     text-shadow: 0 1px 1px #333;
 }
