@@ -88,7 +88,15 @@ export default {
         this.invoices = this.history.map(invoice => invoice)
 
         this.types.splice(0, 0, "all")
-        this.settles.splice(0, 0, 'all')
+
+        let index = -1;
+        this.settles.some((type, i) => {
+            if (typeof type === 'undefined') {
+                index = i;
+                return true;
+            }
+        })
+        index === -1 ? this.settles.splice(0, 0, "all") : this.settles.splice(index, 1, "all")
     },
     data() {
         return {
@@ -218,6 +226,7 @@ tr:last-child {
 
 .option li {
     padding-top: 10px;
+    text-transform: capitalize;
 }
 
 th.option:hover ul {
