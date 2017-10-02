@@ -452,11 +452,11 @@ export default {
         //     }
         //     return status;
         // },
-        initialCashFlow() {
-            this.$dialog({
-                title: 'dialog.'
-            })
-        },
+        // initialCashFlow() {
+        //     this.$dialog({
+        //         title: 'dialog.'
+        //     })
+        // },
         changeDue(paid, change, balance) {
             this.recordCashDrawerAction(paid, change);
             this.poleDisplay(["Paid Cash", this.paid.toFixed(2)], ["Change Due:", change]);
@@ -690,7 +690,7 @@ export default {
                     this.$socket.emit("[GIFTCARD] CARD_ADJUST_VALUE", { _id: this.giftCard._id, value, activity });
                     this.giftCard.balance = 0;
                     //Printer.init(this.config).setJob("cashout").print(this.giftCard);
-                    Printer.printGiftCard("cashout",this.giftCard)
+                    Printer.printGiftCard("cashout", this.giftCard)
                     this.$q();
                 })
             }).catch(() => { this.$q() })
@@ -699,7 +699,7 @@ export default {
             if (!this.giftCard._id) return;
             this.poleDisplay("Gift Card Balance:", ["", this.giftCard.balance.toFixed(2)])
             //Printer.init(this.config).setJob("balance").print(this.giftCard);
-            Printer.printGiftCard("balance",this.giftCard);
+            Printer.printGiftCard("balance", this.giftCard);
         },
         activateGiftCard(number) {
             new Promise((resolve, reject) => {
@@ -715,7 +715,7 @@ export default {
                 this.giftCard = card;
                 this.$socket.emit("[GIFTCARD] CARD_ACTIVATION", card);
                 //Printer.init(this.config).setJob("activation").print(card);
-                Printer.printGiftCard("activation",card)
+                Printer.printGiftCard("activation", card)
                 this.$q()
             }).catch(() => { this.$q() })
         },
@@ -806,8 +806,7 @@ export default {
             order.cashier = this.op.name;
             order.customer = this.customer;
             order.content = order.content.filter(item => item.sort === index);
-            Printer.setTarget('Receipt').print(order)
-            //Printer.init(this.config).setJob("receipt").print(order);
+            this.isNewTicket ? Printer.setTarget('All').print(order) : Printer.setTarget('Receipt').print(order);
             order.content.filter(item => item.sort === this.payment.sort).forEach(item => {
                 delete item.new;
                 item.print = true;
@@ -912,15 +911,19 @@ export default {
             }
         },
         invoiceSettled(ticket, print) {
-            if (print) { 
-                Printer.setTarget('Receipt').print(ticket)
+            if (print) {
+                this.isNewTicket ?
+                    Printer.setTarget('All').print(ticket) :
+                    Printer.setTarget('Receipt').print(ticket);
+
                 ticket.content.forEach(item => {
                     delete item.new;
                     item.print = true;
                     item.pending = false;
-                });
-                this.$socket.emit("[UPDATE] INVOICE", ticket);
+                })
             }
+
+            this.$socket.emit("[UPDATE] INVOICE", ticket);
 
             switch (this.$route.name) {
                 case "Menu":

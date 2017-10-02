@@ -163,6 +163,7 @@ export default {
       this.$emit("open", name);
     },
     less() {
+      if(this.isEmptyTicket)return;
       let boolean = !document.querySelector('.item.active') && (!!document.querySelector('div.request') || !!this.item.choiceSet.length);
 
       if (this.app.mode === 'create' || this.item.new) {

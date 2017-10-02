@@ -105,6 +105,16 @@ export default {
                     }
                     break;
                 case "reload":
+                    let { number, balance } = card;
+                    new Promise((resolve, reject) => {
+                        this.componentData = { resolve, reject, number, balance };
+                        this.component = 'loader';
+                    }).then(() => {
+                        this.$q()
+
+                    }).catch(() => {
+                        this.$q()
+                    })
                     break;
                 case "view":
                     break;
