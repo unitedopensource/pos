@@ -144,9 +144,6 @@ export default {
       time = ("0" + time).slice(0, -1);
       this[this.target] = time;
     },
-    changeDate() {
-
-    },
     confirm() {
       if (this.list.length !== 0) return;
       this.jumpStep(3);
@@ -165,8 +162,7 @@ export default {
             item.pending = true;
             return item
           })
-        });
-        console.log(order)
+        })
         return order
       }).forEach(task => {
         this.delayPrint(task)
@@ -174,7 +170,7 @@ export default {
       this.exit();
     },
     exit() {
-      let order = JSON.parse(JSON.stringify(this.init.order));
+      let order = this.init.order;
       let customer = this.customer;
       delete customer.extra;
       Object.assign(order, {
@@ -192,16 +188,7 @@ export default {
           return item
         })
       });
-      let current = Object.assign({}, this.currentTable.current, {
-        invoice: [order._id],
-        color: "",
-        group: "",
-        guest: this.currentTable.current.guest || 0,
-        server: this.op.name,
-        time: +new Date
-      });
-      this.setTableInfo({ current });
-      this.app.mode === 'create' ? this.$socket.emit("[SAVE] DINE_IN_INVOICE", { table: this.currentTable, order }) : this.$socket.emit("[UPDATE] INVOICE", order);
+      this.app.mode === 'create' ? this.$socket.emit("[TABLE] INVOICE", order) : this.$socket.emit("[UPDATE] INVOICE", order);
       this.init.resolve();
       this.resetAll();
       this.setOrder(order);

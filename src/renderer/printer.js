@@ -365,12 +365,12 @@ var Printer = function (plugin, config) {
         CLODOP.SET_PRINT_STYLEA(0, "FontName", "Agency FB");
         CLODOP.SET_PRINT_STYLEA(0, "FontSize", 14);
         CLODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
-        CLODOP.ADD_PRINT_TEXT(178, 2, 262, 20, 'INITIAL BALANCE: $ '+ card.balance.toFixed(2));
+        CLODOP.ADD_PRINT_TEXT(178, 2, 262, 20, 'BALANCE: $ '+ card.balance.toFixed(2));
         CLODOP.SET_PRINT_STYLEA(0, "FontName", "Agency FB");
         CLODOP.SET_PRINT_STYLEA(0, "FontSize", 14);
         CLODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
         CLODOP.SET_PRINT_STYLEA(0, "LetterSpacing", 1);
-        CLODOP.ADD_PRINT_BARCODE(250, 8, 266, 70, "Code39", card.number);
+        CLODOP.ADD_PRINT_BARCODE(250, 30, 266, 70, "Code39", card.number);
         CLODOP.SET_PRINTER_INDEX(this.station.printer || 'cashier');
         CLODOP.PRINT();
     }

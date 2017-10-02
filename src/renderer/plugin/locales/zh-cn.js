@@ -413,7 +413,9 @@ export default {
         'giftCardRegistered': '礼物卡已激活',
         'giftCardRegisteredInfo': '这个礼物卡已经激活过',
         'giftCardReload': '礼物卡充值',
-        'confirmEntryValue': '请确认要充值价格 $ {i} 到这张礼物卡上'
+        'confirmEntryValue': '请确认要充值价格 $ {i} 到这张礼物卡上',
+        'entryInvalid':'格式不正确',
+        'entryMustBeNumber':'格式必须为数字'
     },
     terminal: {
         'initial': '正在初始化 {i}...',

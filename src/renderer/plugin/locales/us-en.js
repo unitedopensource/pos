@@ -427,7 +427,9 @@ export default {
         'giftCardRegistered': 'Gift Card Activated',
         'giftCardRegisteredInfo': 'This gift card already activated.',
         'giftCardReload': 'Gift Card Reload',
-        'confirmEntryValue': 'Please make sure you want to reload $ {i} dollar to this gift card'
+        'confirmEntryValue': 'Please make sure you want to reload $ {i} dollar to this gift card',
+        'entryInvalid':'Entry Invalid',
+        'entryMustBeNumber':'Entry must be number'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',
