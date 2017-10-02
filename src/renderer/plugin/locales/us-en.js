@@ -201,8 +201,8 @@ export default {
         'reset': 'Reset'
     },
     stats: {
-        'orderType': '订单种类',
-        'paymentType': '付款种类'
+        'orderType': 'Order Type',
+        'paymentType': 'Payment Type'
     },
     title: {
         'markPaymentType': 'Mark Payment Type',
@@ -220,7 +220,9 @@ export default {
         'note': 'Note',
         'subMenuGroup': 'SubMenu Group',
         'subMenuItem': 'SubMenu Item',
-        'subMenuConfig': 'SubMenu Config'
+        'subMenuConfig': 'SubMenu Config',
+        'selectTask': 'Select A Task',
+        'reload': 'Reload'
     },
     menu: {
         'course': 'Course',
@@ -413,7 +415,9 @@ export default {
         'giftCardActivation': 'Gift Card Activation',
         'giftCardActivationTip': 'Are you sure to activate this gift card?',
         'giftCardRegistered': 'Gift Card Activated',
-        'giftCardRegisteredInfo': 'This gift card already activated.'
+        'giftCardRegisteredInfo': 'This gift card already activated.',
+        'giftCardReload': 'Gift Card Reload',
+        'confirmEntryValue': 'Please make sure you want to reload $ {i} dollar to this gift card'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',
@@ -727,7 +731,8 @@ export default {
         'alphabetical': 'Alphabetical',
         'maxSubItem': 'Max Sub Item',
         'overCharge': 'Extra Charge',
-        'subItemGroup': 'SubMenu Group'
+        'subItemGroup': 'SubMenu Group',
+        'records': '{i} Records'
     },
     nav: {
         'store': 'Store',

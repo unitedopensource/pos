@@ -306,76 +306,144 @@ var Printer = function (plugin, config) {
         }
     }
 
-    this.printGiftCard = function (type, card) {
-        let store = this.config.store;
-        let date = moment().format("MM/DD/YYYY");
-        let time = moment().format("hh:mm:ss");
-        let condition;
-        switch (type) {
-            case "Activation":
-                condition = `<h5>Balance: $ ${card.balance}</h5>`;
-                break;
-            case "Reload":
-                condition = `<h5>Reload Amount: $ ${card.reload}</h5>
-                        <h5>Current Balance: $ ${card.balance}</h5>`;
-                break;
-            case "Balance":
-                condition = `<h5>Balance: $ ${card.balance}</h5>
-                         <h5>As of ${moment().format('MM/DD/YY hh:mm:ss')}</h5>`;
-                break;
-            case "Cash Out":
-                condition = `<h5>Remain Balance: $ ${card.balance}</h5>`;
-                break;
-        }
-        let html = `<section class="header">
-                      <div class="store">
-                        <h3>${store.name}</h3>
-                        <h5>${store.address}</h5>
-                        <h5>${store.city} ${store.state} ${store.zipCode}</h5>
-                        <h5>${store.contact}</h5>
-                      </div>
-                      <div class="type">
-                        <h3>Gift Card</h3>
-                        <h5>${type}</h5>
-                      </div>
-                      <div class="time">
-                        <span>Date: ${date}</span>
-                        <span>Time: ${time}</span>
-                      </div>
-                      <div class="server">
-                        <span class="text">Cashier:</span><span class="value">${card.seller}</span>
-                      </div>
-                  </section>
-                  <section class="body">
-                    <img src="http://api-bwipjs.rhcloud.com/?bcid=code128&text=${card.number}">
-                    <h5>${card.number.replace(/(.{4})(.{4})(.{4})(.{4})/g, '$1  $2  $3  $4')}</h5>
-                    ${condition}
-                  </section>
-                  <footer>
-                    Thank You Very Much
-                  </footer>`;
-        let style = `<style>
-                    *{margin:0;padding:0;font-family:'Agency FB';}
-                    section.header{text-align:center;}
-                    .header h3{font-size:1.25em;}
-                    .header h5{font-size:16px;font-weight:lighter}
-                    div.type{margin:10px;}
-                    div.type h3{font-weight:lighter;font-size:1.3em;}
-                    div.type h5{margin-top:-5px;font-size:1.25em;}
-                    div.time span{display:inline-block;margin:0 10px;font-size:1em;}
-                    div.time{border-bottom:1px solid #000;position:relative;}
-                    .server{border-bottom:1px solid #000;padding-bottom:1px;text-align:left;}
-                    section.body{text-align:center;margin:25px;}
-                    img{width:200px;height:45px;}
-                    .body h5{margin-top:10px;}
-                    footer{border-top:1px solid #000;text-align:center;}
-                    </style>`;
+    this.printGiftCard = function (title, card) {
+        let { name, address, city, state, zipCode, contact } = this.config.store;
 
-        this.plugin.PRINT_INIT('Gift Card');
-        this.plugin.ADD_PRINT_HTM(0, 0, "100%", "100%", (html + style));
-        this.plugin.SET_PRINTER_INDEX(this.station.printer || 'cashier');
-        this.plugin.PRINT();
+        CLODOP.PRINT_INIT('Gift Card');
+        CLODOP.PRINT_INITA(0, 0, 260, 2000, "");
+        CLODOP.ADD_PRINT_TEXT(3, 2, 262, 23, name);
+        CLODOP.SET_PRINT_STYLEA(0, "FontName", "Agency FB");
+        CLODOP.SET_PRINT_STYLEA(0, "FontSize", 14);
+        CLODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
+        CLODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+        CLODOP.SET_PRINT_STYLEA(0, "ItemType", 1);
+        CLODOP.SET_PRINT_STYLEA(0, "Horient", 2);
+        CLODOP.ADD_PRINT_TEXT(30, 2, 262, 20, address);
+        CLODOP.SET_PRINT_STYLEA(0, "FontName", "Yuanti-SC Regular");
+        CLODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+        CLODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
+        CLODOP.SET_PRINT_STYLEA(0, "ItemType", 1);
+        CLODOP.SET_PRINT_STYLEA(0, "Horient", 2);
+        CLODOP.ADD_PRINT_TEXT(42, 2, 262, 20, `${city}, ${state} ${zipCode}`);
+        CLODOP.SET_PRINT_STYLEA(0, "FontName", "Yuanti-SC Regular");
+        CLODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+        CLODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
+        CLODOP.SET_PRINT_STYLEA(0, "ItemType", 1);
+        CLODOP.SET_PRINT_STYLEA(0, "Horient", 2);
+        CLODOP.ADD_PRINT_TEXT(60, 2, 262, 20, contact);
+        CLODOP.SET_PRINT_STYLEA(0, "FontName", "Yuanti-SC Regular");
+        CLODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+        CLODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
+        CLODOP.SET_PRINT_STYLEA(0, "ItemType", 1);
+        CLODOP.SET_PRINT_STYLEA(0, "Horient", 2);
+        CLODOP.ADD_PRINT_TEXT(76, 88, 100, 21, 'Gift Card');
+        CLODOP.SET_PRINT_STYLEA(0, "FontName", "Agency FB");
+        CLODOP.SET_PRINT_STYLEA(0, "FontSize", 14);
+        CLODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
+        CLODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+        CLODOP.SET_PRINT_STYLEA(0, "ItemType", 1);
+        CLODOP.SET_PRINT_STYLEA(0, "Horient", 2);
+        CLODOP.SET_PRINT_STYLEA(0, "LetterSpacing", 1);
+        CLODOP.ADD_PRINT_TEXT(96, 88, 100, 21, title);
+        CLODOP.SET_PRINT_STYLEA(0, "FontName", "Agency FB");
+        CLODOP.SET_PRINT_STYLEA(0, "FontSize", 14);
+        CLODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
+        CLODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+        CLODOP.SET_PRINT_STYLEA(0, "ItemType", 1);
+        CLODOP.SET_PRINT_STYLEA(0, "Horient", 2);
+        CLODOP.SET_PRINT_STYLEA(0, "LetterSpacing", 1);
+        CLODOP.ADD_PRINT_TEXT(120, 42, 110, 20, "Date: " + moment().format('MM-DD-YYYY'));
+        CLODOP.SET_PRINT_STYLEA(0, "FontName", "Agency FB");
+        CLODOP.SET_PRINT_STYLEA(0, "FontSize", 11);
+        CLODOP.SET_PRINT_STYLEA(0, "LetterSpacing", 1);
+        CLODOP.ADD_PRINT_TEXT(120, 145, 110, 20, "Time: " + moment().format('HH:mm:ss'));
+        CLODOP.SET_PRINT_STYLEA(0, "FontName", "Agency FB");
+        CLODOP.SET_PRINT_STYLEA(0, "FontSize", 11);
+        CLODOP.SET_PRINT_STYLEA(0, "LetterSpacing", 1);
+        CLODOP.ADD_PRINT_LINE(138, 6, 138, 266, 0, 1);
+        CLODOP.ADD_PRINT_TEXT(152, 2, 262, 20, 'THANK YOU');
+        CLODOP.SET_PRINT_STYLEA(0, "FontName", "Agency FB");
+        CLODOP.SET_PRINT_STYLEA(0, "FontSize", 14);
+        CLODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
+        CLODOP.ADD_PRINT_TEXT(178, 2, 262, 20, 'INITIAL BALANCE: $ '+ card.balance.toFixed(2));
+        CLODOP.SET_PRINT_STYLEA(0, "FontName", "Agency FB");
+        CLODOP.SET_PRINT_STYLEA(0, "FontSize", 14);
+        CLODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
+        CLODOP.SET_PRINT_STYLEA(0, "LetterSpacing", 1);
+        CLODOP.ADD_PRINT_BARCODE(250, 8, 266, 70, "Code39", card.number);
+        CLODOP.SET_PRINTER_INDEX(this.station.printer || 'cashier');
+        CLODOP.PRINT();
     }
+    // this.printGiftCard = function (type, card) {
+    //     let store = this.config.store;
+    //     let date = moment().format("MM/DD/YYYY");
+    //     let time = moment().format("hh:mm:ss");
+    //     let condition;
+    //     switch (type) {
+    //         case "Activation":
+    //             condition = `<h5>Balance: $ ${card.balance}</h5>`;
+    //             break;
+    //         case "Reload":
+    //             condition = `<h5>Reload Amount: $ ${card.reload}</h5>
+    //                     <h5>Current Balance: $ ${card.balance}</h5>`;
+    //             break;
+    //         case "Balance":
+    //             condition = `<h5>Balance: $ ${card.balance}</h5>
+    //                      <h5>As of ${moment().format('MM/DD/YY hh:mm:ss')}</h5>`;
+    //             break;
+    //         case "Cash Out":
+    //             condition = `<h5>Remain Balance: $ ${card.balance}</h5>`;
+    //             break;
+    //     }
+    //     let html = `<section class="header">
+    //                   <div class="store">
+    //                     <h3>${store.name}</h3>
+    //                     <h5>${store.address}</h5>
+    //                     <h5>${store.city} ${store.state} ${store.zipCode}</h5>
+    //                     <h5>${store.contact}</h5>
+    //                   </div>
+    //                   <div class="type">
+    //                     <h3>Gift Card</h3>
+    //                     <h5>${type}</h5>
+    //                   </div>
+    //                   <div class="time">
+    //                     <span>Date: ${date}</span>
+    //                     <span>Time: ${time}</span>
+    //                   </div>
+    //                   <div class="server">
+    //                     <span class="text">Cashier:</span><span class="value">${card.seller}</span>
+    //                   </div>
+    //               </section>
+    //               <section class="body">
+    //                 <img src="http://api-bwipjs.rhcloud.com/?bcid=code128&text=${card.number}">
+    //                 <h5>${card.number.replace(/(.{4})(.{4})(.{4})(.{4})/g, '$1  $2  $3  $4')}</h5>
+    //                 ${condition}
+    //               </section>
+    //               <footer>
+    //                 Thank You Very Much
+    //               </footer>`;
+    //     let style = `<style>
+    //                 *{margin:0;padding:0;font-family:'Agency FB';}
+    //                 section.header{text-align:center;}
+    //                 .header h3{font-size:1.25em;}
+    //                 .header h5{font-size:16px;font-weight:lighter}
+    //                 div.type{margin:10px;}
+    //                 div.type h3{font-weight:lighter;font-size:1.3em;}
+    //                 div.type h5{margin-top:-5px;font-size:1.25em;}
+    //                 div.time span{display:inline-block;margin:0 10px;font-size:1em;}
+    //                 div.time{border-bottom:1px solid #000;position:relative;}
+    //                 .server{border-bottom:1px solid #000;padding-bottom:1px;text-align:left;}
+    //                 section.body{text-align:center;margin:25px;}
+    //                 img{width:200px;height:45px;}
+    //                 .body h5{margin-top:10px;}
+    //                 footer{border-top:1px solid #000;text-align:center;}
+    //                 </style>`;
+
+    //     this.plugin.PRINT_INIT('Gift Card');
+    //     this.plugin.ADD_PRINT_HTM(0, 0, "100%", "100%", (html + style));
+    //     this.plugin.SET_PRINTER_INDEX(this.station.printer || 'cashier');
+    //     this.plugin.PRINT();
+    // }
 
     this.printReport = function (data) {
         let store = this.config.store;
