@@ -171,18 +171,18 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import Dialoger from '../common/dialoger'
+import Capture from '../giftCard/capture'
+import Loader from '../giftCard/loader'
 import CreditCard from './creditCard'
 import Splitter from '../menu/split'
 import Preset from '../../preset'
-import GiftCard from './giftCard'
 import Reloader from './Reloader'
 import Discount from './discount'
-import Inputter from './inputter'
 import paymentMark from './mark'
 import Tips from './tips'
 export default {
     props: ['init'],
-    components: { Dialoger, Reloader, Discount, CreditCard, GiftCard, Tips, Splitter, Inputter, paymentMark },
+    components: { Dialoger, Reloader, Discount, CreditCard, Capture, Tips, Splitter, Loader, paymentMark },
     data() {
         return {
             releaseComponentLock: true,
@@ -531,19 +531,20 @@ export default {
                     change: 0,
                     balance: balance.toFixed(2)
                 });
-                let activity = {
+
+                let paid = parseFloat(this.paid);
+                let log = {
+                    balance: this.giftCard.balance - paid,
+                    change: -paid,
                     date: today(),
                     time: +new Date,
-                    amount: this.paid,
-                    balance,
-                    type: 'GIFT',
-                    op: this.op.name
-                };
-                this.$socket.emit("[GIFTCARD] CARD_ACTIVITY", {
-                    _id: this.giftCard._id,
-                    value: balance,
-                    activity
-                });
+                    type: 'Transaction',
+                    cashier: this.op.name,
+                    number: this.giftCard.number,
+                }
+
+                this.$socket.emit("[GIFTCARD] ACTIVITY", log)
+
                 this.payment.settled = true;
                 this.invoicePaid(this.paid, 0, 'GIFT');
             }
@@ -601,10 +602,44 @@ export default {
         swipeGiftCard() {
             new Promise((resolve, reject) => {
                 this.componentData = { resolve, reject };
-                this.component = "GiftCard";
-            }).then(card => {
-                this.giftCard.number = card;
-                this.$q();
+                this.component = "capture";
+            }).then(query => {
+                this.$q()
+                query.result ?
+                    this.giftCard = query.result :
+                    this.activationRequired(query.number);
+            }).catch(() => { this.$q() })
+        },
+        activationRequired(number) {
+            this.$dialog({
+                title: 'dialog.giftCardActivation',
+                msg: 'dialog.giftCardActivationTip',
+                buttons: [{ text: 'button.cancel', fn: 'reject' }, { text: 'button.confirm', fn: 'resolve' }]
+            }).then(() => {
+                this.activateGiftCard(number);
+            }).catch(() => { this.$q() })
+        },
+        activateGiftCard(number) {
+            new Promise((resolve, reject) => {
+                let activation = true;
+                this.componentData = { resolve, reject, number };
+                this.component = "Loader";
+            }).then((value) => {
+                this.$q()
+                let card = {
+                    number,
+                    date: today(),
+                    time: +new Date,
+                    cashier: this.op.name,
+                    balance: value,
+                    activation: +new Date,
+                    transaction: 1
+                }
+                this.$socket.emit("[GIFTCARD] ACTIVATION", card, (result) => {
+                    this.giftCard = result;
+                    this.recordCashDrawerAction(value, 0);
+                    Printer.printGiftCard('Activation', result)
+                })
             }).catch(() => { this.$q() })
         },
         assignOrder() {
@@ -665,7 +700,30 @@ export default {
         },
         reload() {
             if (!this.giftCard._id) return;
-            this.$p("Reloader", { title: "ADD_VALUE", giftCard: this.giftCard });
+            let { number, balance } = this.giftCard;
+            new Promise((resolve, reject) => {
+                this.componentData = { resolve, reject, number, balance };
+                this.component = 'loader';
+            }).then((value) => {
+                this.$q()
+
+                let detail = {
+                    balance: balance + value,
+                    change: value,
+                    date: today(),
+                    time: +new Date,
+                    type: 'Reload',
+                    cashier: this.op.name,
+                    number
+                }
+
+                this.$socket.emit("[GIFTCARD] RELOAD", detail, (card) => {
+                    this.giftCard = card;
+                    Printer.printGiftCard('Reload', this.giftCard)
+                })
+            }).catch(() => {
+                this.$q()
+            })
         },
         cashOut() {
             if (parseFloat(this.giftCard.balance) === 0) return;
@@ -689,7 +747,6 @@ export default {
                 }).then(() => {
                     this.$socket.emit("[GIFTCARD] CARD_ADJUST_VALUE", { _id: this.giftCard._id, value, activity });
                     this.giftCard.balance = 0;
-                    //Printer.init(this.config).setJob("cashout").print(this.giftCard);
                     Printer.printGiftCard("cashout", this.giftCard)
                     this.$q();
                 })
@@ -698,27 +755,25 @@ export default {
         printBalance() {
             if (!this.giftCard._id) return;
             this.poleDisplay("Gift Card Balance:", ["", this.giftCard.balance.toFixed(2)])
-            //Printer.init(this.config).setJob("balance").print(this.giftCard);
-            Printer.printGiftCard("balance", this.giftCard);
+            Printer.printGiftCard("Balance", this.giftCard);
         },
-        activateGiftCard(number) {
-            new Promise((resolve, reject) => {
-                let title = "text.initialAmount";
-                this.componentData = { title, resolve, reject };
-                this.component = "Inputter"
-            }).then((initialAmount) => {
-                this.recordCashDrawerAction(parseFloat(initialAmount), 0);
-                let card = Preset.giftCard(number, this.op.name, initialAmount, 0);
-                if (this.customer._id) {
-                    card = Object.assign(card, { customer: this.customer._id })
-                }
-                this.giftCard = card;
-                this.$socket.emit("[GIFTCARD] CARD_ACTIVATION", card);
-                //Printer.init(this.config).setJob("activation").print(card);
-                Printer.printGiftCard("activation", card)
-                this.$q()
-            }).catch(() => { this.$q() })
-        },
+        // activateGiftCard(number) {
+        //     new Promise((resolve, reject) => {
+        //         let title = "text.initialAmount";
+        //         this.componentData = { title, resolve, reject };
+        //         this.component = "Inputter"
+        //     }).then((initialAmount) => {
+        //         this.recordCashDrawerAction(parseFloat(initialAmount), 0);
+        //         let card = Preset.giftCard(number, this.op.name, initialAmount, 0);
+        //         if (this.customer._id) {
+        //             card = Object.assign(card, { customer: this.customer._id })
+        //         }
+        //         this.giftCard = card;
+        //         this.$socket.emit("[GIFTCARD] CARD_ACTIVATION", card);
+        //         Printer.printGiftCard("activation", card)
+        //         this.$q()
+        //     }).catch(() => { this.$q() })
+        // },
         setQuickInput(value) {
             this.paid = value.toFixed(2);
         },
@@ -962,7 +1017,6 @@ export default {
             switch (this.op.cashCtrl) {
                 case "enable":
                     this.station.cashDrawer.enable ?
-                        //Printer.init(this.config).openCashDrawer() :
                         Printer.openCashDrawer() :
                         this.cashDrawerUnavailable();
                     this.$socket.emit("[CASHFLOW] ACTIVITY", { cashDrawer: this.station.cashDrawer.name, activity });
@@ -1050,25 +1104,6 @@ export default {
         },
         exp(date) {
             return date.replace(/(.{2})/, '$1 / ')
-        }
-    },
-    sockets: {
-        GIFT_CARD_RESULT(card) {
-            this.giftCard = card;
-            this.$q()
-        },
-        GIFT_CARD_NOT_FOUND(number) {
-            this.$dialog({
-                title: "card.activation",
-                msg: ["card.giftCardNumber", number.replace(/(.{4})(.{4})(.{4})(.{4})/g, '$1 $2 $3 $4')],
-                buttons: [{ text: "button.cancel", fn: "reject" }, { text: "button.activation", fn: "resolve" }]
-            }).then(resolve => {
-                this.activateGiftCard(number)
-            }).catch(() => {
-                this.giftCard.number = "";
-                this.giftCard.balance = "0.00";
-                this.$q();
-            })
         }
     }
 }

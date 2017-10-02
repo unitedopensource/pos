@@ -109,9 +109,23 @@ export default {
                     new Promise((resolve, reject) => {
                         this.componentData = { resolve, reject, number, balance };
                         this.component = 'loader';
-                    }).then(() => {
+                    }).then((value) => {
                         this.$q()
 
+                        let detail = {
+                            balance: balance + value,
+                            change: value,
+                            date: today(),
+                            time: +new Date,
+                            type: 'Reload',
+                            cashier: this.op.name,
+                            number
+                        }
+
+                        this.$socket.emit("[GIFTCARD] RELOAD", detail, (card) => {
+                            this.card = card;
+                            Printer.printGiftCard('Reload', this.card)
+                        })
                     }).catch(() => {
                         this.$q()
                     })

@@ -10,7 +10,8 @@
                     <tr>
                         <th>{{$t('stats.ticket')}}</th>
                         <th class="option">
-                            {{$t('stats.type')}}
+                            <span v-if="!typeFilter">{{$t('stats.type')}}</span>
+                            <span v-else>{{$t('type.'+typeFilter)}}</span>
                             <ul>
                                 <li v-for="(type,index) in types" :key="index" @click="changeType(type)">{{$t('type.'+type)}}</li>
                             </ul>
