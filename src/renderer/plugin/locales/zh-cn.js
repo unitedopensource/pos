@@ -477,7 +477,8 @@ export default {
         'cantReadTack': '礼物卡读取失败',
         'history': '消费记录',
         'printBalance': '打印余额',
-        'readTrackFailed': '无法读取磁条信息'
+        'readTrackFailed': '无法读取磁条信息',
+        'activationBonus':'开卡奖励'
     },
     calendar: {
         'mon': '周一',

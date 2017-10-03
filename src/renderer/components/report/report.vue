@@ -353,40 +353,46 @@ export default {
 
         },
         giftCardReport(data) {
-            if (!data) data = [];
-            let activation = 0, bouns = 0, initialAmount = 0, creditAmount = 0, debetAmount = 0, debet = 0, credit = 0;
-            let datas = [].concat.apply([], data.map(gc => gc.activity))
-                .filter(trans => (trans.time > this.reportRange.from && trans.time < this.reportRange.to))
-                .forEach(trans => {
-                    switch (trans.type) {
-                        case "ACTIVATION":
-                            activation++;
-                            initialAmount += parseFloat(trans.amount);
-                            creditAmount += parseFloat(trans.amount);
-                            bouns += parseFloat(trans.bouns);
-                            break;
-                        case "RELOAD":
-                            creditAmount += parseFloat(trans.amount);
-                            break;
-                        case "DEBET":
-                        case "CASHOUT":
-                            debet++;
-                            debetAmount += parseFloat(trans.amount);
-                            break;
-                    }
-                });
+            data = data || [];
+            let activation = 0, bonus = 0, bonusAmount = 0, initialAmount = 0, creditAmount = 0, debitAmount = 0, debit = 0, credit = 0;
+            data.forEach(log => {
+                let amount = parseFloat(log.change)
+                switch (log.type) {
+                    case "Activation":
+                        activation++;
+                        initialAmount += amount;
+                        creditAmount += amount;
+                        if (log.bonus) {
+                            bonus++;
+                            bonus += log.bonus;
+                        }
+                        break;
+                    case "Reload":
+                        credit++;
+                        creditAmount += amount;
+                        break;
+                    case "Transaction":
+                        debit++;
+                        debitAmount += amount;
+                        break;
+                }
+            })
             return [{
                 text: this.$t("card.activation"),
                 count: activation,
-                amount: `$ ${initialAmount.toFixed(2)}` + this.$t('card.bonus', bouns.toFixed(2))
+                amount: initialAmount
+            }, {
+                text: this.$t('card.activationBonus'),
+                count: bonus,
+                amount: bonusAmount
             }, {
                 text: this.$t('card.giftCardCredit'),
                 count: credit,
                 amount: creditAmount
             }, {
                 text: this.$t("card.giftCardDebit"),
-                count: debet,
-                amount: debetAmount
+                count: debit,
+                amount: debitAmount
             }];
         },
         summarize(data) {

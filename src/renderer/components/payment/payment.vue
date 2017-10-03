@@ -261,7 +261,7 @@ export default {
                     this.paySplit();
                     this.$q();
                 }).catch(() => {
-                    this.initial();
+                    this.payWhole();
                     this.setPaymentType('CASH');
                     this.$q()
                 })
@@ -272,6 +272,16 @@ export default {
             this.payInFull = false;
             index = isNumber(index) ? index : this.order.splitPayment.findIndex(payment => !payment.settled)
             this.switchInvoice(index);
+        },
+        payWhole() {
+            let paid = 0;
+            this.payment.log.forEach(log => {
+                paid += (log.paid - log.change)
+            });
+            this.payment.balance = Math.max(0, (this.payment.due - paid));
+            this.getQuickInput(this.payment.balance);
+            this.poleDisplay(["TOTAL DUE:", ""], ["", this.payment.due.toFixed(2)]);
+
         },
         setPaymentType(type) {
             switch (type) {

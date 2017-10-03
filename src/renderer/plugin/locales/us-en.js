@@ -491,7 +491,8 @@ export default {
         'cantReadTack': 'Can not read tack',
         'history': 'History',
         'printBalance': 'Print Bal.',
-        'readTrackFailed': 'Read Track Failed'
+        'readTrackFailed': 'Read Track Failed',
+        'activationBonus':'Bonus'
     },
     calendar: {
         'mon': 'MON',

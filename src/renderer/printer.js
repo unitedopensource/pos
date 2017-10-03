@@ -365,7 +365,7 @@ var Printer = function (plugin, config) {
         CLODOP.SET_PRINT_STYLEA(0, "FontName", "Agency FB");
         CLODOP.SET_PRINT_STYLEA(0, "FontSize", 14);
         CLODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
-        CLODOP.ADD_PRINT_TEXT(178, 2, 262, 20, 'BALANCE: $ '+ card.balance.toFixed(2));
+        CLODOP.ADD_PRINT_TEXT(178, 2, 262, 20, 'BALANCE: $ ' + card.balance.toFixed(2));
         CLODOP.SET_PRINT_STYLEA(0, "FontName", "Agency FB");
         CLODOP.SET_PRINT_STYLEA(0, "FontSize", 14);
         CLODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
@@ -396,7 +396,7 @@ var Printer = function (plugin, config) {
                     if (Array.isArray(report[key])) {
                         section += report[key].map(record => {
                             let { text, count, amount } = record;
-                            amount = isNumber(amount) ? "$ " + toFixed(amount, 2) : amount ? flatten(amount) : "";
+                            amount = isNumber(amount) ? "$ " + toFixed(amount, 2).toFixed(2) : amount ? flatten(amount) : "";
                             count = count > 0 ? count : "";
                             return `<div class="data">
                         <div class="text">${text}</div>
@@ -407,7 +407,7 @@ var Printer = function (plugin, config) {
                     } else {
                         for (let value in report[key]) {
                             let { text, count, amount } = report[key][value];
-                            amount = isNumber(amount) ? "$ " + toFixed(amount, 2) : amount ? flatten(amount) : "";
+                            amount = isNumber(amount) ? "$ " + toFixed(amount, 2).toFixed(2) : amount ? flatten(amount) : "";
                             count = count > 0 ? count : "";
                             section += `<div class="data">
                                <div class="text">${text}</div>
@@ -439,14 +439,15 @@ var Printer = function (plugin, config) {
         }
         function flatten(array) {
             let html = "";
-            array.forEach(data => {
-                for (let key in data) {
-                    html += `<div class="row">
+            Array.isArray(array) ?
+                array.forEach(data => {
+                    for (let key in data) {
+                        html += `<div class="row">
                         <span class="text">${key}:</span>
                         <span class="value">${isNumber(data[key]) ? '$ ' + data[key] : data[key]}</span>
                       </div>`
-                }
-            })
+                    }
+                }) : null;
             return html;
         }
         function createStyle() {
@@ -1039,14 +1040,14 @@ function createStyle(ctrl) {
               .itemWrap.markItem{margin-top:5px;}
               span.item,span.side{position:relative;display:inline-block;}
               span.mark{position:absolute;top:-10px;left:0;font-size:10px;width:100%;text-align:center;display:inline-block;font-weight:bold;}
-              span.side{font-size:0.9em;vertical-align:middle;}
+              span.side{font-size:1em;vertical-align:middle;}
               span.price{min-width:30px;padding-right:5px;text-align:right;}
               div.category{border-bottom:1px dashed #000;margin-top:5px;${sortItem ? '' : 'display:none;'}}
               .list.zhCN{margin-top:5px;}
               .list.usEN{${printPrimary ? 'margin-top:-5px' : 'margin-bottom:8px'}}
               .zhCN .price{${printPrimaryPrice ? 'display:initial' : 'display:none'}}
               .usEN .price{${printSecondaryPrice ? 'display:initial' : 'display:none'}}
-              .list.choiceSet{margin-top: 0px; display: flex;font-size: 0.9em; margin-left: 35px;}
+              .list.choiceSet{margin-top: 0px; display: flex;font-size: 1em; margin-left: 35px;}
               .choiceSet .set{flex:1;}
               .choiceSet .set > span {margin-left:4px;}
               footer{font-family:'Agency FB';}

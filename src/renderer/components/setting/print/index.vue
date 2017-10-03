@@ -321,6 +321,13 @@ export default {
             this.setPrinter({ [this.device]: this.profile });
             Printer.initial(CLODOP, this.config)
         },
+        configPrinter(){
+            //http://192.168.0.87/tcpip_cfg.htm?
+            //dhcp_mode=0&IP_1=192&IP_2=168&IP_3=0&IP_4=85&
+            //MASK_1=255&MASK_2=255&MASK_3=255&MASK_4=0&
+            //GW_IP_1=192&GW_IP_2=168&GW_IP_3=0&GW_IP_4=1&
+            //__use_dhcp=0&save=+Save+
+        },
         newPrinter() {
             new Promise((resolve, reject) => {
                 this.componentData = { resolve, reject };

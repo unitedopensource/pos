@@ -3,7 +3,6 @@
         <div class="window" v-show="!component">
             <header class="title">
                 <span>{{$t('title.selectTask')}}</span>
-                <i class="fa fa-times" @click="init.reject"></i>
             </header>
             <div class="inner">
                 <div v-if="!card">
@@ -64,7 +63,7 @@ export default {
     },
     filters: {
         card(number) {
-            return number.replace(/^\D?(\d{4})\D?\D?(\d{4})\D?(\d{4})\D?(\d{4})/, "$1 $2 $3 $4")
+            return number ? number.replace(/^\D?(\d{4})\D?\D?(\d{4})\D?(\d{4})\D?(\d{4})/, "$1 $2 $3 $4") : ''
         }
     },
     methods: {
@@ -81,7 +80,7 @@ export default {
                     this.doTask(result, number)
                 }).catch(() => { this.$q() })
         },
-        doTask(card, number) {
+        doTask(card, num) {
             card = card || this.card;
             switch (this.task) {
                 case "activation":
@@ -91,7 +90,7 @@ export default {
                             msg: 'dialog.giftCardActivationTip',
                             buttons: [{ text: 'button.cancel', fn: 'reject' }, { text: 'button.confirm', fn: 'resolve' }]
                         }).then(() => {
-                            this.activateGiftCard(number);
+                            this.activateCard(num);
                         }).catch(() => { this.$q() })
                     } else {
                         this.$dialog({
@@ -141,7 +140,7 @@ export default {
                     break;
             }
         },
-        activateGiftCard(number) {
+        activateCard(number) {
             new Promise((resolve, reject) => {
                 let activation = true;
                 this.componentData = { resolve, reject, number };
