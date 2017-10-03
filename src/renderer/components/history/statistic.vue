@@ -36,8 +36,8 @@
                         <td>{{invoice.cashier}}</td>
                         <td>{{invoice.time | moment('HH:mm:ss')}}</td>
                         <td>{{invoice.payment.type}}</td>
-                        <td>{{invoice.payment.subtotal}}</td>
-                        <td>{{invoice.payment.tax}}</td>
+                        <td>{{invoice.payment.subtotal | decimal}}</td>
+                        <td>{{invoice.payment.tax | decimal}}</td>
                         <td>{{invoice.payment.discount}}</td>
                         <td>{{invoice.payment.tip}}</td>
                         <td>{{invoice.payment.total}}</td>

@@ -203,7 +203,7 @@ export default {
     },
     stats: {
         'orderType': 'Order Type',
-        'paymentType': 'Payment Type',
+        'paymentType': 'Paid',
         'ticket': 'Ticket',
         'type': 'Type',
         'cashier': 'Cashier',
