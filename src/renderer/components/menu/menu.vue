@@ -83,6 +83,7 @@ export default {
         },
         flatten(items) {
             console.time("clone");
+  
             items = [].concat.apply([], items);
 
             if (this.config.hasOwnProperty('display') && this.config.display.favorite &&

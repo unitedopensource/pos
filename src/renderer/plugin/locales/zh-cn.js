@@ -922,7 +922,7 @@ export default {
     },
     tip: {
         'autoTemplate': '自动弹出模板选择页面',
-        'alphabetical': '菜单按字母序列排序',
+        'alphabetical': '菜单将按字母序列排序 (中文字符将会按照拼音排序)',
         'createSubMenuGroup': '创建一个子菜单组',
         'table': {
             'passwordRequire': '创建座位之前需要输入密码',

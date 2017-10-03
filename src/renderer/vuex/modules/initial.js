@@ -67,7 +67,8 @@ const mutations = {
         state.config.store.station = data;
     },
     [types.SET_MENU](state, data) {
-        state.config.layout.menu = flatten(state.config.layout.menu, data, true);
+        let alphabetical = state.config.display.alphabetical;
+        state.config.layout.menu = flatten(state.config.layout.menu, data, true, alphabetical);
     },
     [types.SET_SUBMENU](state, data) {
         let submenu = {};
@@ -240,7 +241,7 @@ export default {
     state, mutations
 }
 
-function flatten(layout, data, page) {
+function flatten(layout, data, page, sort) {
     let group = {};
     data = data || [];
     data.map(item => {
@@ -251,6 +252,15 @@ function flatten(layout, data, page) {
     layout.forEach(layer => {
         layer.contain.forEach(item => {
             let items = group[item] || [];
+
+            if (sort && items.length > 0) {
+                let hanz = !!items[0].zhCN.match(/[\u3400-\u9FBF]/);
+
+                hanz ?
+                    items.sort((a, b) => a.zhCN.localeCompare(b.zhCN, 'zh-Hans-CN', { sensitivity: 'accent' })) :
+                    items.sort((a, b) => a.zhCN.localeCompare(b.zhCN));
+            }
+
             let align = 6 - items.length % 3;
             align === 6 && (align = 3);
             Array(align).fill().forEach(_ => { items.push({ zhCN: "", usEN: "", clickable: false, category: "NA" }) });
