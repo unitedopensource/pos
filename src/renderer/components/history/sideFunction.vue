@@ -36,10 +36,10 @@
             <i class="fa fa-file-text"></i>
             <span class="text">{{$t('button.report')}}</span>
         </div>
-        <div class="btn" @click="stats">
+        <button class="btn" @click="stats" :disabled="!op.access.includes('report')">
             <i class="fa fa-bar-chart"></i>
             <span class="text">{{$t('button.stats')}}</span>
-        </div>
+        </button>
         <div class="btn" @click="exit">
             <i class="fa fa-times"></i>
             <span class="text">{{$t('button.exit')}}</span>

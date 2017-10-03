@@ -190,14 +190,15 @@ th.option:after {
 }
 
 th {
-    padding: 10px 6px;
+    padding: 10px 5px;
     background: #434c5b;
     color: #fff;
     text-shadow: 0 1px 1px #333;
+    font-weight: normal;
 }
 
 td {
-    padding: 10px 6px;
+    padding: 10px 5px;
     text-align: center;
 }
 

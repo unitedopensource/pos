@@ -11,6 +11,7 @@ import routes from './routes'
 import i18n from './plugin/dict'
 import dialog from './plugin/dialog'
 import VueBus from './plugin/bus'
+import FastClick from 'fastclick'
 
 Vue.use(Electron)
 Vue.use(VueBus)
@@ -21,6 +22,8 @@ Vue.use(i18n)
 
 Vue.config.debug = true
 window.moment = moment
+FastClick.attach(document.body)
+
 const ip = Ip.address().split(".").splice(0, 3).join(".") + ".";
 let findHost = new Promise((resolve, reject) => {
   const args = require('electron').remote.process.argv.slice(1);
