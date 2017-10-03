@@ -952,12 +952,20 @@ function createList(printer, ctrl, invoice) {
                       <span class="price">${item.total}</span></p>${setEN}`;
         return zhCN + usEN;
     }
-    let { sortItem, duplicate, printMenuID } = ctrl;
+    let { sortItem, duplicate, printMenuID, sortPriority } = ctrl;
     let list = duplicate ?
         invoice.content.filter(item => item.printer[printer]) :
         invoice.content.filter(item => item.printer[printer] && !item.print);
 
     if (list.length === 0) return null;
+    if (sortPriority) {
+        list.sort((p, n) => {
+            let prev = p.priority || 0;
+            let next = n.priority || 0;
+
+            return prev < next
+        })
+    }
     let content = "";
     if (sortItem) {
         let sorted = [];

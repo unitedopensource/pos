@@ -891,7 +891,9 @@ export default {
         'callLog': 'Call Log',
         'userRemoval': 'User Remove',
         'userRemovalTip': 'Permanent remove user account',
-        'review': 'Approval'
+        'review': 'Approval',
+        'tipsSuggestion': 'Tips Sugg.',
+        'sortPriority':'Prioritize'
     },
     reservation: {
         'create': 'Create Reservation',

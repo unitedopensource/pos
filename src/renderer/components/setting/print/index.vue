@@ -56,6 +56,7 @@
                             <checkbox v-model="profile.control.buzzer" label="setting.buzzer"></checkbox>
                             <!-- <checkbox v-model="profile.control.printCoupon" label="PRINT_COUPON"></checkbox> -->
                             <checkbox v-model="profile.control.printMenuID" label="setting.printMenuID"></checkbox>
+                            <checkbox v-model="profile.control.sortPriority" label="setting.sortPriority"></checkbox>
                         </div>
                     </fieldset>
                 </div>

@@ -890,7 +890,8 @@ export default {
         'userRemoval': '删除用户',
         'userRemovalTip': '永久的删除这个账户',
         'review': '审核',
-        'tipsSuggestion': '小费建议'
+        'tipsSuggestion': '小费建议',
+        'sortPriority':'按优先值'
     },
     reservation: {
         'create': '创建预约',

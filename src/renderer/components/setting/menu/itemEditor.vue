@@ -49,7 +49,7 @@
                         <smart-option v-model="item.taxClass" :options="taxOption" label="text.taxClass"></smart-option>
                         <div v-if="advance">
                             <smart-switch v-model="item.temporary" label="text.openFood"></smart-switch>
-                            <smart-input v-model="item.priority" label="text.priority"></smart-input>
+                            <smart-input v-model.number="item.priority" label="text.priority"></smart-input>
                             <smart-input v-model="item.inventory" label="text.inventory"></smart-input>
                             <smart-input v-model="item.rewardPoint" label="text.rewardPoint"></smart-input>
                         </div>
