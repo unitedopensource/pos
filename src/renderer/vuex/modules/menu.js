@@ -131,7 +131,7 @@ const mutations = {
         if (data.side.overWrite) {
           item.zhCN = data.side.zhCN;
           item.usEN = data.side.usEN;
-        } else if(!data.side.skip) {
+        } else if (!data.side.skip) {
           item.side = { zhCN: `[${data.side.zhCN}]`, usEN: `[${data.side.usEN}]` }
         }
       }
@@ -143,10 +143,7 @@ const mutations = {
         item = Object.assign({}, item);
         item.unique = Math.random().toString(36).substr(2, 5);
         item.qty = 1;
-        item.side = {
-          zhCN: `[${data.side.zhCN}]`,
-          usEN: `[${data.side.usEN}]`
-        };
+        item.side = { zhCN: `[${data.side.zhCN}]`, usEN: `[${data.side.usEN}]` };
         if (data.side.hasOwnProperty('price')) {
           price = parseFloat(data.side.price)
         } else if (data.side.hasOwnProperty('extra')) {
@@ -195,17 +192,10 @@ const mutations = {
       } else {
         state.order.content.remove(state.item);
         state.item = state.order.content.last();
-        let dom = document.querySelector('.list.highlight');
-        dom && dom.classList.remove("highlight");
+        let dom = document.querySelector('.item.active');
+        dom && dom.classList.remove("active");
         let sides = state.order.content.length ? state.order.content.last().option.slice() : [];
-        let length = sides.length;
-        for (let i = length; i < 11; i++) {
-          sides.push({
-            zhCN: "",
-            usEN: "",
-            disable: true
-          })
-        }
+        Array(11 - sides.length).fill().forEach(_ => sides.push({ zhCN: "", usEN: "", disable: true }))
         state.sides = sides;
       }
     }
