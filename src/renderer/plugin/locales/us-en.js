@@ -748,7 +748,8 @@ export default {
         'maxSubItem': 'Max Sub Item',
         'overCharge': 'Extra Charge',
         'subItemGroup': 'SubMenu Group',
-        'records': '{i} Records'
+        'records': '{i} Records',
+        'allDeliveries':'所有送餐'
     },
     nav: {
         'store': 'Store',

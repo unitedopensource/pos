@@ -323,12 +323,22 @@ export default {
             return settle;
         },
         driverReport(data) {
-            let drivers = {};
+            let drivers = {
+                All: {
+                    text: this.$t('text.allDeliveries'),
+                    amount: 0,
+                    tip: 0,
+                    fee: 0,
+                    count: 0
+                }
+            };
             data.forEach(invoice => {
+                let amount = parseFloat(invoice.payment.subtotal) + parseFloat(invoice.payment.tax);
                 if (invoice.driver && invoice.status === 1) {
                     let name = invoice.driver;
+
                     if (drivers.hasOwnProperty(name)) {
-                        drivers[name]["amount"] += parseFloat(invoice.payment.due);
+                        drivers[name]["amount"] += amount;
                         drivers[name]["tip"] += parseFloat(invoice.payment.tip);
                         drivers[name]["fee"] += parseFloat(invoice.payment.delivery);
                         drivers[name]["count"]++;
@@ -336,13 +346,21 @@ export default {
                         drivers[name] = {
                             text: "#" + name,
                             tip: parseFloat(invoice.payment.tip),
-                            amount: parseFloat(invoice.payment.due),
+                            amount: amount,
                             count: 1,
                             fee: parseFloat(invoice.payment.delivery)
                         }
                     }
                 }
+
+                if (invoice.type === 'DELIVERY' && invoice.status === 1) {
+                    drivers.All.amount += amount;
+                    drivers.All.tip += parseFloat(invoice.payment.tip);
+                    drivers.All.fee += parseFloat(invoice.payment.delivery);
+                    drivers.All.count++;
+                }
             });
+
             Object.keys(drivers).forEach(name => {
                 let driver = drivers[name];
                 driver.amount = [{ Total: driver.amount.toFixed(2) }, { Tip: driver.tip.toFixed(2) }, { Fee: driver.fee.toFixed(2) }];

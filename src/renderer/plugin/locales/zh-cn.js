@@ -746,7 +746,8 @@ export default {
         'maxSubItem': '物品选择上限',
         'overCharge': '额外价格',
         'subItemGroup': '子菜单组',
-        'records': '{i} 笔'
+        'records': '{i} 笔',
+        'allDeliveries':'所有送餐'
     },
     nav: {
         'store': '店面',
