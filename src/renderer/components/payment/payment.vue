@@ -871,7 +871,7 @@ export default {
             order.cashier = this.op.name;
             order.customer = this.customer;
             order.content = order.content.filter(item => item.sort === index);
-            this.isNewTicket ? Printer.setTarget('All').print(order) : Printer.setTarget('Receipt').print(order);
+            this.isNewTicket ? Printer.setTarget('All').print(order,true) : Printer.setTarget('Receipt').print(order,true);
             order.content.filter(item => item.sort === this.payment.sort).forEach(item => {
                 delete item.new;
                 item.print = true;
@@ -978,8 +978,8 @@ export default {
         invoiceSettled(ticket, print) {
             if (print) {
                 this.isNewTicket ?
-                    Printer.setTarget('All').print(ticket) :
-                    Printer.setTarget('Receipt').print(ticket);
+                    Printer.setTarget('All').print(ticket,true) :
+                    Printer.setTarget('Receipt').print(ticket,true);
 
                 ticket.content.forEach(item => {
                     delete item.new;

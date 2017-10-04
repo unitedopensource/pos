@@ -114,11 +114,17 @@ var Printer = function (plugin, config) {
         return this.targetDevices.length > 0 ? this.targetDevices : printer
     }
 
-    this.print = function (raw) {
+    this.print = function (raw, receipt) {
         let printers = this.getPrinters();
         printers.forEach(printer => {
             let setting = this.setting[printer];
-            let skip = setting.print.hasOwnProperty(raw.type) ? !setting.print[raw.type] : true;
+            let ticket = raw.type, skip;
+
+            if (!receipt) {
+                skip = setting.print.hasOwnProperty(raw.type) ? !setting.print[ticket] : true
+            } else {
+                skip = !setting.print[ticket] && setting.print[receipt]
+            }
 
             if (skip) { this.skip(); return }
             if (setting.labelPrinter) {
@@ -163,7 +169,7 @@ var Printer = function (plugin, config) {
                 this.plugin.PRINT()
             }
 
-            if (setting.double[raw.type]) {
+            if (setting.double[ticket]) {
                 this.plugin.PRINT_INIT('Reprint ticket')
                 this.plugin.ADD_PRINT_HTM(0, 0, "100%", "100%", html)
                 this.plugin.SET_PRINTER_INDEX(printer)
