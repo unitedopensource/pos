@@ -29,7 +29,7 @@ export default {
         'PAYMENT': 'Payment',
         'DELAY': 'Delay',
         'other': 'Other',
-        'all':'All',
+        'all': 'All',
         'allInvoice': 'All Invoices',
         'walkInInvoice': 'WalkIn Inv.',
         'pickUpInvoice': 'PickUp Inv.',
@@ -199,7 +199,8 @@ export default {
         'clockIn': 'Clock In',
         'printAnyway': 'Print Anyway',
         'setSubMenu': 'Set SubMenu',
-        'reset': 'Reset'
+        'reset': 'Reset',
+        'later': 'Later'
     },
     stats: {
         'orderType': 'Order Type',
@@ -428,8 +429,10 @@ export default {
         'giftCardRegisteredInfo': 'This gift card already activated.',
         'giftCardReload': 'Gift Card Reload',
         'confirmEntryValue': 'Please make sure you want to reload $ {i} dollar to this gift card',
-        'entryInvalid':'Entry Invalid',
-        'entryMustBeNumber':'Entry must be number'
+        'entryInvalid': 'Entry Invalid',
+        'entryMustBeNumber': 'Entry must be number',
+        'subMenuRemoveConfirm': 'Remove SubMenu Group',
+        'subMenuRemoveConfirmTip': 'Are you sure to remove entire ({i}) group and items?'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',
@@ -492,7 +495,7 @@ export default {
         'history': 'History',
         'printBalance': 'Print Bal.',
         'readTrackFailed': 'Read Track Failed',
-        'activationBonus':'Bonus'
+        'activationBonus': 'Bonus'
     },
     calendar: {
         'mon': 'MON',
@@ -893,7 +896,7 @@ export default {
         'userRemovalTip': 'Permanent remove user account',
         'review': 'Approval',
         'tipsSuggestion': 'Tips Sugg.',
-        'sortPriority':'Prioritize'
+        'sortPriority': 'Prioritize'
     },
     reservation: {
         'create': 'Create Reservation',

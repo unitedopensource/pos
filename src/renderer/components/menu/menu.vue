@@ -83,7 +83,7 @@ export default {
         },
         flatten(items) {
             console.time("clone");
-  
+
             items = [].concat.apply([], items);
 
             if (this.config.hasOwnProperty('display') && this.config.display.favorite &&
@@ -207,8 +207,13 @@ export default {
             return true
         },
         setOption(side, index) {
-            side.template ? this.callTemplate(side, index) : this.alterItemOption({ side, index });
-            side.subMenu && this.getSubMenuItem(side)
+            if (side.skip) {
+                side.subMenu && this.getSubMenuItem(side)
+                side.template && this.callTemplate(side, index)
+            } else {
+                side.template ? this.callTemplate(side, index) : this.alterItemOption({ side, index });
+                side.subMenu && this.getSubMenuItem(side)
+            }
         },
         getSubMenuItem(side) {
             console.time("sub menu")
@@ -233,7 +238,8 @@ export default {
             this.items = [];
             let lastIndex = groups.length - 1;
             groups.forEach((group, index) => {
-                let subItem = JSON.parse(JSON.stringify(this.submenu[group]));
+                let subItem = this.submenu[group] || []
+                subItem = JSON.parse(JSON.stringify(subItem));
                 let length = subItem.length;
                 let align = 6 - length % 3;
                 align === 6 && (align = 3);

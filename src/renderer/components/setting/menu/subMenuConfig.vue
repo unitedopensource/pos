@@ -59,9 +59,13 @@ export default {
 </script>
 
 <style scoped>
+select {
+    display: flex;
+    flex-wrap: wrap;
+}
+
 option {
-    display: inline-flex;
-    padding: 2px;
+    padding: 2px 10px;
     margin: 2px;
     border-radius: 4px;
     min-width: 50px;

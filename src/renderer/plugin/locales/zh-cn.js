@@ -198,7 +198,8 @@ export default {
         'clockIn': '打卡',
         'printAnyway': '依然打印',
         'setSubMenu': '设置子菜单',
-        'reset': '重置'
+        'reset': '重置',
+        'later':'稍后'
     },
     title: {
         'markPaymentType': '标记付款方式',
@@ -415,7 +416,9 @@ export default {
         'giftCardReload': '礼物卡充值',
         'confirmEntryValue': '请确认要充值价格 $ {i} 到这张礼物卡上',
         'entryInvalid':'格式不正确',
-        'entryMustBeNumber':'格式必须为数字'
+        'entryMustBeNumber':'格式必须为数字',
+        'subMenuRemoveConfirm':'移除子菜单组',
+        'subMenuRemoveConfirmTip':'您确定要移除整个 ({i}) 子菜单组以及其包含的物品吗？'
     },
     terminal: {
         'initial': '正在初始化 {i}...',

@@ -2,7 +2,7 @@
     <div class="layout">
         <div class="groups">
             <div class="wrap">
-                <div class="group" v-for="(group,index) in groups" :key="index" @click="getItems(group)">
+                <div class="group" v-for="(group,index) in groups" :key="index" @click="getItems(group)" @contextmenu="removeGroup(group)">
                     <span>{{group}}</span>
                     <i class="fa fa-angle-right"></i>
                 </div>
@@ -29,11 +29,12 @@ import { mapGetters } from 'vuex'
 import draggable from 'vuedraggable'
 import creator from './createSubMenu'
 import editor from './subMenuEditor'
+import dialoger from '../../common/dialoger'
 export default {
     computed: {
         ...mapGetters(['submenu', 'language'])
     },
-    components: { creator, editor, draggable },
+    components: { creator, editor, draggable, dialoger },
     data() {
         return {
             component: null,
@@ -104,6 +105,20 @@ export default {
             Object.assign(this.submenu, { [group]: this.items });
             this.getItems(group);
             this.sorted = false;
+        },
+        removeGroup(group) {
+            this.$dialog({
+                title: 'dialog.subMenuRemoveConfirm',
+                msg: ['dialog.subMenuRemoveConfirmTip', group]
+            }).then(() => {
+                this.items = [];
+                delete this.submenu[group];
+                this.groups = Object.keys(this.submenu)
+                this.$socket.emit("[SUBMENU] REMOVE_GROUP", group);
+                this.$q()
+            }).catch(() => {
+                this.$q()
+            })
         }
     }
 }
