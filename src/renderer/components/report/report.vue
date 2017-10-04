@@ -333,7 +333,7 @@ export default {
                 }
             };
             data.forEach(invoice => {
-                let amount = parseFloat(invoice.payment.subtotal) + parseFloat(invoice.payment.tax);
+                let amount = parseFloat(invoice.payment.subtotal) + parseFloat(invoice.payment.tax) - parseFloat(invoice.payment.discount);
                 if (invoice.driver && invoice.status === 1) {
                     let name = invoice.driver;
 
