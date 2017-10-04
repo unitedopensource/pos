@@ -92,7 +92,7 @@ export default {
           switch (type) {
             case "RING":
               clearTimeout(this.timeout);
-              this.timeout = setTimeout(() => { this.phoneRing(null) }, 10000)
+              this.timeout = setTimeout(() => { this.phoneRing(null) }, 12000)
               break;
             case "ERROR":
               this.setDevice({ callid: false });

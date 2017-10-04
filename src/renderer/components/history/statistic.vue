@@ -30,17 +30,17 @@
                         <th>{{$t('stats.tip')}}</th>
                         <th>{{$t('stats.total')}}</th>
                     </tr>
-                    <tr v-for="(invoice,index) in invoices" :key="index" :class="{voided:invoice.status === 0}">
-                        <td>{{invoice.number}}</td>
-                        <td>{{$t('type.'+invoice.type)}}</td>
-                        <td>{{invoice.cashier}}</td>
-                        <td>{{invoice.time | moment('HH:mm:ss')}}</td>
-                        <td>{{invoice.payment.type}}</td>
-                        <td>{{invoice.payment.subtotal | decimal}}</td>
-                        <td>{{invoice.payment.tax | decimal}}</td>
-                        <td>{{invoice.payment.discount}}</td>
-                        <td>{{invoice.payment.tip}}</td>
-                        <td>{{invoice.payment.total}}</td>
+                    <tr v-for="(ticket,index) in tickets" :key="index" :class="{voided:ticket.status === 0}">
+                        <td>{{ticket.number}}</td>
+                        <td>{{$t('type.'+ticket.type)}}</td>
+                        <td>{{ticket.cashier}}</td>
+                        <td>{{ticket.time | moment('HH:mm:ss')}}</td>
+                        <td>{{ticket.payment.type}}</td>
+                        <td>{{ticket.payment.subtotal | decimal}}</td>
+                        <td>{{ticket.payment.tax | decimal}}</td>
+                        <td>{{ticket.payment.discount | decimal}}</td>
+                        <td>{{ticket.payment.tip | decimal}}</td>
+                        <td>{{ticket.payment.total | decimal}}</td>
                     </tr>
                     <tr>
                         <td>{{summary.count}}</td>
@@ -66,27 +66,50 @@ export default {
     props: ['init'],
     computed: {
         summary() {
-            let count = 0, subtotal = 0, tax = 0, discount = 0, tip = 0, total = 0;
-            this.invoices.forEach(invoice => {
-                if (invoice.status === 1) {
-                    count++;
-                    let p = invoice.payment;
-                    subtotal += parseFloat(p.subtotal)
-                    tax += parseFloat(p.tax)
-                    discount += parseFloat(p.discount)
-                    tip += parseFloat(p.tip)
-                    total += parseFloat(p.subtotal) + parseFloat(p.tax) - parseFloat(p.discount)
-                }
-            })
+            let c = (a, b) => a + b;
+
+            let tickets = this.tickets.filter(invoice => invoice.status === 1).map(invoice => invoice.payment);
+            let count = tickets.length;
+            let subtotal = tickets.map(i => parseFloat(i.subtotal)).reduce(c, 0);
+            let tax = tickets.map(i => parseFloat(i.tax)).reduce(c, 0);
+            let discount = tickets.map(i => parseFloat(i.discount)).reduce(c, 0);
+            let tip = tickets.map(i => parseFloat(i.tip)).reduce(c, 0);
+            let total = subtotal + tax + discount;
 
             return { count, subtotal, tax, discount, tip, total }
         },
         ...mapGetters(['history'])
     },
     created() {
-        this.types = [...new Set(this.history.map(invoice => invoice.type))].reverse()
-        this.settles = [...new Set(this.history.map(invoice => invoice.payment.type))].reverse()
-        this.invoices = this.history.map(invoice => invoice)
+        this.invoices = [];
+
+        this.history.forEach(i => {
+            if (i.hasOwnProperty('splitPayment')) {
+                i.splitPayment.forEach(split => {
+                    this.invoices.push({
+                        number: i.number,
+                        status: i.status,
+                        type: i.type,
+                        cashier: i.cashier,
+                        time: i.time,
+                        payment: split
+                    })
+                })
+            } else {
+                this.invoices.push({
+                    number: i.number,
+                    status: i.status,
+                    type: i.type,
+                    cashier: i.cashier,
+                    time: i.time,
+                    payment: i.payment
+                })
+            }
+        });
+
+        this.types = [...new Set(this.invoices.map(invoice => invoice.type))].reverse()
+        this.settles = [...new Set(this.invoices.map(invoice => invoice.payment.type))].reverse()
+        this.tickets = this.invoices;
 
         this.types.splice(0, 0, "all")
 
@@ -105,13 +128,14 @@ export default {
             typeFilter: null,
             settles: [],
             settleFilter: null,
-            invoices: []
+            invoices: [],
+            tickets: []
         }
     },
     methods: {
         changeType(type) {
             this.typeFilter = type;
-            this.invoices = this.history.filter(invoice => {
+            this.tickets = this.invoices.filter(invoice => {
                 let match1 = type === 'all' ? true : invoice.type === this.typeFilter;
                 let match2 = this.settleFilter === 'all' ? true : invoice.payment.type === this.settleFilter;
 
@@ -123,7 +147,7 @@ export default {
         },
         changeSettle(type) {
             this.settleFilter = type;
-            this.invoices = this.history.filter(invoice => {
+            this.tickets = this.invoices.filter(invoice => {
                 let match1 = this.settleFilter === 'all' ? true : invoice.payment.type === this.settleFilter;
                 let match2 = this.typeFilter === 'all' ? true : invoice.type === this.typeFilter;
 

@@ -12,7 +12,7 @@
             <i class="fa fa-ban"></i>
             <span class="text">{{$t('button.cancel')}}</span>
         </button>
-        <button class="btn" @click="combineTicket">
+        <button class="btn" @click="combineTicket" :disabled="true">
             <i class="fa fa-link"></i>
             <span class="text">{{$t('button.combineTicket')}}</span>
         </button>
@@ -24,7 +24,7 @@
             <i class="fa fa-money"></i>
             <span class="text">{{$t('button.payment')}}</span>
         </button>
-        <button class="btn" @click="switchStaff">
+        <button class="btn" @click="switchStaff" :disabled="true">
             <i class="fa fa-user-times"></i>
             <span class="text">{{$t('button.switch')}}</span>
         </button>
