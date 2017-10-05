@@ -275,13 +275,10 @@ export default {
         },
         payWhole() {
             let paid = 0;
-            this.payment.log.forEach(log => {
-                paid += (log.paid - log.change)
-            });
+            this.payment.log.forEach(log => { paid += (log.paid - log.change) });
             this.payment.balance = Math.max(0, (this.payment.due - paid));
             this.getQuickInput(this.payment.balance);
             this.poleDisplay(["TOTAL DUE:", ""], ["", this.payment.due.toFixed(2)]);
-
         },
         setPaymentType(type) {
             switch (type) {
@@ -526,37 +523,44 @@ export default {
         },
         chargeGift() {
             if (parseFloat(this.paid) === 0) return;
-            if (this.paid > this.payment.due)
-                this.paid = (parseFloat(this.payment.due) - parseFloat(this.payment.paid)).toFixed(2);
+            if (this.paid > this.payment.due) this.paid = (parseFloat(this.payment.due) - parseFloat(this.payment.paid)).toFixed(2);
+            if (this.giftCard.balance < this.paid) this.paid = this.giftCard.balance;
+
+            this.payment.paid += parseFloat(this.paid);
+
+            let change = this.payment.change = Math.max(0, (this.paid - this.payment.balance)).toFixed(2);
+            let balance = this.payment.balance = Math.max(0, (this.payment.due - this.payment.paid)).toFixed(2);
+
+            this.payment.log.push({
+                type: "GIFT",
+                paid: this.paid,
+                change: 0,
+                balance: balance.toFixed(2)
+            })
+
+            let paid = parseFloat(this.paid);
+            let log = {
+                balance: this.giftCard.balance - paid,
+                change: -paid,
+                date: today(),
+                time: +new Date,
+                type: 'Transaction',
+                cashier: this.op.name,
+                number: this.giftCard.number,
+            }
+
+            this.$socket.emit("[GIFTCARD] ACTIVITY", log)
 
             if (this.giftCard.balance > this.paid) {
                 this.poleDisplay("Paid Gift Card", "Thank You");
-                this.payment.paid += parseFloat(this.paid);
-                let change = this.payment.change = Math.max(0, (this.paid - this.payment.balance)).toFixed(2);
-                let balance = this.payment.balance = Math.max(0, (this.payment.due - this.payment.paid)).toFixed(2);
-
-                this.payment.log.push({
-                    type: "GIFT",
-                    paid: this.paid,
-                    change: 0,
-                    balance: balance.toFixed(2)
-                });
-
-                let paid = parseFloat(this.paid);
-                let log = {
-                    balance: this.giftCard.balance - paid,
-                    change: -paid,
-                    date: today(),
-                    time: +new Date,
-                    type: 'Transaction',
-                    cashier: this.op.name,
-                    number: this.giftCard.number,
-                }
-
-                this.$socket.emit("[GIFTCARD] ACTIVITY", log)
-
                 this.payment.settled = true;
                 this.invoicePaid(this.paid, 0, 'GIFT');
+            } else {
+                this.poleDisplay("Paid Gift Card", ["Due:", balance.toFixed(2)]);
+                this.$socket.emit("[GIFTCARD] QUERY", this.giftCard.number, card => {
+                    this.giftCard = card;
+                    this.payRemainBalance();
+                })
             }
         },
         creditAccept(trans) {
@@ -672,11 +676,15 @@ export default {
                 this.componentData = { payment: this.payment, resolve, reject };
                 this.component = "Tips"
             }).then(result => {
-                let due = parseFloat(this.payment.total) + parseFloat(result.tip) + parseFloat(result.gratuity) - parseFloat(this.payment.discount);
+                let { subtotal, tax, tip, discount, gratuity, delivery, paid } = this.payment;
+                let due = parseFloat(subtotal) + parseFloat(tax) + parseFloat(tip) + parseFloat(gratuity) + parseFloat(delivery) - parseFloat(discount);
+
+                paid = isNumber(paid) ? parseFloat(paid) : 0;
+
                 this.payment = Object.assign({}, this.payment, {
                     tip: parseFloat(result.tip),
                     gratuity: parseFloat(result.gratuity),
-                    due, balance: due
+                    due, balance: due - paid
                 });
                 this.tip = result.tip;
                 this.payment.type === 'CREDIT' && (this.paid = due)
@@ -690,7 +698,10 @@ export default {
                 this.componentData = { payment: this.payment, resolve, reject };
                 this.component = "Discount";
             }).then(result => {
-                let due = parseFloat(this.payment.total) + parseFloat(this.payment.tip) + parseFloat(this.payment.gratuity) - parseFloat(result.discount);
+                let { subtotal, tax, tip, gratuity, delivery, paid } = this.payment;
+                let due = parseFloat(subtotal) + parseFloat(tax) + parseFloat(tip) + parseFloat(gratuity) + parseFloat(delivery) - parseFloat(result.discount);
+
+                paid = isNumber(paid) ? parseFloat(paid) : 0;
 
                 if (result.coupon) {
                     this.setOrder({ coupon: result.coupon })
@@ -699,10 +710,12 @@ export default {
                     this.setOrder({ coupon: null })
                     Object.assign(this.order, { coupon: null })
                 }
+
                 this.payment = Object.assign({}, this.payment, {
                     discount: parseFloat(result.discount),
-                    due, balance: due
+                    due, balance: due - paid
                 });
+
                 this.getQuickInput(due);
                 this.poleDisplay(["Discount:", -result.discount.toFixed(2)], ["Total:", due.toFixed(2)]);
                 this.$q();
@@ -871,7 +884,7 @@ export default {
             order.cashier = this.op.name;
             order.customer = this.customer;
             order.content = order.content.filter(item => item.sort === index);
-            this.isNewTicket ? Printer.setTarget('All').print(order,true) : Printer.setTarget('Receipt').print(order,true);
+            this.isNewTicket ? Printer.setTarget('All').print(order, true) : Printer.setTarget('Receipt').print(order, true);
             order.content.filter(item => item.sort === this.payment.sort).forEach(item => {
                 delete item.new;
                 item.print = true;
@@ -978,8 +991,8 @@ export default {
         invoiceSettled(ticket, print) {
             if (print) {
                 this.isNewTicket ?
-                    Printer.setTarget('All').print(ticket,true) :
-                    Printer.setTarget('Receipt').print(ticket,true);
+                    Printer.setTarget('All').print(ticket, true) :
+                    Printer.setTarget('Receipt').print(ticket, true);
 
                 ticket.content.forEach(item => {
                     delete item.new;

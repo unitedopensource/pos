@@ -73,7 +73,7 @@
                     <span class="text">{{$t("text.deliveryFee")}}:</span>
                     <span class="value">{{payment.delivery | decimal}}</span>
                 </div>
-                <div v-else-if="order.type === 'DINE_IN'" :class="{hidden:!store.table.surcharge.enable}">
+                <div v-else-if="order.type === 'DINE_IN'" :class="{hidden:parseFloat(payment.gratuity) === 0}">
                     <span class="text">{{$t("text.gratuity")}}:</span>
                     <span class="value">{{payment.gratuity | decimal}}</span>
                 </div>

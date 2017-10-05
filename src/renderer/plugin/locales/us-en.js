@@ -202,7 +202,9 @@ export default {
         'printAnyway': 'Print Anyway',
         'setSubMenu': 'Set SubMenu',
         'reset': 'Reset',
-        'later': 'Later'
+        'later': 'Later',
+        'register':'Register',
+        'unRegister':'Remove'
     },
     thead: {
         'orderType': 'Order Type',
@@ -438,7 +440,9 @@ export default {
         'entryInvalid': 'Entry Invalid',
         'entryMustBeNumber': 'Entry must be number',
         'subMenuRemoveConfirm': 'Remove SubMenu Group',
-        'subMenuRemoveConfirmTip': 'Are you sure to remove entire ({i}) group and items?'
+        'subMenuRemoveConfirmTip': 'Are you sure to remove entire ({i}) group and items?',
+        'itemUnavailable':'Item Unavailable',
+        'itemUnavailableTip':'{i} currently is not available for ordering'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',
@@ -493,6 +497,7 @@ export default {
         'reload': 'Reload',
         'redemption': 'Redemp.',
         'activation': 'Activation',
+        'deactivation':'Deactivation',
         'giftCardCredit': 'Gift Card Credit',
         'giftCardDebit': 'Gift Card Debit',
         'bonus': '(Bonus: $ {i})',

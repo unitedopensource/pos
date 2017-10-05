@@ -89,8 +89,15 @@ export default {
             if (this.config.hasOwnProperty('display') && this.config.display.favorite &&
                 this.customer._id && this.customer.hasOwnProperty('extra') && this.customer.extra.favorite) {
                 let favorite = this.customer.extra.favorite;
-                items.forEach(item => { item.like = favorite.includes(item._id) });
+                items.forEach(item => { item.like = favorite.includes(item._id) })
             }
+
+            items.forEach(item => {
+                if (item.hasOwnProperty('disable')) {
+                    item.clickable = !item.disable
+                }
+            })
+
             console.timeEnd("clone");
             this.items = items;
         },
@@ -127,6 +134,15 @@ export default {
         },
         pick(item) {
             if (!item.clickable) return;
+            // if (item.disable) {
+            //     this.$dialog({
+            //         title: 'dialog.itemUnavailable',
+            //         msg: ['dialog.itemUnavailableTip', item[this.language]],
+            //         timeout: { duration: 5000, fn: 'resolve' },
+            //         buttons: [{ text: 'button.confirm', fn: 'resolve' }]
+            //     }).then(() => { this.$q() })
+            //     return
+            // }
             if (this.isSubMenu(item)) return;
             if (this.isTemporary(item)) return;
             if (this.isScalable(item)) return;

@@ -201,7 +201,9 @@ export default {
         'printAnyway': '依然打印',
         'setSubMenu': '设置子菜单',
         'reset': '重置',
-        'later': '稍后'
+        'later': '稍后',
+        'register':'注册',
+        'unRegister':'反注册'
     },
     title: {
         'markPaymentType': '标记付款方式',
@@ -420,7 +422,9 @@ export default {
         'entryInvalid': '格式不正确',
         'entryMustBeNumber': '格式必须为数字',
         'subMenuRemoveConfirm': '移除子菜单组',
-        'subMenuRemoveConfirmTip': '您确定要移除整个 ({i}) 子菜单组以及其包含的物品吗？'
+        'subMenuRemoveConfirmTip': '您确定要移除整个 ({i}) 子菜单组以及其包含的物品吗？',
+        'itemUnavailable':'物品不可用',
+        'itemUnavailableTip':'{i} 物品暂时无法使用'
     },
     terminal: {
         'initial': '正在初始化 {i}...',
@@ -475,6 +479,7 @@ export default {
         'reload': '充值',
         'redemption': '取现',
         'activation': '激活',
+        'deactivation':'注销',
         'giftCardCredit': '礼物卡充值',
         'giftCardDebit': '礼物卡消费',
         'bonus': '(奖励: $ {i})',

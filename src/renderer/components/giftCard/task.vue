@@ -29,11 +29,17 @@
                         <span class="text" v-if="card">{{$t('text.records',card.transaction)}}</span>
                     </label>
                 </div>
-                <div>
+                <div v-if="card && card.balance > 0">
                     <input type="radio" name="task" v-model="task" value="redemption" id="redemption">
                     <label for="redemption">
                         <i class="fa fa-usd"></i>{{$t('card.redemption')}}
                         <span class="text" v-if="card">$ {{card.balance.toFixed(2)}}</span>
+                    </label>
+                </div>
+                <div v-else>
+                    <input type="radio" name="task" v-model="task" value="deactivation" id="deactivation">
+                    <label for="deactivation">
+                        <i class="fa fa-ban"></i>{{$t('card.deactivation')}}
                     </label>
                 </div>
             </div>
@@ -138,6 +144,13 @@ export default {
                 case "print":
                     Printer.printGiftCard('Balance', this.card);
                     break;
+                case "deactivation":
+                    this.$dialog({ title: 'dialog.deactivationConfirm', msg: 'dialog.deactivationConfirmTip' })
+                        .then(() => {
+                            this.$socket.emit("[GIFTCARD] DEACTIVATION", this.card.number)
+                            this.$q()
+                        }).catch(() => { this.$q() })
+                    break;
             }
         },
         activateCard(number) {
@@ -160,7 +173,8 @@ export default {
                     this.card = result;
                     this.task = 'print';
                     this.recordCashDrawerAction(value, 0);
-                    Printer.printGiftCard('Activation', result)
+                    Printer.printGiftCard('Activation', result);
+                    this.init.reject();
                 })
             }).catch(() => { this.$q() })
         },
