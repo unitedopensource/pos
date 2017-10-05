@@ -481,7 +481,13 @@ export default {
         'history': '消费记录',
         'printBalance': '打印余额',
         'readTrackFailed': '无法读取磁条信息',
-        'activationBonus': '开卡奖励'
+        'activationBonus': '开卡奖励',
+        'swipeEmployeeCard':'请刷员工卡',
+        'swipeEmployeeCardAgain':'请再刷一次员工卡',
+        'removeEmployeeCard':'移除员工卡',
+        'removeEmployeeCardTip':'您确定要移除这个绑定的员工卡吗？',
+        'employeeCardRegisterFailed':'员工卡注册失败',
+        'employeeCardRegistered':'此员工卡已经分配给另外的员工'
     },
     calendar: {
         'mon': '周一',

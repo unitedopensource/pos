@@ -21,8 +21,9 @@ export default {
     data() {
         return {
             read: '',
+            compare: [],
             timeout: null,
-            message: this.$t('card.swipeGiftCard')
+            message: this.$t('card.swipeEmployeeCard')
         }
     },
     methods: {
@@ -31,26 +32,35 @@ export default {
             clearTimeout(this.timeout);
             this.timeout = setTimeout(() => { this.read = "" }, 300);
             (e.code.includes('Digit') || e.code.includes('Key')) && (this.read += e.code.slice(-1));
-            (e.code === 'Equal') && (this.read += "=");
-            (e.code === 'Slash') && (this.read += "/");
-            (e.code === 'Semicolon') && (this.read += ";");
             e.code === 'Enter' && this.parser(this.read);
         },
         parser(data) {
-            if (data.includes("%E") || data.includes(";E?")) {
+            if (data.includes("5E")) {
                 this.message = this.$t('card.readTrackFailed');
                 this.read = "";
                 return;
             }
 
-            try {
-                let number = data.match(/\d{16,16}/)[0];
-                this.$socket.emit("[GIFTCARD] QUERY", number, (result) => {
-                    this.init.resolve({ number, result })
-                })
-            } catch (e) {
-                this.message = this.$t('card.readTrackFailed');
-                this.read = "";
+            if (this.compare.length < 1) {
+                this.compare.push(data)
+                this.message = this.$t('card.swipeEmployeeCardAgain')
+                this.read = '';
+            } else {
+                this.compare.push(data)
+                this.confirm()
+            }
+        },
+        confirm() {
+            let [first, second] = this.compare;
+
+            if (first === second) {
+                this.init.resolve(first);
+            } else {
+                this.compare = [];
+                this.message = this.$t('card.registerCardFailed');
+                setTimeout(() => {
+                    this.init.reject()
+                }, 3000)
             }
         }
     }

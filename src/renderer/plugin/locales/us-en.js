@@ -212,12 +212,12 @@ export default {
         'subtotal': 'Subtotal',
         'tax': 'Tax',
         'tip': 'Tip',
-        'gratuity':'Gratuity',
+        'gratuity': 'Gratuity',
         'discount': 'Discount',
         'total': 'Total',
         'view': 'View',
         'note': 'Note',
-        'status':'Status'
+        'status': 'Status'
     },
     title: {
         'markPaymentType': 'Mark Payment Type',
@@ -499,7 +499,13 @@ export default {
         'history': 'History',
         'printBalance': 'Print Bal.',
         'readTrackFailed': 'Read Track Failed',
-        'activationBonus': 'Bonus'
+        'activationBonus': 'Bonus',
+        'swipeEmployeeCard': 'Please Swipe Employee Card',
+        'swipeEmployeeCardAgain': 'Please Swipe Employee Card Again',
+        'removeEmployeeCard': 'Remove Employee Card',
+        'removeEmployeeCardTip': 'Are you sure to remove this employee card?',
+        'employeeCardRegisterFailed': 'Employee Card Register Failed',
+        'employeeCardRegistered': 'This employee card already assign to another employee'
     },
     calendar: {
         'mon': 'MON',
@@ -545,7 +551,7 @@ export default {
         'tax': 'Tax',
         'itemSales': 'Item Sales',
         'tips': 'Tips',
-        'gratuity':'Gratuity'
+        'gratuity': 'Gratuity'
     },
     text: {
         'starter': 'Starter',
@@ -755,7 +761,7 @@ export default {
         'subItemGroup': 'SubMenu Group',
         'records': '{i} Records',
         'allDeliveries': 'All Deliveries',
-        'penalty':'Penalty'
+        'penalty': 'Penalty'
     },
     nav: {
         'store': 'Store',
@@ -904,8 +910,8 @@ export default {
         'review': 'Approval',
         'tipsSuggestion': 'Tips Suggestion',
         'sortPriority': 'Prioritize',
-        'employeeCard':'Employee Card',
-        'employeeCardRegistration':'Register employee card'
+        'employeeCard': 'Employee Card',
+        'employeeCardRegistration': 'Register employee card'
     },
     reservation: {
         'create': 'Create Reservation',
@@ -939,7 +945,7 @@ export default {
         'autoTemplate': 'Auto popup template page',
         'alphabetical': 'Sort menu item by alphabet',
         'createSubMenuGroup': 'Create a sub menu group',
-        'reportBeforeBatch':'Print detail report ',
+        'reportBeforeBatch': 'Print detail report ',
         'table': {
             'passwordRequire': 'Password input required before create a new table.',
             'autoClearTable': 'Auto restore table status after settling ticket.',

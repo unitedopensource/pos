@@ -73,8 +73,8 @@
                     <span class="tip">{{$t('setting.employeeCardRegistration')}}</span>
                 </header>
                 <div>
-                    <div class="btn" @click="registerEmployeeCard">{{$t('button.register')}}</div>
-                    <div class="btn" @click="removeEmployeeCard">{{$t('button.unRegister')}}</div>
+                    <button class="btn" @click="registerEmployeeCard" v-if="!operator.card">{{$t('button.register')}}</button>
+                    <button class="btn" @click="removeEmployeeCard" v-else>{{$t('button.unRegister')}}</button>
                 </div>
             </div>
             <div>
@@ -98,9 +98,10 @@ import smartInput from '../common/smartInput'
 import dialoger from '../../common/dialoger'
 import checkbox from '../common/checkbox'
 import radio from '../common/radio'
+import capture from './capture'
 export default {
     props: ['profile'],
-    components: { smartOption, smartSwitch, smartInput, checkbox, radio, dialoger },
+    components: { smartOption, smartSwitch, smartInput, checkbox, radio, dialoger, capture },
     data() {
         return {
             componentData: null,
@@ -130,10 +131,33 @@ export default {
             }).catch(() => { this.$q() })
         },
         registerEmployeeCard() {
-
+            new Promise((resolve, reject) => {
+                this.componentData = { resolve, reject };
+                this.component = 'capture'
+            }).then((card) => {
+                this.$socket.emit("[CHECK] EMPLOYEE_CARD", card, exist => {
+                    exist ?
+                        this.$dialog({
+                            title: 'dialog.employeeCardRegisterFailed',
+                            msg: 'dialog.employeeCardRegistered',
+                            buttons: [{ text: 'button.confirm', fn: 'resolve' }]
+                        }).then(() => {
+                            this.$q()
+                        }) : this.operator = Object.assign({}, this.operator, { card })
+                })
+                this.$q()
+            }).catch(() => {
+                this.$q()
+            })
         },
         removeEmployeeCard() {
-
+            this.$dialog({
+                title: 'dialog.removeEmployeeCard',
+                msg: 'dialog.removeEmployeeCardTip'
+            }).then(() => {
+                this.operator.card = null;
+                this.$q()
+            }).catch(() => { this.$q() })
         }
     },
     watch: {
@@ -195,5 +219,9 @@ export default {
 
 .column>div {
     flex: 1;
+}
+
+.column .btn {
+    margin-right: 10px;
 }
 </style>
