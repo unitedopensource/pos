@@ -114,8 +114,8 @@ export default {
         'languageTip': '切换界面语言',
         'logout': '登出',
         'logoutTip': '结算并登出系统',
-        'setting':'设置',
-        'settingTip':'软件后台设置'
+        'setting': '设置',
+        'settingTip': '软件后台设置'
     },
     button: {
         'new': '新增',
@@ -202,8 +202,8 @@ export default {
         'setSubMenu': '设置子菜单',
         'reset': '重置',
         'later': '稍后',
-        'register':'注册',
-        'unRegister':'反注册'
+        'register': '注册',
+        'unRegister': '反注册'
     },
     title: {
         'markPaymentType': '标记付款方式',
@@ -423,8 +423,8 @@ export default {
         'entryMustBeNumber': '格式必须为数字',
         'subMenuRemoveConfirm': '移除子菜单组',
         'subMenuRemoveConfirmTip': '您确定要移除整个 ({i}) 子菜单组以及其包含的物品吗？',
-        'itemUnavailable':'物品不可用',
-        'itemUnavailableTip':'{i} 物品暂时无法使用'
+        'itemUnavailable': '物品不可用',
+        'itemUnavailableTip': '{i} 物品暂时无法使用'
     },
     terminal: {
         'initial': '正在初始化 {i}...',
@@ -479,7 +479,7 @@ export default {
         'reload': '充值',
         'redemption': '取现',
         'activation': '激活',
-        'deactivation':'注销',
+        'deactivation': '注销',
         'giftCardCredit': '礼物卡充值',
         'giftCardDebit': '礼物卡消费',
         'bonus': '(奖励: $ {i})',
@@ -489,12 +489,12 @@ export default {
         'printBalance': '打印余额',
         'readTrackFailed': '无法读取磁条信息',
         'activationBonus': '开卡奖励',
-        'swipeEmployeeCard':'请刷员工卡',
-        'swipeEmployeeCardAgain':'请再刷一次员工卡',
-        'removeEmployeeCard':'移除员工卡',
-        'removeEmployeeCardTip':'您确定要移除这个绑定的员工卡吗？',
-        'employeeCardRegisterFailed':'员工卡注册失败',
-        'employeeCardRegistered':'此员工卡已经分配给另外的员工'
+        'swipeEmployeeCard': '请刷员工卡',
+        'swipeEmployeeCardAgain': '请再刷一次员工卡',
+        'removeEmployeeCard': '移除员工卡',
+        'removeEmployeeCardTip': '您确定要移除这个绑定的员工卡吗？',
+        'employeeCardRegisterFailed': '员工卡注册失败',
+        'employeeCardRegistered': '此员工卡已经分配给另外的员工'
     },
     calendar: {
         'mon': '周一',
@@ -540,7 +540,7 @@ export default {
         'tax': '税',
         'itemSales': '物品销售',
         'tips': '小费',
-        'gratuity':'附加费'
+        'gratuity': '附加费'
     },
     thead: {
         'orderType': '订单种类',
@@ -552,12 +552,12 @@ export default {
         'subtotal': '小计',
         'tax': '税',
         'tip': '小费',
-        'gratuity':'附加费',
+        'gratuity': '附加费',
         'discount': '折扣',
         'total': '总数',
-        'view':'查看',
-        'note':'备注',
-        'status':'状态'
+        'view': '查看',
+        'note': '备注',
+        'status': '状态'
     },
     text: {
         'starter': '起始',
@@ -620,6 +620,7 @@ export default {
         'contactInfo': '联系信息',
         'storeType': '店面类型',
         'enable': '启用',
+        'disable': '禁用',
         'staffBank': '个人钱箱',
         'disallow': '禁止',
         'api': '授权码',
@@ -766,7 +767,7 @@ export default {
         'subItemGroup': '子菜单组',
         'records': '{i} 笔',
         'allDeliveries': '所有送餐',
-        'penalty':'罚金'
+        'penalty': '罚金'
     },
     nav: {
         'store': '店面',
@@ -915,8 +916,8 @@ export default {
         'review': '审核',
         'tipsSuggestion': '小费建议',
         'sortPriority': '按优先值',
-        'employeeCard':'员工卡',
-        'employeeCardRegistration':'注册员工卡'
+        'employeeCard': '员工卡',
+        'employeeCardRegistration': '注册员工卡'
     },
     reservation: {
         'create': '创建预约',
@@ -949,7 +950,7 @@ export default {
         'autoTemplate': '自动弹出模板选择页面',
         'alphabetical': '菜单将按字母序列排序 (中文字符将会按照拼音排序)',
         'createSubMenuGroup': '创建一个子菜单组',
-        'reportBeforeBatch':'过账前是否打印每笔交易信息',
+        'reportBeforeBatch': '过账前是否打印每笔交易信息',
         'table': {
             'passwordRequire': '创建座位之前需要输入密码',
             'autoClearTable': '客人付款之后自动还原座位状态',

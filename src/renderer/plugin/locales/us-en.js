@@ -621,6 +621,7 @@ export default {
         'contactInfo': 'Contact Info',
         'storeType': 'Store Type',
         'enable': 'Enable',
+        'disable': 'Disable',
         'staffBank': 'Staff Bank',
         'disallow': 'Disallow',
         'api': 'API',
