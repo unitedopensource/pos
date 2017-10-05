@@ -903,7 +903,9 @@ export default {
         'userRemovalTip': 'Permanent remove user account',
         'review': 'Approval',
         'tipsSuggestion': 'Tips Suggestion',
-        'sortPriority': 'Prioritize'
+        'sortPriority': 'Prioritize',
+        'employeeCard':'Employee Card',
+        'employeeCardRegistration':'Register employee card'
     },
     reservation: {
         'create': 'Create Reservation',

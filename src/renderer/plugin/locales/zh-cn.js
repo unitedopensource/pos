@@ -901,7 +901,9 @@ export default {
         'userRemovalTip': '永久的删除这个账户',
         'review': '审核',
         'tipsSuggestion': '小费建议',
-        'sortPriority': '按优先值'
+        'sortPriority': '按优先值',
+        'employeeCard':'员工卡',
+        'employeeCardRegistration':'注册员工卡'
     },
     reservation: {
         'create': '创建预约',

@@ -66,13 +66,25 @@
                 </div>
             </article>
         </section>
-        <section class="card">
-            <header>
-                <span>{{$t('setting.userRemoval')}}</span>
-                <span class="tip">{{$t('setting.userRemovalTip')}}</span>
-            </header>
+        <section class="card column">
             <div>
-                <div class="btn" @click="removeUser">{{$t('button.delete')}}</div>
+                <header>
+                    <span>{{$t('setting.employeeCard')}}</span>
+                    <span class="tip">{{$t('setting.employeeCardRegistration')}}</span>
+                </header>
+                <div>
+                    <div class="btn" @click="registerEmployeeCard">{{$t('button.register')}}</div>
+                    <div class="btn" @click="removeEmployeeCard">{{$t('button.unRegister')}}</div>
+                </div>
+            </div>
+            <div>
+                <header>
+                    <span>{{$t('setting.userRemoval')}}</span>
+                    <span class="tip">{{$t('setting.userRemovalTip')}}</span>
+                </header>
+                <div>
+                    <div class="btn" @click="removeUser">{{$t('button.delete')}}</div>
+                </div>
             </div>
         </section>
         <div :is="component" :init="componentData"></div>
@@ -103,7 +115,7 @@ export default {
     created() {
         this.operator = JSON.parse(JSON.stringify(this.profile));
         //patch 
-        !this.operator.hasOwnProperty('review') && (this.operator = Object.assign({},this.operator, { review: [] }));
+        !this.operator.hasOwnProperty('review') && (this.operator = Object.assign({}, this.operator, { review: [] }));
     },
     methods: {
         removeUser() {
@@ -116,6 +128,12 @@ export default {
                     this.$router.push({ name: 'Setting.operator.index' })
                 })
             }).catch(() => { this.$q() })
+        },
+        registerEmployeeCard() {
+
+        },
+        removeEmployeeCard() {
+
         }
     },
     watch: {
@@ -169,5 +187,13 @@ export default {
 
 .datalist .f1 {
     margin-left: 2em;
+}
+
+.column {
+    display: flex;
+}
+
+.column>div {
+    flex: 1;
 }
 </style>

@@ -226,7 +226,7 @@ export default {
         },
         printTicket(order, receipt) {
             receipt ?
-                Printer.setTarget('Receipt').print(order) :
+                Printer.setTarget('Receipt').print(order,true) :
                 Printer.setTarget('All').print(order);
             receipt && order.content.forEach(item => {
                 delete item.new;
@@ -243,7 +243,7 @@ export default {
                 ticket.payment = order.splitPayment[i - 1];
                 ticket.number = `${order.number}-${i}`;
                 receipt ?
-                    Printer.setTarget('Receipt').print(ticket) :
+                    Printer.setTarget('Receipt').print(ticket,true) :
                     Printer.setTarget('All').print(ticket)
             }
             !receipt && order.content.forEach(item => {

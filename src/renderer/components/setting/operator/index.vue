@@ -31,9 +31,7 @@ export default {
         }
     },
     created() {
-        this.$socket.emit("[INQUIRY] OPERATORS", operators => {
-            this.operators = operators
-        })
+        this.$socket.emit("[INQUIRY] OPERATORS", operators => { this.operators = operators })
         this.$emit("profile", null)
     },
     methods: {
