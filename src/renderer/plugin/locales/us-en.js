@@ -212,6 +212,7 @@ export default {
         'subtotal': 'Subtotal',
         'tax': 'Tax',
         'tip': 'Tip',
+        'gratuity':'Gratuity',
         'discount': 'Discount',
         'total': 'Total',
         'view': 'View',
@@ -543,7 +544,8 @@ export default {
         'creditCardTip': 'Credit Card Tips',
         'tax': 'Tax',
         'itemSales': 'Item Sales',
-        'tips': 'Tips'
+        'tips': 'Tips',
+        'gratuity':'Gratuity'
     },
     text: {
         'starter': 'Starter',
@@ -752,7 +754,8 @@ export default {
         'overCharge': 'Extra Charge',
         'subItemGroup': 'SubMenu Group',
         'records': '{i} Records',
-        'allDeliveries': '所有送餐'
+        'allDeliveries': 'All Deliveries',
+        'penalty':'Penalty'
     },
     nav: {
         'store': 'Store',
@@ -824,7 +827,7 @@ export default {
         'dineIn': 'Dine In',
         'station': 'Station Setting',
         'staffBank': 'Staff Bank',
-        'autoCharge': 'Auto Charge',
+        'autoCharge': 'Auto Surcharge',
         'autoChargeTip': 'Auto charge gratuity',
         'terminal': 'Terminal',
         'terminalTip': 'SEMI-Integrated Terminal Configuration',
@@ -899,7 +902,7 @@ export default {
         'userRemoval': 'User Remove',
         'userRemovalTip': 'Permanent remove user account',
         'review': 'Approval',
-        'tipsSuggestion': 'Tips Sugg.',
+        'tipsSuggestion': 'Tips Suggestion',
         'sortPriority': 'Prioritize'
     },
     reservation: {
@@ -934,6 +937,7 @@ export default {
         'autoTemplate': 'Auto popup template page',
         'alphabetical': 'Sort menu item by alphabet',
         'createSubMenuGroup': 'Create a sub menu group',
+        'reportBeforeBatch':'Print detail report ',
         'table': {
             'passwordRequire': 'Password input required before create a new table.',
             'autoClearTable': 'Auto restore table status after settling ticket.',

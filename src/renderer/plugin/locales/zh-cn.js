@@ -526,7 +526,8 @@ export default {
         'creditCardTip': '信用卡小费',
         'tax': '税',
         'itemSales': '物品销售',
-        'tips': '小费'
+        'tips': '小费',
+        'gratuity':'附加费'
     },
     thead: {
         'orderType': '订单种类',
@@ -538,6 +539,7 @@ export default {
         'subtotal': '小计',
         'tax': '税',
         'tip': '小费',
+        'gratuity':'附加费',
         'discount': '折扣',
         'total': '总数',
         'view':'查看',
@@ -750,7 +752,8 @@ export default {
         'overCharge': '额外价格',
         'subItemGroup': '子菜单组',
         'records': '{i} 笔',
-        'allDeliveries': '所有送餐'
+        'allDeliveries': '所有送餐',
+        'penalty':'罚金'
     },
     nav: {
         'store': '店面',
@@ -931,6 +934,7 @@ export default {
         'autoTemplate': '自动弹出模板选择页面',
         'alphabetical': '菜单将按字母序列排序 (中文字符将会按照拼音排序)',
         'createSubMenuGroup': '创建一个子菜单组',
+        'reportBeforeBatch':'过账前是否打印每笔交易信息',
         'table': {
             'passwordRequire': '创建座位之前需要输入密码',
             'autoClearTable': '客人付款之后自动还原座位状态',

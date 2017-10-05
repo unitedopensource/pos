@@ -21,6 +21,7 @@
                 <smart-input v-model="workStation.terminal.address" reg="^[0-9. ]{3,}$" label="text.ipAddress" @dblclick.native="searchTool"></smart-input>
                 <smart-input v-model="workStation.terminal.port" reg="^[a-zA-Z0-9_. ]{2,10}$" label="text.port"></smart-input>
                 <smart-input v-model="workStation.terminal.sn" label="text.authCode"></smart-input>
+                <smart-switch v-model="workStation.terminal.report" label="text.report" tip="tip.reportBeforeBatch"></smart-switch>
             </article>
         </section>
         <section class="card">
@@ -62,7 +63,7 @@
             </article>
         </section>
         <section class="card">
-            <header>{{text('setting.cashDrawer')}}</header>
+            <header>{{$t('setting.cashDrawer')}}</header>
             <article>
                 <smart-switch v-model="workStation.cashDrawer.enable" label="text.enable"></smart-switch>
                 <smart-input v-model="workStation.cashDrawer.name" label="text.name" :disable="!workStation.cashDrawer.enable"></smart-input>

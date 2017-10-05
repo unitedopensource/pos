@@ -231,17 +231,20 @@ export default {
             data.forEach(invoice => {
                 if (invoice.server) {
                     let name = invoice.server;
+                    let { subtotal, tax, tip, discount } = invoice.payment;
+                    let amount = parseFloat(subtotal) + parseFloat(tax) - parseFloat(discount);
+
                     if (staff.hasOwnProperty(name)) {
-                        staff[name]["amount"] += parseFloat(invoice.payment.due);
-                        staff[name]["tip"] += parseFloat(invoice.payment.tip);
-                        staff[name]["gratuity"] += parseFloat(invoice.payment.gratuity);
+                        staff[name]["amount"] += amount;
+                        staff[name]["tip"] += parseFloat(tip);
+                        staff[name]["gratuity"] += parseFloat(gratuity);
                         staff[name]["count"]++;
                     } else {
                         staff[name] = {
                             text: name,
-                            tip: parseFloat(invoice.payment.tip),
-                            gratuity: parseFloat(invoice.payment.gratuity),
-                            amount: parseFloat(invoice.payment.due),
+                            tip: parseFloat(tip),
+                            gratuity: parseFloat(gratuity),
+                            amount: amount,
                             count: 1
                         }
                     }
@@ -257,15 +260,18 @@ export default {
             let source = {};
             data.forEach(invoice => {
                 let name = invoice.source;
+                let { subtotal, tax, discount, tip } = invoice.payment;
+                let amount = parseFloat(subtotal) + parseFloat(tax) - parseFloat(discount);
+
                 if (source.hasOwnProperty(name)) {
-                    source[name]["amount"] += parseFloat(invoice.payment.due);
-                    source[name]["tip"] += parseFloat(invoice.payment.tip);
+                    source[name]["amount"] += amount;
+                    source[name]["tip"] += parseFloat(tip);
                     source[name]["count"]++;
                 } else {
                     source[name] = {
                         text: name,
-                        tip: parseFloat(invoice.payment.tip),
-                        amount: parseFloat(invoice.payment.due),
+                        tip: parseFloat(tip),
+                        amount: amount,
                         count: 1
                     }
                 }
@@ -333,30 +339,32 @@ export default {
                 }
             };
             data.forEach(invoice => {
-                let amount = parseFloat(invoice.payment.subtotal) + parseFloat(invoice.payment.tax) - parseFloat(invoice.payment.discount);
+                let { subtotal, tax, discount, tip, delivery } = invoice.payment;
+                let amount = parseFloat(subtotal) + parseFloat(tax) - parseFloat(discount);
+
                 if (invoice.driver && invoice.status === 1) {
                     let name = invoice.driver;
 
                     if (drivers.hasOwnProperty(name)) {
                         drivers[name]["amount"] += amount;
-                        drivers[name]["tip"] += parseFloat(invoice.payment.tip);
-                        drivers[name]["fee"] += parseFloat(invoice.payment.delivery);
+                        drivers[name]["tip"] += parseFloat(tip);
+                        drivers[name]["fee"] += parseFloat(delivery);
                         drivers[name]["count"]++;
                     } else {
                         drivers[name] = {
                             text: "#" + name,
-                            tip: parseFloat(invoice.payment.tip),
+                            tip: parseFloat(tip),
                             amount: amount,
                             count: 1,
-                            fee: parseFloat(invoice.payment.delivery)
+                            fee: parseFloat(delivery)
                         }
                     }
                 }
 
                 if (invoice.type === 'DELIVERY' && invoice.status === 1) {
                     drivers.All.amount += amount;
-                    drivers.All.tip += parseFloat(invoice.payment.tip);
-                    drivers.All.fee += parseFloat(invoice.payment.delivery);
+                    drivers.All.tip += parseFloat(tip);
+                    drivers.All.fee += parseFloat(delivery);
                     drivers.All.count++;
                 }
             });
@@ -421,6 +429,7 @@ export default {
                 dinein = 0, dineinAmount = 0,
                 bar = 0, barAmount = 0,
                 tips = 0, tipsAmount = 0,
+                gratuityAmount = 0,
                 other = 0, otherAmount = 0,
                 settle = 0, settleAmount = 0,
                 discount = 0, discountAmount = 0,
@@ -432,92 +441,91 @@ export default {
                 gift = 0, giftAmount = 0;
 
             data.forEach(ticket => {
-                let total = parseFloat(ticket.payment.total);
-                let subtotal = parseFloat(ticket.payment.subtotal);
-                let due = parseFloat(ticket.payment.due);
-                let tax = parseFloat(ticket.payment.tax);
-                let tip = parseFloat(ticket.payment.tip);
-                let gratuity = parseFloat(ticket.payment.gratuity);
-                let disc = parseFloat(ticket.payment.discount);
-
+                let { total, subtotal, due, tax, tip, gratuity, discount } = ticket.payment;
+                let amount = parseFloat(subtotal) + parseFloat(tip) - parseFloat(discount);
 
                 if (ticket.status === 1) {
                     switch (ticket.type) {
                         case "WALK_IN":
                             walkin++;
-                            walkinAmount += due;
+                            walkinAmount += amount;
                             break;
                         case "PICK_UP":
                             pickup++;
-                            pickupAmount += due;
+                            pickupAmount += amount;
                             break;
                         case "DELIVERY":
                             delivery++;
-                            deliveryAmount += due;
+                            deliveryAmount += amount;
                             break;
                         case "DINE_IN":
                             dinein++;
-                            dineinAmount += due;
+                            dineinAmount += amount;
                             break;
                         case "BAR":
                             bar++;
-                            barAmount += due;
+                            barAmount += amount;
                             break;
                         default:
                             other++;
-                            otherAmount += due;
+                            otherAmount += amount;
                     }
                     gross++;
-                    grossAmount += total;
-                    netAmount += due;
-                    itemSalesAmount += subtotal;
-                    taxAmount += tax;
+                    grossAmount += parseFloat(total);
+                    netAmount += amount;
+                    itemSalesAmount += parseFloat(subtotal);
+                    taxAmount += parseFloat(tax);
 
                     if (ticket.payment.discount > 0) {
                         discount++;
-                        discountAmount += disc
+                        discountAmount += parseFloat(discount)
                     }
 
                     if (ticket.settled) {
                         settle++;
-                        settleAmount += due;
-                        tipsAmount += tip;
+                        settleAmount += amount;
+                        tipsAmount += parseFloat(tip);
+                        gratuityAmount += parseFloat(gratuity);
+
                         switch (ticket.payment.type) {
                             case "CASH":
                                 cash++;
-                                cashAmount += due;
+                                cashAmount += amount;
                                 break;
                             case "CREDIT":
                                 credit++;
-                                creditAmount += due;
+                                creditAmount += amount;
                                 if (tip > 0) {
                                     creditTip++;
-                                    creditTipAmount += tip
+                                    creditTipAmount += amount
                                 }
                                 break;
                             case "GIFT":
                                 gift++;
-                                giftAmount += due;
+                                giftAmount += amount;
                                 break;
                             default:
                                 if (ticket.splitPayment) {
                                     ticket.splitPayment.forEach(split => {
+                                        let { subtotal, tip, discount } = split;
+                                        let amount = parseFloat(subtotal) + parseFloat(tip) - parseFloat(discount);
+
                                         switch (split.type) {
                                             case "CASH":
                                                 cash++;
-                                                cashAmount += parseFloat(split.due);
+                                                cashAmount += amount;
                                                 break;
                                             case "CREDIT":
                                                 credit++;
-                                                creditAmount += parseFloat(split.due);
+                                                creditAmount += amount;
                                                 if (tip > 0) {
                                                     creditTip++;
-                                                    creditTipAmount += parseFloat(split.tip)
+                                                    creditTipAmount += parseFloat(tip)
                                                 }
                                                 break;
                                             case "GIFT":
                                                 gift++;
-                                                giftAmount += parseFloat(split.due);
+                                                giftAmount += amount;
                                                 break;
                                         }
                                     })
@@ -526,11 +534,11 @@ export default {
 
                     } else if (!ticket.payment.settled) {
                         unsettle++;
-                        unsettleAmount += due;
+                        unsettleAmount += amount;
                     }
                 } else {
                     voided++;
-                    voidedAmount += parseFloat(ticket.payment.total);
+                    voidedAmount += parseFloat(total);
                 }
             })
             this.report["SUMMARY"] = this.summary ? [{
@@ -563,9 +571,17 @@ export default {
                 count: discount,
                 amount: -discountAmount
             }, {
+                text: "&nbsp;",
+                count: 0,
+                amount: ""
+            }, {
                 text: this.$t('report.tips'),
                 count: 0,
                 amount: tipsAmount
+            }, {
+                text: this.$t('report.gratuity'),
+                count: 0,
+                amount: gratuityAmount
             }] : null;
 
             this.report["SALES CATEGORY"] = this.salesCategory ?

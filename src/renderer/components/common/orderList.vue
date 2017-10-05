@@ -69,7 +69,15 @@
                     <span class="text">{{$t("text.tax")}}:</span>
                     <span class="value">{{payment.tax | decimal}}</span>
                 </div>
-                <div :class="{hidden:parseFloat(payment.delivery) === 0}">
+                <div v-if="order.type === 'DELIVERY'">
+                    <span class="text">{{$t("text.deliveryFee")}}:</span>
+                    <span class="value">{{payment.delivery | decimal}}</span>
+                </div>
+                <div v-else-if="order.type === 'DINE_IN'" :class="{hidden:!store.table.surcharge.enable}">
+                    <span class="text">{{$t("text.gratuity")}}:</span>
+                    <span class="value">{{payment.gratuity | decimal}}</span>
+                </div>
+                <div v-else :class="{hidden:parseFloat(payment.delivery) === 0}">
                     <span class="text">{{$t("text.deliveryFee")}}:</span>
                     <span class="value">{{payment.delivery | decimal}}</span>
                 </div>
@@ -259,6 +267,20 @@ export default {
                 });
 
                 delivery = (this.ticket.type === 'DELIVERY' && this.store.delivery && !this.order.deliveryFree) ? this.store.deliveryCharge : 0;
+
+                //auto surcharge
+                let { enable, penalty, when } = this.store.table.surcharge;
+                if (this.order.type === 'DINE_IN' && enable && this.order.guest > when) {
+                    let value = parseFloat(penalty.replace(/[^0-9.]/g, ""));
+
+                    if (penalty.includes("%")) {
+                        value = value / 100;
+                        gratuity = subtotal * value
+                    } else {
+                        gratuity = value
+                    }
+                }
+
                 total = toFixed(subtotal + tax + delivery + parseFloat(tip) + parseFloat(gratuity), 2);
 
                 if (coupon) {
@@ -281,12 +303,13 @@ export default {
                 balance = due - this.payment.paid;
                 this.payment = Object.assign({}, this.payment, {
                     subtotal: subtotal.toFixed(2),
-                    tax: toFixed(tax, 2),
+                    tax: toFixed(tax, 2).toFixed(2),
+                    gratuity: gratuity.toFixed(2),
                     total: total.toFixed(2),
                     due: due.toFixed(2),
                     discount: discount.toFixed(2),
                     balance: balance.toFixed(2),
-                    delivery:delivery.toFixed(2)
+                    delivery: delivery.toFixed(2)
                 });
                 this.setOrder({ payment: this.payment });
             })
@@ -567,7 +590,7 @@ i.flip {
     color: #676767;
 }
 
-.hidden span{
+.hidden span {
     visibility: hidden;
 }
 </style>

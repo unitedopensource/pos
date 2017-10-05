@@ -394,8 +394,9 @@ export default {
                 this.checkBatchRecord();
                 return false;
             }
-            //Printer.init(this.config).setJob("prebatch").print({ content, summary });
-            Printer.printPreBatchReport({ content, summary })
+            this.station.terminal.report ?
+                Printer.printPreBatchReport({ content, summary }) :
+                Printer.printPreBatchReport({ summary });
             return true;
         },
         checkBatchRecord() {
@@ -410,7 +411,6 @@ export default {
                 }).then(() => {
                     this.$q();
                     results.forEach(batch => {
-                        //Printer.init(this.config).setJob("batch").print(result);
                         Printer.printBatchReport(batch)
                     })
                 }).catch(() => { this.$q() })

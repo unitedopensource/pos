@@ -22,8 +22,9 @@
                 <span class="tip">{{$t('setting.autoChargeTip')}}</span>
             </header>
             <article>
-                <smart-switch v-model="table.autoTip" label="text.enable"></smart-switch>
-                <smart-input v-model.number="table.AutoChargeAbove" label="text.autoChargeAbove" :disable="!table.autoTip"></smart-input>
+                <smart-switch v-model="table.surcharge.enable" label="text.enable"></smart-switch>
+                <smart-range v-model.number="table.surcharge.when" label="text.autoChargeAbove" min="0" max="30" step="1"></smart-range>
+                <smart-input v-model="table.surcharge.penalty" label="text.penalty" :disable="!table.surcharge.enable"></smart-input>
             </article>
         </section>
         <section class="card">
@@ -40,10 +41,23 @@
 import { mapGetters } from 'vuex'
 import smartInput from '../common/smartInput'
 import smartSwitch from '../common/smartSwitch'
+import smartRange from '../common/smartRange'
 export default {
-    components: { smartSwitch, smartInput },
+    components: { smartSwitch, smartInput, smartRange },
     created() {
         this.table = JSON.parse(JSON.stringify(this.store.table))
+
+
+        //auto surcharge hot patch remove when v1.0.0
+        if (!this.table.hasOwnProperty('surcharge')) {
+            this.table = Object.assign({}, this.table, {
+                surcharge: {
+                    enable: false,
+                    penalty: 0,
+                    when: 0
+                }
+            })
+        }
     },
     data() {
         return {
@@ -69,6 +83,8 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
+.range {
+    border-bottom: 1px solid #ccc;
+}
 </style>

@@ -8,7 +8,7 @@
             <div class="inner">
                 <table>
                     <tr>
-                        <th>{{$t('thead.ticket')}}</th>
+                        <th>#</th>
                         <th class="option">
                             <span v-if="!typeFilter">{{$t('thead.type')}}</span>
                             <span v-else>{{$t('type.'+typeFilter)}}</span>
@@ -28,6 +28,7 @@
                         <th>{{$t('thead.tax')}}</th>
                         <th>{{$t('thead.discount')}}</th>
                         <th>{{$t('thead.tip')}}</th>
+                        <th>{{$t('thead.gratuity')}}</th>
                         <th>{{$t('thead.total')}}</th>
                     </tr>
                     <tr v-for="(ticket,index) in tickets" :key="index" :class="{voided:ticket.status === 0}">
@@ -40,6 +41,7 @@
                         <td>{{ticket.payment.tax | decimal}}</td>
                         <td>{{ticket.payment.discount | decimal}}</td>
                         <td>{{ticket.payment.tip | decimal}}</td>
+                        <td>{{ticket.payment.gratuity | decimal}}</td>
                         <td>{{ticket.payment.total | decimal}}</td>
                     </tr>
                     <tr>
@@ -51,7 +53,8 @@
                         <td>$ {{summary.subtotal | decimal}}</td>
                         <td>$ {{summary.tax | decimal}}</td>
                         <td>$ {{summary.discount | decimal}}</td>
-                        <td>$ {{summary.tip | decimal}}</td>
+                        <td>($ {{summary.tip | decimal}})</td>
+                        <td>($ {{summary.gratuity | decimal}})</td>
                         <td>$ {{summary.total | decimal}}</td>
                     </tr>
                 </table>
@@ -74,9 +77,10 @@ export default {
             let tax = tickets.map(i => parseFloat(i.tax)).reduce(c, 0);
             let discount = tickets.map(i => parseFloat(i.discount)).reduce(c, 0);
             let tip = tickets.map(i => parseFloat(i.tip)).reduce(c, 0);
+            let gratuity = tickets.map(i => parseFloat(i.gratuity)).reduce(c, 0);
             let total = subtotal + tax + discount;
 
-            return { count, subtotal, tax, discount, tip, total }
+            return { count, subtotal, tax, discount, tip, gratuity, total }
         },
         ...mapGetters(['history'])
     },
