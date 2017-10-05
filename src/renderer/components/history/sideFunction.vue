@@ -16,6 +16,10 @@
             <i class="fa fa-money"></i>
             <span class="text">{{$t('button.payment')}}</span>
         </div>
+        <div class="btn" @click="receipt">
+            <i class="fa fa-print"></i>
+            <span class="text">{{$t('button.receipt')}}</span>
+        </div>
         <div class="btn" @click="print">
             <i class="fa fa-print"></i>
             <span class="text">{{$t('button.print')}}</span>
@@ -40,10 +44,10 @@
             <i class="fa fa-bar-chart"></i>
             <span class="text">{{$t('button.stats')}}</span>
         </button>
-        <div class="btn" @click="exit">
+        <!-- <div class="btn" @click="exit">
             <i class="fa fa-times"></i>
             <span class="text">{{$t('button.exit')}}</span>
-        </div>
+        </div> -->
         <div :is="component" :init="componentData"></div>
     </aside>
 </template>
@@ -75,26 +79,26 @@ export default {
             if (this.isEmptyTicket) return;
             if (!this.approval(this.op.modify, "order")) {
                 this.$denyAccess();
-                return;
-            };
+                return
+            }
             if (this.date !== this.today) {
                 this.$dialog({
                     title: 'dialog.unableEdit', msg: 'dialog.editPrevOrderTip',
                     buttons: [{ text: 'button.confirm', fn: 'resolve' }]
                 }).then(() => { this.$q() })
-                return;
-            };
+                return
+            }
             if (this.order.status === 0) {
                 this.$dialog({
                     title: 'dialog.unableEdit', msg: ['dialog.editVoidOrderTip', this.order.void.by],
                     buttons: [{ text: 'button.confirm', fn: 'resolve' }]
                 }).then(() => { this.$q() })
-                return;
-            };
+                return
+            }
             if (this.order.settled) {
                 this.confirmPaymentRemoval();
-                return;
-            };
+                return
+            }
             this.editOrder();
         },
         isVoidable() {
@@ -204,6 +208,9 @@ export default {
             let order = JSON.parse(JSON.stringify(this.order));
             order.split ? this.askSplitPrint(order) : this.printTicket(order);
         },
+        receipt(){
+            
+        },
         askSplitPrint(order) {
             this.$dialog({
                 type: 'question', title: 'dialog.printSplitTicket', msg: 'dialog.printSplitTicketTip',
@@ -253,10 +260,10 @@ export default {
         stats() {
             this.$p('statistic')
         },
-        exit() {
-            this.resetMenu();
-            this.$router.push({ path: "/main" });
-        },
+        // exit() {
+        //     this.resetMenu();
+        //     this.$router.push({ path: "/main" });
+        // },
         ...mapActions(['setApp', 'setOrder', 'setTicket', 'resetMenu', 'setCustomer', 'removePayment'])
     },
     computed: {

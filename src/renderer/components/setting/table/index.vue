@@ -98,7 +98,17 @@ export default {
             this.isTableSort = true
         },
         applySectionSort() {
-            this.$socket.emit("[CMS] TABLE_SECTION_SORT", this.sectionSorted);
+            let sections = this.sections.map(section => {
+                return {
+                    zone: section.zone,
+                    zhCN: section.zhCN,
+                    usEN: section.usEN,
+                    item: []
+                }
+            })
+            
+            this.table = Object.assign(this.tables, this.sections)
+            this.$socket.emit("[CMS] TABLE_SECTION_SORT", sections);
             this.isSectionSort = false;
             this.sectionSorted = null;
         },

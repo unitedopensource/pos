@@ -277,7 +277,7 @@ export default {
 }
 
 .card.disable {
-    cursor: not-allowed;
+    pointer-events: none;
 }
 
 .card.disable::after {
