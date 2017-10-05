@@ -27,14 +27,6 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
     props: ['item'],
     computed: {
-        // total() {
-        //     let item = toFixed(this.item.single * this.item.qty, 2);
-        //     let addition = 0;
-        //     this.item.choiceSet.forEach(set => {
-        //         addition += toFixed(set.qty * set.price, 2)
-        //     })
-        //     return (item + addition).toFixed(2)
-        // },
         ...mapGetters(['language', 'choiceSet'])
     },
     methods: {
@@ -115,7 +107,7 @@ li {
 }
 
 .itemWrap {
-    white-space: nowrap;
+    /* white-space: nowrap; */
     position: relative;
 }
 
