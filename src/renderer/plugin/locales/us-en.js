@@ -114,7 +114,9 @@ export default {
         'language': 'Language',
         'languageTip': 'Switch UI Language',
         'logout': 'Logout',
-        'logoutTip': 'Settle & Logout POS'
+        'logoutTip': 'Settle & Logout POS',
+        'setting':'Setting',
+        'settingTip':'Software setting'
     },
     button: {
         'new': 'New',

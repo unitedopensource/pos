@@ -11,7 +11,6 @@
                 <smart-input v-model="operator.pin" label="text.password" type="password"></smart-input>
                 <smart-option v-model="operator.language" label="text.defaultLanguage" :options="languages"></smart-option>
                 <smart-switch v-model="operator.timecard" label="text.timeCard"></smart-switch>
-                <!-- <smart-input v-model="operator.entryString" label="text.employeeCard" type="password"></smart-input> -->
             </article>
         </section>
         <section class="card list">

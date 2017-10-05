@@ -37,6 +37,13 @@
                         <h5>{{$t('dock.giftCardTip')}}</h5>
                     </div>
                 </li>
+                <li @click="setting" v-show="op.role === 'Admin' || op.role === 'Manager'">
+                    <i class="fa fa-2x fa-cog"></i>
+                    <div>
+                        <h3>{{$t('dock.setting')}}</h3>
+                        <h5>{{$t('dock.settingTip')}}</h5>
+                    </div>
+                </li>
                 <li @click="changeLanguage">
                     <i class="fa fa-2x fa-language"></i>
                     <div>
@@ -172,6 +179,14 @@ export default {
             this.setApp({ language });
             moment.locale(language === 'usEN' ? 'en' : 'zh-cn');
             this.$forceUpdate();
+        },
+        setting() {
+            if (this.approval(this.op.access, 'setting')) {
+                this.$router.push({ path: '/main/setting' })
+                this.init.reject()
+            } else {
+                this.$denyAccess()
+            }
         },
         exit() {
             this.$router.push({ name: 'Login' })

@@ -341,9 +341,8 @@ export default {
                 height > 329 && dom.classList.add("scrollable");
                 let target = document.querySelector('.item.active');
 
-                if (target) {
-                    // let top = target.getBoundingClientRect().top;
-                    // this.offset = top;
+                if (target && height > 329) {
+                    this.offset -= target.getBoundingClientRect().height;
                 } else {
                     this.offset = height > 329 ? 329 - height : 0;
                 }

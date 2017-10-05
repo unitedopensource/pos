@@ -113,7 +113,9 @@ export default {
         'language': '语言',
         'languageTip': '切换界面语言',
         'logout': '登出',
-        'logoutTip': '结算并登出系统'
+        'logoutTip': '结算并登出系统',
+        'setting':'设置',
+        'settingTip':'软件后台设置'
     },
     button: {
         'new': '新增',

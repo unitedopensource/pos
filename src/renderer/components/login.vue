@@ -70,8 +70,6 @@ export default {
     }
   },
   created() {
-    //let argv = remote.process.argv.slice(1);
-    //this.host = argv.indexOf('-server') !== -1;
     this.host = window.server === true;
   },
   mounted() {
@@ -144,6 +142,12 @@ export default {
         this.setOp(result.op);
         this.setPin();
         this.$router.push({ path: '/main' });
+        this.$socket.emit("[SYNC] POS", sync => {
+          if (this.sync !== sync) {
+            this.$socket.emit("[SYNC] ORDER_LIST")
+            this.$socket.emit("[SYNC] TABLE_LIST")
+          }
+        })
       } else {
         this.reset && this.setPin()
       }
@@ -158,7 +162,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['store', 'password', 'station'])
+    ...mapGetters(['sync', 'store', 'password', 'station'])
   }
 }
 </script>
@@ -240,10 +244,10 @@ export default {
   width: 30px;
 }
 
-#drag{
+#drag {
   position: fixed;
-  bottom:0;
-  left:0;
+  bottom: 0;
+  left: 0;
   width: 50px;
   height: 50px;
   -webkit-app-region: drag;

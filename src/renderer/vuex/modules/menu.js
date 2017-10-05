@@ -92,14 +92,14 @@ const mutations = {
       let length = dom.length;
       let index;
       dom.forEach((div, i) => {
-        if (div.className.indexOf("highlight") !== -1) {
-          dom[i].classList.remove("highlight");
+        if (div.className.indexOf("active") !== -1) {
+          dom[i].classList.remove("active");
           state.item = state.order.content.last();
           index = i + 1;
         }
       });
       if (index !== length) {
-        dom[index] && dom[index].classList.add("highlight");
+        dom[index] && dom[index].classList.add("active");
         state.item = state.order.content[insert];
       }
     } else {
