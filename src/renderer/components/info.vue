@@ -120,7 +120,7 @@ header {
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
     color: #fff;
     font-size: 1.25em;
-    width: 500px;
+    width: auto;
 }
 
 .avatar {

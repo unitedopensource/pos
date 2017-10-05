@@ -19,12 +19,12 @@ export default {
         'PICK_UP': 'Pick Up',
         'DELIVERY': 'Delivery',
         'DINE_IN': 'Dine In',
+        'BAR': 'Bar',
+        'BUFFET': 'Buffet',
         'SALES': 'Sales',
         'PRE_PAYMENT': 'Pre Pay.',
         'CREDIT_CARD': 'Credit Card',
         'RECEIPT': 'Receipt',
-        'BAR': 'Bar',
-        'BUFFET': 'Buffet',
         'REPORT': 'Report',
         'PAYMENT': 'Payment',
         'DELAY': 'Delay',
@@ -202,7 +202,7 @@ export default {
         'reset': 'Reset',
         'later': 'Later'
     },
-    stats: {
+    thead: {
         'orderType': 'Order Type',
         'paymentType': 'Paid',
         'ticket': 'Ticket',
@@ -213,7 +213,10 @@ export default {
         'tax': 'Tax',
         'tip': 'Tip',
         'discount': 'Discount',
-        'total': 'Total'
+        'total': 'Total',
+        'view': 'View',
+        'note': 'Note',
+        'status':'Status'
     },
     title: {
         'markPaymentType': 'Mark Payment Type',
@@ -749,7 +752,7 @@ export default {
         'overCharge': 'Extra Charge',
         'subItemGroup': 'SubMenu Group',
         'records': '{i} Records',
-        'allDeliveries':'所有送餐'
+        'allDeliveries': '所有送餐'
     },
     nav: {
         'store': 'Store',

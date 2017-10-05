@@ -8,7 +8,7 @@
             <div class="inner">
                 <table>
                     <tr>
-                        <th>{{$t('stats.ticket')}}</th>
+                        <th>{{$t('thead.ticket')}}</th>
                         <th class="option">
                             <span v-if="!typeFilter">{{$t('stats.type')}}</span>
                             <span v-else>{{$t('type.'+typeFilter)}}</span>
@@ -16,19 +16,19 @@
                                 <li v-for="(type,index) in types" :key="index" @click="changeType(type)">{{$t('type.'+type)}}</li>
                             </ul>
                         </th>
-                        <th>{{$t('stats.cashier')}}</th>
-                        <th>{{$t('stats.placeTime')}}</th>
+                        <th>{{$t('thead.cashier')}}</th>
+                        <th>{{$t('thead.placeTime')}}</th>
                         <th class="option">
-                            {{$t('stats.paymentType')}}
+                            {{$t('thead.paymentType')}}
                             <ul>
                                 <li v-for="(settle,index) in settles" :key="index" @click="changeSettle(settle)">{{settle}}</li>
                             </ul>
                         </th>
-                        <th>{{$t('stats.subtotal')}}</th>
-                        <th>{{$t('stats.tax')}}</th>
-                        <th>{{$t('stats.discount')}}</th>
-                        <th>{{$t('stats.tip')}}</th>
-                        <th>{{$t('stats.total')}}</th>
+                        <th>{{$t('thead.subtotal')}}</th>
+                        <th>{{$t('thead.tax')}}</th>
+                        <th>{{$t('thead.discount')}}</th>
+                        <th>{{$t('thead.tip')}}</th>
+                        <th>{{$t('thead.total')}}</th>
                     </tr>
                     <tr v-for="(ticket,index) in tickets" :key="index" :class="{voided:ticket.status === 0}">
                         <td>{{ticket.number}}</td>

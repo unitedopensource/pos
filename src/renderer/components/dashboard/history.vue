@@ -1,20 +1,40 @@
 <template>
-    <div>
-        <section class="inner">
-            <div class="invoice" v-for="(ticket,index) in history" :key="index" @click="view(ticket)">
-                <i :class="status(ticket.status)"></i>
-                <span class="ticket">#{{ticket.number}}</span>
-                <span class="type">{{$t('type.'+ticket.type)}}</span>
-                <span class="time">{{ticket.time | moment('MM/DD/YY HH:mm')}}</span>
-                <div class="f1">
-                    <span class="void" v-if="ticket.status === 0">{{text(ticket.void.note)}} ({{ticket.void.by}})</span>
-                </div>
-                <span class="price">$ {{ticket.payment.due.toFixed(2)}}</span>
+    <div class="viewer">
+        <table>
+            <tr>
+                <th>{{$t('thead.status')}}</th>
+                <th>{{$t('thead.ticket')}}</th>
+                <th>{{$t('thead.type')}}</th>
+                <th>{{$t('thead.placeTime')}}</th>
+                <th>{{$t('thead.cashier')}}</th>
+                <th class="note">{{$t('thead.note')}}</th>
+                <th>{{$t('thead.note')}}</th>
+                <th>{{$t('thead.view')}}</th>
+            </tr>
+            <tr v-for="(invoice,index) in invoices" :key="index" :class="{void:invoice.status === 0}">
+                <td>
+                    <i :class="status(invoice.status)"></i>
+                </td>
+                <td>{{invoice.number}}</td>
+                <td>{{$t('type.'+invoice.type)}}</td>
+                <td>{{invoice.time | moment('MM-DD HH:mm')}}</td>
+                <td>{{invoice.cashier}}</td>
+                <td v-if="invoice.status === 0">
+                    <span>{{$t('reason.'+invoice.void.note)}}</span>
+                    <span>({{invoice.void.by}})</span>
+                </td>
+                <td v-else></td>
+                <td>$ {{invoice.payment.due | decimal}}</td>
+                <td @click="view(invoice)" class="icon">
+                    <i class="fa fa-file-text-o"></i>
+                </td>
+            </tr>
+        </table>
+        <transition name="fadeUp">
+            <div class="popupMask center dark" @click.self="component = null" v-if="component">
+                <div :is="component" :init="componentData"></div>
             </div>
-        </section>
-        <div class="popupMask center dark" @click.self="component = null" v-if="component">
-            <div :is="component" :init="componentData"></div>
-        </div>
+        </transition>
     </div>
 </template>
 
@@ -24,13 +44,13 @@ import ticket from '../common/ticket'
 export default {
     components: { ticket },
     created() {
-        this.$socket.emit("[INQUIRY] CUSTOMER_HISTORY", { phone: this.customer.phone, page: this.page })
+        this.$socket.emit("[HISTORY] CUSTOMER_ORDERS", { phone: this.customer.phone, page: this.page }, (data) => { this.invoices = data })
     },
     data() {
         return {
             componentData: null,
             component: null,
-            history: [],
+            invoices: [],
             page: 0
         }
     },
@@ -38,9 +58,9 @@ export default {
         status(code) {
             switch (code) {
                 case 0:
-                    return "fa fa-times-circle-o";
+                    return "fa fa-times-circle-o red";
                 case 1:
-                    return "fa fa-check-circle-o"
+                    return "fa fa-check-circle-o green"
                 default:
                     return "fa fa-question-circle-o"
             }
@@ -51,52 +71,58 @@ export default {
     },
     computed: {
         ...mapGetters(['customer'])
-    },
-    sockets: {
-        ENQUIRY_CUSTOMER_HISTORY(data) {
-            this.history = data;
-        }
     }
 }
 </script>
 
 <style scoped>
-.inner {
+.viewer {
     height: 500px;
+    min-width: 800px;
 }
 
-.invoice {
-    padding: 10px;
-    display: flex;
+table {
+    border-collapse: collapse;
+    width: 100%;
 }
 
-.invoice:nth-child(odd) {
-    background: #fff;
-}
-
-.invoice:nth-child(even) {
-    background: #ECEFF1;
-}
-
-.invoice i {
-    width: 25px;
+th {
+    padding: 7px 5px;
     text-align: center;
 }
 
-.ticket {
-    width: 40px;
+tr:not(:first-child) {
+    background: #fff;
 }
 
-.type {
-    min-width: 50px;
+tr:nth-child(odd) {
+    background: #f5f5f5;
+    border-bottom: 1px solid #f1f1f1;
 }
 
-.price {
-    padding: 0 10px;
-    text-align: right;
+td {
+    padding: 10px 5px;
+    text-align: center;
 }
 
-.f1 {
-    padding: 0 15px;
+.icon {
+    cursor: pointer;
+}
+
+th.note {
+    min-width: 200px;
+}
+
+tr.void {
+    background: #FBE9E7;
+    color: #FF5722;
+}
+
+i.green {
+    color: var(--green);
+}
+
+i.red {
+    color: var(--red);
 }
 </style>

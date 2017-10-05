@@ -19,17 +19,17 @@ export default {
         'PICK_UP': '来取',
         'DELIVERY': '送餐',
         'DINE_IN': '堂吃',
+        'BAR': '酒吧',
+        'BUFFET': '自助餐',
         'SALES': '销售',
         'PRE_PAYMENT': '预付款',
         'CREDIT_CARD': '信用卡',
         'RECEIPT': '收据',
-        'BAR': '酒吧',
-        'BUFFET': '自助餐',
         'REPORT': '报表',
         'PAYMENT': '收据',
         'DELAY': '延迟',
         'other': '其它',
-        'all':'所有',
+        'all': '所有',
         'allInvoice': '所有订单',
         'walkInInvoice': '外等订单',
         'pickUpInvoice': '来取订单',
@@ -199,7 +199,7 @@ export default {
         'printAnyway': '依然打印',
         'setSubMenu': '设置子菜单',
         'reset': '重置',
-        'later':'稍后'
+        'later': '稍后'
     },
     title: {
         'markPaymentType': '标记付款方式',
@@ -415,10 +415,10 @@ export default {
         'giftCardRegisteredInfo': '这个礼物卡已经激活过',
         'giftCardReload': '礼物卡充值',
         'confirmEntryValue': '请确认要充值价格 $ {i} 到这张礼物卡上',
-        'entryInvalid':'格式不正确',
-        'entryMustBeNumber':'格式必须为数字',
-        'subMenuRemoveConfirm':'移除子菜单组',
-        'subMenuRemoveConfirmTip':'您确定要移除整个 ({i}) 子菜单组以及其包含的物品吗？'
+        'entryInvalid': '格式不正确',
+        'entryMustBeNumber': '格式必须为数字',
+        'subMenuRemoveConfirm': '移除子菜单组',
+        'subMenuRemoveConfirmTip': '您确定要移除整个 ({i}) 子菜单组以及其包含的物品吗？'
     },
     terminal: {
         'initial': '正在初始化 {i}...',
@@ -481,7 +481,7 @@ export default {
         'history': '消费记录',
         'printBalance': '打印余额',
         'readTrackFailed': '无法读取磁条信息',
-        'activationBonus':'开卡奖励'
+        'activationBonus': '开卡奖励'
     },
     calendar: {
         'mon': '周一',
@@ -528,7 +528,7 @@ export default {
         'itemSales': '物品销售',
         'tips': '小费'
     },
-    stats: {
+    thead: {
         'orderType': '订单种类',
         'paymentType': '付款种类',
         'ticket': '订单号',
@@ -539,7 +539,10 @@ export default {
         'tax': '税',
         'tip': '小费',
         'discount': '折扣',
-        'total': '总数'
+        'total': '总数',
+        'view':'查看',
+        'note':'备注',
+        'status':'状态'
     },
     text: {
         'starter': '起始',
@@ -747,7 +750,7 @@ export default {
         'overCharge': '额外价格',
         'subItemGroup': '子菜单组',
         'records': '{i} 笔',
-        'allDeliveries':'所有送餐'
+        'allDeliveries': '所有送餐'
     },
     nav: {
         'store': '店面',
@@ -895,7 +898,7 @@ export default {
         'userRemovalTip': '永久的删除这个账户',
         'review': '审核',
         'tipsSuggestion': '小费建议',
-        'sortPriority':'按优先值'
+        'sortPriority': '按优先值'
     },
     reservation: {
         'create': '创建预约',
