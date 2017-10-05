@@ -44,10 +44,6 @@
             <i class="fa fa-bar-chart"></i>
             <span class="text">{{$t('button.stats')}}</span>
         </button>
-        <!-- <div class="btn" @click="exit">
-            <i class="fa fa-times"></i>
-            <span class="text">{{$t('button.exit')}}</span>
-        </div> -->
         <div :is="component" :init="componentData"></div>
     </aside>
 </template>
@@ -205,11 +201,16 @@ export default {
             })
         },
         print() {
+            if (this.isEmptyTicket) return;
+
             let order = JSON.parse(JSON.stringify(this.order));
             order.split ? this.askSplitPrint(order) : this.printTicket(order);
         },
-        receipt(){
-            
+        receipt() {
+            if (this.isEmptyTicket) return;
+
+            let order = JSON.parse(JSON.stringify(this.order));
+            order.split ? this.askSplitPrintReceipt(order) : this.printTicket(order, true);
         },
         askSplitPrint(order) {
             this.$dialog({
@@ -217,25 +218,35 @@ export default {
                 buttons: [{ text: 'button.combinePrint', fn: 'reject' }, { text: 'button.splitPrint', fn: 'resolve' }]
             }).then(() => { this.$q(), this.splitPrint(order) }).catch(() => { this.$q(), this.printTicket(order) })
         },
-        printTicket(order) {
-            Printer.setTarget('All').print(order);
-            order.content.forEach(item => {
+        askSplitPrintReceipt(order) {
+            this.$dialog({
+                type: 'question', title: 'dialog.printSplitTicket', msg: 'dialog.printSplitTicketTip',
+                buttons: [{ text: 'button.combinePrint', fn: 'reject' }, { text: 'button.splitPrint', fn: 'resolve' }]
+            }).then(() => { this.$q(), this.splitPrint(order, true) }).catch(() => { this.$q(), this.printTicket(order, true) })
+        },
+        printTicket(order, receipt) {
+            receipt ?
+                Printer.setTarget('Receipt').print(order) :
+                Printer.setTarget('All').print(order);
+            receipt && order.content.forEach(item => {
                 delete item.new;
                 item.print = true;
                 item.pending = false;
             })
             this.updateInvoice(order);
         },
-        splitPrint(order) {
+        splitPrint(order, receipt) {
             let split = [].concat.apply([], order.content.map(item => item.sort)).filter((v, i, s) => s.indexOf(v) === i).length;
             let ticket = JSON.parse(JSON.stringify(order));
             for (let i = 1; i < split + 1; i++) {
                 ticket.content = order.content.filter(item => Array.isArray(item.sort) ? item.sort.includes(i) : item.sort === i);
                 ticket.payment = order.splitPayment[i - 1];
                 ticket.number = `${order.number}-${i}`;
-                Printer.setTarget('All').print(ticket)
+                receipt ?
+                    Printer.setTarget('Receipt').print(ticket) :
+                    Printer.setTarget('All').print(ticket)
             }
-            order.content.forEach(item => {
+            !receipt && order.content.forEach(item => {
                 delete item.new;
                 item.print = true;
                 item.pending = false;
@@ -260,10 +271,6 @@ export default {
         stats() {
             this.$p('statistic')
         },
-        // exit() {
-        //     this.resetMenu();
-        //     this.$router.push({ path: "/main" });
-        // },
         ...mapActions(['setApp', 'setOrder', 'setTicket', 'resetMenu', 'setCustomer', 'removePayment'])
     },
     computed: {

@@ -82,9 +82,6 @@ export default {
         driver() {
             this.$p("driver", { driver: this.order.driver, ticket: this.ticket.number })
         },
-        invalidOrder() {
-
-        },
         exit() {
             this.resetMenu();
             this.$router.push({ path: "/main" });
@@ -95,7 +92,7 @@ export default {
         disable() {
             return this.order.settled || this.today !== this.date || this.order.status === 0
         },
-        ...mapGetters(['op','order', 'ticket'])
+        ...mapGetters(['op','order', 'ticket','isEmptyTicket'])
     }
 }
 </script>
