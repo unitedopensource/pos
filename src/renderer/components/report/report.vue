@@ -442,7 +442,7 @@ export default {
 
             data.forEach(ticket => {
                 let { total, subtotal, due, tax, tip, gratuity, discount } = ticket.payment;
-                let amount = parseFloat(subtotal) + parseFloat(tip) - parseFloat(discount);
+                let amount = parseFloat(subtotal) + parseFloat(tax) - parseFloat(discount);
 
                 if (ticket.status === 1) {
                     switch (ticket.type) {
