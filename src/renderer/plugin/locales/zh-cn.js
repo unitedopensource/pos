@@ -51,7 +51,12 @@ export default {
         'CASH': '现金',
         'CREDIT': '信用卡',
         'DEBIT': '借记卡',
-        'GIFT': '礼物卡'
+        'GIFT': '礼物卡',
+        'Refund': '退款',
+        'Purchase': '交易',
+        'Reload': '冲值',
+        'Activation': '激活',
+        'Deactivation': '注销'
     },
     tag: {
         'goodCustomer': '好客人',
@@ -223,7 +228,8 @@ export default {
         'subMenuItem': '子菜单物品',
         'subMenuConfig': '子菜单设置',
         'selectTask': '选择一个任务',
-        'reload': '充值'
+        'reload': '充值',
+        'purchaseHistory': '历史记录'
     },
     menu: {
         'course': '定时',
@@ -558,10 +564,10 @@ export default {
         'view': '查看',
         'note': '备注',
         'status': '状态',
-        'invoice':'收据',
-        'date':'日期',
-        'balance':'余额',
-        'change':'变动'
+        'invoice': '收据',
+        'date': '日期',
+        'balance': '余额',
+        'change': '变动'
     },
     text: {
         'starter': '起始',
@@ -772,8 +778,8 @@ export default {
         'records': '{i} 笔',
         'allDeliveries': '所有送餐',
         'penalty': '罚金',
-        'issueGiftCard':'发行礼物卡',
-        'issueCoupon':'发行折扣卷'
+        'issueGiftCard': '发行礼物卡',
+        'issueCoupon': '发行折扣卷'
     },
     nav: {
         'store': '店面',

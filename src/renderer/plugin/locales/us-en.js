@@ -52,7 +52,12 @@ export default {
         'CASH': 'Cash',
         'CREDIT': 'Credit Card',
         'DEBIT': 'Debit Card',
-        'GIFT': 'Gift Card'
+        'GIFT': 'Gift Card',
+        'Refund': 'Refund',
+        'Purchase': 'Purchase',
+        'Reload': 'Reload',
+        'Activation': 'Activation',
+        'Deactivation': 'Deactivation'
     },
     tag: {
         'goodCustomer': 'Good',
@@ -245,7 +250,8 @@ export default {
         'subMenuItem': 'SubMenu Item',
         'subMenuConfig': 'SubMenu Config',
         'selectTask': 'Select A Task',
-        'reload': 'Reload'
+        'reload': 'Reload',
+        'purchaseHistory': 'Purchase History'
     },
     menu: {
         'course': 'Course',

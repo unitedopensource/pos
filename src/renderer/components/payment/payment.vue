@@ -530,14 +530,6 @@ export default {
 
             let change = this.payment.change = Math.max(0, (this.paid - this.payment.balance)).toFixed(2);
             let balance = this.payment.balance = Math.max(0, (this.payment.due - this.payment.paid)).toFixed(2);
-
-            this.payment.log.push({
-                type: "GIFT",
-                paid: this.paid,
-                change: 0,
-                balance: balance.toFixed(2)
-            })
-
             let paid = parseFloat(this.paid);
 
             let { _id, number, type } = this.order;
@@ -546,25 +538,33 @@ export default {
                 change: -paid,
                 date: today(),
                 time: +new Date,
-                type: 'Transaction',
+                type: 'Purchase',
                 cashier: this.op.name,
                 number: this.giftCard.number,
                 order: { _id, number: number || this.ticket.number, type, time: +new Date }
             }
 
-            this.$socket.emit("[GIFTCARD] ACTIVITY", log)
-
-            if (this.giftCard.balance > this.paid) {
-                this.poleDisplay("Paid Gift Card", "Thank You");
-                this.payment.settled = true;
-                this.invoicePaid(this.paid, 0, 'GIFT');
-            } else {
-                this.poleDisplay("Paid Gift Card", ["Due:", balance.toFixed(2)]);
-                this.$socket.emit("[GIFTCARD] QUERY", this.giftCard.number, card => {
-                    this.giftCard = card;
-                    this.payRemainBalance();
+            this.$socket.emit("[GIFTCARD] ACTIVITY", log, (_id) => {
+                this.payment.log.push({
+                    type: "GIFT",
+                    paid: this.paid,
+                    change: 0,
+                    balance: balance.toFixed(2),
+                    _id
                 })
-            }
+
+                if (this.giftCard.balance > this.paid) {
+                    this.poleDisplay("Paid Gift Card", "Thank You");
+                    this.payment.settled = true;
+                    this.invoicePaid(this.paid, 0, 'GIFT');
+                } else {
+                    this.poleDisplay("Paid Gift Card", ["Due:", balance.toFixed(2)]);
+                    this.$socket.emit("[GIFTCARD] QUERY", this.giftCard.number, card => {
+                        this.giftCard = card;
+                        this.payRemainBalance();
+                    })
+                }
+            })
         },
         creditAccept(trans) {
             this.payment.paid += parseFloat(trans.amount.approve);

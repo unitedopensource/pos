@@ -31,7 +31,7 @@
                         </td>
                         <td v-else></td>
                         <td>
-                            <i class="fa fa-file-text-o" @click="viewReceipt(record.order._id)" v-show="record.order"></i>
+                            <i class="fa fa-file-text-o" @click="viewReceipt(record.order._id)" v-show="record.order && record.order._id"></i>
                         </td>
                     </tr>
                 </tbody>
@@ -75,6 +75,7 @@ export default {
 
 .inner {
     height: 600px;
+    overflow:auto;
 }
 
 td.positive {
