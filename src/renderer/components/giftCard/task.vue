@@ -43,9 +43,9 @@
                     </label>
                 </div>
             </div>
-            <footer>
-                <div class="btn" @click="confirm">{{$t('button.confirm')}}</div>
-            </footer>
+            <!-- <footer>
+                        <div class="btn" @click="confirm">{{$t('button.confirm')}}</div>
+                    </footer> -->
         </div>
         <div :is="component" :init="componentData"></div>
     </div>
@@ -64,13 +64,18 @@ export default {
         return {
             componentData: null,
             component: null,
-            task: 'activation',
+            task: null,
             card: null,
         }
     },
     filters: {
         card(number) {
             return number ? number.replace(/^\D?(\d{4})\D?\D?(\d{4})\D?(\d{4})\D?(\d{4})/, "$1 $2 $3 $4") : ''
+        }
+    },
+    watch: {
+        task(n) {
+            n && this.confirm()
         }
     },
     methods: {
@@ -85,7 +90,11 @@ export default {
                     let { number, result } = data;
                     this.card = result;
                     this.doTask(result, number)
-                }).catch(() => { this.$q() })
+                }).catch(() => {
+                    this.task = null;
+                    this.$q();
+                    
+                })
         },
         doTask(card, num) {
             card = card || this.card;
@@ -100,7 +109,9 @@ export default {
                             (this.op.permission && this.op.permission.includes('giftCard')) ?
                                 this.activateCard(num) :
                                 this.$denyAccess();
-                        }).catch(() => { this.$q() })
+                        }).catch(() => { 
+                            this.task = null;
+                            this.$q() })
                     } else {
                         this.$dialog({
                             title: 'dialog.giftCardRegistered',
@@ -108,7 +119,7 @@ export default {
                             buttons: [{ text: 'button.confirm', fn: 'resolve' }]
                         }).then(() => {
                             this.card = card;
-                            this.task = 'print';
+                            this.task = null;
                             this.$q()
                         })
                     }
@@ -175,7 +186,7 @@ export default {
                 this.$socket.emit("[GIFTCARD] ACTIVATION", card, (result) => {
                     this.init.reject();
                     this.card = result;
-                    this.task = 'print';
+                    this.task = null;
                     this.recordCashDrawerAction(value, 0);
                     Printer.printGiftCard('Activation', result);
                 })

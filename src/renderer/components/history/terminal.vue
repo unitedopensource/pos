@@ -396,7 +396,7 @@ export default {
             }
             this.station.terminal.report ?
                 Printer.printPreBatchReport({ content, summary }) :
-                Printer.printPreBatchReport({ summary });
+                Printer.printPreBatchReport({ content:[],summary });
             return true;
         },
         checkBatchRecord() {
