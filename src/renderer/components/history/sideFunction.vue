@@ -275,7 +275,9 @@ export default {
             this.$socket.emit("[UPDATE] INVOICE", ticket);
         },
         stats() {
-            this.$p('statistic')
+            this.$parent.prevHistory.length > 0 ?
+                this.$p('statistic', { history: this.$parent.prevHistory }) :
+                this.$p('statistic')
         },
         ...mapActions(['setApp', 'setOrder', 'setTicket', 'resetMenu', 'setCustomer', 'removePayment'])
     },

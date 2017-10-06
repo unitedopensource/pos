@@ -85,9 +85,10 @@ export default {
         ...mapGetters(['history'])
     },
     created() {
+        let temp = this.init.hasOwnProperty('history') ? this.init.history : this.history;
         this.invoices = [];
 
-        this.history.forEach(i => {
+        temp.forEach(i => {
             if (i.hasOwnProperty('splitPayment')) {
                 i.splitPayment.forEach(split => {
                     this.invoices.push({

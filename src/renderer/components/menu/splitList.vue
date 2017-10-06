@@ -27,6 +27,7 @@
                 <checkbox v-model="isApplyCoupon" label="text.coupon"></checkbox>
                 <div v-show="toggle">
                     <checkbox v-model="isChargeDelivery" label="text.deliveryFee"></checkbox>
+                    <checkbox v-model="isApplyGratuity" label="text.gratuity"></checkbox>
                 </div>
             </div>
         </div>
@@ -51,12 +52,13 @@ export default {
     data() {
         return {
             queue: [],
-            done:false,
+            done: false,
             paid: false,
             isTax: true,
             toggle: false,
             isDiscount: true,
             isApplyCoupon: true,
+            isApplyGratuity: true,
             isChargeDelivery: true
         }
     },
@@ -111,7 +113,6 @@ export default {
 
             this.instance.forEach(item => {
                 let amount = item.single * item.qty;
-                //item.choiceSet.forEach(set => { amount += parseFloat(set.price) })
                 if (this.isTax) {
                     let taxClass = this.tax.class[item.taxClass];
                     tax += taxClass.apply[type] ? (taxClass.rate / 100 * amount) : tax;
@@ -127,6 +128,17 @@ export default {
                     discount = toFixed((coupon.discount.replace(/\D+/, "") / 100) * (subtotal), 2);
                 } else {
                     discount = subtotal - (coupon.discount.replace(/\D+/, ''))
+                }
+            }
+            let { enable, when, penalty } = this.store.table.surcharge;
+            if (this.isApplyGratuity && this.order.type === 'DINE_IN' && enable && this.order.guest > when) {
+                let value = parseFloat(penalty.replace(/[^0-9.]/g, ""));
+
+                if (penalty.includes("%")) {
+                    value = value / 100;
+                    gratuity = subtotal * value
+                } else {
+                    gratuity = value
                 }
             }
             total = (subtotal + tax + tip + gratuity + delivery).toFixed(2);

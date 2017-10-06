@@ -1097,7 +1097,7 @@ function createFooter(table, ctrl, device, ticket) {
     let suggestion = '';
 
     if (table.tipSuggestion && ticket.type === 'PRE_PAYMENT') {
-        let percentage = Array.isArray(table.tipPercentages) ? table.tipPercentages.split(",") : [10, 15, 20];
+        let percentage = table.tipPercentages ? table.tipPercentages.split(",") : [10, 15, 20];
         suggestion = [{
             text: 'Good Service',
             percentage: percentage[0],
