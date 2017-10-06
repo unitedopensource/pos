@@ -414,7 +414,7 @@ export default {
         'timeout': '操作超时',
         'timeoutTip': '发生某个未知的错误导致操作超时，请重新尝试',
         'giftCardActivation': '激活礼物卡',
-        'giftCardActivationTip': '您确定要激活这个礼物卡吗？',
+        'giftCardActivationTip': '您确定要激活礼物卡 {i} 吗？',
         'giftCardRegistered': '礼物卡已激活',
         'giftCardRegisteredInfo': '这个礼物卡已经激活过',
         'giftCardReload': '礼物卡充值',
@@ -557,7 +557,11 @@ export default {
         'total': '总数',
         'view': '查看',
         'note': '备注',
-        'status': '状态'
+        'status': '状态',
+        'invoice':'收据',
+        'date':'日期',
+        'balance':'余额',
+        'change':'变动'
     },
     text: {
         'starter': '起始',
@@ -767,7 +771,9 @@ export default {
         'subItemGroup': '子菜单组',
         'records': '{i} 笔',
         'allDeliveries': '所有送餐',
-        'penalty': '罚金'
+        'penalty': '罚金',
+        'issueGiftCard':'发行礼物卡',
+        'issueCoupon':'发行折扣卷'
     },
     nav: {
         'store': '店面',

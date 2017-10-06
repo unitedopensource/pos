@@ -115,8 +115,8 @@ export default {
         'languageTip': 'Switch UI Language',
         'logout': 'Logout',
         'logoutTip': 'Settle & Logout POS',
-        'setting':'Setting',
-        'settingTip':'Software setting'
+        'setting': 'Setting',
+        'settingTip': 'Software setting'
     },
     button: {
         'new': 'New',
@@ -203,8 +203,8 @@ export default {
         'setSubMenu': 'Set SubMenu',
         'reset': 'Reset',
         'later': 'Later',
-        'register':'Register',
-        'unRegister':'Remove'
+        'register': 'Register',
+        'unRegister': 'Remove'
     },
     thead: {
         'orderType': 'Order Type',
@@ -221,7 +221,11 @@ export default {
         'total': 'Total',
         'view': 'View',
         'note': 'Note',
-        'status': 'Status'
+        'status': 'Status',
+        'invoice': 'Invoice',
+        'date': 'Date',
+        'balance': 'Balance',
+        'change': 'Change'
     },
     title: {
         'markPaymentType': 'Mark Payment Type',
@@ -432,7 +436,7 @@ export default {
         'timeout': 'Time Out',
         'timeoutTip': 'An unknown error occured, please retry later',
         'giftCardActivation': 'Gift Card Activation',
-        'giftCardActivationTip': 'Are you sure to activate this gift card?',
+        'giftCardActivationTip': 'Are you sure to activate gift card {i}?',
         'giftCardRegistered': 'Gift Card Activated',
         'giftCardRegisteredInfo': 'This gift card already activated.',
         'giftCardReload': 'Gift Card Reload',
@@ -441,8 +445,8 @@ export default {
         'entryMustBeNumber': 'Entry must be number',
         'subMenuRemoveConfirm': 'Remove SubMenu Group',
         'subMenuRemoveConfirmTip': 'Are you sure to remove entire ({i}) group and items?',
-        'itemUnavailable':'Item Unavailable',
-        'itemUnavailableTip':'{i} currently is not available for ordering'
+        'itemUnavailable': 'Item Unavailable',
+        'itemUnavailableTip': '{i} currently is not available for ordering'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',
@@ -497,7 +501,7 @@ export default {
         'reload': 'Reload',
         'redemption': 'Redemp.',
         'activation': 'Activation',
-        'deactivation':'Deactivation',
+        'deactivation': 'Deactivation',
         'giftCardCredit': 'Gift Card Credit',
         'giftCardDebit': 'Gift Card Debit',
         'bonus': '(Bonus: $ {i})',
@@ -769,7 +773,9 @@ export default {
         'subItemGroup': 'SubMenu Group',
         'records': '{i} Records',
         'allDeliveries': 'All Deliveries',
-        'penalty': 'Penalty'
+        'penalty': 'Penalty',
+        'issueGiftCard': 'Issue Gift Card',
+        'issueCoupon': 'Issue Coupon'
     },
     nav: {
         'store': 'Store',

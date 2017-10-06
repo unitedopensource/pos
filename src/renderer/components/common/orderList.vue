@@ -179,9 +179,7 @@ export default {
             Printer.setTarget('Order').print(order)
             this.spooler.forEach(item => { item.print = true })
             if (remain === 0) {
-                Object.assign(this.order, {
-                    print: true
-                })
+                Object.assign(this.order, { print: true })
             } else {
                 let txt = remain > 0 ? this.$t('dialog.remainPrintItem', remain) : this.$t('dialog.noRemainItem');
                 this.$dialog({

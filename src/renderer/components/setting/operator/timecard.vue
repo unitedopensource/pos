@@ -42,7 +42,7 @@ export default {
         }
     },
     created() {
-        this.approval = this.profile.review ? this.profile.review.includes('timecard') : false;
+        this.approval = this.profile.permission ? this.profile.permission.includes('timecard') : false;
         this.$socket.emit("[TIMECARD] RECORDS", { id: this.profile._id, index: this.page });
     },
     methods: {

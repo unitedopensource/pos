@@ -150,8 +150,8 @@ export default {
                         this.history.filter(invoice => invoice.type === this.filter && view(invoice.server));
                 case "UNSETTLE":
                     return this.prevHistory.length ?
-                        this.prevHistory.filter(invoice => !invoice.settled && view(invoice.server)) :
-                        this.history.filter(invoice => !invoice.settled && view(invoice.server));
+                        this.prevHistory.filter(invoice => invoice.status === 1 && !invoice.settled && view(invoice.server)) :
+                        this.history.filter(invoice => invoice.status === 1 && !invoice.settled && view(invoice.server));
                 case "DRIVER":
                     return this.prevHistory.length ?
                         this.prevHistory.filter(invoice => (this.driver ? invoice.driver === this.driver : invoice.type === 'DELIVERY') && view(invoice.server)) :

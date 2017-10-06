@@ -54,11 +54,12 @@
 <script>
 import loader from './loader'
 import capture from './capture'
+import history from './history'
 import dialoger from '../common/dialoger'
 import { mapGetters } from 'vuex'
 export default {
     props: ['init'],
-    components: { capture, dialoger, loader },
+    components: { capture, dialoger, loader, history },
     data() {
         return {
             componentData: null,
@@ -93,10 +94,12 @@ export default {
                     if (!card) {
                         this.$dialog({
                             title: 'dialog.giftCardActivation',
-                            msg: 'dialog.giftCardActivationTip',
+                            msg: ['dialog.giftCardActivationTip', num.replace(/^\D?(\d{4})\D?\D?(\d{4})\D?(\d{4})\D?(\d{4})/, "$1 $2 $3 $4")],
                             buttons: [{ text: 'button.cancel', fn: 'reject' }, { text: 'button.confirm', fn: 'resolve' }]
                         }).then(() => {
-                            this.activateCard(num);
+                            (this.op.permission && this.op.permission.includes('giftCard')) ?
+                                this.activateCard(num) :
+                                this.$denyAccess();
                         }).catch(() => { this.$q() })
                     } else {
                         this.$dialog({
@@ -127,7 +130,6 @@ export default {
                             cashier: this.op.name,
                             number
                         }
-
                         this.$socket.emit("[GIFTCARD] RELOAD", detail, (card) => {
                             this.card = card;
                             Printer.printGiftCard('Reload', this.card)
@@ -137,6 +139,7 @@ export default {
                     })
                     break;
                 case "view":
+                    this.$p('history', { card: this.card })
                     break;
                 case "redemption":
                     this.withdrawn();
@@ -170,11 +173,11 @@ export default {
                     transaction: 1
                 }
                 this.$socket.emit("[GIFTCARD] ACTIVATION", card, (result) => {
+                    this.init.reject();
                     this.card = result;
                     this.task = 'print';
                     this.recordCashDrawerAction(value, 0);
                     Printer.printGiftCard('Activation', result);
-                    this.init.reject();
                 })
             }).catch(() => { this.$q() })
         },

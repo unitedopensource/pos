@@ -539,6 +539,8 @@ export default {
             })
 
             let paid = parseFloat(this.paid);
+
+            let { _id, number, type } = this.order;
             let log = {
                 balance: this.giftCard.balance - paid,
                 change: -paid,
@@ -547,6 +549,7 @@ export default {
                 type: 'Transaction',
                 cashier: this.op.name,
                 number: this.giftCard.number,
+                order: { _id, number: number || this.ticket.number, type, time: +new Date }
             }
 
             this.$socket.emit("[GIFTCARD] ACTIVITY", log)

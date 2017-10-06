@@ -30,11 +30,9 @@ export default {
             e.preventDefault();
             clearTimeout(this.timeout);
             this.timeout = setTimeout(() => { this.read = "" }, 300);
-            (e.code.includes('Digit') || e.code.includes('Key')) && (this.read += e.code.slice(-1));
-            (e.code === 'Equal') && (this.read += "=");
-            (e.code === 'Slash') && (this.read += "/");
-            (e.code === 'Semicolon') && (this.read += ";");
-            e.code === 'Enter' && this.parser(this.read);
+
+            e.key.length === 1 && (this.read += e.key);
+            e.key === 'Enter' && this.parser(this.read);
         },
         parser(data) {
             if (data.includes("%E") || data.includes(";E?")) {

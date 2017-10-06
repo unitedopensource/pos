@@ -413,13 +413,13 @@ header.dock{
   display: flex;
 }
 
-.dock .customer{
+.dock .info .customer{
   flex:1;
   display: flex;
   justify-content: center;
 }
 
-.dock .customer span{
+.dock .info .customer span{
   padding:0 10px;
   margin:0 5px;
 }

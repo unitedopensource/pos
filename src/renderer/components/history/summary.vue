@@ -3,37 +3,37 @@
     <div class="filter active" @click="setFilter('',$event)">
       <span class="text">{{$t('type.allInvoice')}}</span>
       <span>({{summary.total}})</span>
-      <div class="value">$ {{summary.totalSum}}</div>
+      <div class="value">$ {{summary.totalAmount | decimal}}</div>
     </div>
-    <div class="filter" @click="setFilter('WALK_IN',$event)" v-show="summary.walkin">
+    <div class="filter" @click="setFilter('WALK_IN',$event)" v-show="summary.walkIn">
       <div class="text">{{$t('type.walkInInvoice')}}
-        <span>({{summary.walkin}})</span>
+        <span>({{summary.walkIn}})</span>
       </div>
-      <div class="value">$ {{summary.walkinSum}}</div>
+      <div class="value">$ {{summary.walkInAmount | decimal}}</div>
     </div>
-    <div class="filter" @click="setFilter('PICK_UP',$event)" v-show="summary.pickup">
+    <div class="filter" @click="setFilter('PICK_UP',$event)" v-show="summary.pickUp">
       <div class="text">{{$t('type.pickUpInvoice')}}
-        <span>({{summary.pickup}})</span>
+        <span>({{summary.pickUp}})</span>
       </div>
-      <div class="value">$ {{summary.pickupSum}}</div>
+      <div class="value">$ {{summary.pickUpAmount | decimal}}</div>
     </div>
-    <div class="filter" @click="setFilter('DELIVERY',$event)" v-show="summary.delivery">
+    <div class="filter" @click="setFilter('DELIVERY',$event)" v-show="summary.deliveries">
       <div class="text">{{$t('type.deliveryInvoice')}}
-        <span>({{summary.delivery}})</span>
+        <span>({{summary.deliveries}})</span>
       </div>
-      <div class="value">$ {{summary.deliverySum}}</div>
+      <div class="value">$ {{summary.deliveryAmount | decimal}}</div>
     </div>
-    <div class="filter" @click="setFilter('DINE_IN',$event)" v-show="summary.dinein">
+    <div class="filter" @click="setFilter('DINE_IN',$event)" v-show="summary.dineIn">
       <div class="text">{{$t('type.dineInInvoice')}}
-        <span>({{summary.dinein}})</span>
+        <span>({{summary.dineIn}})</span>
       </div>
-      <div class="value">$ {{summary.dineinSum}}</div>
+      <div class="value">$ {{summary.dineInAmount | decimal}}</div>
     </div>
     <div class="filter" @click="setFilter('UNSETTLE',$event)" v-show="summary.unsettle">
       <div class="text">{{$t('type.unpaidInvoice')}}
         <span>({{summary.unsettle}})</span>
       </div>
-      <div class="value">$ {{summary.unsettleSum}}</div>
+      <div class="value">$ {{summary.unsettleAmount |decimal}}</div>
     </div>
     <div class="filter dropDown" @click="setFilter('DRIVER',$event)" v-show="Object.keys(summary.driver).length !== 0">
       <div class="text">{{$t('type.driverInvoice')}}
@@ -84,134 +84,96 @@ export default {
 
   computed: {
     summary() {
+      let totalAmount = 0, walkIn = 0, walkInAmount = 0, pickUp = 0, pickUpAmount = 0, deliveries = 0, deliveryAmount = 0,
+        dineIn = 0, dineInAmount = 0, buffet = 0, buffetAmount = 0, hibachi = 0, hibachiAmount = 0, bar = 0, barAmount = 0,
+        unsettle = 0, unsettleAmount = 0, voided = 0, voidedAmount = 0, driver = {};
+
       let invoices = this.approval(this.op.view, "invoices") ? this.data : this.data.filter(ticket => ticket.server === this.op.name);
+      let total = invoices.length;
 
-      let total = 0, totalSum = 0, totalTip = 0, totalGratuity = 0,
-        walkin = 0, walkinSum = 0, walkinTip = 0, walkinGratuity = 0,
-        pickup = 0, pickupSum = 0, pickupTip = 0, pickupGratuity = 0,
-        delivery = 0, deliverySum = 0, deliveryTip = 0, deliveryGratuity = 0, deliveryFee = 0,
-        dinein = 0, dineinSum = 0, dineinTip = 0, dineinGratuity = 0,
-        bar = 0, barSum = 0, barTip = 0, barGratuity = 0,
-        hibachi = 0, hibachiSum = 0, hibachiTip = 0, hibachiGratuity = 0,
-        settle = 0, settleSum = 0, unsettle = 0, unsettleSum = 0,
-        voided = 0, voidedSum = 0,
-        cash = 0, credit = 0, gift = 0, discountSum = 0,
-        corrupted = 0,
-        driver = {},
-        length = invoices.length;
+      invoices.forEach(invoice => {
+        let { subtotal, tax, tip, gratuity, delivery, discount, total } = invoice.payment;
+        let amount = parseFloat(subtotal) + parseFloat(tax) - parseFloat(discount);
 
-      for (let i = 0; i < length; i++) {
-        let invoice = invoices[i];
-        let due = isNumber(invoice.payment.due) ? parseFloat(invoice.payment.due) : invoice.payment.total - invoice.payment.discount;
-        if (invoices[i].status === 1) {
-          if (invoice.payment) {
-            total++;
-            totalSum += due;
-            discountSum += parseFloat(invoice.payment.discount);
-          } else {
-            corrupted++;
-            continue;
-          }
+        if (invoice.status === 1) {
+          totalAmount += amount;
 
           switch (invoice.type) {
-            case "WALK_IN":
-              walkin++;
-              walkinSum += due;
-              walkinTip += parseFloat(invoice.payment.tip);
-              walkinGratuity += parseFloat(invoice.payment.gratuity);
+            case 'WALK_IN':
+              walkIn++;
+              walkInAmount += amount;
               break;
-            case "PICK_UP":
-              pickup++;
-              pickupSum += due;
-              pickupTip += parseFloat(invoice.payment.tip);
-              pickupGratuity += parseFloat(invoice.payment.gratuity);
+            case 'PICK_UP':
+              pickUp++;
+              pickUpAmount += amount;
               break;
-            case "DELIVERY":
-              delivery++;
-              deliverySum += due;
-              deliveryTip += parseFloat(invoice.payment.tip);
-              deliveryGratuity += parseFloat(invoice.payment.gratuity);
-              deliveryFee += invoice.deliveryFree ? 0 : parseFloat(invoice.payment.delivery);
+            case 'DELIVERY':
+              deliveries++;
+              deliveryAmount += amount + parseFloat(delivery);
+
               if (invoice.driver) {
                 if (driver.hasOwnProperty(invoice.driver)) {
                   let name = invoice.driver;
                   driver[name].count++;
-                  driver[name].total += due;
-                  driver[name].discount += parseFloat(invoice.payment.discount);
-                  driver[name].tip += parseFloat(invoice.payment.tip);
-                  driver[name].gratuity += parseFloat(invoice.payment.gratuity);
-                  driver[name].charge += (invoice.deliveryFree ? 0 : parseFloat(invoice.payment.delivery) ? parseFloat(invoice.payment.delivery) : 0);
+                  driver[name].total += amount;
+                  driver[name].discount += parseFloat(discount);
+                  driver[name].tip += parseFloat(tip);
+                  driver[name].gratuity += parseFloat(gratuity);
+                  driver[name].charge += invoice.deliveryFree ? 0 : parseFloat(delivery);
                 } else {
                   driver[invoice.driver] = {
                     count: 1,
-                    total: due,
-                    discount: invoice.payment.discount ? parseFloat(invoice.payment.discount) : 0,
-                    tip: invoice.payment.tip ? parseFloat(invoice.payment.tip) : 0,
-                    gratuity: invoice.payment.gratuity ? parseFloat(invoice.payment.gratuity) : 0,
-                    charge: invoice.deliveryFree ? 0 : parseFloat(invoice.payment.delivery) ? parseFloat(invoice.payment.delivery) : 0
+                    total: amount,
+                    discount: parseFloat(discount),
+                    tip: parseFloat(tip),
+                    gratuity: parseFloat(gratuity),
+                    charge: invoice.deliveryFree ? 0 : parseFloat(delivery)
                   }
                 }
               }
               break;
-            case "DINE_IN":
-              dinein++;
-              dineinSum += (invoice.payment.total - invoice.payment.discount);
-              dineinTip += invoice.payment.tip;
-              dineinGratuity += invoice.payment.gratuity;
+            case 'DINE_IN':
+              dineIn++;
+              dineInAmount += amount;
               break;
-            case "BAR":
+            case 'BUFFET':
+              buffet++;
+              buffetAmount += amount;
+              break;
+            case 'HIBACHI':
+              hibachi++;
+              hibachiAmount += amount;
+              break;
+            case 'BAR':
               bar++;
-              barSum += (invoice.payment.total - invoice.payment.discount);
-              barTip += invoice.payment.tip;
-              barGratuity += invoice.payment.gratuity;
+              barAmount += amount;
+              break;
           }
+
+          //unsettled
           if (!invoice.settled) {
             unsettle++;
-            unsettleSum += (invoice.payment.total - invoice.payment.paid);
-          } else {
-            settle++;
-            settleSum += invoice.payment.paid;
-            invoice.payment.hasOwnProperty('paidCash') && (cash += parseFloat(invoice.payment.paidCash));
-            invoice.payment.hasOwnProperty('paidCredit') && (credit += parseFloat(invoice.payment.paidCredit));
-            invoice.payment.hasOwnProperty('paidGift') && (credit += parseFloat(invoice.payment.paidGift));
+            unsettleAmount += amount;
           }
-        } else if (invoices[i].status === 0) {
+
+        } else {
           voided++;
-          voidedSum += invoice.payment.total;
+          voidedAmount += amount
         }
-      }
-      totalSum = totalSum.toFixed(2);
-      totalTip = totalTip.toFixed(2);
-      totalGratuity = totalGratuity.toFixed(2);
-      walkinSum = walkinSum.toFixed(2);
-      walkinTip = walkinTip.toFixed(2);
-      walkinGratuity = walkinGratuity.toFixed(2);
-      pickupSum = pickupSum.toFixed(2);
-      pickupTip = pickupTip.toFixed(2);
-      pickupGratuity = pickupGratuity.toFixed(2);
-      deliverySum = deliverySum.toFixed(2);
-      deliveryTip = deliveryTip.toFixed(2);
-      deliveryFee = deliveryFee.toFixed(2);
-      dineinSum = dineinSum.toFixed(2);
-      dineinTip = dineinTip.toFixed(2);
-      dineinGratuity = dineinGratuity.toFixed(2);
-      unsettleSum = unsettleSum.toFixed(2);
-      voidedSum = voidedSum.toFixed(2);
-      cash = cash.toFixed(2);
-      credit = credit.toFixed(2);
-      gift = gift.toFixed(2);
+      })
 
       return {
-        total, totalSum, totalTip, totalGratuity,
-        walkin, walkinSum, walkinTip, walkinGratuity,
-        pickup, pickupSum, pickupTip, pickupGratuity,
-        delivery, deliverySum, deliveryTip, deliveryGratuity, deliveryFee,
-        dinein, dineinSum, dineinTip, dineinGratuity,
-        unsettle, unsettleSum,
-        voided, voidedSum,
-        cash, credit, gift,
-        driver, corrupted
-      };
+        total, totalAmount,
+        pickUp, pickUpAmount,
+        walkIn, walkInAmount,
+        deliveries, deliveryAmount,
+        dineIn, dineInAmount,
+        buffet, buffetAmount,
+        hibachi, hibachiAmount,
+        bar, barAmount,
+        unsettle, unsettleAmount,
+        driver
+      }
     },
     ...mapGetters(['op'])
   }

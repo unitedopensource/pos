@@ -31,9 +31,11 @@
                     </div>
                 </div>
                 <div class="datalist">
-                    <span class="name">{{$t('setting.review')}}</span>
+                    <span class="name">{{$t('setting.permission')}}</span>
                     <div class="f1">
-                        <checkbox v-model="operator.review" val="timecard" label="text.timecard" :multiple="true"></checkbox>
+                        <checkbox v-model="operator.permission" val="timecard" label="text.timecard" :multiple="true"></checkbox>
+                        <checkbox v-model="operator.permission" val="giftCard" label="text.issueGiftCard" :multiple="true"></checkbox>
+                        <checkbox v-model="operator.permission" val="coupon" label="text.issueCoupon" :multiple="true"></checkbox>
                     </div>
                 </div>
                 <div class="datalist">
@@ -114,8 +116,9 @@ export default {
     },
     created() {
         this.operator = JSON.parse(JSON.stringify(this.profile));
+
         //patch 
-        !this.operator.hasOwnProperty('review') && (this.operator = Object.assign({}, this.operator, { review: [] }));
+        !this.operator.hasOwnProperty('permission') && (this.operator = Object.assign({}, this.operator, { permission: [] }));
     },
     methods: {
         removeUser() {
