@@ -26,6 +26,7 @@ const Pax = function () {
     let command = this.parser("A00_1.38");
     return fetch(command);
   };
+
   this.check = function (d) {
     let data = d.split(String.fromCharCode(28));
     let sn = data[5].replace(/[^a-z0-9]/gi, '');
@@ -40,15 +41,15 @@ const Pax = function () {
   };
   this.charge = function (data, ticket) {
     let { number, date } = data.creditCard;
-    let amount = toFixed(data.amount * 100,0);
-    let tip = toFixed(data.tip * 100,0);
+    let amount = toFixed(data.amount * 100, 0);
+    let tip = toFixed(data.tip * 100, 0);
     if (!number && !date) {
       let command = this.parser(`T00_1.38_01_${amount}|${tip}|__1_____`);
-      return fetch(command)
+      return command
     } else {
       let info = `${number}|${date}|`;
       let command = this.parser(`T00_1.38_01_${amount}_${info}_1_____`);
-      return fetch(command)
+      return command
     }
   };
   this.explainTransaction = function (raw) {
@@ -108,7 +109,7 @@ const Pax = function () {
           device,
           station,
           addition,
-          unique: Math.random().toString(36).substring(3, 8),
+          order: {},
           time: +new Date,
           status: 1
         };
@@ -174,7 +175,7 @@ const Pax = function () {
           code,
           resMsg: data[4],
           date: today(),
-          time, tid, mid, device,station,
+          time, tid, mid, device, station,
           count: {
             credit: count[0],
             debit: count[1],
@@ -269,10 +270,9 @@ const Pax = function () {
   }
   this.abort = function () {
     var xhr = new XMLHttpRequest(),
-      method = "GET",
       url = this.parser(`A14_1.38`);
-    xhr.open(method, url, true);
-    xhr.send();
+    xhr.open('GET', url, true);
+    xhr.send(null);
     xhr.abort();
   }
   this.drawSignature = function (data) {
@@ -337,4 +337,5 @@ const Draw = function (path) {
     }
   }
 };
+
 module.exports = new Pax();

@@ -487,12 +487,13 @@ export default {
                     buttons: [{ text: 'button.cancel', fn: 'reject' }, { text: 'button.setTip', fn: 'resolve' }]
                 }).then(() => {
                     this.payment.tip = this.tip = extra;
-                    this.payment.total = (parseFloat(this.payment.subtotal) + parseFloat(this.payment.tax) + parseFloat(this.payment.tip) + parseFloat(this.payment.gratuity)).toFixed(2);
-                    this.payment.due = (parseFloat(this.payment.total) - parseFloat(this.payment.discount)).toFixed(2)
+                    let { subtotal, tax, tip, gratuity, discount } = this.payment;
+
+                    this.payment.total = (parseFloat(subtotal) + parseFloat(tax) + parseFloat(tip) + parseFloat(gratuity)).toFixed(2);
+                    this.payment.due = (parseFloat(this.payment.total) - parseFloat(discount)).toFixed(2)
                     this.paid = (parseFloat(this.payment.due) - parseFloat(this.payment.paid)).toFixed(2);
                     let amount = (this.paid - extra).toFixed(2);
-                    let tip = extra.toFixed(2);
-                    this.processing({ amount, tip });
+                    this.processing({ amount, tip: extra.toFixed(2) });
                 }).catch(() => {
                     this.processing();
                 })
@@ -567,31 +568,33 @@ export default {
             })
         },
         creditAccept(trans) {
+            Object.assign(trans, { order: this.assignOrder() })
+
             this.payment.paid += parseFloat(trans.amount.approve);
             this.payment.balance = Math.max(0, (this.payment.due - this.payment.paid)).toFixed(2);
-            this.payment.log.push({
-                id: trans.unique,
-                type: "CREDIT",
-                paid: trans.amount.approve,
-                change: "0.00",
-                balance: this.payment.balance,
-                number: trans.account.number
-            });
-            Object.assign(trans, { order: this.assignOrder() });
-            if (this.payment.tip > 0) {
-                trans.amount.approve = (trans.amount.approve - trans.amount.tip).toFixed(2);
-            }
-            this.$socket.emit("[TERM] SAVE_TRANSACTION", trans);
-            Printer.printCreditCard(trans);
-            if (parseFloat(this.payment.balance) === 0) {
-                this.payment.settled = true;
-                this.poleDisplay("PAID by Credit Card", "Thank You");
-                this.invoicePaid(trans.amount.approve, 0, "CREDIT")
-            } else {
-                this.$q();
-                this.getQuickInput(this.payment.balance);
-                this.paid = this.payment.balance;
-            }
+
+            if (this.payment.tip > 0) trans.amount.approve = (trans.amount.approve - trans.amount.tip).toFixed(2);
+
+            this.$socket.emit("[SAVE] TRANSACTION", trans, (_id) => {
+                this.payment.log.push({
+                    _id, type: "CREDIT", change: "0.00",
+                    paid: trans.amount.approve,
+                    balance: this.payment.balance,
+                    number: trans.account.number,
+                    tip: this.payment.tip
+                })
+                
+                Printer.printCreditCard(trans);
+                if (parseFloat(this.payment.balance) === 0) {
+                    this.payment.settled = true;
+                    this.poleDisplay("PAID by Credit Card", "Thank You");
+                    this.invoicePaid(trans.amount.approve, 0, "CREDIT")
+                } else {
+                    this.$q();
+                    this.getQuickInput(this.payment.balance);
+                    this.paid = this.payment.balance;
+                }
+            })
         },
         creditReject(reason) {
             reason ? this.askSettleType(reason) : this.$q();
@@ -783,30 +786,12 @@ export default {
             this.poleDisplay("Gift Card Balance:", ["", this.giftCard.balance.toFixed(2)])
             Printer.printGiftCard("Balance", this.giftCard);
         },
-        // activateGiftCard(number) {
-        //     new Promise((resolve, reject) => {
-        //         let title = "text.initialAmount";
-        //         this.componentData = { title, resolve, reject };
-        //         this.component = "Inputter"
-        //     }).then((initialAmount) => {
-        //         this.recordCashDrawerAction(parseFloat(initialAmount), 0);
-        //         let card = Preset.giftCard(number, this.op.name, initialAmount, 0);
-        //         if (this.customer._id) {
-        //             card = Object.assign(card, { customer: this.customer._id })
-        //         }
-        //         this.giftCard = card;
-        //         this.$socket.emit("[GIFTCARD] CARD_ACTIVATION", card);
-        //         Printer.printGiftCard("activation", card)
-        //         this.$q()
-        //     }).catch(() => { this.$q() })
-        // },
         setQuickInput(value) {
             this.paid = value.toFixed(2);
         },
         invoicePaid(paid, change, type) {
             let order = JSON.parse(JSON.stringify(this.order));
             let customer = Object.assign({}, this.customer);
-            let paidCash = 0, paidCredit = 0, paidGift = 0;
             Object.assign(this.payment, { settled: true, type });
             delete customer.extra;
             this.isNewTicket ?
@@ -830,22 +815,6 @@ export default {
                     settled: true,
                     print: true
                 });
-            order.payment.log.forEach(trans => {
-                switch (trans.type) {
-                    case "CASH":
-                        paidCash += parseFloat(trans.paid);
-                        break;
-                    case "CREDIT":
-                        paidCredit += parseFloat(trans.paid);
-                        break;
-                    case "GIFT":
-                        paidGift += parseFloat(trans.paid);
-                        break;
-                }
-            })
-            if (paidCash) order.payment.paidCash = paidCash.toFixed(2);
-            if (paidCredit) order.payment.paidCredit = paidCredit.toFixed(2);
-            if (paidGift) order.payment.paidGift = paidGift.toFixed(2);
             if (this.payInFull) {
                 this.isNewTicket ?
                     this.$socket.emit("[SAVE] INVOICE", order) : this.$socket.emit("[UPDATE] INVOICE", order);
@@ -956,7 +925,7 @@ export default {
             return true
         },
         combineSplitPayment() {
-            let payment = { tip: 0, gratuity: 0, discount: 0, delivery: 0, subtotal: 0, tax: 0, total: 0, paid: 0, due: 0, log: [], paidCash: 0, paidCredit: 0, paidGift: 0, settled: true, type: 'MULTIPLE' };
+            let payment = { tip: 0, gratuity: 0, discount: 0, delivery: 0, subtotal: 0, tax: 0, total: 0, paid: 0, due: 0, log: [], settled: true, type: 'MULTIPLE' };
             this.order.splitPayment.forEach((split) => {
                 payment.tip += parseFloat(split.tip);
                 payment.gratuity += parseFloat(split.gratuity);
@@ -969,9 +938,6 @@ export default {
                 payment.due += parseFloat(split.due);
                 payment.log.push(...split.log);
                 !split.settled && (payment.settled = false);
-                split.hasOwnProperty('paidCash') && (payment.paidCash += parseFloat(split.paidCash));
-                split.hasOwnProperty('paidCredit') && (payment.paidCredit += parseFloat(split.paidCredit));
-                split.hasOwnProperty('paidGift') && (payment.paidGift += parseFloat(split.paidGift));
             })
             return payment
         },

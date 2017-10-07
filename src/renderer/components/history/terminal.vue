@@ -28,7 +28,7 @@
                             <div class="info">
                                 <span class="num">#{{trans.trace.trans}}</span>
                                 <span class="type">{{trans.transType}}</span>
-                                <span class="order">{{$t('type.'+trans.order.type)}}
+                                <span class="order" v-if="trans.order">{{$t('type.'+trans.order.type)}}
                                     <span class="ticket">(#{{trans.order.number}})</span>
                                 </span>
                             </div>
@@ -52,6 +52,7 @@
             </div>
             <footer>
                 <button class="btn" @click="batch" :disabled="!ready">{{$t('button.batch')}}</button>
+                <button class="btn" @click="verify" :disabled="!ready">{{$t('button.verify')}}</button>
                 <div class="pagination">
                     <div class="page" @click="page = page > 0 ? page - 1 : 0">
                         <i class="fa fa-angle-left"></i>
@@ -106,7 +107,7 @@ export default {
             this.$socket.emit("[TERM] INITIAL", data => {
                 let sn = this.device ? this.device.sn : this.station.terminal.sn;
                 this.transactions = data.filter(trans => trans.device.sn === sn);
-            });
+            })
         },
         prevDate() {
             this.date = this.date.clone().subtract(1, 'days');
@@ -169,7 +170,6 @@ export default {
             }
         },
         print(receipt) {
-            //Printer.init(this.config).setJob('reprint creditCard').print(receipt);
             Printer.printCreditCard(receipt, true);
         },
         voidSale(record) {
@@ -183,7 +183,6 @@ export default {
                     let transaction = this.terminal.explainTransaction(response);
                     record = Object.assign(record, transaction, { status: 0 });
                     this.$socket.emit("[TERM] UPDATE_TRANSACTION", record);
-                    //Printer.init(this.config).setJob('creditCard').print(transaction);
                     Printer.printCreditCard(transaction);
                     let order = this.history.find(ticket => ticket._id === record.order._id);
                     this.removePayment(order)
@@ -252,7 +251,6 @@ export default {
                     record.status = 2;
                     record.amount.tip = value;
                     this.$socket.emit("[TERM] UPDATE_TRANSACTION", record);
-                    this.adjustOrderTip(record, value);
                 })
         },
         adjustTipFailed(code) {
@@ -260,32 +258,14 @@ export default {
                 type: 'error', title: 'dialog.tipAdjustDenied', msg: ['dialog.tipAdjustDeniedTip', code], buttons: [{ text: 'button.confirm', fn: 'resolve' }]
             }).then(() => { this.$q() })
         },
-        adjustOrderTip(record, tip) {
-            let { order, amount } = record;
-            let invoice = this.history.find(ticket => order._id === ticket._id);
-            if (invoice.split) {
-                let unique = record.unique;
-                invoice.splitPayment.forEach(payment => {
-                    payment.log.forEach(log => {
-                        if (log.id === unique) {
-                            payment.tip = parseFloat(tip)
-                        }
-                    })
-                })
-                invoice.payment.tip = 0;
-                invoice.splitPayment.forEach(payment => {
-                    invoice.payment.tip += parseFloat(payment.tip)
-                })
-            } else {
-                invoice.payment.tip = parseFloat(tip);
-            }
-            this.$socket.emit("[UPDATE] INVOICE", invoice);
-        },
         batch() {
             this.preBatch() && this.$dialog({
                 title: 'dialog.batchClose', msg: "dialog.batchCloseTip",
                 buttons: [{ text: "button.cancel", fn: 'reject' }, { text: 'button.batch', fn: 'resolve' }]
             }).then(() => { this.processBatch() }).catch(() => { this.$q() })
+        },
+        verify(){
+            
         },
         processBatch() {
             this.$p("processor", { timeout: 300000 });
@@ -396,7 +376,7 @@ export default {
             }
             this.station.terminal.report ?
                 Printer.printPreBatchReport({ content, summary }) :
-                Printer.printPreBatchReport({ content:[],summary });
+                Printer.printPreBatchReport({ content: [], summary });
             return true;
         },
         checkBatchRecord() {

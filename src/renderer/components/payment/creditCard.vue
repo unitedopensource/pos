@@ -16,11 +16,11 @@ export default {
     data() {
         return {
             msg: '',
-            tip:'',
+            tip: '',
             config: null,
             icon: 'info',
             timeout: null,
-            transacting: false,
+            transacting: null,
             terminal: null,
             device: null,
             url: null
@@ -39,10 +39,10 @@ export default {
             let terminal = this.station.terminal;
             this.msg = this.$t('terminal.initial', terminal.model);
             this.terminal = this.getFile(terminal.model);
-            this.terminal.initial(terminal.address, terminal.port, terminal.sn,this.station.alies).then(r => r.text()).then((device) => {
+            this.terminal.initial(terminal.address, terminal.port, terminal.sn, this.station.alies).then(r => r.text()).then((device) => {
                 this.device = this.terminal.check(device);
                 if (this.device.code !== "000000") {
-                    this.terminalError(this.$t('terminal.initialFailed', (this.device.model || terminal.model), this.device.code),this.device.msg);
+                    this.terminalError(this.$t('terminal.initialFailed', (this.device.model || terminal.model), this.device.code), this.device.msg);
                     return;
                 }
                 clearTimeout(this.timeout);
@@ -53,11 +53,21 @@ export default {
                         this.$t('terminal.ready', this.device.model || terminal.model);
 
                 }, 2000)
-                this.transacting = true;
-                this.terminal.charge(this.init.card).then(r => r.text()).then(data => {
-                    let result = this.terminal.explainTransaction(data);
-                    result.code === "000000" ? this.init.resolve(result) : this.terminalError(this.$t(result.msg));
-                })
+
+
+                let url = this.terminal.charge(this.init.card);
+
+                this.transacting = new XMLHttpRequest();
+                this.transacting.open('GET', url, true);
+                this.transacting.send(null);
+                this.transacting.onload = () => {
+                    if (this.transacting.readyState === this.transacting.DONE) {
+                        if (this.transacting.status === 200) {
+                            let result = this.terminal.explainTransaction(this.transacting.responseText);
+                            result.code === '000000' ? this.init.resolve(result) : this.terminalError(this.$t(result.msg));
+                        }
+                    }
+                }
             });
             this.timeout = setTimeout(() => {
                 this.init.reject({
@@ -66,7 +76,7 @@ export default {
                 })
             }, 10000)
         },
-        terminalError(msg,tip) {
+        terminalError(msg, tip) {
             this.icon = "error";
             this.msg = msg;
             this.tip = tip;
@@ -87,9 +97,11 @@ export default {
         exit() {
             if (this.transacting) {
                 this.msg = this.$t('terminal.aborting');
-                this.terminal.abort();
-                this.transacting = false;
-                setTimeout(() => { this.init.reject(false) }, 800);
+                this.transacting.abort();
+                setTimeout(() => {
+                    this.terminal.abort()
+                    this.init.reject(false)
+                }, 5000);
             } else { this.init.reject(false) }
         }
     },
