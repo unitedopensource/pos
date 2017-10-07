@@ -20,11 +20,11 @@
             </section>
             <footer>
                 <div class="f1">
-                    <button class="btn" @click="printAllInvoices" :disabled="remain>0">{{$t('button.printAll')}}</button>
-                    <div class="btn" @click="splitEvenly">{{$t('button.evenSplit')}}</div>
+                    <div class="btn" @click="init.reject">{{$t('button.cancel')}}</div>
                 </div>
-                <div class="btn" @click="init.reject">{{$t('button.cancel')}}</div>
+                <button class="btn" @click="printAllInvoices" :disabled="remain>0">{{$t('button.printAll')}}</button>
                 <div class="btn" @click="sort(1)">{{$t('button.sort')}}</div>
+                <div class="btn" @click="splitEvenly">{{$t('button.evenSplit')}}</div>
                 <button class="btn" @click="save" :disabled="remain>0">{{$t('button.save')}}</button>
             </footer>
         </div>
