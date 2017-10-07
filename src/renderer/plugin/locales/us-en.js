@@ -230,7 +230,8 @@ export default {
         'invoice': 'Invoice',
         'date': 'Date',
         'balance': 'Balance',
-        'change': 'Change'
+        'change': 'Change',
+        'table':'Table'
     },
     title: {
         'markPaymentType': 'Mark Payment Type',
@@ -251,7 +252,8 @@ export default {
         'subMenuConfig': 'SubMenu Config',
         'selectTask': 'Select A Task',
         'reload': 'Reload',
-        'purchaseHistory': 'Purchase History'
+        'purchaseHistory': 'Purchase History',
+        'orderList':'Order list'
     },
     menu: {
         'course': 'Course',

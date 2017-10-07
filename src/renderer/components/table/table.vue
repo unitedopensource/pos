@@ -12,7 +12,7 @@
                         <i class="fa fa-user-o"></i>
                         <span class="text">{{$t('button.reservation')}}</span>
                     </div>
-                    <div class="btn">
+                    <div class="btn" @click="list">
                         <i class="fa fa-list-alt"></i>
                         <span class="text">{{$t('button.viewList')}}</span>
                     </div>
@@ -43,8 +43,9 @@ import dialoger from '../common/dialoger'
 import unlock from '../common/unlock'
 import setup from './setup'
 import grid from './grid'
+import list from './list'
 export default {
-    components: { grid, setup, unlock, dialoger, orderList },
+    components: { grid, setup, unlock, dialoger, orderList, list },
     data() {
         return {
             componentData: null,
@@ -179,6 +180,9 @@ export default {
             } else {
                 this.$dialog({ title: 'dialog.tableSwitchFailed', msg: 'dialog.tableSwitchFailedTip', buttons: [{ text: 'button.confirm', fn: 'resolve' }] }).then(() => { this.$q() })
             }
+        },
+        list() {
+            this.$p('list')
         },
         switchTableConfirm() {
             this.$dialog({

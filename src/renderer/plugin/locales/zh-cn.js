@@ -229,7 +229,8 @@ export default {
         'subMenuConfig': '子菜单设置',
         'selectTask': '选择一个任务',
         'reload': '充值',
-        'purchaseHistory': '历史记录'
+        'purchaseHistory': '历史记录',
+        'orderList':'订单列表'
     },
     menu: {
         'course': '定时',
@@ -554,7 +555,7 @@ export default {
         'ticket': '订单号',
         'type': '类别',
         'cashier': '收银',
-        'placeTime': '订单时间',
+        'placeTime': '下单时间',
         'subtotal': '小计',
         'tax': '税',
         'tip': '小费',
@@ -567,7 +568,8 @@ export default {
         'invoice': '收据',
         'date': '日期',
         'balance': '余额',
-        'change': '变动'
+        'change': '变动',
+        'table':'座位'
     },
     text: {
         'starter': '起始',
