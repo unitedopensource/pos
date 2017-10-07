@@ -86,9 +86,10 @@ const mutations = {
     });
 
     if (state.item) {
-      let insert = state.order.content.getIndexOf(state.item) + 1;
+      let insert = state.order.content.findIndex(item=>item === state.item) + 1;
       state.order.content.splice(insert, 0, item);
-      let dom = document.querySelectorAll("div.list");
+
+      let dom = document.querySelectorAll('li.item');
       let length = dom.length;
       let index;
       dom.forEach((div, i) => {

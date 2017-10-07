@@ -35,10 +35,12 @@ export default {
         },
         focus(item, e) {
             if (item === this.$store.getters.item && item !== this.$store.getters.order.content.last()) {
+                console.log('yes trigger')
                 let dom = document.querySelector('li.item.active');
                 dom && dom.classList.remove('active');
                 this.resetPointer()
             } else {
+                console.log('no trigger')
                 let dom = document.querySelector('li.item.active');
                 dom && dom.classList.remove('active');
                 dom = document.querySelector('.choiceSet.target');

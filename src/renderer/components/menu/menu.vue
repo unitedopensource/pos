@@ -156,6 +156,7 @@ export default {
             this.poleDisplay(item.usEN.slice(0, 20), ["Price:", (item.price[0]).toFixed(2)]);
             this.setSides(this.fillOption(item.option));
             this.addToOrder(item);
+            
 
             this.config.display.autoTemplate && this.sides[0].template && this.callTemplate(this.sides[0], 0);
         },
