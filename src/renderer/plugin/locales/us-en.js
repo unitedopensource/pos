@@ -442,7 +442,7 @@ export default {
         'unableAdd': 'Unable to Add',
         'maxSubItem': '{i} can only has {i} maximum subitems',
         'timeout': 'Time Out',
-        'timeoutTip': 'An unknown error occured, please retry later',
+        'timeoutTip': 'An unknown error occurred, please retry later',
         'giftCardActivation': 'Gift Card Activation',
         'giftCardActivationTip': 'Are you sure to activate gift card {i}?',
         'giftCardRegistered': 'Gift Card Activated',
