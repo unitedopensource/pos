@@ -52,7 +52,7 @@
             </div>
             <footer>
                 <button class="btn" @click="batch" :disabled="!ready">{{$t('button.batch')}}</button>
-                <button class="btn" @click="verify" :disabled="!ready">{{$t('button.verify')}}</button>
+                <!-- <button class="btn" @click="verify" :disabled="!ready">{{$t('button.verify')}}</button> -->
                 <div class="pagination">
                     <div class="page" @click="page = page > 0 ? page - 1 : 0">
                         <i class="fa fa-angle-left"></i>
@@ -238,7 +238,6 @@ export default {
                             .then((response) => {
                                 this.$q();
                                 let result = this.terminal.explainTransaction(response);
-                                console.log(result)
                                 result.code === '000000' ? this.applyAdjustTip(record, result, value) : this.adjustTipFailed(result.code);
                             })
                     }).catch(() => { this.$q() })
@@ -265,7 +264,9 @@ export default {
             }).then(() => { this.processBatch() }).catch(() => { this.$q() })
         },
         verify(){
-            
+            this.terminal.getLocalReport().then(r=>r.text()).then((data)=>{
+                console.log(data)
+            })
         },
         processBatch() {
             this.$p("processor", { timeout: 300000 });

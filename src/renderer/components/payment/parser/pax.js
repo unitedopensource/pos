@@ -156,6 +156,11 @@ const Pax = function () {
         }
     }
   }
+  this.getLocalReport = function(){
+    let command = this.parser(`R00_1.26_01_`);
+    return fetch(command)
+  }
+
   this.explainBatch = function (raw) {
     let data = raw.split(String.fromCharCode(28));
     let code = data[3];
