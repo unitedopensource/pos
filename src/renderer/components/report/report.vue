@@ -489,7 +489,7 @@ export default {
                         gratuityAmount += parseFloat(gratuity);
 
                         let log = [];
-                        ticket.hasOwnProperty('splitPayment') ?
+                        Array.isArray(ticket.splitPayment) ?
                             ticket.splitPayment.forEach(split => {
                                 log.push(...split.log)
                             }) : log.push(...ticket.payment.log);
