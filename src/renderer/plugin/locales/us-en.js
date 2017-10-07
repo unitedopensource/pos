@@ -781,7 +781,8 @@ export default {
         'allDeliveries': 'All Deliveries',
         'penalty': 'Penalty',
         'issueGiftCard': 'Issue Gift Card',
-        'issueCoupon': 'Issue Coupon'
+        'issueCoupon': 'Issue Coupon',
+        'preview':'Preview'
     },
     nav: {
         'store': 'Store',

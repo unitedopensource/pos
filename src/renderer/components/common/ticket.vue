@@ -1,5 +1,5 @@
 <template>
-    <div class="receipt">
+    <div class="receipt" @click="fn">
         <div v-html="ticket"></div>
     </div>
 </template>
@@ -13,6 +13,11 @@ export default {
     data() {
         return {
             ticket: null
+        }
+    },
+    methods:{
+        fn(){
+            this.init.exit && this.init.resolve()
         }
     }
 }

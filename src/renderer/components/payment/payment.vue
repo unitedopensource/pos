@@ -8,6 +8,10 @@
                         <label v-for="(split,index) in order.splitPayment" :key="index">
                             <input type="radio" name="split" :id="'split_'+index" :value="index" v-model="current" @change="switchInvoice">
                             <label :for="'split_'+index" class="tag">#{{index + 1}}</label>
+                            <div class="preview" @click="preview(index)">
+                                <i class="fa fa-file-text-o"></i>
+                                <span>{{$t('text.preview')}}</span>
+                            </div>
                         </label>
                     </div>
                     <i class="fa fa-times" @click="init.reject(false)"></i>
@@ -174,15 +178,13 @@ import Dialoger from '../common/dialoger'
 import Capture from '../giftCard/capture'
 import Loader from '../giftCard/loader'
 import CreditCard from './creditCard'
-import Splitter from '../menu/split'
-import Preset from '../../preset'
-import Reloader from './Reloader'
+import ticket from '../common/ticket'
 import Discount from './discount'
 import paymentMark from './mark'
 import Tips from './tips'
 export default {
     props: ['init'],
-    components: { Dialoger, Reloader, Discount, CreditCard, Capture, Tips, Splitter, Loader, paymentMark },
+    components: { Dialoger, Discount, CreditCard, Capture, Tips, Loader, paymentMark, ticket },
     data() {
         return {
             releaseComponentLock: true,
@@ -583,7 +585,7 @@ export default {
                     number: trans.account.number,
                     tip: this.payment.tip
                 })
-                
+
                 Printer.printCreditCard(trans);
                 if (parseFloat(this.payment.balance) === 0) {
                     this.payment.settled = true;
@@ -1051,6 +1053,15 @@ export default {
             array.push(preset.slice(index, index + 6));
             this.quickInput = [].concat.apply([], array);
         },
+        preview(index) {
+            let ticket = JSON.parse(JSON.stringify(this.order));
+            ticket.payment = ticket.splitPayment[index];
+
+            let { sort } = ticket.payment;
+            ticket.content = ticket.content.filter(item => Array.isArray(item.sort) ? item.sort.includes(sort) : item.sort === sort)
+
+            this.$p('ticket', { ticket, exit: true })
+        },
         poleDisplay(line1, line2) {
             if (!this.device.poleDisplay) return;
             poleDisplay.write('\f');
@@ -1355,5 +1366,58 @@ span.card {
 
 .delay {
     animation-delay: 0.3s;
+}
+
+.splitter label {
+    position: relative;
+}
+
+.splitter input:checked~.preview {
+    animation: preview 0.5s .2s ease-out forwards;
+}
+
+.preview {
+    visibility: hidden;
+    position: absolute;
+    bottom: 40px;
+    left: -10px;
+    width: 75px;
+    height: 70px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+    z-index: 1;
+    opacity: 0;
+}
+
+.preview:after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+.preview i {
+    font-size: 28px;
+    color: #EEEEEE;
+    padding: 8px 2px;
+}
+
+@keyframes preview {
+    from {
+        opacity: 0;
+        transform: translate3d(0, 10px, 0);
+    }
+    to {
+        opacity: 1;
+        visibility: visible;
+        transform: translate3d(0, 0, 0)
+    }
 }
 </style>

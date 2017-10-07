@@ -779,7 +779,8 @@ export default {
         'allDeliveries': '所有送餐',
         'penalty': '罚金',
         'issueGiftCard': '发行礼物卡',
-        'issueCoupon': '发行折扣卷'
+        'issueCoupon': '发行折扣卷',
+        'preview':'预览'
     },
     nav: {
         'store': '店面',
