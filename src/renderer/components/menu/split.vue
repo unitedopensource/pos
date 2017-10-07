@@ -75,7 +75,7 @@ export default {
                     let single = (parseFloat(item.single) + addition).toFixed(2);
                     let clone = Object.assign({}, item, {
                         qty: 1,
-                        sort,single,
+                        sort, single,
                         total: single,
                         unique: Math.random().toString(36).substr(2, 5)
                     });
@@ -291,7 +291,7 @@ export default {
             }
         },
         unlockSplit() {
-            this.unlock = this.lock = false;
+            this.unlock = this.lock = false
         },
         cancel() {
             this.init.reject()
@@ -308,34 +308,27 @@ export default {
         quit() {
             this.combineInvoiceInfo();
             if (this.$route.name !== 'Menu') {
-                this.$socket.emit("[UPDATE] INVOICE", this.order);
-                this.init.resolve();
-            } else if (this.$route.name === 'Menu' && this.app.mode === 'create') {
+                this.$socket.emit("[UPDATE] INVOICE", this.order)
+                this.init.resolve()
+            }
+
+            if (this.$route.name === 'Menu' && this.app.mode === 'create') {
                 if (this.ticket.type === 'DINE_IN') {
-                    let current = Object.assign({}, this.currentTable.current, {
-                        invoice: [this.order._id],
-                        color: "",
-                        group: "",
-                        guest: this.currentTable.current.guest || 0,
-                        server: this.op.name,
-                        time: +new Date()
-                    });
-                    this.setTableInfo({ current });
-                    this.$socket.emit("[SAVE] DINE_IN_INVOICE", { table: this.currentTable, order: this.order });
-                    this.$socket.emit("INQUIRY_TICKET_NUMBER");
-                    this.$router.push({ name: "Table" });
+                    this.$socket.emit("[TABLE] INVOICE", this.order)
+                    this.$socket.emit("INQUIRY_TICKET_NUMBER")
+                    this.$router.push({ name: "Table" })
                 } else {
-                    this.$socket.emit("[SAVE] INVOICE", this.order);
-                    this.resetAll();
-                    this.$router.push({ path: '/main' });
+                    this.$socket.emit("[SAVE] INVOICE", this.order)
+                    this.resetAll()
+                    this.$router.push({ path: '/main' })
                 }
             } else {
-                this.$socket.emit("[UPDATE] INVOICE", this.order);
+                this.$socket.emit("[UPDATE] INVOICE", this.order)
                 if (this.ticket.type === 'DINE_IN') {
-                    this.$router.push({ name: "Table" });
+                    this.$router.push({ name: "Table" })
                 } else {
-                    this.resetAll();
-                    this.$router.push({ path: '/main' });
+                    this.resetAll()
+                    this.$router.push({ path: '/main' })
                 }
 
             }
