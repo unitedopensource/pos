@@ -1,0 +1,230 @@
+<template>
+    <div class="popupMask dark" @click.self="init.reject">
+        <section class="input">
+            <div class="wrap">
+                <input type="text" v-model="qty" class="qty" ref="qty" @click="focus('qty')">
+                <input type="text" v-model="keywords" class="item" ref="item" @click="focus('item')">
+                <input type="text" v-model="price" class="price" placeholder="0.00" ref="price" @click="focus('price')">
+                <i class="fa fa-sign-in fa-2x" @click="confirm"></i>
+            </div>
+            <ul>
+                <li v-for="(list,index) in lists" :key="index" @click="fill(list)">
+                    <span>{{list[language]}}</span>
+                </li>
+            </ul>
+        </section>
+        <keyboard></keyboard>
+    </div>
+</template>
+
+<script>
+import { mapGetters, mapActions } from 'vuex'
+import keyboard from './keyboard'
+export default {
+    props: ['init'],
+    components: { keyboard },
+    data() {
+        return {
+            qty: 1,
+            price: '0.00',
+            keywords: '',
+            lists: [],
+            item: null,
+            reset: true,
+            anchor: 'item'
+        }
+    },
+    created() {
+        this.$bus.on("input", this.input)
+        this.$bus.on("backspace", this.backspace)
+        this.$bus.on("clear", this.clear)
+    },
+    mounted() {
+        this.$refs.item.focus();
+        document.activeElement.classList.add('active');
+    },
+    methods: {
+        focus(field) {
+            this.anchor = field;
+            let dom = document.querySelector('input.active');
+            dom && dom.classList.remove('active');
+
+            this.reset = true;
+            this.$refs[this.anchor].focus();
+            document.activeElement.classList.add('active');
+        },
+        input(s) {
+            let target = this.$refs[this.anchor];
+            let caret = target.selectionStart;
+            let a = target.value.substr(0, caret);
+            let b = target.value.substr(caret);
+
+            if (this.anchor === 'price') {
+                if (!isNumber(s)) return;
+
+                if (this.reset) {
+                    target.value = '0.0' + s
+                } else {
+                    console.log(target.value)
+                    let value = toFixed(target.value * 100, 0);
+
+                    target.value = toFixed((String(value) + s) / 100, 2).toFixed(2);
+                }
+                caret = target.value.length;
+            } else {
+                target.value = this.reset ? s : a + s + b;
+            }
+
+            this.reset = false;
+            this.anchor === 'item' && target.dispatchEvent(new Event('input'))
+
+            target.setSelectionRange(++caret, caret)
+            target.focus()
+        },
+        fill(item) {
+            this.item = item;
+            this.keywords = item[this.language];
+            this.price = item.price.toFixed(2);
+            this.lists = [];
+        },
+        backspace() {
+            let target = this.$refs[this.anchor];
+            let caret = target.selectionStart;
+
+            switch (this.anchor) {
+                case "qty":
+                    if (target.value > 10) {
+                        target.value = target.value.slice(0, -1)
+                    } else {
+                        target.value = 1;
+                        this.reset = true;
+                    }
+                    break;
+                case "item":
+                    target.value = target.value.substr(0, caret - 1) + target.value.substr(caret)
+                    target.setSelectionRange(--caret, caret)
+                    target.focus()
+                    target.dispatchEvent(new Event('input'))
+                    break;
+                case "price":
+                    break;
+            }
+        },
+        clear() {
+            let target = this.$refs[this.anchor];
+            target.value = '';
+
+            target.setSelectionRange(0, 0)
+            target.focus()
+            target.dispatchEvent(new Event('input'))
+        },
+        confirm() {
+            let single = isNumber(this.price) ? parseFloat(this.price) : 0;
+            Object.assign(this.item, {
+                qty: isNumber(this.qty) ? ~~this.qty : 1,
+                single,
+                price: single.toFixed(2)
+            })
+            this.setChoiceSet(this.item)
+            this.init.resolve()
+        },
+        ...mapActions(['setChoiceSet'])
+    },
+    beforeDestroy() {
+        this.$bus.off("input", this.input)
+        this.$bus.off("backspace", this.backspace)
+        this.$bus.off("clear", this.clear)
+    },
+    computed: {
+        ...mapGetters(['language'])
+    },
+    watch: {
+        keywords(n) {
+            if (n) {
+                this.$socket.emit("[REQUEST] SEARCH", n, data => { this.lists = data })
+            } else {
+                this.lists = []
+            }
+        }
+    }
+}
+</script>
+
+<style scoped>
+input {
+    background: none;
+    border: none;
+    outline: none;
+    font-size: 40px;
+    width: 100%;
+    font-family: 'Yuanti-SC';
+    text-transform: uppercase;
+    color: #444;
+    padding: 0 10px;
+    margin-right: 10px;
+    border-radius: 6px;
+    background: #fff;
+    opacity: 0.4;
+    transition: opacity 0.3s ease;
+}
+
+input.active {
+    opacity: 1;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, .5)
+}
+
+section.input {
+    width: 100%;
+    margin-top: 100px;
+}
+
+input.qty {
+    width: 50px;
+    text-align: center;
+}
+
+input.price {
+    width: 120px;
+    text-align: center;
+}
+
+input.item {
+    width: 450px;
+}
+
+.input .wrap {
+    height: 65px;
+    display: flex;
+    justify-content: center;
+}
+
+ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 25px;
+}
+
+li {
+    background: #fff;
+    margin: 5px;
+    border-radius: 4px;
+    width: 119px;
+    height: 70px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+    text-align: center;
+}
+
+i {
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 30px;
+    border-radius: 6px;
+    color: #555;
+}
+</style>

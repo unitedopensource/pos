@@ -58,7 +58,7 @@
                 <button class="fn fa fa-shopping-basket" @click="openMarker" :disabled="$route.name !== 'Menu'"></button>
                 <button class="fn" @click="separator" :disabled="$route.name !== 'Menu'">-----</button>
                 <button class="fn fa fa-print" @click="directPrint"></button>
-                <button class="fn fa fa-keyboard-o" @click="openKeyboard"></button>
+                <button class="fn fa fa-keyboard-o" @click="openKeyboard" :disabled="$route.name !== 'Menu'"></button>
             </div>
             <div class="settle" @click="openConfig">
                 <div>
@@ -98,10 +98,11 @@
 import { mapGetters, mapActions } from 'vuex'
 import dialoger from '../common/dialoger'
 import itemMarker from '../menu/marker'
+import entry from '../menu/entry'
 import listItem from './listItem'
 import config from './config'
 export default {
-    components: { config, itemMarker, dialoger, listItem },
+    components: { config, itemMarker, dialoger, listItem, entry },
     props: ['layout', 'group', 'display', 'sort'],
     data() {
         return {
@@ -219,7 +220,7 @@ export default {
             let dash = {
                 zhCN: `----------`,
                 usEN: `----------`,
-                qty:1,
+                qty: 1,
                 single: 0,
                 price: '0.00',
                 key: Math.random().toString(36).substr(2, 5)
@@ -227,7 +228,7 @@ export default {
             this.setChoiceSet(dash)
         },
         openKeyboard() {
-
+            this.component === 'entry' ? this.component = null : this.$p('entry');
         },
         update(config) {
             this.setOrder(config);

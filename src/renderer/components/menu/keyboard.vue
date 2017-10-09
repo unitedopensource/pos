@@ -1,7 +1,7 @@
 <template>
     <div class="keyboard">
         <section class="alphabetic">
-            <span id="Q" @click="input('Q')">Q</span>
+            <span id="Q" @click="input('Q',$event)">Q</span>
             <span id="W" @click="input('W')">W</span>
             <span id="E" @click="input('E')">E</span>
             <span id="R" @click="input('R')">R</span>
@@ -34,9 +34,8 @@
             <i class="fa fa-search" @click="search"></i>
             <span @click="input('|')">|</span>
             <span class="space" @click="input(' ')"></span>
-            <i class="fa fa-keyboard-o" @click="this.init.reject"></i>
-            <span @click="cancelOrder">{{$t('dashboard.cancel')}}</span>
-            <span class="double created">{{$t('dashboard.create')}}</span>
+            <i class="fa fa-keyboard-o double"></i>
+            <span class="double created">{{$t('button.done')}}</span>
         </section>
         <section class="numeric">
             <span @click="input('7')">7</span>
@@ -62,18 +61,18 @@ export default {
 
         }
     },
-    methods:{
-        input(string){
-
+    methods: {
+        input(s) {
+            this.$bus.emit("input", s)
         },
-        backspace(){
-
+        backspace() {
+            this.$bus.emit("backspace")
         },
-        clear(){
-
+        clear() {
+            this.$bus.emit("clear")
         },
-        search(){
-
+        search() {
+            
         }
     }
 }

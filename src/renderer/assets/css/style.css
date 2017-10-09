@@ -916,7 +916,7 @@ section.cart {
 .keyboard .alphabetic i,
 .keyboard .numeric span,
 .keyboard .numeric i {
-  margin: 4px;
+  margin: 3px 4px;
   width: 70.7px;
   height: 62px;
   line-height: 25px;
