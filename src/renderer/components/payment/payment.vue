@@ -1390,6 +1390,8 @@ span.card {
     border-radius: 6px;
     z-index: 1;
     opacity: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 .preview:after {
@@ -1401,6 +1403,10 @@ span.card {
     border-width: 5px;
     border-style: solid;
     border-color: #555 transparent transparent transparent;
+}
+
+.preview span {
+    font-size: 16px;
 }
 
 .preview i {

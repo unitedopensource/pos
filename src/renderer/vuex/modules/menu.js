@@ -86,7 +86,7 @@ const mutations = {
     });
 
     if (state.item) {
-      let insert = state.order.content.findIndex(item=>item === state.item) + 1;
+      let insert = state.order.content.findIndex(item => item === state.item) + 1;
       state.order.content.splice(insert, 0, item);
 
       let dom = document.querySelectorAll('li.item');
@@ -213,11 +213,17 @@ const mutations = {
   },
   [types.SET_CHOICE_SET](state, set) {
     if (state.order.content.length === 0) return;
-    state.item.choiceSet.push(set);
-    state.choiceSetTarget = set;
 
     let dom = document.querySelector(".sub.target");
-    dom && dom.classList.remove("target");
+    if (dom) {
+      let key = dom.dataset.key;
+      let index = state.item.choiceSet.findIndex(s => s.key === key) + 1;
+      state.item.choiceSet.splice(index, 0, set)
+      dom.classList.remove("target");
+    } else {
+      state.item.choiceSet.push(set);
+      state.choiceSetTarget = set;
+    }
   },
   [types.ALERT_CHOICE_SET](state, set) {
     let { zhCN, usEN } = set;

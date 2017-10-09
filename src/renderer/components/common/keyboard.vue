@@ -55,105 +55,31 @@
 </template>
 
 <script>
-import {mapGetters,mapActions} from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 export default {
-  methods:{
-    input(char){
-      this.$emit("input",char)
+  methods: {
+    input(char) {
+      this.$emit("input", char)
     },
-    backspace(){
+    backspace() {
       this.$emit("backspace")
     },
-    clearAll(){
+    clearAll() {
       this.$emit("clear")
     },
-    search(){
+    search() {
       this.$emit("search")
     },
-    cancelOrder(){
+    cancelOrder() {
       this.$emit("cancel")
     },
-    createOrder(){
+    createOrder() {
       this.$emit("create")
     },
     ...mapActions(['toggleKeyboard'])
   },
-  computed:{
+  computed: {
     ...mapGetters(['displayKeyboard'])
   }
 }
 </script>
-
-<style scoped>
-  .keyboard {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      background: linear-gradient(#9098a3, #48525f);
-      color: #3A3D42;
-      border-top:1px solid #848b96;
-      display: flex;
-  }
-  section.alphabetic,
-  section.numeric {
-      display:inline-flex;
-      vertical-align:top;
-      flex-wrap:wrap;
-  }
-  .alphabetic span,
-  .alphabetic i,
-  .numeric span,
-  .numeric i{
-      margin: 4px;
-      width: 70.7px;
-      height: 62px;
-      line-height: 25px;
-      font-size: 1.15em;
-      font-weight: bold;
-      text-indent: 8px;
-      background: linear-gradient(#fefefe, #cfd0d3);
-      box-shadow: 0 1px 3px rgba(0,0,0,.7), 0 1px 0 rgba(0,0,0,.3);
-      text-shadow: 0 1px 1px white;
-      border-top:1px solid rgba(255,255,255,.45);
-      border-radius: 4px;
-  }
-  .alphabetic span:active, .numeric span:active {
-    background: linear-gradient(#E2E3E4,#AAADB4);
-}
-.alphabetic i {
-    background: linear-gradient(#939ba6,#687180);
-    color: white;
-    text-shadow: 0 1px 3px rgba(0,0,0,.7), 0 1px 0 rgba(0,0,0,.3);
-    border-top: 1px solid rgba(255,255,255,.45);
-    font-weight: normal;
-}
-.alphabetic i:active, .numeric i:active {
-    color:#3A3D42;
-    box-shadow:0 1px 3px rgba(0,0,0,.7), 0 1px 0 rgba(0,0,0,.3);
-    background: linear-gradient(#f8f8f9,#dddfe1);
-    text-shadow: 0 1px 1px white;
-}
-  section.alphabetic {
-      flex: 10;
-  }
-  section.numeric {
-      flex: 3;
-  }
-  span.space{
-    width: 307px;
-  }
-  span.double{
-    width: 149.4px;
-  }
-  span.created{
-    background: linear-gradient(#4085f4, #1950dc);
-    text-shadow: 0 -2px 0px #203f79;
-    color:#fff;
-  }
-  span.created:active{
-    background: linear-gradient(#2577fb, #053bc5);
-  }
-  .keyboard .next {
-    background: linear-gradient(#c3e4ff, #6b8fb7);
-}
-</style>

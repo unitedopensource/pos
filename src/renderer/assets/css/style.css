@@ -894,6 +894,94 @@ section.cart {
   padding: 3px 0 0 3px;
 }
 
+/* keyboard layout */
+.keyboard {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  background: linear-gradient(#9098a3, #48525f);
+  color: #3A3D42;
+  border-top: 1px solid #848b96;
+  display: flex;
+}
+
+.keyboard .alphabetic,
+.keyboard .numeric {
+  display: inline-flex;
+  vertical-align: top;
+  flex-wrap: wrap;
+}
+
+.keyboard .alphabetic span,
+.keyboard .alphabetic i,
+.keyboard .numeric span,
+.keyboard .numeric i {
+  margin: 4px;
+  width: 70.7px;
+  height: 62px;
+  line-height: 25px;
+  font-size: 1.15em;
+  font-weight: bold;
+  text-indent: 8px;
+  background: linear-gradient(#fefefe, #cfd0d3);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .7), 0 1px 0 rgba(0, 0, 0, .3);
+  text-shadow: 0 1px 1px white;
+  border-top: 1px solid rgba(255, 255, 255, .45);
+  border-radius: 4px;
+}
+
+.keyboard .alphabetic span:active,
+.keyboard .numeric span:active {
+  background: linear-gradient(#E2E3E4, #AAADB4);
+}
+
+.keyboard .alphabetic i {
+  background: linear-gradient(#939ba6, #687180);
+  color: white;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, .7), 0 1px 0 rgba(0, 0, 0, .3);
+  border-top: 1px solid rgba(255, 255, 255, .45);
+  font-weight: normal;
+}
+
+.keyboard .alphabetic i:active,
+.keyboard .numeric i:active {
+  color: #3A3D42;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .7), 0 1px 0 rgba(0, 0, 0, .3);
+  background: linear-gradient(#f8f8f9, #dddfe1);
+  text-shadow: 0 1px 1px white;
+}
+
+.keyboard .alphabetic {
+  flex: 10;
+}
+
+.keyboard .numeric {
+  flex: 3;
+}
+
+.keyboard .alphabetic .space {
+  width: 307px;
+}
+
+.keyboard .double {
+  width: 149.4px!important;
+}
+
+.keyboard .alphabetic .created {
+  background: linear-gradient(#2196F3, #1f47ad);
+  text-shadow: 0 2px 1px #0D47A1;
+  color: #fff;
+}
+
+.keyboard .created:active {
+  background: linear-gradient(#2577fb, #053bc5);
+}
+
+.keyboard .keyboard .next {
+  background: linear-gradient(#c3e4ff, #6b8fb7);
+}
+
+
 /* Pin input */
 .accessor {
   width: 337px;
