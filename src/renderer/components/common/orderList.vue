@@ -228,6 +228,7 @@ export default {
             this.setChoiceSet(dash)
         },
         openKeyboard() {
+            if(this.isEmptyTicket) return;
             this.component === 'entry' ? this.component = null : this.$p('entry');
         },
         update(config) {

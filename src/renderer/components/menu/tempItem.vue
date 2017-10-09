@@ -41,7 +41,7 @@ export default {
     methods: {
         confirm() {
             let item = JSON.parse(JSON.stringify(this.init.item));
-            let single = isNumber(this.single) ? this.single : "0.00";
+            let single = isNumber(this.single) ? this.single : 0;
             let name = this.item.replace(/\b[a-z]/g, t => t.toUpperCase());
             Object.assign(item, {
                 zhCN: `* ${name} *`,

@@ -84,11 +84,9 @@ const mutations = {
       single: parseFloat(item.price[0]),
       total: item.hasOwnProperty('total') ? item.total : item.price[0].toFixed(2)
     });
-
     if (state.item) {
       let insert = state.order.content.findIndex(item => item === state.item) + 1;
       state.order.content.splice(insert, 0, item);
-
       let dom = document.querySelectorAll('li.item');
       let length = dom.length;
       let index;

@@ -29,7 +29,7 @@ export default {
             price: '0.00',
             keywords: '',
             lists: [],
-            item: null,
+            item: {},
             reset: true,
             anchor: 'item'
         }
@@ -46,8 +46,7 @@ export default {
     methods: {
         focus(field) {
             this.anchor = field;
-            let dom = document.querySelector('input.active');
-            dom && dom.classList.remove('active');
+            document.querySelector('input.active').classList.remove('active');
 
             this.reset = true;
             this.$refs[this.anchor].focus();
@@ -65,9 +64,7 @@ export default {
                 if (this.reset) {
                     target.value = '0.0' + s
                 } else {
-                    console.log(target.value)
                     let value = toFixed(target.value * 100, 0);
-
                     target.value = toFixed((String(value) + s) / 100, 2).toFixed(2);
                 }
                 caret = target.value.length;
@@ -76,8 +73,8 @@ export default {
             }
 
             this.reset = false;
-            this.anchor === 'item' && target.dispatchEvent(new Event('input'))
 
+            target.dispatchEvent(new Event('input'))
             target.setSelectionRange(++caret, caret)
             target.focus()
         },
@@ -85,7 +82,12 @@ export default {
             this.item = item;
             this.keywords = item[this.language];
             this.price = item.price.toFixed(2);
-            this.lists = [];
+
+            this.anchor = 'price';
+            this.$refs.price.focus();
+
+            document.querySelector('input.active').classList.remove('active');
+            document.activeElement.classList.add('active');
         },
         backspace() {
             let target = this.$refs[this.anchor];
@@ -103,12 +105,15 @@ export default {
                 case "item":
                     target.value = target.value.substr(0, caret - 1) + target.value.substr(caret)
                     target.setSelectionRange(--caret, caret)
-                    target.focus()
-                    target.dispatchEvent(new Event('input'))
+
                     break;
                 case "price":
+                    target.value = ((target.value * 100).toFixed(0).slice(0, -1) / 100).toFixed(2);
                     break;
             }
+
+            target.focus()
+            target.dispatchEvent(new Event('input'))
         },
         clear() {
             let target = this.$refs[this.anchor];
@@ -164,7 +169,7 @@ input {
     margin-right: 10px;
     border-radius: 6px;
     background: #fff;
-    opacity: 0.4;
+    opacity: 0.7;
     transition: opacity 0.3s ease;
 }
 
