@@ -9,7 +9,7 @@
                             <input type="radio" name="split" :id="'split_'+index" :value="index" v-model="current" @change="switchInvoice">
                             <label :for="'split_'+index" class="tag">#{{index + 1}}</label>
                             <div class="preview" @click="preview(index)">
-                                <i class="fa fa-file-text-o"></i>
+                                <i class="fa fa-wpforms"></i>
                                 <span>{{$t('text.preview')}}</span>
                             </div>
                         </label>

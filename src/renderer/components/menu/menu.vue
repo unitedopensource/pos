@@ -156,7 +156,6 @@ export default {
             this.poleDisplay(item.usEN.slice(0, 20), ["Price:", (item.price[0]).toFixed(2)]);
             this.setSides(this.fillOption(item.option));
             this.addToOrder(item);
-            
 
             this.config.display.autoTemplate && this.sides[0].template && this.callTemplate(this.sides[0], 0);
         },
@@ -234,6 +233,12 @@ export default {
         },
         getSubMenuItem(side) {
             console.time("sub menu")
+            if (this.saveItems) {
+                this.resetItems();
+                return;
+            }
+
+            let groups = side.subMenu;
             //if item change to subitem the item itself will depends on subitem printer config
             Object.assign(this.item, {
                 printer: {},
@@ -242,13 +247,6 @@ export default {
                     overCharge: side.overCharge
                 }
             })
-
-            let groups = side.subMenu;
-            //temporary solution will become locally in next patch
-            if (this.saveItems) {
-                this.resetItems();
-                return;
-            }
 
             //save item first;
             this.saveItems = this.items;

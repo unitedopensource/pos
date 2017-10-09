@@ -54,11 +54,11 @@
             </v-touch>
         </div>
         <div class="middle">
-            <div class="page">
-                <i class="marker fa fa-shopping-basket" @click="openMarker" v-if="layout === 'order'"></i>
-                <i class="marker fa fa-print" @click="directPrint" v-else></i>
-                <i class="flip fa fa-2x fa-angle-up"></i>
-                <i class="flip fa fa-2x fa-angle-down"></i>
+            <div class="fnWrap">
+                <button class="fn fa fa-shopping-basket" @click="openMarker" :disabled="$route.name !== 'Menu'"></button>
+                <button class="fn" @click="separator" :disabled="$route.name !== 'Menu'">-----</button>
+                <button class="fn fa fa-print" @click="directPrint"></button>
+                <button class="fn fa fa-keyboard-o" @click="openKeyboard"></button>
             </div>
             <div class="settle" @click="openConfig">
                 <div>
@@ -214,6 +214,21 @@ export default {
             }
             this.lastDelta = this.offset;
         },
+        separator() {
+            if (!this.item) return;
+            let dash = {
+                zhCN: `----------`,
+                usEN: `----------`,
+                qty:1,
+                single: 0,
+                price: '0.00',
+                key: Math.random().toString(36).substr(2, 5)
+            }
+            this.setChoiceSet(dash)
+        },
+        openKeyboard() {
+
+        },
         update(config) {
             this.setOrder(config);
             this.calculator(this.cart);
@@ -312,7 +327,7 @@ export default {
                 this.setOrder({ payment: this.payment });
             })
         },
-        ...mapActions(['setPointer', 'resetPointer', 'resetChoiceSet', 'setChoiceSetTarget', 'setOrder'])
+        ...mapActions(['setChoiceSet', 'setPointer', 'resetPointer', 'resetChoiceSet', 'setChoiceSetTarget', 'setOrder'])
     },
     computed: {
         scroll() {
@@ -456,32 +471,33 @@ header i {
     margin-top: 1px;
 }
 
-.page {
+.fnWrap {
     width: 127px;
     padding-left: 3px;
 }
 
-.page i {
+.fn {
     background: linear-gradient(#fefefe, #cfd0d3);
     box-shadow: 0 1px 3px rgba(0, 0, 0, .7);
     text-shadow: 0 1px 1px #fff;
+    width: 60px;
+    height: 53px;
+    text-align: center;
+    padding: 16px 0;
+    border-radius: 4px;
+    border: none;
+    font-family: fontAwesome;
+    font-size: 18px;
+    outline: none;
 }
 
-.page i:active {
+.fn:nth-child(n+3) {
+    margin-top: 4px;
+}
+
+.fn:active {
     background: linear-gradient(#E2E3E4, #AAADB4);
     color: #333;
-}
-
-i.marker {
-    width: 108px;
-    text-align: center;
-    padding: 10px 8px;
-    margin-bottom: 3px;
-}
-
-i.flip {
-    padding: 20px;
-    width: 20px;
 }
 
 .settle {
