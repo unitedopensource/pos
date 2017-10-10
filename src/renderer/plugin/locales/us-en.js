@@ -882,6 +882,7 @@ export default {
         'printSecondary': 'Secondary',
         'sortItem': 'Sort Item',
         'printDuplicate': 'Duplicate',
+        'printDifference':'Difference',
         'printStoreInfo': 'Store Info',
         'printOrderType': 'Order Type',
         'printCustomerInfo': 'Cust. Info',

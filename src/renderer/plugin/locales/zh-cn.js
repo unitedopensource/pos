@@ -880,6 +880,7 @@ export default {
         'printSecondary': '第二语言',
         'sortItem': '物品分类',
         'printDuplicate': '重复打印',
+        'printDifference':'打印差异',
         'printStoreInfo': '店面信息',
         'printOrderType': '订单类别',
         'printCustomerInfo': '客人资料',

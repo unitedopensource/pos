@@ -45,7 +45,8 @@
                             <smart-option v-model="profile.control.secondaryFont" label="setting.font" :options="fonts"></smart-option>
                             <smart-range v-model="profile.control.secondaryFontSize" label="setting.fontSize" min="10" max="40" step="1"></smart-range>
                             <checkbox v-model="profile.control.sortItem" label="setting.sortItem"></checkbox>
-                            <checkbox v-model="profile.control.duplicate" label="setting.printDuplicate"></checkbox>
+                            <!-- <checkbox v-model="profile.control.duplicate" label="setting.printDuplicate"></checkbox> -->
+                            <checkbox v-model="profile.control.difference" label="setting.printDifference"></checkbox>
                             <checkbox v-model="profile.control.printStore" label="setting.printStoreInfo" @input="toggleStore"></checkbox>
                             <checkbox v-model="profile.control.printType" label="setting.printOrderType" @input="toggleType"></checkbox>
                             <checkbox v-model="profile.control.printCustomer" label="setting.printCustomerInfo" @input="toggleCustomer"></checkbox>

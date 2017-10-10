@@ -144,13 +144,11 @@ var Printer = function (plugin, config) {
             let footer = createFooter(this.config.store.table, setting.control, printer, raw);
 
             let html = header + list + footer + style;
-            console.log(html)
 
             setting.control.buzzer && this.buzzer(printer);
 
             this.plugin.PRINT_INIT('Ticket Receipt');
             this.plugin.ADD_PRINT_HTM(0, 0, "100%", "100%", html);
-
             this.plugin.SET_PRINTER_INDEX(printer);
             this.plugin.PRINT();
 
@@ -930,8 +928,10 @@ function createList(printer, ctrl, invoice) {
         let setCN = "";
         let setEN = "";
         let diffs = item.diffs || '';
+
         item.choiceSet.forEach(set => {
             if (set.hasOwnProperty('print') && Array.isArray(set.print) && !set.print.includes(printer)) return;
+
             setCN += `<p class="list choiceSet zhCN">
                       <span class="qty">${set.qty === 1 ? " " : set.qty + ' ×'}</span>
                       <span class="set">${set.zhCN}<span>${parseFloat(set.price) !== 0 ? '(' + set.price.toFixed(2) + ')' : ""}</span></span>
@@ -940,7 +940,8 @@ function createList(printer, ctrl, invoice) {
                       <span class="qty">${set.qty === 1 ? " " : set.qty + ' ×'}</span>
                       <span class="set">${set.usEN}<span>${parseFloat(set.price) !== 0 ? '(' + set.price.toFixed(2) + ')' : ""}</span></span>
                     </p>`;
-        });
+        })
+
         let name = (item[printer] && item[printer].hasOwnProperty("zhCN")) ? item[printer].zhCN : printMenuID ? item.menuID + " " + item.zhCN : item.zhCN;
         let zhCN = `<p class="list zhCN ${diffs}">
                     <span class="qty">${qty}</span>
@@ -961,10 +962,21 @@ function createList(printer, ctrl, invoice) {
         return zhCN + usEN;
     }
 
-    let { sortItem, duplicate, printMenuID, sortPriority } = ctrl;
-    let list = duplicate ?
-        invoice.content.filter(item => item.printer[printer]) :
-        invoice.content.filter(item => item.printer[printer] && !item.print);
+    let { sortItem, difference, printMenuID, sortPriority } = ctrl;
+    let content = "", list = [];
+
+    if (invoice.print) {
+        list = difference ?
+            invoice.content.filter(item => item.printer[printer] && !item.print) :
+            invoice.content.filter(item => item.printer[printer] && item.diffs !== 'removed')
+                .map(item => {
+                    delete item.diffs;
+                    return item
+                });
+    } else {
+        list = invoice.content.filter(item => item.printer[printer] && !item.print)
+    }
+
 
     if (list.length === 0) return false;
     if (sortPriority) {
@@ -976,10 +988,10 @@ function createList(printer, ctrl, invoice) {
         })
     }
 
-    let content = "";
     if (sortItem) {
         let sorted = [];
         let categoryMap = [];
+
         for (let i = 0; i < list.length; i++) {
             let category = list[i].category;
             if (!sorted[category]) {
@@ -1046,10 +1058,8 @@ function createStyle(ctrl) {
               div.category{border-bottom:1px dashed #000;margin-top:5px;${sortItem ? '' : 'display:none;'}}
               .list.zhCN{margin-top:5px;}
               .list.usEN{${printPrimary ? 'margin-top:-5px' : 'margin-bottom:8px'}}
-              del{text-decoration: none;position:absolute;}
               .diff{display:none;}
-              .list.removed del {left: 0;right: 0;top: 45%; bottom: 35%; border-top: 1px solid #000;border-bottom: 1px solid #000;}
-              .list.new del{left:0;}
+              .list.removed del {text-decoration: none;position:absolute;left: 0;right: 0;top: 45%; bottom:45%; border-top: 1px solid #000;border-bottom: 1px solid #000;}
               .list.less .diff,.list.more .diff{display:block;float:right;}
               .zhCN .price{${printPrimaryPrice ? 'display:initial' : 'display:none'}}
               .usEN .price{${printSecondaryPrice ? 'display:initial' : 'display:none'}}
