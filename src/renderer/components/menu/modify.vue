@@ -217,7 +217,6 @@ export default {
       for (let i = length; i < 11; i++) {
         array.push({ zhCN: "", usEN: "", disable: true })
       }
-      console.log(array)
       return array;
     },
     ...mapActions(['setSides', 'alterItem', 'addToOrder', 'setPriceForChoiceSet'])

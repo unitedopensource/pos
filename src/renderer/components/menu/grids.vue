@@ -382,11 +382,12 @@ export default {
       this.$router.push({ path: "/main" });
     },
     dineInExit() {
-      this.isEmptyTicket ? this.resetTableExit() : this.$dialog({ title: 'dialog.exitConfirm', msg: 'dialog.exitConfirmTip' }).then(() => { this.resetTableExit() }).catch(() => { this.$q() });
+      this.isEmptyTicket ? this.resetTableExit() : 
+      this.$dialog({ title: 'dialog.exitConfirm', msg: 'dialog.exitConfirmTip' }).then(() => { this.resetTableExit() }).catch(() => { this.$q() });
     },
     resetTableExit() {
       this.app.mode === 'create' && this.$socket.emit("[TABLE] RESET", { _id: this.currentTable._id });
-      this.exit();
+      this.exitOut();
     },
     switchLanguage() {
       let language = this.app.language === "usEN" ? "zhCN" : "usEN";
