@@ -18,6 +18,7 @@ const state = {
     },
     content: []
   },
+  diffs: null,
   item: null,
   sides: [],
   choiceSetTarget: null,
@@ -287,6 +288,9 @@ const mutations = {
         }
       }
     }
+  },
+  [types.SAVE_FOR_DIFFS](state, data) {
+    state.diffs = JSON.parse(JSON.stringify(data))
   }
 }
 

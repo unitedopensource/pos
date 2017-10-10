@@ -54,8 +54,8 @@ export default {
             menuInstance: null,
             componentData: null,
             component: null,
-            itemPage: 0,
             saveItems: null,
+            itemPage: 0,
             items: [],
             sort: 0
         }
@@ -73,13 +73,19 @@ export default {
             this.flatten(this.menuInstance[0].item);
             this.setSides(this.fillOption([]));
             this.$socket.emit('[INQUIRY] TICKET_NUMBER', number => { this.app.mode === 'create' && this.setTicket({ number }) });
-            this.app.mode === 'create' && this.ticket.type === 'DINE_IN' && this.configDineIn();
-            this.app.mode === 'create' && this.setOrder({
-                _id: ObjectId(),
-                server: this.op.name,
-                station: this.station.alies,
-                type: this.ticket.type
-            });
+
+            if (this.app.mode === 'create') {
+                this.ticket.type === 'DINE_IN' && this.configDineIn();
+
+                this.setOrder({
+                    _id: ObjectId(),
+                    server: this.op.name,
+                    station: this.station.alies,
+                    type: this.ticket.type
+                })
+            } else {
+                this.saveForDiffs(this.order.content)
+            }
         },
         flatten(items) {
             console.time("clone");
@@ -297,12 +303,6 @@ export default {
                 case "guest":
                     this.switchGuest()
                     break;
-                case "dineinExit":
-                    this.isEmptyTicket ? this.resetTableExit() : this.$dialog({ title: 'dialog.exitConfirm', msg: 'dialog.exitConfirmTip' }).then(() => { this.resetTableExit() }).catch(() => { this.$q() });
-                    break;
-                case "exit":
-                    this.isEmptyTicket ? this.exit() : this.$dialog({ title: 'dialog.exitConfirm', msg: 'dialog.exitConfirmTip' }).then(() => { this.exit() }).catch(() => { this.$q() })
-                    break;
             }
         },
         fn(name) {
@@ -315,10 +315,6 @@ export default {
             toggleClass(".category .active", "active");
             toggleClass(".category div", "active");
         },
-        resetTableExit() {
-            this.app.mode === 'create' && this.$socket.emit("[TABLE] RESET", { _id: this.currentTable._id });
-            this.exit();
-        },
         switchGuest() {
             let guest = this.order.guest || 1
             new Promise((resolve, reject) => {
@@ -330,12 +326,7 @@ export default {
 
             }).catch(() => { this.$q() })
         },
-        exit() {
-            this.resetAll();
-            this.setApp({ mode: "create" });
-            this.$router.push({ path: "/main" });
-        },
-        ...mapActions(['setApp', 'setOrder', 'setTicket', 'setSides', 'addToOrder', 'resetPointer', 'alertChoiceSet', 'setChoiceSet', 'resetMenu', 'resetAll', 'alterItemOption', 'resetCurrentTable'])
+        ...mapActions(['setApp', 'setOrder', 'setTicket', 'setSides', 'saveForDiffs', 'addToOrder', 'resetPointer', 'alertChoiceSet', 'setChoiceSet', 'resetMenu', 'resetAll', 'alterItemOption', 'resetCurrentTable'])
     },
     computed: {
         page() {

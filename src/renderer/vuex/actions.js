@@ -396,3 +396,8 @@ export const updateReservation = ({
 }, data) => {
   commit(types.UPDATE_RESERVATION, data)
 }
+export const saveForDiffs = ({
+  commit
+}, data) => {
+  commit(types.SAVE_FOR_DIFFS, data)
+}

@@ -127,6 +127,8 @@ export default {
             let single = isNumber(this.price) ? parseFloat(this.price) : 0;
             Object.assign(this.item, {
                 qty: isNumber(this.qty) ? ~~this.qty : 1,
+                zhCN: this.item.zhCN || this.keywords,
+                usEN: this.item.usEN || this.keywords,
                 single,
                 price: single.toFixed(2)
             })

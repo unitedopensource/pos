@@ -39,7 +39,7 @@
         <i class="fa fa-calculator"></i>
         <span class="text">{{$t('button.modify')}}</span>
       </button>
-      <div class="btn" @click="dineinExit">
+      <div class="btn" @click="dineInExit">
         <i class="fa fa-times"></i>
         <span class="text">{{$t('button.exit')}}</span>
       </div>
@@ -163,7 +163,7 @@ export default {
       this.$emit("open", name);
     },
     less() {
-      if(this.isEmptyTicket)return;
+      if (this.isEmptyTicket) return;
       let boolean = !document.querySelector('.item.active') && (!!document.querySelector('div.request') || !!this.item.choiceSet.length);
 
       if (this.app.mode === 'create' || this.item.new) {
@@ -191,16 +191,10 @@ export default {
         let overCharge = this.item.rules.overCharge || 0;
         if (subItemCount >= max && overCharge === 0) {
           this.$dialog({
-            title: 'dialog.unableAdd',
-            msg: ['dialog.maxSubItem', this.item[this.language], max],
-            timeout: {
-              duration: 5000,
-              fn: 'resolve'
-            },
+            title: 'dialog.unableAdd', msg: ['dialog.maxSubItem', this.item[this.language], max],
+            timeout: { duration: 5000, fn: 'resolve' },
             buttons: [{ text: 'button.confirm', fn: 'resolve' }]
-          }).then(() => {
-            this.$q()
-          })
+          }).then(() => { this.$q() })
           return true
         }
       }
@@ -257,12 +251,18 @@ export default {
     save(print) {
       if (this.isEmptyTicket) return;
       let order = this.combineOrderInfo({ print });
-      print && Printer.setTarget('All').print(order);
-      print && order.content.forEach(item => {
-        delete item.new;
-        item.print = true;
-        item.pending = false;
-      });
+
+
+      if (print) {
+
+        Printer.setTarget('All').print(this.app.mode === 'edit' ? this.analyzeDiffs(order) : order)
+        order.content.forEach(item => {
+          delete item.new;
+          item.print = true;
+          item.pending = false;
+        })
+      }
+
       this.app.mode === 'create' ? this.$socket.emit("[SAVE] INVOICE", order) : this.$socket.emit("[UPDATE] INVOICE", order);
       this.resetAll();
       this.$router.push({ path: "/main" });
@@ -284,18 +284,26 @@ export default {
       } else {
         order = this.combineOrderInfo({});
       }
+
       let printOnDone = this.store.printOnDone;
+
       if (print) {
-        printOnDone ? Printer.setTarget('All').print(order) : Printer.setTarget('Order').print(order)
+        printOnDone ?
+          Printer.setTarget('All').print(this.app.mode === 'edit' ? this.analyzeDiffs(order) : order) :
+          Printer.setTarget('Order').print(this.app.mode === 'edit' ? this.analyzeDiffs(order) : order);
+
+        order.content.forEach(item => {
+          delete item.new;
+          item.print = true;
+          item.pending = false;
+        })
       }
-      print && order.content.forEach(item => {
-        delete item.new;
-        item.print = true;
-        item.pending = false;
-      });
+      console.log(order)
+
       this.app.mode === 'create'
         ? this.$socket.emit("[SAVE] INVOICE", order)
         : this.$socket.emit("[UPDATE] INVOICE", order);
+
       this.setOrder(order);
       this.$router.push({ name: "Table" });
     },
@@ -328,11 +336,57 @@ export default {
       }
       return Object.assign({}, order, extra);
     },
-    exit() {
-      this.callComponent("exit");
+    analyzeDiffs(current) {
+      current = JSON.parse(JSON.stringify(current));
+
+      let items = [];
+      let compare = current.content;
+
+      this.diffs.forEach(prev => {
+        let key = prev.unique;
+        let index = compare.findIndex(item => item.unique === key);
+        if (index !== -1) {
+          let now = compare[index];
+
+          //compare quantity
+          if (now.qty < prev.qty) {
+            compare[index].diffs = 'less'
+            compare[index].print = false
+          } else if (now.qty > prev.qty) {
+            compare[index].diffs = 'more'
+            compare[index].print = false
+          } else {
+            compare[index].diffs = 'unchanged'
+          }
+          compare[index].origin = prev.qty
+          items.push(compare[index])
+        } else {
+          prev.diffs = 'removed'
+          prev.print = false;
+          items.push(prev)
+        }
+      })
+
+      items.push(...current.content.filter(item => item.new).map(item => {
+        item.diffs = 'new';
+        return item
+      }))
+      return Object.assign(current, { content: items });
     },
-    dineinExit() {
-      this.callComponent("dineinExit");
+    exit() {
+      this.isEmptyTicket ? this.exitOut() : this.$dialog({ title: 'dialog.exitConfirm', msg: 'dialog.exitConfirmTip' }).then(() => { this.exitOut() }).catch(() => { this.$q() })
+    },
+    exitOut() {
+      this.resetAll();
+      this.setApp({ mode: "create" });
+      this.$router.push({ path: "/main" });
+    },
+    dineInExit() {
+      this.isEmptyTicket ? this.resetTableExit() : this.$dialog({ title: 'dialog.exitConfirm', msg: 'dialog.exitConfirmTip' }).then(() => { this.resetTableExit() }).catch(() => { this.$q() });
+    },
+    resetTableExit() {
+      this.app.mode === 'create' && this.$socket.emit("[TABLE] RESET", { _id: this.currentTable._id });
+      this.exit();
     },
     switchLanguage() {
       let language = this.app.language === "usEN" ? "zhCN" : "usEN";
@@ -344,7 +398,7 @@ export default {
     ...mapActions(['setApp', 'lessQty', 'moreQty', 'resetAll', 'setOrder', 'setTableInfo'])
   },
   computed: {
-    ...mapGetters(['op', 'app', 'item', 'language', 'order', 'ticket', 'store', 'customer', 'station', 'isEmptyTicket', 'currentTable', 'choiceSet'])
+    ...mapGetters(['op', 'app', 'item', 'diffs', 'language', 'order', 'ticket', 'store', 'customer', 'station', 'isEmptyTicket', 'currentTable', 'choiceSet'])
   }
 }
 </script>

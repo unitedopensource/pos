@@ -25,7 +25,7 @@ export default {
     props: ['init'],
     data() {
         return {
-            options: ['Seamless', 'GrubHub', 'Eat 24', 'Uber Eat', 'Delivery.com', 'Simpon', 'UnionPay', 'Visa', 'Master', 'Discover', 'AE', 'CASH'],
+            options: ['Seamless', 'GrubHub', 'Eat 24', 'Uber Eat', 'Postmates', 'Simpon', 'UnionPay', 'Visa', 'Master', 'Discover', 'AE', 'CASH'],
             type: 'CASH'
         }
     },

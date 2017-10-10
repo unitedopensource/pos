@@ -144,6 +144,7 @@ var Printer = function (plugin, config) {
             let footer = createFooter(this.config.store.table, setting.control, printer, raw);
 
             let html = header + list + footer + style;
+            console.log(html)
 
             setting.control.buzzer && this.buzzer(printer);
 
@@ -925,9 +926,10 @@ function createList(printer, ctrl, invoice) {
         let markA = item.mark[0].join(" ");
         let markB = item.mark[1].join(" ");
         let mark = (markA || markB) ? "markItem" : "";
-        let newItem = item.new ? '<span class="new">★</span>' : '';
+        //let newItem = item.new ? '<span class="new">★</span>' : '';
         let setCN = "";
         let setEN = "";
+        let diffs = item.diffs || '';
         item.choiceSet.forEach(set => {
             if (set.hasOwnProperty('print') && Array.isArray(set.print) && !set.print.includes(printer)) return;
             setCN += `<p class="list choiceSet zhCN">
@@ -940,32 +942,31 @@ function createList(printer, ctrl, invoice) {
                     </p>`;
         });
         let name = (item[printer] && item[printer].hasOwnProperty("zhCN")) ? item[printer].zhCN : printMenuID ? item.menuID + " " + item.zhCN : item.zhCN;
-        let zhCN = `<p class="list zhCN">
+        let zhCN = `<p class="list zhCN ${diffs}">
                     <span class="qty">${qty}</span>
-                    ${newItem}
                     <span class="itemWrap ${mark}">
                       <span class="item">${name}<span class="mark">${markA}</span></span>
                       <span class="side">${side}<span class="mark">${markB}</span></span>
                     </span>
-                    <span class="price">${item.total}</span></p>${setCN}`;
+                    <span class="price">${item.total}</span><del></del><span class="diff">(${item.origin}⇒${item.qty})</span></p>${setCN}`;
         side = item.side.usEN ? item.side.usEN : "";
         name = (item[printer] && item[printer].hasOwnProperty("usEN")) ? item[printer].usEN : printMenuID ? item.menuID + " " + item.usEN : item.usEN;
-        let usEN = `<p class="list usEN">
+        let usEN = `<p class="list usEN ${diffs}">
                       <span class="qty">${qty}</span>
-                      ${newItem}
                       <span class="itemWrap">
                         <span class="item">${name}<span class="mark">${markA}</span></span>
                         <span class="side">${side}<span class="mark">${markB}</span></span>
                       </span>
-                      <span class="price">${item.total}</span></p>${setEN}`;
+                      <span class="price">${item.total}</span><del></del><span class="diff">(${item.origin}⇒${item.qty})</span></p>${setEN}`;
         return zhCN + usEN;
     }
+
     let { sortItem, duplicate, printMenuID, sortPriority } = ctrl;
     let list = duplicate ?
         invoice.content.filter(item => item.printer[printer]) :
         invoice.content.filter(item => item.printer[printer] && !item.print);
 
-    if (list.length === 0) return null;
+    if (list.length === 0) return false;
     if (sortPriority) {
         list.sort((p, n) => {
             let prev = p.priority || 0;
@@ -974,6 +975,7 @@ function createList(printer, ctrl, invoice) {
             return prev < next
         })
     }
+
     let content = "";
     if (sortItem) {
         let sorted = [];
@@ -1004,25 +1006,8 @@ function createList(printer, ctrl, invoice) {
     return `<section class="body">${content}</section>`;
 };
 function createStyle(ctrl) {
-    let {
-      printPrimary,
-        primaryFont,
-        primaryFontSize,
-        printSecondary,
-        secondaryFont,
-        secondaryFontSize,
-        sortItem,
-        printStore,
-        printType,
-        printCustomer,
-        printPrimaryPrice,
-        printSecondaryPrice,
-        printPayment,
-        printCoupon,
-        printActionTime,
-        buzzer,
-        enlargeDetail
-      } = ctrl;
+    let { printPrimary, primaryFont, primaryFontSize, printSecondary, secondaryFont, secondaryFontSize, sortItem, printStore, printType,
+        printCustomer, printPrimaryPrice, printSecondaryPrice, printPayment, printCoupon, printActionTime, buzzer, enlargeDetail } = ctrl;
 
     let enlarge = enlargeDetail ? ".customer .enlarge{font-size:1.2em;font-family:'Tensentype RuiHeiJ-W2'}" : "";
     !primaryFontSize.includes('px') && (primaryFontSize += "px");
@@ -1049,7 +1034,7 @@ function createStyle(ctrl) {
               .customer .ext{margin-left:10px;}
               ${enlarge}
               section.body{padding:10px 0px;}
-              p.list{display:flex;}
+              p.list{display:flex;position:relative;}
               span.qty{min-width:25px;text-align:left;}
               span.itemWrap{flex:1;display:flex;align-items:center;}
               span.space{margin-left:10px;}
@@ -1061,6 +1046,11 @@ function createStyle(ctrl) {
               div.category{border-bottom:1px dashed #000;margin-top:5px;${sortItem ? '' : 'display:none;'}}
               .list.zhCN{margin-top:5px;}
               .list.usEN{${printPrimary ? 'margin-top:-5px' : 'margin-bottom:8px'}}
+              del{text-decoration: none;position:absolute;}
+              .diff{display:none;}
+              .list.removed del {left: 0;right: 0;top: 45%; bottom: 35%; border-top: 1px solid #000;border-bottom: 1px solid #000;}
+              .list.new del{left:0;}
+              .list.less .diff,.list.more .diff{display:block;float:right;}
               .zhCN .price{${printPrimaryPrice ? 'display:initial' : 'display:none'}}
               .usEN .price{${printSecondaryPrice ? 'display:initial' : 'display:none'}}
               .list.choiceSet{margin-top: -5px; display: flex; margin-left: 35px;}
