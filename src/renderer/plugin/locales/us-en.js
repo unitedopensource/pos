@@ -454,7 +454,9 @@ export default {
         'subMenuRemoveConfirm': 'Remove SubMenu Group',
         'subMenuRemoveConfirmTip': 'Are you sure to remove entire ({i}) group and items?',
         'itemUnavailable': 'Item Unavailable',
-        'itemUnavailableTip': '{i} currently is not available for ordering'
+        'itemUnavailableTip': '{i} currently is not available for ordering',
+        'addressMismatch':'Address Mismatch',
+        'replaceAddress':'Are you wish to replace address {i} with {i} ?'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',

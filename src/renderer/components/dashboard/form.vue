@@ -9,6 +9,7 @@
             <data-input id="note" label="dashboard.note" v-model="customer.note" @focus="setInput" class="note"></data-input>
         </form>
         <keyboard @input="input" @backspace="delChar" @cancel="cancelOrder" @create="createOrder" @clear="clearInput" @search="search"></keyboard>
+        <div :is="component" :init="componentData"></div>
     </section>
 </template>
 
@@ -16,6 +17,7 @@
 import { mapGetters, mapActions } from 'vuex'
 import dataInput from './dataInput'
 import keyboard from '../common/keyboard'
+import dialoger from '../common/dialoger'
 export default {
     created() {
         this.resetAutoComplete();
@@ -28,6 +30,8 @@ export default {
     },
     data() {
         return {
+            componentData: null,
+            component: null,
             predict: null,
             target: 'phone',
             caret: 0,
@@ -174,7 +178,7 @@ export default {
             })
         },
         calculateDistance(data) {
-            if (!this.store.mapAPI) return;
+            if (!this.store.mapAPI && !this.store.calcDistance) return;
             let api = this.store.mapAPI;
             let { address, city, state, zipCode } = this.store;
             address = this.$options.filters.formatAddress(address).split(' ').join('+');
@@ -202,8 +206,18 @@ export default {
                         let matrix = result.rows[0].elements[0];
                         let distance = matrix.distance.text;
                         let duration = matrix.duration.text;
-
-                        this.setCustomer({ address, city, distance, duration })
+                        if (address.indexOf(this.customer.address) !== -1) {
+                            this.setCustomer({ address, city, distance, duration })
+                        } else {
+                            this.$dialog({
+                                title: 'dialog.addressMismatch', msg: ['dialog.replaceAddress', this.customer.address, address]
+                            }).then(() => {
+                                this.setCustomer({ address, city, distance, duration });
+                                this.$q()
+                            }).catch(() => {
+                                this.$q()
+                            })
+                        }
                     }
                 }
             });
@@ -258,7 +272,7 @@ export default {
         ...mapGetters(['store', 'customer', 'ticket'])
     },
     components: {
-        keyboard, dataInput
+        keyboard, dataInput, dialoger
     },
     filters: {
         formatAddress(address) {

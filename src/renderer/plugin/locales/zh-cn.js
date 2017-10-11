@@ -431,7 +431,9 @@ export default {
         'subMenuRemoveConfirm': '移除子菜单组',
         'subMenuRemoveConfirmTip': '您确定要移除整个 ({i}) 子菜单组以及其包含的物品吗？',
         'itemUnavailable': '物品不可用',
-        'itemUnavailableTip': '{i} 物品暂时无法使用'
+        'itemUnavailableTip': '{i} 物品暂时无法使用',
+        'addressMismatch':'地址不一致',
+        'replaceAddress':'是否要将地址 {i} 替换成 {i} ?'
     },
     terminal: {
         'initial': '正在初始化 {i}...',
