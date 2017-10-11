@@ -18,7 +18,7 @@ ul {
 }
 
 #app {
-  background: url(../image/6.jpg) center center;
+  background: url(../image/20.png) center center;
   background-size: cover;
   width: 1024px;
   height: 768px;
@@ -26,7 +26,7 @@ ul {
 }
 
 #app.admin{
-  background: url(../image/20.png) center center;
+  background: url(../image/17.jpg) center center;
   background-size:cover; 
 }
 

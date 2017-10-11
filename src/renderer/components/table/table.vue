@@ -277,6 +277,8 @@ aside {
     align-items: center;
     justify-content: space-around;
     flex-direction: column;
+    border-radius: 6px;
+    border-top: 1px solid #f3f3f3;
     background: linear-gradient(135deg, rgb(245, 247, 250) 0%, rgb(195, 207, 226) 110%);
     margin: 4px;
     text-shadow: 0 1px 1px #fff;
