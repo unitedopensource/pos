@@ -968,7 +968,7 @@ function createList(printer, ctrl, invoice) {
     if (invoice.print) {
         list = difference ?
             invoice.content.filter(item => item.printer[printer] && !item.print) :
-            invoice.content.filter(item => item.printer[printer] && item.diffs !== 'removed' && item.diffs !== 'unchanged')
+            invoice.content.filter(item => item.printer[printer] && item.diffs !== 'removed')
                 .map(item => {
                     delete item.diffs;
                     return item
