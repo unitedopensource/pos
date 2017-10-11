@@ -491,7 +491,7 @@ export default {
                     this.payment.tip = this.tip = extra;
                     let { subtotal, tax, tip, gratuity, discount } = this.payment;
 
-                    this.payment.total = (parseFloat(subtotal) + parseFloat(tax) + parseFloat(tip) + parseFloat(gratuity)).toFixed(2);
+                    this.payment.total = (parseFloat(subtotal) + parseFloat(tax)).toFixed(2);
                     this.payment.due = (parseFloat(this.payment.total) - parseFloat(discount)).toFixed(2)
                     this.paid = (parseFloat(this.payment.due) - parseFloat(this.payment.paid)).toFixed(2);
                     let amount = (this.paid - extra).toFixed(2);
@@ -602,23 +602,10 @@ export default {
             reason ? this.askSettleType(reason) : this.$q();
         },
         askSettleType(content) {
-            console.log(this.paid - this.payment.balance)
-            if (this.paid > this.payment.balance) {
-                let extra = (this.paid - this.payment.balance).toFixed(2);
-                this.$dialog({
-                    title: 'dialog.paidAmountGreaterThanDue', msg: ['dialog.extraAmountSetAsTip', extra],
-                    buttons: [{ text: 'button.cancel', fn: 'reject' }, { text: 'button.setTip', fn: 'resolve' }]
-                }).then(() => {
-                    this.paid = this.payment.balance;
-                    this.markPayment(content, extra)
-                }).catch(() => {
-                    this.markPayment(content, 0)
-                })
-            }
-        },
-        markPayment(content, tip) {
             this.$q()
             this.$dialog(content).then(() => {
+                this.paid = this.payment.balance;
+
                 new Promise((resolve, reject) => {
                     this.componentData = { resolve, reject, callback: true };
                     this.component = 'paymentMark'
@@ -632,9 +619,10 @@ export default {
                         paid: this.paid,
                         change: "0.00",
                         balance: "0.00",
-                        tip,
+                        tip: this.payment.tip,
                         number: 'N/A'
                     })
+                    console.log(this.payment)
                     this.invoicePaid(this.payment.due, 0, type)
                 }).catch(() => { this.$q() })
             }).catch(() => { this.$q() })

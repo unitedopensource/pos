@@ -27,20 +27,23 @@ export default {
     }
   },
   created() {
-    this.title = typeof this.init.title === 'string' ? this.$t(this.init.title) : this.$t(...this.init.title);
-    this.msg = typeof this.init.msg === 'string' ? this.$t(this.init.msg) : this.$t(...this.init.msg);
-    if (this.init.timeout) {
-      this.timeout = setTimeout(() => {
-        typeof this.init.timeout.fn === 'function' ? this.init.timeout.fn() : eval(this.init.timeout.fn);
-      }, this.init.timeout.duration);
-      this.loader = 'loader';
-      this.step = 90 / (this.init.timeout.duration / 1000);
-      this.bar = {
-        transform: `translate3d(-100%,0,0)`
-      }
-    }
+    this.initial()
   },
   methods: {
+    initial() {
+      this.title = typeof this.init.title === 'string' ? this.$t(this.init.title) : this.$t(...this.init.title);
+      this.msg = typeof this.init.msg === 'string' ? this.$t(this.init.msg) : this.$t(...this.init.msg);
+      if (this.init.timeout) {
+        this.timeout = setTimeout(() => {
+          typeof this.init.timeout.fn === 'function' ? this.init.timeout.fn() : eval(this.init.timeout.fn);
+        }, this.init.timeout.duration);
+        this.loader = 'loader';
+        this.step = 90 / (this.init.timeout.duration / 1000);
+        this.bar = {
+          transform: `translate3d(-100%,0,0)`
+        }
+      }
+    },
     trigger(button) {
       clearTimeout(this.timeout);
       typeof button.fn === "function" ? button.fn() : eval(button.fn);
@@ -54,6 +57,9 @@ export default {
     ...mapGetters(['time'])
   },
   watch: {
+    'init.title'(n) {
+      this.initial()
+    },
     time(n) {
       if (this.init.timeout && this.pct > 0) {
         this.pct = this.pct - this.step;
@@ -121,11 +127,12 @@ export default {
 .warning .progress {
   background: #F44336
 }
+
 .warning .progress:after {
   box-shadow: 0 0px 10px #F44336, 0 0 7px #E64A19;
 }
 
-.warning.loader:after{
+.warning.loader:after {
   border-top-color: #F44336;
   border-left-color: #F44336;
 }
