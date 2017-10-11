@@ -289,37 +289,47 @@ export default {
                 if (!payment.settled) return;
                 if (type === 'MULTIPLE') {
                     invoice.splitPayment.forEach(split => {
-                        let amount = parseFloat(split.subtotal) + parseFloat(split.tax) - parseFloat(split.discount);
-                        if (settle.hasOwnProperty(split.type)) {
-                            settle[split.type]["amount"] += amount;
-                            settle[split.type]["tip"] += parseFloat(split.tip);
-                            settle[split.type]["count"]++
+                        //let amount = parseFloat(split.subtotal) + parseFloat(split.tax) - parseFloat(split.discount);
+                        split.log.forEach(log => {
+                            let paid = parseFloat(log.paid) - parseFloat(log.change)
+                            let tip = parseFloat(log.tip || 0)
+                            let type = log.type;
+
+                            if (settle.hasOwnProperty(type)) {
+                                settle[split.type]["amount"] += paid;
+                                settle[split.type]["tip"] += tip;
+                                settle[split.type]["count"]++
+                            } else {
+                                settle[split.type] = {
+                                    text: split.type,
+                                    tip: tip,
+                                    amount: paid,
+                                    count: 1
+                                }
+                            }
+                        })
+                    })
+                } else {
+                    //let amount = parseFloat(payment.subtotal) + parseFloat(payment.tax) - parseFloat(payment.discount);
+                    payment.log.forEach(log => {
+                        let paid = parseFloat(log.paid) - parseFloat(log.change)
+                        let tip = parseFloat(log.tip || 0)
+                        let type = log.type;
+
+                        if (settle.hasOwnProperty(type)) {
+                            settle[type]["amount"] += paid;
+                            settle[type]["tip"] += tip
+                            settle[type]["count"]++;
                         } else {
-                            settle[split.type] = {
-                                text: split.type,
-                                tip: parseFloat(split.tip),
-                                amount: amount,
+                            settle[type] = {
+                                text: type,
+                                tip: tip,
+                                amount: paid,
                                 count: 1
                             }
                         }
                     })
-                } else {
-                    let amount = parseFloat(payment.subtotal) + parseFloat(payment.tax) - parseFloat(payment.discount);
-
-                    if (settle.hasOwnProperty(type)) {
-                        settle[type]["amount"] += amount;
-                        settle[type]["tip"] += parseFloat(payment.tip)
-                        settle[type]["count"]++;
-                    } else {
-                        settle[type] = {
-                            text: type,
-                            tip: parseFloat(payment.tip),
-                            amount: amount,
-                            count: 1
-                        }
-                    }
                 }
-
             });
 
             Object.keys(settle).forEach(type => {

@@ -482,8 +482,8 @@ export default {
         },
         chargeCredit() {
             if (parseFloat(this.paid) === 0) return;
-            if (this.paid > this.payment.due) {
-                let extra = (this.paid - this.payment.due).toFixed(2);
+            if (this.paid > this.payment.balance) {
+                let extra = (this.paid - this.payment.balance).toFixed(2);
                 this.$dialog({
                     title: 'dialog.paidAmountGreaterThanDue', msg: ['dialog.extraAmountSetAsTip', extra],
                     buttons: [{ text: 'button.cancel', fn: 'reject' }, { text: 'button.setTip', fn: 'resolve' }]
@@ -602,12 +602,29 @@ export default {
             reason ? this.askSettleType(reason) : this.$q();
         },
         askSettleType(content) {
+            console.log(this.paid - this.payment.balance)
+            if (this.paid > this.payment.balance) {
+                let extra = (this.paid - this.payment.balance).toFixed(2);
+                this.$dialog({
+                    title: 'dialog.paidAmountGreaterThanDue', msg: ['dialog.extraAmountSetAsTip', extra],
+                    buttons: [{ text: 'button.cancel', fn: 'reject' }, { text: 'button.setTip', fn: 'resolve' }]
+                }).then(() => {
+                    this.paid = this.payment.balance;
+                    this.markPayment(content, extra)
+                }).catch(() => {
+                    this.markPayment(content, 0)
+                })
+            }
+        },
+        markPayment(content, tip) {
+            this.$q()
             this.$dialog(content).then(() => {
                 new Promise((resolve, reject) => {
                     this.componentData = { resolve, reject, callback: true };
                     this.component = 'paymentMark'
                 }).then(type => {
                     this.$q()
+                    this.payment.paid += parseFloat(this.paid);
                     this.payment.balance = "0.00";
                     this.payment.log.push({
                         id: "",
@@ -615,6 +632,7 @@ export default {
                         paid: this.paid,
                         change: "0.00",
                         balance: "0.00",
+                        tip,
                         number: 'N/A'
                     })
                     this.invoicePaid(this.payment.due, 0, type)
