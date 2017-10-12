@@ -63,21 +63,21 @@
 <script>
 export default {
   props: ['init'],
-  mounted() {
-    this.currentUnit = this.discount = this.init.payment.discount > 0 ? '$ ' + this.init.payment.discount : '0 %';
-  },
+
   data() {
     return {
-      coupons: [
-        { for: 'Grand Opening', discount: '20%', match: [], rules: [] },
-        { for: '15% Store Discount', discount: '15%', match: [], rules: [] },
-        { for: '10% Store Discount', discount: '10%', match: [], rules: [] },
-        { for: '5% Store Discount', discount: '5%', match: [], rules: [] }],
+      coupons: [],
       redeem: null,
       currentUnit: "%",
       formula: null,
       discount: null,
     }
+  },
+  created() {
+    this.$socket.emit("[COUPON] LIST", (coupons) => { this.coupons = coupons })
+  },
+  mounted() {
+    this.currentUnit = this.discount = this.init.payment.discount > 0 ? '$ ' + this.init.payment.discount : '0 %';
   },
   filters: {
     discount(value, coupon) {
@@ -105,7 +105,7 @@ export default {
     getFormula(value) {
       let total = this.init.payment.subtotal.toFixed(2);
       if (value.includes('%')) {
-        let result = toFixed(total * (parseFloat(value.replace(/D+/, "")) / 100),2);
+        let result = toFixed(total * (parseFloat(value.replace(/D+/, "")) / 100), 2);
         this.formula = `${total} * ${value} = ${result}`;
       }
     },
@@ -314,15 +314,15 @@ input:checked+label:after {
   color: #E0F2F1;
   text-shadow: 0 1px 1px #333;
   z-index: 2;
-  animation:cut 0.3s linear;
+  animation: cut 0.3s linear;
 }
 
-@keyframes cut{
-  from{
+@keyframes cut {
+  from {
     opacity: 0;
     transform: translateX(-10px)
   }
-  to{
+  to {
     opacity: 1;
     transform: translateX(0)
   }
