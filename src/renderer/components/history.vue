@@ -100,14 +100,14 @@ export default {
         },
         resetViewOrder() {
             this.$nextTick(() => {
-                let dom = document.querySelector(".invoice.active");
-                dom && dom.classList.remove("active");
                 this.orders.length && this.getInvoice(this.orders[0]);
-                dom = document.querySelector(".invoice");
+                let dom = document.querySelector(".invoice");
                 dom && dom.classList.add("active");
             })
         },
         setPage(number) {
+            let dom = document.querySelector(".invoice.active");
+            dom && dom.classList.remove("active");
             this.page = number
             this.resetViewOrder()
         },
@@ -122,12 +122,14 @@ export default {
             this.$nextTick(() => {
                 let dom = document.querySelector(".invoice.active");
                 dom && dom.classList.remove("active");
-                let i = 0;
                 dom = document.querySelectorAll(".invoice");
-                for (; i < dom.length; i++) {
-                    if (dom[i].dataset.number == number) break;
+                
+                for (let i = 0; i < dom.length; i++) {
+                    if(~~dom[i].dataset.number === number){
+                        dom[i] && dom[i].classList.add("active")
+                        break;
+                    }
                 }
-                dom[i].classList.add("active");
             })
         },
         getConsole() {
