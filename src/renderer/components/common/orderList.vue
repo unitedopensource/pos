@@ -113,7 +113,7 @@ export default {
                 discount: 0,
                 due: 0,      // total - discount
                 balance: 0,  // due + surcharge
-                paid: 0,    
+                paid: 0,
                 remain: 0,   // balance - paid
                 change: 0,   // depreciate
                 tip: 0,
@@ -248,20 +248,38 @@ export default {
         },
         calculator(items) {
             if (items.length === 0) {
-                this.payment = {
+                Object.assign(this.payment, {
                     subtotal: 0,
                     tax: 0,
-                    total: 0,
-                    due: 0,
-                    balance: 0,
-                    paid: 0,
-                    change: 0,
-                    gratuity: 0,
-                    tip: 0,
+                    total: 0,    // subtotal + tax
                     discount: 0,
+                    due: 0,      // total - discount
+                    balance: 0,  // due + surcharge
+                    paid: 0,
+                    remain: 0,   // balance - paid
+                    change: 0,   // depreciate
+                    tip: 0,
+                    gratuity: 0,
                     delivery: 0,
+                    surcharge: 0, // tip + gratuity + delivery
                     log: []
-                };
+                })
+                // this.payment = {
+                //     subtotal: 0,
+                //     tax: 0,
+                //     total: 0,    // subtotal + tax
+                //     discount: 0,
+                //     due: 0,      // total - discount
+                //     balance: 0,  // due + surcharge
+                //     paid: 0,
+                //     remain: 0,   // balance - paid
+                //     change: 0,   // depreciate
+                //     tip: 0,
+                //     gratuity: 0,
+                //     delivery: 0,
+                //     surcharge: 0, // tip + gratuity + delivery
+                //     log: []
+                // };
                 return;
             }
             this.$nextTick(() => {
@@ -269,10 +287,9 @@ export default {
                 let total = 0;
                 let subtotal = 0;
                 let tax = 0;
-                let delivery = 0;
                 let due = 0;
                 let balance = 0;
-                let { tip, gratuity, discount } = this.payment;
+                let { tip, gratuity, delivery, discount } = this.payment;
                 let coupon = this.order.coupon;
                 items.forEach(item => {
                     if (item.void) return;
