@@ -58,7 +58,7 @@ export default [{
   {
     path: 'history',
     name: 'History',
-    component: require('./components/history')
+    component: require('./components/history/index')
   },
   {
     path: 'lock',

@@ -1,0 +1,161 @@
+<template>
+    <div class="ticket" :data-number="invoice.number" @click="view($event)" :class="{void:invoice.status === 0,settled:invoice.settled,split:invoice.split}">
+        <span class="type">{{$t('type.'+invoice.type)}}</span>
+        <div class="info customer" v-if="invoice.type ==='DELIVERY'">
+            <span>{{invoice.customer.address}}</span>
+            <span>{{invoice.customer.phone | phone}}</span>
+        </div>
+        <span class="info" v-else-if="invoice.type === 'DINE_IN'">{{invoice.table}}</span>
+        <span class="info" v-else>{{invoice.customer.name}}</span>
+        <span class="note" v-if="invoice.status === 0">{{$t('reason.'+invoice.void.note)}}</span>
+        <span class="price">$ {{invoice.payment.due | decimal}}</span>
+    </div>
+</template>
+
+
+<script>
+import { mapGetters, mapActions } from 'vuex'
+export default {
+    props: ['invoice'],
+    data() {
+        return {
+
+        }
+    },
+    methods: {
+        view(e) {
+            let dom = document.querySelector('.ticket.active');
+            dom && dom.classList.remove('active');
+
+            e.currentTarget.classList.add('active')
+            this.setViewOrder(this.invoice)
+        },
+        ...mapActions(['setViewOrder'])
+    }
+}
+</script>
+
+<style scoped>
+.ticket {
+    display: flex;
+    flex-direction: column;
+    width: 117.5px;
+    height: 92px;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    margin: 5px;
+    position: relative;
+    color: #3c3c3c;
+    transition: background 0.3s ease;
+}
+
+.ticket:before {
+    position: absolute;
+    top: -6px;
+    left: -6px;
+    content: attr(data-number);
+    min-width: 37px;
+    height: 30px;
+    text-align: center;
+    line-height: 30px;
+    background: #03A9F4;
+    color: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    font-family: 'Agency FB';
+    font-size: 30px;
+}
+
+.type {
+    margin-left: 33px;
+    padding: 4px 0;
+}
+
+.info {
+    font-size: 13px;
+    font-family: 'Microsoft YaHei';
+    text-align: center;
+    color: gray;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.customer {
+    display: flex;
+    flex-direction: column;
+    line-height: 14px;
+}
+
+.price {
+    text-align: center;
+    font-family: 'Agency FB';
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.ticket.active {
+    background: #03A9F4;
+    color: #fff;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.54);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+}
+
+.active:before {
+    background: #607D8B;
+}
+
+.void:before {
+    background: red;
+}
+
+.active .info {
+    border-color: #90CAF9;
+    color: #fff;
+}
+
+.note {
+    text-align: center;
+    color: #FB8C00;
+    background: #FFF3E0;
+    position: absolute;
+    width: 100%;
+    bottom: 25px;
+    text-shadow: none;
+}
+
+.active.void {
+    background: #F44336;
+}
+
+.split:after {
+    content: ' ';
+    position: absolute;
+    bottom: 0;
+    right: 0px;
+    width: 25px;
+    height: 25px;
+    background: url(../../../assets/image/corner.png) transparent;
+}
+
+.split.active:after {
+    border-color: transparent #fff #fff transparent;
+    border-radius: 4px 0 0 0px;
+    border-style: solid;
+    position: absolute;
+    background: #6fc1e6;
+    height: 0;
+    width: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 1;
+    transition: border-width .15s ease-in, opacity 0ms ease-in 0ms;
+    border-width: 8px;
+    content: ' ';
+    display: block;
+}
+
+.settled:before {
+    background: #4CAF50;
+}
+</style>

@@ -10,13 +10,14 @@
             <side-function :date="calendarDate || today" @change="setCalendar"></side-function>
             <section class="tickets">
                 <div class="inner">
-                    <div v-for="(ticket,index) in invoices" class="invoice" @click="getInvoice(ticket)" :data-number="ticket.number" :key="index" :class="{void:ticket.status === 0,settled:ticket.settled,split:ticket.split}">
-                        <span class="type">{{$t('type.'+ticket.type)}}</span>
-                        <span v-if="ticket.type === 'DINE_IN'" class="address">{{ticket.table}}</span>
-                        <span v-else class="address">{{ticket.customer.address}}</span>
-                        <span class="phone">{{ticket.customer.phone | dot}}</span>
-                        <span class="total">$ {{ticket.payment.due.toFixed(2)}}</span>
-                    </div>
+                    <ticket v-for="(invoice,index) in invoices" :key="index" :invoice="invoice"></ticket>
+                    <!-- <div v-for="(ticket,index) in invoices" class="invoice" @click="getInvoice(ticket)" :data-number="ticket.number" :key="index" :class="{void:ticket.status === 0,settled:ticket.settled,split:ticket.split}">
+                            <span class="type">{{$t('type.'+ticket.type)}}</span>
+                            <span v-if="ticket.type === 'DINE_IN'" class="address">{{ticket.table}}</span>
+                            <span v-else class="address">{{ticket.customer.address}}</span>
+                            <span class="phone">{{ticket.customer.phone | dot}}</span>
+                            <span class="total">$ {{ticket.payment.due.toFixed(2)}}</span>
+                        </div> -->
                 </div>
                 <pagination :of="orders" @page="setPage" :contain="30" :max="12"></pagination>
             </section>
@@ -31,16 +32,17 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import pagination from './common/pagination'
-import orderSummary from './history/summary'
-import Maintenance from './dock/maintenance'
-import orderList from './common/orderList'
-import dialoger from './common/dialoger'
-import sideFunction from './history/sideFunction'
-import orderFunction from './history/orderFunction'
+import Maintenance from '../dock/maintenance'
+import pagination from '../common/pagination'
+import orderList from '../common/orderList'
+import dialoger from '../common/dialoger'
+import orderFunction from './orderFunction'
+import sideFunction from './sideFunction'
+import orderSummary from './summary'
+import ticket from './component/ticket'
 
 export default {
-    components: { sideFunction, orderFunction, orderList, orderSummary, Maintenance, dialoger, pagination },
+    components: { sideFunction, orderFunction, orderList, orderSummary, Maintenance, dialoger, pagination, ticket },
     data() {
         return {
             today: today(),
@@ -123,9 +125,9 @@ export default {
                 let dom = document.querySelector(".invoice.active");
                 dom && dom.classList.remove("active");
                 dom = document.querySelectorAll(".invoice");
-                
+
                 for (let i = 0; i < dom.length; i++) {
-                    if(~~dom[i].dataset.number === number){
+                    if (~~dom[i].dataset.number === number) {
                         dom[i] && dom[i].classList.add("active")
                         break;
                     }
@@ -133,7 +135,7 @@ export default {
             })
         },
         getConsole() {
-            this.$p("Maintenance");
+            this.$p("Maintenance")
         },
         ...mapActions(['setViewOrder'])
     },
@@ -177,11 +179,6 @@ export default {
         },
         ...mapGetters(['op', 'sync', 'ticket', 'order', 'history', 'store'])
     },
-    filters: {
-        dot(val) {
-            return val ? val.replace(/^\D?(\d{3})\D?\D?(\d{3})\D?(\d{4})/, "$1.$2.$3") : val;
-        }
-    },
     watch: {
         order(ticket) {
             this.highlightTicket(ticket.number)
@@ -223,7 +220,7 @@ header {
 article {
     flex: 1;
     display: flex;
-    background: url(../assets/image/grid.png) #ebeff1;
+    background: url(../../assets/image/grid.png) #ebeff1;
 }
 
 .logo {
@@ -257,7 +254,7 @@ section.ticket {
     max-height: 616px;
 }
 
-.invoice {
+/* .invoice {
     height: 90px;
     width: 115px;
     margin: 6px;
@@ -369,5 +366,5 @@ section.ticket {
 .total {
     display: block;
     text-align: center;
-}
+} */
 </style>
