@@ -37,15 +37,22 @@ export default {
                 type: this.type,
                 settled: true
             })
-            Object.assign(this.order, {
-                settled: true,
-                cashier: this.op.name
-            })
-            if (this.order.tableID) {
-                let table = this.order.tableID;
-                let status = this.store.table.autoClean ? 1 : 4;
-                this.$socket.emit("[UPDATE] TABLE_SETTLED", { table, status })
+            Object.assign(this.order, { settled: true, cashier: this.op.name })
+            //this.order.session && this.$socket.emit("[TABLE] RESET", { session: this.order.session })
+
+
+            if (!this.init.hasOwnProperty('callback')) {
+                this.order.payment.log.push({
+                    id: "",
+                    type: this.type,
+                    paid: this.order.payment.due,
+                    change: "0.00",
+                    balance: "0.00",
+                    tip: this.order.payment.tip,
+                    number: 'N/A'
+                })
             }
+
             this.$socket.emit('[UPDATE] INVOICE', this.order);
             this.init.resolve(this.type);
         },

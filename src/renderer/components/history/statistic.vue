@@ -78,7 +78,7 @@ export default {
             let discount = tickets.map(i => parseFloat(i.discount)).reduce(c, 0);
             let tip = tickets.map(i => parseFloat(i.tip)).reduce(c, 0);
             let gratuity = tickets.map(i => parseFloat(i.gratuity)).reduce(c, 0);
-            let total = subtotal + tax + discount;
+            let total = subtotal + tax - discount;
 
             return { count, subtotal, tax, discount, tip, gratuity, total }
         },

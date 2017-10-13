@@ -250,7 +250,7 @@ export default {
             })
         },
         initial() {
-            this.payment.balance = Math.max(0, (this.payment.due - this.payment.paid));
+            this.payment.balance = Math.max(0, (this.payment.due - this.payment.paid + parseFloat(this.payment.tip) + parseFloat(this.payment.gratuity)));
             this.getQuickInput(this.payment.balance);
             this.poleDisplay(["TOTAL DUE:", ""], ["", this.payment.due.toFixed(2)]);
         },
@@ -622,7 +622,6 @@ export default {
                         tip: this.payment.tip,
                         number: 'N/A'
                     })
-                    console.log(this.payment)
                     this.invoicePaid(this.payment.due, 0, type)
                 }).catch(() => { this.$q() })
             }).catch(() => { this.$q() })
@@ -695,7 +694,7 @@ export default {
 
                 paid = isNumber(paid) ? parseFloat(paid) : 0;
 
-                this.payment = Object.assign({}, this.payment, {
+                this.order.payment = this.payment = Object.assign({}, this.payment, {
                     tip: parseFloat(result.tip),
                     gratuity: parseFloat(result.gratuity),
                     due, balance: due - paid
