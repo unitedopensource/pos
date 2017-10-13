@@ -100,7 +100,7 @@ var Dictionary = function (key) {
         PB: [{ zhCN: "芥兰叉烧", usEN: "Pork Broccoli" }],
         PMV: [{ zhCN: "杂菜叉烧", usEN: "Pork w.Mixed Vege." }],
         PM: [{ zhCN: "蘑菇叉烧", usEN: "Pork w.Mushroom" }],
-        PSP: [{ zhCN: "雪豆叉烧", usEN: "Pork w.Sonw Peas" }],
+        PSP: [{ zhCN: "雪豆叉烧", usEN: "Pork w.Snow Peas" }],
         PHS: [{ zhCN: "湖南叉烧", usEN: "Pork w.Hunan Style", spicy: true }],
         PZS: [{ zhCN: "四川叉烧", usEN: "Pork w.Szechuan Style", spicy: true }],
         PBBS: [{ zhCN: "豆豉叉烧", usEN: "Pork w.Black Bean Sauce" }],
@@ -133,7 +133,7 @@ var Dictionary = function (key) {
         KPS: [{ zhCN: "宫保虾", usEN: "Kong Pao Shrimp" }],
         SCN: [{ zhCN: "腰果虾", usEN: "Shrimp w.Cashew Nuts" }],
         SBS: [{ zhCN: "豆豉虾", usEN: "Shrp w.Black Bean Sauce" }],
-        STD:[{ zhCN: "海鲜三样", usEN: "Seafood Triple Delight" }]
+        STD:[{ zhCN: "海鲜三样", usEN: "Seafood Triple Delight" }],
 
         TD: [{ zhCN: "炒三样", usEN: "Triple Delight" }],
         HTD: [{ zhCN: "湖南三样", usEN: "Hunan Triple Delight" }],
