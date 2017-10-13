@@ -109,15 +109,17 @@ export default {
             payment: {
                 subtotal: 0,
                 tax: 0,
-                total: 0,
-                due: 0,
-                balance: 0,
-                paid: 0,
-                change: 0,
-                gratuity: 0,
-                tip: 0,
+                total: 0,    // subtotal + tax
                 discount: 0,
+                due: 0,      // total - discount
+                balance: 0,  // due + surcharge
+                paid: 0,    
+                remain: 0,   // balance - paid
+                change: 0,   // depreciate
+                tip: 0,
+                gratuity: 0,
                 delivery: 0,
+                surcharge: 0, // tip + gratuity + delivery
                 log: []
             },
             lastDelta: 0,
@@ -228,7 +230,7 @@ export default {
             this.setChoiceSet(dash)
         },
         openKeyboard() {
-            if(this.isEmptyTicket) return;
+            if (this.isEmptyTicket) return;
             this.component === 'entry' ? this.component = null : this.$p('entry');
         },
         update(config) {
