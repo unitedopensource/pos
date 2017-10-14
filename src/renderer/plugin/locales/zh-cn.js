@@ -571,7 +571,11 @@ export default {
         'date': '日期',
         'balance': '余额',
         'change': '变动',
-        'table':'座位'
+        'table':'座位',
+        'server':'服务员',
+        'lapse':'历时',
+        'action':'操作',
+        'todo':'完成'
     },
     text: {
         'starter': '起始',

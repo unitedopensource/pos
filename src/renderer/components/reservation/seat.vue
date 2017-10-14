@@ -1,6 +1,8 @@
 <template>
     <div class="tables">
-        <span class="seat" v-for="(table,index) in tables" :key="index" :class="{available:table.status === 1,unavailable:table.status === 0,select:selected.includes(table.name)}" @click="setTable(table)">{{table.name}}</span>
+        <div class="seat" v-for="(table,index) in tables" :key="index" :class="{available:table.status === 1,unavailable:table.status === 0,select:selected.includes(table.name)}" @click="setTable(table)">
+            <span>{{table.name}}</span>
+        </div>
     </div>
 </template>
 
@@ -22,6 +24,7 @@ export default {
             let { name } = table;
             let index = this.selected.indexOf(name);
             index === -1 ? this.selected.push(name) : this.selected.splice(index, 1);
+            this.$emit("pick", this.selected)
         }
     },
     watch: {
@@ -41,7 +44,7 @@ export default {
     align-items: flex-start;
 }
 
-span.seat {
+.seat {
     width: 25px;
     height: 25px;
     line-height: 25px;

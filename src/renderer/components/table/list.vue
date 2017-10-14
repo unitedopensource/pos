@@ -11,11 +11,11 @@
                         <tr>
                             <th>#</th>
                             <th>{{$t('thead.table')}}</th>
-                            <th>{{$t('thead.cashier')}}</th>
+                            <th>{{$t('thead.server')}}</th>
                             <th>{{$t('thead.placeTime')}}</th>
                             <th>{{$t('thead.lapse')}}</th>
                             <th>{{$t('thead.total')}}</th>
-                            <th>Note</th>
+                            <th>{{$t('thead.todo')}}</th>
                             <th>Action</th>
                             <th>{{$t('thead.view')}}</th>
                         </tr>
@@ -24,32 +24,40 @@
                         <tr v-for="(invoice,index) in invoices" :key="index">
                             <td>{{invoice.number}}</td>
                             <td>{{invoice.table}}</td>
-                            <td>{{invoice.cashier}}</td>
+                            <td>{{invoice.server}}</td>
                             <td>{{invoice.time | moment('HH:mm')}}</td>
                             <td>{{invoice.time | fromNow}}</td>
                             <td>$ {{invoice.payment.due | decimal}}</td>
-                            <td>{{invoice.content.length}}</td>
+                            <td>{{todo(invoice.content)}} / {{invoice.content.length}}</td>
                             <td>
-                                <span class="paid">{{$t('button.payment')}}</span>
+                                <span class="paid" @click="settle(invoice)">{{$t('button.payment')}}</span>
                             </td>
                             <td>
-                                <i class="fa fa-file-text-o"></i>
+                                <i class="fa fa-file-text-o" @click="view(invoice)"></i>
                             </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
+        <div class="popupMask center dark" v-show="component" @click="exitView">
+            <div :is="component" :init="componentData"></div>
+        </div>
     </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import ticket from '../common/ticket'
+import payment from '../payment/payment'
 export default {
     props: ['init'],
+    components: { ticket, payment },
     data() {
         return {
-            invoices: []
+            invoices: [],
+            componentData: null,
+            component: null
         }
     },
     computed: {
@@ -58,6 +66,26 @@ export default {
     created() {
         this.invoices = this.history.filter(invoice => invoice.type === 'DINE_IN' && invoice.status === 1 && !invoice.settled)
             .sort((a, b) => a.time > b.time)
+    },
+    methods: {
+        view(ticket) {
+            this.$p('ticket', { ticket })
+        },
+        todo(content) {
+            return content.filter(item => item.print).map(item => item.qty).reduce((a, b) => a + b, 0)
+        },
+        settle(order) {
+            this.$p('payment', { order })
+        },
+        exitView() {
+            this.component === 'ticket' && this.$q()
+        }
+    },
+    watch: {
+        history(invoices) {
+            this.invoices = invoices.filter(invoice => invoice.type === 'DINE_IN' && invoice.status === 1 && !invoice.settled)
+                .sort((a, b) => a.time > b.time)
+        }
     }
 }
 </script>

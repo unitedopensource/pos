@@ -8,7 +8,7 @@
                     </div>
                 </div>
                 <div class="functions">
-                    <div class="btn">
+                    <div class="btn" @click="reservation">
                         <i class="fa fa-user-o"></i>
                         <span class="text">{{$t('button.reservation')}}</span>
                     </div>
@@ -32,12 +32,13 @@
                 <grid class="grid" @switch="switchTable" :transfer="queue.length === 0"></grid>
             </div>
         </div>
-        <div :is="component" :init="componentData"></div>
+        <div :is="component" :init="componentData" @seat="place"></div>
     </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import reservation from '../reservation/index'
 import orderList from '../common/orderList'
 import dialoger from '../common/dialoger'
 import unlock from '../common/unlock'
@@ -45,17 +46,22 @@ import setup from './setup'
 import grid from './grid'
 import list from './list'
 export default {
-    components: { grid, setup, unlock, dialoger, orderList, list },
+    components: { grid, setup, unlock, dialoger, orderList, list, reservation },
     data() {
         return {
             componentData: null,
             component: null,
+            reserved: null,
             queue: [],
             view: 0
         }
     },
     created() {
-        this.checkSync()
+        this.checkSync();
+        this.$bus.on('seat', this.place)
+    },
+    beforeDestroy() {
+        this.$bus.off('seat', this.place)
     },
     methods: {
         checkSync() {
@@ -69,6 +75,7 @@ export default {
         },
         selectTable(table, e) {
             if (!table._id) return;
+
             if (this.queue.length === 1) {
                 this.addToQueue(table)
                 return
@@ -95,15 +102,24 @@ export default {
                     }
                     break;
                 default:
-                    this.store.table.passwordRequire ? this.unlockTable() :
-                        this.store.table.guestCount ? this.$p("setup") :
-                            this.createTable(1)
+                    this.reserved ? this.createTableForReserved() :
+                        this.store.table.passwordRequire ? this.unlockTable() :
+                            this.store.table.guestCount ? this.$p("setup") :
+                                this.createTable(1)
             }
         },
-        unlockTable() {
+        createTableForReserved() {
+            Object.assign(this.customer, { name: this.reserved.name })
+            this.store.table.passwordRequire ? this.unlockTable(this.reserved.size) : this.createTable(this.reserved.size);
+
+            Object.assign(this.reserved, { status: 2 })
+            this.$socket.emit("[RESV] UPDATE", this.reserved);
+        },
+        unlockTable(guest) {
+            !isNumber(guest) && (guest = 1);
             this.$denyAccess(true).then(op => {
                 if (op._id === this.op._id) {
-                    this.store.table.guestCount ? this.$p("setup") : this.createTable(1);
+                    this.store.table.guestCount ? this.$p("setup") : this.createTable(guest);
                 } else {
                     this.$dialog({
                         type: 'question', title: 'dialog.switchOperator', msg: ['dialog.switchCurrentOperator', this.op.name, op.name]
@@ -113,12 +129,15 @@ export default {
                         this.$setLanguage(language);
                         this.setApp({ language, mode: 'create' });
                         this.setOp(op);
-                        this.createTable(1);
+                        this.createTable(guest);
                     }).catch(() => { this.$q() })
                 }
             }).catch(() => {
                 this.$denyAccess();
             })
+        },
+        place(reservation) {
+            this.reserved = reservation;
         },
         access() {
             new Promise((resolve, reject) => {
@@ -214,13 +233,16 @@ export default {
                 this.$q()
             })
         },
+        reservation() {
+            this.$p('reservation')
+        },
         ...mapActions(['setOp', 'setApp', 'resetMenu', 'setTicket', 'setViewOrder', 'setCurrentTable', 'setTableInfo'])
     },
     computed: {
         viewSection() {
             return this.tables[this.view] ? this.tables[this.view].item : [];
         },
-        ...mapGetters(['op', 'sync', 'store', 'tables', 'language', 'history', 'currentTable'])
+        ...mapGetters(['op', 'sync', 'store', 'tables', 'language', 'history','customer', 'currentTable'])
     }
 }
 </script>

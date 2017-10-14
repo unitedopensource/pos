@@ -231,7 +231,7 @@ export default {
             data.forEach(invoice => {
                 if (invoice.server) {
                     let name = invoice.server;
-                    let { subtotal, tax, tip, discount } = invoice.payment;
+                    let { subtotal, tax, tip,gratuity, discount } = invoice.payment;
                     let amount = parseFloat(subtotal) + parseFloat(tax) - parseFloat(discount);
 
                     if (staff.hasOwnProperty(name)) {

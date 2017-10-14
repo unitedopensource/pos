@@ -43,9 +43,12 @@ export default {
 
             try {
                 let number = data.match(/\d{16,16}/)[0];
-                this.$socket.emit("[GIFTCARD] QUERY", number, (result) => {
-                    this.init.resolve({ number, result })
-                })
+
+                setTimeout(() => {
+                    this.$socket.emit("[GIFTCARD] QUERY", number, (result) => {
+                        this.init.resolve({ number, result })
+                    })
+                }, 100)
             } catch (e) {
                 this.message = this.$t('card.readTrackFailed');
                 this.read = "";

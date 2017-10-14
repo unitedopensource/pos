@@ -3,9 +3,19 @@
         <section class="input">
             <div class="wrap">
                 <input type="text" v-model="qty" class="qty" ref="qty" @click="focus('qty')">
-                <input type="text" v-model="keywords" class="item" ref="item" @click="focus('item')">
+                <div class="item">
+                    <input type="text" v-model="keywords" class="item" ref="item" @click="focus('item')">
+                    <i class="fa fa-angle-double-down fa-2x" @click="dropDown" v-if="!option"></i>
+                    <i class="fa fa-angle-double-up fa-2x" @click="closeDropDown" v-else></i>
+                    <transition name="fadeDown">
+                        <div v-show="option" class="dropDown">
+                            <checkbox v-model="devices" :val="printer" :multiple="true" :label="printer" class="printer" v-for="(printer,index) in printers" :key="printer" @input="check"></checkbox>
+                            <checkbox v-model="toggle" label="button.selectAll" @input="selectAll"></checkbox>
+                        </div>
+                    </transition>
+                </div>
                 <input type="text" v-model="price" class="price" placeholder="0.00" ref="price" @click="focus('price')">
-                <i class="fa fa-sign-in fa-2x" @click="confirm"></i>
+                <i class="fa fa-sign-in fa-2x confirm" @click="confirm"></i>
             </div>
             <ul>
                 <li v-for="(list,index) in lists" :key="index" @click="fill(list)">
@@ -19,18 +29,23 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import checkbox from '../setting/common/checkbox'
 import keyboard from './keyboard'
 export default {
     props: ['init'],
-    components: { keyboard },
+    components: { keyboard, checkbox },
     data() {
         return {
             qty: 1,
             price: '0.00',
             keywords: '',
+            printers: [],
+            devices: [],
             lists: [],
             item: {},
             reset: true,
+            option: false,
+            toggle: false,
             anchor: 'item'
         }
     },
@@ -38,6 +53,8 @@ export default {
         this.$bus.on("input", this.input)
         this.$bus.on("backspace", this.backspace)
         this.$bus.on("clear", this.clear)
+
+        this.printers = Object.keys(this.config.printer)
     },
     mounted() {
         this.$refs.item.focus();
@@ -49,6 +66,7 @@ export default {
             document.querySelector('input.active').classList.remove('active');
 
             this.reset = true;
+            this.option = false;
             this.$refs[this.anchor].focus();
             document.activeElement.classList.add('active');
         },
@@ -130,10 +148,27 @@ export default {
                 zhCN: this.item.zhCN || this.keywords,
                 usEN: this.item.usEN || this.keywords,
                 single,
+                print: this.devices.length > 0 ? this.devices : undefined,
                 price: single.toFixed(2)
             })
             this.setChoiceSet(this.item)
             this.init.resolve()
+        },
+        dropDown() {
+            this.focus('item');
+            this.option = true;
+            this.lists = [];
+        },
+        closeDropDown() {
+            this.option = false;
+        },
+        selectAll() {
+            this.toggle ?
+                this.devices = this.printers.slice(0) :
+                this.devices = [];
+        },
+        check() {
+            this.toggle = this.devices.length === this.printers.length;
         },
         ...mapActions(['setChoiceSet'])
     },
@@ -143,7 +178,7 @@ export default {
         this.$bus.off("clear", this.clear)
     },
     computed: {
-        ...mapGetters(['language'])
+        ...mapGetters(['language', 'config'])
     },
     watch: {
         keywords(n) {
@@ -225,7 +260,7 @@ li {
     text-align: center;
 }
 
-i {
+i.confirm {
     background: #fff;
     display: flex;
     justify-content: center;
@@ -233,5 +268,37 @@ i {
     padding: 0 30px;
     border-radius: 6px;
     color: #555;
+}
+
+.item {
+    display: flex;
+    position: relative;
+}
+
+.item i {
+    position: absolute;
+    right: 10px;
+    top: 0px;
+    padding: 17px 29px;
+    cursor: pointer;
+    color: #555;
+}
+
+.dropDown {
+    position: absolute;
+    background: #fff;
+    z-index: -1;
+    top: 50px;
+    padding: 20px 10px 10px;
+    margin: 10px;
+    width: 430px;
+    display: flex;
+    flex-wrap: wrap;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+}
+
+.dropDown>div {
+    width: 120px;
+    padding: 5px 0;
 }
 </style>

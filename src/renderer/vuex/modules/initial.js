@@ -234,6 +234,8 @@ const mutations = {
         let { _id } = data;
         let index = state.reservation.findIndex(reservation => reservation._id === _id);
         state.reservation.splice(index, 1, data)
+
+        state.reservation = state.reservation.filter(reserved => reserved.status !== 2)
     }
 }
 

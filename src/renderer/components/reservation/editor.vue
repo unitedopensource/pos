@@ -88,7 +88,8 @@
                                 <select v-model="section">
                                     <option v-for="(section,index) in tables" :key="section" :value="section">{{section.usEN}}</option>
                                 </select>
-                                <seat :section="section" :status="scheduled"></seat>
+                                <seat :section="section" :status="scheduled" @pick="pick"></seat>
+                                <p>You selected: {{selected}}</p>
                             </aside>
                         </div>
                         <footer>
@@ -127,13 +128,12 @@ export default {
             },
             section: null,
             scheduled: [],
+            selected:null,
             step: 0
         }
     },
     created() {
-        this.$socket.emit("[RESV] GET_QUEUE", number => {
-            this.book.queue = number
-        })
+        this.$socket.emit("[RESV] GET_QUEUE", number => {this.book.queue = number})
         this.section = this.tables[0];
     },
     methods: {
@@ -150,6 +150,9 @@ export default {
             this.$socket.emit("[RESV] CREATE", this.book);
             Printer.printReservationTicket(this.book)
             this.init.resolve()
+        },
+        pick(seat){
+            this.selected = seat.join(",");
         },
         reserve(){
             

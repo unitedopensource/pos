@@ -36,7 +36,7 @@ export default {
       ipcRenderer.send("Loading", this.$t('initial.initialApplication'))
     },
     APP_RUNTIME_ENVIRONMENT(data) {
-      let { config, menu, submenu, request, orders, table, template, reservation, sync } = data;
+      let { config, menu, submenu, request, orders, table, template, reservations, sync } = data;
       ipcRenderer.send("Loading", this.$t('initial.loadConfiguration'));
       this.setConfig(config);
       this.setMenu(menu);
@@ -45,7 +45,7 @@ export default {
       ipcRenderer.send("Loading", this.$t('initial.applyConfiguration'));
       this.setTable(table);
       this.setTemplates(template);
-      this.setReservation(reservation);
+      this.setReservation({ reservations, sync });
       this.setTodayOrder({ orders, sync });
       this.setLastSync(sync);
       window.server && this.checkAwake(config.store.station);

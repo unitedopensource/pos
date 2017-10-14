@@ -1131,11 +1131,6 @@ function createFooter(table, ctrl, device, ticket) {
 
     let settle = [];
 
-    //     let coupon = (ticket.coupon && applyCoupon) ?
-    //     `<section class="details">
-    //     <h3>${ticket.coupon.for} - ${ticket.coupon.discount} OFF</h3>
-    //   </section>`: "";
-
     if (ticket.coupon && applyCoupon) {
         settle.push(`<section class="details">
                     <h3>${ticket.coupon.for} - ${ticket.coupon.discount} OFF</h3>
@@ -1196,51 +1191,6 @@ function createFooter(table, ctrl, device, ticket) {
       </section>`)
     }
 
-
-    //     let voidTicket = ticket.status === 0 ?
-    //     `<section class="details">
-    //     <h3>*** Ticket Voided ***</h3>
-    //      <p>
-    //       <span class="text">Reason:</span>
-    //       <span class="value">${ticket.void.note}</span>
-    //     </p>
-    //     <h3>Void by: ${ticket.void.by} @ ${moment(ticket.void.time).format('HH:mm:ss')}</h3>
-    //   </section>`: "";
-
-
-    // let cash = payment.hasOwnProperty('paidCash') ?
-    //     `<section class="details">
-    //       <h3>Paid by Cash - Thank You</h3>
-    //       <p>
-    //         <span class="text">Paid:</span>
-    //         <span class="value">$${payment.paidCash}</span>
-    //       </p>
-    //       <p>
-    //         <span class="text">Change:</span>
-    //         <span class="value">$${(Math.max(0, (payment.paidCash - payment.due))).toFixed(2)}</span>
-    //       </p>
-    //     </section>`: "";
-    // let credit = payment.hasOwnProperty('paidCredit') ?
-    //     `<section class="details">
-    //     <h3>Paid by Credit Card - Thank You</h3>
-    //     <p>
-    //       <span class="text">Paid:</span>
-    //       <span class="value">$${payment.paidCredit}</span>
-    //     </p>
-    //   </section>`: "";
-
-    // let gift = payment.hasOwnProperty('paidGift') ?
-    //     `<section class="details">
-    //     <h3>Paid by Gift Card - Thank You</h3>
-    //     <p>
-    //       <span class="text">Paid:</span>
-    //       <span class="value">$${payment.paidGift}</span>
-    //     </p>
-    //   </section>`: "";
-    // let thirdParty = (payment.settled && payment.type !== 'CASH' && payment.type !== 'CREDIT' && payment.type !== 'GIFT') ?
-    //     `<section class="details">
-    //     <h3>Paid by ${payment.type} - Thank You</h3>
-    //   </section>`: "";
     let discount = parseFloat(payment.discount) !== 0 ?
         `<p><span class="text">Disc.:</span><span class="value">- ${payment.discount.toFixed(2)}</span></p>` : "";
     let tip = parseFloat(payment.tip) > 0 ?

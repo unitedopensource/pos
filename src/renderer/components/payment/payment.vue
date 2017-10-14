@@ -211,7 +211,11 @@ export default {
         }
     },
     created() {
-        this.order = JSON.parse(JSON.stringify(this.$store.getters.order));
+        this.order = this.init.hasOwnProperty('order') ?
+            JSON.parse(JSON.stringify(this.init.order)) :
+            JSON.parse(JSON.stringify(this.$store.getters.order));
+            console.log(this.order)
+
         this.payment = Object.assign(this.order.payment, { type: 'CASH' });
         this.checkComponentUsage();
         this.setPaymentType('CASH');

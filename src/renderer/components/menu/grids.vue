@@ -298,7 +298,6 @@ export default {
           item.pending = false;
         })
       }
-      console.log(order)
 
       this.app.mode === 'create'
         ? this.$socket.emit("[SAVE] INVOICE", order)
@@ -382,8 +381,8 @@ export default {
       this.$router.push({ path: "/main" });
     },
     dineInExit() {
-      this.isEmptyTicket ? this.resetTableExit() : 
-      this.$dialog({ title: 'dialog.exitConfirm', msg: 'dialog.exitConfirmTip' }).then(() => { this.resetTableExit() }).catch(() => { this.$q() });
+      this.isEmptyTicket ? this.resetTableExit() :
+        this.$dialog({ title: 'dialog.exitConfirm', msg: 'dialog.exitConfirmTip' }).then(() => { this.resetTableExit() }).catch(() => { this.$q() });
     },
     resetTableExit() {
       this.app.mode === 'create' && this.$socket.emit("[TABLE] RESET", { _id: this.currentTable._id });

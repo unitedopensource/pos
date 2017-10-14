@@ -23,7 +23,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import contextMenu from './menu'
+import contextMenu from './context'
 import dialoger from '../common/dialoger'
 export default {
     components: { contextMenu, dialoger },
@@ -45,11 +45,12 @@ export default {
         },
         seat() {
             this.$q();
-            this.$emit('seat', this.book);
+            this.$emit('seat')
+            this.$bus.emit('seat', this.book);
         },
         reprint() {
             this.$q();
-            Printer.printReservationTicket()
+            Printer.printReservationTicket(this.book)
         },
         active() {
             Object.assign(this.book, { status: 1 })
@@ -96,7 +97,7 @@ export default {
         },
         hours() {
             let hours = {};
-            this.reservation.filter(book => book.status !== -1 && book.status !== 3).forEach(book => {
+            this.reservation && this.reservation.filter(book => book.status !== -1 && book.status !== 3).forEach(book => {
                 let frame = new Date(book.time).getHours();
                 hours.hasOwnProperty(frame) ? hours[frame].push(book) : hours[frame] = [book]
             });
@@ -109,8 +110,8 @@ export default {
         // },
         ...mapGetters(['config', 'tables', 'reservation'])
     },
-    watch:{
-        reservation(){
+    watch: {
+        reservation() {
             console.log('trigger update')
         }
     }

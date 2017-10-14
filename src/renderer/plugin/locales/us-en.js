@@ -231,7 +231,11 @@ export default {
         'date': 'Date',
         'balance': 'Balance',
         'change': 'Change',
-        'table':'Table'
+        'table':'Table',
+        'server':'Server',
+        'lapse':'Lapse',
+        'action':'Action',
+        'todo':'Todo'
     },
     title: {
         'markPaymentType': 'Mark Payment Type',

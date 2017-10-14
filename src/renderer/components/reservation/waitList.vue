@@ -1,6 +1,6 @@
 <template>
     <div>
-        wait list
+        
     </div>
 </template>
 
