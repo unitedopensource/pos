@@ -122,10 +122,9 @@ export default {
         },
         highlightTicket(number) {
             this.$nextTick(() => {
-                let dom = document.querySelector(".invoice.active");
+                let dom = document.querySelector(".ticket.active");
                 dom && dom.classList.remove("active");
-                dom = document.querySelectorAll(".invoice");
-
+                dom = document.querySelectorAll(".ticket");
                 for (let i = 0; i < dom.length; i++) {
                     if (~~dom[i].dataset.number === number) {
                         dom[i] && dom[i].classList.add("active")
