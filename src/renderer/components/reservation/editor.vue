@@ -155,7 +155,8 @@ export default {
             this.selected = seat.join(",");
         },
         reserve(){
-            
+            this.$socket.emit("[RESV] CREATE",this.book);
+            this.init.resolve()
         }
     },
     computed: {
