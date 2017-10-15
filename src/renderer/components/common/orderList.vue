@@ -45,12 +45,12 @@
         </header>
         <div class="order" @click.self="resetHighlight" v-if="layout === 'order'">
             <v-touch class="inner" :style="scroll" @panup="move" @pandown="move" @panstart="panStart" @panend="panEnd" tag="ul">
-                <list-item v-for="(item,index) in cart" :data-category="item.category" :key="index" :item="item"></list-item>
+                <list-item v-for="(item,index) in order.content" :data-category="item.category" :key="index" :item="item"></list-item>
             </v-touch>
         </div>
         <div class="order" v-else>
             <v-touch class="inner" :style="scroll" @panup="move" @pandown="move" @panstart="panStart" @panend="panEnd" tag="ul">
-                <list-item v-for="(item,index) in cart" :data-category="item.category" :key="index" :item="item" :class="{print:!item.print,pending:item.pending}" @click.native="addToSpooler(item)"></list-item>
+                <list-item v-for="(item,index) in order.content" :data-category="item.category" :key="index" :item="item" :class="{print:!item.print,pending:item.pending}" @click.native="addToSpooler(item)"></list-item>
             </v-touch>
         </div>
         <div class="middle">
@@ -248,10 +248,11 @@ export default {
         },
         calculator(items) {
             if (items.length === 0) {
-                Object.assign(this.payment, {
+                let delivery = (this.ticket.type === 'DELIVERY' && this.store.delivery && !this.order.deliveryFree) ? parseFloat(this.store.deliveryCharge) : 0;
+                this.payment = Object.assign(this.order.payment, {
                     subtotal: 0,
                     tax: 0,
-                    total: 0,    // subtotal + tax
+                    total: 0,    // subtotal + tax + delivery
                     discount: 0,
                     due: 0,      // total - discount
                     balance: 0,  // due + surcharge
@@ -260,93 +261,81 @@ export default {
                     change: 0,   // depreciate
                     tip: 0,
                     gratuity: 0,
-                    delivery: 0,
-                    surcharge: 0, // tip + gratuity + delivery
+                    delivery,
+                    surcharge: 0, // tip + gratuity
                     log: []
                 })
-                // this.payment = {
-                //     subtotal: 0,
-                //     tax: 0,
-                //     total: 0,    // subtotal + tax
-                //     discount: 0,
-                //     due: 0,      // total - discount
-                //     balance: 0,  // due + surcharge
-                //     paid: 0,
-                //     remain: 0,   // balance - paid
-                //     change: 0,   // depreciate
-                //     tip: 0,
-                //     gratuity: 0,
-                //     delivery: 0,
-                //     surcharge: 0, // tip + gratuity + delivery
-                //     log: []
-                // };
                 return;
             }
-            this.$nextTick(() => {
-                let { type } = this.ticket;
-                let total = 0;
-                let subtotal = 0;
-                let tax = 0;
-                let due = 0;
-                let balance = 0;
-                let { tip, gratuity, delivery, discount } = this.payment;
-                let coupon = this.order.coupon;
-                items.forEach(item => {
-                    if (item.void) return;
-                    let taxClass = this.tax.class[item.taxClass];
-                    let amount = item.single * item.qty;
-                    item.choiceSet.forEach(set => { amount += set.single * set.qty });
-                    if (!this.order.taxFree) tax += taxClass.apply[type] ? (taxClass.rate / 100 * amount) : tax;
-                    subtotal += amount;
-                });
 
-                delivery = (this.ticket.type === 'DELIVERY' && this.store.delivery && !this.order.deliveryFree) ? this.store.deliveryCharge : 0;
+            let { tip, gratuity, discount, paid } = this.order.payment;
+            let { type } = this.ticket;
+            let { coupon } = this.order;
 
-                //auto surcharge
-                let { enable, penalty, when } = this.store.table.surcharge;
-                if (this.order.type === 'DINE_IN' && enable && this.order.guest > when) {
-                    let value = parseFloat(penalty.replace(/[^0-9.]/g, ""));
+            let subtotal = 0, tax = 0;
 
-                    if (penalty.includes("%")) {
-                        value = value / 100;
-                        gratuity = subtotal * value
-                    } else {
-                        gratuity = value
-                    }
-                }
+            items.forEach(item => {
+                if (item.void) return;
 
-                total = toFixed(subtotal + tax + delivery + parseFloat(tip) + parseFloat(gratuity), 2);
+                let taxClass = this.tax.class[item.taxClass];
+                let amount = parseFloat(item.single) * (item.qty || 1);
+                item.choiceSet.forEach(set => { amount += parseFloat(set.single) * (set.qty || 1) });
+                subtotal += amount;
 
-                if (coupon) {
-                    /**
-                     * Tax apply Before Discount (For Example: 10% Tax Rate, 20% Discount)
-                     * 
-                     * Subtotal: 10.00
-                     * Tax:       1.00  
-                     * Discount:  2.00
-                     * Total:     9.00
-                     * ------------------------------------------------------------------
-                     */
-                    if (coupon.discount.includes("%")) {
-                        discount = toFixed((coupon.discount.replace(/\D+/, "") / 100) * (subtotal), 2);
-                    } else {
-                        discount = subtotal - (coupon.discount.replace(/\D+/, ''))
-                    }
-                }
-                due = Math.max(0, total - parseFloat(discount));
-                balance = due - this.payment.paid;
-                this.payment = Object.assign({}, this.payment, {
-                    subtotal: subtotal.toFixed(2),
-                    tax: toFixed(tax, 2).toFixed(2),
-                    gratuity: gratuity.toFixed(2),
-                    total: total.toFixed(2),
-                    due: due.toFixed(2),
-                    discount: discount.toFixed(2),
-                    balance: balance.toFixed(2),
-                    delivery: delivery.toFixed(2)
-                });
-                this.setOrder({ payment: this.payment });
+                if (!this.order.taxFree) tax += taxClass.apply[type] ? toFixed(taxClass.rate / 100 * amount, 2) : tax;
             })
+
+            let { enable, penalty, when } = this.store.table.surcharge;
+
+            if (this.order.type === 'DINE_IN' && enable && this.order.guest > when) {
+                let value = parseFloat(penalty.replace(/[^0-9.]/g, ""));
+
+                if (penalty.includes("%")) {
+                    value = value / 100;
+                    gratuity = subtotal * value
+                } else {
+                    gratuity = value
+                }
+            }
+
+            if (coupon) {
+                /**
+                 * Tax apply Before Discount (For Example: 10% Tax Rate, 20% Discount)
+                 * 
+                 * Subtotal: 10.00
+                 * Tax:       1.00  
+                 * Discount:  2.00
+                 * Total:     9.00
+                 * ------------------------------------------------------------------
+                 */
+                if (coupon.discount.includes("%")) {
+                    discount = toFixed((coupon.discount.replace(/\D+/, "") / 100) * (subtotal), 2)
+                } else {
+                    discount = subtotal - (coupon.discount.replace(/\D+/, ''))
+                }
+            }
+
+            let delivery = (type === 'DELIVERY' && this.store.delivery && !this.order.deliveryFree) ? parseFloat(this.store.deliveryCharge) : 0;
+            let total = subtotal + tax + delivery;
+            let due = Math.max(0, total - discount);
+            let surcharge = tip + gratuity;
+            let balance = due + surcharge;
+            let remain = balance - paid;
+
+            this.payment = Object.assign({}, this.payment, {
+                subtotal: toFixed(subtotal, 2),
+                tax: toFixed(tax, 2),
+                total: toFixed(total, 2),
+                discount: toFixed(discount, 2),
+                due: toFixed(due, 2),
+                balance: toFixed(balance, 2),
+                remain: toFixed(remain, 2),
+                tip: toFixed(tip, 2),
+                gratuity: toFixed(gratuity, 2),
+                delivery: toFixed(delivery, 2),
+                surcharge: toFixed(surcharge, 2)
+            })
+            Object.assign(this.order, { payment: this.payment })
         },
         ...mapActions(['setChoiceSet', 'setPointer', 'resetPointer', 'resetChoiceSet', 'setChoiceSetTarget', 'setOrder'])
     },
@@ -354,18 +343,14 @@ export default {
         scroll() {
             return { transform: `translate3d(0,${this.offset}px,0)` }
         },
-        cart() {
-            return this.sort ? this.order.content.filter(item => item.sort === this.sort && !item.void) : this.order.content.filter(item => !item.void)
-        },
-        // voidItems() {
-        //     return this.config.display.voidItem ? this.order.content.filter(item => item.void) : []
-        // },
         ...mapGetters(['app', 'config', 'store', 'tax', 'order', 'item', 'ticket', 'language', 'isEmptyTicket'])
     },
     watch: {
-        cart: {
-            handler(n) {
-                this.display ? this.payment = this.order.payment : this.calculator(n);
+        'order.content': {
+            handler(items) {
+                this.display ?
+                    this.payment = this.order.payment :
+                    this.calculator(items)
             }, deep: true
         },
         payment() {
@@ -384,11 +369,6 @@ export default {
         },
         'ticket.type'(n) {
             this.calculator(this.cart)
-        },
-        order: {
-            handler(n) {
-                n.content.length > 0 && (this.payment = n.payment)
-            }, deep: true
         }
     }
 }

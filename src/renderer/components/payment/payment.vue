@@ -34,7 +34,7 @@
                     <div class="totalDue" @dblclick="roundUp">
                         <span class="text">{{$t('text.balanceDue')}}:</span>
                         <div class="inner">
-                            <span class="due">{{payment.balance | decimal}}</span>
+                            <span class="due">{{payment.remain | decimal}}</span>
                             <div class="addition" v-show="parseFloat(payment.discount) !== 0">
                                 <span class="text">{{$t('text.discount')}}</span>
                                 <span class="value">-{{payment.discount | decimal}}</span>
@@ -214,7 +214,6 @@ export default {
         this.order = this.init.hasOwnProperty('order') ?
             JSON.parse(JSON.stringify(this.init.order)) :
             JSON.parse(JSON.stringify(this.$store.getters.order));
-            console.log(this.order)
 
         this.payment = Object.assign(this.order.payment, { type: 'CASH' });
         this.checkComponentUsage();
@@ -254,8 +253,8 @@ export default {
             })
         },
         initial() {
-            this.payment.balance = Math.max(0, (this.payment.due - this.payment.paid + parseFloat(this.payment.tip) + parseFloat(this.payment.gratuity)));
-            this.getQuickInput(this.payment.balance);
+            this.payment.remain = Math.max(0, (this.payment.due - this.payment.paid + this.payment.surcharge));
+            this.getQuickInput(this.payment.remain);
             this.poleDisplay(["TOTAL DUE:", ""], ["", this.payment.due.toFixed(2)]);
         },
         askPayMode() {
@@ -282,9 +281,9 @@ export default {
         payWhole() {
             let paid = 0;
             this.payment.log.forEach(log => { paid += (log.paid - log.change) });
-            this.payment.balance = Math.max(0, (this.payment.due - paid));
-            this.getQuickInput(this.payment.balance);
-            this.poleDisplay(["TOTAL DUE:", ""], ["", this.payment.due.toFixed(2)]);
+            this.payment.remain = Math.max(0, (this.payment.due - paid));
+            this.getQuickInput(this.payment.remain);
+            this.poleDisplay(["Balance Due:", ""], ["", this.payment.remain.toFixed(2)]);
         },
         setPaymentType(type) {
             switch (type) {
@@ -432,7 +431,7 @@ export default {
             if (parseFloat(this.paid) === 0) return;
 
             this.payment.paid += parseFloat(this.paid);
-
+//bug
             let change = this.payment.change = Math.max(0, (this.paid - this.payment.balance)).toFixed(2);
             let balance = this.payment.balance = Math.max(0, (this.payment.due - this.payment.paid)).toFixed(2);
 
@@ -481,13 +480,13 @@ export default {
         payRemainBalance() {
             this.paid = "0.00";
             this.reset = true;
-            this.getQuickInput(this.payment.balance);
+            this.getQuickInput(this.payment.remain);
             this.setInput("paid");
         },
         chargeCredit() {
             if (parseFloat(this.paid) === 0) return;
-            if (this.paid > this.payment.balance) {
-                let extra = (this.paid - this.payment.balance).toFixed(2);
+            if (this.paid > this.payment.remain) {
+                let extra = (this.paid - this.payment.remain).toFixed(2);
                 this.$dialog({
                     title: 'dialog.paidAmountGreaterThanDue', msg: ['dialog.extraAmountSetAsTip', extra],
                     buttons: [{ text: 'button.cancel', fn: 'reject' }, { text: 'button.setTip', fn: 'resolve' }]
@@ -577,7 +576,7 @@ export default {
             Object.assign(trans, { order: this.assignOrder() })
 
             this.payment.paid += parseFloat(trans.amount.approve);
-            this.payment.balance = Math.max(0, (this.payment.due - this.payment.paid)).toFixed(2);
+            this.payment.remain = Math.max(0, (this.payment.balance - this.payment.paid)).toFixed(2);
 
             if (this.payment.tip > 0) trans.amount.approve = (trans.amount.approve - trans.amount.tip).toFixed(2);
 
@@ -585,20 +584,20 @@ export default {
                 this.payment.log.push({
                     _id, type: "CREDIT", change: "0.00",
                     paid: trans.amount.approve,
-                    balance: this.payment.balance,
+                    balance: this.payment.remain,
                     number: trans.account.number,
                     tip: this.payment.tip
                 })
 
                 Printer.printCreditCard(trans);
-                if (parseFloat(this.payment.balance) === 0) {
+                if (parseFloat(this.payment.remain) === 0) {
                     this.payment.settled = true;
                     this.poleDisplay("PAID by Credit Card", "Thank You");
                     this.invoicePaid(trans.amount.approve, 0, "CREDIT")
                 } else {
                     this.$q();
-                    this.getQuickInput(this.payment.balance);
-                    this.paid = this.payment.balance;
+                    this.getQuickInput(this.payment.remain);
+                    this.paid = this.payment.remain;
                 }
             })
         },
@@ -608,7 +607,7 @@ export default {
         askSettleType(content) {
             this.$q()
             this.$dialog(content).then(() => {
-                this.paid = this.payment.balance;
+                this.paid = this.payment.remain;
 
                 new Promise((resolve, reject) => {
                     this.componentData = { resolve, reject, callback: true };
@@ -693,10 +692,11 @@ export default {
                 this.componentData = { payment: this.payment, resolve, reject };
                 this.component = "Tips"
             }).then(result => {
-                let { subtotal, tax, tip, discount, gratuity, delivery, paid } = this.payment;
-                let due = parseFloat(subtotal) + parseFloat(tax) + parseFloat(tip) + parseFloat(gratuity) + parseFloat(delivery) - parseFloat(discount);
+                //let { subtotal, tax, tip, discount, gratuity, delivery, paid } = this.payment;
 
-                paid = isNumber(paid) ? parseFloat(paid) : 0;
+                let surcharge = this.payment.gratuity + parseFloat(result.tip)
+                this.payment.balance = this.payment.due + surcharge;
+                //bug
 
                 this.order.payment = this.payment = Object.assign({}, this.payment, {
                     tip: parseFloat(result.tip),
@@ -715,8 +715,13 @@ export default {
                 this.componentData = { payment: this.payment, resolve, reject };
                 this.component = "Discount";
             }).then(result => {
+
+                //bug rewrite
+                
                 let { subtotal, tax, tip, gratuity, delivery, paid } = this.payment;
                 let due = parseFloat(subtotal) + parseFloat(tax) + parseFloat(tip) + parseFloat(gratuity) + parseFloat(delivery) - parseFloat(result.discount);
+
+                this.paid = due;
 
                 paid = isNumber(paid) ? parseFloat(paid) : 0;
 
@@ -961,7 +966,7 @@ export default {
                 this.exit()
             } else {
                 let payment = this.combineSplitPayment();
-                let order = Object.assign({}, this.order, { payment });
+                let order = Object.assign({}, this.order, { cashier: this.op.name, payment });
                 order.settled = !!payment.settled;
                 this.setOrder(order);
                 (this.$route.name === 'History' || this.$route.name === 'Table') && this.$socket.emit("[UPDATE] INVOICE", order);
@@ -1040,22 +1045,23 @@ export default {
         switchInvoice(index) {
             if (isNumber(index)) this.current = index;
             this.payment = this.order.splitPayment[this.current];
-            this.payment.balance = Math.max(0, (this.payment.due - this.payment.paid));
+            this.payment.remain = Math.max(0, (this.payment.due - this.payment.paid));
             this.paid = "0.00";
             this.setPaymentType("CASH");
-            this.getQuickInput(this.payment.balance);
+            this.getQuickInput(this.payment.remain);
         },
         roundUp() {
             let rounded = Math.ceil(this.payment.due);
-            this.payment.due = rounded;
-            this.payment.balance = Math.max(0, (rounded - this.payment.discount)).toFixed(2);
+            this.payment.due = Math.max(0, rounded - this.payment.discount);
+            this.payment.balance = this.payment.due + this.payment.surcharge;
+            this.payment.remain = Math.max(0, this.payment.balance - this.payment.paid);
             this.paid = "0.00";
-            this.getQuickInput(rounded);
+            this.getQuickInput(this.payment.remain);
         },
         getQuickInput(amount) {
             let preset = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 100, 120, 140, 150, 200, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1100, 1500, 2000, 3000, 4000, 5000];
             let array = [];
-            let round = Math.ceil(isNumber(amount) ? amount : 0);
+            let round = Math.ceil(isNumber(amount) ? toFixed(amount, 2) : 0);
             array.push(amount.toFixed(2));
             amount === round ? array.push((round + 1)) : array.push(round);
             let index = preset.findIndex(i => i > round);
@@ -1087,7 +1093,9 @@ export default {
         },
         due() {
             let change = this.paid - this.payment.due;
-            let balance = this.payment.settled ? this.payment.balance : this.payment.due - this.paid;
+
+            //bug check
+            let balance = this.payment.settled ? this.payment.remain : this.payment.balance - this.paid;
 
             return {
                 change: Math.max(0, change).toFixed(2),

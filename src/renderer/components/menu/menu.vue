@@ -156,7 +156,7 @@ export default {
 
             item = JSON.parse(JSON.stringify(item));
             this.app.mode === 'edit' && (item.new = true);
-            this.store.table.seatOrder && (item.sort = this.sort);
+            //this.store.table.seatOrder && (item.sort = this.sort);
             item.hasOwnProperty("prices") && item.prices[this.ticket.type] && (item.price = item.prices[this.ticket.type]);
 
             this.poleDisplay(item.usEN.slice(0, 20), ["Price:", (item.price[0]).toFixed(2)]);

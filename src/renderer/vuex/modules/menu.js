@@ -246,7 +246,11 @@ const mutations = {
     state.choiceSetTarget = target;
   },
   [types.SET_ORDER](state, data) {
-    Object.assign(state.order, data)
+    state.order = Object.assign({}, state.order, data);
+    state.item = state.order.content.last();
+
+    let dom = document.querySelector('li.item.active');
+    dom && dom.classList.remove('active')
   },
   [types.REMOVE_PAYMENT](state) {
     let total = parseFloat(state.order.payment.total);
