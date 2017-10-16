@@ -80,13 +80,12 @@ export default {
 .categories {
     display: flex;
     flex-wrap: wrap;
-    width: 575px;
-    padding: 10px;
+    width: 590px;
     justify-content: space-between;
 }
 
 .categories .checkbox {
-    width: 170px;
+    width: 175px;
 }
 
 fieldset {

@@ -255,7 +255,6 @@ export default {
             let customer = Object.assign({}, this.customer);
             delete customer.extra;
             let split = this.check(this.items) > 1;
-            console.log(split)
             if (this.app.mode === 'create' && this.$route.name === 'Menu') {
                 this.setOrder({
                     customer,

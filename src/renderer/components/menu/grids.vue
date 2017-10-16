@@ -318,7 +318,6 @@ export default {
       } else {
         Object.assign(order, {
           customer,
-          type: this.ticket.type,
           lastEdit: +new Date(),
           editor: this.op.name,
           modify: isNumber(this.order.modify) ? this.order.modify + 1 : 1

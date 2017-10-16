@@ -131,9 +131,11 @@ export default {
         }
     },
     mounted() {
-        this.$route.name === 'Menu' && this.app.mode === 'edit' && (this.payment = this.order.payment);
-        this.$route.name === 'Table' && this.order.content.length > 0 && (this.payment = this.order.payment);
-        this.app.mode === 'create' && this.order.content.length > 0 && this.calculator(this.order.content);
+        if (this.$route.name === 'Table' && this.order.content.length > 0) {
+            this.payment = this.order.payment
+        } else {
+            this.calculator(this.order.content)
+        }
     },
     methods: {
         resetHighlight() {
@@ -270,7 +272,7 @@ export default {
             }
 
             let { tip, gratuity, discount, paid } = this.order.payment;
-            let { type } = this.ticket;
+            let type = this.app.mode === 'create' ? this.ticket.type : this.order.type;
             let { coupon } = this.order;
 
             let subtotal = 0, tax = 0;
@@ -328,6 +330,7 @@ export default {
             }
 
             let delivery = (type === 'DELIVERY' && this.store.delivery && !this.order.deliveryFree) ? parseFloat(this.store.deliveryCharge) : 0;
+
             let total = subtotal + tax + delivery;
             let due = Math.max(0, total - discount);
             let surcharge = tip + gratuity;
@@ -378,9 +381,6 @@ export default {
                     this.offset = height > 329 ? 329 - height : 0;
                 }
             })
-        },
-        'ticket.type'(n) {
-            this.calculator(this.cart)
         }
     }
 }

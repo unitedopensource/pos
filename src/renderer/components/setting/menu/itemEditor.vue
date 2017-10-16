@@ -304,10 +304,13 @@ export default {
             if (pass.length === 0) {
                 this.item.price = String(this.item.price).split(",").map(parseFloat);
                 Object.keys(this.item.prices).forEach(type => {
-                    type === "DEFAULT" ?
-                        this.item.prices.DEFAULT = this.item.price :
-                        this.item.prices[type].length === 0 ? delete this.item.prices[type] :
-                            this.item.prices[type] = String(this.item.prices[type]).split(",").map(parseFloat);
+                    if (Array.isArray(this.item.prices[type])) {
+                        if (this.item.prices[type][0] == null || this.item.prices[type].length === 0) {
+                            delete this.item.prices[type]
+                        }
+                    } else {
+                        this.item.prices[type] = this.item.prices[type].split(",").map(parseFloat)
+                    }
                 })
                 this.item.option = this.item.option.map((item, index) => {
                     if (!isNumber(item.price)) delete item.price;

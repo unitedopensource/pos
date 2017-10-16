@@ -40,7 +40,7 @@ export default {
 
     },
     computed: {
-        ...mapGetters(['app', 'ticket', 'order','currentTable'])
+        ...mapGetters(['app', 'store', 'ticket', 'order', 'currentTable'])
     },
     methods: {
         change(type) {
@@ -55,13 +55,11 @@ export default {
             })
         },
         switchType(type) {
-            if (this.ticket.type === 'DINE_IN') {
-                this.resetCurrentTable()
-                this.$socket.emit("TABLE_MODIFIED", this.currentTable)
-                this.resetTable()
-            }
-            this.setTicket({ type });
+            this.ticket.type === 'DINE_IN' && this.$socket.emit("[TABLE] RESET", { session: this.order.session })
+            this.order.payment.delivery = (type === 'DELIVERY' && this.store.delivery && !this.order.deliveryFree) ? parseFloat(this.store.deliveryCharge) : 0;
+            Object.assign(this.order, { type })
             this.applyPrice(type);
+
             switch (type) {
                 case "PICK_UP":
                 case "DELIVERY":
@@ -76,7 +74,7 @@ export default {
         applyPrice(type) {
             let content = this.order.content.map(item => {
                 if (item.hasOwnProperty('prices') && item.prices[type])
-                    item.price = item.prices[type] || item.prices.DEFAULT;
+                    item.price = item.prices[type];
                 return item;
             })
             this.setOrder({ content })
@@ -109,7 +107,7 @@ li {
     border-bottom: 1px solid #ddd;
 }
 
-li i{
+li i {
     width: 25px;
     text-align: center;
 }
