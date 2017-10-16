@@ -1058,7 +1058,7 @@ function createStyle(ctrl) {
               div.category{border-bottom:1px dashed #000;margin-top:5px;${sortItem ? '' : 'display:none;'}}
               .list.zhCN{margin-top:5px;}
               .list.usEN{${printPrimary ? 'margin-top:-5px' : 'margin-bottom:8px'}}
-              .diff{display:none;}
+              .diff{display:none;font-size:16px;}
               .list.removed del {text-decoration: none;position:absolute;left: 0;right: 0;top: 45%; bottom:45%; border-top: 1px solid #000;border-bottom: 1px solid #000;}
               .list.less .diff,.list.more .diff{display:block;float:right;}
               .zhCN .price{${printPrimaryPrice ? 'display:initial' : 'display:none'}}
@@ -1068,13 +1068,13 @@ function createStyle(ctrl) {
               .choiceSet .set > span {margin-left:4px;}
               footer{font-family:'Agency FB';}
               section.column{display:flex;}
-              .payment{min-width:150px;${printPayment ? '' : 'display:none;'}}
+              .payment{min-width:150px;${printPayment ? 'display:flex;flex-direction:column;' : 'display:none;'}}
               .empty{flex:1}
               .payment p{display:flex;font-family:'Tensentype RuiHeiJ-W2';}
-              .payment .text{width:calc(60% - 5px);text-align:right;}
-              .payment .value{width:40%;text-align:right;padding-right:5px;}
+              .payment .text{flex:1;text-align:right;}
+              .payment .value{min-width:40%;text-align:right;padding:0 5px;}
               .settle{${printPayment ? '' : 'display:none;'}}
-              p.bold{font-weight:bold;font-size:22px;}
+              .payment p.bold{font-weight:bold;font-size:22px;}
               section.details{border:1px dashed #000;margin-top:5px;text-align:center;}
               .details p{display:flex;}
               .details .text{text-align:right;padding-right:20px;flex:5;}
@@ -1128,8 +1128,8 @@ function createFooter(table, ctrl, device, ticket) {
 
     let delivery = parseFloat(payment.delivery) > 0 ? `<p><span class="text">Delivery:</span><span class="value">${payment.delivery.toFixed(2)}</span></p>` : "";
     let note = footer ? footer.map(text => `<p>${text}</p>`).join("").toString() : "";
-
     let settle = [];
+    let applyCoupon = ticket.payment.hasOwnProperty('applyCoupon') ? ticket.payment.applyCoupon : true;
 
     if (ticket.coupon && applyCoupon) {
         settle.push(`<section class="details">
@@ -1191,28 +1191,38 @@ function createFooter(table, ctrl, device, ticket) {
       </section>`)
     }
 
+    let detail = [];
+    ['subtotal', 'discount', 'tax', 'total', 'tip', 'gratuity'].forEach(key => {
+        if (payment[key] > 0) {
+            let cls = '';
+            let value = payment[key].toFixed(2);
+            key === 'discount' && (value = '- ' + value);
+            if (key === 'total') {
+                value = payment.due.toFixed(2);
+                cls = 'bold';
+            }
+            detail.push(`<p class="${cls}">
+                            <span class="text">${key.toCapitalCase()}:</span>
+                            <span class="value">${value}</span>
+                        </p>`)
+        }
+    });
     let discount = parseFloat(payment.discount) !== 0 ?
         `<p><span class="text">Disc.:</span><span class="value">- ${payment.discount.toFixed(2)}</span></p>` : "";
     let tip = parseFloat(payment.tip) > 0 ?
         `<p><span class="text">Tip:</span><span class="value">${payment.tip}</span></p>` : "";
     let gratuity = parseFloat(payment.gratuity) > 0 ?
         `<p><span class="text">Gratuity:</span><span class="value">${payment.gratuity}</span></p>` : "";
-    let applyCoupon = ticket.payment.hasOwnProperty('applyCoupon') ? ticket.payment.applyCoupon : true;
-
-    let details = suggestion + settle.join(" ").toString();//voidTicket + coupon + cash + credit + gift + thirdParty;
 
     return `<footer>
               <section class="column">
                 <div class="empty"></div>
                 <div class="payment">
-                  <p><span class="text">Subtotal:</span><span class="value">${payment.subtotal.toFixed(2)}</span></p>
-                  <p><span class="text">Tax:</span><span class="value">${payment.tax.toFixed(2)}</span></p>
-                  ${delivery}${discount}${tip}${gratuity}
-                  <p class="bold"><span class="text">TOTAL:</span><span class="value">${payment.due.toFixed(2)}</span></p>
+                  ${detail.join("").toString()}
                 </div>
               </section>
               <div class="settle">
-              ${details}
+                ${suggestion + settle.join("").toString()}
               </div>
               <section class="note">${note}</section>
               <p class="printTime">${device} print @ ${moment().format('hh:mm:ss')}</p>

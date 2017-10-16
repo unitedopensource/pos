@@ -254,7 +254,6 @@ export default {
 
 
       if (print) {
-
         Printer.setTarget('All').print(this.app.mode === 'edit' ? this.analyzeDiffs(order) : order)
         order.content.forEach(item => {
           delete item.new;
@@ -271,14 +270,7 @@ export default {
       if (this.isEmptyTicket) return;
       let order;
       if (this.app.mode === 'create') {
-        order = this.combineOrderInfo({
-          server: this.op.name, print,
-          table: this.currentTable.name,
-          tableID: this.currentTable._id,
-          session: this.currentTable.session,
-          guest: isNumber(this.order.guest) ? this.order.guest : this.currentTable.guest
-        });
-
+        order = this.combineOrderInfo({ print });
         Object.assign(this.currentTable, { invoice: [order._id] })
         this.$socket.emit("[TABLE] SETUP", this.currentTable);
       } else {
@@ -322,8 +314,7 @@ export default {
           status: 1,
           time: +new Date(),
           date: today()
-        });
-
+        })
       } else {
         Object.assign(order, {
           customer,

@@ -50,7 +50,7 @@
             <div class="change">
               <span class="before">{{init.payment.total | decimal}}</span>
               <i class="fa fa-long-arrow-right"></i>
-              <span class="after">{{init.payment.total | discount(coupon.discount)}}</span>
+              <span class="after">{{init.payment.subtotal | discount(coupon.discount)}}</span>
             </div>
           </label>
           <span class="name">{{coupon.for}}</span>
@@ -71,6 +71,7 @@ export default {
       currentUnit: "%",
       formula: null,
       discount: null,
+      reset:true,
     }
   },
   created() {
@@ -83,7 +84,7 @@ export default {
     discount(value, coupon) {
       if (coupon.includes('%')) {
         let discount = 1 - coupon.replace(/\D+/, "") / 100;
-        return toFixed(value * discount, 2);
+        return toFixed(value * discount, 2).toFixed(2);
       } else {
         let discount = ~~coupon.replace(/\D+/, "");
         return value - discount;

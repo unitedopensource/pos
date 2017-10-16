@@ -121,8 +121,6 @@ export default {
 .calendar>header {
   text-align: center;
   display: flex;
-  font-size: 2em;
-  padding: 20px 0 15px;
   border-bottom: 1px solid #BDBDBD;
 }
 
@@ -130,7 +128,7 @@ export default {
   flex: 1;
   text-align: center;
   color: #1780d0;
-  padding: 20px;
+  padding: 15px 25px;
   text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3);
 }
 
@@ -145,7 +143,7 @@ i.fa-chevron-left {
 
 .calendar span.target {
   color: #deedf9;
-  border-bottom: 1px dashed #42b5da;
+  text-shadow: 0 1px 1px #333;
 }
 
 .display {
@@ -154,6 +152,8 @@ i.fa-chevron-left {
 
 .display span {
   color: #444;
+  text-shadow: 0 1px 1px #64B5F6;
+  cursor: pointer;
 }
 
 .dayWrap {
@@ -192,8 +192,8 @@ i.fa-chevron-left {
 .wk {
   display: flex;
   padding: 5px 0;
-  background: aliceblue;
-  color: #666;
+  background: #CFD8DC;
+  color: #455A64;
 }
 
 .wk span {

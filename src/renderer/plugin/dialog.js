@@ -72,6 +72,26 @@ const dialog = {
         }).then(() => { this.$q() }).catch(() => { this.$q() })
       }
     }
+    Vue.prototype.$accessDenied = function (restriction) {
+      if (restriction) {
+        //No login allowed
+
+        this.$dialog({
+          type: 'warning',
+          title: 'dialog.accessDenied',
+          msg: 'dialog.accessDeniedTip',
+          timeout: { duration: 10000 },
+          buttons: [{ text: 'button.confirm', fn: 'resolve' }]
+        }).then(() => { this.$q() }).catch(() => { this.$q() })
+      } else {
+        //allow operator to access
+
+        return new Promise((resolve, reject) => {
+          this.componentData = { resolve, reject };
+          this.component = 'unlock'
+        })
+      }
+    }
     Vue.prototype.$q = function () {
       this.component = null;
       this.componentData = null;

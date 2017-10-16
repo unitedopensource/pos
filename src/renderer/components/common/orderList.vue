@@ -101,6 +101,7 @@ import itemMarker from '../menu/marker'
 import entry from '../menu/entry'
 import listItem from './listItem'
 import config from './config'
+import NP from 'number-precision'
 export default {
     components: { config, itemMarker, dialoger, listItem, entry },
     props: ['layout', 'group', 'display', 'sort'],
@@ -276,13 +277,21 @@ export default {
 
             items.forEach(item => {
                 if (item.void) return;
-
+                let single = parseFloat(item.single);
+                let qty = item.qty || 1;
                 let taxClass = this.tax.class[item.taxClass];
-                let amount = parseFloat(item.single) * (item.qty || 1);
-                item.choiceSet.forEach(set => { amount += parseFloat(set.single) * (set.qty || 1) });
-                subtotal += amount;
+                let amount = NP.times(single, qty);
 
-                if (!this.order.taxFree) tax += taxClass.apply[type] ? toFixed(taxClass.rate / 100 * amount, 2) : tax;
+                item.choiceSet.forEach(set => {
+                    let p = parseFloat(set.single);
+                    let s = set.qty || 1;
+                    let t = NP.times(p, s);
+                    amount = NP.plus(amount, t)
+                });
+
+                subtotal = NP.plus(subtotal, amount);
+
+                if (!this.order.taxFree) tax += taxClass.apply[type] ? NP.times(NP.divide(taxClass.rate, 100), amount) : tax;
             })
 
             let { enable, penalty, when } = this.store.table.surcharge;
@@ -291,8 +300,8 @@ export default {
                 let value = parseFloat(penalty.replace(/[^0-9.]/g, ""));
 
                 if (penalty.includes("%")) {
-                    value = value / 100;
-                    gratuity = subtotal * value
+                    value = NP.divide(value, 100);
+                    gratuity = NP.times(subtotal, value)
                 } else {
                     gratuity = value
                 }
@@ -308,10 +317,13 @@ export default {
                  * Total:     9.00
                  * ------------------------------------------------------------------
                  */
+                let value = parseFloat(coupon.discount.replace(/\D+/, ""));
+
                 if (coupon.discount.includes("%")) {
-                    discount = toFixed((coupon.discount.replace(/\D+/, "") / 100) * (subtotal), 2)
+                    value = NP.divide(value, 100);
+                    discount = NP.times(value, subtotal)
                 } else {
-                    discount = subtotal - (coupon.discount.replace(/\D+/, ''))
+                    discount = NP.minus(subtotal, value)
                 }
             }
 
@@ -323,17 +335,17 @@ export default {
             let remain = balance - paid;
 
             this.payment = Object.assign({}, this.payment, {
-                subtotal: toFixed(subtotal, 2),
-                tax: toFixed(tax, 2),
-                total: toFixed(total, 2),
-                discount: toFixed(discount, 2),
-                due: toFixed(due, 2),
-                balance: toFixed(balance, 2),
-                remain: toFixed(remain, 2),
-                tip: toFixed(tip, 2),
-                gratuity: toFixed(gratuity, 2),
-                delivery: toFixed(delivery, 2),
-                surcharge: toFixed(surcharge, 2)
+                subtotal: NP.round(subtotal, 2),
+                tax: NP.round(tax, 2),
+                total: NP.round(total, 2),
+                discount: NP.round(discount, 2),
+                due: NP.round(due, 2),
+                balance: NP.round(balance, 2),
+                remain: NP.round(remain, 2),
+                tip: NP.round(tip, 2),
+                gratuity: NP.round(gratuity, 2),
+                delivery: NP.round(delivery, 2),
+                surcharge: NP.round(surcharge, 2)
             })
             Object.assign(this.order, { payment: this.payment })
         },

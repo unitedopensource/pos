@@ -38,8 +38,6 @@ export default {
                 settled: true
             })
             Object.assign(this.order, { settled: true, cashier: this.op.name })
-            //this.order.session && this.$socket.emit("[TABLE] RESET", { session: this.order.session })
-
 
             if (!this.init.hasOwnProperty('callback')) {
                 this.order.payment.log.push({

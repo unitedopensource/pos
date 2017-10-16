@@ -253,14 +253,10 @@ const mutations = {
     dom && dom.classList.remove('active')
   },
   [types.REMOVE_PAYMENT](state) {
-    let total = parseFloat(state.order.payment.total);
-
-    delete state.order.payment.paidCash;
-    delete state.order.payment.paidCredit;
-    delete state.order.payment.paidGift;
     delete state.order.payment.type;
     delete state.order.settled;
-    delete state.order.pending;
+
+    let { subtotal, tax, discount, delivery, tip, gratuity } = state.order.payment;
 
     if (state.order.splitPayment) {
       delete state.order.splitPayment;
@@ -268,17 +264,13 @@ const mutations = {
       state.order.content.forEach(item => item.sort = 0)
     }
 
-    state.order.payment = Object.assign({},
-      state.order.payment, {
-        settled: false,
-        tip: 0,
-        gratuity: 0,
-        paid: 0,
-        discount: 0,
-        log: [],
-        balance: total,
-        due: total
-      })
+    let surcharge = tip + gratuity;
+    let total = subtotal + tax + delivery;
+    let due = total - discount;
+    let balance = due + surcharge;
+    let remain = balance;
+
+    state.order.payment = { subtotal, tax, delivery, discount, tip, gratuity, surcharge, total, due, balance, paid: 0, remain, settled: false, log: [] }
   },
   [types.REFRESH_CURRENT_ORDER](state, orders) {
     if (state.order.hasOwnProperty('status')) {

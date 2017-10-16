@@ -12,10 +12,10 @@
             <i class="fa fa-ban"></i>
             <span class="text">{{$t('button.void')}}</span>
         </div>
-        <div class="btn" @click="isSettled">
+        <button class="btn" @click="isSettled" :disabled="order.settled">
             <i class="fa fa-money"></i>
             <span class="text">{{$t('button.payment')}}</span>
-        </div>
+        </button>
         <div class="btn" @click="receipt">
             <i class="fa fa-print"></i>
             <span class="text">{{$t('button.receipt')}}</span>
@@ -174,10 +174,6 @@ export default {
         },
         isSettled() {
             if (this.isEmptyTicket) return;
-            if (this.op.cashCtrl !== 'enable' && this.op.cashCtrl !== 'staffBank') {
-                this.$denyAccess();
-                return;
-            }
             if (this.order.status === 0) {
                 this.$dialog({
                     title: 'dialog.orderVoided',

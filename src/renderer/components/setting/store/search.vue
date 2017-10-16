@@ -7,7 +7,7 @@
             <div class="wrap">
                 <div class="search">
                     <i class="fa fa-search"></i>
-                    <input type="text" v-model.number="port" @keydown.enter="search">
+                    <input type="text" v-model.number="port" @keydown.enter="scan">
                     <i class="fa fa-times" @click="reset"></i>
                 </div>
             </div>
