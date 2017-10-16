@@ -1058,9 +1058,12 @@ export default {
         preview(index) {
             let ticket = JSON.parse(JSON.stringify(this.order));
             ticket.payment = ticket.splitPayment[index];
+            ticket.print = false;
 
             let { sort } = ticket.payment;
-            ticket.content = ticket.content.filter(item => Array.isArray(item.sort) ? item.sort.includes(sort) : item.sort === sort)
+
+            ticket.content = ticket.content.filter(item => Array.isArray(item.sort) ? item.sort.includes(sort) : item.sort === sort);
+            ticket.content.forEach(item => {item.print = false})
 
             this.$p('ticket', { ticket, exit: true })
         },

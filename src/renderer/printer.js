@@ -180,8 +180,8 @@ var Printer = function (plugin, config) {
     }
 
     this.preview = function (raw) {
-        let printer = this.station.printer || 'cashier';
-        let setting = this.setting[printer];
+        let printer = 'cashier';
+        let setting = this.setting.cashier;
 
         let { printStore, printType, printCustomer, enlargeDetail } = setting.control;
         let header = createHeader(this.config.store, raw);
@@ -924,7 +924,6 @@ function createList(printer, ctrl, invoice) {
         let markA = item.mark[0].join(" ");
         let markB = item.mark[1].join(" ");
         let mark = (markA || markB) ? "markItem" : "";
-        //let newItem = item.new ? '<span class="new">★</span>' : '';
         let setCN = "";
         let setEN = "";
         let diffs = item.diffs || '';
@@ -976,7 +975,6 @@ function createList(printer, ctrl, invoice) {
     } else {
         list = invoice.content.filter(item => item.printer[printer] && !item.print)
     }
-
 
     if (list.length === 0) return false;
     if (sortPriority) {

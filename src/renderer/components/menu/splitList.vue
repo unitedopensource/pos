@@ -46,6 +46,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import checkbox from '../setting/common/checkbox'
+import NP from 'number-precision'
 export default {
     components: { checkbox },
     props: ['invoice', 'split', 'settle', 'hide'],
@@ -107,45 +108,70 @@ export default {
                 this.invoice.filter(item => item.sort === 0);
         },
         payment() {
-            let tip = 0, gratuity = 0, discount = 0, delivery = 0, subtotal = 0, tax = 0, total = 0, paid = 0, due = 0, log = [];
             let type = this.$route.name === 'Menu' ? this.ticket.type : this.order.type;
             let coupon = this.order.coupon;
 
+            let tip = 0, gratuity = 0, discount = 0, delivery = 0, subtotal = 0, tax = 0, paid = 0, log = [];
+
             this.instance.forEach(item => {
-                let amount = item.single * item.qty;
+                let amount = NP.times(parseFloat(item.single), item.qty)
+                item.choiceSet.forEach(set => {
+                    amount += NP.times(parseFloat(set.single), set.qty)
+                })
+
                 if (this.isTax) {
                     let taxClass = this.tax.class[item.taxClass];
                     tax += taxClass.apply[type] ? (taxClass.rate / 100 * amount) : tax;
                 }
+
                 delivery = (type === 'DELIVERY' && this.isChargeDelivery &&
                     this.store.delivery && !this.invoice.deliveryFree) ?
                     this.store.deliveryCharge : 0;
+
                 subtotal += amount;
-            });
+            })
+
             tax = toFixed(tax, 2);
+
             if (coupon && this.isApplyCoupon) {
+                let value = parseFloat(coupon.discount.replace(/\D+/, ""))
                 if (coupon.discount.includes("%")) {
-                    discount = toFixed((coupon.discount.replace(/\D+/, "") / 100) * (subtotal), 2);
+                    discount = toFixed((value / 100) * (subtotal), 2)
                 } else {
-                    discount = subtotal - (coupon.discount.replace(/\D+/, ''))
+                    discount = value
                 }
             }
+
             let { enable, when, penalty } = this.store.table.surcharge;
             if (this.isApplyGratuity && this.order.type === 'DINE_IN' && enable && this.order.guest > when) {
                 let value = parseFloat(penalty.replace(/[^0-9.]/g, ""));
 
                 if (penalty.includes("%")) {
                     value = value / 100;
-                    gratuity = subtotal * value
+                    gratuity = NP.times(subtotal, value)
                 } else {
                     gratuity = value
                 }
             }
-            total = (subtotal + tax + tip + gratuity + delivery).toFixed(2);
-            due = (parseFloat(total) - parseFloat(discount)).toFixed(2);
+
+            let total = subtotal + tax + delivery;
+            let due = total - discount;
+            let surcharge = tip + gratuity;
+            let balance = due + surcharge;
+            let remain = balance - paid;
+
             return (this.settle && this.settle.settled) ?
                 this.settle :
-                { tip, gratuity, discount, delivery, subtotal, total, tax, paid, log, due, sort: this.split, applyCoupon: this.isApplyCoupon }
+                {
+                    tip, gratuity, discount, delivery, subtotal,
+                    paid, log, sort: this.split, applyCoupon: this.isApplyCoupon,
+                    total: NP.round(total, 2),
+                    due: NP.round(due,2),
+                    tax: NP.round(tax, 2),
+                    surcharge: NP.round(surcharge, 2),
+                    balance: NP.round(balance, 2),
+                    remain: NP.round(remain, 2)
+                }
         },
         ...mapGetters(['tax', 'ticket', 'store', 'order', 'language'])
     },

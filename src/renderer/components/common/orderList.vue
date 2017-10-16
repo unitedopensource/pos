@@ -325,7 +325,7 @@ export default {
                     value = NP.divide(value, 100);
                     discount = NP.times(value, subtotal)
                 } else {
-                    discount = NP.minus(subtotal, value)
+                    discount = value
                 }
             }
 
