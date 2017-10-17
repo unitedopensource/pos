@@ -552,7 +552,8 @@ export default {
         'tax': '税',
         'itemSales': '物品销售',
         'tips': '小费',
-        'gratuity': '附加费'
+        'gratuity': '附加费',
+        'thirdParty':'第三方'
     },
     thead: {
         'orderType': '订单种类',

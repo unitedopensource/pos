@@ -289,7 +289,6 @@ export default {
                 if (!payment.settled) return;
                 if (type === 'MULTIPLE') {
                     invoice.splitPayment.forEach(split => {
-                        //let amount = parseFloat(split.subtotal) + parseFloat(split.tax) - parseFloat(split.discount);
                         split.log.forEach(log => {
                             let paid = parseFloat(log.paid) - parseFloat(log.change)
                             let tip = parseFloat(log.tip || 0)
@@ -312,7 +311,6 @@ export default {
                         })
                     })
                 } else {
-                    //let amount = parseFloat(payment.subtotal) + parseFloat(payment.tax) - parseFloat(payment.discount);
                     payment.log.forEach(log => {
                         let paid = parseFloat(log.paid) - parseFloat(log.change)
                         let tip = parseFloat(log.tip || 0)
@@ -505,8 +503,9 @@ export default {
                         let log = [];
                         Array.isArray(ticket.splitPayment) ?
                             ticket.splitPayment.forEach(split => {
-                                log.push(...split.log)
-                            }) : log.push(...ticket.payment.log);
+                                split && log.push(...split.log)
+                            }) :
+                            log.push(...ticket.payment.log);
 
                         log.forEach(t => {
                             switch (t.type) {
@@ -603,6 +602,11 @@ export default {
                     text: this.$t('report.giftCard'),
                     count: gift,
                     amount: giftAmount
+                },
+                {
+                    text: this.$t('report.thirdParty'),
+                    count: third,
+                    amount: thirdAmount
                 },
                 {
                     text: "&nbsp;",

@@ -68,18 +68,16 @@ export default {
         done() {
             let price = parseFloat(this.total);
             Object.assign(this.item, {
-                single: 0.00,
-                price: [0.00],
-                total: "",
-                prices: {
-                    DEFAULT: [0.00]
-                },
+                single: price,
+                price: [price],
+                total: this.total,
+                prices: {},
                 choiceSet: [{
                     qty: 1,
-                    zhCN: `${this.scale}@${this.item.unitPrice.toFixed(2)}/` + this.$t('text.perUnit'),
-                    usEN: `${this.scale}@${this.item.unitPrice.toFixed(2)}/per Unit`,
-                    single: price,
-                    price: this.total
+                    zhCN: `${this.scale} @ ${this.item.unitPrice.toFixed(2)} / ` + this.$t('text.perUnit'),
+                    usEN: `${this.scale} @ ${this.item.unitPrice.toFixed(2)} / per Unit`,
+                    single: 0,
+                    price: 0
                 }]
             })
             this.addToOrder(this.item);

@@ -587,7 +587,8 @@ export default {
         'tax': 'Tax',
         'itemSales': 'Item Sales',
         'tips': 'Tips',
-        'gratuity': 'Gratuity'
+        'gratuity': 'Gratuity',
+        'thirdParty':'Third Party'
     },
     text: {
         'starter': 'Starter',

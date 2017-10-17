@@ -351,7 +351,6 @@ export default {
                 delivery: toFixed(delivery, 2),
                 surcharge: toFixed(surcharge, 2)
             })
-            console.log(this.payment)
             Object.assign(this.order, { payment: this.payment })
         },
         ...mapActions(['setChoiceSet', 'setPointer', 'resetPointer', 'resetChoiceSet', 'setChoiceSetTarget', 'setOrder'])
