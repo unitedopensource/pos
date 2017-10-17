@@ -1,52 +1,87 @@
 <template>
     <div>
-        <div class="period">
-            <div>
-                
-            </div>
-        </div>
-        <section class="card list">
-            <header>{{$t('title.timecard')}}</header>
-            <div class="header">
-                <span class="approve">{{$t('text.approve')}}</span>
-                <span class="week">{{$t('text.date')}}</span>
-                <span class="time">{{$t('text.clockInTime')}}</span>
-                <span class="time">{{$t('text.clockOutTime')}}</span>
-                <span class="hour">{{$t('text.workHour')}}</span>
-            </div>
-            <article>
-                <div class="list" v-for="(log,index) in logs" :key="index">
-                    <i class="approve fa" :class="getIcon(log.valid)"></i>
-                    <span class="week">{{log.clockIn | moment('ddd')}}</span>
-                    <span class="time">{{log.clockIn | moment('M/D/YY HH:mm:ss')}}</span>
-                    <span class="time">{{log.clockOut | moment('M/D/YY HH:mm:ss')}}</span>
-                    <span class="hour">{{calc(log.clockIn,log.clockOut)}}</span>
+        <section class="period">
+            <div class="wrap">
+                <div>
+                    <input type="radio" name="period" id="week" v-model="period" value="week" @change="fetchData">
+                    <label for="week">{{$t('thead.currentWeek')}}</label>
                 </div>
-            </article>
+                <div>
+                    <input type="radio" name="period" id="lastWeek" v-model="period" value="lastWeek" @change="fetchData">
+                    <label for="lastWeek">{{$t('thead.lastWeek')}}</label>
+                </div>
+                <div>
+                    <input type="radio" name="period" id="month" v-model="period" value="month" @change="fetchData">
+                    <label for="month">{{$t('thead.currentMonth')}}</label>
+                </div>
+                <div>
+                    <input type="radio" name="period" id="lastMonth" v-model="period" value="lastMonth" @change="fetchData">
+                    <label for="lastMonth">{{$t('thead.lastMonth')}}</label>
+                </div>
+            </div>
+            <div class="fn">
+                <button>
+                    <i class="fa fa-calendar-check-o"></i>Calendar</button>
+                <button :disabled="logs.length ===0" @click="generateExcel">
+                    <i class="fa fa-external-link"></i>Export</button>
+            </div>
         </section>
+        <section class="dataList">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="period"></th>
+                        <th class="date">{{$t('thead.date')}}</th>
+                        <th>{{$t('thead.start')}}</th>
+                        <th>{{$t('thead.end')}}</th>
+                        <th>{{$t('thead.workHour')}}</th>
+                        <th>{{$t('thead.wage')}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(log,index) in logs" :key="index">
+                        <td></td>
+                        <td>{{log.clockIn | moment('ddd')}}</td>
+                        <td>{{log.clockIn | moment('M/D/YY HH:mm:ss')}}</td>
+                        <td v-if="approval" class="editable" @click="edit(log)">{{log.clockOut | moment('M/D/YY HH:mm:ss')}}</td>
+                        <td v-else>{{log.clockOut | moment('M/D/YY HH:mm:ss')}}</td>
+                        <td>{{calculate(log.clockIn,log.clockOut)}}</td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        <div :is="component" :init="componentData" @refresh="fetchData"></div>
     </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import fileSaver from 'file-saver'
+import editor from './editor'
 export default {
     props: ['profile'],
+    components: { editor },
     computed: {
         ...mapGetters(['op'])
     },
     data() {
         return {
+            componentData: null,
+            component: null,
             approval: false,
-            logs: [],
-            page: 0,
+            period: 'week',
+            from: '',
+            to: '',
+            logs: []
         }
     },
     created() {
+        this.fetchData();
         this.approval = this.profile.permission ? this.profile.permission.includes('timecard') : false;
-        this.$socket.emit("[TIMECARD] RECORDS", { id: this.profile._id, index: this.page });
     },
     methods: {
-        calc(clockIn, clockOut) {
+        calculate(clockIn, clockOut) {
             clockOut = clockOut || +new Date();
             let duration = clockOut - clockIn;
             if (isNumber(duration)) {
@@ -56,78 +91,136 @@ export default {
 
                 return hh + ' ' + this.$t('text.hour') + ' ' + mm + ' ' + this.$t('text.minute') + ' ' + ss + ' ' + this.$t('text.second');
             }
-
         },
-        getIcon(status) {
-            return status ? 'fa-check-circle green' : 'fa-times-circle red';
+        fetchData() {
+            switch (this.period) {
+                case 'week':
+                    this.from = +moment().subtract(4, 'hours').startOf('week').hours(4);
+                    this.to = +moment().subtract(4, 'hours').endOf('week').add('1', 'days').hours(3).minutes(59).seconds(59).milliseconds(0);
+                    break;
+                case 'lastWeek':
+                    this.from = +moment().subtract(4, 'hours').subtract(1, 'weeks').startOf('week').hours(4);
+                    this.to = +moment().subtract(4, 'hours').subtract(1, 'weeks').endOf('week').add('1', 'days').hours(3).minutes(59).seconds(59).milliseconds(0);
+                    break;
+                case 'month':
+                    this.from = +moment().subtract(4, 'hours').startOf('month').hours(4);
+                    this.to = +moment().subtract(4, 'hours').endOf('month').add('1', 'days').hours(3).minutes(59).seconds(59).milliseconds(0);
+                    break;
+                case 'lastMonth':
+                    this.from = +moment().subtract(4, 'hours').subtract(1, 'months').startOf('month').hours(4);
+                    this.to = +moment().subtract(4, 'hours').subtract(1, 'months').endOf('month').add('1', 'days').hours(3).minutes(59).seconds(59).milliseconds(0);
+                    break;
+                case 'any':
+                    break;
+            }
+            this.$socket.emit("[TIMECARD] RECORDS", { _id: this.profile._id, from: this.from, to: this.to }, logs => { this.logs = logs })
         },
-        more() {
+        edit(log) {
+            this.$p('editor', { log })
+        },
+        generateExcel() {
+            let excel = [['Index', 'Date', 'Clock In', 'Clock Out', 'Work Hour(Min)', 'Wage']];
+            let csvRows = [];
 
-        }
-    },
-    sockets: {
-        OPERATOR_TIMECARD(logs) {
-            this.logs.push(...logs);
+            this.logs.forEach((log, index) => {
+                let { date, clockIn, clockOut } = log;
+                let timeIn = moment(clockIn).format('HH:mm:ss');
+                let timeOut = clockOut ? moment(clockOut).format('HH:mm:ss') : '';
+                let workHour = isNumber(clockOut) ? Math.floor(((clockOut - clockIn) % (1000 * 60 * 60)) / (1000 * 60)) : 'N/A';
+                let wage = '';
+                excel.push([index + 1, date, timeIn, timeOut, workHour, wage])
+            })
+
+            for (let i = 0; i < excel.length; i++) {
+                csvRows.push(excel[i].join(','));
+            }
+
+            let csvFile = csvRows.join('\n');
+            let blob = new Blob([csvFile], { type: "text/plain;charset=utf-8" });
+            fileSaver.saveAs(blob,`${this.op.name} work sheet.csv`)
         }
     }
 }
 </script>
 
+
 <style scoped>
-div.header {
-    padding: 10px 0;
-    background: #4D6D83;
-    color: #fff;
+section.period {
     display: flex;
-    border-bottom: 1px solid #455A64;
 }
 
-.approve {
-    width: 40px;
-    text-align: center;
-    padding: 0 5px;
+.period .wrap {
+    display: flex;
 }
 
-.week {
-    width: 100px;
-    text-align: center;
+.fn {
+    flex: 1;
+    background: #2196F3;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
 }
 
-.time {
-    padding: 0 5px;
-    width: 130px;
-}
-
-.hour {
-    width: 210px;
-    padding: 0 5px;
-}
-
-article .list {
+.fn button {
+    padding: 10px 20px;
+    margin: 0 5px;
+    background: #E1F5FE;
+    border: none;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px #333;
+    cursor: pointer;
     display: flex;
     align-items: center;
-    height: 40px;
+    outline: none;
 }
 
-.approve button {
-    height: 25px;
-    width: auto;
-    padding: 0 10px;
-    margin-left: 5px;
+.fn i {
+    margin-right: 5px;
+}
+
+.period label {
+    padding: 20px;
+    display: block;
+    border-bottom: 2px solid transparent;
+    background: #2196F3;
+    color: #BBDEFB;
+    transition: all 0.3s ease;
+}
+
+input:checked+label {
+    background: #42A5F5;
+    color: #fff;
+    text-shadow: 0 1px 1px #0D47A1;
+    border-bottom: 2px solid #FFB74D;
+}
+
+table {
+    table-layout: auto;
+    border-spacing: 0;
+    width: 100%;
+}
+
+thead {
+    background: #5389a0;
+    color: #fff;
+    text-shadow: 0 1px 1px #555;
+}
+
+td {
+    text-align: center;
+}
+
+td.editable:hover {
+    color: #FF5722;
     cursor: pointer;
-    font-size: initial;
-    color: #333;
+    text-decoration: underline;
 }
 
-article .list:nth-child(even) {
-    background: #F5F5F5;
+tbody tr:nth-child(even) {
+    background: #ECEFF1;
 }
 
-i.red {
-    color: var(--orange);
-}
-
-i.green {
-    color: var(--green);
+tr {
+    height: 40px;
 }
 </style>

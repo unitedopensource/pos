@@ -101,7 +101,6 @@ import itemMarker from '../menu/marker'
 import entry from '../menu/entry'
 import listItem from './listItem'
 import config from './config'
-import NP from 'number-precision'
 export default {
     components: { config, itemMarker, dialoger, listItem, entry },
     props: ['layout', 'group', 'display', 'sort'],
@@ -152,7 +151,8 @@ export default {
             let taxFree = this.order.taxFree || false;
             let deliveryFree = this.order.deliveryFree || false;
             let menuID = this.config.display.menuID;
-            this.$p("config", { taxFree, deliveryFree, menuID });
+            let seatOrder = this.store.table.seatOrder;
+            this.$p("config", { taxFree, deliveryFree, menuID, seatOrder });
         },
         openMarker() {
             if (this.isEmptyTicket) return;
@@ -282,18 +282,18 @@ export default {
                 let single = parseFloat(item.single);
                 let qty = item.qty || 1;
                 let taxClass = this.tax.class[item.taxClass];
-                let amount = NP.times(single, qty);
+                let amount = toFixed(single * qty, 2);
 
                 item.choiceSet.forEach(set => {
                     let p = parseFloat(set.single);
                     let s = set.qty || 1;
-                    let t = NP.times(p, s);
-                    amount = NP.plus(amount, t)
+                    let t = toFixed(p * s, 2);
+                    amount = toFixed(amount + t, 2)
                 });
 
-                subtotal = NP.plus(subtotal, amount);
+                subtotal = toFixed(subtotal + amount, 2);
 
-                if (!this.order.taxFree) tax += taxClass.apply[type] ? NP.times(NP.divide(taxClass.rate, 100), amount) : tax;
+                if (!this.order.taxFree) tax += taxClass.apply[type] ? toFixed(toFixed(taxClass.rate / 100, 2) * amount, 2) : tax;
             })
 
             let { enable, penalty, when } = this.store.table.surcharge;
@@ -302,8 +302,8 @@ export default {
                 let value = parseFloat(penalty.replace(/[^0-9.]/g, ""));
 
                 if (penalty.includes("%")) {
-                    value = NP.divide(value, 100);
-                    gratuity = NP.times(subtotal, value)
+                    value = toFixed(value / 100, 2);
+                    gratuity = toFixed(subtotal * value, 2)
                 } else {
                     gratuity = value
                 }
@@ -322,8 +322,8 @@ export default {
                 let value = parseFloat(coupon.discount.replace(/\D+/, ""));
 
                 if (coupon.discount.includes("%")) {
-                    value = NP.divide(value, 100);
-                    discount = NP.times(value, subtotal)
+                    value = toFixed(value / 100, 2);
+                    discount = toFixed(value * subtotal, 2)
                 } else {
                     discount = value
                 }
@@ -338,17 +338,17 @@ export default {
             let remain = balance - paid;
 
             this.payment = Object.assign({}, this.payment, {
-                subtotal: NP.round(subtotal, 2),
-                tax: NP.round(tax, 2),
-                total: NP.round(total, 2),
-                discount: NP.round(discount, 2),
-                due: NP.round(due, 2),
-                balance: NP.round(balance, 2),
-                remain: NP.round(remain, 2),
-                tip: NP.round(tip, 2),
-                gratuity: NP.round(gratuity, 2),
-                delivery: NP.round(delivery, 2),
-                surcharge: NP.round(surcharge, 2)
+                subtotal: toFixed(subtotal, 2),
+                tax: toFixed(tax, 2),
+                total: toFixed(total, 2),
+                discount: toFixed(discount, 2),
+                due: toFixed(due, 2),
+                balance: toFixed(balance, 2),
+                remain: toFixed(remain, 2),
+                tip: toFixed(tip, 2),
+                gratuity: toFixed(gratuity, 2),
+                delivery: toFixed(delivery, 2),
+                surcharge: toFixed(surcharge, 2)
             })
             Object.assign(this.order, { payment: this.payment })
         },

@@ -177,17 +177,17 @@ const mutations = {
           })
         })
       } else {
-        state.choiceSetTarget.price = (--state.choiceSetTarget.qty * state.choiceSetTarget.single).toFixed(2);
+        state.choiceSetTarget.price = toFixed(--state.choiceSetTarget.qty * state.choiceSetTarget.single,2).toFixed(2)
       }
     } else if (delChoiceSetFirst) {
       let set = state.item.choiceSet.last();
-      set && (set.qty === 1 ? state.item.choiceSet.pop() : set.price = (--set.qty * set.single).toFixed(2));
+      set && (set.qty === 1 ? state.item.choiceSet.pop() : set.price = toFixed(--set.qty * set.single,2).toFixed(2));
     } else {
       let currentActionTime = +new Date();
       let diff = currentActionTime - state.lastActionTime;
       if (!state.item) state.item = state.order.content.last();
       if (state.item.qty !== 1 && diff > 250) {
-        state.item.total = (--state.item.qty * state.item.single).toFixed(2);
+        state.item.total = toFixed(--state.item.qty * state.item.single,2).toFixed(2);
         state.order.content.splice();
       } else {
         state.order.content.remove(state.item);
@@ -206,7 +206,7 @@ const mutations = {
     if (state.choiceSetTarget && state.choiceSetTarget.qty < 99) {
       state.choiceSetTarget.price = (++state.choiceSetTarget.qty * state.choiceSetTarget.single).toFixed(2);
     } else {
-      state.item.total = (++state.item.qty * state.item.single).toFixed(2);
+      state.item.total = toFixed(++state.item.qty * state.item.single, 2).toFixed(2);
       state.order.content.splice();
     }
   },
@@ -239,7 +239,7 @@ const mutations = {
     if (!state.choiceSetTarget) return;
     let single = data.single || data.total;
     let qty = data.qty || 1;
-    let price = (single * qty).toFixed(2);
+    let price = toFixed(single * qty, 2).toFixed(2);
     Object.assign(state.choiceSetTarget, { qty, single, price })
   },
   [types.SET_CHOICE_SET_TARGET](state, target) {

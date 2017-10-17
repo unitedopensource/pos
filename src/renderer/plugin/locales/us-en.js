@@ -235,7 +235,15 @@ export default {
         'server':'Server',
         'lapse':'Lapse',
         'action':'Action',
-        'todo':'Todo'
+        'todo':'Todo',
+        'currentWeek':'Current Week',
+        'lastWeek':'Last Week',
+        'currentMonth':'Current Month',
+        'lastMonth':'Last Month',
+        'start':'Start',
+        'end':'End',
+        'workHour':'Work Hour',
+        'wage':'Wage'
     },
     title: {
         'markPaymentType': 'Mark Payment Type',
@@ -790,7 +798,8 @@ export default {
         'penalty': 'Penalty',
         'issueGiftCard': 'Issue Gift Card',
         'issueCoupon': 'Issue Coupon',
-        'preview':'Preview'
+        'preview':'Preview',
+        'seatOrder':'Seat Order'
     },
     nav: {
         'store': 'Store',

@@ -575,7 +575,15 @@ export default {
         'server':'服务员',
         'lapse':'历时',
         'action':'操作',
-        'todo':'完成'
+        'todo':'完成',
+        'currentWeek':'本周',
+        'lastWeek':'上周',
+        'currentMonth':'本月',
+        'lastMonth':'上个月',
+        'start':'开始',
+        'end':'结束',
+        'workHour':'工时',
+        'wage':'工资'
     },
     text: {
         'starter': '起始',
@@ -788,7 +796,8 @@ export default {
         'penalty': '罚金',
         'issueGiftCard': '发行礼物卡',
         'issueCoupon': '发行折扣卷',
-        'preview':'预览'
+        'preview':'预览',
+        'seatOrder':'按位点餐'
     },
     nav: {
         'store': '店面',

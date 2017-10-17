@@ -1152,7 +1152,7 @@ function createFooter(table, ctrl, device, ticket) {
                             </section>`)
                     break;
                 case 'CREDIT':
-                    let cc = log.number ? `(${cc})` : '';
+                    let cc = log.number ? `(${log.number})` : '';
                     settle.push(`<section class="details">
                                 <h3>Paid by CREDIT Card ${cc} - Thank You</h3>
                                 <p>
@@ -1190,13 +1190,13 @@ function createFooter(table, ctrl, device, ticket) {
     }
 
     let detail = [];
-    ['subtotal', 'discount', 'tax', 'total', 'tip', 'gratuity'].forEach(key => {
+    ['subtotal', 'discount', 'tax', 'tip', 'gratuity', 'total'].forEach(key => {
         if (payment[key] > 0) {
             let cls = '';
             let value = payment[key].toFixed(2);
             key === 'discount' && (value = '- ' + value);
             if (key === 'total') {
-                value = payment.due.toFixed(2);
+                value = payment.balance.toFixed(2);
                 cls = 'bold';
             }
             detail.push(`<p class="${cls}">

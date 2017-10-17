@@ -16,7 +16,7 @@
                             <th>{{$t('thead.lapse')}}</th>
                             <th>{{$t('thead.total')}}</th>
                             <th>{{$t('thead.todo')}}</th>
-                            <th>Action</th>
+                            <th>{{$t('thead.action')}}</th>
                             <th>{{$t('thead.view')}}</th>
                         </tr>
                     </thead>
@@ -61,11 +61,14 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(['history'])
+        ...mapGetters(['op', 'history'])
     },
     created() {
-        this.invoices = this.history.filter(invoice => invoice.type === 'DINE_IN' && invoice.status === 1 && !invoice.settled)
-            .sort((a, b) => a.time > b.time)
+        let approval = this.approval(this.op.view, "invoices");
+
+        this.invoices = approval ?
+            this.history.filter(invoice => invoice.type === 'DINE_IN' && invoice.status === 1 && !invoice.settled).sort((a, b) => a.time > b.time) :
+            this.history.filter(invoice => invoice.type === 'DINE_IN' && invoice.server === this.op.name && invoice.status === 1 && !invoice.settled).sort((a, b) => a.time > b.time);
     },
     methods: {
         view(ticket) {

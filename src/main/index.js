@@ -44,6 +44,7 @@ function createWindow() {
     width: 460,
     height: 270,
     frame: false,
+    resizable: false,
     autoHideMenuBar: true,
     alwaysOnTop: true,
     show: false,

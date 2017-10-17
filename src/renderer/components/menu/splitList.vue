@@ -3,15 +3,21 @@
         <header v-if="split">#{{split}}</header>
         <div class="inner" :class="{paid}">
             <div v-for="(item,index) in instance" :key="index" @click.stop="pick(item.unique)" :data-key="item.unique">
-                <span class="itemWrap">
-                    <span class="item">{{item[language]}}
-                        <span class="mark">{{item.mark[0] | mark}}</span>
+                <div class="main">
+                    <span class="itemWrap">
+                        <span class="item">{{item[language]}}
+                            <span class="mark">{{item.mark[0] | mark}}</span>
+                        </span>
+                        <span class="side">{{item.side[language]}}
+                            <span class="mark">{{item.mark[1] | mark}}</span>
+                        </span>
                     </span>
-                    <span class="side">{{item.side[language]}}
-                        <span class="mark">{{item.mark[1] | mark}}</span>
-                    </span>
-                </span>
-                <span>{{item.total}}</span>
+                    <span>{{item.total}}</span>
+                </div>
+                <div class="sub" v-for="(sub,index) in item.choiceSet" :key="index">
+                    <span>{{sub[language]}}</span>
+                    <span class="price" v-show="sub.price > 0">( {{sub.price | decimal}} )</span>
+                </div>
             </div>
             <div class="space" v-if="instance.length > 7 && !hide"></div>
         </div>
@@ -166,7 +172,7 @@ export default {
                     tip, gratuity, discount, delivery, subtotal,
                     paid, log, sort: this.split, applyCoupon: this.isApplyCoupon,
                     total: NP.round(total, 2),
-                    due: NP.round(due,2),
+                    due: NP.round(due, 2),
                     tax: NP.round(tax, 2),
                     surcharge: NP.round(surcharge, 2),
                     balance: NP.round(balance, 2),
@@ -218,6 +224,7 @@ export default {
 
 .inner>div {
     display: flex;
+    flex-direction: column;
     padding: 10px;
     border-bottom: 1px solid #ddd;
 }
@@ -322,5 +329,19 @@ header {
     height: 100px;
     background: url(../../assets/image/paid.png) no-repeat;
     background-size: cover;
+}
+
+.main {
+    display: flex;
+}
+
+.sub {
+    font-size: 12px;
+    color: #EF6C00;
+    text-indent: 1em;
+}
+
+.active .sub {
+    color: #fff;
 }
 </style>

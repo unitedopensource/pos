@@ -29,6 +29,13 @@
           <span></span>
         </label>
       </div>
+      <div class="option">
+        <span class="text">{{$t('text.seatOrder')}}</span>
+        <label class="input-toggle" @change="toggleSeatOrder">
+          <input type="checkbox" v-model="init.seatOrder">
+          <span></span>
+        </label>
+      </div>
     </div>
   </div>
 </template>
@@ -70,6 +77,9 @@ export default {
       this.viewCategory ?
         dom.classList.add("showCategory") :
         dom.classList.remove("showCategory");
+    },
+    toggleSeatOrder(){
+      console.log(toggle)
     },
     ...mapActions(['setConfig'])
   },

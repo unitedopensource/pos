@@ -181,7 +181,6 @@ import CreditCard from './creditCard'
 import ticket from '../common/ticket'
 import Discount from './discount'
 import paymentMark from './mark'
-import NP from 'number-precision'
 import Tips from './tips'
 export default {
     props: ['init'],
@@ -453,9 +452,9 @@ export default {
             if (parseFloat(this.paid) === 0) return;
             let balance = this.payment.remain;
             let paid = Math.min(parseFloat(this.paid), this.payment.remain);
-            let change = Math.max(0, NP.minus(this.paid, balance));
+            let change = Math.max(0, toFixed(this.paid - balance, 2));
 
-            this.payment.paid = NP.plus(this.payment.paid, paid);
+            this.payment.paid = toFixed(this.payment.paid + paid, 2);
             this.recalculatePayment();
 
             this.payment.log.push({
@@ -469,7 +468,7 @@ export default {
         changeDue(paid, change, balance) {
             this.recordCashDrawerAction(paid, change);
             this.poleDisplay(["Paid Cash", this.paid.toFixed(2)], ["Change Due:", change]);
-
+            console.log(balance)
             balance > 0 ?
                 this.payRemainBalance() :
                 this.invoicePaid(paid, change, "CASH");
@@ -918,17 +917,26 @@ export default {
             return true
         },
         combineSplitPayment() {
-            let payment = { tip: 0, gratuity: 0, discount: 0, delivery: 0, subtotal: 0, tax: 0, total: 0, paid: 0, due: 0, log: [], settled: true, type: 'MULTIPLE' };
+            let payment = {
+                subtotal: 0, tax: 0, delivery: 0, discount: 0,
+                total: 0, due: 0,
+                paid: 0, balance: 0, remain: 0,
+                tip: 0, gratuity: 0, surcharge: 0,
+                log: [], settled: true, type: 'MULTIPLE'
+            };
             this.order.splitPayment.forEach((split) => {
-                payment.tip += parseFloat(split.tip);
-                payment.gratuity += parseFloat(split.gratuity);
-                payment.discount += parseFloat(split.discount);
-                payment.delivery += parseFloat(split.delivery);
                 payment.subtotal += parseFloat(split.subtotal);
                 payment.tax += parseFloat(split.tax);
                 payment.total += parseFloat(split.total);
+                payment.delivery += parseFloat(split.delivery);
+                payment.discount += parseFloat(split.discount);
                 payment.paid += parseFloat(split.paid);
                 payment.due += parseFloat(split.due);
+                payment.balance += parseFloat(split.balance);
+                payment.remain += parseFloat(split.remain);
+                payment.tip += parseFloat(split.tip);
+                payment.gratuity += parseFloat(split.gratuity);
+                payment.surcharge += parseFloat(split.surcharge);
                 payment.log.push(...split.log);
                 !split.settled && (payment.settled = false);
             })
@@ -1047,11 +1055,11 @@ export default {
         },
         recalculatePayment() {
             let { subtotal, tax, discount, paid, delivery, tip, gratuity } = this.payment;
-            let total = NP.plus(subtotal, tax);
-            let due = NP.minus(total, discount);
-            let surcharge = NP.plus(tip, gratuity);
-            let balance = NP.plus(due, surcharge);
-            let remain = NP.minus(balance, paid);
+            let total = toFixed(subtotal + tax, 2);
+            let due = toFixed(total - discount, 2);
+            let surcharge = toFixed(tip + gratuity, 2);
+            let balance = toFixed(due + surcharge, 2);
+            let remain = toFixed(balance - paid, 2);
 
             this.payment = Object.assign({}, this.payment, { total, due, surcharge, balance, remain })
         },
@@ -1063,7 +1071,7 @@ export default {
             let { sort } = ticket.payment;
 
             ticket.content = ticket.content.filter(item => Array.isArray(item.sort) ? item.sort.includes(sort) : item.sort === sort);
-            ticket.content.forEach(item => {item.print = false})
+            ticket.content.forEach(item => { item.print = false })
 
             this.$p('ticket', { ticket, exit: true })
         },
