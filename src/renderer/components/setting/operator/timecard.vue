@@ -119,7 +119,7 @@ export default {
             this.$p('editor', { log })
         },
         generateExcel() {
-            let excel = [['Index', 'Date', 'Clock In', 'Clock Out', 'Work Hours', 'Wage']];
+            let excel = [['Index', 'Date', 'Clock In', 'Clock Out', 'Work Hours', 'Wage', 'Editor', 'Edit Time']];
             let csvRows = [];
 
             this.logs.reverse().forEach((log, index) => {
@@ -128,7 +128,9 @@ export default {
                 let timeOut = clockOut ? moment(clockOut).format('HH:mm:ss') : '';
                 let workHour = isNumber(clockOut) ? toFixed((clockOut - clockIn) / 3600000, 2) : 'N/A';
                 let wage = '';
-                excel.push([index + 1, date, timeIn, timeOut, workHour, wage])
+                let editor = log.editor || '';
+                let editTime = log.edit ? moment(log.edit).format('YYYY-MM-DD HH:mm:ss') : '';
+                excel.push([index + 1, date, timeIn, timeOut, workHour, wage, editor, editTime])
             })
 
             for (let i = 0; i < excel.length; i++) {
