@@ -344,12 +344,14 @@ export default {
                 discount: toFixed(discount, 2),
                 due: toFixed(due, 2),
                 balance: toFixed(balance, 2),
+                paid :toFixed(paid,2),
                 remain: toFixed(remain, 2),
                 tip: toFixed(tip, 2),
                 gratuity: toFixed(gratuity, 2),
                 delivery: toFixed(delivery, 2),
                 surcharge: toFixed(surcharge, 2)
             })
+            console.log(this.payment)
             Object.assign(this.order, { payment: this.payment })
         },
         ...mapActions(['setChoiceSet', 'setPointer', 'resetPointer', 'resetChoiceSet', 'setChoiceSetTarget', 'setOrder'])

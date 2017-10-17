@@ -231,7 +231,7 @@ export default {
             data.forEach(invoice => {
                 if (invoice.server) {
                     let name = invoice.server;
-                    let { subtotal, tax, tip,gratuity, discount } = invoice.payment;
+                    let { subtotal, tax, tip, gratuity, discount } = invoice.payment;
                     let amount = parseFloat(subtotal) + parseFloat(tax) - parseFloat(discount);
 
                     if (staff.hasOwnProperty(name)) {
@@ -295,6 +295,8 @@ export default {
                             let tip = parseFloat(log.tip || 0)
                             let type = log.type;
 
+                            paid -= tip;
+
                             if (settle.hasOwnProperty(type)) {
                                 settle[split.type]["amount"] += paid;
                                 settle[split.type]["tip"] += tip;
@@ -315,6 +317,8 @@ export default {
                         let paid = parseFloat(log.paid) - parseFloat(log.change)
                         let tip = parseFloat(log.tip || 0)
                         let type = log.type;
+
+                        paid -= tip;
 
                         if (settle.hasOwnProperty(type)) {
                             settle[type]["amount"] += paid;

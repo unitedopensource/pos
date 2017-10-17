@@ -30,6 +30,7 @@ export default {
         'DELAY': 'Delay',
         'other': 'Other',
         'all': 'All',
+        'THIRD':'Third Party',
         'allInvoice': 'All Invoices',
         'walkInInvoice': 'WalkIn Inv.',
         'pickUpInvoice': 'PickUp Inv.',

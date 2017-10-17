@@ -22,9 +22,13 @@
                             <input type="radio" v-model="payment.type" name="paymentType" value="CASH" id="CASH" @change="setPaymentType('CASH')">
                             <label for="CASH">{{$t('type.CASH')}}</label>
                         </div>
-                        <div class="type">
+                        <div class="type" v-if="!thirdParty">
                             <input type="radio" v-model="payment.type" name="paymentType" value="CREDIT" id="CREDIT" @change="setPaymentType('CREDIT')">
                             <label for="CREDIT">{{$t('type.CREDIT')}}</label>
+                        </div>
+                        <div class="type" v-else>
+                            <input type="radio" v-model="payment.type" name="paymentType" value="THIRD" id="THIRD" @change="setPaymentType('THIRD')">
+                            <label for="THIRD">{{$t('type.THIRD')}}</label>
                         </div>
                         <div class="type">
                             <input type="radio" v-model="payment.type" name="paymentType" value="GIFT" id="GIFT" @change="setPaymentType('GIFT')">
@@ -121,6 +125,41 @@
                             <div @click="chargeCredit">&#8626;</div>
                         </aside>
                     </section>
+                    <section class="field" v-else-if="payment.type === 'THIRD'">
+                        <div class="display">
+                            <div class="data" @click="setInput('paid',$event)">
+                                <span class="text">{{$t('text.paid')}}</span>
+                                <span class="value">{{paid | decimal}}</span>
+                            </div>
+                            <div class="data" @click="setInput('tip',$event)">
+                                <span class="text">{{$t('button.setTip')}}</span>
+                                <span class="value">{{tip}}</span>
+                            </div>
+                            <div class="option">
+                                <div class="types">
+                                    <input type="radio" v-model="thirdPartyType" value="Visa" id="Visa">
+                                    <label for="Visa">Visa</label>
+                                </div>
+                                <div class="types">
+                                    <input type="radio" v-model="thirdPartyType" value="Master" id="Master">
+                                    <label for="Master">Master</label>
+                                </div>
+                                <div class="types">
+                                    <input type="radio" v-model="thirdPartyType" value="Discover" id="Discover">
+                                    <label for="Discover">Discover</label>
+                                </div>
+                                <div class="types">
+                                    <input type="radio" v-model="thirdPartyType" value="AE" id="AE">
+                                    <label for="AE">AE</label>
+                                </div>
+                            </div>
+                        </div>
+                        <aside class="numpad">
+                            <div @click="delCredit">&#8592;</div>
+                            <div @click="clearCredit">C</div>
+                            <div @click="chargeThird">&#8626;</div>
+                        </aside>
+                    </section>
                     <section class="field" v-else>
                         <div class="display">
                             <div class="data" @click="setInput('paid',$event)">
@@ -191,6 +230,8 @@ export default {
             componentData: null,
             component: null,
             quickInput: [],
+            thirdParty: true,
+            thirdPartyType: null,
             payment: {},
             order: null,
             anchor: "paid",
@@ -218,6 +259,8 @@ export default {
         this.payment = Object.assign(this.order.payment, { type: 'CASH' });
         this.checkComponentUsage();
         this.setPaymentType('CASH');
+
+        this.thirdParty = !this.station.terminal.enable;
     },
     beforeDestroy() {
         this.releaseComponentLock && this.$socket.emit('[COMPONENT] UNLOCK', { component: 'payment', lock: this.order._id })
@@ -248,7 +291,6 @@ export default {
             }).then(() => { this.init.reject() })
         },
         initial() {
-            console.log(this.payment)
             this.checkPermission().then(() => {
                 this.getQuickInput(this.payment.remain);
                 this.poleDisplay(["TOTAL DUE:", ""], ["", this.payment.remain.toFixed(2)]);
@@ -301,6 +343,7 @@ export default {
                     this.paid = '0.00';
                     break;
                 case "CREDIT":
+                case "THIRD":
                     this.paid = this.payment.remain.toFixed(2)
                     this.tip = this.payment.tip.toFixed(2)
                     break;
@@ -314,6 +357,7 @@ export default {
                     break;
             }
             this.setInput("paid");
+            this.thirdPartyType = null;
             this.payment = Object.assign({}, this.payment, { type });
             this.reset = true;
         },
@@ -375,6 +419,26 @@ export default {
                             break;
                     }
                     break;
+                case 'THIRD':
+                    switch (this.anchor) {
+                        case 'paid':
+                            let value = (this.paid * 100).toFixed(0).toString() + num;
+                            this.reset ?
+                                this.paid = (num / 100).toFixed(2) :
+                                this.paid = (value / 100).toFixed(2);
+                            this.paid = this.paid > 9999 ? "9999.00" : this.paid;
+                            break;
+                        case 'tip':
+                            let tip = (this.tip * 100).toFixed(0) + num;
+                            this.reset ?
+                                this.tip = (num / 100).toFixed(2) :
+                                this.tip = (tip / 100).toFixed(2);
+                            this.tip = this.tip > 9999 ? "9999.00" : this.tip;
+                            this.payment.tip = parseFloat(this.tip);
+                            this.recalculatePayment();
+                            break;
+                    }
+                    break;
                 case "GIFT":
                     if (this.anchor === 'number') {
                         this.reset ?
@@ -409,7 +473,6 @@ export default {
         },
         delCredit() {
             let p = this.anchor;
-            console.log(p)
             switch (p) {
                 case 'paid':
                     this.paid = (this.paid * 100).toFixed(0).slice(0, -1) / 100;
@@ -468,7 +531,6 @@ export default {
         changeDue(paid, change, balance) {
             this.recordCashDrawerAction(paid, change);
             this.poleDisplay(["Paid Cash", this.paid.toFixed(2)], ["Change Due:", change]);
-            console.log(balance)
             balance > 0 ?
                 this.payRemainBalance() :
                 this.invoicePaid(paid, change, "CASH");
@@ -513,17 +575,56 @@ export default {
                 this.component = "CreditCard";
             }).then((data) => { this.creditAccept(data) }).catch((reason) => { this.creditReject(reason) });
         },
+        chargeThird() {
+            if (this.thirdPartyType) {
+                this.payment.paid += parseFloat(this.paid);
+                this.payment.tip = parseFloat(this.tip);
+                this.recalculatePayment();
+
+                this.payment.log.push({
+                    id: "",
+                    type: this.thirdPartyType,
+                    paid: this.paid,
+                    change: "0.00",
+                    balance: "0.00",
+                    tip: this.payment.tip,
+                    number: 'N/A'
+                })
+                this.invoicePaid(this.payment.remain, 0, this.thirdPartyType)
+            } else {
+                this.paid = this.payment.remain;
+
+                new Promise((resolve, reject) => {
+                    this.componentData = { resolve, reject, callback: true };
+                    this.component = 'paymentMark'
+                }).then(type => {
+                    this.$q()
+                    this.payment.paid += parseFloat(this.paid);
+                    this.recalculatePayment();
+
+                    this.payment.log.push({
+                        id: "",
+                        type,
+                        paid: this.paid,
+                        change: "0.00",
+                        balance: "0.00",
+                        tip: this.payment.tip,
+                        number: 'N/A'
+                    })
+                    this.invoicePaid(this.payment.remain, 0, type)
+                }).catch(() => { this.$q() })
+            }
+        },
         chargeGift() {
             if (parseFloat(this.paid) === 0) return;
 
-
-            if (this.paid > this.payment.due) this.paid = (parseFloat(this.payment.due) - parseFloat(this.payment.paid)).toFixed(2);
+            if (this.paid > this.payment.remain) this.paid = (parseFloat(this.payment.remain) - parseFloat(this.payment.paid)).toFixed(2);
             if (this.giftCard.balance < this.paid) this.paid = this.giftCard.balance;
 
             this.payment.paid += parseFloat(this.paid);
 
             let change = this.payment.change = Math.max(0, (this.paid - this.payment.balance)).toFixed(2);
-            let balance = this.payment.balance = Math.max(0, (this.payment.due - this.payment.paid)).toFixed(2);
+            let balance = this.payment.balance = Math.max(0, (this.payment.remain - this.payment.paid)).toFixed(2);
             let paid = parseFloat(this.paid);
 
             let { _id, number, type } = this.order;
@@ -613,7 +714,7 @@ export default {
                         tip: this.payment.tip,
                         number: 'N/A'
                     })
-                    this.invoicePaid(this.payment.due, 0, type)
+                    this.invoicePaid(this.payment.remain, 0, type)
                 }).catch(() => { this.$q() })
             }).catch(() => { this.$q() })
         },
@@ -682,6 +783,7 @@ export default {
             }).then(result => {
                 let { tip, gratuity } = result;
 
+                this.tip = tip.toFixed(2);
                 this.payment.tip = tip;
                 this.payment.gratuity = gratuity;
 
@@ -1030,17 +1132,18 @@ export default {
         switchInvoice(index) {
             if (isNumber(index)) this.current = index;
             this.payment = this.order.splitPayment[this.current];
-            this.payment.remain = Math.max(0, (this.payment.due - this.payment.paid));
+            this.payment.remain = Math.max(0, (this.payment.balance - this.payment.paid));
             this.paid = "0.00";
             this.setPaymentType("CASH");
             this.getQuickInput(this.payment.remain);
         },
         roundUp() {
-            let rounded = Math.ceil(this.payment.due);
-            this.payment.due = Math.max(0, rounded - this.payment.discount);
-            this.payment.balance = this.payment.due + this.payment.surcharge;
-            this.payment.remain = Math.max(0, this.payment.balance - this.payment.paid);
+            let rounded = Math.ceil(this.payment.remain);
+
+            this.payment.gratuity = toFixed(rounded - this.payment.remain, 2);
             this.paid = "0.00";
+
+            this.recalculatePayment();
             this.getQuickInput(this.payment.remain);
         },
         getQuickInput(amount) {
@@ -1428,6 +1531,28 @@ span.card {
     font-size: 28px;
     color: #EEEEEE;
     padding: 8px 2px;
+}
+
+.types {
+    display: inline-flex;
+}
+
+.types label {
+    padding: 30px 0;
+    width: 105px;
+    text-align: center;
+    background: #fff;
+    margin: 3px 0px;
+    border: 2px solid #ffffff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.types input:checked+label {
+    background: #4CAF50;
+    color: #fff;
+    border-radius: 2px;
+    border: 2px solid #009688;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
 }
 
 @keyframes preview {
