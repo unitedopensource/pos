@@ -230,7 +230,9 @@ export default {
         'selectTask': '选择一个任务',
         'reload': '充值',
         'purchaseHistory': '历史记录',
-        'orderList':'订单列表'
+        'orderList':'订单列表',
+        'baseSetting':'基本设定',
+        'salary':'工资'
     },
     menu: {
         'course': '定时',
@@ -797,7 +799,9 @@ export default {
         'issueGiftCard': '发行礼物卡',
         'issueCoupon': '发行折扣卷',
         'preview':'预览',
-        'seatOrder':'按位点餐'
+        'seatOrder':'按位点餐',
+        'wage':'工资(小时)',
+        'payroll':'$ {i}'
     },
     nav: {
         'store': '店面',

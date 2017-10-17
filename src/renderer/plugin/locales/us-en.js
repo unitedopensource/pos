@@ -265,7 +265,9 @@ export default {
         'selectTask': 'Select A Task',
         'reload': 'Reload',
         'purchaseHistory': 'Purchase History',
-        'orderList':'Order list'
+        'orderList':'Order list',
+        'baseSetting':'Base Setting',
+        'salary':'Salary'
     },
     menu: {
         'course': 'Course',
@@ -799,7 +801,9 @@ export default {
         'issueGiftCard': 'Issue Gift Card',
         'issueCoupon': 'Issue Coupon',
         'preview':'Preview',
-        'seatOrder':'Seat Order'
+        'seatOrder':'Seat Order',
+        'wage':'Wage(Hour)',
+        'payroll':'$ {i}'
     },
     nav: {
         'store': 'Store',

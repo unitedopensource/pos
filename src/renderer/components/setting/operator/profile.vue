@@ -2,7 +2,7 @@
     <div>
         <section class="card">
             <header>
-                <span>{{$t('setting.config')}}</span>
+                <span>{{$t('title.baseSetting')}}</span>
                 <span class="tip"></span>
             </header>
             <article>
@@ -10,7 +10,15 @@
                 <smart-option v-model="operator.role" label="text.role" :options="roles"></smart-option>
                 <smart-input v-model="operator.pin" label="text.password" type="password"></smart-input>
                 <smart-option v-model="operator.language" label="text.defaultLanguage" :options="languages"></smart-option>
+            </article>
+        </section>
+        <section class="card">
+            <header>
+                <span>{{$t('title.salary')}}</span>
+            </header>
+            <article>
                 <smart-switch v-model="operator.timecard" label="text.timeCard"></smart-switch>
+                <smart-input v-model.number="operator.wage" label="text.wage" :disable="!operator.timecard"></smart-input>
             </article>
         </section>
         <section class="card list">

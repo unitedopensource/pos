@@ -46,7 +46,7 @@
                         <td v-if="approval" class="editable" @click="edit(log)">{{log.clockOut | moment('M/D/YY HH:mm:ss')}}</td>
                         <td v-else>{{log.clockOut | moment('M/D/YY HH:mm:ss')}}</td>
                         <td>{{calculate(log.clockIn,log.clockOut)}}</td>
-                        <td></td>
+                        <td>{{salary(log.clockIn,log.clockOut)}}</td>
                     </tr>
                 </tbody>
             </table>
@@ -92,6 +92,11 @@ export default {
                 return hh + ' ' + this.$t('text.hour') + ' ' + mm + ' ' + this.$t('text.minute') + ' ' + ss + ' ' + this.$t('text.second');
             }
         },
+        salary(clockIn, clockOut) {
+            let hour = isNumber(clockOut) ? toFixed((clockOut - clockIn) / 3600000, 2) : 0;
+            let wage = isNumber(this.profile.wage) ? parseFloat(this.profile.wage) : 0;
+            return '$ ' + toFixed(wage * hour, 2).toFixed(2)
+        },
         fetchData() {
             switch (this.period) {
                 case 'week':
@@ -119,18 +124,19 @@ export default {
             this.$p('editor', { log })
         },
         generateExcel() {
-            let excel = [['Index', 'Date', 'Clock In', 'Clock Out', 'Work Hours', 'Wage', 'Editor', 'Edit Time']];
+            let excel = [['Index', 'Date', 'Clock In', 'Clock Out', 'Work Hours', 'Wage', 'Salary', 'Editor', 'Edit Time']];
             let csvRows = [];
-
-            this.logs.reverse().forEach((log, index) => {
+            let wage = isNumber(this.profile.wage) ? parseFloat(this.profile.wage) : 0;
+            this.logs.slice(0).reverse().forEach((log, index) => {
                 let { date, clockIn, clockOut } = log;
                 let timeIn = moment(clockIn).format('HH:mm:ss');
                 let timeOut = clockOut ? moment(clockOut).format('HH:mm:ss') : '';
                 let workHour = isNumber(clockOut) ? toFixed((clockOut - clockIn) / 3600000, 2) : 'N/A';
-                let wage = '';
+                let salary = workHour * wage;
+                wage = isNumber(wage) ? toFixed(wage, 2).toFixed(2) : 0;
                 let editor = log.editor || '';
                 let editTime = log.edit ? moment(log.edit).format('YYYY-MM-DD HH:mm:ss') : '';
-                excel.push([index + 1, date, timeIn, timeOut, workHour, wage, editor, editTime])
+                excel.push([index + 1, date, timeIn, timeOut, workHour, wage, salary, editor, editTime])
             })
 
             for (let i = 0; i < excel.length; i++) {
