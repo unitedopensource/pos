@@ -20,7 +20,7 @@
                 </div>
             </div>
             <div class="fn">
-                <button>
+                <button :disabled="true">
                     <i class="fa fa-calendar-check-o"></i>Calendar</button>
                 <button :disabled="logs.length ===0" @click="generateExcel">
                     <i class="fa fa-external-link"></i>Export</button>
@@ -122,11 +122,11 @@ export default {
             let excel = [['Index', 'Date', 'Clock In', 'Clock Out', 'Work Hours', 'Wage']];
             let csvRows = [];
 
-            this.logs.forEach((log, index) => {
+            this.logs.reverse().forEach((log, index) => {
                 let { date, clockIn, clockOut } = log;
                 let timeIn = moment(clockIn).format('HH:mm:ss');
                 let timeOut = clockOut ? moment(clockOut).format('HH:mm:ss') : '';
-                let workHour = isNumber(clockOut) ? toFixed(((clockOut - clockIn) % (1000 * 60 * 60)) / (1000 * 60) / 60,2) : 'N/A';
+                let workHour = isNumber(clockOut) ? toFixed((clockOut - clockIn) / 3600000, 2) : 'N/A';
                 let wage = '';
                 excel.push([index + 1, date, timeIn, timeOut, workHour, wage])
             })
@@ -137,7 +137,7 @@ export default {
 
             let csvFile = csvRows.join('\n');
             let blob = new Blob([csvFile], { type: "text/plain;charset=utf-8" });
-            fileSaver.saveAs(blob,`${this.op.name} work sheet.csv`)
+            fileSaver.saveAs(blob, `${this.op.name} work sheet.csv`)
         }
     }
 }
