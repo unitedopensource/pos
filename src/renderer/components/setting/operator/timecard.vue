@@ -119,14 +119,14 @@ export default {
             this.$p('editor', { log })
         },
         generateExcel() {
-            let excel = [['Index', 'Date', 'Clock In', 'Clock Out', 'Work Hour(Min)', 'Wage']];
+            let excel = [['Index', 'Date', 'Clock In', 'Clock Out', 'Work Hours', 'Wage']];
             let csvRows = [];
 
             this.logs.forEach((log, index) => {
                 let { date, clockIn, clockOut } = log;
                 let timeIn = moment(clockIn).format('HH:mm:ss');
                 let timeOut = clockOut ? moment(clockOut).format('HH:mm:ss') : '';
-                let workHour = isNumber(clockOut) ? Math.floor(((clockOut - clockIn) % (1000 * 60 * 60)) / (1000 * 60)) : 'N/A';
+                let workHour = isNumber(clockOut) ? toFixed(((clockOut - clockIn) % (1000 * 60 * 60)) / (1000 * 60) / 60,2) : 'N/A';
                 let wage = '';
                 excel.push([index + 1, date, timeIn, timeOut, workHour, wage])
             })
