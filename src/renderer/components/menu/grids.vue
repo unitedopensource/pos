@@ -253,14 +253,14 @@ export default {
       let order = this.combineOrderInfo({ print });
 
       if (this.app.mode === 'create') {
-        Printer.setTarget('All').print(content);
+        Printer.setTarget('All').print(order);
         if (print) {
           order.content.forEach(item => {
             item.print = true;
             item.pending = false;
           })
         }
-        this.$socket.emit("[SAVE] INVOICE", order, content => { })
+        this.$socket.emit("[SAVE] INVOICE", order, content => { console.log(content)})
       } else {
         if (print) {
           let diffs = this.analyzeDiffs(order);
@@ -287,7 +287,7 @@ export default {
 
       if (this.app.mode === 'create') {
         if (print) {
-          printOnDone ? Printer.setTarget('All').print(content) : Printer.setTarget('Order').print(content)
+          printOnDone ? Printer.setTarget('All').print(order) : Printer.setTarget('Order').print(order)
         }
       } else {
         if (print) {
@@ -304,7 +304,7 @@ export default {
         Object.assign(this.currentTable, { invoice: [order._id] });
         this.$socket.emit("[TABLE] SETUP", this.currentTable);
         this.$socket.emit("[SAVE] INVOICE", order, content => {
-
+          console.log(content)
         })
       } else {
         this.$socket.emit("[UPDATE] INVOICE", order);
