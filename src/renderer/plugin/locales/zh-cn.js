@@ -234,7 +234,8 @@ export default {
         'orderList':'订单列表',
         'baseSetting':'基本设定',
         'salary':'工资',
-        'doneAction':'完成操作'
+        'doneAction':'完成操作',
+        'setDate':'设定日期'
     },
     menu: {
         'course': '定时',

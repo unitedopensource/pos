@@ -1,6 +1,6 @@
 <template>
     <div class="popupMask center dark">
-        <div class="window">
+        <div class="window reservation" v-show="!component">
             <header class="title">
                 <span>{{$t('reservation.create')}}</span>
                 <i class="fa fa-times" @click="init.reject"></i>
@@ -56,7 +56,7 @@
                                 <div>
                                     <label>{{$t('reservation.date')}}</label>
                                     <div>
-                                        <input type="text" v-model="book.date" ref="date">
+                                        <input type="text" v-model="date" ref="date" @click="openCalendar">
                                     </div>
                                 </div>
                                 <div>
@@ -99,16 +99,18 @@
                 </section>
             </div>
         </div>
+        <div :is="component" :init="componentData"></div>
     </div>
 </template>
 
 <script>
 import { mapAction, mapGetters } from 'vuex'
+import calendar from './calendar'
 import seat from './seat'
 
 export default {
     props: ['init'],
-    components: { seat },
+    components: { seat,calendar },
     data() {
         return {
             book: {
@@ -126,15 +128,19 @@ export default {
                 status: 1,
                 request: []
             },
+            componentData:null,
+            component:null,
             section: null,
             scheduled: [],
             selected:null,
-            step: 0
+            step: 0,
+            date:null
         }
     },
     created() {
         this.$socket.emit("[RESV] GET_QUEUE", number => {this.book.queue = number})
         this.section = this.tables[0];
+        this.date = this.book.date;
     },
     methods: {
         current() {
@@ -157,6 +163,20 @@ export default {
         reserve(){
             this.$socket.emit("[RESV] CREATE",this.book);
             this.init.resolve()
+        },
+        openCalendar(){
+            new Promise((resolve,reject)=>{
+                this.componentData = {resolve,reject};
+                this.component = 'calendar'
+            }).then((time)=>{
+                console.log(time)
+                this.date = moment(time).format("MM-DD HH:mm");
+                this.book.date = moment(time).format("YYYY-MM-DD");
+                this.book.reserve = time;
+                this.$q()
+            }).catch(()=>{
+                this.$q()
+            })
         }
     },
     computed: {
@@ -166,7 +186,7 @@ export default {
 </script>
 
 <style scoped>
-.window {
+.reservation {
     min-width: 600px;
 }
 

@@ -1,6 +1,6 @@
 <template>
     <div class="window">
-        <header class="title">{{$t('text.setDate')}}</header>
+        <header class="title">{{$t('title.setDate')}}</header>
         <header class="tab">
             <div>
                 <input type="radio" v-model="tab" id="calendar" value="calendar">

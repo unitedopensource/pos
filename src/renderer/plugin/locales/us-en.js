@@ -271,7 +271,8 @@ export default {
         'orderList':'Order list',
         'baseSetting':'Base Setting',
         'salary':'Salary',
-        'doneAction':'Done Action'
+        'doneAction':'Done Action',
+        'setDate':'Set Date'
     },
     menu: {
         'course': 'Course',

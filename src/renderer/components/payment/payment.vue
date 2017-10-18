@@ -157,7 +157,7 @@
                         <aside class="numpad">
                             <div @click="delCredit">&#8592;</div>
                             <div @click="clearCredit">C</div>
-                            <div @click="chargeThird">&#8626;</div>
+                            <div @click="checkOverPay">&#8626;</div>
                         </aside>
                     </section>
                     <section class="field" v-else>
@@ -590,7 +590,7 @@ export default {
                     tip: this.payment.tip,
                     number: 'N/A'
                 })
-                this.invoicePaid(this.payment.remain, 0, this.thirdPartyType)
+                this.invoicePaid(this.paid, 0, this.thirdPartyType)
             } else {
                 this.paid = this.payment.remain;
 
@@ -600,6 +600,7 @@ export default {
                 }).then(type => {
                     this.$q()
                     this.payment.paid += parseFloat(this.paid);
+                    this.payment.tip = parseFloat(this.tip);
                     this.recalculatePayment();
 
                     this.payment.log.push({
@@ -611,9 +612,26 @@ export default {
                         tip: this.payment.tip,
                         number: 'N/A'
                     })
-                    this.invoicePaid(this.payment.remain, 0, type)
+                    this.invoicePaid(this.paid, 0, type)
                 }).catch(() => { this.$q() })
             }
+        },
+        checkOverPay() {
+            this.paid > this.payment.remain ?
+                this.$dialog({
+                    title: 'dialog.paidAmountGreaterThanDue',
+                    msg: ['dialog.extraAmountSetAsTip', toFixed(this.paid - this.payment.remain, 2).toFixed(2)],
+                    buttons: [{ text: 'button.cancel', fn: 'reject' }, { text: 'button.setTip', fn: 'resolve' }]
+                }).then(() => {
+                    let extra = toFixed(this.paid - this.payment.remain, 2);
+                    this.paid = this.payment.remain.toFixed(2);
+                    this.tip = extra.toFixed(2);
+                    this.chargeThird();
+                }).catch(() => {
+                    this.paid = this.payment.remain.toFixed(2);
+                    this.tip = '0.00';
+                    this.$q();
+                }) : this.chargeThird();
         },
         chargeGift() {
             if (parseFloat(this.paid) === 0) return;
@@ -714,7 +732,7 @@ export default {
                         tip: this.payment.tip,
                         number: 'N/A'
                     })
-                    this.invoicePaid(this.payment.remain, 0, type)
+                    this.invoicePaid(this.paid, 0, type)
                 }).catch(() => { this.$q() })
             }).catch(() => { this.$q() })
         },
