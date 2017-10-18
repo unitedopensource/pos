@@ -281,32 +281,28 @@ export default {
     },
     done(print) {
       if (this.isEmptyTicket) return;
-      let order;
-      if (this.app.mode === 'create') {
-        order = this.combineOrderInfo({ print });
-        Object.assign(this.currentTable, { invoice: [order._id] })
-        this.$socket.emit("[TABLE] SETUP", this.currentTable);
-      } else {
-        order = this.combineOrderInfo({});
-      }
-
       let { printOnDone, lockOnDone } = this.store.table;
+      let order = this.combineOrderInfo({ print });
 
-      if (print) {
-        printOnDone ?
-          Printer.setTarget('All').print(this.app.mode === 'edit' ? this.analyzeDiffs(order) : order) :
-          Printer.setTarget('Order').print(this.app.mode === 'edit' ? this.analyzeDiffs(order) : order);
+      print && printOnDone && order.content.forEach(item => {
+        item.print = true;
+        item.pending = false;
+      });
 
-        order.content.forEach(item => {
-          delete item.new;
-          item.print = true;
-          item.pending = false;
+      if (this.app.mode === 'create') {
+        Object.assign(this.currentTable, { invoice: [order._id] });
+        this.$socket.emit("[TABLE] SETUP", this.currentTable);
+        this.$socket.emit("[SAVE] INVOICE", order, content => {
+          if (print) {
+            printOnDone ? Printer.setTarget('All').print(content) : Printer.setTarget('Order').print(content)
+          }
         })
+      } else {
+        this.$socket.emit("[UPDATE] INVOICE", order);
+        if(print){
+          printOnDone ? Printer.setTarget('All').print(this.analyzeDiffs(order)) : Printer.setTarget('Order').print(this.analyzeDiffs(order))
+        }
       }
-
-      this.app.mode === 'create'
-        ? this.$socket.emit("[SAVE] INVOICE", order)
-        : this.$socket.emit("[UPDATE] INVOICE", order);
 
       if (lockOnDone) {
         this.setOp(null);

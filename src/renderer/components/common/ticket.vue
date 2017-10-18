@@ -1,7 +1,7 @@
 <template>
     <div>
         <div v-html="ticket" class="receipt" @click="fn"></div>
-        <button>{{$t('button.print')}}</button>
+        <button class="btn print" @click="print">{{$t('button.print')}}</button>
     </div>
 </template>
 
@@ -19,6 +19,9 @@ export default {
     methods: {
         fn() {
             this.init.exit && this.init.resolve()
+        },
+        print() {
+            Printer.setTarget('Receipt').print(this.init.ticket)
         }
     }
 }
@@ -30,5 +33,14 @@ export default {
     width: 280px;
     padding: 35px 20px 5px;
     box-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
+}
+
+.print {
+    position: fixed;
+    left: 0;
+    right: 0;
+    margin: auto;
+    padding: 15px;
+    bottom: 30px;
 }
 </style>

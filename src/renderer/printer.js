@@ -907,7 +907,7 @@ function createHeader(store, ticket) {
             <div class="time">
                 <span>Date: ${date}</span>
                 <span>Time: ${placeTime}</span>
-                <div class="number">${type === 'DINE_IN' ? '🅃' + table || '' : number}</div>
+                <div class="number">${type === 'DINE_IN' ? '🅃 ' + table || '' : number}</div>
             </div>
             <div class="server">
                 ${ticketInfo}
