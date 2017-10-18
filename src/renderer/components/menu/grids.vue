@@ -253,17 +253,18 @@ export default {
       let order = this.combineOrderInfo({ print });
 
       if (this.app.mode === 'create') {
+        Printer.setTarget('All').print(content);
         if (print) {
           order.content.forEach(item => {
             item.print = true;
             item.pending = false;
           })
         }
-        this.$socket.emit("[SAVE] INVOICE", order, content => { Printer.setTarget('All').print(content) })
+        this.$socket.emit("[SAVE] INVOICE", order, content => { })
       } else {
         if (print) {
           let diffs = this.analyzeDiffs(order);
-
+          Printer.setTarget('All').print(diffs);
           order.content.forEach(item => {
             delete item.new;
             item.print = true;
@@ -272,7 +273,7 @@ export default {
 
           this.$socket.emit("[UPDATE] INVOICE", order);
 
-          Printer.setTarget('All').print(diffs);
+
         }
       }
 
@@ -284,6 +285,16 @@ export default {
       let { printOnDone, lockOnDone } = this.store.table;
       let order = this.combineOrderInfo({ print });
 
+      if (this.app.mode === 'create') {
+        if (print) {
+          printOnDone ? Printer.setTarget('All').print(content) : Printer.setTarget('Order').print(content)
+        }
+      } else {
+        if (print) {
+          printOnDone ? Printer.setTarget('All').print(this.analyzeDiffs(order)) : Printer.setTarget('Order').print(this.analyzeDiffs(order))
+        }
+      }
+
       print && printOnDone && order.content.forEach(item => {
         item.print = true;
         item.pending = false;
@@ -293,15 +304,11 @@ export default {
         Object.assign(this.currentTable, { invoice: [order._id] });
         this.$socket.emit("[TABLE] SETUP", this.currentTable);
         this.$socket.emit("[SAVE] INVOICE", order, content => {
-          if (print) {
-            printOnDone ? Printer.setTarget('All').print(content) : Printer.setTarget('Order').print(content)
-          }
+
         })
       } else {
         this.$socket.emit("[UPDATE] INVOICE", order);
-        if(print){
-          printOnDone ? Printer.setTarget('All').print(this.analyzeDiffs(order)) : Printer.setTarget('Order').print(this.analyzeDiffs(order))
-        }
+
       }
 
       if (lockOnDone) {
