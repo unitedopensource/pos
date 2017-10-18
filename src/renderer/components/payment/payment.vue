@@ -929,7 +929,8 @@ export default {
                 });
             if (this.payInFull) {
                 this.isNewTicket ?
-                    this.$socket.emit("[SAVE] INVOICE", order) : this.$socket.emit("[UPDATE] INVOICE", order);
+                    this.$socket.emit("[SAVE] INVOICE", order, false, (content) => { order = content; console.log(order) }) :
+                    this.$socket.emit("[UPDATE] INVOICE", order);
 
                 type === 'CASH' ?
                     this.$dialog({
@@ -1079,19 +1080,9 @@ export default {
             }
         },
         invoiceSettled(ticket, print) {
-            if (print) {
-                this.isNewTicket ?
-                    Printer.setTarget('All').print(ticket, true) :
-                    Printer.setTarget('Receipt').print(ticket, true);
-
-                ticket.content.forEach(item => {
-                    delete item.new;
-                    item.print = true;
-                    item.pending = false;
-                })
-            }
-
-            this.$socket.emit("[UPDATE] INVOICE", ticket);
+            this.isNewTicket ?
+                print && Printer.setTarget('All').print(ticket, true) :
+                print && Printer.setTarget('Receipt').print(ticket, true);
 
             switch (this.$route.name) {
                 case "Menu":

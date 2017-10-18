@@ -98,7 +98,7 @@ export default {
         hours() {
             let hours = {};
             this.reservation && this.reservation.filter(book => book.status !== -1 && book.status !== 3).forEach(book => {
-                let frame = new Date(book.time).getHours();
+                let frame = new Date(book.reserve).getHours();
                 hours.hasOwnProperty(frame) ? hours[frame].push(book) : hours[frame] = [book]
             });
             return hours;

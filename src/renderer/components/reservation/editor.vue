@@ -168,7 +168,7 @@ export default {
             this.selected = seat.join(",");
         },
         reserve() {
-            this.$socket.emit("[RESV] GET_QUEUE", date, (number) => {
+            this.$socket.emit("[RESV] GET_QUEUE", this.book.date, (number) => {
                 Object.assign(this.book, {
                     op: this.op.name,
                     queue: number
