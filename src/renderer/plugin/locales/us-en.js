@@ -268,7 +268,8 @@ export default {
         'purchaseHistory': 'Purchase History',
         'orderList':'Order list',
         'baseSetting':'Base Setting',
-        'salary':'Salary'
+        'salary':'Salary',
+        'doneAction':'Done Action'
     },
     menu: {
         'course': 'Course',
@@ -1001,6 +1002,9 @@ export default {
         'suggestion': {
             'enable': 'Print tip suggestion on pre-payment ticket',
             'percentage': 'Set 3 tip suggestions percentage'
+        },
+        'terminal':{
+            'integration':'Semi-integrated terminal configuration'
         }
     }
 }

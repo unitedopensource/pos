@@ -13,7 +13,7 @@
         </section>
         <section class="card">
             <header>{{$t('setting.terminal')}}
-                <span class="tip">{{$t('setting.terminalTip')}}</span>
+                <span class="tip">{{$t('tip.terminal.integration')}}</span>
             </header>
             <article>
                 <smart-switch v-model="workStation.terminal.enable" label="text.enable"></smart-switch>

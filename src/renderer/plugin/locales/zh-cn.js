@@ -233,7 +233,8 @@ export default {
         'purchaseHistory': '历史记录',
         'orderList':'订单列表',
         'baseSetting':'基本设定',
-        'salary':'工资'
+        'salary':'工资',
+        'doneAction':'完成操作'
     },
     menu: {
         'course': '定时',
@@ -998,6 +999,9 @@ export default {
         'suggestion': {
             'enable': '在预付单收据下面打印小费建议',
             'percentage': '设置3个小费建议的百分比'
+        },
+        'terminal':{
+            'integration':'刷卡机半集成连接设置'
         }
     }
 }

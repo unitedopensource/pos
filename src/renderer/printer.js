@@ -1080,8 +1080,9 @@ function createStyle(ctrl) {
               .suggestion{border:1px dashed #000;padding:5px;display:flex;flex-direction:column;text-align:center;}
               .suggestion h5{font-size:22px;}
               .suggestion i{font-style: italic;font-size:14px;}
-              .suggestion div{width:80%;margin:auto;display:flex;}
-              .suggestion span{flex:1;text-align:right;}
+              .suggestion div{display:flex;justify-content: center;width:75%;margin:auto;}
+              .dash{margin: 0 5px;}
+              .tips{margin-left:15px;}
               section.note{text-align:center;font-weight:lighter;margin-top:10px;border-top:1px solid #000;}
               .printTime{${printActionTime ? '' : 'display:none;'}font-weight:bold;text-align:center;}
               .zhCN{font-family:'${primaryFont}';font-size:${primaryFontSize};${printPrimary ? '' : 'display:none!important;'}}
@@ -1099,20 +1100,20 @@ function createFooter(table, ctrl, device, ticket) {
         let percentage = table.tipPercentages ? table.tipPercentages.split(",") : [15, 18, 20];
         let data = [{
             percentage: percentage[0],
-            value: toFixed(payment.due * percentage[0] / 100, 2).toFixed(2),
-            total: toFixed(payment.due * (1 + percentage[0] / 100), 2).toFixed(2)
+            value: toFixed(payment.balance * percentage[0] / 100, 2).toFixed(2),
+            total: toFixed(payment.balance * (1 + percentage[0] / 100), 2).toFixed(2)
         }, {
             percentage: percentage[1],
-            value: toFixed(payment.due * percentage[1] / 100, 2).toFixed(2),
-            total: toFixed(payment.due * (1 + percentage[1] / 100), 2).toFixed(2)
+            value: toFixed(payment.balance * percentage[1] / 100, 2).toFixed(2),
+            total: toFixed(payment.balance * (1 + percentage[1] / 100), 2).toFixed(2)
         }, {
             percentage: percentage[2],
-            value: toFixed(payment.due * percentage[2] / 100, 2).toFixed(2),
-            total: toFixed(payment.due * (1 + percentage[2] / 100), 2).toFixed(2)
-        }].map(kindness => `<div>
-                <span>${kindness.percentage}% - </span>
-                <span>$ ${kindness.value}</span>
-                <span>( $ ${kindness.total} )</span>
+            value: toFixed(payment.balance * percentage[2] / 100, 2).toFixed(2),
+            total: toFixed(payment.balance * (1 + percentage[2] / 100), 2).toFixed(2)
+        }].map(kindness =>
+            `<div class="outer">
+                <span>${kindness.percentage}%<span class="dash">-</span>$ ${kindness.value}</span>
+                <span class="tips">( $ ${kindness.total} )</span>
             </div>`).join("").toString();
 
         suggestion = `<section class="suggestion">

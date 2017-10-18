@@ -66,6 +66,7 @@ export default {
             this.setConfig({ store: this.store });
             this.setApp({ autoLock: false });
             this.updateStation(this.store);
+            Printer.initial(CLODOP, this.config);
             setTimeout(() => { this.cancel() }, 1000);
         },
         updateStation(store) {
@@ -83,7 +84,7 @@ export default {
         ...mapActions(['setApp', 'setConfig', 'setStation'])
     },
     computed: {
-        ...mapGetters(['station'])
+        ...mapGetters(['config', 'station'])
     }
 }
 </script>

@@ -310,6 +310,7 @@ export default {
 
       if (lockOnDone) {
         this.setOp(null);
+        this.resetAll();
         this.$router.push({ path: '/main/lock' });
       } else {
         this.setOrder(order);
