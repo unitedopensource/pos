@@ -110,7 +110,7 @@ import seat from './seat'
 
 export default {
     props: ['init'],
-    components: { seat,calendar },
+    components: { seat, calendar },
     data() {
         return {
             book: {
@@ -128,17 +128,18 @@ export default {
                 status: 1,
                 request: []
             },
-            componentData:null,
-            component:null,
+            componentData: null,
+            component: null,
             section: null,
             scheduled: [],
-            selected:null,
+            selected: null,
             step: 0,
-            date:null
+            date: null
         }
     },
     created() {
-        this.$socket.emit("[RESV] GET_QUEUE", number => {this.book.queue = number})
+        let date = today();
+        this.$socket.emit("[RESV] GET_QUEUE", date, (number) => { this.book.queue = number })
         this.section = this.tables[0];
         this.date = this.book.date;
     },
@@ -152,29 +153,40 @@ export default {
             this.book.type = 'phone';
         },
         placeQueue() {
-            Object.assign(this.book, { op: this.op.name });
-            this.$socket.emit("[RESV] CREATE", this.book);
-            Printer.printReservationTicket(this.book)
-            this.init.resolve()
+            let date = today();
+            this.$socket.emit("[RESV] GET_QUEUE", date, (number) => {
+                Object.assign(this.book, {
+                    op: this.op.name,
+                    queue: number
+                })
+                this.$socket.emit("[RESV] CREATE", this.book);
+                Printer.printReservationTicket(this.book)
+                this.init.resolve()
+            })
         },
-        pick(seat){
+        pick(seat) {
             this.selected = seat.join(",");
         },
-        reserve(){
-            this.$socket.emit("[RESV] CREATE",this.book);
-            this.init.resolve()
+        reserve() {
+            this.$socket.emit("[RESV] GET_QUEUE", date, (number) => {
+                Object.assign(this.book, {
+                    op: this.op.name,
+                    queue: number
+                })
+                this.$socket.emit("[RESV] CREATE", this.book);
+                this.init.resolve()
+            })
         },
-        openCalendar(){
-            new Promise((resolve,reject)=>{
-                this.componentData = {resolve,reject};
+        openCalendar() {
+            new Promise((resolve, reject) => {
+                this.componentData = { resolve, reject };
                 this.component = 'calendar'
-            }).then((time)=>{
-                console.log(time)
+            }).then((time) => {
                 this.date = moment(time).format("MM-DD HH:mm");
                 this.book.date = moment(time).format("YYYY-MM-DD");
                 this.book.reserve = time;
                 this.$q()
-            }).catch(()=>{
+            }).catch(() => {
                 this.$q()
             })
         }

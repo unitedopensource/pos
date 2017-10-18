@@ -161,7 +161,14 @@ export default {
             this.checkTime() ? this.init.resolve(+this.date) : this.invalidDate();
         },
         invalidDate() {
-            this.$dialog({ type: "error", title: "INVALID_DATE", msg: "INVALID_DATE_TIP", buttons: [{ text: "CONFIRM", fn: "resolve" }] }).then(() => { this.$exitComponent() })
+            this.$dialog({
+                type: "error", title: "dialog.invalidDate", msg: "dialog.reserveDateIsPassed",
+                buttons: [{ text: "button.confirm", fn: "resolve" }]
+            }).then(() => {
+                this.date = today();
+                this.tab = 'calendar'
+                this.$q()
+            })
         },
         checkTime() {
             let date = this.date + ' ' + (this.period ? this.time + 12 : this.time) + ':' + this.minute + ':00';

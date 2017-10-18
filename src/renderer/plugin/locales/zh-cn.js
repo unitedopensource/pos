@@ -438,7 +438,9 @@ export default {
         'itemUnavailable': '物品不可用',
         'itemUnavailableTip': '{i} 物品暂时无法使用',
         'addressMismatch':'地址不一致',
-        'replaceAddress':'是否要将地址 {i} 替换成 {i} ?'
+        'replaceAddress':'是否要将地址 {i} 替换成 {i} ?',
+        'invalidDate':'日期错误',
+        'reserveDateIsPassed':'选定的预约日期无效'
     },
     terminal: {
         'initial': '正在初始化 {i}...',

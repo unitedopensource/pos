@@ -475,7 +475,9 @@ export default {
         'itemUnavailable': 'Item Unavailable',
         'itemUnavailableTip': '{i} currently is not available for ordering',
         'addressMismatch':'Address Mismatch',
-        'replaceAddress':'Are you wish to replace address {i} with {i} ?'
+        'replaceAddress':'Are you wish to replace address {i} with {i} ?',
+        'invalidDate':'Invalid Date',
+        'reserveDateIsPassed':'Reserve Date is passed!'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',
