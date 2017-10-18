@@ -989,9 +989,11 @@ export default {
         'createSubMenuGroup': '创建一个子菜单组',
         'reportBeforeBatch': '过账前是否打印每笔交易信息',
         'table': {
+            'actionsOnDone':'设定完成订单之后的操作',
             'passwordRequire': '创建座位之前需要输入密码',
             'autoClearTable': '客人付款之后自动还原座位状态',
-            'printReceiptOnDone': '是否在完成后打印收据'
+            'printReceiptOnDone': '在完成后打印收据',
+            'lockOnDone':'在完成之后锁定界面'
         },
         'suggestion': {
             'enable': '在预付单收据下面打印小费建议',

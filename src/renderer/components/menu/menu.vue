@@ -322,8 +322,6 @@ export default {
                 this.component = "guests"
             }).then((callback) => {
                 this.$q()
-                console.log(callback)
-
             }).catch(() => { this.$q() })
         },
         ...mapActions(['setApp', 'setOrder', 'setTicket', 'setSides', 'saveForDiffs', 'addToOrder', 'resetPointer', 'alertChoiceSet', 'setChoiceSet', 'resetMenu', 'resetAll', 'alterItemOption', 'resetCurrentTable'])

@@ -12,9 +12,13 @@
             </article>
         </section>
         <section class="card">
-            <header>{{$t('setting.print')}}</header>
+            <header>
+                <span>{{$t('title.doneAction')}}</span>
+                <span class="tip">{{$t('tip.table.actionsOnDone')}}</span>
+            </header>
             <article>
                 <smart-switch v-model="table.printOnDone" label="text.printReceipt" tip="tip.table.printReceiptOnDone"></smart-switch>
+                <smart-switch v-model="table.lockOnDone" label="text.autoLock" tip="tip.table.lockOnDone"></smart-switch>
             </article>
         </section>
         <section class="card">

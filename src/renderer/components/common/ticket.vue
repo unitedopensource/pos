@@ -1,6 +1,7 @@
 <template>
-    <div class="receipt" @click="fn">
-        <div v-html="ticket"></div>
+    <div>
+        <div v-html="ticket" class="receipt" @click="fn"></div>
+        <button>{{$t('button.print')}}</button>
     </div>
 </template>
 
@@ -15,8 +16,8 @@ export default {
             ticket: null
         }
     },
-    methods:{
-        fn(){
+    methods: {
+        fn() {
             this.init.exit && this.init.resolve()
         }
     }

@@ -40,7 +40,7 @@
                 </table>
             </div>
         </div>
-        <div class="popupMask center dark" v-show="component" @click="exitView">
+        <div class="popupMask center dark" v-show="component">
             <div :is="component" :init="componentData"></div>
         </div>
     </div>
@@ -72,16 +72,13 @@ export default {
     },
     methods: {
         view(ticket) {
-            this.$p('ticket', { ticket })
+            this.$p('ticket', { ticket, exit: true })
         },
         todo(content) {
             return content.filter(item => item.print).map(item => item.qty).reduce((a, b) => a + b, 0)
         },
         settle(order) {
             this.$p('payment', { order })
-        },
-        exitView() {
-            this.component === 'ticket' && this.$q()
         }
     },
     watch: {

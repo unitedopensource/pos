@@ -907,7 +907,7 @@ function createHeader(store, ticket) {
             <div class="time">
                 <span>Date: ${date}</span>
                 <span>Time: ${placeTime}</span>
-                <div class="number">${type === 'DINE_IN' ? table || '' : number}</div>
+                <div class="number">${type === 'DINE_IN' ? '🅃' + table || '' : number}</div>
             </div>
             <div class="server">
                 ${ticketInfo}
@@ -1035,7 +1035,7 @@ function createStyle(ctrl) {
               div.time{border-bottom:1px solid #000;position:relative;margin-top:10px;}
               .server{border-bottom:1px solid #000;padding-bottom:1px;text-align:left;}
               .server .wrap{display:flex;padding:0 10px;}
-              .wrap .text{flex:2;}.wrap .value{flex:3;}
+              .server .text{flex:2;}.server .value{flex:3;}
               .customer{padding:4px 0;${printCustomer ? '' : 'display:none;'}}
               .customer p{text-align:left;padding-bottom:2px;}
               .customer p:last-child{border-bottom:1px solid #000;padding-bottom:0px;}
@@ -1077,12 +1077,11 @@ function createStyle(ctrl) {
               .details p{display:flex;}
               .details .text{text-align:right;padding-right:20px;flex:5;}
               .details .value{text-align:left;flex:6}
-              .suggestion{font-family:'Agency FB';border:1px dashed #000;padding:5px; margin:auto;width:90%;display:flex;}}
-              .symbol{margin-right:5px;width:50px;text-align:center;}
-              .suggestion .percentage{ flex:1;display:inline-flex; }
-              .gratuity{width:90px;display:inline-flex;}
-              .suggestion .text{flex:1}
-              .suggestion .value{padding-right:10px;}
+              .suggestion{border:1px dashed #000;padding:5px;display:flex;flex-direction:column;text-align:center;}
+              .suggestion h5{font-size:22px;}
+              .suggestion i{font-style: italic;font-size:14px;}
+              .suggestion div{width:80%;margin:auto;display:flex;}
+              .suggestion span{flex:1;text-align:right;}
               section.note{text-align:center;font-weight:lighter;margin-top:10px;border-top:1px solid #000;}
               .printTime{${printActionTime ? '' : 'display:none;'}font-weight:bold;text-align:center;}
               .zhCN{font-family:'${primaryFont}';font-size:${primaryFontSize};${printPrimary ? '' : 'display:none!important;'}}
@@ -1098,30 +1097,29 @@ function createFooter(table, ctrl, device, ticket) {
 
     if (table.tipSuggestion && ticket.type === 'PRE_PAYMENT') {
         let percentage = table.tipPercentages ? table.tipPercentages.split(",") : [15, 18, 20];
-        suggestion = [{
-            text: 'Good Service',
+        let data = [{
             percentage: percentage[0],
-            value: (payment.due * percentage[0] / 100).toFixed(2)
+            value: toFixed(payment.due * percentage[0] / 100, 2).toFixed(2),
+            total: toFixed(payment.due * (1 + percentage[0] / 100), 2).toFixed(2)
         }, {
-            text: 'Great Service',
             percentage: percentage[1],
-            value: (payment.due * percentage[1] / 100).toFixed(2)
+            value: toFixed(payment.due * percentage[1] / 100, 2).toFixed(2),
+            total: toFixed(payment.due * (1 + percentage[1] / 100), 2).toFixed(2)
         }, {
-            text: 'Excellent Service',
             percentage: percentage[2],
-            value: (payment.due * percentage[2] / 100).toFixed(2)
-        }].map(kindness =>
-            `<section class="suggestion">
-                <span class="symbol">☐</span>
-                <div class="percentage">
-                    <span class="text">${kindness.text}</span>
-                    <span class="value">${kindness.percentage}%</span>
-                </div>
-                <div class="gratuity">
-                    <span class="value">Gratuity:</span>
-                    <span class="value">$${kindness.value}</span>
-                </div>
-            </section>`).join("").toString();
+            value: toFixed(payment.due * percentage[2] / 100, 2).toFixed(2),
+            total: toFixed(payment.due * (1 + percentage[2] / 100), 2).toFixed(2)
+        }].map(kindness => `<div>
+                <span>${kindness.percentage}% - </span>
+                <span>$ ${kindness.value}</span>
+                <span>( $ ${kindness.total} )</span>
+            </div>`).join("").toString();
+
+        suggestion = `<section class="suggestion">
+                        <h5>Tips Suggestion</h5>
+                        <i>These tip amounts are provided for your convenience.</i>
+                        ${data}
+                      </section>`
     }
 
     let delivery = parseFloat(payment.delivery) > 0 ? `<p><span class="text">Delivery:</span><span class="value">${payment.delivery.toFixed(2)}</span></p>` : "";
@@ -1190,7 +1188,7 @@ function createFooter(table, ctrl, device, ticket) {
     }
 
     let detail = [];
-    ['subtotal', 'discount', 'tax', 'tip', 'gratuity', 'total'].forEach(key => {
+    ['subtotal', 'discount', 'tax', 'delivery', 'tip', 'gratuity', 'total'].forEach(key => {
         if (payment[key] > 0) {
             let cls = '';
             let value = payment[key].toFixed(2);

@@ -992,9 +992,11 @@ export default {
         'createSubMenuGroup': 'Create a sub menu group',
         'reportBeforeBatch': 'Print detail report ',
         'table': {
+            'actionsOnDone':'Actions after tapping Done',
             'passwordRequire': 'Password input required before create a new table.',
             'autoClearTable': 'Auto restore table status after settling ticket.',
-            'printReceiptOnDone': 'Print receipt after Done'
+            'printReceiptOnDone': 'Print receipt after Done',
+            'lockOnDone':'Automatically lock screen'
         },
         'suggestion': {
             'enable': 'Print tip suggestion on pre-payment ticket',

@@ -252,17 +252,30 @@ export default {
       if (this.isEmptyTicket) return;
       let order = this.combineOrderInfo({ print });
 
+      if (this.app.mode === 'create') {
+        if (print) {
+          order.content.forEach(item => {
+            item.print = true;
+            item.pending = false;
+          })
+        }
+        this.$socket.emit("[SAVE] INVOICE", order, content => { Printer.setTarget('All').print(content) })
+      } else {
+        if (print) {
+          let diffs = this.analyzeDiffs(order);
 
-      if (print) {
-        Printer.setTarget('All').print(this.app.mode === 'edit' ? this.analyzeDiffs(order) : order)
-        order.content.forEach(item => {
-          delete item.new;
-          item.print = true;
-          item.pending = false;
-        })
+          order.content.forEach(item => {
+            delete item.new;
+            item.print = true;
+            item.pending = false;
+          })
+
+          this.$socket.emit("[UPDATE] INVOICE", order);
+
+          Printer.setTarget('All').print(diffs);
+        }
       }
 
-      this.app.mode === 'create' ? this.$socket.emit("[SAVE] INVOICE", order) : this.$socket.emit("[UPDATE] INVOICE", order);
       this.resetAll();
       this.$router.push({ path: "/main" });
     },
@@ -277,7 +290,7 @@ export default {
         order = this.combineOrderInfo({});
       }
 
-      let printOnDone = this.store.printOnDone;
+      let { printOnDone, lockOnDone } = this.store.table;
 
       if (print) {
         printOnDone ?
@@ -295,11 +308,15 @@ export default {
         ? this.$socket.emit("[SAVE] INVOICE", order)
         : this.$socket.emit("[UPDATE] INVOICE", order);
 
-      this.setOrder(order);
-      this.$router.push({ name: "Table" });
+      if (lockOnDone) {
+        this.setOp(null);
+        this.$router.push({ path: '/main/lock' });
+      } else {
+        this.setOrder(order);
+        this.$router.push({ name: "Table" })
+      }
     },
     combineOrderInfo(extra) {
-      this.$socket.emit("INQUIRY_TICKET_NUMBER");
       let customer = Object.assign({}, this.customer);
       let print = extra.hasOwnProperty("print") ? extra.print : true;
       let order = Object.assign({}, this.order);
@@ -385,7 +402,7 @@ export default {
       moment.locale(language === 'usEN' ? 'en' : 'zh-cn');
       this.$forceUpdate();
     },
-    ...mapActions(['setApp', 'lessQty', 'moreQty', 'resetAll', 'setOrder', 'setTableInfo'])
+    ...mapActions(['setOp', 'setApp', 'lessQty', 'moreQty', 'resetAll', 'setOrder', 'setTableInfo'])
   },
   computed: {
     ...mapGetters(['op', 'app', 'item', 'diffs', 'language', 'order', 'ticket', 'store', 'customer', 'station', 'isEmptyTicket', 'currentTable', 'choiceSet'])

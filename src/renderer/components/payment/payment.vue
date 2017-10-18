@@ -933,7 +933,7 @@ export default {
 
                 type === 'CASH' ?
                     this.$dialog({
-                        title: ["dialog.cashChange", change], msg: ["dialog.cashChangeTip", paid.toFixed(2)],
+                        title: ["dialog.cashChange", change.toFixed(2)], msg: ["dialog.cashChangeTip", paid.toFixed(2)],
                         buttons: [{ text: 'button.noReceipt', fn: 'reject' }, { text: 'button.printReceipt', fn: 'resolve' }]
                     }).then(() => { this.printSplitReceipt() }).catch(() => { this.nextSplit() }) :
                     this.$dialog({
