@@ -253,8 +253,8 @@ export default {
       let order = this.combineOrderInfo({ print });
 
       if (this.app.mode === 'create') {
-        Printer.setTarget('All').print(order);
         if (print) {
+          Printer.setTarget('All').print(order);
           order.content.forEach(item => {
             item.print = true;
             item.pending = false;
