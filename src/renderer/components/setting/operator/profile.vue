@@ -178,6 +178,7 @@ export default {
 
                     switch (typeof n[key]) {
                         case 'string':
+                        case 'number':
                             return n[key] !== this.profile[key]
                         case 'object':
                             if (Array.isArray(n[key])) {

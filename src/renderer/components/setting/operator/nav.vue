@@ -101,6 +101,7 @@ export default {
             this.txt = this.$t('text.settingUpdated')
             this.$socket.emit("[CMS] UPDATE_USER", this.temp)
             this.profile._id === this.op._id && Object.assign(this.op, this.temp)
+            this.setProfile(this.temp)
             setTimeout(() => { this.cancel() }, 1000)
         },
         cancel() {

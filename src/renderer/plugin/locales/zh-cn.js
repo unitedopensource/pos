@@ -588,7 +588,9 @@ export default {
         'start':'开始',
         'end':'结束',
         'workHour':'工时',
-        'wage':'工资'
+        'wage':'时薪',
+        'salary':'工资',
+        'verify':'认证'
     },
     text: {
         'starter': '起始',

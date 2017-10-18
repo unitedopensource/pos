@@ -244,7 +244,9 @@ export default {
         'start':'Start',
         'end':'End',
         'workHour':'Work Hour',
-        'wage':'Wage'
+        'wage':'Wage',
+        'salary':'Salary',
+        'verify':'Verify'
     },
     title: {
         'markPaymentType': 'Mark Payment Type',
@@ -805,8 +807,7 @@ export default {
         'issueCoupon': 'Issue Coupon',
         'preview':'Preview',
         'seatOrder':'Seat Order',
-        'wage':'Wage(Hour)',
-        'payroll':'$ {i}'
+        'wage':'Wage(Hour)'
     },
     nav: {
         'store': 'Store',

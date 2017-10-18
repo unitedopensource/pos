@@ -36,17 +36,24 @@
                         <th>{{$t('thead.end')}}</th>
                         <th>{{$t('thead.workHour')}}</th>
                         <th>{{$t('thead.wage')}}</th>
+                        <th>{{$t('thead.salary')}}</th>
+                        <th>{{$t('thead.verify')}}</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="(log,index) in logs" :key="index">
                         <td></td>
-                        <td>{{log.clockIn | moment('ddd')}}</td>
-                        <td>{{log.clockIn | moment('M/D/YY HH:mm:ss')}}</td>
-                        <td v-if="approval" class="editable" @click="edit(log)">{{log.clockOut | moment('M/D/YY HH:mm:ss')}}</td>
-                        <td v-else>{{log.clockOut | moment('M/D/YY HH:mm:ss')}}</td>
+                        <td>{{log.clockIn | moment('YYYY-MM-DD')}}</td>
+                        <td>{{log.clockIn | moment('HH:mm:ss')}}</td>
+                        <td v-if="approval" class="editable" @click="edit(log)">{{log.clockOut | moment('HH:mm:ss')}}</td>
+                        <td v-else>{{log.clockOut | moment('HH:mm:ss')}}</td>
                         <td>{{calculate(log.clockIn,log.clockOut)}}</td>
+                        <td>{{log.wage}}</td>
                         <td>{{salary(log.clockIn,log.clockOut)}}</td>
+                        <td v-if="approval" class="editable">
+                            <!-- <i class="fa fa-pencil-square"></i> -->
+                        </td>
+                        <td v-else></td>
                     </tr>
                 </tbody>
             </table>
@@ -71,6 +78,7 @@ export default {
             component: null,
             approval: false,
             period: 'week',
+            defaultWage: 0,
             from: '',
             to: '',
             logs: []
@@ -79,6 +87,7 @@ export default {
     created() {
         this.fetchData();
         this.approval = this.profile.permission ? this.profile.permission.includes('timecard') : false;
+        this.defaultWage = isNumber(this.profile.wage) ? this.profile.wage : 0;
     },
     methods: {
         calculate(clockIn, clockOut) {
@@ -126,14 +135,14 @@ export default {
         generateExcel() {
             let excel = [['Index', 'Date', 'Clock In', 'Clock Out', 'Work Hours', 'Wage', 'Salary', 'Editor', 'Edit Time']];
             let csvRows = [];
-            let wage = isNumber(this.profile.wage) ? parseFloat(this.profile.wage) : 0;
+            let defaultWage = isNumber(this.profile.wage) ? parseFloat(this.profile.wage) : 0;
             this.logs.slice(0).reverse().forEach((log, index) => {
-                let { date, clockIn, clockOut } = log;
+                let { date, clockIn, clockOut, wage } = log;
                 let timeIn = moment(clockIn).format('HH:mm:ss');
                 let timeOut = clockOut ? moment(clockOut).format('HH:mm:ss') : '';
                 let workHour = isNumber(clockOut) ? toFixed((clockOut - clockIn) / 3600000, 2) : 'N/A';
-                let salary = workHour * wage;
-                wage = isNumber(wage) ? toFixed(wage, 2).toFixed(2) : 0;
+                wage = isNumber(wage) ? toFixed(wage, 2).toFixed(2) : defaultWage;
+                let salary = workHour * (wage || defaultWage);
                 let editor = log.editor || '';
                 let editTime = log.edit ? moment(log.edit).format('YYYY-MM-DD HH:mm:ss') : '';
                 excel.push([index + 1, date, timeIn, timeOut, workHour, wage, salary, editor, editTime])
@@ -142,10 +151,11 @@ export default {
             for (let i = 0; i < excel.length; i++) {
                 csvRows.push(excel[i].join(','));
             }
-
+            let from = moment(this.logs[0].clockIn).format('MMMDD');
+            let to = moment(this.logs[this.logs.length - 1].clockIn).format('MMMDD');
             let csvFile = csvRows.join('\n');
             let blob = new Blob([csvFile], { type: "text/plain;charset=utf-8" });
-            fileSaver.saveAs(blob, `${this.op.name} work sheet.csv`)
+            fileSaver.saveAs(blob, `${this.op.name} payroll (${from} - ${to}).csv`)
         }
     }
 }
