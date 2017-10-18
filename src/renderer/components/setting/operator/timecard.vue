@@ -86,7 +86,7 @@ export default {
     },
     created() {
         this.fetchData();
-        this.approval = this.profile.permission ? this.profile.permission.includes('timecard') : false;
+        this.approval = this.op.permission ? this.op.permission.includes('timecard') : false;
         this.defaultWage = isNumber(this.profile.wage) ? this.profile.wage : 0;
     },
     methods: {
