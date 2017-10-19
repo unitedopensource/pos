@@ -253,14 +253,14 @@ export default {
       let order = this.combineOrderInfo({ print });
 
       if (this.app.mode === 'create') {
-        this.$socket.emit("[SAVE] INVOICE", order, print, (callback) => { print && Printer.setTarget('All').print(order) })
+        this.$socket.emit("[SAVE] INVOICE", order, print, (content) => { print && Printer.setTarget('All').print(content) })
       } else {
         if (print) {
           let diffs = this.analyzeDiffs(order)
           Printer.setTarget('All').print(diffs)
           this.$socket.emit("[UPDATE] INVOICE", order, print)
         } else {
-          this.$socket.emit("[UPDATE] INVOICE", order)
+          this.$socket.emit("[UPDATE] INVOICE", order,print)
         }
       }
       this.resetAll();
@@ -274,13 +274,13 @@ export default {
       if (this.app.mode === 'create') {
         Object.assign(this.currentTable, { invoice: [order._id] });
         this.$socket.emit("[TABLE] SETUP", this.currentTable);
-        this.$socket.emit("[SAVE] INVOICE", order, print, (callback) => {
+        this.$socket.emit("[SAVE] INVOICE", order, print, (content) => {
           if (print) {
-            printOnDone ? Printer.setTarget('All').print(order) : Printer.setTarget('Order').print(order)
+            printOnDone ? Printer.setTarget('All').print(content) : Printer.setTarget('Order').print(content)
           }
         })
       } else {
-        this.$socket.emit("[UPDATE] INVOICE", order);
+        this.$socket.emit("[UPDATE] INVOICE", order,print);
         if (print) {
           printOnDone ? Printer.setTarget('All').print(this.analyzeDiffs(order)) : Printer.setTarget('Order').print(this.analyzeDiffs(order))
         }

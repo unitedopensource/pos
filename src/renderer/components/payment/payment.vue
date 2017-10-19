@@ -1084,6 +1084,8 @@ export default {
                 print && Printer.setTarget('All').print(ticket, true) :
                 print && Printer.setTarget('Receipt').print(ticket, true);
 
+            this.$socket.emit("[UPDATE] INVOICE", ticket, print);
+
             switch (this.$route.name) {
                 case "Menu":
                     if (ticket.type !== 'BUFFET') {

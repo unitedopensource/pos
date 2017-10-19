@@ -440,7 +440,9 @@ export default {
         'addressMismatch':'地址不一致',
         'replaceAddress':'是否要将地址 {i} 替换成 {i} ?',
         'invalidDate':'日期错误',
-        'reserveDateIsPassed':'选定的预约日期无效'
+        'reserveDateIsPassed':'选定的预约日期无效',
+        'paymentFailed':'付款失败',
+        'canNotPayZeroAmount':'支付数额必须大于 $ 0.00 '
     },
     terminal: {
         'initial': '正在初始化 {i}...',

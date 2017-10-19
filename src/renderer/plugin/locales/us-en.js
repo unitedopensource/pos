@@ -30,7 +30,7 @@ export default {
         'DELAY': 'Delay',
         'other': 'Other',
         'all': 'All',
-        'THIRD':'Third Party',
+        'THIRD': 'Third Party',
         'allInvoice': 'All Invoices',
         'walkInInvoice': 'WalkIn Inv.',
         'pickUpInvoice': 'PickUp Inv.',
@@ -232,21 +232,21 @@ export default {
         'date': 'Date',
         'balance': 'Balance',
         'change': 'Change',
-        'table':'Table',
-        'server':'Server',
-        'lapse':'Lapse',
-        'action':'Action',
-        'todo':'Todo',
-        'currentWeek':'Current Week',
-        'lastWeek':'Last Week',
-        'currentMonth':'Current Month',
-        'lastMonth':'Last Month',
-        'start':'Start',
-        'end':'End',
-        'workHour':'Work Hour',
-        'wage':'Wage',
-        'salary':'Salary',
-        'verify':'Verify'
+        'table': 'Table',
+        'server': 'Server',
+        'lapse': 'Lapse',
+        'action': 'Action',
+        'todo': 'Todo',
+        'currentWeek': 'Current Week',
+        'lastWeek': 'Last Week',
+        'currentMonth': 'Current Month',
+        'lastMonth': 'Last Month',
+        'start': 'Start',
+        'end': 'End',
+        'workHour': 'Work Hour',
+        'wage': 'Wage',
+        'salary': 'Salary',
+        'verify': 'Verify'
     },
     title: {
         'markPaymentType': 'Mark Payment Type',
@@ -268,11 +268,11 @@ export default {
         'selectTask': 'Select A Task',
         'reload': 'Reload',
         'purchaseHistory': 'Purchase History',
-        'orderList':'Order list',
-        'baseSetting':'Base Setting',
-        'salary':'Salary',
-        'doneAction':'Done Action',
-        'setDate':'Set Date'
+        'orderList': 'Order list',
+        'baseSetting': 'Base Setting',
+        'salary': 'Salary',
+        'doneAction': 'Done Action',
+        'setDate': 'Set Date'
     },
     menu: {
         'course': 'Course',
@@ -474,10 +474,12 @@ export default {
         'subMenuRemoveConfirmTip': 'Are you sure to remove entire ({i}) group and items?',
         'itemUnavailable': 'Item Unavailable',
         'itemUnavailableTip': '{i} currently is not available for ordering',
-        'addressMismatch':'Address Mismatch',
-        'replaceAddress':'Are you wish to replace address {i} with {i} ?',
-        'invalidDate':'Invalid Date',
-        'reserveDateIsPassed':'Reserve Date is passed!'
+        'addressMismatch': 'Address Mismatch',
+        'replaceAddress': 'Are you wish to replace address {i} with {i} ?',
+        'invalidDate': 'Invalid Date',
+        'reserveDateIsPassed': 'Reserve Date is passed!',
+        'paymentFailed': 'Payment Failed',
+        'canNotPayZeroAmount': 'Paid amount must grater than $ 0.00'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',
@@ -594,7 +596,7 @@ export default {
         'itemSales': 'Item Sales',
         'tips': 'Tips',
         'gratuity': 'Gratuity',
-        'thirdParty':'Third Party'
+        'thirdParty': 'Third Party'
     },
     text: {
         'starter': 'Starter',
@@ -808,9 +810,9 @@ export default {
         'penalty': 'Penalty',
         'issueGiftCard': 'Issue Gift Card',
         'issueCoupon': 'Issue Coupon',
-        'preview':'Preview',
-        'seatOrder':'Seat Order',
-        'wage':'Wage(Hour)'
+        'preview': 'Preview',
+        'seatOrder': 'Seat Order',
+        'wage': 'Wage(Hour)'
     },
     nav: {
         'store': 'Store',
@@ -908,7 +910,7 @@ export default {
         'printSecondary': 'Secondary',
         'sortItem': 'Sort Item',
         'printDuplicate': 'Duplicate',
-        'printDifference':'Difference',
+        'printDifference': 'Difference',
         'printStoreInfo': 'Store Info',
         'printOrderType': 'Order Type',
         'printCustomerInfo': 'Cust. Info',
@@ -997,18 +999,18 @@ export default {
         'createSubMenuGroup': 'Create a sub menu group',
         'reportBeforeBatch': 'Print detail report ',
         'table': {
-            'actionsOnDone':'Actions after tapping Done',
+            'actionsOnDone': 'Actions after tapping Done',
             'passwordRequire': 'Password input required before create a new table.',
             'autoClearTable': 'Auto restore table status after settling ticket.',
             'printReceiptOnDone': 'Print receipt after Done',
-            'lockOnDone':'Automatically lock screen'
+            'lockOnDone': 'Automatically lock screen'
         },
         'suggestion': {
             'enable': 'Print tip suggestion on pre-payment ticket',
             'percentage': 'Set 3 tip suggestions percentage'
         },
-        'terminal':{
-            'integration':'Semi-integrated terminal configuration'
+        'terminal': {
+            'integration': 'Semi-integrated terminal configuration'
         }
     }
 }

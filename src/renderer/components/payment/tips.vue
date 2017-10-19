@@ -7,19 +7,17 @@
       </header>
       <div class="inner">
         <div class="display">
-          <div class="total">
-            <span class="due">{{init.payment.due | decimal}}</span>
-            <span class="formula">{{formula}}</span>
-          </div>
-          <div class="wrap">
-            <div class="data" @click="setTarget('tip')" :class="{active:target==='tip'}">
-              <span class="text">{{$t('button.setTip')}}</span>
-              <span class="value">{{tip}}</span>
-            </div>
-            <div class="data" @click="setTarget('gratuity')" :class="{active:target==='gratuity'}">
-              <span class="text">{{$t('button.setGratuity')}}</span>
-              <span class="value">{{gratuity}}</span>
-            </div>
+          <h5>Tipping Base On</h5>
+          <span class="due">
+            <span class="symbol">$</span>{{init.payment.due | decimal}}
+            <i class="tooltip fa fa-question-circle-o">
+              <span class="content">Tip is after Discount (Subtotal + Tax)</span>
+            </i>
+          </span>
+          <div class="entry">
+            <div v-if="unit === '%'" class="unit" @click="switchUnit('$')">%</div>
+            <div v-else class="unit" @click="switchUnit('%')">$</div>
+            <input type="text" v-model="tip">
           </div>
         </div>
         <div class="wrap">
@@ -38,8 +36,7 @@
           </section>
           <aside class="numpad">
             <div @click="del">&#8592;</div>
-            <div @click="switchUnit" v-if="this.currentUnit === '%'">%</div>
-            <div @click="switchUnit" v-else>$</div>
+            <div @click="clear">C</div>
             <div @click="enter">&#8626;</div>
           </aside>
         </div>
@@ -51,74 +48,64 @@
 <script>
 export default {
   props: ['init'],
-  mounted() {
-    this.tip = this.init.payment.tip ? '$ ' + this.init.payment.tip : '0 %';
-    this.gratuity = this.init.payment.gratuity ? '$ ' + this.init.payment.gratuity : '0 %';
-    if (this.tip || this.gratuity) this.currentUnit = '$';
-  },
   data() {
     return {
-      currentUnit: "%",
-      target: "tip",
+      unit: "%",
       formula: null,
-      gratuity: null,
-      tip: null,
+      tip: '0',
+      reset: true
+    }
+  },
+  created() {
+    if (this.init.payment.tip) {
+      this.tip = this.init.payment.tip.toFixed(2);
+      this.unit = '$';
     }
   },
   methods: {
-    switchUnit() {
-      if (this.currentUnit === "$") {
-        this[this.target] = "0 %";
-        this.currentUnit = "%";
+    clear() {
+      this.tip = this.unit === '$' ? '0.00' : '0'
+    },
+    switchUnit(unit) {
+      this.unit = unit;
+      this.reset = true;
+      this.clear();
+    },
+    input(val) {
+      let value = this.tip;
+      if (this.unit === '%') {
+        this.tip = this.reset ? val : value + val;
       } else {
-        this[this.target] = "$ 0.00";
-        this.currentUnit = "$";
+        if (this.reset) {
+          this.tip = (val / 100).toFixed(2)
+        } else {
+          value = (value * 100).toFixed(0) + val;
+          this.tip = (value / 100).toFixed(2)
+        }
       }
-      this.formula = null;
-    },
-    setTarget(name) {
-      this.target = name;
-    },
-    getFormula(value) {
-      let total = this.init.payment.total;
-      if (value.includes('%')) {
-        let result = (total * (parseFloat(value.replace(/D+/, "")) / 100)).toFixed(2);
-        this.formula = `${total} * ${value} = ${result}`;
-      }
-    },
-    input(num) {
-      let value = this[this.target];
-      if (value.includes('%')) {
-        value = ~~(value.replace(/\D+/, "") + num) + " %";
-        this.getFormula(value);
-        this[this.target] = value;
-      } else {
-        value = Math.round(parseFloat(value.replace(/\D+/, "")) * 100);
-        value = (value ? value + num : num) / 100;
-        this[this.target] = "$ " + value.toFixed(2);
-      }
+      this.reset = false;
     },
     del() {
-      let value = this[this.target];
-      if (value.includes('%')) {
-        value = ~~String(value.replace(/\D+/, "")).slice(0, -1) + " %";
-        this.getFormula(value);
-        this[this.target] = value;
+      let value = this.tip;
+      if (this.unit === '%') {
+        if (value.length > 1) {
+          this.tip = value.slice(0, -1);
+        } else {
+          this.tip = '0';
+          this.reset = true;
+        }
       } else {
-        value = value.replace(/\D+/, "").slice(0, -1) / 10;
-        this[this.target] = "$ " + value.toFixed(2);
+        this.tip = (value.slice(0, -1) / 10).toFixed(2)
       }
     },
     enter() {
-      let tip = this.tip.includes("%") ?
-        toFixed(this.tip.replace(/\D+/, "") / 100 * this.init.payment.due, 2) :
-        parseFloat(this.tip.replace(/\D+/, ""));
-
-      let gratuity = this.gratuity.includes("%") ?
-        toFixed(this.gratuity.replace(/\D+/, "") / 100 * this.init.payment.due, 2) :
-        parseFloat(this.gratuity.replace(/\D+/, ""));
-
-      this.init.resolve({ tip, gratuity });
+      let tip;
+      if(this.unit === '%'){
+        tip = toFixed(this.init.payment.due * this.tip / 100,2)
+      }else{
+        tip = this.tip
+      }
+      this.init.resolve({ tip });
     }
   }
 }
@@ -146,11 +133,98 @@ section.numpad {
   flex-wrap: wrap;
 }
 
-span.due {
-  font-size: 2em;
+h5 {
+  padding: 20px 0 2px;
+  font-size: 16px;
+  color: #545050;
+}
+
+.symbol {
+  color: #009688;
+  font-size: 28px;
+  margin-right: 3px;
+}
+
+.due {
+  font-size: 38px;
   font-weight: bold;
   color: #444;
+  font-family: 'Agency FB';
+  position: relative;
 }
+
+i.tooltip {
+  color: #FF5722;
+  font-size: 18px;
+  position: absolute;
+  right: -35px;
+  top: 15px;
+  cursor: help;
+}
+
+i.tooltip:hover .content {
+  opacity: 1;
+}
+
+span.content {
+  position: absolute;
+  opacity: 0;
+  font-family: 'Yuanti-SC';
+  background: #FFF8E1;
+  color: #FF9800;
+  box-shadow: 1px 1px 3px #CFD8DC;
+  border-radius: 3px;
+  font-size: 14px;
+  padding: 10px;
+  width: 200px;
+  left: -100px;
+  top: 25px;
+  transition: opacity 250ms ease-out;
+}
+
+.entry {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 10px 10px 5px;
+  height: 45px;
+  margin-top: 4px;
+  background: #fff;
+  margin: 0 3px 0 0;
+  border-radius: 4px;
+  box-shadow: 0 1px 1px #b5aaaa;
+}
+
+.entry input {
+  border: none;
+  outline: none;
+  background: none;
+  flex: 1;
+  font-size: 46px;
+  font-family: 'Agency FB';
+  font-weight: bold;
+  color: #3c3c3c;
+  text-align: right;
+}
+
+.entry .unit {
+  padding: 8px 0;
+  width: 55px;
+  background: #607D8B;
+  color: #fff;
+  border-radius: 4px;
+  font-size: 34px;
+  font-family: 'Agency FB';
+  text-shadow: 0 1px 1px #333;
+  cursor: pointer;
+}
+
+
+
+
+
+
+
 
 .total {
   padding: 10px;

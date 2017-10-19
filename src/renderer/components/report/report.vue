@@ -527,7 +527,7 @@ export default {
                                     break;
                                 default:
                                     third++;
-                                    thirdAmount == parseFloat(t.paid)
+                                    thirdAmount += parseFloat(t.paid)
                             }
                         })
                     } else if (!ticket.payment.settled) {
