@@ -36,7 +36,7 @@
 import { mapGetters, mapActions } from 'vuex'
 import orderList from '../common/orderList'
 import dialoger from '../common/dialoger'
-import payment from '../payment/payment'
+import payment from '../payment/index'
 import tempItem from './tempItem'
 import request from './request'
 import scaleItem from './scale'

@@ -14,9 +14,6 @@
                 </div>
             </div>
             <footer>
-                <div class="f1">
-                    <!-- <checkbox v-model="all" label="text.autoAdd"></checkbox> -->
-                </div>
                 <div class="btn" @click="init.reject">{{$t('button.cancel')}}</div>
                 <button class="btn" @click="confirm">{{$t('button.confirm')}}</button>
             </footer>
@@ -25,31 +22,29 @@
 </template>
 
 <script>
-import checkbox from '../common/checkbox'
+import checkbox from "../common/checkbox";
 export default {
-    props: ['init'],
-    components: { checkbox },
-    data() {
-        return {
-            all: true,
-            printer: "",
-            label: false
-        }
-    },
-    mounted(){
-        this.$refs.name.focus()
-    },
-    methods: {
-        confirm() {
-            if(!this.printer) return;
-            this.init.resolve({
-                name: this.printer,
-                label: this.label,
-                add: this.all
-            })
-        }
+  props: ["init"],
+  components: { checkbox },
+  data() {
+    return {
+      printer: "",
+      label: false
+    };
+  },
+  mounted() {
+    this.$refs.name.focus();
+  },
+  methods: {
+    confirm() {
+      if (!this.printer) return;
+      this.init.resolve({
+        name: this.printer,
+        label: this.label
+      });
     }
-}
+  }
+};
 </script>
 
 <style></style>

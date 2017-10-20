@@ -127,16 +127,9 @@ const mutations = {
     [types.PHONE_RING](state, data) {
         state.ring = data;
     },
-    [types.INSERT_ORDER](state, order) {
-        state.orders.unshift(order);
-    },
-    [types.UPDATE_ORDER](state, order) {
-        for (let i = 0; i < state.orders.length; i++) {
-            if (state.orders[i]._id === order._id) {
-                state.orders.splice(i, 1, order);
-                break;
-            }
-        }
+    [types.UPSERT_INVOICE](state, invoice) {
+        let index = state.orders.findIndex(ticket => ticket._id === invoice._id);
+        index === -1 ? state.orders.unshift(invoice) : state.orders.splice(index, 1, invoice);
     },
     [types.UPDATE_TABLE_STATUS](state, table) {
         let zone = table.zone;

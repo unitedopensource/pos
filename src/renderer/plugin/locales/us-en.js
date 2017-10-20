@@ -380,7 +380,7 @@ export default {
         'batchFailed': 'Batch Failed',
         'batchFailedTip': 'Fail Code: {i}',
         'cashChange': 'Change: ${i}',
-        'cashChangeTip': 'Customer has paid (${i})',
+        'cashChangeTip': 'Customer has paid ($ {i})',
         'printReceiptConfirm': 'Print Receipt',
         'printReceiptConfirmTip': 'Do you want to print a receipt to customer?',
         'noInvoice': 'No Result',
@@ -479,7 +479,12 @@ export default {
         'invalidDate': 'Invalid Date',
         'reserveDateIsPassed': 'Reserve Date is passed!',
         'paymentFailed': 'Payment Failed',
-        'canNotPayZeroAmount': 'Paid amount must grater than $ 0.00'
+        'canNotPayZeroAmount': 'Paid amount must grater than $ 0.00',
+        'invalidCreditCard': 'Invalid Credit Card',
+        'creditCardLengthIncorrect': 'Credit card length incorrect',
+        'expirationDateIncorrect': 'Credit card expiration date incorrect',
+        'assignPrinter':'Assign Printer',
+        'assignPrinterToAllItems':'Are you wish to assign {i} printer to all items?'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',
@@ -812,7 +817,8 @@ export default {
         'issueCoupon': 'Issue Coupon',
         'preview': 'Preview',
         'seatOrder': 'Seat Order',
-        'wage': 'Wage(Hour)'
+        'wage': 'Wage(Hour)',
+        'calcTips': 'Current Tips: $ {i}'
     },
     nav: {
         'store': 'Store',
@@ -998,6 +1004,8 @@ export default {
         'alphabetical': 'Sort menu item by alphabet',
         'createSubMenuGroup': 'Create a sub menu group',
         'reportBeforeBatch': 'Print detail report ',
+        'tipFor': 'Tips Based On',
+        'howTipCalculate': 'Tip is after tax and before discount',
         'table': {
             'actionsOnDone': 'Actions after tapping Done',
             'passwordRequire': 'Password input required before create a new table.',

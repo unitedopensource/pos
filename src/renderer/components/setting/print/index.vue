@@ -181,7 +181,7 @@
                 </div>
             </div>
             <aside class="action">
-                <i class="fa fa-plus" @click="newPrinter"></i>
+                <i class="fa fa-plus" @click="addPrinter"></i>
                 <i class="fa fa-trash" @click="removePrinterConfirm"></i>
                 <i class="fa fa-print" @click="test"></i>
                 <i class="fa fa-volume-up" @click="buzzer"></i>
@@ -192,441 +192,492 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
-import smartOption from '../common/smartOption'
-import smartRange from '../common/smartRange'
-import dialoger from '../../common/dialoger'
-import checkbox from '../common/checkbox'
-import Preset from '../../../preset'
-import editor from './editor'
+import { mapGetters, mapActions } from "vuex";
+import smartOption from "../common/smartOption";
+import smartRange from "../common/smartRange";
+import dialoger from "../../common/dialoger";
+import checkbox from "../common/checkbox";
+import Preset from "../../../preset";
+import editor from "./editor";
 export default {
-    components: { smartOption, smartRange, checkbox, dialoger, editor },
-    created() {
-        this.initial()
+  components: { smartOption, smartRange, checkbox, dialoger, editor },
+  created() {
+    this.initial();
+  },
+  data() {
+    return {
+      fonts: [
+        {
+          label: "Agency FB (English)",
+          value: "Agency FB"
+        },
+        {
+          label: "Tahoma (English)",
+          value: "Tahoma"
+        },
+        {
+          label: "Tensentype RuiHeiJ-W2 (English)",
+          value: "Tensentype RuiHeiJ-W2"
+        },
+        {
+          label: "Trebuchet MS (English)",
+          value: "Trebuchet MS"
+        },
+        {
+          label: "Noto Mono (English)",
+          value: "Noto Mono"
+        },
+        {
+          label: "Futura LT Condensed (English)",
+          value: "Futura LT Condensed"
+        },
+        {
+          label: "Noto Sans SC Light (中文)",
+          value: "Noto Sans SC Light"
+        },
+        {
+          label: "PingFang SC Regular (中文)",
+          value: "PingFang SC Regular"
+        },
+        {
+          label: "QingYuan (中文)",
+          value: "QingYuan"
+        },
+        {
+          label: "PingFang Light (中文)",
+          value: "PingFang Light"
+        }
+      ],
+      time: moment()
+        .locale("en")
+        .format("hh:mm a"),
+      date: moment().format("MM-DD-YYYY"),
+      componentData: null,
+      profile: undefined,
+      component: null,
+      printers: null,
+      devices: [],
+      device: null,
+      unchanged: true,
+      preset: "",
+      receipt: {
+        zhCN: true,
+        usEN: true,
+        store: true,
+        type: true,
+        customer: true,
+        primaryPrice: false,
+        secondaryPrice: true,
+        payment: true,
+        tip: true,
+        coupon: true
+      },
+      style: {
+        zhCN: null,
+        usEN: null,
+        info: null
+      }
+    };
+  },
+  methods: {
+    initial() {
+      this.printers = JSON.parse(JSON.stringify(this.config.printer));
+      this.devices = Object.keys(this.printers) || [""];
     },
-    data() {
-        return {
-            fonts: [{
-                label: 'Agency FB (English)',
-                value: 'Agency FB'
-            }, {
-                label: 'Tahoma (English)',
-                value: 'Tahoma'
-            }, {
-                label: 'Tensentype RuiHeiJ-W2 (English)',
-                value: 'Tensentype RuiHeiJ-W2'
-            }, {
-                label: 'Trebuchet MS (English)',
-                value: 'Trebuchet MS'
-            }, {
-                label: 'Noto Mono (English)',
-                value: 'Noto Mono'
-            }, {
-                label: 'Futura LT Condensed (English)',
-                value: 'Futura LT Condensed'
-            }, {
-                label: 'Noto Sans SC Light (中文)',
-                value: 'Noto Sans SC Light'
-            }, {
-                label: 'PingFang SC Regular (中文)',
-                value: 'PingFang SC Regular'
-            }, {
-                label: 'QingYuan (中文)',
-                value: 'QingYuan'
-            }, {
-                label: 'PingFang Light (中文)',
-                value: 'PingFang Light'
-            }],
-            time: moment().locale('en').format('hh:mm a'),
-            date: moment().format('MM-DD-YYYY'),
-            componentData: null,
-            profile: undefined,
-            component: null,
-            printers: null,
-            devices: [],
-            device: null,
-            unchanged: true,
-            preset: "",
-            receipt: {
-                zhCN: true,
-                usEN: true,
-                store: true,
-                type: true,
-                customer: true,
-                primaryPrice: false,
-                secondaryPrice: true,
-                payment: true,
-                tip: true,
-                coupon: true
+    buzzer() {
+      if (!this.device) return;
+      Printer.buzzer(this.device);
+    },
+    test() {
+      Printer.testPage(this.device);
+    },
+    back() {
+      this.$router.push({ name: "Setting.index" });
+    },
+    togglePrimary(bool) {
+      this.receipt.zhCN = bool;
+    },
+    toggleSecondary(bool) {
+      this.receipt.usEN = bool;
+    },
+    toggleStore(bool) {
+      this.receipt.store = bool;
+    },
+    toggleType(bool) {
+      this.receipt.type = bool;
+    },
+    toggleCustomer(bool) {
+      this.receipt.customer = bool;
+    },
+    togglePrimaryPrice(bool) {
+      this.receipt.primaryPrice = bool;
+    },
+    toggleSecondaryPrice(bool) {
+      this.receipt.secondaryPrice = bool;
+    },
+    togglePayment(bool) {
+      this.receipt.payment = bool;
+    },
+    removePrinterConfirm() {
+      this.device &&
+        this.$dialog({
+          type: "question",
+          title: "dialog.printerRemoveConfirm",
+          msg: ["dialog.printerRemoveConfirmTip", this.device]
+        })
+          .then(() => {
+            this.remove(this.device);
+          })
+          .catch(this.$q);
+    },
+    remove(printer) {
+      this.$socket.emit("[CMS] REMOVE_PRINTER", printer);
+      this.removePrinter(printer);
+      this.device = null;
+      this.$q();
+    },
+    save() {
+      if (!this.device) return;
+      this.unchanged = true;
+      this.$socket.emit("[CMS] SAVE_PRINTERS", { [this.device]: this.profile });
+      this.setPrinter({ [this.device]: this.profile });
+      Printer.initial(CLODOP, this.config);
+    },
+    configPrinter() {
+      //http://192.168.0.87/tcpip_cfg.htm?
+      //dhcp_mode=0&IP_1=192&IP_2=168&IP_3=0&IP_4=85&
+      //MASK_1=255&MASK_2=255&MASK_3=255&MASK_4=0&
+      //GW_IP_1=192&GW_IP_2=168&GW_IP_3=0&GW_IP_4=1&
+      //__use_dhcp=0&save=+Save+
+    },
+    addPrinter() {
+      this.openEditor()
+        .then(this.askAssign)
+        .catch(this.$q);
+    },
+    openEditor() {
+      return new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject };
+        this.component = "editor";
+      });
+    },
+    askAssign(printer) {
+      let profile = Preset.printer();
+      printer.label && (profile.label = true);
+      let printers = Object.assign({}, this.config.printer, {
+        [printer.name]: profile
+      });
+      this.setPrinter(printers);
+      this.initial();
+      this.$socket.emit("[CMS] SAVE_PRINTERS", printers);
+      this.$dialog({
+        type: "question",
+        title: "dialog.assignPrinter",
+        msg: "dialog.assignPrinterToAllItems",
+        buttons: [
+          { text: "button.cancel", fn: "reject" },
+          { text: "button.apply", fn: "resolve" }
+        ]
+      })
+        .then(() => {
+          this.$socket.emit("[CMS] ASSIGN_PRINTER_TO_ITEMS", printer.name);
+          this.$q();
+        })
+        .catch(this.$q);
+    },
+    ...mapActions(["setPrinter", "removePrinter"])
+  },
+  watch: {
+    device(profile) {
+      this.profile = this.printers[profile];
+      let { control } = this.profile;
+      Object.assign(this.receipt, {
+        zhCN: control.printPrimary,
+        usEN: control.printSecondary,
+        store: control.printStore,
+        type: control.printType,
+        customer: control.printCustomer,
+        primaryPrice: control.printPrimaryPrice,
+        secondaryPrice: control.printSecondaryPrice,
+        payment: control.printPayment,
+        tip: control.printSuggestion,
+        coupon: control.printCoupon
+      });
+    },
+    profile: {
+      handler(n) {
+        if (n.hasOwnProperty("control")) {
+          let {
+            printPrimary,
+            primaryFont,
+            primaryFontSize,
+            printSecondary,
+            secondaryFont,
+            secondaryFontSize,
+            enlargeDetail
+          } = n.control;
+          this.style = {
+            zhCN: {
+              "font-family": primaryFont,
+              "font-size": primaryFontSize + "px",
+              display: printPrimary ? "flex" : "none"
             },
-            style: {
-                zhCN: null,
-                usEN: null,
-                info: null
+            usEN: {
+              "font-family": secondaryFont,
+              "font-size": secondaryFontSize + "px",
+              display: printSecondary ? "flex" : "none"
+            },
+            info: {
+              "font-family": enlargeDetail
+                ? "Tensentype RuiHeiJ-W2"
+                : "Agency FB",
+              "font-size": enlargeDetail ? "1.25em" : "1em"
             }
+          };
         }
-    },
-    methods: {
-        initial() {
-            this.printers = JSON.parse(JSON.stringify(this.config.printer));
-            this.devices = Object.keys(this.printers) || [""];
-        },
-        buzzer() {
-            if (!this.device) return;
-            Printer.buzzer(this.device)
-        },
-        test() {
-            Printer.testPage(this.device);
-        },
-        back() {
-            this.$router.push({ name: 'Setting.index' })
-        },
-        togglePrimary(bool) {
-            this.receipt.zhCN = bool;
-        },
-        toggleSecondary(bool) {
-            this.receipt.usEN = bool;
-        },
-        toggleStore(bool) {
-            this.receipt.store = bool
-        },
-        toggleType(bool) {
-            this.receipt.type = bool;
-        },
-        toggleCustomer(bool) {
-            this.receipt.customer = bool;
-        },
-        togglePrimaryPrice(bool) {
-            this.receipt.primaryPrice = bool;
-        },
-        toggleSecondaryPrice(bool) {
-            this.receipt.secondaryPrice = bool;
-        },
-        togglePayment(bool) {
-            this.receipt.payment = bool;
-        },
-        removePrinterConfirm() {
-            this.device && this.$dialog({
-                type: "question", title: "dialog.printerRemoveConfirm", msg: ["dialog.printerRemoveConfirmTip", this.device]
-            }).then(() => { this.remove(this.device) }).catch(() => { this.$q() });
-        },
-        remove(printer) {
-            this.$socket.emit("[CMS] REMOVE_PRINTER", printer);
-            this.removePrinter(printer);
-            this.device = null;
-            this.$q();
-        },
-        save() {
-            if (!this.device) return;
-            this.unchanged = true;
-            this.$socket.emit("[CMS] SAVE_PRINTERS", { [this.device]: this.profile });
-            this.setPrinter({ [this.device]: this.profile });
-            Printer.initial(CLODOP, this.config)
-        },
-        configPrinter(){
-            //http://192.168.0.87/tcpip_cfg.htm?
-            //dhcp_mode=0&IP_1=192&IP_2=168&IP_3=0&IP_4=85&
-            //MASK_1=255&MASK_2=255&MASK_3=255&MASK_4=0&
-            //GW_IP_1=192&GW_IP_2=168&GW_IP_3=0&GW_IP_4=1&
-            //__use_dhcp=0&save=+Save+
-        },
-        newPrinter() {
-            new Promise((resolve, reject) => {
-                this.componentData = { resolve, reject };
-                this.component = 'editor';
-            }).then(printer => {
-                this.$q();
-                let profile = Preset.printer();
-                printer.label && (profile.label = true);
-                let printers = Object.assign({}, this.config.printer, { [printer.name]: profile });
-                this.setPrinter(printers);
-                this.initial();
-                this.$socket.emit('[CMS] SAVE_PRINTERS', printers)
-            }).catch(() => { this.$q() })
-        },
-        ...mapActions(['setPrinter', 'removePrinter'])
-    },
-    watch: {
-        device(profile) {
-            this.profile = this.printers[profile];
-            let { control } = this.profile;
-            Object.assign(this.receipt, {
-                zhCN: control.printPrimary,
-                usEN: control.printSecondary,
-                store: control.printStore,
-                type: control.printType,
-                customer: control.printCustomer,
-                primaryPrice: control.printPrimaryPrice,
-                secondaryPrice: control.printSecondaryPrice,
-                payment: control.printPayment,
-                tip: control.printSuggestion,
-                coupon: control.printCoupon
-            })
-        },
-        profile: {
-            handler(n) {
-                if (n.hasOwnProperty('control')) {
-                    let { printPrimary, primaryFont, primaryFontSize, printSecondary, secondaryFont, secondaryFontSize, enlargeDetail } = n.control;
-                    this.style = {
-                        zhCN: {
-                            "font-family": primaryFont,
-                            "font-size": primaryFontSize + "px",
-                            "display": printPrimary ? "flex" : "none"
-                        },
-                        usEN: {
-                            "font-family": secondaryFont,
-                            "font-size": secondaryFontSize + "px",
-                            "display": printSecondary ? "flex" : "none"
-                        },
-                        info: {
-                            "font-family": enlargeDetail ? "Tensentype RuiHeiJ-W2" : "Agency FB",
-                            "font-size": enlargeDetail ? "1.25em" : "1em"
-                        }
-                    }
-                }
-                this.unchanged = false;
-            }, deep: true
-        }
-
-    },
-    computed: {
-        ...mapGetters(['op', 'config', 'store', 'ticket'])
+        this.unchanged = false;
+      },
+      deep: true
     }
-}
+  },
+  computed: {
+    ...mapGetters(["op", "config", "store", "ticket"])
+  }
+};
 </script>
 
 <style scoped>
 .printer {
-    display: flex;
-    height: 100%;
+  display: flex;
+  height: 100%;
 }
 
 .section .selection {
-    display: flex;
-    flex-wrap: wrap;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .input {
-    align-items: center;
-    margin: 7px;
-    background: #fff;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  align-items: center;
+  margin: 7px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 fieldset {
-    border: 1px solid #ccc;
-    background: #fff;
-    border-radius: 2px;
-    margin: 5px;
-    padding: 5px 0;
+  border: 1px solid #ccc;
+  background: #fff;
+  border-radius: 2px;
+  margin: 5px;
+  padding: 5px 0;
 }
 
 legend {
-    margin-left: 10px;
+  margin-left: 10px;
 }
 
 section.setting {
-    background: rgba(238, 238, 238, 0.57);
-    width: 360px;
+  background: rgba(238, 238, 238, 0.57);
+  width: 360px;
 }
 
 .selection .input {
-    width: 325px;
+  width: 325px;
 }
 
 .range {
-    width: 339px;
-    font-size: 13px;
-    border-bottom: 1px dashed #ccc;
-    padding-bottom: 5px;
-    margin-bottom: 5px;
+  width: 339px;
+  font-size: 13px;
+  border-bottom: 1px dashed #ccc;
+  padding-bottom: 5px;
+  margin-bottom: 5px;
 }
 
 .range label {
-    width: 100px;
+  width: 100px;
 }
 
 .wrap {
-    height: 622px;
+  height: 622px;
 }
 
 .preview {
-    flex: 1;
-    background: #525659;
-    box-shadow: inset 5px 0 35px -8px rgba(0, 0, 0, .62);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
+  flex: 1;
+  background: #525659;
+  box-shadow: inset 5px 0 35px -8px rgba(0, 0, 0, 0.62);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
 }
 
 .receipt {
-    background: #fff;
-    width: 290px;
-    padding: 45px 15px 20px;
-    box-shadow: 0px 0 25px rgba(0, 0, 0, .62);
+  background: #fff;
+  width: 290px;
+  padding: 45px 15px 20px;
+  box-shadow: 0px 0 25px rgba(0, 0, 0, 0.62);
 }
 
 footer {
-    display: flex;
+  display: flex;
 }
 
 .btn {
-    margin: 0 5px;
+  margin: 0 5px;
 }
 
 .receipt header {
-    text-align: center;
-    font-family: 'Agency FB';
+  text-align: center;
+  font-family: "Agency FB";
 }
 
 .receipt h3 {
-    font-size: 22px;
-    font-weight: bold;
+  font-size: 22px;
+  font-weight: bold;
 }
 
 .receipt h5 {
-    font-size: 16px;
-    font-weight: lighter;
+  font-size: 16px;
+  font-weight: lighter;
 }
 
 .receipt .type {
-    margin: 12px;
+  margin: 12px;
 }
 
 .receipt .type p {
-    justify-content: center;
-    align-content: center;
+  justify-content: center;
+  align-content: center;
 }
 
 .receipt .time {
-    display: flex;
-    justify-content: center;
-    border-bottom: 1px solid #9E9E9E;
-    position: relative;
+  display: flex;
+  justify-content: center;
+  border-bottom: 1px solid #9e9e9e;
+  position: relative;
 }
 
 .receipt .time span {
-    margin: 0 10px;
+  margin: 0 10px;
 }
 
 .receipt .time .number {
-    position: absolute;
-    right: 10px;
-    bottom: 12px;
-    font-size: 2em;
-    font-weight: bold;
+  position: absolute;
+  right: 10px;
+  bottom: 12px;
+  font-size: 2em;
+  font-weight: bold;
 }
 
 .server p {
-    text-align: left;
-    padding: 0 10px;
-    border-bottom: 1px solid gray;
+  text-align: left;
+  padding: 0 10px;
+  border-bottom: 1px solid gray;
 }
 
 .receipt .customer {
-    text-align: left;
-    padding: 2px 10px;
-    border-bottom: 1px solid gray;
+  text-align: left;
+  padding: 2px 10px;
+  border-bottom: 1px solid gray;
 }
 
 .receipt .customer .text {
-    display: inline-block;
-    width: 40px;
+  display: inline-block;
+  width: 40px;
 }
 
 p.list {
-    display: flex;
+  display: flex;
 }
 
 p.list .qty {
-    width: 35px;
-    text-align: center;
+  width: 35px;
+  text-align: center;
 }
 
 section.body {
-    padding: 10px 10px 15px 0;
+  padding: 10px 10px 15px 0;
 }
 
 p.mark {
-    margin-top: 10px;
+  margin-top: 10px;
 }
 
 .itemWrap .mark {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: -11px;
-    text-align: center;
-    font-size: 12px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -11px;
+  text-align: center;
+  font-size: 12px;
 }
 
-.itemWrap>span {
-    position: relative;
+.itemWrap > span {
+  position: relative;
 }
 
 .price {
-    flex: 1;
-    text-align: right;
+  flex: 1;
+  text-align: right;
 }
 
 .payment {
-    font-family: 'Agency FB';
-    text-align: right;
-    padding: 0 10px;
+  font-family: "Agency FB";
+  text-align: right;
+  padding: 0 10px;
 }
 
 .payment .value {
-    display: inline-block;
-    width: 40px;
+  display: inline-block;
+  width: 40px;
 }
 
 .payment .bold {
-    font-weight: bolder;
-    font-size: 1.25em;
+  font-weight: bolder;
+  font-size: 1.25em;
 }
 
 .footer {
-    text-align: center;
-    border-top: 1px solid gray;
-    margin-top: 10px;
-    padding-top: 5px;
+  text-align: center;
+  border-top: 1px solid gray;
+  margin-top: 10px;
+  padding-top: 5px;
 }
 
 .hide {
-    display: none;
+  display: none;
 }
 
 aside.action {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    display: flex;
-    flex-direction: column;
-    padding: 30px;
-    opacity: 0;
-    transition: opacity 0.22s ease;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+  opacity: 0;
+  transition: opacity 0.22s ease;
 }
 
 .action i {
-    width: 45px;
-    height: 45px;
-    line-height: 45px;
-    text-align: center;
-    display: block;
-    box-shadow: 0 2px 5px 0 rgba(22, 45, 61, 0.58);
-    border-radius: 50%;
-    background: linear-gradient(to bottom, white 0%, #eeeeee 100%);
-    color: #5f5d5d;
-    margin-bottom: 15px;
-    cursor: pointer;
+  width: 45px;
+  height: 45px;
+  line-height: 45px;
+  text-align: center;
+  display: block;
+  box-shadow: 0 2px 5px 0 rgba(22, 45, 61, 0.58);
+  border-radius: 50%;
+  background: linear-gradient(to bottom, white 0%, #eeeeee 100%);
+  color: #5f5d5d;
+  margin-bottom: 15px;
+  cursor: pointer;
 }
 
 section.preview:hover .action {
-    opacity: 1;
+  opacity: 1;
 }
 
-.selection>div {
-    min-width: 90px;
+.selection > div {
+  min-width: 90px;
 }
 </style>

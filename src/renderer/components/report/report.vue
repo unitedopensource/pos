@@ -74,752 +74,937 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import calendar from './calendar'
-import processor from '../common/processor'
-import checkbox from '../setting/common/checkbox'
+import { mapGetters } from "vuex";
+import calendar from "./calendar";
+import processor from "../common/processor";
+import checkbox from "../setting/common/checkbox";
 export default {
-    props: ['init'],
-    components: { checkbox, calendar, processor },
-    created() {
-        this.getRange(this.range)
+  props: ["init"],
+  components: { checkbox, calendar, processor },
+  created() {
+    this.getRange(this.range);
+  },
+  data() {
+    return {
+      tip: false,
+      daily: false,
+      range: "today",
+      hourly: false,
+      driver: false,
+      summary: true,
+      giftCard: false,
+      waitStaff: false,
+      countItem: false,
+      thirdParty: false,
+      emailReport: false,
+      reportRange: null,
+      settleType: false,
+      component: null,
+      componentData: null,
+      countCategory: false,
+      salesCategory: false,
+      report: {}
+    };
+  },
+  methods: {
+    confirm() {
+      this.$p("processor");
+      if (this.daily) {
+        let { from, to } = this.reportRange;
+        from = moment(from);
+        to = moment(to);
+        let days = to.diff(from, "days") + 1;
+        let current = 0;
+        let h = to.format("HH");
+        let m = to.format("mm");
+
+        to = from
+          .clone()
+          .hours(h)
+          .minutes(m);
+        from = from.clone().subtract(1, "days");
+        this.processLoop({ from, to }, current, days);
+      } else {
+        this.process(null, this.init.resolve);
+      }
     },
-    data() {
-        return {
-            tip: false,
-            daily: false,
-            range: 'today',
-            hourly: false,
-            driver: false,
-            summary: true,
-            giftCard: false,
-            waitStaff: false,
-            countItem: false,
-            thirdParty: false,
-            emailReport: false,
-            reportRange: null,
-            settleType: false,
-            component: null,
-            componentData: null,
-            countCategory: false,
-            salesCategory: false,
-            report: {}
+    processLoop(date, current, days) {
+      let { from, to } = date;
+      from = from.clone().add(1, "days");
+      to = to.clone().add(1, "days");
+      this.reportRange = { from: +from, to: +to };
+      this.process(null, () => {
+        current++;
+        current !== days
+          ? this.processLoop({ from, to }, current, days)
+          : this.init.resolve();
+      });
+    },
+    process(date, callback) {
+      Promise.all([
+        this.fetchData(),
+        this.fetchCreditCard(),
+        this.fetchGiftCard()
+      ]).then(datas => {
+        this.handler(datas);
+        if (!date) date = this.reportRange;
+        Printer.printReport({ date, report: this.report });
+        callback && callback();
+      });
+    },
+    getRange(type) {
+      let from, to;
+      switch (type) {
+        case "today":
+          from = +moment()
+            .subtract(4, "hours")
+            .hours(4)
+            .minutes(0)
+            .seconds(0)
+            .milliseconds(0);
+          to = +moment()
+            .subtract(4, "hours")
+            .hours(3)
+            .minutes(59)
+            .seconds(59)
+            .milliseconds(0)
+            .add("1", "days");
+          break;
+        case "week":
+          from = +moment()
+            .subtract(4, "hours")
+            .startOf("week")
+            .hours(4);
+          to = +moment()
+            .subtract(4, "hours")
+            .endOf("week")
+            .add("1", "days")
+            .hours(3)
+            .minutes(59)
+            .seconds(59)
+            .milliseconds(0);
+          break;
+        case "month":
+          from = +moment()
+            .subtract(4, "hours")
+            .startOf("month")
+            .hours(4);
+          to = +moment()
+            .subtract(4, "hours")
+            .endOf("month")
+            .add("1", "days")
+            .hours(3)
+            .minutes(59)
+            .seconds(59)
+            .milliseconds(0);
+          break;
+        case "last":
+          from = +moment()
+            .subtract(4, "hours")
+            .subtract(1, "months")
+            .startOf("month")
+            .hours(4);
+          to = +moment()
+            .subtract(4, "hours")
+            .subtract(1, "months")
+            .endOf("month")
+            .add("1", "days")
+            .hours(3)
+            .minutes(59)
+            .seconds(59)
+            .milliseconds(0);
+          break;
+      }
+      this.reportRange = { from, to };
+    },
+    openCalendar() {
+      new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject };
+        this.component = "calendar";
+      })
+        .then(date => {
+          this.reportRange = date;
+          this.$q();
+        })
+        .catch(() => {
+          this.range = "today";
+          this.getRange("today");
+          this.$q();
+        });
+    },
+    fetchData() {
+      return new Promise(resolve => {
+        this.$socket.emit("[REPORT] GATHER_ORDER_DATA", this.reportRange);
+        this.$options.sockets["REPORT_ORDER_RESULTS"] = data => {
+          resolve(data);
+        };
+      });
+    },
+    fetchGiftCard() {
+      return new Promise(resolve => {
+        if (this.giftCard) {
+          this.$socket.emit("[REPORT] GATHER_GIFTCARD_DATA", this.reportRange);
+          this.$options.sockets["REPORT_GIFTCARD_RESULTS"] = data => {
+            resolve(data);
+          };
+        } else {
+          resolve([]);
         }
+      });
     },
-    methods: {
-        confirm() {
-            this.$p('processor');
-            if (this.daily) {
-                let { from, to } = this.reportRange;
-                from = moment(from);
-                to = moment(to);
-                let days = to.diff(from, 'days') + 1;
-                let current = 0;
-                let h = to.format('HH');
-                let m = to.format('mm');
+    fetchCreditCard() {
+      return new Promise(resolve => {
+        if (this.creditCard) {
+          this.$socket.emit(
+            "[REPORT] GATHER_CREDITCARD_DATA",
+            this.reportRange
+          );
+          this.$options.sockets["REPORT_CREDITCARD_RESULTS"] = data => {
+            resolve(data);
+          };
+        } else {
+          resolve([]);
+        }
+      });
+    },
+    fetchEmpolyee() {
+      return new Promise(resolve => {
+        if (this.waitStaff) {
+          this.$socket.emit("[REPORT] GATER_EMPLOYEE_DATA", this.reportRange);
+          this.$options.sockets["REPORT_WAITSTAFF_RESULTS"] = data => {
+            resolve(data);
+          };
+        } else {
+          resolve([]);
+        }
+      });
+    },
+    handler(datas) {
+      this.summarize(datas[0]);
+      this.report["CREDIT CARD"] = this.creditCardReport(datas[1]);
+      this.report["GIFT CARD"] = this.giftCard
+        ? this.giftCardReport(datas[2])
+        : null;
+      this.report["EMPLOYEE"] = this.waitStaff
+        ? this.employeeReport(datas[0])
+        : null;
+      this.report["DRIVER"] = this.driver ? this.driverReport(datas[0]) : null;
+      this.report["HOURLY REPORT"] = this.hourly
+        ? this.hourlyReport(datas[0])
+        : null;
+      this.report["ITEM SALES"] = this.countItem
+        ? this.itemCounter(datas[0])
+        : null;
+      this.report["CATEGORY SALES"] = this.countCategory
+        ? this.categoryCounter(datas[0])
+        : null;
+      this.report["SOURCE REPORT"] = this.thirdParty
+        ? this.sourceReport(datas[0])
+        : null;
+      this.report["SETTLE TYPE"] = this.settleType
+        ? this.settleTypeReport(datas[0])
+        : null;
+    },
+    employeeReport(data) {
+      let staff = {};
+      data.forEach(invoice => {
+        if (invoice.server) {
+          let name = invoice.server;
+          let { subtotal, tax, tip, gratuity, discount } = invoice.payment;
+          let amount =
+            parseFloat(subtotal) + parseFloat(tax) - parseFloat(discount);
 
-                to = from.clone().hours(h).minutes(m);
-                from = from.clone().subtract(1, 'days');
-                this.processLoop({ from, to }, current, days);
-            } else {
-                this.process(null, this.init.resolve);
-            }
-        },
-        processLoop(date, current, days) {
-            let { from, to } = date;
-            from = from.clone().add(1, 'days');
-            to = to.clone().add(1, 'days');
-            this.reportRange = { from: +from, to: +to };
-            this.process(null, () => {
-                current++;
-                current !== days ? this.processLoop({ from, to }, current, days) : this.init.resolve();
-            });
-        },
-        process(date, callback) {
-            Promise.all([this.fetchData(), this.fetchCreditCard(), this.fetchGiftCard()]).then(datas => {
-                this.handler(datas);
-                if (!date) date = this.reportRange;
-                Printer.printReport({ date, report: this.report })
-                callback && callback();
-            })
-        },
-        getRange(type) {
-            let from, to;
-            switch (type) {
-                case 'today':
-                    from = +moment().subtract(4, 'hours').hours(4).minutes(0).seconds(0).milliseconds(0);
-                    to = +moment().subtract(4, 'hours').hours(3).minutes(59).seconds(59).milliseconds(0).add('1', 'days');
-                    break;
-                case 'week':
-                    from = +moment().subtract(4, 'hours').startOf('week').hours(4);
-                    to = +moment().subtract(4, 'hours').endOf('week').add('1', 'days').hours(3).minutes(59).seconds(59).milliseconds(0);
-                    break;
-                case 'month':
-                    from = +moment().subtract(4, 'hours').startOf('month').hours(4);
-                    to = +moment().subtract(4, 'hours').endOf('month').add('1', 'days').hours(3).minutes(59).seconds(59).milliseconds(0);
-                    break;
-                case 'last':
-                    from = +moment().subtract(4, 'hours').subtract(1, 'months').startOf('month').hours(4);
-                    to = +moment().subtract(4, 'hours').subtract(1, 'months').endOf('month').add('1', 'days').hours(3).minutes(59).seconds(59).milliseconds(0);
-                    break;
-            }
-            this.reportRange = { from, to }
-        },
-        openCalendar() {
-            new Promise((resolve, reject) => {
-                this.componentData = { resolve, reject };
-                this.component = "calendar";
-            }).then((date) => {
-                this.reportRange = date;
-                this.$q();
-            }).catch(() => {
-                this.range = "today";
-                this.getRange('today');
-                this.$q();
-            })
-        },
-        fetchData() {
-            return new Promise((resolve) => {
-                this.$socket.emit("[REPORT] GATHER_ORDER_DATA", this.reportRange);
-                this.$options.sockets["REPORT_ORDER_RESULTS"] = (data) => { resolve(data) }
-            })
-        },
-        fetchGiftCard() {
-            return new Promise((resolve) => {
-                if (this.giftCard) {
-                    this.$socket.emit("[REPORT] GATHER_GIFTCARD_DATA", this.reportRange);
-                    this.$options.sockets["REPORT_GIFTCARD_RESULTS"] = (data) => { resolve(data) }
-                } else {
-                    resolve([]);
-                }
-            })
-        },
-        fetchCreditCard() {
-            return new Promise((resolve) => {
-                if (this.creditCard) {
-                    this.$socket.emit("[REPORT] GATHER_CREDITCARD_DATA", this.reportRange);
-                    this.$options.sockets["REPORT_CREDITCARD_RESULTS"] = (data) => { resolve(data) }
-                } else {
-                    resolve([]);
-                }
-            })
-        },
-        fetchEmpolyee() {
-            return new Promise((resolve) => {
-                if (this.waitStaff) {
-                    this.$socket.emit("[REPORT] GATER_EMPLOYEE_DATA", this.reportRange);
-                    this.$options.sockets["REPORT_WAITSTAFF_RESULTS"] = (data) => { resolve(data) }
-                } else {
-                    resolve([]);
-                }
-            })
-        },
-        handler(datas) {
-            this.summarize(datas[0]);
-            this.report["CREDIT CARD"] = this.creditCardReport(datas[1]);
-            this.report["GIFT CARD"] = this.giftCard ? this.giftCardReport(datas[2]) : null;
-            this.report["EMPLOYEE"] = this.waitStaff ? this.employeeReport(datas[0]) : null;
-            this.report["DRIVER"] = this.driver ? this.driverReport(datas[0]) : null;
-            this.report["HOURLY REPORT"] = this.hourly ? this.hourlyReport(datas[0]) : null;
-            this.report["ITEM SALES"] = this.countItem ? this.itemCounter(datas[0]) : null;
-            this.report["CATEGORY SALES"] = this.countCategory ? this.categoryCounter(datas[0]) : null;
-            this.report["SOURCE REPORT"] = this.thirdParty ? this.sourceReport(datas[0]) : null;
-            this.report["SETTLE TYPE"] = this.settleType ? this.settleTypeReport(datas[0]) : null;
-        },
-        employeeReport(data) {
-            let staff = {};
-            data.forEach(invoice => {
-                if (invoice.server) {
-                    let name = invoice.server;
-                    let { subtotal, tax, tip, gratuity, discount } = invoice.payment;
-                    let amount = parseFloat(subtotal) + parseFloat(tax) - parseFloat(discount);
-
-                    if (staff.hasOwnProperty(name)) {
-                        staff[name]["amount"] += amount;
-                        staff[name]["tip"] += parseFloat(tip);
-                        staff[name]["gratuity"] += parseFloat(gratuity);
-                        staff[name]["count"]++;
-                    } else {
-                        staff[name] = {
-                            text: name,
-                            tip: parseFloat(tip),
-                            gratuity: parseFloat(gratuity),
-                            amount: amount,
-                            count: 1
-                        }
-                    }
-                }
-            });
-            Object.keys(staff).forEach(name => {
-                let server = staff[name];
-                server.amount = [{ Total: server.amount.toFixed(2) }, { Tip: server.tip.toFixed(2) }, { Gratuity: server.tip.toFixed(2) }];
-            })
-            return staff;
-        },
-        sourceReport(data) {
-            let source = {};
-            data.forEach(invoice => {
-                let name = invoice.source;
-                let { subtotal, tax, discount, tip } = invoice.payment;
-                let amount = parseFloat(subtotal) + parseFloat(tax) - parseFloat(discount);
-
-                if (source.hasOwnProperty(name)) {
-                    source[name]["amount"] += amount;
-                    source[name]["tip"] += parseFloat(tip);
-                    source[name]["count"]++;
-                } else {
-                    source[name] = {
-                        text: name,
-                        tip: parseFloat(tip),
-                        amount: amount,
-                        count: 1
-                    }
-                }
-
-            })
-            return source;
-        },
-        settleTypeReport(data) {
-            let settle = {};
-            let tip = 0;
-            data.forEach(invoice => {
-                let payment = invoice.payment;
-                let type = payment.type;
-
-                if (!payment.settled) return;
-                if (type === 'MULTIPLE') {
-                    invoice.splitPayment.forEach(split => {
-                        split.log.forEach(log => {
-                            let paid = parseFloat(log.paid) - parseFloat(log.change)
-                            let tip = parseFloat(log.tip || 0)
-                            let type = log.type;
-
-                            paid -= tip;
-
-                            if (settle.hasOwnProperty(type)) {
-                                settle[split.type]["amount"] += paid;
-                                settle[split.type]["tip"] += tip;
-                                settle[split.type]["count"]++
-                            } else {
-                                settle[split.type] = {
-                                    text: split.type,
-                                    tip: tip,
-                                    amount: paid,
-                                    count: 1
-                                }
-                            }
-                        })
-                    })
-                } else {
-                    payment.log.forEach(log => {
-                        let paid = parseFloat(log.paid) - parseFloat(log.change)
-                        let tip = parseFloat(log.tip || 0)
-                        let type = log.type;
-
-                        paid -= tip;
-
-                        if (settle.hasOwnProperty(type)) {
-                            settle[type]["amount"] += paid;
-                            settle[type]["tip"] += tip
-                            settle[type]["count"]++;
-                        } else {
-                            settle[type] = {
-                                text: type,
-                                tip: tip,
-                                amount: paid,
-                                count: 1
-                            }
-                        }
-                    })
-                }
-            });
-
-            Object.keys(settle).forEach(type => {
-                settle[type]['amount'] = [{ Total: settle[type]['amount'].toFixed(2) }, { Tip: settle[type]['tip'].toFixed(2) }]
-            })
-
-            return settle;
-        },
-        driverReport(data) {
-            let drivers = {
-                All: {
-                    text: this.$t('text.allDeliveries'),
-                    amount: 0,
-                    tip: 0,
-                    fee: 0,
-                    count: 0
-                }
+          if (staff.hasOwnProperty(name)) {
+            staff[name]["amount"] += amount;
+            staff[name]["tip"] += parseFloat(tip);
+            staff[name]["gratuity"] += parseFloat(gratuity);
+            staff[name]["count"]++;
+          } else {
+            staff[name] = {
+              text: name,
+              tip: parseFloat(tip),
+              gratuity: parseFloat(gratuity),
+              amount: amount,
+              count: 1
             };
-            data.forEach(invoice => {
-                let { subtotal, tax, discount, tip, delivery } = invoice.payment;
-                let amount = parseFloat(subtotal) + parseFloat(tax) - parseFloat(discount);
-
-                if (invoice.driver && invoice.status === 1) {
-                    let name = invoice.driver;
-
-                    if (drivers.hasOwnProperty(name)) {
-                        drivers[name]["amount"] += amount;
-                        drivers[name]["tip"] += parseFloat(tip);
-                        drivers[name]["fee"] += parseFloat(delivery);
-                        drivers[name]["count"]++;
-                    } else {
-                        drivers[name] = {
-                            text: "#" + name,
-                            tip: parseFloat(tip),
-                            amount: amount,
-                            count: 1,
-                            fee: parseFloat(delivery)
-                        }
-                    }
-                }
-
-                if (invoice.type === 'DELIVERY' && invoice.status === 1) {
-                    drivers.All.amount += amount;
-                    drivers.All.tip += parseFloat(tip);
-                    drivers.All.fee += parseFloat(delivery);
-                    drivers.All.count++;
-                }
-            });
-
-            Object.keys(drivers).forEach(name => {
-                let driver = drivers[name];
-                driver.amount = [{ Total: driver.amount.toFixed(2) }, { Tip: driver.tip.toFixed(2) }, { Fee: driver.fee.toFixed(2) }];
-            })
-            return drivers;
-        },
-        creditCardReport() {
-
-        },
-        giftCardReport(data) {
-            data = data || [];
-            let activation = 0, bonus = 0, bonusAmount = 0, initialAmount = 0, creditAmount = 0, debitAmount = 0, debit = 0, credit = 0;
-            data.forEach(log => {
-                let amount = parseFloat(log.change)
-                switch (log.type) {
-                    case "Activation":
-                        activation++;
-                        initialAmount += amount;
-                        creditAmount += amount;
-                        if (log.bonus) {
-                            bonus++;
-                            bonus += log.bonus;
-                        }
-                        break;
-                    case "Reload":
-                        credit++;
-                        creditAmount += amount;
-                        break;
-                    case "Transaction":
-                        debit++;
-                        debitAmount += amount;
-                        break;
-                }
-            })
-            return [{
-                text: this.$t("card.activation"),
-                count: activation,
-                amount: initialAmount
-            }, {
-                text: this.$t('card.activationBonus'),
-                count: bonus,
-                amount: bonusAmount
-            }, {
-                text: this.$t('card.giftCardCredit'),
-                count: credit,
-                amount: creditAmount
-            }, {
-                text: this.$t("card.giftCardDebit"),
-                count: debit,
-                amount: debitAmount
-            }];
-        },
-        summarize(data) {
-            let gross = 0, grossAmount = 0, netAmount = 0, itemSalesAmount = 0, taxAmount = 0,
-                walkin = 0, walkinAmount = 0,
-                pickup = 0, pickupAmount = 0,
-                delivery = 0, deliveryAmount = 0, deliveryTip = 0,
-                dinein = 0, dineinAmount = 0,
-                bar = 0, barAmount = 0,
-                tips = 0, tipsAmount = 0,
-                gratuityAmount = 0,
-                other = 0, otherAmount = 0,
-                third = 0, thirdAmount = 0,
-                settle = 0, settleAmount = 0,
-                discount = 0, discountAmount = 0,
-                unsettle = 0, unsettleAmount = 0,
-                voided = 0, voidedAmount = 0,
-                cash = 0, cashAmount = 0,
-                credit = 0, creditAmount = 0,
-                creditTip = 0, creditTipAmount = 0,
-                gift = 0, giftAmount = 0;
-
-            data.forEach(ticket => {
-                let { total, subtotal, due, tax, tip, gratuity, discount } = ticket.payment;
-                let amount = parseFloat(subtotal) + parseFloat(tax) - parseFloat(discount);
-
-                if (ticket.status === 1) {
-                    switch (ticket.type) {
-                        case "WALK_IN":
-                            walkin++;
-                            walkinAmount += amount;
-                            break;
-                        case "PICK_UP":
-                            pickup++;
-                            pickupAmount += amount;
-                            break;
-                        case "DELIVERY":
-                            delivery++;
-                            deliveryAmount += amount;
-                            break;
-                        case "DINE_IN":
-                            dinein++;
-                            dineinAmount += amount;
-                            break;
-                        case "BAR":
-                            bar++;
-                            barAmount += amount;
-                            break;
-                        default:
-                            other++;
-                            otherAmount += amount;
-                    }
-                    gross++;
-                    grossAmount += parseFloat(total);
-                    netAmount += amount;
-                    itemSalesAmount += parseFloat(subtotal);
-                    taxAmount += parseFloat(tax);
-
-                    if (ticket.payment.discount > 0) {
-                        discount++;
-                        discountAmount += parseFloat(discount)
-                    }
-
-                    if (ticket.settled) {
-                        settle++;
-                        settleAmount += amount;
-                        tipsAmount += parseFloat(tip);
-                        gratuityAmount += parseFloat(gratuity);
-
-                        let log = [];
-                        Array.isArray(ticket.splitPayment) ?
-                            ticket.splitPayment.forEach(split => {
-                                split && log.push(...split.log)
-                            }) :
-                            log.push(...ticket.payment.log);
-
-                        log.forEach(t => {
-                            switch (t.type) {
-                                case 'CASH':
-                                    cash++;
-                                    cashAmount += parseFloat(t.paid - t.change);
-                                    break;
-                                case 'CREDIT':
-                                    credit++;
-                                    creditAmount += parseFloat(t.paid);
-                                    if (t.tip > 0) {
-                                        creditTip++;
-                                        creditTipAmount += parseFloat(t.tip)
-                                    }
-                                    break;
-                                case 'GIFT':
-                                    gift++;
-                                    giftAmount += parseFloat(t.paid)
-                                    break;
-                                default:
-                                    third++;
-                                    thirdAmount += parseFloat(t.paid)
-                            }
-                        })
-                    } else if (!ticket.payment.settled) {
-                        unsettle++;
-                        unsettleAmount += amount;
-                    }
-                } else {
-                    voided++;
-                    voidedAmount += parseFloat(total);
-                }
-            })
-            this.report["SUMMARY"] = this.summary ? [{
-                text: this.$t('report.grossSales'),
-                count: gross,
-                amount: grossAmount
-            },
-            {
-                text: this.$t('report.netSales'),
-                count: 0,
-                amount: netAmount
-            },
-            {
-                text: "&nbsp;",
-                count: 0,
-                amount: ""
-            },
-            {
-                text: this.$t('report.itemSales'),
-                count: 0,
-                amount: itemSalesAmount
-            },
-            {
-                text: this.$t('report.tax'),
-                count: 0,
-                amount: taxAmount
-            },
-            {
-                text: this.$t('report.discount'),
-                count: discount,
-                amount: -discountAmount
-            }, {
-                text: "&nbsp;",
-                count: 0,
-                amount: ""
-            }, {
-                text: this.$t('report.tips'),
-                count: 0,
-                amount: tipsAmount
-            }, {
-                text: this.$t('report.gratuity'),
-                count: 0,
-                amount: gratuityAmount
-            }] : null;
-
-            this.report["SALES CATEGORY"] = this.salesCategory ?
-                [{
-                    text: this.$t('report.cash'),
-                    count: cash,
-                    amount: cashAmount
-                },
-                {
-                    text: this.$t('report.creditCard'),
-                    count: credit,
-                    amount: creditAmount
-                },
-                {
-                    text: this.$t('report.creditCardTip'),
-                    count: creditTip,
-                    amount: creditTipAmount
-                },
-                {
-                    text: this.$t('report.giftCard'),
-                    count: gift,
-                    amount: giftAmount
-                },
-                {
-                    text: this.$t('report.thirdParty'),
-                    count: third,
-                    amount: thirdAmount
-                },
-                {
-                    text: "&nbsp;",
-                    count: 0,
-                    amount: ""
-                },
-                {
-                    text: this.$t('type.WALK_IN'),
-                    count: walkin,
-                    amount: walkinAmount
-                }, {
-                    text: this.$t('type.PICK_UP'),
-                    count: pickup,
-                    amount: pickupAmount
-                }, {
-                    text: this.$t('type.DELIVERY'),
-                    count: delivery,
-                    amount: deliveryAmount
-                }, {
-                    text: this.$t('type.DINE_IN'),
-                    count: dinein,
-                    amount: dineinAmount
-                },
-                {
-                    text: this.$t('type.other'),
-                    count: 0,
-                    amount: otherAmount
-                },
-                {
-                    text: "&nbsp;",
-                    count: 0,
-                    amount: ""
-                }, {
-                    text: this.$t("type.settled"),
-                    count: settle,
-                    amount: settleAmount
-                }, {
-                    text: this.$t("type.unsettled"),
-                    count: unsettle,
-                    amount: unsettleAmount
-                }, {
-                    text: this.$t('type.voided'),
-                    count: voided,
-                    amount: voidedAmount
-                }] : null;
-        },
-        hourlyReport(data) {
-            let hours = {};
-            data.forEach(ticket => {
-                let hour = new Date(ticket.time).getHours();
-                let pay = ticket.payment;
-                let { subtotal, tax, discount } = pay;
-                let amount = parseFloat(subtotal) + parseFloat(tax) - parseFloat(discount);
-                if (!hours.hasOwnProperty(hour)) {
-                    hours[hour] = {
-                        text: `${hour}:00`,
-                        count: 1,
-                        amount
-                    }
-                } else {
-                    hours[hour].count++;
-                    hours[hour].amount += amount;
-                }
-            })
-            return hours;
-        },
-        itemCounter(data) {
-            let counter = {};
-            data.forEach(ticket => {
-                ticket.content.forEach(item => {
-                    if (!counter.hasOwnProperty(item.usEN)) {
-                        counter[item.usEN] = {
-                            text: item[this.language],
-                            count: 1,
-                            amount: item.single * item.qty
-                        }
-                    } else {
-                        counter[item.usEN].count++;
-                        counter[item.usEN].amount += item.single * item.qty;
-                    }
-                })
-            })
-            return Object.values(counter).filter(item => item.amount > 0).sort((a, b) => a.count > b.count ? -1 : 1)
-        },
-        categoryCounter(data) {
-            let counter = {};
-            data.forEach(ticket => {
-                ticket.content.forEach(item => {
-                    if (!counter.hasOwnProperty(item.category)) {
-                        counter[item.category] = {
-                            text: this.language === 'zhCN' ? (item.categoryCN || item.category) : item.category,
-                            count: 1,
-                            amount: item.single * item.qty
-                        }
-                    } else {
-                        counter[item.category].count++;
-                        counter[item.category].amount += item.single * item.qty;
-                    }
-                })
-            })
-            return Object.values(counter).filter(item => item.amount > 0).sort((a, b) => a.count > b.count ? -1 : 1)
-        },
-        generateCSV() {
-            let excel = [['Index', 'Date', 'Content']];
-            let csvRows = [];
-
-            for (let i = 1; i < 10; i++) {
-                excel.push([i, "2017-01-" + i, i * 2]);
-            }
-
-            for (let i = 0; i < excel.length; i++) {
-                csvRows.push(excel[i].join(','));
-            }
-
-            let csvFile = csvRows.join("%0A");
-            console.log('data:attachment/csv,' + csvFile);
-        },
+          }
+        }
+      });
+      Object.keys(staff).forEach(name => {
+        let server = staff[name];
+        server.amount = [
+          { Total: server.amount.toFixed(2) },
+          { Tip: server.tip.toFixed(2) },
+          { Gratuity: server.tip.toFixed(2) }
+        ];
+      });
+      return staff;
     },
-    computed: {
-        ...mapGetters(['config', 'language'])
+    sourceReport(data) {
+      let source = {};
+      data.forEach(invoice => {
+        let name = invoice.source;
+        let { subtotal, tax, discount, tip } = invoice.payment;
+        let amount =
+          parseFloat(subtotal) + parseFloat(tax) - parseFloat(discount);
+
+        if (source.hasOwnProperty(name)) {
+          source[name]["amount"] += amount;
+          source[name]["tip"] += parseFloat(tip);
+          source[name]["count"]++;
+        } else {
+          source[name] = {
+            text: name,
+            tip: parseFloat(tip),
+            amount: amount,
+            count: 1
+          };
+        }
+      });
+      return source;
+    },
+    settleTypeReport(data) {
+      let settle = {};
+      let tip = 0;
+      let logs = [];
+
+      data.forEach(invoice => {
+        if (invoice.settled) {
+          if (invoice.payment.type === "MULTIPLE") {
+            invoice.splitPayment.forEach(split => {
+              logs.push(...split.log);
+            });
+          } else {
+            logs.push(...invoice.payment.log);
+          }
+        }
+      });
+      let types = new Set();
+      logs.forEach(log => {
+        types.add(log.type);
+      });
+
+      types.forEach(type => {
+        let list = logs.filter(log => log.type === type);
+        let count = list.length;
+        let amount = list
+          .map(log => log.paid - log.change)
+          .reduce((a, b) => a + b, 0);
+        let tip = list
+          .map(log => parseFloat(log.tip || 0))
+          .reduce((a, b) => a + b, 0);
+            console.log(list.map(i=>i.paid-i.change))
+          console.log(type,count,amount,tip)
+      });
+
+      //   data.forEach(invoice => {
+      //     let payment = invoice.payment;
+      //     let type = payment.type;
+
+      //     if (!payment.settled) return;
+      //     if (type === "MULTIPLE") {
+      //       invoice.splitPayment.forEach(split => {
+      //         split.log.forEach(log => {
+      //           let paid = parseFloat(log.paid) - parseFloat(log.change);
+      //           let tip = parseFloat(log.tip || 0);
+      //           let type = log.type;
+
+      //           paid -= tip;
+
+      //           if (settle.hasOwnProperty(type)) {
+      //             settle[split.type]["amount"] += paid;
+      //             settle[split.type]["tip"] += tip;
+      //             settle[split.type]["count"]++;
+      //           } else {
+      //             settle[split.type] = {
+      //               text: split.type,
+      //               tip: tip,
+      //               amount: paid,
+      //               count: 1
+      //             };
+      //           }
+      //         });
+      //       });
+      //     } else {
+
+      //       payment.log.forEach(log => {
+      //         let paid = toFixed(log.paid - log.change, 2);
+      //         let tip = parseFloat(log.tip || 0);
+      //         let type = log.type;
+
+      //         if (settle.hasOwnProperty(type)) {
+      //           settle[type]["amount"] += paid;
+      //           settle[type]["tip"] += tip;
+      //           settle[type]["count"]++;
+      //         } else {
+      //           settle[type] = {
+      //             text: type,
+      //             tip: tip,
+      //             amount: paid,
+      //             count: 1
+      //           };
+      //         }
+      //       });
+      //     }
+      //   });
+      //   Object.keys(settle).forEach(type => {
+      //     settle[type]["amount"] = [
+      //       { Total: toFixed(settle[type]["amount"], 2).toFixed(2) },
+      //       { Tip: settle[type]["tip"].toFixed(2) }
+      //     ];
+      //   });
+
+      return settle;
+    },
+    driverReport(data) {
+      let drivers = {
+        All: {
+          text: this.$t("text.allDeliveries"),
+          amount: 0,
+          tip: 0,
+          fee: 0,
+          count: 0
+        }
+      };
+      data.forEach(invoice => {
+        let { subtotal, tax, discount, tip, delivery } = invoice.payment;
+        let amount =
+          parseFloat(subtotal) + parseFloat(tax) - parseFloat(discount);
+
+        if (invoice.driver && invoice.status === 1) {
+          let name = invoice.driver;
+
+          if (drivers.hasOwnProperty(name)) {
+            drivers[name]["amount"] += amount;
+            drivers[name]["tip"] += parseFloat(tip);
+            drivers[name]["fee"] += parseFloat(delivery);
+            drivers[name]["count"]++;
+          } else {
+            drivers[name] = {
+              text: "#" + name,
+              tip: parseFloat(tip),
+              amount: amount,
+              count: 1,
+              fee: parseFloat(delivery)
+            };
+          }
+        }
+
+        if (invoice.type === "DELIVERY" && invoice.status === 1) {
+          drivers.All.amount += amount;
+          drivers.All.tip += parseFloat(tip);
+          drivers.All.fee += parseFloat(delivery);
+          drivers.All.count++;
+        }
+      });
+
+      Object.keys(drivers).forEach(name => {
+        let driver = drivers[name];
+        driver.amount = [
+          { Total: driver.amount.toFixed(2) },
+          { Tip: driver.tip.toFixed(2) },
+          { Fee: driver.fee.toFixed(2) }
+        ];
+      });
+      return drivers;
+    },
+    creditCardReport() {},
+    giftCardReport(data) {
+      data = data || [];
+      let activation = 0,
+        bonus = 0,
+        bonusAmount = 0,
+        initialAmount = 0,
+        creditAmount = 0,
+        debitAmount = 0,
+        debit = 0,
+        credit = 0;
+      data.forEach(log => {
+        let amount = parseFloat(log.change);
+        switch (log.type) {
+          case "Activation":
+            activation++;
+            initialAmount += amount;
+            creditAmount += amount;
+            if (log.bonus) {
+              bonus++;
+              bonus += log.bonus;
+            }
+            break;
+          case "Reload":
+            credit++;
+            creditAmount += amount;
+            break;
+          case "Transaction":
+            debit++;
+            debitAmount += amount;
+            break;
+        }
+      });
+      return [
+        {
+          text: this.$t("card.activation"),
+          count: activation,
+          amount: initialAmount
+        },
+        {
+          text: this.$t("card.activationBonus"),
+          count: bonus,
+          amount: bonusAmount
+        },
+        {
+          text: this.$t("card.giftCardCredit"),
+          count: credit,
+          amount: creditAmount
+        },
+        {
+          text: this.$t("card.giftCardDebit"),
+          count: debit,
+          amount: debitAmount
+        }
+      ];
+    },
+    summarize(data) {
+      let gross = 0,
+        grossAmount = 0,
+        netAmount = 0,
+        itemSalesAmount = 0,
+        taxAmount = 0,
+        walkin = 0,
+        walkinAmount = 0,
+        pickup = 0,
+        pickupAmount = 0,
+        delivery = 0,
+        deliveryAmount = 0,
+        deliveryTip = 0,
+        dinein = 0,
+        dineinAmount = 0,
+        bar = 0,
+        barAmount = 0,
+        tips = 0,
+        tipsAmount = 0,
+        gratuityAmount = 0,
+        other = 0,
+        otherAmount = 0,
+        third = 0,
+        thirdAmount = 0,
+        settle = 0,
+        settleAmount = 0,
+        discount = 0,
+        discountAmount = 0,
+        unsettle = 0,
+        unsettleAmount = 0,
+        voided = 0,
+        voidedAmount = 0,
+        cash = 0,
+        cashAmount = 0,
+        credit = 0,
+        creditAmount = 0,
+        creditTip = 0,
+        creditTipAmount = 0,
+        gift = 0,
+        giftAmount = 0;
+
+      data.forEach(ticket => {
+        let {
+          total,
+          subtotal,
+          due,
+          tax,
+          tip,
+          gratuity,
+          discount
+        } = ticket.payment;
+        let amount =
+          parseFloat(subtotal) + parseFloat(tax) - parseFloat(discount);
+
+        if (ticket.status === 1) {
+          switch (ticket.type) {
+            case "WALK_IN":
+              walkin++;
+              walkinAmount += amount;
+              break;
+            case "PICK_UP":
+              pickup++;
+              pickupAmount += amount;
+              break;
+            case "DELIVERY":
+              delivery++;
+              deliveryAmount += amount;
+              break;
+            case "DINE_IN":
+              dinein++;
+              dineinAmount += amount;
+              break;
+            case "BAR":
+              bar++;
+              barAmount += amount;
+              break;
+            default:
+              other++;
+              otherAmount += amount;
+          }
+          gross++;
+          grossAmount += parseFloat(total);
+          netAmount += amount;
+          itemSalesAmount += parseFloat(subtotal);
+          taxAmount += parseFloat(tax);
+
+          if (ticket.payment.discount > 0) {
+            discount++;
+            discountAmount += parseFloat(discount);
+          }
+
+          if (ticket.settled) {
+            settle++;
+            settleAmount += amount;
+            tipsAmount += parseFloat(tip);
+            gratuityAmount += parseFloat(gratuity);
+
+            let log = [];
+            Array.isArray(ticket.splitPayment)
+              ? ticket.splitPayment.forEach(split => {
+                  split && log.push(...split.log);
+                })
+              : log.push(...ticket.payment.log);
+
+            log.forEach(t => {
+              switch (t.type) {
+                case "CASH":
+                  cash++;
+                  cashAmount += parseFloat(t.paid - t.change);
+                  break;
+                case "CREDIT":
+                  credit++;
+                  creditAmount += parseFloat(t.paid);
+                  if (t.tip > 0) {
+                    creditTip++;
+                    creditTipAmount += parseFloat(t.tip);
+                  }
+                  break;
+                case "GIFT":
+                  gift++;
+                  giftAmount += parseFloat(t.paid);
+                  break;
+                default:
+                  third++;
+                  thirdAmount += parseFloat(t.paid);
+              }
+            });
+          } else if (!ticket.payment.settled) {
+            unsettle++;
+            unsettleAmount += amount;
+          }
+        } else {
+          voided++;
+          voidedAmount += parseFloat(total);
+        }
+      });
+      this.report["SUMMARY"] = this.summary
+        ? [
+            {
+              text: this.$t("report.grossSales"),
+              count: gross,
+              amount: grossAmount
+            },
+            {
+              text: this.$t("report.netSales"),
+              count: 0,
+              amount: netAmount
+            },
+            {
+              text: "&nbsp;",
+              count: 0,
+              amount: ""
+            },
+            {
+              text: this.$t("report.itemSales"),
+              count: 0,
+              amount: itemSalesAmount
+            },
+            {
+              text: this.$t("report.tax"),
+              count: 0,
+              amount: taxAmount
+            },
+            {
+              text: this.$t("report.discount"),
+              count: discount,
+              amount: -discountAmount
+            },
+            {
+              text: "&nbsp;",
+              count: 0,
+              amount: ""
+            },
+            {
+              text: this.$t("report.tips"),
+              count: 0,
+              amount: tipsAmount
+            },
+            {
+              text: this.$t("report.gratuity"),
+              count: 0,
+              amount: gratuityAmount
+            }
+          ]
+        : null;
+
+      this.report["SALES CATEGORY"] = this.salesCategory
+        ? [
+            {
+              text: this.$t("report.cash"),
+              count: cash,
+              amount: cashAmount
+            },
+            {
+              text: this.$t("report.creditCard"),
+              count: credit,
+              amount: creditAmount
+            },
+            {
+              text: this.$t("report.creditCardTip"),
+              count: creditTip,
+              amount: creditTipAmount
+            },
+            {
+              text: this.$t("report.giftCard"),
+              count: gift,
+              amount: giftAmount
+            },
+            {
+              text: this.$t("report.thirdParty"),
+              count: third,
+              amount: thirdAmount
+            },
+            {
+              text: "&nbsp;",
+              count: 0,
+              amount: ""
+            },
+            {
+              text: this.$t("type.WALK_IN"),
+              count: walkin,
+              amount: walkinAmount
+            },
+            {
+              text: this.$t("type.PICK_UP"),
+              count: pickup,
+              amount: pickupAmount
+            },
+            {
+              text: this.$t("type.DELIVERY"),
+              count: delivery,
+              amount: deliveryAmount
+            },
+            {
+              text: this.$t("type.DINE_IN"),
+              count: dinein,
+              amount: dineinAmount
+            },
+            {
+              text: this.$t("type.other"),
+              count: 0,
+              amount: otherAmount
+            },
+            {
+              text: "&nbsp;",
+              count: 0,
+              amount: ""
+            },
+            {
+              text: this.$t("type.settled"),
+              count: settle,
+              amount: settleAmount
+            },
+            {
+              text: this.$t("type.unsettled"),
+              count: unsettle,
+              amount: unsettleAmount
+            },
+            {
+              text: this.$t("type.voided"),
+              count: voided,
+              amount: voidedAmount
+            }
+          ]
+        : null;
+    },
+    hourlyReport(data) {
+      let hours = {};
+      data.forEach(ticket => {
+        let hour = new Date(ticket.time).getHours();
+        let pay = ticket.payment;
+        let { subtotal, tax, discount } = pay;
+        let amount =
+          parseFloat(subtotal) + parseFloat(tax) - parseFloat(discount);
+        if (!hours.hasOwnProperty(hour)) {
+          hours[hour] = {
+            text: `${hour}:00`,
+            count: 1,
+            amount
+          };
+        } else {
+          hours[hour].count++;
+          hours[hour].amount += amount;
+        }
+      });
+      return hours;
+    },
+    itemCounter(data) {
+      let counter = {};
+      data.forEach(ticket => {
+        ticket.content.forEach(item => {
+          if (!counter.hasOwnProperty(item.usEN)) {
+            counter[item.usEN] = {
+              text: item[this.language],
+              count: 1,
+              amount: item.single * item.qty
+            };
+          } else {
+            counter[item.usEN].count++;
+            counter[item.usEN].amount += item.single * item.qty;
+          }
+        });
+      });
+      return Object.values(counter)
+        .filter(item => item.amount > 0)
+        .sort((a, b) => (a.count > b.count ? -1 : 1));
+    },
+    categoryCounter(data) {
+      let counter = {};
+      data.forEach(ticket => {
+        ticket.content.forEach(item => {
+          if (!counter.hasOwnProperty(item.category)) {
+            counter[item.category] = {
+              text:
+                this.language === "zhCN"
+                  ? item.categoryCN || item.category
+                  : item.category,
+              count: 1,
+              amount: item.single * item.qty
+            };
+          } else {
+            counter[item.category].count++;
+            counter[item.category].amount += item.single * item.qty;
+          }
+        });
+      });
+      return Object.values(counter)
+        .filter(item => item.amount > 0)
+        .sort((a, b) => (a.count > b.count ? -1 : 1));
+    },
+    generateCSV() {
+      let excel = [["Index", "Date", "Content"]];
+      let csvRows = [];
+
+      for (let i = 1; i < 10; i++) {
+        excel.push([i, "2017-01-" + i, i * 2]);
+      }
+
+      for (let i = 0; i < excel.length; i++) {
+        csvRows.push(excel[i].join(","));
+      }
+
+      let csvFile = csvRows.join("%0A");
+      console.log("data:attachment/csv," + csvFile);
     }
-}
+  },
+  computed: {
+    ...mapGetters(["config", "language"])
+  }
+};
 </script>
 
 <style scoped>
 .inner {
-    padding: 15px;
+  padding: 15px;
 }
 
 .rangeWrap {
-    display: flex;
-    border: 1px solid #ddd;
-    margin: 10px;
-    background: #fff;
-    border-radius: 4px;
+  display: flex;
+  border: 1px solid #ddd;
+  margin: 10px;
+  background: #fff;
+  border-radius: 4px;
 }
 
 .rangeWrap input {
-    display: none;
+  display: none;
 }
 
-.rangeWrap>div {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-right: 1px solid #ddd;
+.rangeWrap > div {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid #ddd;
 }
 
-.rangeWrap>div:last-child {
-    border-right: none;
+.rangeWrap > div:last-child {
+  border-right: none;
 }
 
 .detailWrap {
-    display: flex;
-    margin: 10px;
-    padding: 10px;
-    border: 1px solid #ddd;
-    background: #fff;
-    border-radius: 4px;
-    width: 500px;
+  display: flex;
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  background: #fff;
+  border-radius: 4px;
+  width: 500px;
 }
 
-.detailWrap>div {
-    flex: 1;
+.detailWrap > div {
+  flex: 1;
 }
 
 .f1 {
-    align-items: center;
-    display: flex;
+  align-items: center;
+  display: flex;
 }
 
 h5 {
-    text-align: center;
-    font-size: 20px;
-    margin-bottom: 10px;
-    color: #37474F;
+  text-align: center;
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: #37474f;
 }
 
 .left {
-    border-right: 1px solid #ddd;
+  border-right: 1px solid #ddd;
 }
 
 .right {
-    margin-left: 10px;
+  margin-left: 10px;
 }
 
 .rangeWrap label {
-    padding: 10px;
-    width: 100%;
-    text-align: center;
-    cursor: pointer;
+  padding: 10px;
+  width: 100%;
+  text-align: center;
+  cursor: pointer;
 }
 
-.rangeWrap input:checked+label {
-    background: #2196F3;
-    color: #fff;
+.rangeWrap input:checked + label {
+  background: #2196f3;
+  color: #fff;
 }
 
 .for {
-    display: flex;
+  display: flex;
 }
 
 .range {
-    flex: 1;
-    text-align: center;
-    color: #009688;
+  flex: 1;
+  text-align: center;
+  color: #009688;
 }
 
 .range span {
-    background: #fff;
-    border-radius: 4px;
-    padding: 1px 10px 0;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+  background: #fff;
+  border-radius: 4px;
+  padding: 1px 10px 0;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
 }
 </style>

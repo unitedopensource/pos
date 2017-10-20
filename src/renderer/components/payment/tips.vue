@@ -7,11 +7,11 @@
       </header>
       <div class="inner">
         <div class="display">
-          <h5>Tipping Base On</h5>
+          <h5>{{$t('tip.tipFor')}}</h5>
           <span class="due">
-            <span class="symbol">$</span>{{init.payment.due | decimal}}
+            <span class="symbol">$</span>{{init.payment.subtotal | decimal}}
             <i class="tooltip fa fa-question-circle-o">
-              <span class="content">Tip is after Discount (Subtotal + Tax)</span>
+              <span class="content">{{tooltip}}</span>
             </i>
           </span>
           <div class="entry">
@@ -47,24 +47,23 @@
 
 <script>
 export default {
-  props: ['init'],
+  props: ["init"],
   data() {
     return {
       unit: "%",
-      formula: null,
-      tip: '0',
+      tip: "0",
       reset: true
-    }
+    };
   },
   created() {
     if (this.init.payment.tip) {
       this.tip = this.init.payment.tip.toFixed(2);
-      this.unit = '$';
+      this.unit = "$";
     }
   },
   methods: {
     clear() {
-      this.tip = this.unit === '$' ? '0.00' : '0'
+      this.tip = this.unit === "$" ? "0.00" : "0";
     },
     switchUnit(unit) {
       this.unit = unit;
@@ -73,42 +72,58 @@ export default {
     },
     input(val) {
       let value = this.tip;
-      if (this.unit === '%') {
+      if (this.unit === "%") {
         this.tip = this.reset ? val : value + val;
       } else {
         if (this.reset) {
-          this.tip = (val / 100).toFixed(2)
+          this.tip = (val / 100).toFixed(2);
         } else {
           value = (value * 100).toFixed(0) + val;
-          this.tip = (value / 100).toFixed(2)
+          this.tip = (value / 100).toFixed(2);
         }
       }
       this.reset = false;
     },
     del() {
       let value = this.tip;
-      if (this.unit === '%') {
+      if (this.unit === "%") {
         if (value.length > 1) {
           this.tip = value.slice(0, -1);
         } else {
-          this.tip = '0';
+          this.tip = "0";
           this.reset = true;
         }
       } else {
-        this.tip = (value.slice(0, -1) / 10).toFixed(2)
+        this.tip = (value.slice(0, -1) / 10).toFixed(2);
       }
     },
     enter() {
       let tip;
-      if(this.unit === '%'){
-        tip = toFixed(this.init.payment.due * this.tip / 100,2)
-      }else{
-        tip = this.tip
+      if (this.unit === "%") {
+        tip = toFixed(this.init.payment.subtotal * this.tip / 100, 2);
+      } else {
+        tip = this.tip;
       }
       this.init.resolve({ tip });
     }
+  },
+  computed: {
+    tooltip() {
+      if (~~this.tip > 0) {
+        if (this.unit === "%") {
+          return this.$t(
+            "text.calcTips",
+            toFixed(this.init.payment.subtotal * this.tip / 100, 2).toFixed(2)
+          );
+        } else {
+          return this.$t("text.calcTips", this.tip.toFixed(2));
+        }
+      } else {
+        return this.$t("tip.howTipCalculate");
+      }
+    }
   }
-}
+};
 </script>
 
 <style scoped>
@@ -134,7 +149,7 @@ section.numpad {
 }
 
 h5 {
-  padding: 20px 0 2px;
+  padding: 20px 0 0;
   font-size: 16px;
   color: #545050;
 }
@@ -149,12 +164,12 @@ h5 {
   font-size: 38px;
   font-weight: bold;
   color: #444;
-  font-family: 'Agency FB';
+  font-family: "Agency FB";
   position: relative;
 }
 
 i.tooltip {
-  color: #FF5722;
+  color: #ff5722;
   font-size: 18px;
   position: absolute;
   right: -35px;
@@ -169,16 +184,17 @@ i.tooltip:hover .content {
 span.content {
   position: absolute;
   opacity: 0;
-  font-family: 'Yuanti-SC';
-  background: #FFF8E1;
-  color: #FF9800;
-  box-shadow: 1px 1px 3px #CFD8DC;
+  font-family: "Yuanti-SC";
+  background: #fff8e1;
+  color: #ff9800;
+  box-shadow: 1px 1px 3px #cfd8dc;
   border-radius: 3px;
   font-size: 14px;
   padding: 10px;
-  width: 200px;
-  left: -100px;
+  min-width: 170px;
+  left: 50%;
   top: 25px;
+  transform: translate(-50%, 0);
   transition: opacity 250ms ease-out;
 }
 
@@ -188,9 +204,8 @@ span.content {
   align-items: center;
   padding: 10px 10px 10px 5px;
   height: 45px;
-  margin-top: 4px;
   background: #fff;
-  margin: 0 3px 0 0;
+  margin: 4px 3px 0 0;
   border-radius: 4px;
   box-shadow: 0 1px 1px #b5aaaa;
 }
@@ -201,7 +216,7 @@ span.content {
   background: none;
   flex: 1;
   font-size: 46px;
-  font-family: 'Agency FB';
+  font-family: "Agency FB";
   font-weight: bold;
   color: #3c3c3c;
   text-align: right;
@@ -210,21 +225,15 @@ span.content {
 .entry .unit {
   padding: 8px 0;
   width: 55px;
-  background: #607D8B;
+  background: #607d8b;
   color: #fff;
   border-radius: 4px;
   font-size: 34px;
-  font-family: 'Agency FB';
+  font-family: "Agency FB";
   text-shadow: 0 1px 1px #333;
+  box-shadow: 0px 2px 1px #123344;
   cursor: pointer;
 }
-
-
-
-
-
-
-
 
 .total {
   padding: 10px;
@@ -233,7 +242,7 @@ span.content {
 }
 
 span.formula {
-  color: #607D8B;
+  color: #607d8b;
   height: 25px;
 }
 
@@ -250,7 +259,7 @@ span.formula {
 
 .data.active {
   color: #fff;
-  background: #5C6BC0;
+  background: #5c6bc0;
   text-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
   font-weight: bold;
 }

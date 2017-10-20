@@ -3,6 +3,7 @@ import Electron from 'vue-electron'
 import Router from 'vue-router'
 import VueSocketio from 'vue-socket.io'
 import VueTouch from 'vue-touch'
+import { VueMaskDirective } from 'v-mask'
 import moment from 'moment'
 import Net from 'net'
 import Ip from 'ip'
@@ -18,6 +19,8 @@ Vue.use(VueTouch, { name: 'v-touch' })
 Vue.use(Router)
 Vue.use(dialog)
 Vue.use(i18n)
+
+Vue.directive('mask', VueMaskDirective);
 
 Vue.config.debug = true
 window.moment = moment

@@ -85,7 +85,16 @@
                                     <span class="text">{{$t('text.tip')}}</span>
                                     <span class="value">{{tip}}</span>
                                 </div>
-
+                                <div class="input">
+                                    <span class="text">{{$t('text.changeDue')}}</span>
+                                    <span class="value">{{cashTender}}</span>
+                                </div>
+                                <div class="input" @click="setAnchor($event)" data-anchor="evenly" data-format="number">
+                                    <span class="text">{{$t('text.separate')}}
+                                        <span class="people">$ {{(payment.due / evenly) | decimal}}</span>
+                                    </span>
+                                    <span class="value">{{evenly}}</span>
+                                </div>
                             </div>
                             <aside class="numpad">
                                 <div @click="del">&#8592;</div>
@@ -103,8 +112,13 @@
                                     <span class="text">{{$t('text.tip')}}</span>
                                     <span class="value">{{tip}}</span>
                                 </div>
-                                <div class="input">
-
+                                <div class="input" @click="setAnchor($event)" data-anchor="creditCard" data-format="number">
+                                    <span class="text">{{$t('card.number')}}</span>
+                                    <input v-model="creditCard" v-mask="'#### #### #### ####'">
+                                </div>
+                                <div class="input" @click="setAnchor($event)" data-anchor="expiration" data-format="number">
+                                    <span class="text">{{$t('card.expirationDate')}}</span>
+                                    <input v-model="expiration" v-mask="'## / ##'">
                                 </div>
                             </div>
                             <aside class="numpad">
@@ -188,810 +202,1164 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
-import dialoger from '../common/dialoger'
-import ticket from '../common/ticket'
-import discount from './discount'
-import tips from './tips'
+import { mapGetters, mapActions } from "vuex";
+import dialoger from "../common/dialoger";
+import ticket from "../common/ticket";
+import creditCard from "./creditCard";
+import discount from "./discount";
+import tips from "./tips";
 export default {
-    props: ['init'],
-    components: { dialoger, tips, discount, ticket },
-    computed: {
-        ...mapGetters(['op', 'device', 'station'])
+  props: ["init"],
+  components: { dialoger, tips, discount, ticket, creditCard },
+  computed: {
+    isNewTicket() {
+      return this.app.mode === "create" && this.$route.name === "Menu";
     },
-    data() {
-        return {
-            releaseComponentLock: true,
-            componentData: null,
-            component: null,
-            discountable: false,
-            order: null,
-            thirdPartyPayment: true,
-            thirdPartyType: null,
-            paymentType: 'CASH',
-            payInFull: true,
-            quickInput: [],
-            current: 0,
-            reset: true,
-            paid: '0.00',
-            tip: '0.00'
-        }
+    cashTender() {
+      let change = toFixed(this.paid - this.payment.remain, 2);
+      return Math.max(0, change).toFixed(2);
     },
-    created() {
-        this.initial()
-            .then(this.checkComponentUsage)
-            .then(this.checkPermission)
-            .then(this.checkSplit)
-            .catch((err) => {
-                this.initialFailed(err);
-            })
-    },
-    mounted() {
-        this.setPaymentType('CASH')
-    },
-    beforeDestroy() {
-        this.releaseComponentLock && this.$socket.emit('[COMPONENT] UNLOCK', { component: 'payment', lock: this.order._id })
-    },
-    methods: {
-        initial() {
-            return new Promise((resolve) => {
-                this.order = this.init.hasOwnProperty('order') ?
-                    JSON.parse(JSON.stringify(this.init.order)) :
-                    JSON.parse(JSON.stringify(this.$store.getters.order));
+    ...mapGetters(["op", "app", "ticket", "device", "customer", "station"])
+  },
+  data() {
+    return {
+      releaseComponentLock: true,
+      componentData: null,
+      component: null,
+      discountable: false,
+      order: null,
+      thirdPartyPayment: true,
+      thirdPartyType: null,
+      paymentType: "CASH",
+      payInFull: true,
+      quickInput: [],
+      creditCard: "",
+      expiration: "",
+      evenly: 1,
+      current: 0,
+      reset: true,
+      paid: "0.00",
+      tip: "0.00"
+    };
+  },
+  created() {
+    this.initial()
+      .then(this.checkComponentUsage)
+      .then(this.checkPermission)
+      .then(this.checkSplit)
+      .catch(err => {
+        this.initialFailed(err);
+      });
+  },
+  mounted() {
+    this.setPaymentType("CASH");
+  },
+  beforeDestroy() {
+    this.releaseComponentLock &&
+      this.$socket.emit("[COMPONENT] UNLOCK", {
+        component: "payment",
+        lock: this.order._id
+      });
+  },
+  methods: {
+    initial() {
+      return new Promise(resolve => {
+        this.order = this.init.hasOwnProperty("order")
+          ? JSON.parse(JSON.stringify(this.init.order))
+          : JSON.parse(JSON.stringify(this.$store.getters.order));
 
-                this.payment = this.order.payment;
-                this.thirdPartyPayment = !this.station.terminal.enable;
-                resolve()
+        this.payment = this.order.payment;
+        this.thirdPartyPayment = !this.station.terminal.enable;
+        resolve();
+      });
+    },
+    checkComponentUsage() {
+      return new Promise((resolve, reject) => {
+        let data = {
+          component: "payment",
+          operator: this.op.name,
+          lock: this.order._id,
+          time: +new Date(),
+          exp: +new Date() + 1000 * 120
+        };
+        this.$socket.emit("[COMPONENT] LOCK", data, lock => {
+          lock ? reject({ error: "paymentPending", data }) : resolve();
+        });
+      });
+    },
+    checkPermission() {
+      return new Promise((resolve, reject) => {
+        this.discountable = this.op.modify.includes("discount");
+        this.op.cashCtrl === "disable"
+          ? reject({ error: "accessDenied" })
+          : resolve();
+      });
+    },
+    checkSplit() {
+      this.order.split ? this.askPayMode() : this.initialized();
+    },
+    askPayMode() {
+      this.$dialog({
+        type: "question",
+        title: "dialog.splitPayment",
+        msg: "dialog.splitPaymentTip",
+        buttons: [
+          { text: "button.paidInFull", fn: "reject" },
+          { text: "button.splitPay", fn: "resolve" }
+        ]
+      })
+        .then(() => {
+          this.paySplit();
+          this.$q();
+        })
+        .catch(() => {
+          this.payWhole();
+          this.setPaymentType("CASH");
+          this.$q();
+        });
+    },
+    paySplit() {
+      this.payInFull = false;
+      this.switchInvoice(
+        this.order.splitPayment.findIndex(payment => !payment.settled)
+      );
+      this.initialized();
+    },
+    payWhole() {
+      let paid = this.payment.log
+        .map(log => log.paid - log.change)
+        .reduce((a, b) => a + b, 0);
+      this.payment.remain = Math.max(
+        0,
+        this.payment.balance - toFixed(paid, 2)
+      );
+      this.initialized();
+    },
+    initialized() {
+      this.getQuickInput(this.payment.remain);
+      this.poleDisplay(
+        ["Balance Due:", ""],
+        ["", this.payment.remain.toFixed(2)]
+      );
+    },
+    initialFailed(reason) {
+      let { error, data } = reason;
+      switch (error) {
+        case "paymentPending":
+          let current = +new Date();
+          let exp = data.exp;
+          let duration = exp - current;
+
+          this.releaseComponentLock = false;
+
+          this.$dialog({
+            title: "dialog.pending",
+            msg: "dialog.pendingOrderAccessDenied",
+            timeout: { duration, fn: "resolve" },
+            buttons: [{ text: "button.confirm", fn: "resolve" }]
+          }).then(() => {
+            this.exit();
+          });
+          break;
+        case "accessDenied":
+          this.$dialog({
+            type: "warning",
+            title: "dialog.accessDenied",
+            msg: "dialog.accessDeniedTip",
+            timeout: { duration: 10000, fn: "resolve" },
+            buttons: [{ text: "button.confirm", fn: "resolve" }]
+          }).then(() => {
+            this.exit();
+          });
+          break;
+      }
+    },
+    setAnchor(target) {
+      let dom = document.querySelector(".input.active");
+      dom && dom.classList.remove("active");
+      if (target instanceof Event) {
+        target.currentTarget.classList.add("active");
+        target.currentTarget.dataset.anchor === "tip"
+          ? this.getQuickTip(this.payment.remain)
+          : this.getQuickInput(this.payment.remain);
+      } else {
+        document
+          .querySelector(`[data-anchor="${target}"]`)
+          .classList.add("active");
+      }
+
+      this.reset = true;
+    },
+    del() {
+      let { anchor, format } = document.querySelector(".input.active").dataset;
+      let val = this[anchor];
+
+      switch (format) {
+        case "money":
+          this[anchor] = (val.slice(0, -1) / 10).toFixed(2);
+          break;
+        case "number":
+          this[anchor] = val.length > 0 ? val.slice(0, -1) : val;
+          break;
+      }
+    },
+    clear() {
+      let { anchor, format } = document.querySelector(".input.active").dataset;
+
+      switch (format) {
+        case "money":
+          this[anchor] = "0.00";
+          break;
+        case "number":
+          this[anchor] = "";
+          break;
+      }
+      this.reset = true;
+    },
+    charge() {
+      switch (this.paymentType) {
+        case "CASH":
+          this.checkCashDrawer()
+            .then(this.chargeCash)
+            .then(this.tenderCash)
+            .then(this.saveLogs)
+            .then(this.postToDatabase)
+            .then(this.askReceipt)
+            .then(this.checkBalance)
+            .catch(this.payFailed);
+          break;
+        case "CREDIT":
+          this.checkOverPay()
+            .then(this.checkEntry)
+            .then(this.chargeCreditCard)
+            .then(this.saveTransaction)
+            .then(this.postToDatabase)
+            .then(this.askReceipt)
+            .then(this.checkBalance)
+            .catch(this.payFailed);
+          break;
+        case "THIRD":
+          this.checkOverPay()
+            .then(this.chargeThirdParty)
+            .then(this.saveLogs)
+            .then(this.postToDatabase)
+            .then(this.askReceipt)
+            .then(this.checkBalance)
+            .catch(this.payFailed);
+          break;
+        case "GIFT":
+          this.checkOverPay()
+            .then(this.swipeGiftCard)
+            .then(this.chargeGiftCard)
+            .then(this.saveLogs)
+            .then(this.postToDatabase)
+            .then(this.askReceipt)
+            .then(this.checkBalance)
+            .catch(this.payFailed);
+          break;
+      }
+    },
+    payFailed(error) {
+      typeof error === "object"
+        ? this.$dialog(error).then(() => {
+            this.$q();
+          })
+        : this.$q();
+    },
+    setPaymentType(type) {
+      this.paymentType = type;
+
+      switch (type) {
+        case "CASH":
+          this.paid = "0.00";
+          break;
+        case "CREDIT":
+        case "THIRD":
+          this.paid = this.payment.remain.toFixed(2);
+          this.tip = this.payment.tip.toFixed(2);
+          break;
+        case "GIFT":
+          this.paid = this.payment.remain.toFixed(2);
+          this.tip = this.payment.tip.toFixed(2);
+          break;
+      }
+
+      this.setAnchor("paid");
+      this.getQuickInput(this.payment.remain);
+    },
+    checkOverPay() {
+      return new Promise((resolve, reject) => {
+        let error = {
+          type: "error",
+          title: "dialog.paymentFailed",
+          msg: "dialog.canNotPayZeroAmount",
+          buttons: [{ text: "button.confirm", fn: "resolve" }]
+        };
+
+        if (this.paid === "0.00") throw error;
+        if (this.paid > this.payment.remain) {
+          let extra = toFixed(this.paid - this.payment.remain, 2);
+          this.$dialog({
+            title: "dialog.paidAmountGreaterThanDue",
+            msg: ["dialog.extraAmountSetAsTip", extra.toFixed(2)],
+            buttons: [
+              { text: "button.cancel", fn: "reject" },
+              { text: "button.setTip", fn: "resolve" }
+            ]
+          })
+            .then(() => {
+              this.paid = this.payment.remain.toFixed(2);
+              this.tip = extra.toFixed(2);
+              this.payment.tip = extra;
+
+              this.$q();
+              this.recalculatePayment();
+              resolve();
             })
-        },
-        checkComponentUsage() {
-            return new Promise((resolve, reject) => {
-                let data = {
-                    component: 'payment',
-                    operator: this.op.name,
-                    lock: this.order._id,
-                    time: +new Date,
-                    exp: +new Date + 1000 * 120
-                }
-                this.$socket.emit('[COMPONENT] LOCK', data, lock => {
-                    lock ? reject({ error: 'paymentPending', data }) : resolve();
-                })
+            .catch(() => {
+              this.$q();
+            });
+        } else {
+          resolve();
+        }
+      });
+    },
+    chargeCash() {
+      return new Promise(resolve => {
+        let paid = Math.min(this.paid, this.payment.remain);
+        let change = Math.max(0, toFixed(this.paid - this.payment.remain, 2));
+
+        this.payment.paid = toFixed(this.payment.paid + paid, 2);
+        this.payment.type = "CASH";
+
+        this.recalculatePayment();
+        this.op.cashCtrl === "enable" && Printer.openCashDrawer();
+        resolve({ type: "CASH", paid, change });
+      });
+    },
+    chargeCreditCard(card) {
+      return new Promise((resolve, reject) => {
+        this.componentData = { card, resolve, reject };
+        this.component = "creditCard";
+      });
+    },
+    chargeThirdParty() {},
+    chargeGiftCard() {},
+    checkCashDrawer() {
+      return new Promise((resolve, reject) => {
+        let error = {
+          type: "error",
+          title: "dialog.paymentFailed",
+          msg: "dialog.canNotPayZeroAmount",
+          buttons: [{ text: "button.confirm", fn: "resolve" }]
+        };
+
+        if (parseFloat(this.paid) === 0) throw error;
+        this.station.cashDrawer.enable || this.op.cashCtrl === "staffBank"
+          ? resolve()
+          : reject({
+              title: "dialog.cashDrawerUnavailable",
+              msg: "dialog.cashDrawerUnavailableTip",
+              buttons: [{ text: "button.confirm", fn: "resolve" }]
+            });
+      });
+    },
+    checkEntry() {
+      return new Promise((resolve, reject) => {
+        let number = this.creditCard.replace(/[^0-9\.]+/g, "");
+        let date = this.expiration.replace(/[^0-9\.]+/g, "");
+        let lengthError = {
+          type: "error",
+          title: "dialog.invalidCreditCard",
+          msg: "dialog.creditCardLengthIncorrect",
+          buttons: [{ text: "button.confirm", fn: "resolve" }]
+        };
+        let expError = {
+          type: "error",
+          title: "dialog.invalidCreditCard",
+          msg: "dialog.expirationDateIncorrect",
+          buttons: [{ text: "button.confirm", fn: "resolve" }]
+        };
+
+        if (number.length > 0 && number.length !== 16) throw lengthError;
+        if (date.length > 0 && date.length !== 4) throw expError;
+
+        let card = {
+          creditCard: { number, date },
+          amount: this.paid,
+          tip: this.tip
+        };
+        resolve(card);
+      });
+    },
+    tenderCash(detail) {
+      return new Promise(resolve => {
+        let { paid, change } = detail;
+
+        this.poleDisplay(
+          ["Paid Cash", paid.toFixed(2)],
+          ["Change Due:", change.toFixed(2)]
+        );
+
+        if (change > 0) {
+          this.$dialog({
+            title: ["dialog.cashChange", change.toFixed(2)],
+            msg: ["dialog.cashChangeTip", paid.toFixed(2)],
+            buttons: [{ text: "button.confirm", fn: "resolve" }]
+          }).then(() => {
+            this.$q();
+            resolve(detail);
+          });
+        } else {
+          resolve(detail);
+        }
+      });
+    },
+    saveTransaction(record) {
+      this.poleDisplay("PAID by Credit Card", "Thank You");
+      return new Promise((resolve, reject) => {
+        Object.assign(record, {
+          order: {
+            _id: this.order._id,
+            type: this.order.type || this.ticket.type,
+            number: this.order.number || this.ticket.number,
+            cashier: this.order.cashier || this.op.name,
+            server: this.order.server || this.op.name
+          }
+        });
+
+        this.payment.paid += parseFloat(record.amount.approve);
+        this.payment.type = "CREDIT";
+        this.recalculatePayment();
+
+        if (this.tip > 0)
+          record.amount.approve = (record.amount.approve - record.amount.tip
+          ).toFixed(2);
+
+        Printer.printCreditCard(record);
+
+        this.$socket.emit("[SAVE] TRANSACTION", record, _id => {
+          this.payment.log.push({
+            _id,
+            type: "CREDIT",
+            change: "0.00",
+            paid: record.amount.approve,
+            balance: this.payment.remain,
+            number: record.account.number,
+            tip: record.amount.tip
+          });
+
+          let activity = {
+            _id: ObjectId(),
+            order: this.order._id,
+            transaction: _id,
+            type: "CREDITFLOW",
+            inflow: parseFloat(record.amount.approve),
+            outflow: 0,
+            time: +new Date(),
+            ticket: this.order.ticket,
+            cardBin: record.account.number,
+            operator: this.op.name
+          };
+
+          let cashDrawer =
+            this.op.cashCtrl === "staffBank"
+              ? this.op.name
+              : this.station.cashDrawer.name;
+          this.$socket.emit("[CASHFLOW] ACTIVITY", { cashDrawer, activity });
+
+          resolve();
+        });
+      });
+    },
+    askReceipt() {
+      return new Promise(resolve => {
+        let alwayAskReceipt = true;
+
+        alwayAskReceipt
+          ? this.$dialog({
+              type: "question",
+              title: "dialog.printReceiptConfirm",
+              msg: "dialog.printReceiptConfirmTip",
+              buttons: [
+                { text: "button.noReceipt", fn: "reject" },
+                { text: "button.printReceipt", fn: "resolve" }
+              ]
             })
-        },
-        checkPermission() {
-            return new Promise((resolve, reject) => {
-                this.discountable = this.op.modify.includes('discount');
-                this.op.cashCtrl === 'disable' ? reject({ error: 'accessDenied' }) : resolve()
-            })
-        },
-        checkSplit() {
-            this.order.split ? this.askPayMode() : this.initialized();
-        },
-        askPayMode() {
-            this.$dialog({
-                type: "question", title: "dialog.splitPayment", msg: "dialog.splitPaymentTip",
-                buttons: [{ text: 'button.paidInFull', fn: "reject" }, { text: "button.splitPay", fn: "resolve" }]
-            }).then(() => {
-                this.paySplit();
+              .then(() => {
+                Printer.setTarget("Receipt").print(this.order, true);
+                resolve();
                 this.$q();
-            }).catch(() => {
-                this.payWhole();
-                this.setPaymentType('CASH');
-                this.$q()
-            })
-        },
-        paySplit() {
-            this.payInFull = false;
-            this.switchInvoice(this.order.splitPayment.findIndex(payment => !payment.settled));
-            this.initialized();
-        },
-        payWhole() {
-            //let paid = 0;
-            //this.payment.log.forEach(log => { paid += toFixed(log.paid - log.change, 2) });
-            let paid = this.payment.log.map(log => log.paid - log.change).reduce((a, b) => a + b, 2);
-            this.payment.remain = Math.max(0, (this.payment.balance - toFixed(paid, 2)));
-            this.initialized();
-        },
-        initialized() {
-            this.getQuickInput(this.payment.remain);
-            this.poleDisplay(["Balance Due:", ""], ["", this.payment.remain.toFixed(2)]);
-        },
-        initialFailed(reason) {
-            let { error, data } = reason;
-            switch (error) {
-                case 'paymentPending':
-                    let current = +new Date;
-                    let exp = data.exp;
-                    let duration = exp - current;
-
-                    this.releaseComponentLock = false;
-
-                    this.$dialog({
-                        title: 'dialog.pending',
-                        msg: 'dialog.pendingOrderAccessDenied',
-                        timeout: { duration, fn: 'resolve' },
-                        buttons: [{ text: 'button.confirm', fn: 'resolve' }]
-                    }).then(() => { this.quit() })
-                    break;
-                case 'accessDenied':
-                    this.$dialog({
-                        type: 'warning',
-                        title: 'dialog.accessDenied',
-                        msg: 'dialog.accessDeniedTip',
-                        timeout: { duration: 10000, fn: 'resolve' },
-                        buttons: [{ text: 'button.confirm', fn: 'resolve' }]
-                    }).then(() => { this.quit() })
-                    break;
-            }
-        },
-        setAnchor(target) {
-            let dom = document.querySelector('.input.active');
-            dom && dom.classList.remove('active');
-            if (target instanceof Event) {
-                target.currentTarget.classList.add('active');
-                target.currentTarget.dataset.anchor === 'tip' ? this.getQuickTip(this.payment.remain) : this.getQuickInput(this.payment.remain)
-            } else {
-                document.querySelector(`[data-anchor="${target}"]`).classList.add("active");
-            }
-
-            this.reset = true;
-        },
-        del() {
-            let { anchor, format } = document.querySelector('.input.active').dataset;
-            let val = this[anchor];
-
-            switch (format) {
-                case 'money':
-                    this[anchor] = (val.slice(0, -1) / 10).toFixed(2);
-                    break;
-                case 'number':
-                    this[anchor] = val.length > 0 ? val.slice(0, -1) : val;
-                    break;
-            }
-        },
-        clear() {
-            let { anchor, format } = document.querySelector('.input.active').dataset;
-
-            switch (format) {
-                case 'money':
-                    this[anchor] = '0.00';
-                    break;
-                case 'number':
-                    this[anchor] = '';
-                    break;
-            }
-            this.reset = true;
-        },
-        charge() {
-            switch (this.paymentType) {
-                case 'CASH':
-                    this.checkCashDrawer()
-                        .then(this.chargeCash)
-                        .then(this.tenderCash)
-                        .then(this.saveTransaction)
-                        .then(this.askReceipt)
-                        .then(this.checkBalance)
-                        .catch(this.payFailed)
-                    break;
-                case 'CREDIT':
-                    this.checkOverPay()
-                        .then(this.checkTerminal)
-                        .then(this.chargeCreditCard)
-                        .then(this.saveTransaction)
-                        .then(this.askReceipt)
-                        .then(this.checkBalance)
-                        .catch(this.payFailed)
-                    break;
-                case 'THIRD':
-                    this.checkOverPay()
-                        .then(this.chargeThirdParty)
-                        .then(this.saveTransaction)
-                        .then(this.askReceipt)
-                        .then(this.checkBalance)
-                        .catch(this.payFailed)
-                    break;
-                case 'GIFT':
-                    this.checkOverPay()
-                        .then(this.swipeGiftCard)
-                        .then(this.chargeGiftCard)
-                        .then(this.saveTransaction)
-                        .then(this.askReceipt)
-                        .then(this.checkBalance)
-                        .catch(this.payFailed)
-                    break;
-            }
-        },
-        payFailed(error) {
-            this.$dialog(error).then(() => { this.$q() })
-        },
-        setPaymentType(type) {
-            this.paymentType = type;
-
-            switch (type) {
-                case 'CASH':
-                    this.paid = '0.00'
-                    break;
-                case 'CREDIT':
-                case 'THIRD':
-                    this.paid = this.payment.remain.toFixed(2);
-                    this.tip = this.payment.tip.toFixed(2);
-                    break;
-                case 'GIFT':
-                    this.paid = this.payment.remain.toFixed(2);
-                    this.tip = this.payment.tip.toFixed(2);
-                    break;
-            }
-
-            this.setAnchor('paid');
-            this.getQuickInput(this.payment.remain)
-        },
-        checkOverPay() {
-            return new Promise((resolve, reject) => {
-                if (this.paid === '0.00') {
-                    reject({
-                        type: 'error',
-                        title: 'dialog.paymentFailed',
-                        msg: 'dialog.canNotPayZeroAmount',
-                        buttons: [{ text: 'button.confirm', fn: 'resolve' }]
-                    })
-                } else if (this.paid > this.payment.remain) {
-                    let extra = toFixed(this.paid - this.payment.remain, 2);
-                    this.$dialog({
-                        title: 'dialog.paidAmountGreaterThanDue', msg: ['dialog.extraAmountSetAsTip', extra.toFixed(2)],
-                        buttons: [{ text: 'button.cancel', fn: 'reject' }, { text: 'button.setTip', fn: 'resolve' }]
-                    }).then(() => {
-                        this.paid = this.payment.remain.toFixed(2);
-                        this.tip = extra.toFixed(2);
-                        this.payment.tip = extra;
-
-                        this.$q()
-                        this.recalculatePayment()
-                        resolve()
-                    }).catch(() => {
-                        this.$q()
-                    })
-                } else {
-                    resolve()
-                }
-            })
-        },
-        chargeCash() {
-            return new Promise((resolve) => {
-                let paid = Math.min(this.paid, this.payment.remain);
-                let change = Math.max(0, toFixed(this.paid - this.payment.remain, 2));
-
-                this.payment.paid = toFixed(this.payment.paid + paid, 2);
-                this.recalculatePayment();
-                Printer.openCashDrawer();
-                resolve({ type: 'CASH', paid, change })
-            })
-        },
-        chargeCreditCard() { },
-        chargeThirdParty() { },
-        chargeGiftCard() { },
-        checkCashDrawer() {
-            return new Promise((resolve, reject) => {
-                (this.station.cashDrawer.enable || this.op.cashCtrl === 'staffBank') ? resolve() :
-                    reject({
-                        title: "dialog.cashDrawerUnavailable",
-                        msg: "dialog.cashDrawerUnavailableTip",
-                        buttons: [{ text: 'button.confirm', fn: 'resolve' }]
-                    })
-            })
-        },
-        checkTerminal() {
-
-        },
-        tenderCash(detail) {
-            return new Promise((resolve) => {
-                let { paid, change } = detail;
-                if (change > 0) {
-                    this.$dialog({
-                        title: ["dialog.cashChange", change.toFixed(2)],
-                        msg: ["dialog.cashChangeTip", paid.toFixed(2)],
-                        buttons: [{ text: 'button.confirm', fn: 'resolve' }]
-                    }).then(() => {
-                        this.$q()
-                        resolve(detail)
-                    })
-                } else {
-                    resolve(detail)
-                }
-            })
-        },
-        askReceipt() {
-            return new Promise((resolve) => {
-                let alwayAskReceipt = true;
-
-                alwayAskReceipt ? this.$dialog({
-                    type: "question",
-                    title: "dialog.printReceiptConfirm",
-                    msg: "dialog.printReceiptConfirmTip",
-                    buttons: [{ text: 'button.noReceipt', fn: 'reject' }, { text: 'button.printReceipt', fn: 'resolve' }]
-                }).then(() => {
-                    Printer.setTarget("Receipt").print(this.order, true)
-                    resolve()
-                    this.$q()
-                }).catch(() => {
-                    resolve()
-                    this.$q()
-                }) : resolve()
-            })
-        },
-        saveTransaction(detail) {
-            return new Promise((resolve) => {
-                let activity;
-                let _id = ObjectId();
-                let { type, paid, change, cardBin, transactionID } = detail;
-                let cashDrawer = this.op.cashCtrl === 'staffBank' ? this.op.name : this.station.cashDrawer.name;
-
-                switch (type) {
-                    case 'CASH':
-                        activity = {
-                            _id,
-                            type: "CASHFLOW",
-                            inflow: parseFloat(paid),
-                            outflow: parseFloat(change),
-                            time: +new Date,
-                            ticket: this.order.ticket,
-                            operator: this.op.name
-                        }
-                        break;
-                    case 'CREDIT':
-                        activity = {
-                            _id,
-                            type: "CREDITFLOW",
-                            inflow: parseFloat(paid),
-                            outflow: parseFloat(change),
-                            time: +new Date,
-                            ticket: this.order.ticket,
-                            cardBin, transactionID,
-                            operator: this.op.name
-                        }
-                        break;
-                    case 'GIFT':
-                        activity = {
-                            _id,
-                            type: "GIFTFLOW",
-                            inflow: parseFloat(paid),
-                            outflow: parseFloat(change),
-                            time: +new Date,
-                            ticket: this.order.ticket,
-                            operator: this.op.name
-                        }
-                        break;
-                    default:
-                }
-                this.$socket.emit("[CASHFLOW] ACTIVITY", { cashDrawer, activity });
-                //save this _id to order
-                resolve()
-            })
-        },
-        checkBalance() {
-            //check split order as well
-            //if pay in full && ticket is new
-            //print set target order
-            if (this.payment.remain > 0) {
+              })
+              .catch(() => {
+                resolve();
                 this.$q();
-                this.setPaymentType('CASH')
-                this.tip = '0.00';
-            } else {
-
-            }
-        },
-        switchInvoice(index) {
-            this.current = index;
-            this.payment = this.order.splitPayment[this.current];
-            this.payment.remain = Math.max(0, toFixed(this.payment.balance - this.payment.paid, 2));
-            this.paymentType = 'CASH';
-            this.paid = "0.00";
-
-            this.getQuickInput(this.payment.remain);
-        },
-        input(val) {
-            let { anchor, format } = document.querySelector('.input.active').dataset;
-            let value = this[anchor];
-
-            switch (format) {
-                case 'money':
-                    value = this.reset ? val : (value * 100).toFixed(0) + val;
-                    this[anchor] = (value / 100).toFixed(2);
-                    break;
-                case 'number':
-                    value = this.reset ? val : value + val
-                    this[anchor] = value;
-                    break;
-            }
-
-            this.reset = false;
-        },
-        setTip() {
-            new Promise((resolve, reject) => {
-                this.componentData = { resolve, reject, payment: this.payment };
-                this.component = 'tips';
-            }).then((result) => {
-                let { tip } = result;
-                this.tip = tip.toFixed(2);
-                this.payment.tip = tip;
-                this.recalculatePayment();
-                this.$q()
-            }).catch(() => {
-                this.$q()
-            })
-        },
-        setDiscount() {
-            new Promise((resolve, reject) => {
-                this.componentData = { resolve, reject, payment: this.payment };
-                this.component = 'discount';
-            }).then((result) => {
-                let { discount } = result;
-
-            }).catch(() => {
-                this.$q()
-            })
-        },
-        save() { },
-        preview(index) {
-            let ticket = JSON.parse(JSON.stringify(this.order));
-            ticket.payment = ticket.splitPayment[index];
-            ticket.print = false;
-
-            let { sort } = ticket.payment;
-
-            ticket.content = ticket.content.filter(item => Array.isArray(item.sort) ? item.sort.includes(sort) : item.sort === sort);
-            ticket.content.forEach(item => { item.print = false })
-
-            this.$p('ticket', { ticket, exit: true })
-        },
-        roundUp() {
-            let rounded = Math.ceil(this.payment.remain);
-
-            this.payment.gratuity = toFixed(rounded - this.payment.remain, 2);
-            this.paid = "0.00";
-
-            this.recalculatePayment();
-        },
-        setQuickInput(val) {
-            let { anchor } = document.querySelector('.input.active').dataset;
-            anchor === 'tip' ? this.tip = val.toFixed(2) : this.paid = val.toFixed(2);
-
-            this.reset = true;
-        },
-        getQuickInput(amount) {
-            let preset = [1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 100, 120, 140, 150, 200, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1100, 1500, 2000, 3000, 4000, 5000];
-            let array = [];
-            let round = Math.ceil(isNumber(amount) ? toFixed(amount, 2) : 0);
-            array.push(amount.toFixed(2));
-            amount === round ? array.push((round + 1)) : array.push(round);
-            let index = preset.findIndex(i => i > round);
-            array.push(preset.slice(index, index + 6));
-            this.quickInput = [].concat.apply([], array);
-        },
-        getQuickTip(amount) {
-            let preset = [];
-            let base = (Math.ceil(toFixed(amount, 2)) - amount).toFixed(2);
-            preset.push(base);
-            preset.push((parseFloat(base) + 1).toFixed(2));
-            preset.push('1.00');
-            preset.push('2.00');
-            preset.push('3.00');
-            preset.push('5.00');
-            preset.push((amount * 0.15).toFixed(2))
-            preset.push((amount * 0.20).toFixed(2))
-            this.quickInput = preset;
-        },
-        recalculatePayment() {
-            let { subtotal, tax, discount, paid, delivery, tip, gratuity } = this.payment;
-            let total = toFixed(subtotal + tax, 2);
-            let due = toFixed(total - discount, 2);
-            let surcharge = toFixed(tip + gratuity, 2);
-            let balance = toFixed(due + surcharge, 2);
-            let remain = toFixed(balance - paid, 2);
-
-            this.payment = Object.assign({}, this.payment, { total, due, surcharge, balance, remain });
-            this.getQuickInput(remain)
-        },
-        poleDisplay() {
-            if (!this.device.poleDisplay) return;
-            poleDisplay.write('\f');
-            poleDisplay.write(line(line1, line2));
-        },
-        quit() {
-            this.init.reject()
-        }
+              })
+          : resolve();
+      });
     },
-    watch: {
-        tip(n) {
-            this.payment.tip = toFixed(n, 2);
-            this.recalculatePayment();
-            n === '0.00' && (this.paid = this.payment.remain.toFixed(2))
+    saveLogs(detail) {
+      return new Promise(resolve => {
+        let activity;
+        let _id = ObjectId();
+        let order = this.order._id;
+        let { type, paid, change, cardBin, transactionID } = detail;
+        let cashDrawer =
+          this.op.cashCtrl === "staffBank"
+            ? this.op.name
+            : this.station.cashDrawer.name;
+
+        switch (type) {
+          case "CASH":
+            activity = {
+              _id,
+              order,
+              type: "CASHFLOW",
+              inflow: parseFloat(paid),
+              outflow: parseFloat(change),
+              time: +new Date(),
+              ticket: this.order.ticket,
+              operator: this.op.name
+            };
+            break;
+          case "GIFT":
+            activity = {
+              _id,
+              order,
+              type: "GIFTFLOW",
+              inflow: parseFloat(paid),
+              outflow: parseFloat(change),
+              time: +new Date(),
+              ticket: this.order.ticket,
+              operator: this.op.name
+            };
+            break;
+          default:
+            activity = {
+              _id,
+              order,
+              type: "OTHERFLOW",
+              inflow: parseFloat(paid),
+              outflow: parseFloat(change),
+              time: +new Date(),
+              ticket: this.order.ticket,
+              operator: this.op.name
+            };
         }
+        this.$socket.emit("[CASHFLOW] ACTIVITY", { cashDrawer, activity });
+
+        let log = {
+          _id: transactionID,
+          type,
+          paid: parseFloat(this.paid),
+          change,
+          actual: toFixed(this.paid - change, 2),
+          balance: this.payment.remain,
+          tip: parseFloat(this.tip),
+          number: cardBin
+        };
+
+        this.payment.log.push(log);
+        resolve();
+      });
+    },
+    postToDatabase() {
+      console.log("trigger");
+      return new Promise((resolve, reject) => {
+        if (this.payInFull) {
+          let settled = this.isTicketSettled();
+          if (this.isNewTicket) {
+            let customer = JSON.parse(JSON.stringify(this.customer));
+            delete customer.extra;
+
+            Object.assign(this.order, {
+              payment: this.payment,
+              customer,
+              type: this.ticket.type,
+              station: this.station.alies,
+              cashier: this.op.name,
+              source: this.op.role === "ThirdParty" ? this.op.name : "POS",
+              modify: 0,
+              status: 1,
+              date: today(),
+              time: +new Date(),
+              settled,
+              print: true
+            });
+
+            this.$socket.emit("[SAVE] INVOICE", this.order, false, content => {
+              this.order = content;
+              resolve();
+            });
+          } else {
+            Object.assign(this.order, {
+              payment: this.payment,
+              cashier: this.op.name,
+              settled,
+              print: true
+            });
+            console.log(this.order.payment);
+            this.$socket.emit("[UPDATE] INVOICE", this.order, false);
+            resolve();
+          }
+        } else {
+          //split combine
+        }
+      });
+    },
+    saveSplitPayment() {},
+    isTicketSettled() {
+      return this.payment.remain === 0;
+    },
+    checkBalance() {
+      //check split order as well
+      //if pay in full && ticket is new
+      //print set target order
+      if (this.payInFull) {
+        if (this.payment.remain > 0) {
+          this.$q();
+          this.setPaymentType("CASH");
+          this.tip = "0.00";
+        } else {
+          if (this.$route.name === "Menu" && this.app.mode === "create") {
+            this.$socket.emit("[UPDATE] INVOICE", this.order, true);
+            Printer.setTarget("Order").print(this.order);
+            this.exitPayment();
+          } else {
+            this.exit();
+          }
+        }
+      } else {
+      }
+    },
+    switchInvoice(index) {
+      this.current = index;
+      this.payment = this.order.splitPayment[this.current];
+      this.payment.remain = Math.max(
+        0,
+        toFixed(this.payment.balance - this.payment.paid, 2)
+      );
+      this.paymentType = "CASH";
+      this.paid = "0.00";
+
+      this.getQuickInput(this.payment.remain);
+    },
+    input(val) {
+      let { anchor, format } = document.querySelector(".input.active").dataset;
+      let value = this[anchor];
+
+      switch (format) {
+        case "money":
+          value = this.reset ? val : (value * 100).toFixed(0) + val;
+          this[anchor] = (value / 100).toFixed(2);
+          break;
+        case "number":
+          value = this.reset ? val : value + val;
+          this[anchor] = value;
+          break;
+      }
+
+      this.reset = false;
+    },
+    setTip() {
+      new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject, payment: this.payment };
+        this.component = "tips";
+      })
+        .then(result => {
+          let { tip } = result;
+          this.tip = tip.toFixed(2);
+          this.payment.tip = tip;
+          this.recalculatePayment();
+          this.$q();
+        })
+        .catch(() => {
+          this.$q();
+        });
+    },
+    setDiscount() {
+      new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject, payment: this.payment };
+        this.component = "discount";
+      })
+        .then(result => {
+          let { discount } = result;
+        })
+        .catch(() => {
+          this.$q();
+        });
+    },
+    save() {},
+    preview(index) {
+      let ticket = JSON.parse(JSON.stringify(this.order));
+      ticket.payment = ticket.splitPayment[index];
+      ticket.print = false;
+
+      let { sort } = ticket.payment;
+
+      ticket.content = ticket.content.filter(
+        item =>
+          Array.isArray(item.sort)
+            ? item.sort.includes(sort)
+            : item.sort === sort
+      );
+      ticket.content.forEach(item => {
+        item.print = false;
+      });
+
+      this.$p("ticket", { ticket, exit: true });
+    },
+    roundUp() {
+      let rounded = Math.ceil(this.payment.remain);
+
+      this.payment.gratuity = toFixed(rounded - this.payment.remain, 2);
+      this.paid = "0.00";
+
+      this.recalculatePayment();
+    },
+    setQuickInput(val) {
+      let { anchor } = document.querySelector(".input.active").dataset;
+      anchor === "tip"
+        ? (this.tip = val.toFixed(2))
+        : (this.paid = val.toFixed(2));
+
+      this.reset = true;
+    },
+    getQuickInput(amount) {
+      let preset = [
+        1,
+        2,
+        3,
+        4,
+        5,
+        10,
+        15,
+        20,
+        25,
+        30,
+        35,
+        40,
+        45,
+        50,
+        60,
+        70,
+        80,
+        100,
+        120,
+        140,
+        150,
+        200,
+        300,
+        350,
+        400,
+        450,
+        500,
+        600,
+        700,
+        800,
+        900,
+        1000,
+        1100,
+        1500,
+        2000,
+        3000,
+        4000,
+        5000
+      ];
+      let array = [];
+      let round = Math.ceil(isNumber(amount) ? toFixed(amount, 2) : 0);
+      array.push(amount.toFixed(2));
+      amount === round ? array.push(round + 1) : array.push(round);
+      let index = preset.findIndex(i => i > round);
+      array.push(preset.slice(index, index + 6));
+      this.quickInput = [].concat.apply([], array);
+    },
+    getQuickTip(amount) {
+      let preset = [];
+      let base = (Math.ceil(toFixed(amount, 2)) - amount).toFixed(2);
+      preset.push(base);
+      preset.push((parseFloat(base) + 1).toFixed(2));
+      preset.push("1.00");
+      preset.push("2.00");
+      preset.push("3.00");
+      preset.push("5.00");
+      preset.push((amount * 0.15).toFixed(2));
+      preset.push((amount * 0.2).toFixed(2));
+      this.quickInput = preset;
+    },
+    recalculatePayment() {
+      let {
+        subtotal,
+        tax,
+        discount,
+        paid,
+        delivery,
+        tip,
+        gratuity
+      } = this.payment;
+      let total = toFixed(subtotal + tax, 2);
+      let due = toFixed(total - discount, 2);
+      let surcharge = toFixed(tip + gratuity, 2);
+      let balance = toFixed(due + surcharge, 2);
+      let remain = toFixed(balance - paid, 2);
+      let settled = remain === 0;
+
+      this.payment = Object.assign({}, this.payment, {
+        total,
+        due,
+        surcharge,
+        balance,
+        remain,
+        settled
+      });
+      this.getQuickInput(remain);
+    },
+    poleDisplay() {
+      if (!this.device.poleDisplay) return;
+      poleDisplay.write("\f");
+      poleDisplay.write(line(line1, line2));
+    },
+    exit() {
+      this.init.reject();
+    },
+    exitPayment() {
+      switch (this.$route.name) {
+        case "Menu":
+          if (this.ticket.type === "BUFFET") {
+            this.resetMenu();
+            this.exit();
+          } else {
+            this.resetAll();
+            this.$router.push({ path: "/main" });
+          }
+          break;
+        case "History":
+          break;
+        case "Table":
+          break;
+        case "PickupList":
+          break;
+        default:
+          this.exit();
+      }
+    },
+    ...mapActions(["resetAll", "resetMenu"])
+  },
+  watch: {
+    tip(n) {
+      this.payment.tip = toFixed(n, 2);
+      this.recalculatePayment();
+      n === "0.00" && (this.paid = this.payment.remain.toFixed(2));
     }
-
-}
+  }
+};
 </script>
 
 <style scoped>
 .window {
-    width: 916px;
+  width: 916px;
 }
 
 nav {
-    display: flex;
-    margin-left: 4px;
+  display: flex;
+  margin-left: 4px;
 }
 
 .viewer {
-    display: inline-flex;
-    margin-left: 10px;
+  display: inline-flex;
+  margin-left: 10px;
 }
 
-.viewer input:checked+label {
-    background: #3F51B5;
+.viewer input:checked + label {
+  background: #3f51b5;
 }
 
 .viewer .tag {
-    padding: 5px 15px;
-    margin: 0 2px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-    border-radius: 4px;
-    background: #51aef5;
+  padding: 5px 15px;
+  margin: 0 2px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  border-radius: 4px;
+  background: #51aef5;
 }
 
 .viewer label {
-    position: relative;
+  position: relative;
 }
 
-.viewer input:checked~.preview {
-    animation: preview 0.5s .2s ease-out forwards;
+.viewer input:checked ~ .preview {
+  animation: preview 0.5s 0.2s ease-out forwards;
 }
 
 .preview {
-    visibility: hidden;
-    position: absolute;
-    bottom: 40px;
-    left: -10px;
-    width: 75px;
-    height: 70px;
-    background-color: #555;
-    color: #fff;
-    text-align: center;
-    padding: 5px 0;
-    border-radius: 6px;
-    z-index: 1;
-    opacity: 0;
-    display: flex;
-    flex-direction: column;
+  visibility: hidden;
+  position: absolute;
+  bottom: 40px;
+  left: -10px;
+  width: 75px;
+  height: 70px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  z-index: 1;
+  opacity: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .preview:after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: #555 transparent transparent transparent;
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
 }
 
 .preview span {
-    font-size: 16px;
+  font-size: 16px;
 }
 
 .preview i {
-    font-size: 28px;
-    color: #EEEEEE;
-    padding: 8px 2px;
+  font-size: 28px;
+  color: #eeeeee;
+  padding: 8px 2px;
 }
 
 .paymentTypes {
-    display: flex;
-    height: 60px;
+  display: flex;
+  height: 60px;
 }
 
 .paymentTypes label {
-    display: block;
-    width: 104px;
-    margin: 4px 6px 4px 0;
-    background: #fff;
-    border: 2px solid #e0e0e0;
-    position: relative;
-    text-align: center;
-    line-height: 49px;
-    border-radius: 4px;
-    color: #bdbdbd;
+  display: block;
+  width: 104px;
+  margin: 4px 6px 4px 0;
+  background: #fff;
+  border: 2px solid #e0e0e0;
+  position: relative;
+  text-align: center;
+  line-height: 49px;
+  border-radius: 4px;
+  color: #bdbdbd;
 }
 
 .options {
-    display: flex;
-    flex-wrap: wrap;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .options label {
-    display: flex;
-    width: 103px;
-    height: 50px;
-    margin: 2px;
-    justify-content: center;
-    background: #fff;
-    border: 2px solid #e0e0e0;
-    position: relative;
-    text-align: center;
-    align-items: center;
-    border-radius: 4px;
-    color: #bdbdbd;
+  display: flex;
+  width: 103px;
+  height: 50px;
+  margin: 2px;
+  justify-content: center;
+  background: #fff;
+  border: 2px solid #e0e0e0;
+  position: relative;
+  text-align: center;
+  align-items: center;
+  border-radius: 4px;
+  color: #bdbdbd;
 }
 
 .options label:after {
-    bottom: 0px!important;
+  bottom: 0px !important;
 }
 
-.type input:checked+label {
-    background: #66bb6a;
-    color: #fafafa;
-    border: 2px solid #009688;
-    text-shadow: 0 2px 1px rgba(0, 0, 0, .5);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, .3);
+.type input:checked + label {
+  background: #66bb6a;
+  color: #fafafa;
+  border: 2px solid #009688;
+  text-shadow: 0 2px 1px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-.type input:checked+label:before {
-    position: absolute;
-    content: ' ';
-    width: 23px;
-    height: 15px;
-    background: #009688;
-    bottom: 0;
-    right: 0;
-    border-top-left-radius: 4px;
+.type input:checked + label:before {
+  position: absolute;
+  content: " ";
+  width: 23px;
+  height: 15px;
+  background: #009688;
+  bottom: 0;
+  right: 0;
+  border-top-left-radius: 4px;
 }
 
-.type input:checked+label:after {
-    position: absolute;
-    content: '\f00c';
-    font-family: fontAwesome;
-    bottom: -17px;
-    right: 3px;
+.type input:checked + label:after {
+  position: absolute;
+  content: "\f00c";
+  font-family: fontAwesome;
+  bottom: -17px;
+  right: 3px;
 }
 
 .balanceDue {
-    width: 219px;
-    height: 42px;
-    margin: 10px 0 4px;
-    border-radius: 4px;
-    border: 2px solid #607d8b;
-    color: #3c3c3c;
-    position: relative;
+  width: 219px;
+  height: 42px;
+  margin: 10px 0 4px;
+  border-radius: 4px;
+  border: 2px solid #607d8b;
+  color: #3c3c3c;
+  position: relative;
 }
 
 .balanceDue .for {
-    position: absolute;
-    top: -12px;
-    background: #f5f5f5;
-    font-weight: 700;
-    left: 10px;
-    padding: 0 5px;
+  position: absolute;
+  top: -12px;
+  background: #f5f5f5;
+  font-weight: 700;
+  left: 10px;
+  padding: 0 5px;
 }
 
 .balanceDue .inner {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    padding: 0 10px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 0 10px;
 }
 
 .due {
-    font-family: 'Agency FB';
-    font-weight: bold;
-    font-size: 36px;
+  font-family: "Agency FB";
+  font-weight: bold;
+  font-size: 36px;
 }
 
 .symbol {
-    font-size: 26px;
-    font-weight: normal;
-    color: #009688;
-    text-shadow: 0 1px 1px #ddd;
+  font-size: 26px;
+  font-weight: normal;
+  color: #009688;
+  text-shadow: 0 1px 1px #ddd;
 }
 
 .addition {
-    display: flex;
-    flex-direction: column;
-    margin-left: 10px;
-    text-align: center;
-    color: #FF9800;
-    font-size: 20px;
-    text-align: center;
+  display: flex;
+  flex-direction: column;
+  margin-left: 5px;
+  text-align: center;
+  color: #ff9800;
+  font-size: 14px;
+  text-align: center;
 }
 
 .addition .text {
-    font-size: 14px;
+  font-size: 14px;
 }
 
 .fn {
-    margin-left: 4px;
+  margin-left: 4px;
 }
 
 .fn .btn {
-    height: 48px;
-    margin: 6px 2px;
-    width: 106px;
+  height: 48px;
+  margin: 6px 2px;
+  width: 106px;
 }
 
 article {
-    display: flex;
-    margin-left: 4px;
+  display: flex;
+  margin-left: 4px;
 }
 
 section.numpad {
-    display: flex;
-    flex-wrap: wrap;
-    width: 342px;
+  display: flex;
+  flex-wrap: wrap;
+  width: 342px;
 }
-
 .double {
-    width: 223px;
+  width: 223px;
 }
-
 section.field {
-    display: flex;
-    width: 339px;
+  display: flex;
+  width: 339px;
 }
-
 .input {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    width: 223px;
-    height: 84px;
-    border-radius: 2px;
-    margin-bottom: 6px;
-    color: #3c3c3c;
-    box-shadow: var(--shadow);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 223px;
+  height: 83px;
+  border-radius: 2px;
+  margin-bottom: 6px;
+  color: #3c3c3c;
+  box-shadow: var(--shadow);
 }
-
 .input.active {
-    background: #5c6bc0;
-    color: #fff;
-    text-shadow: 0 1px 1px #444;
+  background: #5c6bc0;
+  color: #fff;
+  text-shadow: 0 1px 1px #444;
 }
-
 .input .text {
-    padding: 7px 10px;
-    font-size: 22px;
+  padding: 7px 10px;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+}
+.input input {
+  border: none;
+  background: none;
+  outline: none;
+  font-size: 22px;
+  text-align: right;
+  padding-right: 5px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  color: #3c3c3c;
+}
+.input.active input {
+  color: #fff;
+}
+.people {
+  font-family: "Agency FB";
+  font-size: 17px;
+  color: #fafafa;
+  padding: 1px 8px;
+  text-shadow: 0 1px 1px #333;
+  background: #4caf50;
+  border-radius: 4px;
+  margin-left: 10px;
+  box-shadow: 0 1px 1px #607d8b;
 }
 
 .input .value {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    padding-right: 10px;
-    font-size: 22px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 10px;
+  font-size: 22px;
 }
 
 aside.numpad {
-    text-align: center;
-    margin-left: 5px;
+  text-align: center;
+  margin-left: 5px;
 }
 
 section.quickInput {
-    margin-left: 3px;
-    display: flex;
-    flex-wrap: wrap;
-    height: 353px;
-    width: 228px;
+  margin-left: 3px;
+  display: flex;
+  flex-wrap: wrap;
+  height: 353px;
+  width: 228px;
 }
 
 @keyframes preview {
-    from {
-        opacity: 0;
-        transform: translate3d(0, 10px, 0);
-    }
-    to {
-        opacity: 1;
-        visibility: visible;
-        transform: translate3d(0, 0, 0)
-    }
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+  to {
+    opacity: 1;
+    visibility: visible;
+    transform: translate3d(0, 0, 0);
+  }
 }
 </style>

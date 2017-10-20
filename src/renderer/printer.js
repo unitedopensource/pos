@@ -948,7 +948,7 @@ function createList(printer, ctrl, invoice) {
                       <span class="item">${name}<span class="mark">${markA}</span></span>
                       <span class="side">${side}<span class="mark">${markB}</span></span>
                     </span>
-                    <span class="price">${item.total}</span><del></del><span class="diff">(${item.origin}⇒${item.qty})</span></p>${setCN}`;
+                    <span class="price">${item.total}</span><del></del><span class="diff">(${item.origin || 0}⇒${item.qty})</span></p>${setCN}`;
         side = item.side.usEN ? item.side.usEN : "";
         name = (item[printer] && item[printer].hasOwnProperty("usEN")) ? item[printer].usEN : printMenuID ? item.menuID + " " + item.usEN : item.usEN;
         let usEN = `<p class="list usEN ${diffs}">
@@ -957,7 +957,7 @@ function createList(printer, ctrl, invoice) {
                         <span class="item">${name}<span class="mark">${markA}</span></span>
                         <span class="side">${side}<span class="mark">${markB}</span></span>
                       </span>
-                      <span class="price">${item.total}</span><del></del><span class="diff">(${item.origin}⇒${item.qty})</span></p>${setEN}`;
+                      <span class="price">${item.total}</span><del></del><span class="diff">(${item.origin || 0}⇒${item.qty})</span></p>${setEN}`;
         return zhCN + usEN;
     }
 
@@ -1142,11 +1142,11 @@ function createFooter(table, ctrl, device, ticket) {
                                 <h3>Paid by Cash - Thank You</h3>
                                 <p>
                                 <span class="text">Paid:</span>
-                                <span class="value">$${log.paid}</span>
+                                <span class="value">$${log.paid.toFixed(2)}</span>
                                 </p>
                                 <p>
                                 <span class="text">Change:</span>
-                                <span class="value">$${log.change}</span>
+                                <span class="value">$${log.change.toFixed(2)}</span>
                                 </p>
                             </section>`)
                     break;
@@ -1156,7 +1156,7 @@ function createFooter(table, ctrl, device, ticket) {
                                 <h3>Paid by CREDIT Card ${cc} - Thank You</h3>
                                 <p>
                                 <span class="text">Paid:</span>
-                                <span class="value">$${log.paid}</span>
+                                <span class="value">$${log.paid.toFixed(2)}</span>
                                 </p>
                             </section>`)
                     break;
@@ -1165,7 +1165,7 @@ function createFooter(table, ctrl, device, ticket) {
                                 <h3>Paid by GIFT Card - Thank You</h3>
                                 <p>
                                 <span class="text">Paid:</span>
-                                <span class="value">$${log.paid}</span>
+                                <span class="value">$${log.paid.toFixed(2)}</span>
                                 </p>
                             </section>`)
                     break;

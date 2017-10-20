@@ -268,7 +268,7 @@ export default {
         },
         search() { },
         updateInvoice(ticket) {
-            this.$socket.emit("[UPDATE] INVOICE", ticket);
+            this.$socket.emit("[UPDATE] INVOICE", ticket,true);
         },
         stats() {
             this.$parent.prevHistory.length > 0 ?

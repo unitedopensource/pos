@@ -296,7 +296,7 @@ export const insertOrder = ({
   let { number, sync, order } = data;
   commit(types.SET_TICKET, { number });
   commit(types.SET_LASTSYNC, sync);
-  commit(types.INSERT_ORDER, order);
+  commit(types.UPSERT_INVOICE, order);
   commit(types.REFRESH_CURRENT_ORDER, rootState.initial.orders);
 }
 export const updateOrder = ({
@@ -304,7 +304,7 @@ export const updateOrder = ({
 }, data) => {
   let { sync, order } = data;
   commit(types.SET_LASTSYNC, sync);
-  commit(types.UPDATE_ORDER, order);
+  commit(types.UPSERT_INVOICE, order);
   commit(types.REFRESH_CURRENT_ORDER, rootState.initial.orders);
 }
 export const updateMenuCategory = ({

@@ -343,7 +343,7 @@ export default {
         'batchFailed': '过账失败',
         'batchFailedTip': '过账错误代码: {i}',
         'cashChange': '请找 ${i}',
-        'cashChangeTip': '客人支付现金 (${i})',
+        'cashChangeTip': '客人支付现金 ($ {i})',
         'printReceiptConfirm': '打印收据',
         'printReceiptConfirmTip': '是否需要打印收据给客人？',
         'noInvoice': '没有任何订单',
@@ -442,7 +442,12 @@ export default {
         'invalidDate':'日期错误',
         'reserveDateIsPassed':'选定的预约日期无效',
         'paymentFailed':'付款失败',
-        'canNotPayZeroAmount':'支付数额必须大于 $ 0.00 '
+        'canNotPayZeroAmount':'支付数额必须大于 $ 0.00 ',
+        'invalidCreditCard':'无效的信用卡',
+        'creditCardLengthIncorrect':'信用卡号码长度不正确',
+        'expirationDateIncorrect':'信用卡日期格式不正确',
+        'assignPrinter':'分配打印机',
+        'assignPrinterToAllItems':'您是否将 {i} 打印机应用于所有的物品之上？'
     },
     terminal: {
         'initial': '正在初始化 {i}...',
@@ -811,7 +816,7 @@ export default {
         'preview':'预览',
         'seatOrder':'按位点餐',
         'wage':'工资(小时)',
-        'payroll':'$ {i}'
+        'calcTips':'小费为: $ {i}'
     },
     nav: {
         'store': '店面',
@@ -996,6 +1001,8 @@ export default {
         'alphabetical': '菜单将按字母序列排序 (中文字符将会按照拼音排序)',
         'createSubMenuGroup': '创建一个子菜单组',
         'reportBeforeBatch': '过账前是否打印每笔交易信息',
+        'tipFor':'小费基于',
+        'howTipCalculate':'小费的计算是在税后折扣前',
         'table': {
             'actionsOnDone':'设定完成订单之后的操作',
             'passwordRequire': '创建座位之前需要输入密码',
