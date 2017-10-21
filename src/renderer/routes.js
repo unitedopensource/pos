@@ -85,9 +85,9 @@ export default [{
         name: 'Setting.store',
         component: require('./components/setting/store/index')
       }, {
-        path: 'tax',
-        name: 'Setting.tax',
-        component: require('./components/setting/store/tax')
+        path: 'calculation',
+        name: 'Setting.calc',
+        component: require('./components/setting/store/calculation')
       }, {
         path: 'station',
         name: 'Setting.station',

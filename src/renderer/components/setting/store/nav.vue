@@ -10,9 +10,9 @@
                     <i class="fa fa-desktop"></i>
                     <span class="text">{{$t('nav.station')}}</span>
                 </router-link>
-                <router-link tag="li" :to="{name:'Setting.tax'}">
+                <router-link tag="li" :to="{name:'Setting.calc'}">
                     <i class="fa fa-usd"></i>
-                    <span class="text">{{$t('nav.tax')}}</span>
+                    <span class="text">{{$t('nav.calc')}}</span>
                 </router-link>
                 <router-link tag="li" :to="{name:'Setting.dinein'}">
                     <i class="fa fa-cutlery"></i>

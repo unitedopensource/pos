@@ -950,7 +950,9 @@ export default {
           this.$q();
         });
     },
-    save() {},
+    save() {
+      
+    },
     preview(index) {
       let ticket = JSON.parse(JSON.stringify(this.order));
       ticket.payment = ticket.splitPayment[index];

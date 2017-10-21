@@ -29,11 +29,17 @@ export default {
   data() {
     return {
       componentData: null,
-      component: null,
-      tip: false
+      component: null
     };
   },
   created() {
+    // this.getTicketNumber()
+    //   .then(this.checkActivation)
+    //   .then(this.checkTimeCard)
+    //   .then(this.checkCashInOut)
+    //   .then(this.initialized)
+    //   .catch(this.checkFailed)
+
     this.$socket.emit("[INQUIRY] TICKET_NUMBER", number => {
       this.setTicket({ number });
     });
