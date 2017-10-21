@@ -53,7 +53,8 @@
         <section class="card">
             <header>{{$t('setting.security')}}</header>
             <article>
-                <smart-range v-model.number="workStation.timeout" label="text.autoLock" min="0" max="600" step="30"></smart-range>
+                <smart-switch v-model="workStation.doneLock" label="text.doneLock" tip="tip.lockWhenCompleteOrder"></smart-switch>
+                <smart-range v-model.number="workStation.timeout" label="text.inactiveLock" min="0" max="600" step="30"></smart-range>
             </article>
         </section>
         <section class="card">
@@ -77,145 +78,186 @@
             <article>
                 <smart-switch v-model="workStation.enlargeTitle" label="text.enlargeTitle"></smart-switch>
             </article>
-            <article class="grid" :class="{enlarge:workStation.enlargeTitle}">
-                <div v-for="(grid,index) in workStation.interface" :key="index" class="block" @click="edit(grid,index)" :class="{disable:!grid.enable}">
-                    <i class="fa icon" :class="[grid.icon]"></i>
-                    <h1>{{grid.head}}</h1>
-                    <h4>{{grid.subhead}}</h4>
-                </div>
-            </article>
+                <draggable v-model="workStation.interface" :options="dragtions">
+                    <transition-group tag="article" class="grid" :class="{enlarge:workStation.enlargeTitle}">
+                        <div v-for="(grid,index) in workStation.interface" :key="index" class="block" @click="edit(grid,index)" :class="{disable:!grid.enable}">
+                            <i class="fa icon" :class="[grid.icon]"></i>
+                            <h1>{{grid.head}}</h1>
+                            <h4>{{grid.subhead}}</h4>
+                        </div>
+                    </transition-group>
+                </draggable>
         </section>
         <div :is="component" :init="componentData"></div>
     </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import smartInput from '../common/smartInput'
-import smartRange from '../common/smartRange'
-import smartSwitch from '../common/smartSwitch'
-import smartOption from '../common/smartOption'
-import search from './search'
-import editor from './uiEditor'
+import { mapGetters } from "vuex";
+import draggable from "vuedraggable";
+import smartInput from "../common/smartInput";
+import smartRange from "../common/smartRange";
+import smartSwitch from "../common/smartSwitch";
+import smartOption from "../common/smartOption";
+import search from "./search";
+import editor from "./uiEditor";
 export default {
-    components: { smartInput, smartRange, smartSwitch, smartOption, editor, search },
-    created() {
-        this.workStation = JSON.parse(JSON.stringify(this.station));
-        this.printers = Object.keys(this.config.printer);
+  components: {
+    smartInput,
+    smartRange,
+    smartSwitch,
+    smartOption,
+    editor,
+    search,
+    draggable
+  },
+  created() {
+    this.workStation = JSON.parse(JSON.stringify(this.station));
+    this.printers = Object.keys(this.config.printer);
+  },
+  data() {
+    return {
+      change: false,
+      component: null,
+      componentData: null,
+      workStation: null,
+      devices: ["SP30", "S80", "S300", "NX2200"],
+      ports: [
+        "COM1",
+        "COM2",
+        "COM3",
+        "COM4",
+        "COM5",
+        "COM6",
+        "COM7",
+        "COM8",
+        "COM9"
+      ],
+      commands: ["AT#CID=1", "AT+VCID=1", "AT%CCID=1"],
+      printers: [],
+      dragtions: {
+        animation: 300,
+        ghostClass: "ghost"
+      }
+    };
+  },
+  methods: {
+    edit(ui, index) {
+      new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject, ui };
+        this.component = "editor";
+      })
+        .then(result => {
+          this.workStation.interface.splice(index, 1, result);
+          this.$q();
+        })
+        .catch(() => {
+          this.$q();
+        });
     },
-    data() {
-        return {
-            change: false,
-            component: null,
-            componentData: null,
-            workStation: null,
-            devices: ['SP30', 'S80', 'S300', 'NX2200'],
-            ports: ['COM1', 'COM2', 'COM3', 'COM4', 'COM5', 'COM6', 'COM7', 'COM8', 'COM9'],
-            commands: ['AT#CID=1', 'AT+VCID=1', 'AT%CCID=1'],
-            printers: []
-        }
+    searchTool() {
+      new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject };
+        this.component = "search";
+      })
+        .then(data => {
+          let { address, port, model, sn } = data;
+          this.workStation.terminal = Object.assign(
+            {},
+            this.workStation.terminal,
+            {
+              enable: true,
+              address,
+              model,
+              port,
+              sn
+            }
+          );
+          this.$q();
+        })
+        .catch(() => {
+          this.$q();
+        });
     },
-    methods: {
-        edit(ui, index) {
-            new Promise((resolve, reject) => {
-                this.componentData = { resolve, reject, ui };
-                this.component = "editor";
-            }).then(result => {
-                this.workStation.interface.splice(index, 1, result);
-                this.$q()
-            }).catch(() => { this.$q() })
-        },
-        searchTool() {
-            new Promise((resolve, reject) => {
-                this.componentData = { resolve, reject };
-                this.component = "search";
-            }).then(data => {
-                let { address, port, model, sn } = data;
-                this.workStation.terminal = Object.assign({}, this.workStation.terminal, {
-                    enable: true,
-                    address,
-                    model,
-                    port,
-                    sn
-                })
-                this.$q()
-            }).catch(() => { this.$q() })
-        },
-        update(data) {
-            this.workStation.print = data;
-        },
-    },
-    watch: {
-        workStation: {
-            handler(n) {
-                let keys = Object.keys(n);
-                let isChanged = keys.some(key => {
-                    return typeof n[key] === 'string' ?
-                        n[key] !== this.station[key] :
-                        JSON.stringify(n[key]) !== JSON.stringify(this.station[key]);
-                })
-                if (isChanged) {
-                    let stations = Object.keys(this.store.station);
-                    let index = stations.findIndex(key => this.store.station[key].mac === n.mac);
-                    let name = stations[index];
-                    let store = JSON.parse(JSON.stringify(this.store));
-                    store.station[name] = n;
-                    this.$emit("change", store)
-                } else {
-                    this.$emit("unchanged");
-                }
-            }, deep: true
-        }
-    },
-    computed: {
-        ...mapGetters(['config', 'store', 'station'])
+    update(data) {
+      this.workStation.print = data;
     }
-
-}
+  },
+  watch: {
+    workStation: {
+      handler(n) {
+        let keys = Object.keys(n);
+        let isChanged = keys.some(key => {
+          return typeof n[key] === "string"
+            ? n[key] !== this.station[key]
+            : JSON.stringify(n[key]) !== JSON.stringify(this.station[key]);
+        });
+        if (isChanged) {
+          let stations = Object.keys(this.store.station);
+          let index = stations.findIndex(
+            key => this.store.station[key].mac === n.mac
+          );
+          let name = stations[index];
+          let store = JSON.parse(JSON.stringify(this.store));
+          store.station[name] = n;
+          this.$emit("change", store);
+        } else {
+          this.$emit("unchanged");
+        }
+      },
+      deep: true
+    }
+  },
+  computed: {
+    ...mapGetters(["config", "store", "station"])
+  }
+};
 </script>
 
 <style scoped>
 .grid {
-    display: flex;
-    flex-wrap: wrap;
+  display: flex;
+  flex-wrap: wrap;
+  background: #eceff1;
 }
 
 .block {
-    width: 178px;
-    padding: 35px 20px 15px;
-    border-right: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
-    color: #333;
-    position: relative;
-    cursor: pointer;
+  width: 175px;
+  margin: 1px;
+  padding: 35px 20px 15px;
+  border: 1px solid #e0e0e0;
+  background: #fff;
+  color: #333;
+  position: relative;
+  cursor: pointer;
 }
 
 .block:nth-child(4n) {
-    border-right: none;
+  border-right: none;
 }
 
 .icon {
-    position: absolute;
-    right: 0;
-    top: 0px;
-    padding: 10px 15px;
+  position: absolute;
+  right: 0;
+  top: 0px;
+  padding: 10px 15px;
 }
 
 .enlarge h1 {
-    font-size: 2em;
-    font-weight: normal;
+  font-size: 2em;
+  font-weight: normal;
 }
 
 .block h4 {
-    font-weight: normal;
-    color: gray;
+  font-weight: normal;
+  color: gray;
 }
 
 .disable {
-    color: #F5F5F5;
+  color: #f5f5f5;
 }
 
 .disable h4 {
-    color: #F5F5F5;
+  color: #f5f5f5;
 }
 </style>

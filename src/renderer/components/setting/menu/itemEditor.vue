@@ -630,10 +630,6 @@ div.add {
     margin: 0 10px;
 }
 
-.ghost {
-    opacity: 0.5;
-}
-
 .checkbox {
     font-size: 18px;
     vertical-align: sub;

@@ -688,7 +688,7 @@ export default {
         'firstLine': '第一行',
         'secondLine': '第二行',
         'command': '命令',
-        'autoLock': '自动锁定',
+        'inactiveLock': '自动锁屏',
         'binding': '绑定',
         'cashFlowCtrl': '现金流控制',
         'errorsAllow': '误差值',
@@ -1005,6 +1005,7 @@ export default {
         'discountFor':'折扣基于',
         'howTipCalculate':'小费的计算基于小计',
         'howDiscountCalculate':'折扣是按小计进行打折',
+        'lockWhenCompleteOrder':'完成订单之后锁定界面',
         'table': {
             'actionsOnDone':'设定完成订单之后的操作',
             'passwordRequire': '创建座位之前需要输入密码',

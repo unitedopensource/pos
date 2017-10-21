@@ -689,7 +689,7 @@ export default {
         'firstLine': 'First Line',
         'secondLine': 'Second Line',
         'command': 'Command',
-        'autoLock': 'Auto Lock',
+        'inactiveLock': 'Inactive Lock',
         'binding': 'Binding',
         'cashFlowCtrl': 'Cash Flow Ctrl',
         'errorsAllow': 'Errors Allow',
@@ -1008,6 +1008,7 @@ export default {
         'discountFor':'Discount Base On',
         'howTipCalculate': 'Tip is before tax and discount',
         'howDiscountCalculate':'Discount is before tax',
+        'lockWhenCompleteOrder':'Lock screen when complete order',
         'table': {
             'actionsOnDone': 'Actions after tapping Done',
             'passwordRequire': 'Password input required before create a new table.',

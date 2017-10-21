@@ -317,7 +317,9 @@ input[type="text"]:disabled {
   background: #f6f6f6;
 }
 
-
+.ghost {
+  opacity: 0.5;
+}
 /* Define window */
 
 .window {
