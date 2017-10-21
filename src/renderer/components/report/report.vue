@@ -379,6 +379,7 @@ export default {
           }
         }
       });
+
       let types = new Set();
       logs.forEach(log => {
         types.add(log.type);
@@ -393,67 +394,16 @@ export default {
         let tip = list
           .map(log => parseFloat(log.tip || 0))
           .reduce((a, b) => a + b, 0);
-            console.log(list.map(i=>i.paid-i.change))
-          console.log(type,count,amount,tip)
+
+        settle[type] = {
+          text: type,
+          amount: [
+            { Total: toFixed(amount, 2).toFixed(2) },
+            { Tip: toFixed(tip, 2).toFixed(2) }
+          ],
+          count
+        };
       });
-
-      //   data.forEach(invoice => {
-      //     let payment = invoice.payment;
-      //     let type = payment.type;
-
-      //     if (!payment.settled) return;
-      //     if (type === "MULTIPLE") {
-      //       invoice.splitPayment.forEach(split => {
-      //         split.log.forEach(log => {
-      //           let paid = parseFloat(log.paid) - parseFloat(log.change);
-      //           let tip = parseFloat(log.tip || 0);
-      //           let type = log.type;
-
-      //           paid -= tip;
-
-      //           if (settle.hasOwnProperty(type)) {
-      //             settle[split.type]["amount"] += paid;
-      //             settle[split.type]["tip"] += tip;
-      //             settle[split.type]["count"]++;
-      //           } else {
-      //             settle[split.type] = {
-      //               text: split.type,
-      //               tip: tip,
-      //               amount: paid,
-      //               count: 1
-      //             };
-      //           }
-      //         });
-      //       });
-      //     } else {
-
-      //       payment.log.forEach(log => {
-      //         let paid = toFixed(log.paid - log.change, 2);
-      //         let tip = parseFloat(log.tip || 0);
-      //         let type = log.type;
-
-      //         if (settle.hasOwnProperty(type)) {
-      //           settle[type]["amount"] += paid;
-      //           settle[type]["tip"] += tip;
-      //           settle[type]["count"]++;
-      //         } else {
-      //           settle[type] = {
-      //             text: type,
-      //             tip: tip,
-      //             amount: paid,
-      //             count: 1
-      //           };
-      //         }
-      //       });
-      //     }
-      //   });
-      //   Object.keys(settle).forEach(type => {
-      //     settle[type]["amount"] = [
-      //       { Total: toFixed(settle[type]["amount"], 2).toFixed(2) },
-      //       { Tip: settle[type]["tip"].toFixed(2) }
-      //     ];
-      //   });
-
       return settle;
     },
     driverReport(data) {
@@ -612,6 +562,7 @@ export default {
           due,
           tax,
           tip,
+          delivery,
           gratuity,
           discount
         } = ticket.payment;
@@ -645,7 +596,12 @@ export default {
               otherAmount += amount;
           }
           gross++;
-          grossAmount += parseFloat(total);
+          grossAmount +=
+            parseFloat(subtotal) +
+            parseFloat(tax) +
+            parseFloat(tip) +
+            parseFloat(gratuity) +
+            parseFloat(delivery);
           netAmount += amount;
           itemSalesAmount += parseFloat(subtotal);
           taxAmount += parseFloat(tax);

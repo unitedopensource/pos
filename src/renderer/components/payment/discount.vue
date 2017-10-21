@@ -1,21 +1,23 @@
 <template>
   <div class="popupMask center dark" @click.self="init.reject">
-    <div class="window">
+    <div class="window inputter">
       <header class="title">
         <span>{{$t('text.discount')}}</span>
         <i class="fa fa-times" @click="init.reject"></i>
       </header>
       <div class="inner">
         <div class="display">
-          <div class="total">
-            <span class="due">{{(init.payment.subtotal) | decimal}}</span>
-            <span class="formula">{{formula}}</span>
-          </div>
-          <div class="wrap">
-            <div class="data active">
-              <span class="text">{{$t('button.setDiscount')}}</span>
-              <span class="value">{{discount}}</span>
-            </div>
+          <h5>{{$t('tip.discountFor')}}</h5>
+          <span class="due">
+            <span class="symbol">$</span>{{init.payment.subtotal | decimal}}
+            <i class="tooltip fa fa-question-circle-o">
+              <span class="content">{{tooltip}}</span>
+            </i>
+          </span>
+          <div class="entry">
+            <div v-if="unit === '%'" class="unit" @click="switchUnit('$')">%</div>
+            <div v-else class="unit" @click="switchUnit('%')">$</div>
+            <input type="text" v-model="discount">
           </div>
         </div>
         <div class="wrap">
@@ -34,8 +36,7 @@
           </section>
           <aside class="numpad">
             <div @click="del">&#8592;</div>
-            <div @click="switchUnit" v-if="this.currentUnit === '%'">%</div>
-            <div @click="switchUnit" v-else>$</div>
+            <div @click="clear">C</div>
             <div @click="enter">&#8626;</div>
           </aside>
         </div>
@@ -62,27 +63,29 @@
 
 <script>
 export default {
-  props: ['init'],
-
-  data() {
-    return {
-      coupons: [],
-      redeem: null,
-      currentUnit: "%",
-      formula: null,
-      discount: null,
-      reset:true,
+  props: ["init"],
+  computed: {
+    tooltip() {
+      if (~~this.discount > 0) {
+        if (this.unit === "%") {
+          return this.$t(
+            "text.calcDiscount",
+            toFixed(
+              this.init.payment.subtotal * this.discount / 100,
+              2
+            ).toFixed(2)
+          );
+        } else {
+          return this.$t("text.calcDiscount", this.discount.toFixed(2));
+        }
+      } else {
+        return this.$t("tip.howDiscountCalculate");
+      }
     }
-  },
-  created() {
-    this.$socket.emit("[COUPON] LIST", (coupons) => { this.coupons = coupons })
-  },
-  mounted() {
-    this.currentUnit = this.discount = this.init.payment.discount > 0 ? '$ ' + this.init.payment.discount : '0 %';
   },
   filters: {
     discount(value, coupon) {
-      if (coupon.includes('%')) {
+      if (coupon.includes("%")) {
         let discount = 1 - coupon.replace(/\D+/, "") / 100;
         return toFixed(value * discount, 2).toFixed(2);
       } else {
@@ -91,128 +94,79 @@ export default {
       }
     }
   },
+  data() {
+    return {
+      coupons: [],
+      redeem: null,
+      discount: "0",
+      reset: true,
+      unit: "%"
+    };
+  },
+  created() {
+    this.$socket.emit("[COUPON] LIST", coupons => {
+      this.coupons = coupons;
+    });
+  },
   methods: {
-    switchUnit() {
-      if (this.currentUnit === "$") {
-        this.discount = "0 %";
-        this.currentUnit = "%";
-      } else {
-        this.discount = "$ 0.00";
-        this.currentUnit = "$";
-      }
-      this.formula = null;
+    switchUnit(unit) {
+      this.unit = unit;
+      this.reset = true;
       this.redeem = null;
+      this.clear();
     },
-    getFormula(value) {
-      let total = this.init.payment.subtotal.toFixed(2);
-      if (value.includes('%')) {
-        let result = toFixed(total * (parseFloat(value.replace(/D+/, "")) / 100), 2);
-        this.formula = `${total} * ${value} = ${result}`;
-      }
+    clear() {
+      this.discount = this.unit === "$" ? "0.00" : "0";
     },
-    input(num) {
+    input(val) {
       let value = this.discount;
-      if (value.includes('%')) {
-        value = ~~(value.replace(/\D+/, "") + num) + " %";
-        this.getFormula(value);
-        this.discount = value;
+      if (this.unit === "%") {
+        this.discount = this.reset ? val : value + val;
       } else {
-        value = Math.round(parseFloat(value.replace(/\D+/, "")) * 100);
-        value = (value ? value + num : num) / 100;
-        this.discount = "$ " + value.toFixed(2);
+        if (thi.reset) {
+          this.discount = (value / 100).toFixed(2);
+        } else {
+          value = (value * 100).toFixed(0) + val;
+          this.discount = (value / 100).toFixed(2);
+        }
       }
+      this.reset = false;
     },
     del() {
       this.redeem = null;
       let value = this.discount;
-      if (value.includes('%')) {
-        value = ~~String(value.replace(/\D+/, "")).slice(0, -1) + " %";
-        this.getFormula(value);
-        this.discount = value;
+
+      if (this.unit === "%") {
+        if (value.length > 1) {
+          this.discount = value.slice(0, -1);
+        } else {
+          this.discount = "0";
+          this.reset = true;
+        }
       } else {
-        value = value.replace(/\D+/, "").slice(0, -1) / 10;
-        this.discount = "$ " + value.toFixed(2);
+        this.discount = (value.slice(0, -1) / 10).toFixed(2);
       }
     },
     enter() {
-      let discount = this.discount.includes("%") ?
-        (this.discount.replace(/\D+/, "") / 100 * this.init.payment.subtotal).toFixed(2) :
-        parseFloat(this.discount.replace(/\D+/, ""));
+      let discount = this.discount;
+
+      if (this.unit === "%") {
+        discount = toFixed(this.init.payment.subtotal * this.discount / 100, 2);
+      }
+
       this.init.resolve({ discount, coupon: this.redeem });
     },
     applyCoupon() {
-      this.discount = this.redeem.discount;
-      this.input('');
+      this.discount = this.redeem.discount.replace(/\D/g, "");
+      this.input("");
+
+      this.unit = this.redeem.discount.indexOf("%") !== -1 ? "%" : "$";
     }
   }
-}
+};
 </script>
 
 <style scoped>
-.inner {
-  padding: 0 2px 0 4px;
-}
-
-.display {
-  height: 160px;
-  text-align: center;
-}
-
-.wrap {
-  display: flex;
-  width: 453px;
-}
-
-section.numpad {
-  flex: 3;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-}
-
-span.due {
-  font-size: 2em;
-  font-weight: bold;
-  color: #444;
-}
-
-.total {
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-}
-
-span.formula {
-  color: #607D8B;
-  height: 25px;
-}
-
-.data {
-  flex: 1;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
-  margin: 2px;
-  display: flex;
-  flex-direction: column;
-  padding: 8px 12px;
-  border-radius: 2px;
-}
-
-.data.active {
-  color: #fff;
-  background: #5C6BC0;
-  text-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
-  font-weight: bold;
-}
-
-.data .text {
-  text-align: left;
-  margin-bottom: 20px;
-}
-
-.data .value {
-  text-align: right;
-}
-
 .couponWrap {
   margin-left: 20px;
 }
@@ -233,7 +187,7 @@ span.formula {
   bottom: 20px;
   left: -11px;
   background: rgb(55, 57, 59);
-  content: ' ';
+  content: " ";
   width: 20px;
   height: 20px;
   border-radius: 50%;
@@ -245,7 +199,7 @@ span.formula {
   bottom: 20px;
   right: -11px;
   background: rgb(55, 57, 59);
-  content: ' ';
+  content: " ";
   width: 20px;
   height: 20px;
   border-radius: 50%;
@@ -281,7 +235,7 @@ span.formula {
   font-size: 25px;
   color: aliceblue;
   text-shadow: 0 1px 1px #333;
-  font-family: 'Agency FB';
+  font-family: "Agency FB";
 }
 
 .change {
@@ -291,7 +245,7 @@ span.formula {
   justify-content: center;
   align-items: center;
   font-size: 28px;
-  font-family: 'Agency FB';
+  font-family: "Agency FB";
   font-weight: bold;
   color: aliceblue;
 }
@@ -305,14 +259,14 @@ span.formula {
   text-shadow: 0 1px 1px #0a6f66;
 }
 
-input:checked+label:after {
-  content: '\f0c4';
+input:checked + label:after {
+  content: "\f0c4";
   position: absolute;
   left: 18px;
   bottom: -13px;
   font-size: 28px;
   font-family: fontAwesome;
-  color: #E0F2F1;
+  color: #e0f2f1;
   text-shadow: 0 1px 1px #333;
   z-index: 2;
   animation: cut 0.3s linear;
@@ -321,11 +275,11 @@ input:checked+label:after {
 @keyframes cut {
   from {
     opacity: 0;
-    transform: translateX(-10px)
+    transform: translateX(-10px);
   }
   to {
     opacity: 1;
-    transform: translateX(0)
+    transform: translateX(0);
   }
 }
 </style>

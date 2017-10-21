@@ -1,6 +1,6 @@
 <template>
   <div class="popupMask center dark" @click.self="init.reject">
-    <div class="window">
+    <div class="window inputter">
       <header class="title">
         <span>{{$t('text.adjustTip')}}</span>
         <i class="fa fa-times" @click="init.reject"></i>
@@ -98,12 +98,12 @@ export default {
       }
     },
     enter() {
-      let tip;
+      let tip = this.tip;
+
       if (this.unit === "%") {
         tip = toFixed(this.init.payment.subtotal * this.tip / 100, 2);
-      } else {
-        tip = this.tip;
       }
+
       this.init.resolve({ tip });
     }
   },
@@ -125,151 +125,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.inner {
-  padding: 0 2px 0 4px;
-}
-
-.display {
-  height: 160px;
-  text-align: center;
-}
-
-.wrap {
-  display: flex;
-  width: 453px;
-}
-
-section.numpad {
-  flex: 3;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-}
-
-h5 {
-  padding: 20px 0 0;
-  font-size: 16px;
-  color: #545050;
-}
-
-.symbol {
-  color: #009688;
-  font-size: 28px;
-  margin-right: 3px;
-}
-
-.due {
-  font-size: 38px;
-  font-weight: bold;
-  color: #444;
-  font-family: "Agency FB";
-  position: relative;
-}
-
-i.tooltip {
-  color: #ff5722;
-  font-size: 18px;
-  position: absolute;
-  right: -35px;
-  top: 15px;
-  cursor: help;
-}
-
-i.tooltip:hover .content {
-  opacity: 1;
-}
-
-span.content {
-  position: absolute;
-  opacity: 0;
-  font-family: "Yuanti-SC";
-  background: #fff8e1;
-  color: #ff9800;
-  box-shadow: 1px 1px 3px #cfd8dc;
-  border-radius: 3px;
-  font-size: 14px;
-  padding: 10px;
-  min-width: 170px;
-  left: 50%;
-  top: 25px;
-  transform: translate(-50%, 0);
-  transition: opacity 250ms ease-out;
-}
-
-.entry {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 10px 10px 10px 5px;
-  height: 45px;
-  background: #fff;
-  margin: 4px 3px 0 0;
-  border-radius: 4px;
-  box-shadow: 0 1px 1px #b5aaaa;
-}
-
-.entry input {
-  border: none;
-  outline: none;
-  background: none;
-  flex: 1;
-  font-size: 46px;
-  font-family: "Agency FB";
-  font-weight: bold;
-  color: #3c3c3c;
-  text-align: right;
-}
-
-.entry .unit {
-  padding: 8px 0;
-  width: 55px;
-  background: #607d8b;
-  color: #fff;
-  border-radius: 4px;
-  font-size: 34px;
-  font-family: "Agency FB";
-  text-shadow: 0 1px 1px #333;
-  box-shadow: 0px 2px 1px #123344;
-  cursor: pointer;
-}
-
-.total {
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-}
-
-span.formula {
-  color: #607d8b;
-  height: 25px;
-}
-
-.data {
-  flex: 1;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
-  margin: 2px;
-  display: flex;
-  flex-direction: column;
-  padding: 8px 12px;
-  border-radius: 2px;
-  background: #fff;
-}
-
-.data.active {
-  color: #fff;
-  background: #5c6bc0;
-  text-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
-  font-weight: bold;
-}
-
-.data .text {
-  text-align: left;
-  margin-bottom: 20px;
-}
-
-.data .value {
-  text-align: right;
-}
-</style>

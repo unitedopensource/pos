@@ -87,7 +87,7 @@
                                 </div>
                                 <div class="input">
                                     <span class="text">{{$t('text.changeDue')}}</span>
-                                    <span class="value">{{cashTender}}</span>
+                                    <span class="value">{{cashTender | decimal}}</span>
                                 </div>
                                 <div class="input" @click="setAnchor($event)" data-anchor="evenly" data-format="number">
                                     <span class="text">{{$t('text.separate')}}
@@ -207,17 +207,18 @@ import dialoger from "../common/dialoger";
 import ticket from "../common/ticket";
 import creditCard from "./creditCard";
 import discount from "./discount";
+import thirdParty from "./mark";
 import tips from "./tips";
 export default {
   props: ["init"],
-  components: { dialoger, tips, discount, ticket, creditCard },
+  components: { dialoger, tips, discount, ticket, creditCard, thirdParty },
   computed: {
     isNewTicket() {
       return this.app.mode === "create" && this.$route.name === "Menu";
     },
     cashTender() {
       let change = toFixed(this.paid - this.payment.remain, 2);
-      return Math.max(0, change).toFixed(2);
+      return Math.max(0, change);
     },
     ...mapGetters(["op", "app", "ticket", "device", "customer", "station"])
   },
@@ -320,9 +321,9 @@ export default {
     },
     paySplit() {
       this.payInFull = false;
-      this.switchInvoice(
-        this.order.splitPayment.findIndex(payment => !payment.settled)
-      );
+      let index = this.order.splitPayment.findIndex(split => split.remain > 0);
+
+      this.switchInvoice(index);
       this.initialized();
     },
     payWhole() {
@@ -472,6 +473,7 @@ export default {
       switch (type) {
         case "CASH":
           this.paid = "0.00";
+          this.tip = "0.00";
           break;
         case "CREDIT":
         case "THIRD":
@@ -527,14 +529,12 @@ export default {
     chargeCash() {
       return new Promise(resolve => {
         let paid = Math.min(this.paid, this.payment.remain);
-        let change = Math.max(0, toFixed(this.paid - this.payment.remain, 2));
-
         this.payment.paid = toFixed(this.payment.paid + paid, 2);
         this.payment.type = "CASH";
 
         this.recalculatePayment();
         this.op.cashCtrl === "enable" && Printer.openCashDrawer();
-        resolve({ type: "CASH", paid, change });
+        resolve("CASH");
       });
     },
     chargeCreditCard(card) {
@@ -543,7 +543,32 @@ export default {
         this.component = "creditCard";
       });
     },
-    chargeThirdParty() {},
+    chargeThirdParty() {
+      return new Promise(charge => {
+        if (this.thirdPartyType) {
+          let paid = Math.min(this.paid, this.payment.remain);
+          this.payment.paid = toFixed(this.payment.paid + paid, 2);
+          this.payment.type = this.thirdPartyType;
+          this.recalculatePayment();
+          charge(this.thirdPartyType);
+        } else {
+          new Promise((resolve, reject) => {
+            this.componentData = { resolve, reject, callback: true };
+            this.component = "thirdParty";
+          })
+            .then(type => {
+              let paid = Math.min(this.paid, this.payment.remain);
+              this.payment.paid = toFixed(this.payment.paid + paid, 2);
+              this.payment.type = type;
+              this.recalculatePayment();
+              charge(type);
+            })
+            .catch(() => {
+              this.component = null;
+            });
+        }
+      });
+    },
     chargeGiftCard() {},
     checkCashDrawer() {
       return new Promise((resolve, reject) => {
@@ -592,26 +617,24 @@ export default {
         resolve(card);
       });
     },
-    tenderCash(detail) {
+    tenderCash(type) {
       return new Promise(resolve => {
-        let { paid, change } = detail;
-
         this.poleDisplay(
-          ["Paid Cash", paid.toFixed(2)],
-          ["Change Due:", change.toFixed(2)]
+          ["Paid Cash", this.paid.toFixed(2)],
+          ["Change Due:", this.cashTender.toFixed(2)]
         );
 
-        if (change > 0) {
+        if (this.cashTender > 0) {
           this.$dialog({
-            title: ["dialog.cashChange", change.toFixed(2)],
-            msg: ["dialog.cashChangeTip", paid.toFixed(2)],
+            title: ["dialog.cashChange", this.cashTender.toFixed(2)],
+            msg: ["dialog.cashChangeTip", this.paid.toFixed(2)],
             buttons: [{ text: "button.confirm", fn: "resolve" }]
           }).then(() => {
             this.$q();
-            resolve(detail);
+            resolve(type);
           });
         } else {
-          resolve(detail);
+          resolve(type);
         }
       });
     },
@@ -698,12 +721,11 @@ export default {
           : resolve();
       });
     },
-    saveLogs(detail) {
+    saveLogs(type) {
       return new Promise(resolve => {
         let activity;
         let _id = ObjectId();
         let order = this.order._id;
-        let { type, paid, change, cardBin, transactionID } = detail;
         let cashDrawer =
           this.op.cashCtrl === "staffBank"
             ? this.op.name
@@ -715,8 +737,8 @@ export default {
               _id,
               order,
               type: "CASHFLOW",
-              inflow: parseFloat(paid),
-              outflow: parseFloat(change),
+              inflow: parseFloat(this.paid),
+              outflow: parseFloat(this.cashTender),
               time: +new Date(),
               ticket: this.order.ticket,
               operator: this.op.name
@@ -727,8 +749,8 @@ export default {
               _id,
               order,
               type: "GIFTFLOW",
-              inflow: parseFloat(paid),
-              outflow: parseFloat(change),
+              inflow: parseFloat(this.paid),
+              outflow: 0,
               time: +new Date(),
               ticket: this.order.ticket,
               operator: this.op.name
@@ -739,8 +761,8 @@ export default {
               _id,
               order,
               type: "OTHERFLOW",
-              inflow: parseFloat(paid),
-              outflow: parseFloat(change),
+              inflow: parseFloat(this.paid),
+              outflow: 0,
               time: +new Date(),
               ticket: this.order.ticket,
               operator: this.op.name
@@ -748,15 +770,20 @@ export default {
         }
         this.$socket.emit("[CASHFLOW] ACTIVITY", { cashDrawer, activity });
 
+        let actual =
+          type === "CASH" ? toFixed(this.paid - this.cashTender, 2) : this.paid;
+
+        let balance = Math.max(0, this.payment.remain);
+
         let log = {
-          _id: transactionID,
+          _id: null,
           type,
           paid: parseFloat(this.paid),
-          change,
-          actual: toFixed(this.paid - change, 2),
-          balance: this.payment.remain,
+          change: type === "CASH" ? this.cashTender : 0,
+          actual,
+          balance,
           tip: parseFloat(this.tip),
-          number: cardBin
+          number: null
         };
 
         this.payment.log.push(log);
@@ -764,62 +791,98 @@ export default {
       });
     },
     postToDatabase() {
-      console.log("trigger");
       return new Promise((resolve, reject) => {
-        if (this.payInFull) {
-          let settled = this.isTicketSettled();
-          if (this.isNewTicket) {
-            let customer = JSON.parse(JSON.stringify(this.customer));
-            delete customer.extra;
+        let settled = this.isTicketSettled();
 
-            Object.assign(this.order, {
-              payment: this.payment,
-              customer,
-              type: this.ticket.type,
-              station: this.station.alies,
-              cashier: this.op.name,
-              source: this.op.role === "ThirdParty" ? this.op.name : "POS",
-              modify: 0,
-              status: 1,
-              date: today(),
-              time: +new Date(),
-              settled,
-              print: true
-            });
+        if (this.isNewTicket) {
+          let customer = JSON.parse(JSON.stringify(this.customer));
+          delete customer.extra;
 
-            this.$socket.emit("[SAVE] INVOICE", this.order, false, content => {
-              this.order = content;
-              resolve();
-            });
-          } else {
-            Object.assign(this.order, {
-              payment: this.payment,
-              cashier: this.op.name,
-              settled,
-              print: true
-            });
-            console.log(this.order.payment);
-            this.$socket.emit("[UPDATE] INVOICE", this.order, false);
+          Object.assign(this.order, {
+            payment: this.payInFull ? this.payment : this.combineSplitPayment(),
+            customer,
+            type: this.ticket.type,
+            station: this.station.alies,
+            cashier: this.op.name,
+            source: this.op.role === "ThirdParty" ? this.op.name : "POS",
+            modify: 0,
+            status: 1,
+            date: today(),
+            time: +new Date(),
+            settled,
+            print: true
+          });
+
+          this.$socket.emit("[SAVE] INVOICE", this.order, false, content => {
+            this.order = content;
             resolve();
-          }
+          });
         } else {
-          //split combine
+          Object.assign(this.order, {
+            payment: this.payInFull ? this.payment : this.combineSplitPayment(),
+            cashier: this.op.name,
+            settled,
+            print: true
+          });
+          this.$socket.emit("[UPDATE] INVOICE", this.order, false);
+          resolve();
         }
       });
     },
-    saveSplitPayment() {},
     isTicketSettled() {
-      return this.payment.remain === 0;
+      if (this.payInFull) {
+        return this.payment.remain === 0;
+      } else {
+        return this.order.splitPayment.every(ticket => ticket.remain === 0);
+      }
+    },
+    combineSplitPayment() {
+      this.order.splitPayment[this.current] = JSON.parse(
+        JSON.stringify(this.payment)
+      );
+      let payment = {
+        subtotal: 0,
+        tax: 0,
+        total: 0,
+        due: 0,
+        balance: 0,
+        paid: 0,
+        change: 0,
+        gratuity: 0,
+        tip: 0,
+        discount: 0,
+        delivery: 0,
+        surcharge: 0,
+        remain: 0,
+        log: [],
+        type: "MULTIPLE",
+        settled: true
+      };
+      this.order.splitPayment.forEach(split => {
+        Object.keys(split).forEach(key => {
+          switch (typeof split[key]) {
+            case "number":
+              payment[key] = toFixed(payment[key] + split[key], 2);
+              break;
+            case "object":
+              if (Array.isArray(split[key])) {
+                payment[key].push(...split[key]);
+              }
+              break;
+            case "boolean":
+              !split[key] && (payment[key] = false);
+              break;
+          }
+        });
+      });
+      delete payment.sort;
+      return payment;
     },
     checkBalance() {
-      //check split order as well
-      //if pay in full && ticket is new
-      //print set target order
       if (this.payInFull) {
         if (this.payment.remain > 0) {
           this.$q();
           this.setPaymentType("CASH");
-          this.tip = "0.00";
         } else {
           if (this.$route.name === "Menu" && this.app.mode === "create") {
             this.$socket.emit("[UPDATE] INVOICE", this.order, true);
@@ -830,18 +893,16 @@ export default {
           }
         }
       } else {
+        let index = this.order.splitPayment.findIndex(
+          split => split.remain > 0
+        );
+        index === -1 ? this.settled() : this.switchInvoice(index);
       }
     },
     switchInvoice(index) {
       this.current = index;
-      this.payment = this.order.splitPayment[this.current];
-      this.payment.remain = Math.max(
-        0,
-        toFixed(this.payment.balance - this.payment.paid, 2)
-      );
-      this.paymentType = "CASH";
-      this.paid = "0.00";
-
+      this.payment = this.order.splitPayment[index];
+      this.setPaymentType("CASH");
       this.getQuickInput(this.payment.remain);
     },
     input(val) {
@@ -1019,6 +1080,12 @@ export default {
       poleDisplay.write("\f");
       poleDisplay.write(line(line1, line2));
     },
+    settled() {
+      this.combineSplitPayment();
+      this.order.settled = true;
+      this.$socket.emit("[UPDATE] INVOICE", this.order, false);
+      this.exitPayment();
+    },
     exit() {
       this.init.reject();
     },
@@ -1034,10 +1101,9 @@ export default {
           }
           break;
         case "History":
-          break;
         case "Table":
-          break;
         case "PickupList":
+          this.exit();
           break;
         default:
           this.exit();
@@ -1050,6 +1116,8 @@ export default {
       this.payment.tip = toFixed(n, 2);
       this.recalculatePayment();
       n === "0.00" && (this.paid = this.payment.remain.toFixed(2));
+      this.paymentType !== "CASH" &&
+        (this.paid = this.payment.remain.toFixed(2));
     }
   }
 };

@@ -177,17 +177,17 @@ const mutations = {
           })
         })
       } else {
-        state.choiceSetTarget.price = toFixed(--state.choiceSetTarget.qty * state.choiceSetTarget.single,2).toFixed(2)
+        state.choiceSetTarget.price = toFixed(--state.choiceSetTarget.qty * state.choiceSetTarget.single, 2).toFixed(2)
       }
     } else if (delChoiceSetFirst) {
       let set = state.item.choiceSet.last();
-      set && (set.qty === 1 ? state.item.choiceSet.pop() : set.price = toFixed(--set.qty * set.single,2).toFixed(2));
+      set && (set.qty === 1 ? state.item.choiceSet.pop() : set.price = toFixed(--set.qty * set.single, 2).toFixed(2));
     } else {
       let currentActionTime = +new Date();
       let diff = currentActionTime - state.lastActionTime;
       if (!state.item) state.item = state.order.content.last();
       if (state.item.qty !== 1 && diff > 250) {
-        state.item.total = toFixed(--state.item.qty * state.item.single,2).toFixed(2);
+        state.item.total = toFixed(--state.item.qty * state.item.single, 2).toFixed(2);
         state.order.content.splice();
       } else {
         state.order.content.remove(state.item);
@@ -264,11 +264,11 @@ const mutations = {
       state.order.content.forEach(item => item.sort = 0)
     }
 
-    let surcharge = tip + gratuity;
-    let total = subtotal + tax + delivery;
-    let due = total - discount;
-    let balance = due + surcharge;
-    let remain = balance;
+    let surcharge = toFixed(tip + gratuity, 2);
+    let total = toFixed(subtotal + tax + delivery, 2);
+    let due = toFixed(total - discount, 2);
+    let balance = toFixed(due + surcharge, 2);
+    let remain = toFixed(balance, 2);
 
     state.order.payment = { subtotal, tax, delivery, discount, tip, gratuity, surcharge, total, due, balance, paid: 0, remain, settled: false, log: [] }
   },

@@ -66,8 +66,7 @@ export default {
           break;
         case "reload":
           if (arg === 'order') {
-            this.$socket.emit("INQUIRY_TODAY_ORDER_LIST");
-            console.log('Order reloaded');
+            this.$socket.emit("[SYNC] ORDER_LIST");
           }
           break;
         case "debug":

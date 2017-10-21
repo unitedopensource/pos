@@ -1002,7 +1002,9 @@ export default {
         'createSubMenuGroup': '创建一个子菜单组',
         'reportBeforeBatch': '过账前是否打印每笔交易信息',
         'tipFor':'小费基于',
-        'howTipCalculate':'小费的计算是在税后折扣前',
+        'discountFor':'折扣基于',
+        'howTipCalculate':'小费的计算基于小计',
+        'howDiscountCalculate':'折扣是按小计进行打折',
         'table': {
             'actionsOnDone':'设定完成订单之后的操作',
             'passwordRequire': '创建座位之前需要输入密码',

@@ -1005,7 +1005,9 @@ export default {
         'createSubMenuGroup': 'Create a sub menu group',
         'reportBeforeBatch': 'Print detail report ',
         'tipFor': 'Tips Based On',
-        'howTipCalculate': 'Tip is after tax and before discount',
+        'discountFor':'Discount Base On',
+        'howTipCalculate': 'Tip is before tax and discount',
+        'howDiscountCalculate':'Discount is before tax',
         'table': {
             'actionsOnDone': 'Actions after tapping Done',
             'passwordRequire': 'Password input required before create a new table.',
