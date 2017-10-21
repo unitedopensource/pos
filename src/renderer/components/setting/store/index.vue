@@ -58,7 +58,7 @@
             </article>
         </section>
         <section class="card">
-            <header>{{$t('setting.receipt')}}
+            <header>{{$t('setting.settledReceipt')}}
                 <span class="tip"></span>
             </header>
             <article>
@@ -122,5 +122,3 @@ export default {
   }
 };
 </script>
-
-<style></style>

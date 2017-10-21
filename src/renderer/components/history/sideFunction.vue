@@ -52,7 +52,7 @@
 import { mapGetters, mapActions } from 'vuex'
 import paymentMark from '../payment/mark'
 import Dialoger from '../common/dialoger'
-import Payment from '../payment/payment'
+import Payment from '../payment/index'
 import Report from '../report/report'
 import statistic from './statistic'
 import Calendar from './calendar'

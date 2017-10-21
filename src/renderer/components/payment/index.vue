@@ -180,14 +180,28 @@
                                     <span class="text">{{$t('text.tip')}}</span>
                                     <span class="value">{{tip}}</span>
                                 </div>
-                                <div class="input">
-
+                                <div class="input" @click="setAnchor($event)" data-anchor="giftCard" data-format="number" v-if="typeof giftCard === 'string'">
+                                    <span class="text">{{$t('card.number')}}</span>
+                                    <input v-model="giftCard" type="text" v-mask="'#### #### #### ####'">
+                                </div>
+                                <div class="input" v-else>
+                                  <span class="text">{{$t('card.number')}}</span>
+                                    <input v-model="giftCard.number" v-mask="'#### #### #### ####'">
+                                </div>
+                                <div class="input" v-if="typeof giftCard === 'string'">
+                                    <span class="text">{{$t('text.balance')}}</span>
+                                    <span class="value">0.00</span>
+                                </div>
+                                <div class="input" v-else>
+                                    <span class="text">{{$t('text.balance')}}</span>
+                                    <span class="value">$ {{giftCard.balance | decimal}}</span>
                                 </div>
                             </div>
                             <aside class="numpad">
                                 <div @click="del">&#8592;</div>
                                 <div @click="clear">C</div>
-                                <div @click="charge">&#8626;</div>
+                                <div @click="queryGiftCard" v-if="anchor === 'giftCard' && typeof giftCard === 'string'" :class="{disabled:giftCard.length !== 19}"><i class="fa fa-search"></i></div>
+                                <div @click="charge" v-else>&#8626;</div>
                             </aside>
                         </template>
                     </section>
@@ -204,6 +218,7 @@
 <script>
 import { mapGetters, mapActions } from "vuex";
 import dialoger from "../common/dialoger";
+import capture from "../giftCard/capture";
 import ticket from "../common/ticket";
 import creditCard from "./creditCard";
 import discount from "./discount";
@@ -211,7 +226,15 @@ import thirdParty from "./mark";
 import tips from "./tips";
 export default {
   props: ["init"],
-  components: { dialoger, tips, discount, ticket, creditCard, thirdParty },
+  components: {
+    tips,
+    ticket,
+    capture,
+    dialoger,
+    discount,
+    creditCard,
+    thirdParty
+  },
   computed: {
     isNewTicket() {
       return this.app.mode === "create" && this.$route.name === "Menu";
@@ -244,6 +267,8 @@ export default {
       quickInput: [],
       creditCard: "",
       expiration: "",
+      giftCard: "",
+      anchor: "paid",
       evenly: 1,
       current: 0,
       reset: true,
@@ -329,10 +354,17 @@ export default {
     },
     paySplit() {
       this.payInFull = false;
-      let index = this.order.splitPayment.findIndex(split => split.remain > 0);
+      let index = this.order.splitPayment.findIndex(
+        split => toFixed(split.remain.toFixed(2), 2) > 0
+      );
 
-      this.switchInvoice(index);
-      this.initialized();
+      if (index === -1) {
+        //Fuck Javascript Floating issue
+        this.handleFloatingIssue();
+      } else {
+        this.switchInvoice(index);
+        this.initialized();
+      }
     },
     payWhole() {
       let paid = this.payment.log
@@ -387,6 +419,7 @@ export default {
       let dom = document.querySelector(".input.active");
       dom && dom.classList.remove("active");
       if (target instanceof Event) {
+        this.anchor = target.currentTarget.dataset.anchor;
         target.currentTarget.classList.add("active");
         target.currentTarget.dataset.anchor === "tip"
           ? this.getQuickTip(this.payment.remain)
@@ -457,10 +490,11 @@ export default {
             .catch(this.payFailed);
           break;
         case "GIFT":
-          this.checkOverPay()
-            .then(this.swipeGiftCard)
+          this.swipeGiftCard()
+            .then(this.checkGiftCard)
+            .then(this.checkOverPay)
             .then(this.chargeGiftCard)
-            .then(this.saveLogs)
+            .then(this.updateGiftCard)
             .then(this.postToDatabase)
             .then(this.askReceipt)
             .then(this.checkBalance)
@@ -489,8 +523,15 @@ export default {
           this.tip = this.payment.tip.toFixed(2);
           break;
         case "GIFT":
+          this.giftCard = "";
           this.paid = this.payment.remain.toFixed(2);
           this.tip = this.payment.tip.toFixed(2);
+
+          this.swipeGiftCard()
+            .then(this.checkGiftCard)
+            .catch(() => {
+              this.$q();
+            });
           break;
       }
 
@@ -529,7 +570,10 @@ export default {
             .catch(() => {
               this.$q();
             });
-        } else {
+        } else if(true) {
+          //gift card issue
+          //*bug
+        }else{
           resolve();
         }
       });
@@ -577,7 +621,59 @@ export default {
         }
       });
     },
-    chargeGiftCard() {},
+    chargeGiftCard() {
+      return new Promise((resolve, reject) => {
+        let paid = Math.min(this.paid, this.payment.remain);
+        this.payment.paid = toFixed(this.payment.paid + paid, 2);
+        this.payment.type = "GIFT";
+
+        this.recalculatePayment();
+        resolve("GIFT");
+      });
+    },
+    swipeGiftCard(number) {
+      return new Promise((resolve, reject) => {
+        if (typeof this.giftCard === "string") {
+          this.componentData = number
+            ? { resolve, reject, number }
+            : { resolve, reject };
+          this.component = "capture";
+        } else {
+          resolve({
+            number: this.giftCard.number,
+            result: this.giftCard
+          });
+        }
+      });
+    },
+    queryGiftCard() {
+      this.swipeGiftCard(this.giftCard)
+        .then(this.checkGiftCard)
+        .catch(() => {
+          this.$q();
+        });
+    },
+    checkGiftCard(card) {
+      this.$q();
+
+      return new Promise((resolve, reject) => {
+        let { number, result } = card;
+
+        if (result) {
+          this.giftCard = result;
+          this.setAnchor("paid");
+          this.$forceUpdate();
+          resolve();
+        } else {
+          this.$dialog({
+            type: "error",
+            title: "title.giftCardActivation",
+            msg: ["title.giftCardNotActivated", number],
+            buttons: [{ text: "button.confirm", fn: "resolve" }]
+          }).then(reject);
+        }
+      });
+    },
     checkCashDrawer() {
       return new Promise((resolve, reject) => {
         let error = {
@@ -703,6 +799,51 @@ export default {
         });
       });
     },
+    updateGiftCard() {
+      let activity = {
+        _id: Object(),
+        order: this.order._id,
+        type: "GIFTFLOW",
+        inflow: parseFloat(this.paid),
+        outflow: 0,
+        time: +new Date(),
+        ticket: this.order.ticket,
+        operator: this.op.name
+      };
+
+      let cashDrawer =
+        this.op.cashCtrl === "staffBank"
+          ? this.op.name
+          : this.station.cashDrawer.name;
+
+      this.$socket.emit("[CASHFLOW] ACTIVITY", { cashDrawer, activity });
+
+      let log = {
+        balance: toFixed(this.giftCard.balance - this.paid, 2),
+        change: -this.paid,
+        date: today(),
+        time: +new Date(),
+        type: "Purchase",
+        cashier: this.op.name,
+        number: this.giftCard.number.replace(/\D/g, ""),
+        order: {
+          _id: this.order._id,
+          number: this.order.number || this.ticket.number,
+          type: this.order.type || this.ticket.type,
+          time: +new Date()
+        }
+      };
+
+      this.$socket.emit("[GIFTCARD] ACTIVITY", log, _id => {
+        this.payment.log.push({
+          _id,
+          type: "GIFT",
+          paid: this.paid,
+          change: 0,
+          balance: this.cashTender
+        });
+      });
+    },
     askReceipt() {
       return new Promise(resolve => {
         this.store.noReceipt
@@ -745,18 +886,6 @@ export default {
               type: "CASHFLOW",
               inflow: parseFloat(this.paid),
               outflow: parseFloat(this.cashTender),
-              time: +new Date(),
-              ticket: this.order.ticket,
-              operator: this.op.name
-            };
-            break;
-          case "GIFT":
-            activity = {
-              _id,
-              order,
-              type: "GIFTFLOW",
-              inflow: parseFloat(this.paid),
-              outflow: 0,
               time: +new Date(),
               ticket: this.order.ticket,
               operator: this.op.name
@@ -887,10 +1016,15 @@ export default {
     checkBalance() {
       if (this.payInFull) {
         if (this.payment.remain > 0) {
+          this.poleDisplay("Thank You", [
+            "Due:",
+            this.payment.remain.toFixed(2)
+          ]);
           this.$q();
           this.setPaymentType("CASH");
         } else {
-          if (this.$route.name === "Menu" && this.app.mode === "create") {
+          this.poleDisplay("Thank You", "Please Come Again!");
+          if (this.isNewTicket) {
             this.$socket.emit("[UPDATE] INVOICE", this.order, true);
             Printer.setTarget("Order").print(this.order);
             this.exitPayment();
@@ -950,13 +1084,40 @@ export default {
         this.component = "discount";
       })
         .then(result => {
-          let { discount } = result;
+          let { discount, coupon } = result;
+
+          if (coupon) {
+            this.setOrder({ coupon });
+            Object.assign(this.order, { coupon });
+          } else {
+            this.setOrder({ coupon: undefined });
+            Object.assign(this.order, { coupon: undefined });
+          }
+
+          this.payment.discount = discount;
+          console.log(discount);
+          this.recalculatePayment();
+
+          this.poleDisplay(
+            ["Discount:", -discount.toFixed(2)],
+            ["Due:", this.payment.remain.toFixed(2)]
+          );
+
+          this.$q();
         })
         .catch(() => {
           this.$q();
         });
     },
-    save() {},
+    save() {
+      if (this.isNewTicket) {
+        this.setOrder(this.order);
+        this.exit();
+      } else {
+        Object.assign(this.order, { payment: this.payment });
+        this.$socket.emit("[SAVE] INVOICE", this.order);
+      }
+    },
     preview(index) {
       let ticket = JSON.parse(JSON.stringify(this.order));
       ticket.payment = ticket.splitPayment[index];
@@ -1068,7 +1229,7 @@ export default {
       let due = toFixed(total - discount, 2);
       let surcharge = toFixed(tip + gratuity, 2);
       let balance = toFixed(due + surcharge, 2);
-      let remain = toFixed(balance - paid, 2);
+      let remain = Math.max(0, toFixed(balance - paid, 2));
       let settled = remain === 0;
 
       this.payment = Object.assign({}, this.payment, {
@@ -1115,7 +1276,27 @@ export default {
           this.exit();
       }
     },
-    ...mapActions(["resetAll", "resetMenu"])
+    handleFloatingIssue() {
+      this.$dialog({
+        type: "question",
+        title: "dialog.splitTicketSettled",
+        msg: "dialog.splitTicketSettledTip",
+        buttons: [
+          { text: "button.cancel", fn: "reject" },
+          { text: "button.markAsPaid", fn: "resolve" }
+        ]
+      })
+        .then(() => {
+          let payment = this.combineSplitPayment();
+          Object.assign(this.order, payment);
+          this.$socket.emit("[UPDATE] INVOICE", this.order, false);
+          this.$exit();
+        })
+        .catch(() => {
+          this.$exit();
+        });
+    },
+    ...mapActions(["setOrder", "resetAll", "resetMenu"])
   },
   watch: {
     tip(n) {
@@ -1296,7 +1477,7 @@ nav {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  padding: 0 10px;
+  padding: 0 5px;
 }
 
 .due {
@@ -1361,7 +1542,7 @@ section.field {
   height: 83px;
   border-radius: 2px;
   margin-bottom: 6px;
-  color: #3c3c3c;
+  color: #4c4b4b;
   box-shadow: var(--shadow);
 }
 .input.active {
@@ -1379,13 +1560,15 @@ section.field {
   border: none;
   background: none;
   outline: none;
-  font-size: 22px;
+  font-size: 28px;
   text-align: right;
-  padding-right: 5px;
+  padding-right: 10px;
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  font-family: "Agency FB";
+  font-weight: bold;
   color: #3c3c3c;
 }
 .input.active input {
@@ -1409,7 +1592,9 @@ section.field {
   align-items: center;
   justify-content: flex-end;
   padding-right: 10px;
-  font-size: 22px;
+  font-size: 28px;
+  font-family: "Agency FB";
+  font-weight: bold;
 }
 
 aside.numpad {
@@ -1423,6 +1608,10 @@ section.quickInput {
   flex-wrap: wrap;
   height: 353px;
   width: 228px;
+}
+.disabled {
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 @keyframes preview {

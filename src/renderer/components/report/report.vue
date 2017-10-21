@@ -628,7 +628,7 @@ export default {
               switch (t.type) {
                 case "CASH":
                   cash++;
-                  cashAmount += parseFloat(t.paid - t.change);
+                  cashAmount += toFixed(t.paid - t.change, 2);
                   break;
                 case "CREDIT":
                   credit++;
@@ -815,11 +815,11 @@ export default {
             counter[item.usEN] = {
               text: item[this.language],
               count: 1,
-              amount: item.single * item.qty
+              amount: toFixed(item.single * item.qty,2)
             };
           } else {
-            counter[item.usEN].count++;
-            counter[item.usEN].amount += item.single * item.qty;
+            counter[item.usEN].count += item.qty;
+            counter[item.usEN].amount += toFixed(item.single * item.qty, 2);
           }
         });
       });
@@ -841,8 +841,8 @@ export default {
               amount: item.single * item.qty
             };
           } else {
-            counter[item.category].count++;
-            counter[item.category].amount += item.single * item.qty;
+            counter[item.category].count += item.qty;
+            counter[item.category].amount += toFixed(item.single * item.qty, 2);
           }
         });
       });

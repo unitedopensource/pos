@@ -148,7 +148,7 @@ export default {
       }
     },
     enter() {
-      let discount = this.discount;
+      let discount = parseFloat(this.discount);
 
       if (this.unit === "%") {
         discount = toFixed(this.init.payment.subtotal * this.discount / 100, 2);

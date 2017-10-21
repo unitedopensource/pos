@@ -91,8 +91,8 @@
                                     <div class="ctrl" v-if="advance">
                                         <div>
                                             <checkbox v-model="side.sub" label="text.subItem"></checkbox>
-                                            <checkbox v-model="side.overWrite" label="text.overWrite"></checkbox>
-                                            <checkbox v-model="side.skip" label="text.skip"></checkbox>
+                                            <checkbox v-model="side.overWrite" label="text.replaceName"></checkbox>
+                                            <checkbox v-model="side.skip" label="text.ignore"></checkbox>
                                         </div>
                                         <div class="btn" @click="configSubMenu(side,index)">
                                             <i class="fa fa-th-large"></i>

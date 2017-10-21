@@ -447,7 +447,9 @@ export default {
         'creditCardLengthIncorrect':'信用卡号码长度不正确',
         'expirationDateIncorrect':'信用卡日期格式不正确',
         'assignPrinter':'分配打印机',
-        'assignPrinterToAllItems':'您是否将 {i} 打印机应用于所有的物品之上？'
+        'assignPrinterToAllItems':'您是否将 {i} 打印机应用于所有的物品之上？',
+        'splitTicketSettled':'所有分单均已结账',
+        'splitTicketSettledTip':'您想要将此订单设置成已付吗？'
     },
     terminal: {
         'initial': '正在初始化 {i}...',
@@ -650,7 +652,7 @@ export default {
         'giftCard': '礼物卡',
         'paid': '支付',
         'changeDue': '找零',
-        'balance': '尾款',
+        'balance': '余额',
         'separate': '人均',
         'autoComplete': '自动完成',
         'printer': '打印机',
@@ -724,7 +726,7 @@ export default {
         'priceExtra': '加价',
         'template': '模板',
         'subItem': '子菜项',
-        'overWrite': '替换菜名',
+        'replaceName': '替换菜名',
         'addSide': '添加副菜',
         'printItemName': '改变物品名字',
         'invalidValue': '{i} 的格式不正确',
@@ -819,7 +821,8 @@ export default {
         'wage':'工资(小时)',
         'calcTips':'小费为: $ {i}',
         'fuelSurcharge':'燃油附加费',
-        'noReceipt':'无收据模式'
+        'noReceipt':'不打印收据',
+        'ignore':'忽略'
     },
     nav: {
         'store': '店面',
@@ -971,7 +974,8 @@ export default {
         'tipsSuggestion': '小费建议',
         'sortPriority': '按优先值',
         'employeeCard': '员工卡',
-        'employeeCardRegistration': '注册员工卡'
+        'employeeCardRegistration': '注册员工卡',
+        'settledReceipt':'结账收据'
     },
     reservation: {
         'create': '创建预约',
@@ -1010,7 +1014,7 @@ export default {
         'howTipCalculate':'小费的计算基于小计',
         'howDiscountCalculate':'折扣是按小计进行打折',
         'lockWhenCompleteOrder':'完成订单之后锁定界面',
-        'doNotAskReceiptAfterSettle':'结账之后不打印收据',
+        'doNotAskReceiptAfterSettle':'结账之后不弹出收据打印确认框',
         'table': {
             'actionsOnDone':'设定完成订单之后的操作',
             'passwordRequire': '创建座位之前需要输入密码',

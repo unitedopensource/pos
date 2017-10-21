@@ -49,7 +49,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import ticket from '../common/ticket'
-import payment from '../payment/payment'
+import payment from '../payment/index'
 export default {
     props: ['init'],
     components: { ticket, payment },

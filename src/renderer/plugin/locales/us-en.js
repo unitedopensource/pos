@@ -484,7 +484,9 @@ export default {
         'creditCardLengthIncorrect': 'Credit card length incorrect',
         'expirationDateIncorrect': 'Credit card expiration date incorrect',
         'assignPrinter':'Assign Printer',
-        'assignPrinterToAllItems':'Are you wish to assign {i} printer to all items?'
+        'assignPrinterToAllItems':'Are you wish to assign {i} printer to all items?',
+        'splitTicketSettled':'All Split Ticket Are Settled',
+        'splitTicketSettledTip':'Are you wish to mark this ticket as paid?'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',
@@ -725,7 +727,7 @@ export default {
         'priceExtra': 'Extra',
         'template': 'Template',
         'subItem': 'Subitem',
-        'overWrite': 'Overwrite',
+        'replaceName': 'Replace',
         'addSide': 'Add Side',
         'printItemName': 'Change Item Name',
         'invalidValue': '{i} format incorrect',
@@ -821,7 +823,8 @@ export default {
         'wage': 'Wage(Hour)',
         'calcTips': 'Current Tips: $ {i}',
         'fuelSurcharge':'Fuel Surcharge',
-        'noReceipt':'No Receipt'
+        'noReceipt':'No Receipt',
+        'ignore':'Ignore'
     },
     nav: {
         'store': 'Store',
@@ -973,7 +976,8 @@ export default {
         'tipsSuggestion': 'Tips Suggestion',
         'sortPriority': 'Prioritize',
         'employeeCard': 'Employee Card',
-        'employeeCardRegistration': 'Register employee card'
+        'employeeCardRegistration': 'Register employee card',
+        'settledReceipt':'Settle Payment Receipt'
     },
     reservation: {
         'create': 'Create Reservation',
@@ -1013,7 +1017,7 @@ export default {
         'howTipCalculate': 'Tip is before tax and discount',
         'howDiscountCalculate':'Discount is before tax',
         'lockWhenCompleteOrder':'Lock screen when complete order',
-        'doNotAskReceiptAfterSettle':'Do not ask for receipt after each settle',
+        'doNotAskReceiptAfterSettle':'Do not prompt "Print Receipt" dialog',
         'table': {
             'actionsOnDone': 'Actions after tapping Done',
             'passwordRequire': 'Password input required before create a new table.',

@@ -47,7 +47,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import dialoger from '../common/dialoger'
-import payment from '../payment/payment'
+import payment from '../payment/index'
 import unlock from '../common/unlock'
 import split from '../menu/split'
 export default {
