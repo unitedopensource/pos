@@ -220,7 +220,15 @@ export default {
       let change = toFixed(this.paid - this.payment.remain, 2);
       return Math.max(0, change);
     },
-    ...mapGetters(["op", "app", "ticket", "device", "customer", "station"])
+    ...mapGetters([
+      "op",
+      "app",
+      "store",
+      "ticket",
+      "device",
+      "customer",
+      "station"
+    ])
   },
   data() {
     return {
@@ -697,10 +705,9 @@ export default {
     },
     askReceipt() {
       return new Promise(resolve => {
-        let alwayAskReceipt = true;
-
-        alwayAskReceipt
-          ? this.$dialog({
+        this.store.noReceipt
+          ? resolve()
+          : this.$dialog({
               type: "question",
               title: "dialog.printReceiptConfirm",
               msg: "dialog.printReceiptConfirmTip",
@@ -717,8 +724,7 @@ export default {
               .catch(() => {
                 resolve();
                 this.$q();
-              })
-          : resolve();
+              });
       });
     },
     saveLogs(type) {
@@ -950,9 +956,7 @@ export default {
           this.$q();
         });
     },
-    save() {
-      
-    },
+    save() {},
     preview(index) {
       let ticket = JSON.parse(JSON.stringify(this.order));
       ticket.payment = ticket.splitPayment[index];

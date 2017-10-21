@@ -14,7 +14,7 @@
                     <input v-model.trim="ui.subhead">
                 </div>
                 <div class="options">
-                    <label>{{$t('text.route')}}</label>
+                    <label>{{$t('text.function')}}</label>
                     <select v-model="ui.route">
                         <option :value="route" v-for="(route,index) in routes" :key="index">{{route}}</option>
                     </select>
@@ -38,24 +38,45 @@
 </template>
 
 <script>
-import checkbox from '../common/checkbox'
+import checkbox from "../common/checkbox";
 export default {
-    components: { checkbox },
-    props: ['init'],
-    data() {
-        return {
-            ui: null,
-            icons: ['fa-user', 'fa-phone', 'fa-car', 'fa-cutlery', 'fa-list', 'fa-inbox', 'fa-cog', 'fa-lock'],
-            routes: ['sale', 'order', 'pickup', 'delivery', 'table', 'buffet', 'history', 'pickupList', 'setting', 'cashDrawer', 'lock']
-        }
-    },
-    created() {
-        this.ui = Object.assign({}, this.init.ui);
-    },
-    methods: {
-        confirm() {
-            this.init.resolve(this.ui)
-        }
+  components: { checkbox },
+  props: ["init"],
+  data() {
+    return {
+      ui: null,
+      icons: [
+        "fa-user",
+        "fa-phone",
+        "fa-car",
+        "fa-cutlery",
+        "fa-list",
+        "fa-inbox",
+        "fa-cog",
+        "fa-lock"
+      ],
+      routes: [
+        "sale",
+        "order",
+        "pickup",
+        "delivery",
+        "table",
+        "buffet",
+        "history",
+        "pickupList",
+        "setting",
+        "cashDrawer",
+        "lock"
+      ]
+    };
+  },
+  created() {
+    this.ui = Object.assign({}, this.init.ui);
+  },
+  methods: {
+    confirm() {
+      this.init.resolve(this.ui);
     }
-}
+  }
+};
 </script>

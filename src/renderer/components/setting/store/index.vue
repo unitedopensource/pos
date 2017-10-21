@@ -57,51 +57,70 @@
                 <smart-option v-model="store.timeZone" :options="timezones" label="text.area"></smart-option>
             </article>
         </section>
+        <section class="card">
+            <header>{{$t('setting.receipt')}}
+                <span class="tip"></span>
+            </header>
+            <article>
+                <smart-switch v-model="store.noReceipt" label="text.noReceipt" tip="tip.doNotAskReceiptAfterSettle"></smart-switch>
+            </article>
+        </section>
     </div>
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
-import smartInput from '../common/smartInput'
-import smartSwitch from '../common/smartSwitch'
-import smartOption from '../common/smartOption'
+import { mapGetters, mapActions } from "vuex";
+import smartInput from "../common/smartInput";
+import smartSwitch from "../common/smartSwitch";
+import smartOption from "../common/smartOption";
 export default {
-    components: { smartInput, smartSwitch, smartOption },
-    created() {
-        this.store = Object.assign({}, this.config.store)
-    },
-    data() {
-        return {
-            store: null,
-            change: false,
-            timezones: ['America/New_York', 'America/Chicago', 'America/Denver', 'America/Phoenix', 'America/Los_Angeles', 'America/Anchorage', 'America/Adak', 'Pacific/Honolulu'],
-            storeTypes: [
-                { label: this.$t('type.chineseTakeOut'), value: 'chineseTakeOut' },
-                { label: this.$t('type.chineseDineIn'), value: 'chineseDineIn' },
-                { label: this.$t('type.japaneseDineIn'), value: 'japaneseDineIn' },
-                { label: this.$t('type.thaiDineIn'), value: 'thaiDineIn' },
-                { label: this.$t('type.vietDineIn'), value: 'vietDineIn' },
-                { label: this.$t('type.buffet'), value: 'buffet' },
-                { label: this.$t('type.retail'), value: 'retail' }]
-        }
-    },
-    computed: {
-        ...mapGetters(['config'])
-    },
-    watch: {
-        store: {
-            handler(n) {
-                let keys = Object.keys(n);
-                let isChanged = keys.some(key => {
-                    return typeof n[key] === 'string' ?
-                        n[key] !== this.config.store[key] :
-                        JSON.stringify(n[key]) !== JSON.stringify(this.config.store[key]);
-                })
-                isChanged ? this.$emit("change", n) : this.$emit("unchanged");
-            }, deep: true
-        }
+  components: { smartInput, smartSwitch, smartOption },
+  created() {
+    this.store = Object.assign({}, this.config.store);
+  },
+  data() {
+    return {
+      store: null,
+      change: false,
+      timezones: [
+        "America/New_York",
+        "America/Chicago",
+        "America/Denver",
+        "America/Phoenix",
+        "America/Los_Angeles",
+        "America/Anchorage",
+        "America/Adak",
+        "Pacific/Honolulu"
+      ],
+      storeTypes: [
+        { label: this.$t("type.chineseTakeOut"), value: "chineseTakeOut" },
+        { label: this.$t("type.chineseDineIn"), value: "chineseDineIn" },
+        { label: this.$t("type.japaneseDineIn"), value: "japaneseDineIn" },
+        { label: this.$t("type.thaiDineIn"), value: "thaiDineIn" },
+        { label: this.$t("type.vietDineIn"), value: "vietDineIn" },
+        { label: this.$t("type.buffet"), value: "buffet" },
+        { label: this.$t("type.retail"), value: "retail" }
+      ]
+    };
+  },
+  computed: {
+    ...mapGetters(["config"])
+  },
+  watch: {
+    store: {
+      handler(n) {
+        let keys = Object.keys(n);
+        let isChanged = keys.some(key => {
+          return typeof n[key] === "string"
+            ? n[key] !== this.config.store[key]
+            : JSON.stringify(n[key]) !== JSON.stringify(this.config.store[key]);
+        });
+        isChanged ? this.$emit("change", n) : this.$emit("unchanged");
+      },
+      deep: true
     }
-}
+  }
+};
 </script>
 
 <style></style>

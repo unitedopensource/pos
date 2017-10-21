@@ -33,424 +33,482 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
-import dialoger from '../common/dialoger'
-import splitList from './splitList'
+import { mapGetters, mapActions } from "vuex";
+import dialoger from "../common/dialoger";
+import splitList from "./splitList";
 export default {
-    props: ['init'],
-    components: { splitList, dialoger },
-    data() {
-        return {
-            page: 0,
-            split: 0,
-            items: [],
-            lock: false,
-            origin: null,
-            unlock: false,
-            component: null,
-            componentData: null,
-            transferItems: [],
-            splitPayment: []
+  props: ["init"],
+  components: { splitList, dialoger },
+  data() {
+    return {
+      page: 0,
+      split: 0,
+      items: [],
+      lock: false,
+      origin: null,
+      unlock: false,
+      component: null,
+      componentData: null,
+      transferItems: [],
+      splitPayment: []
+    };
+  },
+  created() {
+    this.initial();
+  },
+  methods: {
+    initial() {
+      this.items = this.flatten(this.order.content);
+      this.split = this.check(this.items);
+      this.splitPayment = this.order.split ? this.order.splitPayment : [];
+      this.unlock = this.lock = !!this.order.split;
+    },
+    flatten(items) {
+      let flattened = [];
+      items.forEach(item => {
+        let { qty, sort = 0, single } = item;
+        while (qty > 0) {
+          let addition = 0;
+          item.choiceSet.forEach(set => {
+            addition += toFixed(set.qty * set.price, 2);
+          });
+          let single = (parseFloat(item.single) + addition).toFixed(2);
+          let clone = Object.assign({}, item, {
+            qty: 1,
+            sort,
+            single,
+            total: single,
+            unique: Math.random()
+              .toString(36)
+              .substr(2, 5)
+          });
+          flattened.push(clone);
+          qty--;
         }
+      });
+      return flattened;
     },
-    created() {
-        this.initial();
+    check(items) {
+      return [].concat
+        .apply([], items.map(item => item.sort))
+        .filter((v, i, s) => s.indexOf(v) === i).length;
     },
-    methods: {
-        initial() {
-            this.items = this.flatten(this.order.content);
-            this.split = this.check(this.items);
-            this.splitPayment = this.order.split ? this.order.splitPayment : [];
-            this.unlock = this.lock = !!this.order.split;
-        },
-        flatten(items) {
-            let flattened = [];
-            items.forEach(item => {
-                let { qty, sort = 0, single } = item;
-                while (qty > 0) {
-                    let addition = 0;
-                    item.choiceSet.forEach(set => {
-                        addition += toFixed(set.qty * set.price, 2)
-                    })
-                    let single = (parseFloat(item.single) + addition).toFixed(2);
-                    let clone = Object.assign({}, item, {
-                        qty: 1,
-                        sort, single,
-                        total: single,
-                        unique: Math.random().toString(36).substr(2, 5)
-                    });
-                    flattened.push(clone);
-                    qty--;
-                }
-            });
-            return flattened
-        },
-        check(items) {
-            return [].concat.apply([], items.map(item => item.sort)).filter((v, i, s) => s.indexOf(v) === i).length
-        },
-        newSplit() {
-            this.transferItems.length ? this.transfer(++this.split) : this.split++;
-        },
-        trigger(i) {
-            let settled = this.splitPayment ? this.splitPayment[i - 1] && this.splitPayment[i - 1].settled : false;
-            this.transferItems.length && !settled && this.transfer(i);
-        },
-        setQueue(transfer) {
-            if (transfer.items.length !== 0) {
-                this.origin = transfer.origin;
-                this.transferItems = transfer.items;
-            }
-        },
-        sort(index) {
-            let unique = [].concat.apply([], this.items.map(item => item.sort)).filter((v, i, s) => s.indexOf(v) === i);
-            let max = Math.max(...unique);
-            if (!unique.includes(index)) {
-                let origin = unique[index - 1];
-                this.items.forEach(item => {
-                    item.sort = item.sort === origin ? index : item.sort
-                })
-            }
-            ++index <= max ? this.sort(index) : (this.split = [].concat.apply([], this.items.map(item => item.sort)).filter((v, i, s) => s.indexOf(v) === i).length)
-        },
-        splitEvenly() {
-            this.split > 1 && this.transfer([], true)
-        },
-        transfer(index, even) {
-            let doms = document.querySelectorAll(".split .active");
-            doms.forEach(dom => { dom && dom.classList.remove("active") });
-
-            if (even) {
-                for (let i = 1; i < this.split + 1; i++) {
-                    index.push(i)
-                }
-            }
-            this.items.forEach(item => {
-                if (this.transferItems.includes(item.unique)) {
-                    item.sort = index;
-                    if (even) {
-                        if (item.total.includes("/")) return;
-                        item.single = parseFloat((item.single / index.length).toFixed(2));
-                        item.total = item.total + "/" + index.length;
-                    } else if (item.total.includes("/")) {
-                        let split = item.total.split("/")[1];
-                        item.single = parseFloat((item.single * split).toFixed(2));
-                        item.total = item.single.toFixed(2);
-                    }
-                }
-            });
-            this.transferItems = [];
-            this.$bus.emit("SPLIT_ORDER");
-        },
-        printInvoice(index, skip) {
-            skip ? this.print(index) :
-                this.$dialog({
-                    type: "question", title: "dialog.printReceiptConfirm", msg: "dialog.printReceiptConfirmTip",
-                    buttons: [{ text: 'button.noReceipt', fn: 'reject' }, { text: 'button.printReceipt', fn: 'resolve' }]
-                }).then(() => {
-                    this.$q();
-                    this.print(index);
-                    this.checkSettle();
-                }).catch(() => { this.$q(); this.checkSettle() })
-        },
-        printAllInvoices() {
-            this.sort(1);
-            for (let i = 1; i < this.split + 1; i++) {
-                this.printInvoice(i, true);
-            }
-            this.quit();
-        },
-        print(index) {
-            let content = this.items.filter(item => Array.isArray(item.sort) ? item.sort.includes(index) : item.sort === index)
-            let order = JSON.parse(JSON.stringify(this.order));
-            let number = this.order.number ? `${this.order.number}-${index}` : `${this.ticket.number}-${index}`
-            let customer = this.customer;
-            Object.assign(order, {
-                content, customer, number,
-                type: this.order.type,
-                payment: this.$children[index].payment,
-                time: +new Date
-            });
-            Printer.setTarget('All').print(order)
-            this.items.forEach(item => {
-                Array.isArray(item.sort) ?
-                    item.sort.includes(index) && (item.print = true) :
-                    item.sort === index && (item.print = true);
-                delete item.new;
-            })
-        },
-        save() {
-            if (this.items.filter(item => item.sort === 0).length > 0) {
-                this.$dialog({
-                    title: 'dialog.saveFailed',
-                    msg: 'dialog.splitItemNotComplete',
-                    buttons: [{ text: 'button.confirm', fn: 'resolve' }]
-                }).then(() => { this.$q() })
-            } else {
-                this.sort(1);
-                this.verifyItem();
-                this.combineInvoiceInfo();
-                this.exit();
-            }
-        },
-        verifyItem() {
-            this.items.forEach((item, index) => {
-                if (Array.isArray(item.sort)) {
-                    let sort = item.sort;
-                    let clone = [];
-                    for (let i = 0; i < sort.length; i++) {
-                        let nItem = JSON.parse(JSON.stringify(item));
-                        Object.assign(nItem, {
-                            sort: sort[i],
-                            unique: Math.random().toString(36).substr(2, 5)
-                        })
-                        clone.push(nItem)
-                    }
-                    this.items.splice.apply(this.items, [index, 1].concat(clone));
-                }
-            })
-        },
-        settle(ticket) {
-            let { split, payment } = ticket;
-            new Promise((resolve, reject) => {
-                this.componentData = { index: split - 1, resolve, reject };
-                this.component = "payment";
-            }).then((result) => {
-                this.$q();
-                this.splitPayment[split] = result;
-                this.$bus.emit("SPLIT_PAID", split);
-            }).catch(() => { this.$q() })
-        },
-        checkSettle() {
-            let settle = 0;
-            Object.keys(this.splitPayment).forEach(split => {
-                this.splitPayment[split].settled && settle++
-            });
-            if (settle === this.split) {
-                this.setOrder({ settled: true })
-                this.quit()
-            }
-        },
-        gatherPayment() {
-            let splitPayment = []
-            this.$children.forEach(invoice => {
-                splitPayment.push(invoice.payment)
-            });
-            splitPayment.splice(0, 1);
-            let payment = {};
-            splitPayment.filter(ticket => typeof ticket === 'object').forEach(pay => {
-                Object.keys(pay).forEach(key => {
-                    if (payment.hasOwnProperty(key) && key !== 'applyCoupon') {
-                        isNumber(payment[key]) ?
-                            payment[key] = parseFloat(payment[key]) + parseFloat(pay[key]) :
-                            payment[key].push(...pay[key]);
-                    } else {
-                        payment[key] = pay[key]
-                    }
-                })
-            })
-            delete payment.sort;
-            this.setOrder({ splitPayment, payment });
-        },
-        combineInvoiceInfo() {
-            let customer = Object.assign({}, this.customer);
-            delete customer.extra;
-            let split = this.check(this.items) > 1;
-            if (this.app.mode === 'create' && this.$route.name === 'Menu') {
-                this.setOrder({
-                    customer,
-                    content: this.items,
-                    type: this.ticket.type,
-                    number: this.ticket.number,
-                    station: this.station.alies,
-                    source: "POS",
-                    modify: 0,
-                    status: 1,
-                    time: +new Date,
-                    date: today(),
-                    split
-                })
-            } else {
-                this.setOrder({
-                    content: this.items,
-                    lastEdit: +new Date,
-                    editor: this.op.name,
-                    modify: this.order.modify + 1,
-                    split
-                })
-            }
-            this.gatherPayment();
-        },
-        lockSplit(e) {
-            if (!this.lock) {
-                this.sort(1);
-                this.lock = true;
-                e.currentTarget.classList.add("active");
-                this.verifyItem();
-                this.combineInvoiceInfo();
-            }
-        },
-        unlockSplit() {
-            this.unlock = this.lock = false
-        },
-        cancel() {
-            this.init.reject()
-        },
-        exit() {
-            if (this.$route.name !== 'Menu' || this.app.mode !== 'create') {
-                this.$socket.emit("[UPDATE] INVOICE", this.order)
-            } else {
-                this.resetChoiceSet()
-                this.resetPointer()
-            }
-            this.init.resolve()
-        },
-        quit() {
-            this.combineInvoiceInfo();
-            if (this.$route.name !== 'Menu') {
-                this.$socket.emit("[UPDATE] INVOICE", this.order)
-                this.init.resolve()
-            }
-
-            if (this.$route.name === 'Menu' && this.app.mode === 'create') {
-                if (this.ticket.type === 'DINE_IN') {
-                    this.$socket.emit("[TABLE] INVOICE", this.order)
-                    this.$socket.emit("INQUIRY_TICKET_NUMBER")
-                    this.$router.push({ name: "Table" })
-                } else {
-                    this.$socket.emit("[SAVE] INVOICE", this.order)
-                    this.resetAll()
-                    this.$router.push({ path: '/main' })
-                }
-            } else {
-                this.$socket.emit("[UPDATE] INVOICE", this.order)
-                if (this.ticket.type === 'DINE_IN') {
-                    this.$router.push({ name: "Table" })
-                } else {
-                    this.resetAll()
-                    this.$router.push({ path: '/main' })
-                }
-
-            }
-        },
-        ...mapActions(['setOrder', 'resetAll', 'resetChoiceSet', 'resetPointer', 'setTableInfo'])
+    newSplit() {
+      this.transferItems.length ? this.transfer(++this.split) : this.split++;
     },
-    computed: {
-        offset() {
-            let width = this.split * 250;
-            let offset = this.page * 250;
-            return { transform: `translate3d(${offset}px,0,0)` }
-        },
-        remain() {
-            return this.items.filter(item => item.sort === 0).length
-        },
-        ...mapGetters(['op', 'app', 'config', 'order', 'ticket', 'customer', 'station', 'currentTable'])
-    }
-}
+    trigger(i) {
+      let settled = this.splitPayment
+        ? this.splitPayment[i - 1] && this.splitPayment[i - 1].settled
+        : false;
+      this.transferItems.length && !settled && this.transfer(i);
+    },
+    setQueue(transfer) {
+      if (transfer.items.length !== 0) {
+        this.origin = transfer.origin;
+        this.transferItems = transfer.items;
+      }
+    },
+    sort(index) {
+      let unique = [].concat
+        .apply([], this.items.map(item => item.sort))
+        .filter((v, i, s) => s.indexOf(v) === i);
+      let max = Math.max(...unique);
+      if (!unique.includes(index)) {
+        let origin = unique[index - 1];
+        this.items.forEach(item => {
+          item.sort = item.sort === origin ? index : item.sort;
+        });
+      }
+      ++index <= max
+        ? this.sort(index)
+        : (this.split = [].concat
+            .apply([], this.items.map(item => item.sort))
+            .filter((v, i, s) => s.indexOf(v) === i).length);
+    },
+    splitEvenly() {
+      this.split > 1 && this.transfer([], true);
+    },
+    transfer(index, even) {
+      let doms = document.querySelectorAll(".split .active");
+      doms.forEach(dom => {
+        dom && dom.classList.remove("active");
+      });
+
+      if (even) {
+        for (let i = 1; i < this.split + 1; i++) {
+          index.push(i);
+        }
+      }
+      this.items.forEach(item => {
+        if (this.transferItems.includes(item.unique)) {
+          item.sort = index;
+          if (even) {
+            if (item.total.includes("/")) return;
+            item.single = parseFloat((item.single / index.length).toFixed(2));
+            item.total = item.total + "/" + index.length;
+          } else if (item.total.includes("/")) {
+            let split = item.total.split("/")[1];
+            item.single = parseFloat((item.single * split).toFixed(2));
+            item.total = item.single.toFixed(2);
+          }
+        }
+      });
+      this.transferItems = [];
+      this.$bus.emit("SPLIT_ORDER");
+    },
+    printInvoice(index, skip) {
+      skip
+        ? this.print(index)
+        : this.$dialog({
+            type: "question",
+            title: "dialog.printReceiptConfirm",
+            msg: "dialog.printReceiptConfirmTip",
+            buttons: [
+              { text: "button.noReceipt", fn: "reject" },
+              { text: "button.printReceipt", fn: "resolve" }
+            ]
+          })
+            .then(() => {
+              this.$q();
+              this.print(index);
+              this.checkSettle();
+            })
+            .catch(() => {
+              this.$q();
+              this.checkSettle();
+            });
+    },
+    printAllInvoices() {
+      this.sort(1);
+      for (let i = 1; i < this.split + 1; i++) {
+        this.printInvoice(i, true);
+      }
+      this.quit(true);
+    },
+    print(index) {
+      let content = this.items.filter(
+        item =>
+          Array.isArray(item.sort)
+            ? item.sort.includes(index)
+            : item.sort === index
+      );
+      let order = JSON.parse(JSON.stringify(this.order));
+      let number = this.order.number
+        ? `${this.order.number}-${index}`
+        : `${this.ticket.number}-${index}`;
+      let customer = this.customer;
+      Object.assign(order, {
+        content,
+        customer,
+        number,
+        type: this.order.type,
+        payment: this.$children[index].payment,
+        time: +new Date()
+      });
+      Printer.setTarget("All").print(order);
+      this.items.forEach(item => {
+        Array.isArray(item.sort)
+          ? item.sort.includes(index) && (item.print = true)
+          : item.sort === index && (item.print = true);
+        delete item.new;
+      });
+    },
+    save() {
+      if (this.items.filter(item => item.sort === 0).length > 0) {
+        this.$dialog({
+          title: "dialog.saveFailed",
+          msg: "dialog.splitItemNotComplete",
+          buttons: [{ text: "button.confirm", fn: "resolve" }]
+        }).then(() => {
+          this.$q();
+        });
+      } else {
+        this.sort(1);
+        this.verifyItem();
+        this.combineInvoiceInfo();
+        this.exit();
+      }
+    },
+    verifyItem() {
+      this.items.forEach((item, index) => {
+        if (Array.isArray(item.sort)) {
+          let sort = item.sort;
+          let clone = [];
+          for (let i = 0; i < sort.length; i++) {
+            let nItem = JSON.parse(JSON.stringify(item));
+            Object.assign(nItem, {
+              sort: sort[i],
+              unique: Math.random()
+                .toString(36)
+                .substr(2, 5)
+            });
+            clone.push(nItem);
+          }
+          this.items.splice.apply(this.items, [index, 1].concat(clone));
+        }
+      });
+    },
+    settle(ticket) {
+      let { split, payment } = ticket;
+      new Promise((resolve, reject) => {
+        this.componentData = { index: split - 1, resolve, reject };
+        this.component = "payment";
+      })
+        .then(result => {
+          this.$q();
+          this.splitPayment[split] = result;
+          this.$bus.emit("SPLIT_PAID", split);
+        })
+        .catch(() => {
+          this.$q();
+        });
+    },
+    checkSettle() {
+      let settle = 0;
+      Object.keys(this.splitPayment).forEach(split => {
+        this.splitPayment[split].settled && settle++;
+      });
+      if (settle === this.split) {
+        this.setOrder({ settled: true });
+        this.quit(false);
+      }
+    },
+    gatherPayment() {
+      let splitPayment = [];
+      this.$children.forEach(invoice => {
+        splitPayment.push(invoice.payment);
+      });
+      splitPayment.splice(0, 1);
+      let payment = {};
+      splitPayment.filter(ticket => typeof ticket === "object").forEach(pay => {
+        Object.keys(pay).forEach(key => {
+          if (payment.hasOwnProperty(key) && key !== "applyCoupon") {
+            isNumber(payment[key])
+              ? (payment[key] = parseFloat(payment[key]) + parseFloat(pay[key]))
+              : payment[key].push(...pay[key]);
+          } else {
+            payment[key] = pay[key];
+          }
+        });
+      });
+      delete payment.sort;
+      this.setOrder({ splitPayment, payment });
+    },
+    combineInvoiceInfo() {
+      let customer = Object.assign({}, this.customer);
+      delete customer.extra;
+      let split = this.check(this.items) > 1;
+      if (this.app.mode === "create" && this.$route.name === "Menu") {
+        this.setOrder({
+          customer,
+          content: this.items,
+          type: this.ticket.type,
+          number: this.ticket.number,
+          station: this.station.alies,
+          source: "POS",
+          modify: 0,
+          status: 1,
+          time: +new Date(),
+          date: today(),
+          split
+        });
+      } else {
+        this.setOrder({
+          content: this.items,
+          lastEdit: +new Date(),
+          editor: this.op.name,
+          modify: this.order.modify + 1,
+          split
+        });
+      }
+      this.gatherPayment();
+    },
+    lockSplit(e) {
+      if (!this.lock) {
+        this.sort(1);
+        this.lock = true;
+        e.currentTarget.classList.add("active");
+        this.verifyItem();
+        this.combineInvoiceInfo();
+      }
+    },
+    unlockSplit() {
+      this.unlock = this.lock = false;
+    },
+    cancel() {
+      this.init.reject();
+    },
+    exit() {
+      if (this.$route.name !== "Menu" || this.app.mode !== "create") {
+        this.$socket.emit("[UPDATE] INVOICE", this.order);
+      } else {
+        this.resetChoiceSet();
+        this.resetPointer();
+      }
+      this.init.resolve();
+    },
+    quit(print) {
+      this.combineInvoiceInfo();
+      if (this.$route.name !== "Menu") {
+        this.$socket.emit("[UPDATE] INVOICE", this.order, print);
+        this.init.resolve();
+      }
+
+      if (this.$route.name === "Menu" && this.app.mode === "create") {
+        if (this.ticket.type === "DINE_IN") {
+          this.$socket.emit("[TABLE] INVOICE", this.order);
+          this.$socket.emit("INQUIRY_TICKET_NUMBER");
+          this.$router.push({ name: "Table" });
+        } else {
+          this.$socket.emit("[SAVE] INVOICE", this.order, print, callback => {
+            this.resetAll();
+            this.$router.push({ path: "/main" });
+          });
+        }
+      } else {
+        this.$socket.emit("[UPDATE] INVOICE", this.order);
+        if (this.ticket.type === "DINE_IN") {
+          this.$router.push({ name: "Table" });
+        } else {
+          this.resetAll();
+          this.$router.push({ path: "/main" });
+        }
+      }
+    },
+    ...mapActions([
+      "setOrder",
+      "resetAll",
+      "resetChoiceSet",
+      "resetPointer",
+      "setTableInfo"
+    ])
+  },
+  computed: {
+    offset() {
+      let width = this.split * 250;
+      let offset = this.page * 250;
+      return { transform: `translate3d(${offset}px,0,0)` };
+    },
+    remain() {
+      return this.items.filter(item => item.sort === 0).length;
+    },
+    ...mapGetters([
+      "op",
+      "app",
+      "config",
+      "order",
+      "ticket",
+      "customer",
+      "station",
+      "currentTable"
+    ])
+  }
+};
 </script>
 
 <style scoped>
 .window {
-    width: 1000px;
-    background: url(../../assets/image/grid.png) #fcfcfc;
+  width: 1000px;
+  background: url(../../assets/image/grid.png) #fcfcfc;
 }
 
 .title {
-    padding: 15px;
+  padding: 15px;
 }
 
 .title i {
-    padding: 15px 20px;
+  padding: 15px 20px;
 }
 
 section {
-    display: flex;
-    flex-direction: row-reverse;
-    min-height: 410px;
+  display: flex;
+  flex-direction: row-reverse;
+  min-height: 410px;
 }
 
 .wrap {
-    display: flex;
-    flex: 1;
-    justify-content: flex-start;
-    overflow: auto;
+  display: flex;
+  flex: 1;
+  justify-content: flex-start;
+  overflow: auto;
 }
 
 i.page {
-    position: absolute;
-    top: 180px;
-    color: #37474F;
-    text-align: center;
-    border-radius: 50%;
-    background: #fff;
-    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.4);
-    height: 50px;
-    width: 50px;
-    line-height: 50px;
-    cursor: pointer;
-    z-index: 1;
-    transition: all 0.1s ease;
+  position: absolute;
+  top: 180px;
+  color: #37474f;
+  text-align: center;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.4);
+  height: 50px;
+  width: 50px;
+  line-height: 50px;
+  cursor: pointer;
+  z-index: 1;
+  transition: all 0.1s ease;
 }
 
 i.page:active {
-    background: #eee;
-    transform: translateY(1px);
+  background: #eee;
+  transform: translateY(1px);
 }
 
 .fa-angle-left {
-    left: 10px;
+  left: 10px;
 }
 
 .fa-angle-right {
-    right: 10px;
+  right: 10px;
 }
 
 .inner {
-    flex: 1;
-    overflow: hidden;
-    display: flex;
-    justify-content: flex-end;
-    position: relative;
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  justify-content: flex-end;
+  position: relative;
 }
 
 .extend {
-    display: flex;
-    justify-content: flex-start;
-    flex-wrap: nowrap;
-    transition: transform 0.22s ease;
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  transition: transform 0.22s ease;
 }
 
 .splitter {
-    width: 150px;
-    height: inherit;
-    background: #fff;
-    border: 2px dashed #ddd;
-    border-radius: 4px;
-    margin: 5px;
-    position: relative;
+  width: 150px;
+  height: inherit;
+  background: #fff;
+  border: 2px dashed #ddd;
+  border-radius: 4px;
+  margin: 5px;
+  position: relative;
 }
 
 .splitter:before {
-    font-family: fontAwesome;
-    content: '\F067';
-    position: absolute;
-    top: calc(50% - 40px);
-    left: 0;
-    right: 0;
-    margin: auto;
-    width: 63px;
-    display: block;
-    font-size: 5em;
-    color: gray;
+  font-family: fontAwesome;
+  content: "\F067";
+  position: absolute;
+  top: calc(50% - 40px);
+  left: 0;
+  right: 0;
+  margin: auto;
+  width: 63px;
+  display: block;
+  font-size: 5em;
+  color: gray;
 }
 
 .btn {
-    margin: 5px;
-    flex: 1;
-    max-width: 100px;
+  margin: 5px;
+  flex: 1;
+  max-width: 100px;
 }
 
 .confirm.active {
-    background: linear-gradient(#ddd, #f5f5f5);
-    color: #666;
+  background: linear-gradient(#ddd, #f5f5f5);
+  color: #666;
 }
 </style>

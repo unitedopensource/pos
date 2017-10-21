@@ -701,7 +701,7 @@ export default {
         'setDefault': 'Set Default',
         'title': 'Title',
         'subtitle': 'Subtitle',
-        'route': 'Route',
+        'function': 'Function',
         'icon': 'Icon',
         'primary': 'Primary',
         'secondary': 'Secondary',
@@ -819,7 +819,9 @@ export default {
         'preview': 'Preview',
         'seatOrder': 'Seat Order',
         'wage': 'Wage(Hour)',
-        'calcTips': 'Current Tips: $ {i}'
+        'calcTips': 'Current Tips: $ {i}',
+        'fuelSurcharge':'Fuel Surcharge',
+        'noReceipt':'No Receipt'
     },
     nav: {
         'store': 'Store',
@@ -1011,6 +1013,7 @@ export default {
         'howTipCalculate': 'Tip is before tax and discount',
         'howDiscountCalculate':'Discount is before tax',
         'lockWhenCompleteOrder':'Lock screen when complete order',
+        'doNotAskReceiptAfterSettle':'Do not ask for receipt after each settle',
         'table': {
             'actionsOnDone': 'Actions after tapping Done',
             'passwordRequire': 'Password input required before create a new table.',

@@ -700,7 +700,7 @@ export default {
         'setDefault': '设为默认',
         'title': '标题',
         'subtitle': '子标题',
-        'route': '路由',
+        'function': '功能',
         'icon': '图标',
         'primary': '第一语言',
         'secondary': '第二语言',
@@ -817,7 +817,9 @@ export default {
         'preview':'预览',
         'seatOrder':'按位点餐',
         'wage':'工资(小时)',
-        'calcTips':'小费为: $ {i}'
+        'calcTips':'小费为: $ {i}',
+        'fuelSurcharge':'燃油附加费',
+        'noReceipt':'无收据模式'
     },
     nav: {
         'store': '店面',
@@ -1008,6 +1010,7 @@ export default {
         'howTipCalculate':'小费的计算基于小计',
         'howDiscountCalculate':'折扣是按小计进行打折',
         'lockWhenCompleteOrder':'完成订单之后锁定界面',
+        'doNotAskReceiptAfterSettle':'结账之后不打印收据',
         'table': {
             'actionsOnDone':'设定完成订单之后的操作',
             'passwordRequire': '创建座位之前需要输入密码',
