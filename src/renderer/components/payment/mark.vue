@@ -1,6 +1,6 @@
 <template>
     <div class="popupMask center dark">
-        <div class="window">
+        <div class="window" v-show="!component">
             <header class="title">
                 <span>{{$t('title.markPaymentType')}}</span>
                 <i class="fa fa-times" @click="init.reject(false)"></i>
@@ -12,17 +12,23 @@
                 </div>
             </div>
             <footer>
+              <div class="f1">
+                <div class="btn">{{$t('button.view')}}</div>
+              </div>
                 <div class="btn" @click="init.reject(false)">{{$t('button.cancel')}}</div>
                 <div class="btn" @click="confirm">{{$t('button.confirm')}}</div>
             </footer>
         </div>
+        <div :is="component" :init="componentData"></div>
     </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
+import dialoger from "../common/dialoger";
 export default {
   props: ["init"],
+  components: { dialoger },
   data() {
     return {
       options: [
@@ -39,14 +45,131 @@ export default {
         "AE",
         "CASH"
       ],
-      type: "CASH"
+      type: "CASH",
+      orders: [],
+      releaseComponentLock: true,
+      componentData: null,
+      component: null
     };
   },
+  created() {
+    this.order.split
+      ? this.checkComponentUsage()
+          .then(this.checkPermission)
+          .then(this.createSplitOrder)
+          .catch(this.initialFailed)
+      : this.checkComponentUsage()
+          .then(this.checkPermission)
+          .catch(this.initialFailed);
+  },
+  beforeDestroy() {
+    this.releaseComponentLock &&
+      this.$socket.emit("[COMPONENT] UNLOCK", {
+        component: "thirdParty",
+        lock: this.order._id
+      });
+  },
   methods: {
+    checkComponentUsage() {
+      return new Promise((resolve, reject) => {
+        let data = {
+          component: "thirdParty",
+          operator: this.op.name,
+          lock: this.order._id,
+          time: +new Date(),
+          exp: +new Date() + 1000 * 120
+        };
+
+        if (this.init.hasOwnProperty("callback")) {
+          this.$socket.emit("[COMPONENT] LOCK", data, lock => {
+            lock ? reject({ error: "paymentPending", data }) : resolve();
+          });
+        } else {
+          this.releaseComponentLock = false;
+          resolve();
+        }
+      });
+    },
+    checkPermission() {
+      return new Promise((resolve, reject) => {
+        this.op.cashCtrl === "disable"
+          ? reject({ error: "accessDenied" })
+          : resolve();
+      });
+    },
+    createSplitOrder() {
+      return new Promise(resolve => {
+        this.order.splitPayment.forEach(split => {
+          let order = JSON.parse(JSON.stringify(this.order));
+          order.payment = JSON.parse(JSON.stringify(split));
+          this.orders.push(order);
+        });
+        //pick order to continue
+        resolve();
+      });
+    },
+    initialFailed(reason) {
+      let { error, data } = reason;
+      switch (error) {
+        case "paymentPending":
+          let current = +new Date();
+          let exp = data.exp;
+          let duration = exp - current;
+
+          this.releaseComponentLock = false;
+
+          this.$dialog({
+            title: "dialog.pending",
+            msg: "dialog.pendingOrderAccessDenied",
+            timeout: { duration, fn: "resolve" },
+            buttons: [{ text: "button.confirm", fn: "resolve" }]
+          }).then(() => {
+            this.exit();
+          });
+          break;
+        case "accessDenied":
+          this.$dialog({
+            type: "warning",
+            title: "dialog.accessDenied",
+            msg: "dialog.accessDeniedTip",
+            timeout: { duration: 10000, fn: "resolve" },
+            buttons: [{ text: "button.confirm", fn: "resolve" }]
+          }).then(() => {
+            this.exit();
+          });
+          break;
+      }
+    },
     confirm() {
       if (!this.init.hasOwnProperty("callback")) {
+        if (this.order.hasOwnProperty("splitPayment")) {
+          this.order.splitPayment.forEach(split => {
+            if (toFixed(split.remain.toFixed(2), 2) !== 0) {
+              split.log.push({
+                _id: "",
+                type: this.type,
+                paid: split.remain,
+                change: 0,
+                balance: 0,
+                actual: split.remain,
+                //potential bug here
+                tip: 0,
+                number: "N/A"
+              });
+
+              Object.assign(split, {
+                paid: split.remain,
+                remain: 0,
+                type: this.type,
+                settled: true
+              });
+            }
+          });
+        }
+
         Object.assign(this.order.payment, {
           paid: this.order.payment.remain,
+          remain: 0,
           type: this.type,
           settled: true
         });
@@ -66,6 +189,11 @@ export default {
         this.$socket.emit("[UPDATE] INVOICE", this.order, false);
       }
       this.init.resolve(this.type);
+    },
+    checkSplit() {},
+    checkCallback() {},
+    exit() {
+      this.init.resolve();
     }
   },
   computed: {

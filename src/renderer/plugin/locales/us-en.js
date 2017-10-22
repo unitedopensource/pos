@@ -486,7 +486,8 @@ export default {
         'assignPrinter':'Assign Printer',
         'assignPrinterToAllItems':'Are you wish to assign {i} printer to all items?',
         'splitTicketSettled':'All Split Ticket Are Settled',
-        'splitTicketSettledTip':'Are you wish to mark this ticket as paid?'
+        'splitTicketSettledTip':'Are you wish to mark this ticket as paid?',
+        'insufficientAmount':'There is an insufficient amount of balance.'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',

@@ -46,7 +46,6 @@ export default {
     margin: 5px;
     position: relative;
     color: #3c3c3c;
-    transition: background 0.3s ease;
 }
 
 .ticket:before {

@@ -64,10 +64,10 @@ export default {
   methods: {
     clear() {
       this.tip = this.unit === "$" ? "0.00" : "0";
+      this.reset = true;
     },
     switchUnit(unit) {
       this.unit = unit;
-      this.reset = true;
       this.clear();
     },
     input(val) {

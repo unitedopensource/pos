@@ -449,7 +449,8 @@ export default {
         'assignPrinter':'分配打印机',
         'assignPrinterToAllItems':'您是否将 {i} 打印机应用于所有的物品之上？',
         'splitTicketSettled':'所有分单均已结账',
-        'splitTicketSettledTip':'您想要将此订单设置成已付吗？'
+        'splitTicketSettledTip':'您想要将此订单设置成已付吗？',
+        'insufficientAmount':'所剩余额不足'
     },
     terminal: {
         'initial': '正在初始化 {i}...',

@@ -111,12 +111,12 @@ export default {
   methods: {
     switchUnit(unit) {
       this.unit = unit;
-      this.reset = true;
       this.redeem = null;
       this.clear();
     },
     clear() {
       this.discount = this.unit === "$" ? "0.00" : "0";
+      this.reset = true;
     },
     input(val) {
       let value = this.discount;

@@ -343,8 +343,8 @@ export default {
         ]
       })
         .then(() => {
-          this.paySplit();
           this.$q();
+          this.paySplit();
         })
         .catch(() => {
           this.payWhole();
@@ -799,47 +799,51 @@ export default {
       });
     },
     updateGiftCard() {
-      let activity = {
-        _id: Object(),
-        order: this.order._id,
-        type: "GIFTFLOW",
-        inflow: parseFloat(this.paid),
-        outflow: 0,
-        time: +new Date(),
-        ticket: this.order.ticket,
-        operator: this.op.name
-      };
+      return new Promise(resolve => {
+        let paid = parseFloat(this.paid);
+        let activity = {
+          _id: Object(),
+          order: this.order._id,
+          type: "GIFTFLOW",
+          inflow: paid,
+          outflow: 0,
+          time: +new Date(),
+          ticket: this.order.ticket,
+          operator: this.op.name
+        };
 
-      let cashDrawer =
-        this.op.cashCtrl === "staffBank"
-          ? this.op.name
-          : this.station.cashDrawer.name;
+        let cashDrawer =
+          this.op.cashCtrl === "staffBank"
+            ? this.op.name
+            : this.station.cashDrawer.name;
 
-      this.$socket.emit("[CASHFLOW] ACTIVITY", { cashDrawer, activity });
+        this.$socket.emit("[CASHFLOW] ACTIVITY", { cashDrawer, activity });
 
-      let log = {
-        balance: toFixed(this.giftCard.balance - this.paid, 2),
-        change: -this.paid,
-        date: today(),
-        time: +new Date(),
-        type: "Purchase",
-        cashier: this.op.name,
-        number: this.giftCard.number.replace(/\D/g, ""),
-        order: {
-          _id: this.order._id,
-          number: this.order.number || this.ticket.number,
-          type: this.order.type || this.ticket.type,
-          time: +new Date()
-        }
-      };
+        let log = {
+          balance: toFixed(this.giftCard.balance - paid, 2),
+          change: -paid,
+          date: today(),
+          time: +new Date(),
+          type: "Purchase",
+          cashier: this.op.name,
+          number: this.giftCard.number.replace(/\D/g, ""),
+          order: {
+            _id: this.order._id,
+            number: this.order.number || this.ticket.number,
+            type: this.order.type || this.ticket.type,
+            time: +new Date()
+          }
+        };
 
-      this.$socket.emit("[GIFTCARD] ACTIVITY", log, _id => {
-        this.payment.log.push({
-          _id,
-          type: "GIFT",
-          paid: this.paid,
-          change: 0,
-          balance: this.cashTender
+        this.$socket.emit("[GIFTCARD] ACTIVITY", log, _id => {
+          this.payment.log.push({
+            _id,
+            type: "GIFT",
+            paid,
+            change: 0,
+            balance: this.cashTender
+          });
+          resolve();
         });
       });
     },
@@ -1040,7 +1044,17 @@ export default {
     },
     checkGiftCardBalance() {
       return new Promise((resolve, reject) => {
-        if (this.giftCard.balance < this.paid) {
+        if (this.giftCard.balance <= 0) {
+          this.$dialog({
+            type: "error",
+            title: "dialog.paymentFailed",
+            msg: "dialog.insufficientAmount",
+            buttons: [{ text: "button.confirm", fn: "resolve" }]
+          }).then(() => {
+            this.$q();
+            reject();
+          });
+        } else if (this.giftCard.balance < this.paid) {
           this.$dialog({
             type: "warning",
             title: "dialog.paymentFailed",
@@ -1058,6 +1072,8 @@ export default {
             .catch(() => {
               reject();
             });
+        } else {
+          resolve();
         }
       });
     },
@@ -1117,7 +1133,6 @@ export default {
           }
 
           this.payment.discount = discount;
-          console.log(discount);
           this.recalculatePayment();
 
           this.poleDisplay(
@@ -1300,7 +1315,7 @@ export default {
     },
     handleFloatingIssue() {
       this.$dialog({
-        type: "question",
+        type: "alert",
         title: "dialog.splitTicketSettled",
         msg: "dialog.splitTicketSettledTip",
         buttons: [
@@ -1310,12 +1325,12 @@ export default {
       })
         .then(() => {
           let payment = this.combineSplitPayment();
-          Object.assign(this.order, payment);
+          Object.assign(this.order, {payment});
           this.$socket.emit("[UPDATE] INVOICE", this.order, false);
-          this.$exit();
+          this.exit();
         })
         .catch(() => {
-          this.$exit();
+          this.exit();
         });
     },
     ...mapActions(["setOrder", "resetAll", "resetMenu"])

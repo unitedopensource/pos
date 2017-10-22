@@ -907,7 +907,8 @@ function createHeader(store, ticket) {
             <div class="time">
                 <span>Date: ${date}</span>
                 <span>Time: ${placeTime}</span>
-                <div class="number">${type === 'DINE_IN' ? table || '' : number}</div>
+                <div class="number">${number}</div>
+                <div class="table">${type === 'DINE_IN' ? table : ''}</div>
             </div>
             <div class="server">
                 ${ticketInfo}
@@ -1030,7 +1031,9 @@ function createStyle(ctrl) {
               .header h3{font-size:1.25em;}
               .header h5{font-size:16px;font-weight:lighter}
               div.type{${printType ? '' : 'display:none;'}font-size:1.3em;font-weight:bold;font-family:"Agency FB"}
-              div.number{position:absolute;right:10px;bottom:12px;font-size:2em;font-weight:bold;font-family:"Agency FB"}
+              div.number,div.table{position:absolute;bottom:12px;font-size:2em;font-weight:bold;font-family:"Agency FB"}
+              div.number{right:10px;}
+              div.table{left:10px;}
               div.time span{display:inline-block;margin:0 10px;font-size:1em;}
               div.time{border-bottom:1px solid #000;position:relative;margin-top:10px;}
               .server{border-bottom:1px solid #000;padding-bottom:1px;text-align:left;}

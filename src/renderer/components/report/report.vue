@@ -487,6 +487,7 @@ export default {
             creditAmount += amount;
             break;
           case "Transaction":
+          case "Purchase":
             debit++;
             debitAmount += amount;
             break;
@@ -541,31 +542,31 @@ export default {
             parseFloat(ticket.tip) +
             parseFloat(ticket.gratuity)
         )
-        .reduce(counter);
+        .reduce(counter,0);
 
       let discount = validPayment.filter(ticket => ticket.discount > 0);
 
       let discountAmount = discount
         .map(ticket => parseFloat(ticket.discount))
-        .reduce(counter);
+        .reduce(counter,0);
 
       let netAmount = toFixed(grossAmount - discountAmount, 2);
 
       let itemSalesAmount = validPayment
         .map(ticket => parseFloat(ticket.subtotal))
-        .reduce(counter);
+        .reduce(counter,0);
 
       let taxAmount = validPayment
         .map(ticket => parseFloat(ticket.tax))
-        .reduce(counter);
+        .reduce(counter,0);
 
       let tipAmount = validPayment
         .map(ticket => parseFloat(ticket.tip))
-        .reduce(counter);
+        .reduce(counter,0);
 
       let gratuityAmount = validPayment
         .map(ticket => parseFloat(ticket.gratuity))
-        .reduce(counter);
+        .reduce(counter,0);
 
       // receivable should consider gift card transaction, cash out , and other activities
       let receivable = toFixed(netAmount, 2);
