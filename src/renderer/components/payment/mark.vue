@@ -165,14 +165,21 @@ export default {
               });
             }
           });
+          Object.assign(this.order.payment, {
+            paid: this.order.payment.remain,
+            remain: 0,
+            type: "MULTIPLE",
+            settled: true
+          });
+        } else {
+          Object.assign(this.order.payment, {
+            paid: this.order.payment.remain,
+            remain: 0,
+            type: this.type,
+            settled: true
+          });
         }
 
-        Object.assign(this.order.payment, {
-          paid: this.order.payment.remain,
-          remain: 0,
-          type: this.type,
-          settled: true
-        });
         Object.assign(this.order, { settled: true, cashier: this.op.name });
 
         this.order.payment.log.push({

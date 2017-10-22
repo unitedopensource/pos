@@ -385,7 +385,6 @@ export default {
       logs.forEach(log => {
         types.add(log.type);
       });
-
       types.forEach(type => {
         let list = logs.filter(log => log.type === type);
         let count = list.length;
