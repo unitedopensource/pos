@@ -154,7 +154,7 @@ export default {
             this.$dialog({
                 type: "question",
                 title: ['dialog.recoverOrderConfirm', this.order.number],
-                msg: ['dialog.recoverOrderConfirm', this.order.void.by, this.$t('reason.' + this.order.void.note)]
+                msg: ['dialog.recoverOrderConfirmTip', this.order.void.by, this.$t('reason.' + this.order.void.note)]
             }).then(() => {
                 let order = JSON.parse(JSON.stringify(this.order));
                 order.status = 1;

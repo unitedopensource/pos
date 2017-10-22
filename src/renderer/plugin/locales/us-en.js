@@ -588,6 +588,7 @@ export default {
         'countItem': 'Item Sales Report',
         'performance': 'Performance',
         'staffSummary': 'Staff Summary',
+        'cashierSummary':'Cashier Summary',
         'driverSummary': 'Driver Summary',
         'thirdPartySummary': 'Third Party Summary',
         'viaEmail': 'Send Report Via Email',
@@ -603,7 +604,10 @@ export default {
         'itemSales': 'Item Sales',
         'tips': 'Tips',
         'gratuity': 'Gratuity',
-        'thirdParty': 'Third Party'
+        'thirdParty': 'Third Party',
+        'include':' (Include)',
+        'exclude':' (Exclude)',
+        'receivable':'Receivable'
     },
     text: {
         'starter': 'Starter',

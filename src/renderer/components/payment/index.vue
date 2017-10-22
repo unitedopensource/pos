@@ -492,6 +492,7 @@ export default {
         case "GIFT":
           this.swipeGiftCard()
             .then(this.checkGiftCard)
+            .then(this.checkGiftCardBalance)
             .then(this.checkOverPay)
             .then(this.chargeGiftCard)
             .then(this.updateGiftCard)
@@ -536,6 +537,7 @@ export default {
       }
 
       this.setAnchor("paid");
+      this.thirdPartyType = null;
       this.getQuickInput(this.payment.remain);
     },
     checkOverPay() {
@@ -570,10 +572,7 @@ export default {
             .catch(() => {
               this.$q();
             });
-        } else if(true) {
-          //gift card issue
-          //*bug
-        }else{
+        } else {
           resolve();
         }
       });
@@ -1034,10 +1033,33 @@ export default {
         }
       } else {
         let index = this.order.splitPayment.findIndex(
-          split => split.remain > 0
+          split => toFixed(split.remain.toFixed(2), 2) > 0
         );
         index === -1 ? this.settled() : this.switchInvoice(index);
       }
+    },
+    checkGiftCardBalance() {
+      return new Promise((resolve, reject) => {
+        if (this.giftCard.balance < this.paid) {
+          this.$dialog({
+            type: "warning",
+            title: "dialog.paymentFailed",
+            msg: "dialog.canNotPayZeroAmount",
+            buttons: [
+              { text: "button.cancel", fn: "reject" },
+              { text: "button.chargeRemain", fn: "resolve" }
+            ]
+          })
+            .then(() => {
+              this.paid = this.giftCard.balance.toFixed(2);
+              this.$q();
+              resolve();
+            })
+            .catch(() => {
+              reject();
+            });
+        }
+      });
     },
     switchInvoice(index) {
       this.current = index;

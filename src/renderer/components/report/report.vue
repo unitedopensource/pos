@@ -48,13 +48,13 @@
                             <checkbox v-model="salesCategory" label="report.salesCategory"></checkbox>
                             <checkbox v-model="countCategory" label="report.categorySales"></checkbox>
                             <checkbox v-model="hourly" label="report.hourlyReport"></checkbox>
-                            <!-- <checkbox v-model="tip" label="report.tipSummary"></checkbox> -->
                             <checkbox v-model="settleType" label="report.settleType"></checkbox>
                             <checkbox v-model="giftCard" label="report.giftCardSummary"></checkbox>
                             <checkbox v-model="countItem" label="report.countItem"></checkbox>
                         </div>
                         <div class="right">
                             <h5>{{$t('report.performance')}}</h5>
+                            <checkbox v-model="cashier" label="report.cashierSummary"></checkbox>
                             <checkbox v-model="waitStaff" label="report.staffSummary"></checkbox>
                             <checkbox v-model="driver" label="report.driverSummary"></checkbox>
                             <checkbox v-model="thirdParty" label="report.thirdPartySummary"></checkbox>
@@ -64,7 +64,7 @@
             </div>
             <footer>
                 <div class="f1">
-                    <checkbox v-model="emailReport" label="report.viaEmail"></checkbox>
+                    <checkbox v-model="viewInTables" label="report.viaEmail"></checkbox>
                 </div>
                 <div class="btn" @click="confirm">{{$t('button.confirm')}}</div>
             </footer>
@@ -93,10 +93,11 @@ export default {
       driver: false,
       summary: true,
       giftCard: false,
+      cashier: false,
       waitStaff: false,
       countItem: false,
       thirdParty: false,
-      emailReport: false,
+      viewInTables: false,
       reportRange: null,
       settleType: false,
       component: null,
@@ -515,163 +516,66 @@ export default {
       ];
     },
     summarize(data) {
-      let gross = 0,
-        grossAmount = 0,
-        netAmount = 0,
-        itemSalesAmount = 0,
-        taxAmount = 0,
-        walkin = 0,
-        walkinAmount = 0,
-        pickup = 0,
-        pickupAmount = 0,
-        delivery = 0,
-        deliveryAmount = 0,
-        deliveryTip = 0,
-        dinein = 0,
-        dineinAmount = 0,
-        bar = 0,
-        barAmount = 0,
-        tips = 0,
-        tipsAmount = 0,
-        gratuityAmount = 0,
-        other = 0,
-        otherAmount = 0,
-        third = 0,
-        thirdAmount = 0,
-        settle = 0,
-        settleAmount = 0,
-        discount = 0,
-        discountAmount = 0,
-        unsettle = 0,
-        unsettleAmount = 0,
-        voided = 0,
-        voidedAmount = 0,
-        cash = 0,
-        cashAmount = 0,
-        credit = 0,
-        creditAmount = 0,
-        creditTip = 0,
-        creditTipAmount = 0,
-        gift = 0,
-        giftAmount = 0;
-
+      let valid = data.filter(ticket => ticket.status === 1);
+      let validPayment = valid.map(ticket => ticket.payment);
+      let settled = data.filter(
+        ticket => ticket.settled && ticket.status === 1
+      );
+      let payments = [];
       data.forEach(ticket => {
-        let {
-          total,
-          subtotal,
-          due,
-          tax,
-          tip,
-          delivery,
-          gratuity,
-          discount
-        } = ticket.payment;
-        let amount =
-          parseFloat(subtotal) + parseFloat(tax) - parseFloat(discount);
-
-        if (ticket.status === 1) {
-          switch (ticket.type) {
-            case "WALK_IN":
-              walkin++;
-              walkinAmount += amount;
-              break;
-            case "PICK_UP":
-              pickup++;
-              pickupAmount += amount;
-              break;
-            case "DELIVERY":
-              delivery++;
-              deliveryAmount += amount;
-              break;
-            case "DINE_IN":
-              dinein++;
-              dineinAmount += amount;
-              break;
-            case "BAR":
-              bar++;
-              barAmount += amount;
-              break;
-            default:
-              other++;
-              otherAmount += amount;
-          }
-          gross++;
-          grossAmount +=
-            parseFloat(subtotal) +
-            parseFloat(tax) +
-            parseFloat(tip) +
-            parseFloat(gratuity) +
-            parseFloat(delivery);
-          netAmount += amount;
-          itemSalesAmount += parseFloat(subtotal);
-          taxAmount += parseFloat(tax);
-
-          if (ticket.payment.discount > 0) {
-            discount++;
-            discountAmount += parseFloat(discount);
-          }
-
-          if (ticket.settled) {
-            settle++;
-            settleAmount += amount;
-            tipsAmount += parseFloat(tip);
-            gratuityAmount += parseFloat(gratuity);
-
-            let log = [];
-            Array.isArray(ticket.splitPayment)
-              ? ticket.splitPayment.forEach(split => {
-                  split && log.push(...split.log);
-                })
-              : log.push(...ticket.payment.log);
-
-            log.forEach(t => {
-              switch (t.type) {
-                case "CASH":
-                  cash++;
-                  cashAmount += toFixed(t.paid - t.change, 2);
-                  break;
-                case "CREDIT":
-                  credit++;
-                  creditAmount += parseFloat(t.paid);
-                  if (t.tip > 0) {
-                    creditTip++;
-                    creditTipAmount += parseFloat(t.tip);
-                  }
-                  break;
-                case "GIFT":
-                  gift++;
-                  giftAmount += parseFloat(t.paid);
-                  break;
-                default:
-                  third++;
-                  thirdAmount += parseFloat(t.paid);
-              }
-            });
-          } else if (!ticket.payment.settled) {
-            unsettle++;
-            unsettleAmount += amount;
-          }
+        if (ticket.splitPayment) {
+          payments.push(...ticket.splitPayment);
         } else {
-          voided++;
-          voidedAmount += parseFloat(total);
+          payments.push(ticket.payment);
         }
       });
+
+      let counter = (a, b) => a + b;
+
+      let grossAmount = validPayment
+        .map(
+          ticket =>
+            parseFloat(ticket.subtotal) +
+            parseFloat(ticket.tax) +
+            parseFloat(ticket.delivery) +
+            parseFloat(ticket.tip) +
+            parseFloat(ticket.gratuity)
+        )
+        .reduce(counter);
+
+      let discount = validPayment.filter(ticket => ticket.discount > 0);
+
+      let discountAmount = discount
+        .map(ticket => parseFloat(ticket.discount))
+        .reduce(counter);
+
+      let netAmount = toFixed(grossAmount - discountAmount, 2);
+
+      let itemSalesAmount = validPayment
+        .map(ticket => parseFloat(ticket.subtotal))
+        .reduce(counter);
+
+      let taxAmount = validPayment
+        .map(ticket => parseFloat(ticket.tax))
+        .reduce(counter);
+
+      let tipAmount = validPayment
+        .map(ticket => parseFloat(ticket.tip))
+        .reduce(counter);
+
+      let gratuityAmount = validPayment
+        .map(ticket => parseFloat(ticket.gratuity))
+        .reduce(counter);
+
+      // receivable should consider gift card transaction, cash out , and other activities
+      let receivable = toFixed(netAmount, 2);
+
       this.report["SUMMARY"] = this.summary
         ? [
             {
               text: this.$t("report.grossSales"),
-              count: gross,
+              count: validPayment.length,
               amount: grossAmount
-            },
-            {
-              text: this.$t("report.netSales"),
-              count: 0,
-              amount: netAmount
-            },
-            {
-              text: "&nbsp;",
-              count: 0,
-              amount: ""
             },
             {
               text: this.$t("report.itemSales"),
@@ -685,53 +589,18 @@ export default {
             },
             {
               text: this.$t("report.discount"),
-              count: discount,
+              count: discount.length,
               amount: -discountAmount
-            },
-            {
-              text: "&nbsp;",
-              count: 0,
-              amount: ""
             },
             {
               text: this.$t("report.tips"),
               count: 0,
-              amount: tipsAmount
+              amount: tipAmount
             },
             {
               text: this.$t("report.gratuity"),
               count: 0,
               amount: gratuityAmount
-            }
-          ]
-        : null;
-
-      this.report["SALES CATEGORY"] = this.salesCategory
-        ? [
-            {
-              text: this.$t("report.cash"),
-              count: cash,
-              amount: cashAmount
-            },
-            {
-              text: this.$t("report.creditCard"),
-              count: credit,
-              amount: creditAmount
-            },
-            {
-              text: this.$t("report.creditCardTip"),
-              count: creditTip,
-              amount: creditTipAmount
-            },
-            {
-              text: this.$t("report.giftCard"),
-              count: gift,
-              amount: giftAmount
-            },
-            {
-              text: this.$t("report.thirdParty"),
-              count: third,
-              amount: thirdAmount
             },
             {
               text: "&nbsp;",
@@ -739,53 +608,286 @@ export default {
               amount: ""
             },
             {
-              text: this.$t("type.WALK_IN"),
-              count: walkin,
-              amount: walkinAmount
-            },
-            {
-              text: this.$t("type.PICK_UP"),
-              count: pickup,
-              amount: pickupAmount
-            },
-            {
-              text: this.$t("type.DELIVERY"),
-              count: delivery,
-              amount: deliveryAmount
-            },
-            {
-              text: this.$t("type.DINE_IN"),
-              count: dinein,
-              amount: dineinAmount
-            },
-            {
-              text: this.$t("type.other"),
+              text: this.$t("report.receivable"),
               count: 0,
-              amount: otherAmount
-            },
-            {
-              text: "&nbsp;",
-              count: 0,
-              amount: ""
-            },
-            {
-              text: this.$t("type.settled"),
-              count: settle,
-              amount: settleAmount
-            },
-            {
-              text: this.$t("type.unsettled"),
-              count: unsettle,
-              amount: unsettleAmount
-            },
-            {
-              text: this.$t("type.voided"),
-              count: voided,
-              amount: voidedAmount
+              amount: receivable
             }
           ]
         : null;
     },
+
+    // summarize(data) {
+    //   let gross = 0,
+    //     grossAmount = 0,
+    //     netAmount = 0,
+    //     itemSalesAmount = 0,
+    //     taxAmount = 0,
+    //     walkin = 0,
+    //     walkinAmount = 0,
+    //     pickup = 0,
+    //     pickupAmount = 0,
+    //     delivery = 0,
+    //     deliveryAmount = 0,
+    //     deliveryTip = 0,
+    //     dinein = 0,
+    //     dineinAmount = 0,
+    //     bar = 0,
+    //     barAmount = 0,
+    //     tips = 0,
+    //     tipsAmount = 0,
+    //     gratuityAmount = 0,
+    //     other = 0,
+    //     otherAmount = 0,
+    //     third = 0,
+    //     thirdAmount = 0,
+    //     settle = 0,
+    //     settleAmount = 0,
+    //     discount = 0,
+    //     discountAmount = 0,
+    //     unsettle = 0,
+    //     unsettleAmount = 0,
+    //     voided = 0,
+    //     voidedAmount = 0,
+    //     cash = 0,
+    //     cashAmount = 0,
+    //     credit = 0,
+    //     creditAmount = 0,
+    //     creditTip = 0,
+    //     creditTipAmount = 0,
+    //     gift = 0,
+    //     giftAmount = 0;
+
+    //   data.forEach(ticket => {
+    //     let {
+    //       total,
+    //       subtotal,
+    //       due,
+    //       tax,
+    //       tip,
+    //       delivery,
+    //       gratuity,
+    //       discount
+    //     } = ticket.payment;
+    //     let amount =
+    //       parseFloat(subtotal) + parseFloat(tax) - parseFloat(discount);
+
+    //     if (ticket.status === 1) {
+    //       switch (ticket.type) {
+    //         case "WALK_IN":
+    //           walkin++;
+    //           walkinAmount += amount;
+    //           break;
+    //         case "PICK_UP":
+    //           pickup++;
+    //           pickupAmount += amount;
+    //           break;
+    //         case "DELIVERY":
+    //           delivery++;
+    //           deliveryAmount += amount;
+    //           break;
+    //         case "DINE_IN":
+    //           dinein++;
+    //           dineinAmount += amount;
+    //           break;
+    //         case "BAR":
+    //           bar++;
+    //           barAmount += amount;
+    //           break;
+    //         default:
+    //           other++;
+    //           otherAmount += amount;
+    //       }
+    //       gross++;
+    //       grossAmount +=
+    //         parseFloat(subtotal) +
+    //         parseFloat(tax) +
+    //         parseFloat(tip) +
+    //         parseFloat(gratuity) +
+    //         parseFloat(delivery);
+    //       netAmount += amount;
+    //       itemSalesAmount += parseFloat(subtotal);
+    //       taxAmount += parseFloat(tax);
+
+    //       if (ticket.settled) {
+    //         settle++;
+    //         settleAmount += amount;
+    //         tipsAmount += parseFloat(tip);
+    //         gratuityAmount += parseFloat(gratuity);
+
+    //         if (ticket.payment.discount > 0) {
+    //           discount++;
+    //           discountAmount += parseFloat(discount);
+    //         }
+
+    //         let log = [];
+    //         Array.isArray(ticket.splitPayment)
+    //           ? ticket.splitPayment.forEach(split => {
+    //               split && log.push(...split.log);
+    //             })
+    //           : log.push(...ticket.payment.log);
+
+    //         log.forEach(t => {
+    //           switch (t.type) {
+    //             case "CASH":
+    //               cash++;
+    //               cashAmount += toFixed(t.paid - t.change, 2);
+    //               break;
+    //             case "CREDIT":
+    //               credit++;
+    //               creditAmount += parseFloat(t.paid);
+    //               if (t.tip > 0) {
+    //                 creditTip++;
+    //                 creditTipAmount += parseFloat(t.tip);
+    //               }
+    //               break;
+    //             case "GIFT":
+    //               gift++;
+    //               giftAmount += parseFloat(t.paid);
+    //               break;
+    //             default:
+    //               third++;
+    //               thirdAmount += parseFloat(t.paid);
+    //           }
+    //         });
+    //       } else if (!ticket.payment.settled) {
+    //         unsettle++;
+    //         unsettleAmount += amount;
+    //       }
+    //     } else {
+    //       voided++;
+    //       voidedAmount += parseFloat(total);
+    //     }
+    //   });
+    //   this.report["SUMMARY"] = this.summary
+    //     ? [
+    //         {
+    //           text: this.$t("report.grossSales"),
+    //           count: gross,
+    //           amount: grossAmount
+    //         },
+    //         {
+    //           text: this.$t("report.netSales"),
+    //           count: 0,
+    //           amount: netAmount
+    //         },
+    //         {
+    //           text: "&nbsp;",
+    //           count: 0,
+    //           amount: ""
+    //         },
+    //         {
+    //           text: this.$t("report.itemSales"),
+    //           count: 0,
+    //           amount: itemSalesAmount
+    //         },
+    //         {
+    //           text: this.$t("report.tax"),
+    //           count: 0,
+    //           amount: taxAmount
+    //         },
+    //         {
+    //           text: this.$t("report.discount"),
+    //           count: discount,
+    //           amount: -discountAmount
+    //         },
+    //         {
+    //           text: "&nbsp;",
+    //           count: 0,
+    //           amount: ""
+    //         },
+    //         {
+    //           text: this.$t("report.tips"),
+    //           count: 0,
+    //           amount: tipsAmount
+    //         },
+    //         {
+    //           text: this.$t("report.gratuity"),
+    //           count: 0,
+    //           amount: gratuityAmount
+    //         }
+    //       ]
+    //     : null;
+
+    //   this.report["SALES CATEGORY"] = this.salesCategory
+    //     ? [
+    //         {
+    //           text: this.$t("report.cash"),
+    //           count: cash,
+    //           amount: cashAmount
+    //         },
+    //         {
+    //           text: this.$t("report.creditCard"),
+    //           count: credit,
+    //           amount: creditAmount
+    //         },
+    //         {
+    //           text: this.$t("report.creditCardTip"),
+    //           count: creditTip,
+    //           amount: creditTipAmount
+    //         },
+    //         {
+    //           text: this.$t("report.giftCard"),
+    //           count: gift,
+    //           amount: giftAmount
+    //         },
+    //         {
+    //           text: this.$t("report.thirdParty"),
+    //           count: third,
+    //           amount: thirdAmount
+    //         },
+    //         {
+    //           text: "&nbsp;",
+    //           count: 0,
+    //           amount: ""
+    //         },
+    //         {
+    //           text: this.$t("type.WALK_IN"),
+    //           count: walkin,
+    //           amount: walkinAmount
+    //         },
+    //         {
+    //           text: this.$t("type.PICK_UP"),
+    //           count: pickup,
+    //           amount: pickupAmount
+    //         },
+    //         {
+    //           text: this.$t("type.DELIVERY"),
+    //           count: delivery,
+    //           amount: deliveryAmount
+    //         },
+    //         {
+    //           text: this.$t("type.DINE_IN"),
+    //           count: dinein,
+    //           amount: dineinAmount
+    //         },
+    //         {
+    //           text: this.$t("type.other"),
+    //           count: 0,
+    //           amount: otherAmount
+    //         },
+    //         {
+    //           text: "&nbsp;",
+    //           count: 0,
+    //           amount: ""
+    //         },
+    //         {
+    //           text: this.$t("type.settled"),
+    //           count: settle,
+    //           amount: settleAmount
+    //         },
+    //         {
+    //           text: this.$t("type.unsettled"),
+    //           count: unsettle,
+    //           amount: unsettleAmount
+    //         },
+    //         {
+    //           text: this.$t("type.voided"),
+    //           count: voided,
+    //           amount: voidedAmount
+    //         }
+    //       ]
+    //     : null;
+    // },
     hourlyReport(data) {
       let hours = {};
       data.forEach(ticket => {
@@ -815,7 +917,7 @@ export default {
             counter[item.usEN] = {
               text: item[this.language],
               count: 1,
-              amount: toFixed(item.single * item.qty,2)
+              amount: toFixed(item.single * item.qty, 2)
             };
           } else {
             counter[item.usEN].count += item.qty;
