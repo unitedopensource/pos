@@ -137,15 +137,15 @@ export default {
       let queue = this.combineOrders.slice(0);
       let index = queue.indexOf(number);
       queue.splice(index, 1);
-      queue = queue.map(i => "#" + i).join(",");
 
       this.$dialog({
         type: "question",
         title: "dialog.combineTickets",
-        msg: ["dialog.combineTicketsConfirm", queue, number]
+        msg: ["dialog.combineTicketsConfirm", queue.map(i => "#" + i).join(","), number]
       })
         .then(() => {
-          let master = this.history.find(invoice => invoice.number === number);
+            try{
+ let master = this.history.find(invoice => invoice.number === number);
           let slaves = [];
 
           queue.forEach(num => {
@@ -172,11 +172,15 @@ export default {
 
             slaves.push(ticket);
           });
-          this.$socket.emit("[COMBINE] INVOICE", {
+          this.$socket.emit("[COMBINE] TABLE_INVOICE", {
             master,
             slaves,
             op: this.op.name
           });
+            }catch(e){
+                console.log(e)
+            }
+         
           this.$q();
         })
         .catch(() => {
