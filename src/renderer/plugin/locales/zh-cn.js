@@ -83,7 +83,8 @@ export default {
         'Malice Order': '恶意订单',
         'Invalid Order': '无效订单',
         'Payment Issue': '付款问题',
-        'Manager Redemption': '经理免单'
+        'Manager Redemption': '经理免单',
+        'Order Combined':'合并订单'
     },
     dashboard: {
         'name': '名字',

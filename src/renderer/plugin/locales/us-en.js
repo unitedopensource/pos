@@ -90,7 +90,8 @@ export default {
         'Malice Order': 'Malice Order',
         'Invalid Order': 'Invalid Order',
         'Payment Issue': 'Payment Issue',
-        'Manager Redemption': 'Manager Redemption'
+        'Manager Redemption': 'Manager Redemption',
+        'Order Combined':'Order Combined'
     },
     dashboard: {
         'name': 'Name',

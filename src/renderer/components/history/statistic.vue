@@ -253,6 +253,7 @@ td {
 tr.voided {
   background: #fbe9e7;
   color: #ff5722;
+  position: relative;
 }
 
 tr:nth-child(odd) {

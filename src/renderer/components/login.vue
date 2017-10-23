@@ -54,10 +54,10 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
-import dialoger from './common/dialoger'
-import _debounce from 'lodash.debounce'
-import { ipcRenderer } from 'electron'
+import { mapActions, mapGetters } from "vuex";
+import dialoger from "./common/dialoger";
+import _debounce from "lodash.debounce";
+import { ipcRenderer } from "electron";
 export default {
   components: { dialoger },
   data() {
@@ -66,8 +66,8 @@ export default {
       reset: false,
       component: null,
       componentData: null,
-      toggleMenu: false,
-    }
+      toggleMenu: false
+    };
   },
   created() {
     this.host = window.server === true;
@@ -86,28 +86,34 @@ export default {
           this.delPin();
           break;
         default:
-          /^[a-z,A-z,0-9]$/.test(e.key) && this.setPin(e.key);
+          let charCode = e.which || e.keyCode;
+          let char = String.fromCharCode(charCode);
+          /[a-zA-Z0-9]/i.test(char) && this.setPin(char);
       }
     },
     login() {
       this.reset = true;
-      this.$socket.emit("INQUIRY_LOGIN", this.password.join(''));
+      this.$socket.emit("INQUIRY_LOGIN", this.password.join(""));
     },
     autoLogin: _debounce(function() {
-      if (this.$route.name === 'Login') {
+      if (this.$route.name === "Login") {
         this.login();
         this.reset = false;
       }
     }, 500),
     massiveShutdown() {
       this.$dialog({
-        type: 'question',
-        title: 'dialog.massiveShutdownConfirm',
-        msg: 'dialog.massiveShutdownConfirmTip'
-      }).then(() => {
-        this.$socket.emit("[CTRL] MASSIVE_SHUTDOWN");
-        this.$q()
-      }).catch(() => { this.$q() })
+        type: "question",
+        title: "dialog.massiveShutdownConfirm",
+        msg: "dialog.massiveShutdownConfirmTip"
+      })
+        .then(() => {
+          this.$socket.emit("[CTRL] MASSIVE_SHUTDOWN");
+          this.$q();
+        })
+        .catch(() => {
+          this.$q();
+        });
     },
     shutdown() {
       ipcRenderer.send("Shutdown");
@@ -120,13 +126,9 @@ export default {
       //Promise.all([this.checkTerminal(),this.checkSettlement()]).then()
       ipcRenderer.send("Exit");
     },
-    checkTerminal() {
-
-    },
-    checkSettlement() {
-
-    },
-    ...mapActions(['setPin', 'delPin', 'setOp', 'setApp'])
+    checkTerminal() {},
+    checkSettlement() {},
+    ...mapActions(["setPin", "delPin", "setOp", "setApp"])
   },
   beforeDestroy() {
     window.removeEventListener("keydown", this.input, false);
@@ -136,24 +138,24 @@ export default {
       if (result.auth) {
         document.querySelector(".ctrl").classList.add("hide");
         let language = result.op.language || "usEN";
-        moment.locale(language === 'usEN' ? 'en' : 'zh-cn');
+        moment.locale(language === "usEN" ? "en" : "zh-cn");
         this.$setLanguage(language);
-        this.setApp({ language, mode: 'create' });
+        this.setApp({ language, mode: "create" });
         this.setOp(result.op);
         this.setPin();
-        this.$router.push({ path: '/main' });
+        this.$router.push({ path: "/main" });
         this.$socket.emit("[SYNC] POS", sync => {
           if (this.sync !== sync) {
-            this.$socket.emit("[SYNC] ORDER_LIST")
-            this.$socket.emit("[SYNC] TABLE_LIST")
+            this.$socket.emit("[SYNC] ORDER_LIST");
+            this.$socket.emit("[SYNC] TABLE_LIST");
           }
-        })
+        });
       } else {
-        this.reset && this.setPin()
+        this.reset && this.setPin();
       }
     },
     SHUTDOWN() {
-      ipcRenderer.send("Shutdown")
+      ipcRenderer.send("Shutdown");
     }
   },
   watch: {
@@ -162,9 +164,9 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['sync', 'store', 'password', 'station'])
+    ...mapGetters(["sync", "store", "password", "station"])
   }
-}
+};
 </script>
 
 <style scoped>
@@ -187,7 +189,7 @@ export default {
 }
 
 .ctrl label:active {
-  background: #E0E0E0;
+  background: #e0e0e0;
 }
 
 .ctrl.hide,
@@ -206,7 +208,7 @@ export default {
 }
 
 .ctrl ul:after {
-  content: ' ';
+  content: " ";
   position: absolute;
   left: 52px;
   bottom: -9px;
@@ -235,9 +237,16 @@ export default {
   bottom: 0;
   left: 0;
   width: 100%;
-  content: ' ';
+  content: " ";
   height: 1px;
-  background: -webkit-gradient(linear, 0 0, 100% 0, from(white), to(white), color-stop(50%, #03A9F4));
+  background: -webkit-gradient(
+    linear,
+    0 0,
+    100% 0,
+    from(white),
+    to(white),
+    color-stop(50%, #03a9f4)
+  );
 }
 
 .ctrl li i {

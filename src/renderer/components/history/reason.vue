@@ -21,19 +21,19 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 export default {
-  props: ['init'],
+  props: ["init"],
   data() {
     return {
       reason: null
-    }
+    };
   },
   methods: {
     setReason(note, e) {
-      let dom = document.querySelector('.reason li.set');
-      dom && dom.classList.remove('set');
-      e.currentTarget.classList.add('set');
+      let dom = document.querySelector(".reason li.set");
+      dom && dom.classList.remove("set");
+      e.currentTarget.classList.add("set");
       this.reason = note;
     },
     confirm() {
@@ -44,15 +44,14 @@ export default {
         time: +new Date(),
         note: this.reason
       };
-      //add table clear logic here
       this.$socket.emit("[UPDATE] INVOICE", order);
       this.init.resolve();
     }
   },
   computed: {
-    ...mapGetters(['op', 'order'])
+    ...mapGetters(["op", "order"])
   }
-}
+};
 </script>
 
 <style scoped>
@@ -79,15 +78,15 @@ li.flag {
 }
 
 li.flag:before {
-  content: '\F024';
+  content: "\F024";
   font-family: FontAwesome;
   position: absolute;
   left: -12px;
-  color: #F44336;
+  color: #f44336;
 }
 
 li.set {
-  background: #FFD54F;
+  background: #ffd54f;
   border-bottom: 1px solid #795548;
   font-weight: bold;
 }

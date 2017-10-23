@@ -124,7 +124,6 @@ export default {
     },
     created() {
         this.operator = JSON.parse(JSON.stringify(this.profile));
-
         //patch 
         !this.operator.hasOwnProperty('permission') && (this.operator = Object.assign({}, this.operator, { permission: [] }));
     },
@@ -162,8 +161,8 @@ export default {
         },
         removeEmployeeCard() {
             this.$dialog({
-                title: 'dialog.removeEmployeeCard',
-                msg: 'dialog.removeEmployeeCardTip'
+                title: 'card.removeEmployeeCard',
+                msg: 'card.removeEmployeeCardTip'
             }).then(() => {
                 this.operator.card = null;
                 this.$q()

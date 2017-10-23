@@ -24,13 +24,13 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
-import _debounce from 'lodash.debounce'
+import { mapActions, mapGetters } from "vuex";
+import _debounce from "lodash.debounce";
 export default {
   data() {
     return {
       reset: false
-    }
+    };
   },
   mounted() {
     window.addEventListener("keydown", this.input, false);
@@ -46,15 +46,17 @@ export default {
           this.delPin();
           break;
         default:
-          /^[a-z,A-z,0-9]$/.test(e.key) && this.setPin(e.key);
+          let charCode = e.which || e.keyCode;
+          let char = String.fromCharCode(charCode);
+          /[a-zA-Z0-9]/i.test(char) && this.setPin(char);
       }
     },
     login() {
       this.reset = true;
-      this.$socket.emit("INQUIRY_LOGIN", this.password.join(''));
+      this.$socket.emit("INQUIRY_LOGIN", this.password.join(""));
     },
-    autoLogin: _debounce(function () {
-      if (this.$route.name === 'Lock') {
+    autoLogin: _debounce(function() {
+      if (this.$route.name === "Lock") {
         this.login();
         this.reset = false;
       }
@@ -62,7 +64,7 @@ export default {
     shutdown() {
       this.$socket.emit("SHUTDOWN");
     },
-    ...mapActions(['setPin', 'delPin', 'setOp', 'setApp'])
+    ...mapActions(["setPin", "delPin", "setOp", "setApp"])
   },
   beforeDestroy() {
     window.removeEventListener("keydown", this.input, false);
@@ -71,12 +73,12 @@ export default {
     LOGIN_AUTH(result) {
       if (result.auth) {
         let language = result.op.language || "usEN";
-        moment.locale(language === 'usEN' ? 'en' : 'zh-cn');
+        moment.locale(language === "usEN" ? "en" : "zh-cn");
         this.$setLanguage(language);
-        this.setApp({ language, mode: 'create' });
+        this.setApp({ language, mode: "create" });
         this.setOp(result.op);
         this.setPin();
-        this.$router.push({ path: '/main' });
+        this.$router.push({ path: "/main" });
       } else {
         this.reset && this.setPin();
       }
@@ -88,7 +90,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['store', 'password', 'station'])
+    ...mapGetters(["store", "password", "station"])
   }
-}
+};
 </script>

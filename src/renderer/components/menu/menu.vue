@@ -112,8 +112,9 @@ export default {
         this.saveForDiffs(this.order.content);
       }
     },
-    entry(entry) {
-      switch (entry.key) {
+    entry(e) {
+      if(this.component) return;
+      switch (e.key) {
         case "Escape":
           this.queryItem = "";
           this.queryItemResult = [];
@@ -143,16 +144,16 @@ export default {
           break;
         default:
           if (this.queryItemResult.length > 1) {
-            if (isNumber(entry.key) && this.queryItemResult[entry.key - 1]) {
-              this.pick(this.queryItemResult[entry.key - 1]);
+            if (isNumber(e.key) && this.queryItemResult[e.key - 1]) {
+              this.pick(this.queryItemResult[e.key - 1]);
               this.queryItemResult = [];
               this.queryItem = "";
             }
           } else {
-            let charCode = entry.which || entry.keyCode;
+            let charCode = e.which || e.keyCode;
             let char = String.fromCharCode(charCode);
             if (/[a-z0-9]/i.test(char)) {
-              this.queryItem += entry.key;
+              this.queryItem += e.key;
             }
           }
       }
