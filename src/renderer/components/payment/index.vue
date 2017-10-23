@@ -1284,7 +1284,7 @@ export default {
       });
       this.getQuickInput(remain);
     },
-    poleDisplay() {
+    poleDisplay(line1,line2) {
       if (!this.device.poleDisplay) return;
       poleDisplay.write("\f");
       poleDisplay.write(line(line1, line2));

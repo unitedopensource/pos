@@ -328,7 +328,9 @@ export default {
           .then(() => {
             this.remove(this.device);
           })
-          .catch(this.$q);
+          .catch(() => {
+            this.$q();
+          });
     },
     remove(printer) {
       this.$socket.emit("[CMS] REMOVE_PRINTER", printer);
@@ -383,7 +385,9 @@ export default {
           this.$socket.emit("[CMS] ASSIGN_PRINTER_TO_ITEMS", printer.name);
           this.$q();
         })
-        .catch(this.$q);
+        .catch(() => {
+          this.$q();
+        });
     },
     ...mapActions(["setPrinter", "removePrinter"])
   },
