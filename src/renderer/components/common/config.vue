@@ -79,7 +79,7 @@ export default {
         dom.classList.remove("showCategory");
     },
     toggleSeatOrder(){
-      console.log(toggle)
+      this.init.seatOrder = false;
     },
     ...mapActions(['setConfig'])
   },
