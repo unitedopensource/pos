@@ -137,14 +137,48 @@ export default {
       let queue = this.combineOrders.slice(0);
       let index = queue.indexOf(number);
       queue.splice(index, 1);
-      queue = queue.map(i=>"#"+i).join(",");
+      queue = queue.map(i => "#" + i).join(",");
 
       this.$dialog({
         type: "question",
         title: "dialog.combineTickets",
         msg: ["dialog.combineTicketsConfirm", queue, number]
       })
-        .then(() => {})
+        .then(() => {
+          let master = this.history.find(invoice => invoice.number === number);
+          let slaves = [];
+
+          queue.forEach(num => {
+            let ticket = this.history.find(invoice => invoice.number === num);
+            ticket.content.forEach(item => {
+              master.content.push(item);
+            });
+            //combine payment
+            master.payment.subtotal += ticket.payment.subtotal;
+            master.payment.tax += ticket.payment.tax;
+            master.payment.total += ticket.payment.total;
+            master.payment.due += ticket.payment.due;
+            master.payment.balance += ticket.payment.balance;
+            master.payment.paid += ticket.payment.paid;
+            master.payment.change += ticket.payment.change;
+
+            //should we ignore surcharge?
+            master.payment.gratuity += ticket.payment.gratuity;
+            master.payment.tip += ticket.payment.tip;
+            master.payment.surcharge += ticket.payment.surcharge;
+
+            master.payment.discount += ticket.payment.discount;
+            master.payment.remain += ticket.payment.remain;
+
+            slaves.push(ticket);
+          });
+          this.$socket.emit("[COMBINE] INVOICE", {
+            master,
+            slaves,
+            op: this.op.name
+          });
+          this.$q();
+        })
         .catch(() => {
           this.$q();
         });

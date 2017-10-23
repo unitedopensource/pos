@@ -146,7 +146,7 @@ export default {
 
         if (this.isTax) {
           let taxClass = this.tax.class[item.taxClass];
-          tax += taxClass.apply[type] ? taxClass.rate / 100 * amount : tax;
+          tax += taxClass.apply[type] ? (taxClass.rate / 100 * amount) : tax;
         }
 
         delivery =
