@@ -909,7 +909,9 @@ export default {
         this.$socket.emit("[CASHFLOW] ACTIVITY", { cashDrawer, activity });
 
         let actual =
-          type === "CASH" ? toFixed(this.paid - this.cashTender, 2) : this.paid;
+          type === "CASH"
+            ? toFixed(this.paid - this.cashTender, 2)
+            : parseFloat(this.paid);
 
         let balance = Math.max(0, this.payment.remain);
 
@@ -1032,7 +1034,7 @@ export default {
             Printer.setTarget("Order").print(this.order);
             this.exitPayment();
           } else {
-            this.exit();
+            this.exitPayment();
           }
         }
       } else {
@@ -1108,7 +1110,7 @@ export default {
         .then(result => {
           let { tip } = result;
           this.tip = tip.toFixed(2);
-          this.payment.tip = tip;
+          Object.assign(this.payment, { tip });
           this.recalculatePayment();
           this.$q();
         })
@@ -1132,7 +1134,7 @@ export default {
             Object.assign(this.order, { coupon: undefined });
           }
 
-          this.payment.discount = discount;
+          Object.assign(this.payment, { discount });
           this.recalculatePayment();
 
           this.poleDisplay(
@@ -1272,6 +1274,8 @@ export default {
       this.payment = Object.assign({}, this.payment, {
         total,
         due,
+        tip,
+        discount,
         surcharge,
         balance,
         remain,
@@ -1296,16 +1300,24 @@ export default {
     exitPayment() {
       switch (this.$route.name) {
         case "Menu":
+          let { doneLock } = this.station;
           if (this.ticket.type === "BUFFET") {
             this.resetMenu();
             this.exit();
           } else {
-            this.resetAll();
-            this.$router.push({ path: "/main" });
+            if (doneLock) {
+              this.setOp(null);
+              this.resetAll();
+              this.$router.push({ path: "/main/lock" });
+            } else {
+              this.resetAll();
+              this.$router.push({ path: "/main" });
+            }
           }
           break;
-        case "History":
         case "Table":
+          this.resetAll();
+        case "History":
         case "PickupList":
           this.exit();
           break;
@@ -1325,7 +1337,7 @@ export default {
       })
         .then(() => {
           let payment = this.combineSplitPayment();
-          Object.assign(this.order, {payment});
+          Object.assign(this.order, { payment });
           this.$socket.emit("[UPDATE] INVOICE", this.order, false);
           this.exit();
         })
@@ -1333,7 +1345,7 @@ export default {
           this.exit();
         });
     },
-    ...mapActions(["setOrder", "resetAll", "resetMenu"])
+    ...mapActions(["setOp", "setOrder", "resetAll", "resetMenu"])
   },
   watch: {
     tip(n) {

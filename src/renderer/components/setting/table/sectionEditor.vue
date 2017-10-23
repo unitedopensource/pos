@@ -13,10 +13,12 @@
                     <label for="secondary">{{$t('text.secondary')}}</label>
                     <input v-model="section.zhCN" id="secondary">
                 </div>
-
                 <div class="input">
                     <label for="zone">{{$t('text.section')}}</label>
                     <input v-model="section.zone" id="zone">
+                </div>
+                <div class="default">
+                    <checkbox label="text.barTap" v-model="bar"></checkbox>
                 </div>
             </div>
             <footer>
@@ -30,20 +32,23 @@
 </template>
 
 <script>
+import checkbox from "../common/checkbox";
 export default {
-    props: ['init'],
-    created() {
-        this.section = JSON.parse(JSON.stringify(this.init.section));
-    },
-    data() {
-        return {
-            section: null
-        }
-    },
-    methods: {
-        confirm() {
-            this.init.resolve(this.section);
-        }
+  props: ["init"],
+  components: { checkbox },
+  created() {
+    this.section = JSON.parse(JSON.stringify(this.init.section));
+  },
+  data() {
+    return {
+      bar: false,
+      section: null
+    };
+  },
+  methods: {
+    confirm() {
+      this.init.resolve(this.section);
     }
-}
+  }
+};
 </script>

@@ -116,6 +116,8 @@ export default {
         'terminalTip': '查看刷卡记录',
         'station': '工作站',
         'stationTip': '更改工作站设置',
+        'payOut':'支出',
+        'payOutTip':'员工采购记录',
         'language': '语言',
         'languageTip': '切换界面语言',
         'logout': '登出',
@@ -235,7 +237,8 @@ export default {
         'baseSetting':'基本设定',
         'salary':'工资',
         'doneAction':'完成操作',
-        'setDate':'设定日期'
+        'setDate':'设定日期',
+        'payOut':'支出记录'
     },
     menu: {
         'course': '定时',
@@ -543,7 +546,7 @@ export default {
         'details': '报表内容',
         'statistics': '数据',
         'summary': '简要报告',
-        'salesCategory': '付款来源明细',
+        'salesFrom': '款项来源明细',
         'categorySales': '菜单类别销售',
         'hourlyReport': '按小时统计销售',
         'settleType': '支付类别明细',
@@ -572,7 +575,8 @@ export default {
         'thirdParty':'第三方',
         'include':' (含)',
         'exclude':' (不含)',
-        'receivable':'应收款'
+        'receivable':'应收款',
+        'actualAmount':'实收款'
     },
     thead: {
         'orderType': '订单种类',
@@ -828,7 +832,9 @@ export default {
         'calcTips':'小费为: $ {i}',
         'fuelSurcharge':'燃油附加费',
         'noReceipt':'不打印收据',
-        'ignore':'忽略'
+        'ignore':'忽略',
+        'receiver':'收款人',
+        'comment':'注释'
     },
     nav: {
         'store': '店面',

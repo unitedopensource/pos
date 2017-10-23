@@ -32,39 +32,37 @@
 
 <script>
 export default {
-    props: ['init'],
-    data() {
-        return {
-            table: {},
-            options: [
-                "",
-                "icon-table-set",
-                "icon-round-couple",
-                "icon-square-couple"
-            ]
-        }
-    },
-    created() {
-        this.table = Object.assign({}, {
-            _id: ObjectId(),
-            feature: [],
-            guest: 0,
-            server: "",
-            time: null,
-            grid: this.init.index,
-            status: 1,
-            name: "",
-            shape: "icon-table-set",
-        }, JSON.parse(JSON.stringify(this.init.table)))
-    },
-    mounted() {
-        this.$refs.name.focus();
-    },
-    methods: {
-        confirm() {
-            this.init.resolve(this.table)
-        }
+  props: ["init"],
+  data() {
+    return {
+      table: {},
+      options: ["", "icon-table-set", "icon-round-couple", "icon-square-couple"]
+    };
+  },
+  created() {
+    this.table = Object.assign(
+      {},
+      {
+        _id: ObjectId(),
+        feature: [],
+        guest: 0,
+        server: "",
+        time: null,
+        grid: this.init.index,
+        status: 1,
+        name: "",
+        shape: "icon-table-set"
+      },
+      JSON.parse(JSON.stringify(this.init.table))
+    );
+  },
+  mounted() {
+    this.$refs.name.focus();
+  },
+  methods: {
+    confirm() {
+      this.init.resolve(this.table);
     }
-}
-
+  }
+};
 </script>

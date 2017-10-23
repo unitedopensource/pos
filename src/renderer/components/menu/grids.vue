@@ -89,6 +89,7 @@
       <i class="fa fa-language"></i>
       <span class="text">{{$t('button.language')}}</span>
     </div>
+    <div :is="component" :init="componentData"></div>
   </div>
   <div class="function" v-else>
     <div class="btn" @click="less">
@@ -144,19 +145,19 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
-import dialoger from '../common/dialoger'
-import unlock from '../common/unlock'
-import modify from './modify'
+import { mapGetters, mapActions } from "vuex";
+import dialoger from "../common/dialoger";
+import unlock from "../common/unlock";
+import modify from "./modify";
 export default {
-  props: ['layout'],
+  props: ["layout"],
   components: { dialoger, unlock, modify },
   data() {
     return {
       isDisplayGuests: false,
       componentData: null,
       component: null
-    }
+    };
   },
   methods: {
     callComponent(name) {
@@ -164,63 +165,84 @@ export default {
     },
     less() {
       if (this.isEmptyTicket) return;
-      let boolean = !document.querySelector('.item.active') && (!!document.querySelector('div.request') || !!this.item.choiceSet.length);
+      let boolean =
+        !document.querySelector(".item.active") &&
+        (!!document.querySelector("div.request") ||
+          !!this.item.choiceSet.length);
 
-      if (this.app.mode === 'create' || this.item.new) {
+      if (this.app.mode === "create" || this.item.new) {
         this.lessQty(boolean);
       } else {
-        this.approval(this.op.modify, 'item') ?
-          this.lessQty(boolean) :
-          this.requestAccess().then(op => {
-            if (this.approval(op.modify, 'item')) {
-              this.$q()
-              this.lessQty(boolean)
-            } else {
-              this.accessDenied()
-            }
-          }).catch(() => { this.accessDenied() })
+        this.approval(this.op.modify, "item")
+          ? this.lessQty(boolean)
+          : this.requestAccess()
+              .then(op => {
+                if (this.approval(op.modify, "item")) {
+                  this.$q();
+                  this.lessQty(boolean);
+                } else {
+                  this.accessDenied();
+                }
+              })
+              .catch(() => {
+                this.accessDenied();
+              });
       }
     },
     more() {
-      let focus = document.querySelector('.item.active');
-      let subItemCount = Array.isArray(this.item.choiceSet) ?
-        this.item.choiceSet.filter(item => item.subItem).map(item => item.qty).reduce((a, b) => a + b, 0) : 0;
+      let focus = document.querySelector(".item.active");
+      let subItemCount = Array.isArray(this.item.choiceSet)
+        ? this.item.choiceSet
+            .filter(item => item.subItem)
+            .map(item => item.qty)
+            .reduce((a, b) => a + b, 0)
+        : 0;
 
-      if (!focus && this.item.hasOwnProperty('rules')) {
+      if (!focus && this.item.hasOwnProperty("rules")) {
         let max = this.item.rules.maxSubItem || Infinity;
         let overCharge = this.item.rules.overCharge || 0;
         if (subItemCount >= max && overCharge === 0) {
           this.$dialog({
-            title: 'dialog.unableAdd', msg: ['dialog.maxSubItem', this.item[this.language], max],
-            timeout: { duration: 5000, fn: 'resolve' },
-            buttons: [{ text: 'button.confirm', fn: 'resolve' }]
-          }).then(() => { this.$q() })
-          return true
+            title: "dialog.unableAdd",
+            msg: ["dialog.maxSubItem", this.item[this.language], max],
+            timeout: { duration: 5000, fn: "resolve" },
+            buttons: [{ text: "button.confirm", fn: "resolve" }]
+          }).then(() => {
+            this.$q();
+          });
+          return true;
         }
       }
-      this.moreQty()
+      this.moreQty();
     },
     requestAccess() {
       return new Promise((resolve, reject) => {
         this.componentData = { resolve, reject };
-        this.component = 'unlock'
-      })
+        this.component = "unlock";
+      });
     },
     accessDenied() {
       this.$dialog({
-        title: 'dialog.accessDenied', msg: 'dialog.accessDeniedTip', buttons: [{ text: 'button.confirm', fn: 'resolve' }]
-      }).then(() => { this.$q() })
+        title: "dialog.accessDenied",
+        msg: "dialog.accessDeniedTip",
+        buttons: [{ text: "button.confirm", fn: "resolve" }]
+      }).then(() => {
+        this.$q();
+      });
     },
     modify() {
       if (this.isEmptyTicket) return;
-      let target = !!document.querySelector(".sub.target")
-      target ? this.$p("modify", {
-        item: {
-          qty: this.choiceSet ? this.choiceSet.qty : 1,
-          single: this.choiceSet ? this.choiceSet.single : 0,
-          discount: 0
-        }, type: 'choiceSet'
-      }) : this.$p("modify", { item: this.item })
+      let target = !!document.querySelector(".sub.target");
+      target
+        ? this.$p("modify", {
+            item: {
+              qty: this.choiceSet ? this.choiceSet.qty : 1,
+              single: this.choiceSet ? this.choiceSet.single : 0,
+              discount: 0
+            },
+            type: "choiceSet"
+          })
+        : this.$p("modify", { item: this.item });
     },
     course() {
       if (this.isEmptyTicket) return;
@@ -228,96 +250,109 @@ export default {
     },
     settle() {
       if (this.isEmptyTicket) return;
-      if (this.op.cashCtrl !== 'enable' && this.op.cashCtrl !== 'staffBank') return;
-      this.callComponent("settle")
+      if (this.op.cashCtrl !== "enable" && this.op.cashCtrl !== "staffBank")
+        return;
+      this.callComponent("settle");
     },
     request() {
-      this.callComponent("request")
+      this.callComponent("request");
     },
-    search() {
-
-    },
+    search() {},
     timer() {
       if (this.isEmptyTicket) return;
-      this.callComponent("timer")
+      this.callComponent("timer");
     },
     split() {
       if (this.isEmptyTicket) return;
-      this.callComponent("split")
+      this.callComponent("split");
     },
     switchGuest() {
-      this.callComponent("guest")
+      this.callComponent("guest");
     },
     save(print) {
       if (this.isEmptyTicket) return;
+      let { doneLock } = this.station;
       let order = this.combineOrderInfo({ print });
 
-      if (this.app.mode === 'create') {
-        this.$socket.emit("[SAVE] INVOICE", order, print, (content) => { print && Printer.setTarget('All').print(content) })
+      if (this.app.mode === "create") {
+        this.$socket.emit("[SAVE] INVOICE", order, print, content => {
+          print && Printer.setTarget("All").print(content);
+        });
       } else {
         if (print) {
-          let diffs = this.analyzeDiffs(order)
-          Printer.setTarget('All').print(diffs)
-          this.$socket.emit("[UPDATE] INVOICE", order, print)
+          let diffs = this.analyzeDiffs(order);
+          Printer.setTarget("All").print(diffs);
+          this.$socket.emit("[UPDATE] INVOICE", order, print);
         } else {
-          this.$socket.emit("[UPDATE] INVOICE", order,print)
+          this.$socket.emit("[UPDATE] INVOICE", order, print);
         }
       }
-      this.resetAll();
-      this.$router.push({ path: "/main" });
+      if (doneLock) {
+        this.setOp(null);
+        this.resetAll();
+        this.$router.push({ path: "/main/lock" });
+      } else {
+        this.resetAll();
+        this.$router.push({ path: "/main" });
+      }
     },
     done(print) {
       if (this.isEmptyTicket) return;
+      let { doneLock } = this.station;
       let { printOnDone, lockOnDone } = this.store.table;
       let order = this.combineOrderInfo({ print });
 
-      if (this.app.mode === 'create') {
+      if (this.app.mode === "create") {
         Object.assign(this.currentTable, { invoice: [order._id] });
         this.$socket.emit("[TABLE] SETUP", this.currentTable);
-        this.$socket.emit("[SAVE] INVOICE", order, print, (content) => {
+        this.$socket.emit("[SAVE] INVOICE", order, print, content => {
           if (print) {
-            printOnDone ? Printer.setTarget('All').print(content) : Printer.setTarget('Order').print(content)
+            printOnDone
+              ? Printer.setTarget("All").print(content)
+              : Printer.setTarget("Order").print(content);
           }
-        })
+        });
       } else {
-        this.$socket.emit("[UPDATE] INVOICE", order,print);
+        this.$socket.emit("[UPDATE] INVOICE", order, print);
         if (print) {
-          printOnDone ? Printer.setTarget('All').print(this.analyzeDiffs(order)) : Printer.setTarget('Order').print(this.analyzeDiffs(order))
+          printOnDone
+            ? Printer.setTarget("All").print(this.analyzeDiffs(order))
+            : Printer.setTarget("Order").print(this.analyzeDiffs(order));
         }
       }
 
-      if (lockOnDone) {
+      if (lockOnDone || doneLock) {
         this.setOp(null);
         this.resetAll();
-        this.$router.push({ path: '/main/lock' });
+        this.$router.push({ path: "/main/lock" });
       } else {
         this.setOrder(order);
-        this.$router.push({ name: "Table" })
+        this.$router.push({ name: "Table" });
       }
     },
     combineOrderInfo(extra) {
       let customer = Object.assign({}, this.customer);
       let print = extra.hasOwnProperty("print") ? extra.print : true;
       let order = Object.assign({}, this.order);
-      if (this.app.mode === 'create') {
+      if (this.app.mode === "create") {
         delete customer.extra;
         Object.assign(order, {
           customer,
           type: this.ticket.type,
           number: this.ticket.number,
-          source: this.op.role !== 'ThirdParty' ? "POS" : this.op.name,
+          source: this.op.role !== "ThirdParty" ? "POS" : this.op.name,
           modify: 0,
           status: 1,
           time: +new Date(),
           date: today()
-        })
+        });
       } else {
         Object.assign(order, {
           customer,
           lastEdit: +new Date(),
           editor: this.op.name,
           modify: isNumber(this.order.modify) ? this.order.modify + 1 : 1
-        })
+        });
       }
       return Object.assign({}, order, extra);
     },
@@ -335,31 +370,44 @@ export default {
 
           //compare quantity
           if (now.qty < prev.qty) {
-            compare[index].diffs = 'less'
-            compare[index].print = false
+            compare[index].diffs = "less";
+            compare[index].print = false;
           } else if (now.qty > prev.qty) {
-            compare[index].diffs = 'more'
-            compare[index].print = false
+            compare[index].diffs = "more";
+            compare[index].print = false;
           } else {
-            compare[index].diffs = 'unchanged'
+            compare[index].diffs = "unchanged";
           }
-          compare[index].origin = prev.qty
-          items.push(compare[index])
+          compare[index].origin = prev.qty;
+          items.push(compare[index]);
         } else {
-          prev.diffs = 'removed'
+          prev.diffs = "removed";
           prev.print = false;
-          items.push(prev)
+          items.push(prev);
         }
-      })
+      });
 
-      items.push(...current.content.filter(item => item.new).map(item => {
-        item.diffs = 'new';
-        return item
-      }))
+      items.push(
+        ...current.content.filter(item => item.new).map(item => {
+          item.diffs = "new";
+          return item;
+        })
+      );
       return Object.assign(current, { content: items });
     },
     exit() {
-      this.isEmptyTicket ? this.exitOut() : this.$dialog({ title: 'dialog.exitConfirm', msg: 'dialog.exitConfirmTip' }).then(() => { this.exitOut() }).catch(() => { this.$q() })
+      this.isEmptyTicket
+        ? this.exitOut()
+        : this.$dialog({
+            title: "dialog.exitConfirm",
+            msg: "dialog.exitConfirmTip"
+          })
+            .then(() => {
+              this.exitOut();
+            })
+            .catch(() => {
+              this.$q();
+            });
     },
     exitOut() {
       this.resetAll();
@@ -367,26 +415,59 @@ export default {
       this.$router.push({ path: "/main" });
     },
     dineInExit() {
-      this.isEmptyTicket ? this.resetTableExit() :
-        this.$dialog({ title: 'dialog.exitConfirm', msg: 'dialog.exitConfirmTip' }).then(() => { this.resetTableExit() }).catch(() => { this.$q() });
+      this.isEmptyTicket
+        ? this.resetTableExit()
+        : this.$dialog({
+            title: "dialog.exitConfirm",
+            msg: "dialog.exitConfirmTip"
+          })
+            .then(() => {
+              this.resetTableExit();
+            })
+            .catch(() => {
+              this.$q();
+            });
     },
     resetTableExit() {
-      this.app.mode === 'create' && this.$socket.emit("[TABLE] RESET", { _id: this.currentTable._id });
+      this.app.mode === "create" &&
+        this.$socket.emit("[TABLE] RESET", { _id: this.currentTable._id });
       this.exitOut();
     },
     switchLanguage() {
       let language = this.app.language === "usEN" ? "zhCN" : "usEN";
       this.$setLanguage(language);
       this.setApp({ language });
-      moment.locale(language === 'usEN' ? 'en' : 'zh-cn');
+      moment.locale(language === "usEN" ? "en" : "zh-cn");
       this.$forceUpdate();
     },
-    ...mapActions(['setOp', 'setApp', 'lessQty', 'moreQty', 'resetAll', 'setOrder', 'setTableInfo'])
+    ...mapActions([
+      "setOp",
+      "setApp",
+      "lessQty",
+      "moreQty",
+      "resetAll",
+      "setOrder",
+      "setTableInfo"
+    ])
   },
   computed: {
-    ...mapGetters(['op', 'app', 'item', 'diffs', 'language', 'order', 'ticket', 'store', 'customer', 'station', 'isEmptyTicket', 'currentTable', 'choiceSet'])
+    ...mapGetters([
+      "op",
+      "app",
+      "item",
+      "diffs",
+      "language",
+      "order",
+      "ticket",
+      "store",
+      "customer",
+      "station",
+      "isEmptyTicket",
+      "currentTable",
+      "choiceSet"
+    ])
   }
-}
+};
 </script>
 
 <style scoped>

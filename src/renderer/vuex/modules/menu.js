@@ -46,7 +46,7 @@ const mutations = {
     };
     state.item = null;
     state.choiceSetTarget = null;
-    state.sides = [];
+    state.sides = Array(11).fill({ zhCN: "", usEN: "", disable: true })
   },
   [types.SET_VIEW_ORDER](state, order) {
     state.order = order;

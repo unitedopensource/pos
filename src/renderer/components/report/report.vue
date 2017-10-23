@@ -45,12 +45,12 @@
                         <div class="left">
                             <h5>{{$t('report.statistics')}}</h5>
                             <checkbox v-model="summary" label="report.summary"></checkbox>
-                            <checkbox v-model="salesCategory" label="report.salesCategory"></checkbox>
-                            <checkbox v-model="countCategory" label="report.categorySales"></checkbox>
-                            <checkbox v-model="hourly" label="report.hourlyReport"></checkbox>
+                            <checkbox v-model="salesFrom" label="report.salesFrom"></checkbox>
                             <checkbox v-model="settleType" label="report.settleType"></checkbox>
-                            <checkbox v-model="giftCard" label="report.giftCardSummary"></checkbox>
+                            <checkbox v-model="hourly" label="report.hourlyReport"></checkbox>
+                            <checkbox v-model="countCategory" label="report.categorySales"></checkbox>
                             <checkbox v-model="countItem" label="report.countItem"></checkbox>
+                            <checkbox v-model="giftCard" label="report.giftCardSummary"></checkbox>
                         </div>
                         <div class="right">
                             <h5>{{$t('report.performance')}}</h5>
@@ -103,7 +103,7 @@ export default {
       component: null,
       componentData: null,
       countCategory: false,
-      salesCategory: false,
+      salesFrom: false,
       report: {}
     };
   },
@@ -282,6 +282,9 @@ export default {
     },
     handler(datas) {
       this.summarize(datas[0]);
+      this.report["SALES ANALYSIS"] = this.salesFrom
+        ? this.salesAnalysis(datas[0])
+        : null;
       this.report["CREDIT CARD"] = this.creditCardReport(datas[1]);
       this.report["GIFT CARD"] = this.giftCard
         ? this.giftCardReport(datas[2])
@@ -541,31 +544,31 @@ export default {
             parseFloat(ticket.tip) +
             parseFloat(ticket.gratuity)
         )
-        .reduce(counter,0);
+        .reduce(counter, 0);
 
       let discount = validPayment.filter(ticket => ticket.discount > 0);
 
       let discountAmount = discount
         .map(ticket => parseFloat(ticket.discount))
-        .reduce(counter,0);
+        .reduce(counter, 0);
 
       let netAmount = toFixed(grossAmount - discountAmount, 2);
 
       let itemSalesAmount = validPayment
         .map(ticket => parseFloat(ticket.subtotal))
-        .reduce(counter,0);
+        .reduce(counter, 0);
 
       let taxAmount = validPayment
         .map(ticket => parseFloat(ticket.tax))
-        .reduce(counter,0);
+        .reduce(counter, 0);
 
       let tipAmount = validPayment
         .map(ticket => parseFloat(ticket.tip))
-        .reduce(counter,0);
+        .reduce(counter, 0);
 
       let gratuityAmount = validPayment
         .map(ticket => parseFloat(ticket.gratuity))
-        .reduce(counter,0);
+        .reduce(counter, 0);
 
       // receivable should consider gift card transaction, cash out , and other activities
       let receivable = toFixed(netAmount, 2);
@@ -615,279 +618,162 @@ export default {
           ]
         : null;
     },
+    salesAnalysis(data) {
+      this.report["SALES ANALYZE"] = [];
+      let settled = data.filter(ticket => ticket.settled);
+      let unsettled = data.filter(ticket => !ticket.settled);
+      let counter = (a, b) => a + b;
+      let logs = [];
+      let temp;
 
-    // summarize(data) {
-    //   let gross = 0,
-    //     grossAmount = 0,
-    //     netAmount = 0,
-    //     itemSalesAmount = 0,
-    //     taxAmount = 0,
-    //     walkin = 0,
-    //     walkinAmount = 0,
-    //     pickup = 0,
-    //     pickupAmount = 0,
-    //     delivery = 0,
-    //     deliveryAmount = 0,
-    //     deliveryTip = 0,
-    //     dinein = 0,
-    //     dineinAmount = 0,
-    //     bar = 0,
-    //     barAmount = 0,
-    //     tips = 0,
-    //     tipsAmount = 0,
-    //     gratuityAmount = 0,
-    //     other = 0,
-    //     otherAmount = 0,
-    //     third = 0,
-    //     thirdAmount = 0,
-    //     settle = 0,
-    //     settleAmount = 0,
-    //     discount = 0,
-    //     discountAmount = 0,
-    //     unsettle = 0,
-    //     unsettleAmount = 0,
-    //     voided = 0,
-    //     voidedAmount = 0,
-    //     cash = 0,
-    //     cashAmount = 0,
-    //     credit = 0,
-    //     creditAmount = 0,
-    //     creditTip = 0,
-    //     creditTipAmount = 0,
-    //     gift = 0,
-    //     giftAmount = 0;
+      settled.map(ticket => {
+        if (ticket.hasOwnProperty("splitPayment")) {
+          ticket.splitPayment.forEach(split => {
+            logs.push(...split.log);
+          });
+        } else {
+          logs.push(...ticket.payment.log);
+        }
+      });
 
-    //   data.forEach(ticket => {
-    //     let {
-    //       total,
-    //       subtotal,
-    //       due,
-    //       tax,
-    //       tip,
-    //       delivery,
-    //       gratuity,
-    //       discount
-    //     } = ticket.payment;
-    //     let amount =
-    //       parseFloat(subtotal) + parseFloat(tax) - parseFloat(discount);
+      let settledCount = settled.length;
+      let settledAmount = settled
+        .map(ticket => ticket.payment.paid)
+        .reduce(counter, 0);
+      this.report["SALES ANALYZE"].push({
+        text: this.$t("type.settled"),
+        count: settledCount,
+        amount: settledAmount
+      });
 
-    //     if (ticket.status === 1) {
-    //       switch (ticket.type) {
-    //         case "WALK_IN":
-    //           walkin++;
-    //           walkinAmount += amount;
-    //           break;
-    //         case "PICK_UP":
-    //           pickup++;
-    //           pickupAmount += amount;
-    //           break;
-    //         case "DELIVERY":
-    //           delivery++;
-    //           deliveryAmount += amount;
-    //           break;
-    //         case "DINE_IN":
-    //           dinein++;
-    //           dineinAmount += amount;
-    //           break;
-    //         case "BAR":
-    //           bar++;
-    //           barAmount += amount;
-    //           break;
-    //         default:
-    //           other++;
-    //           otherAmount += amount;
-    //       }
-    //       gross++;
-    //       grossAmount +=
-    //         parseFloat(subtotal) +
-    //         parseFloat(tax) +
-    //         parseFloat(tip) +
-    //         parseFloat(gratuity) +
-    //         parseFloat(delivery);
-    //       netAmount += amount;
-    //       itemSalesAmount += parseFloat(subtotal);
-    //       taxAmount += parseFloat(tax);
+      let unsettledCount = unsettled.length;
+      let unsettledAmount = unsettled
+        .map(ticket => ticket.payment.balance)
+        .reduce(counter, 0);
+      this.report["SALES ANALYZE"].push({
+        text: this.$t("type.unsettled"),
+        count: unsettledCount,
+        amount: unsettledAmount
+      });
 
-    //       if (ticket.settled) {
-    //         settle++;
-    //         settleAmount += amount;
-    //         tipsAmount += parseFloat(tip);
-    //         gratuityAmount += parseFloat(gratuity);
+      this.report["SALES ANALYZE"].push({
+        text: "&nbsp;",
+        count: 0,
+        amount: ""
+      });
 
-    //         if (ticket.payment.discount > 0) {
-    //           discount++;
-    //           discountAmount += parseFloat(discount);
-    //         }
+      temp = logs.filter(log => log.type === "CASH");
+      let cashCount = temp.length;
+      let cashAmount = temp
+        .map(log => toFixed(log.paid - log.change, 2))
+        .reduce(counter, 0);
+      this.report["SALES ANALYZE"].push({
+        text: this.$t("report.cash"),
+        count: cashCount,
+        amount: cashAmount
+      });
 
-    //         let log = [];
-    //         Array.isArray(ticket.splitPayment)
-    //           ? ticket.splitPayment.forEach(split => {
-    //               split && log.push(...split.log);
-    //             })
-    //           : log.push(...ticket.payment.log);
+      temp = logs.filter(log => log.type === "CREDIT");
+      let creditCount = temp.length;
+      let creditAmount = temp
+        .map(log => toFixed(log.paid - log.tip, 2))
+        .reduce(counter, 0);
+      this.report["SALES ANALYZE"].push({
+        text: this.$t("report.creditCard"),
+        count: creditCount,
+        amount: creditAmount
+      });
 
-    //         log.forEach(t => {
-    //           switch (t.type) {
-    //             case "CASH":
-    //               cash++;
-    //               cashAmount += toFixed(t.paid - t.change, 2);
-    //               break;
-    //             case "CREDIT":
-    //               credit++;
-    //               creditAmount += parseFloat(t.paid);
-    //               if (t.tip > 0) {
-    //                 creditTip++;
-    //                 creditTipAmount += parseFloat(t.tip);
-    //               }
-    //               break;
-    //             case "GIFT":
-    //               gift++;
-    //               giftAmount += parseFloat(t.paid);
-    //               break;
-    //             default:
-    //               third++;
-    //               thirdAmount += parseFloat(t.paid);
-    //           }
-    //         });
-    //       } else if (!ticket.payment.settled) {
-    //         unsettle++;
-    //         unsettleAmount += amount;
-    //       }
-    //     } else {
-    //       voided++;
-    //       voidedAmount += parseFloat(total);
-    //     }
-    //   });
-    //   this.report["SUMMARY"] = this.summary
-    //     ? [
-    //         {
-    //           text: this.$t("report.grossSales"),
-    //           count: gross,
-    //           amount: grossAmount
-    //         },
-    //         {
-    //           text: this.$t("report.netSales"),
-    //           count: 0,
-    //           amount: netAmount
-    //         },
-    //         {
-    //           text: "&nbsp;",
-    //           count: 0,
-    //           amount: ""
-    //         },
-    //         {
-    //           text: this.$t("report.itemSales"),
-    //           count: 0,
-    //           amount: itemSalesAmount
-    //         },
-    //         {
-    //           text: this.$t("report.tax"),
-    //           count: 0,
-    //           amount: taxAmount
-    //         },
-    //         {
-    //           text: this.$t("report.discount"),
-    //           count: discount,
-    //           amount: -discountAmount
-    //         },
-    //         {
-    //           text: "&nbsp;",
-    //           count: 0,
-    //           amount: ""
-    //         },
-    //         {
-    //           text: this.$t("report.tips"),
-    //           count: 0,
-    //           amount: tipsAmount
-    //         },
-    //         {
-    //           text: this.$t("report.gratuity"),
-    //           count: 0,
-    //           amount: gratuityAmount
-    //         }
-    //       ]
-    //     : null;
+      let creditTipCount = temp.filter(log => log.tip > 0).length;
+      let creditTipAmount = temp
+        .map(log => toFixed(log.tip, 2))
+        .reduce(counter, 0);
+      this.report["SALES ANALYZE"].push({
+        text: this.$t("report.creditCardTip"),
+        count: creditTipCount,
+        amount: creditTipAmount
+      });
 
-    //   this.report["SALES CATEGORY"] = this.salesCategory
-    //     ? [
-    //         {
-    //           text: this.$t("report.cash"),
-    //           count: cash,
-    //           amount: cashAmount
-    //         },
-    //         {
-    //           text: this.$t("report.creditCard"),
-    //           count: credit,
-    //           amount: creditAmount
-    //         },
-    //         {
-    //           text: this.$t("report.creditCardTip"),
-    //           count: creditTip,
-    //           amount: creditTipAmount
-    //         },
-    //         {
-    //           text: this.$t("report.giftCard"),
-    //           count: gift,
-    //           amount: giftAmount
-    //         },
-    //         {
-    //           text: this.$t("report.thirdParty"),
-    //           count: third,
-    //           amount: thirdAmount
-    //         },
-    //         {
-    //           text: "&nbsp;",
-    //           count: 0,
-    //           amount: ""
-    //         },
-    //         {
-    //           text: this.$t("type.WALK_IN"),
-    //           count: walkin,
-    //           amount: walkinAmount
-    //         },
-    //         {
-    //           text: this.$t("type.PICK_UP"),
-    //           count: pickup,
-    //           amount: pickupAmount
-    //         },
-    //         {
-    //           text: this.$t("type.DELIVERY"),
-    //           count: delivery,
-    //           amount: deliveryAmount
-    //         },
-    //         {
-    //           text: this.$t("type.DINE_IN"),
-    //           count: dinein,
-    //           amount: dineinAmount
-    //         },
-    //         {
-    //           text: this.$t("type.other"),
-    //           count: 0,
-    //           amount: otherAmount
-    //         },
-    //         {
-    //           text: "&nbsp;",
-    //           count: 0,
-    //           amount: ""
-    //         },
-    //         {
-    //           text: this.$t("type.settled"),
-    //           count: settle,
-    //           amount: settleAmount
-    //         },
-    //         {
-    //           text: this.$t("type.unsettled"),
-    //           count: unsettle,
-    //           amount: unsettleAmount
-    //         },
-    //         {
-    //           text: this.$t("type.voided"),
-    //           count: voided,
-    //           amount: voidedAmount
-    //         }
-    //       ]
-    //     : null;
-    // },
+      temp = logs.filter(log => log.type === "GIFT");
+      let giftCount = temp.length;
+      let giftAmount = temp.map(log => toFixed(log.paid, 2)).reduce(counter, 0);
+      this.report["SALES ANALYZE"].push({
+        text: this.$t("report.giftCard"),
+        count: giftCount,
+        amount: giftAmount
+      });
+
+      temp = logs.filter(
+        log =>
+          log.type !== "CASH" && log.type !== "CREDIT" && log.type !== "GIFT"
+      );
+      let thirdPartyCount = temp.length;
+      let thirdPartyAmount = temp
+        .map(log => toFixed(log.paid, 2))
+        .reduce(counter, 0);
+      this.report["SALES ANALYZE"].push({
+        text: this.$t("report.thirdParty"),
+        count: thirdPartyCount,
+        amount: thirdPartyAmount
+      });
+      this.report["SALES ANALYZE"].push({
+        text: "&nbsp;",
+        count: 0,
+        amount: ""
+      });
+
+      let tipAmount = logs.map(log => parseFloat(log.tip)).reduce(counter, 0);
+      let gratuityAmount = settled
+        .map(ticket => parseFloat(ticket.payment.gratuity))
+        .reduce(counter, 0);
+      this.report["SALES ANALYZE"].push({
+        text: this.$t("report.surcharge"),
+        count: 0,
+        amount: tipAmount + gratuityAmount
+      });
+
+      let actualAmount = toFixed(
+        cashAmount +
+          creditAmount +
+          creditTipAmount +
+          giftAmount +
+          thirdPartyAmount,
+        2
+      );
+
+      this.report["SALES ANALYZE"].unshift({
+        text: this.$t("report.actualAmount"),
+        count: 0,
+        amount: actualAmount
+      });
+      this.report["SALES ANALYZE"].push({
+        text: "&nbsp;",
+        count: 0,
+        amount: ""
+      });
+
+      //remove from memory
+      logs = null;
+
+      let orderTypes = new Set();
+
+      settled.forEach(ticket => {
+        orderTypes.add(ticket.type);
+      });
+
+      orderTypes.forEach(type => {
+        let order = settled.filter(ticket => ticket.type === type);
+        let count = order.length;
+        let amount = order
+          .map(ticket => parseFloat(ticket.payment.paid))
+          .reduce(counter, 0);
+        this.report["SALES ANALYZE"].push({
+          text: this.$t("type." + type),
+          count,
+          amount
+        });
+      });
+    },
     hourlyReport(data) {
       let hours = {};
       data.forEach(ticket => {

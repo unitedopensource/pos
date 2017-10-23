@@ -145,7 +145,7 @@ export default {
         if (this.order.hasOwnProperty("splitPayment")) {
           this.order.splitPayment.forEach(split => {
             if (toFixed(split.remain.toFixed(2), 2) !== 0) {
-              split.log.push({
+              let log = {
                 _id: "",
                 type: this.type,
                 paid: split.remain,
@@ -155,7 +155,8 @@ export default {
                 //potential bug here
                 tip: 0,
                 number: "N/A"
-              });
+              };
+              split.log.push(log);
 
               Object.assign(split, {
                 paid: split.remain,
@@ -173,7 +174,7 @@ export default {
           });
         } else {
           Object.assign(this.order.payment, {
-            paid: this.order.payment.remain,
+            paid: this.order.payment.balance,
             remain: 0,
             type: this.type,
             settled: true
@@ -185,10 +186,10 @@ export default {
         this.order.payment.log.push({
           _id: "",
           type: this.type,
-          paid: this.order.payment.remain,
+          paid: this.order.payment.balance,
           change: 0,
           balance: 0,
-          actual: this.order.payment.remain,
+          actual: this.order.payment.balance,
           tip: this.order.payment.tip,
           number: "N/A"
         });

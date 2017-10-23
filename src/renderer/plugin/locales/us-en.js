@@ -1,4 +1,10 @@
 export default {
+    /*  
+     *  Translation File for 
+     *  UnitedPOS ver 0.7.78
+     *  Last Edit 2017/10/22 23:27
+     * 
+     */
     initial: {
         'findHost': 'Looking For Host...',
         'hostConnected': 'Exchange Information With Host...',
@@ -47,7 +53,7 @@ export default {
         'chineseDineIn': 'Chinese Dine-in Restaurant',
         'japaneseDineIn': 'Japanese Dine-in Restaurant',
         'thaiDineIn': 'Thai Dine-in Restaurant',
-        'vietDineIn': 'Viet Dine-in Restaurant',
+        'vietDineIn': 'Việt Dine-in Restaurant',
         'buffet': 'Buffet Restaurant',
         'retail': 'Retail Store',
         'CASH': 'Cash',
@@ -117,6 +123,8 @@ export default {
         'terminalTip': 'View All Transaction',
         'station': 'Station',
         'stationTip': 'View Station Setting',
+        'payOut': 'Paid Out',
+        'payOutTip': 'Record for cash pays out',
         'language': 'Language',
         'languageTip': 'Switch UI Language',
         'logout': 'Logout',
@@ -175,7 +183,7 @@ export default {
         'activation': 'Activation',
         'back': 'Back',
         'viewMore': 'View More',
-        'reservation': 'RESV',
+        'reservation': 'Resv.',
         'viewList': 'View',
         'switchTable': 'Switch T.',
         'combineTicket': 'Comb. T.',
@@ -272,7 +280,8 @@ export default {
         'baseSetting': 'Base Setting',
         'salary': 'Salary',
         'doneAction': 'Done Action',
-        'setDate': 'Set Date'
+        'setDate': 'Set Date',
+        'payOut': 'Pay Out Record'
     },
     menu: {
         'course': 'Course',
@@ -293,7 +302,7 @@ export default {
         'maintenance': 'Maintenance',
         'maintenanceTip': 'POS is under maintenance...',
         'communicationInterrupted': 'Communication is interrupted',
-        'communicationInterruptedTip': 'Trying to reconnect to host... If problem presist, Please contact UnitedPOS technical support team',
+        'communicationInterruptedTip': 'Trying to reconnect to host... If problem persist, Please contact UnitedPOS technical support team',
         'technicalSupportNumber': '(888)299-0524',
         'exitConfirm': 'Are you sure you want to exit?',
         'exitConfirmTip': 'Unsaved order will be removed.',
@@ -418,7 +427,7 @@ export default {
         'removeClientTip': 'Are you sure you are going to delete {i} information?',
         'unableSent': 'Unable Sent',
         'errorCode': 'Error Code {i}',
-        'remainPrintItem': 'Remain {i} items unprint',
+        'remainPrintItem': 'Remain {i} items unprinted',
         'noRemainItem': 'All items are printed',
         'itemSent': 'Item Sent',
         'printResult': 'Send {i} items, {i}',
@@ -483,11 +492,11 @@ export default {
         'invalidCreditCard': 'Invalid Credit Card',
         'creditCardLengthIncorrect': 'Credit card length incorrect',
         'expirationDateIncorrect': 'Credit card expiration date incorrect',
-        'assignPrinter':'Assign Printer',
-        'assignPrinterToAllItems':'Are you wish to assign {i} printer to all items?',
-        'splitTicketSettled':'All Split Ticket Are Settled',
-        'splitTicketSettledTip':'Are you wish to mark this ticket as paid?',
-        'insufficientAmount':'There is an insufficient amount of balance.'
+        'assignPrinter': 'Assign Printer',
+        'assignPrinterToAllItems': 'Are you wish to assign {i} printer to all items?',
+        'splitTicketSettled': 'All Split Ticket Are Settled',
+        'splitTicketSettledTip': 'Are you wish to mark this ticket as paid?',
+        'insufficientAmount': 'There is an insufficient amount of balance.'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',
@@ -580,7 +589,7 @@ export default {
         'details': 'Report Details',
         'statistics': 'Statistics',
         'summary': 'Summary',
-        'salesCategory': 'Sales Category Report',
+        'salesFrom': 'Sales Analysis Report',
         'categorySales': 'Category Sales Report',
         'hourlyReport': 'Hourly Report',
         'settleType': 'Settle Type Report',
@@ -589,7 +598,7 @@ export default {
         'countItem': 'Item Sales Report',
         'performance': 'Performance',
         'staffSummary': 'Staff Summary',
-        'cashierSummary':'Cashier Summary',
+        'cashierSummary': 'Cashier Summary',
         'driverSummary': 'Driver Summary',
         'thirdPartySummary': 'Third Party Summary',
         'viaEmail': 'Send Report Via Email',
@@ -606,9 +615,10 @@ export default {
         'tips': 'Tips',
         'gratuity': 'Gratuity',
         'thirdParty': 'Third Party',
-        'include':' (Include)',
-        'exclude':' (Exclude)',
-        'receivable':'Receivable'
+        'include': ' (Include)',
+        'exclude': ' (Exclude)',
+        'receivable': 'Receivable',
+        'actualAmount':'Actual Amount'
     },
     text: {
         'starter': 'Starter',
@@ -696,7 +706,7 @@ export default {
         'firstLine': 'First Line',
         'secondLine': 'Second Line',
         'command': 'Command',
-        'doneLock':'Auto Lock',
+        'doneLock': 'Auto Lock',
         'inactiveLock': 'Inactive Lock',
         'binding': 'Binding',
         'cashFlowCtrl': 'Cash Flow Ctrl',
@@ -827,14 +837,16 @@ export default {
         'seatOrder': 'Seat Order',
         'wage': 'Wage(Hour)',
         'calcTips': 'Current Tips: $ {i}',
-        'fuelSurcharge':'Fuel Surcharge',
-        'noReceipt':'No Receipt',
-        'ignore':'Ignore'
+        'fuelSurcharge': 'Fuel Surcharge',
+        'noReceipt': 'No Receipt',
+        'ignore': 'Ignore',
+        'receiver': 'Receiver',
+        'comment': 'comment'
     },
     nav: {
         'store': 'Store',
         'station': 'Station',
-        'calc':'Calc',
+        'calc': 'Calc',
         'tax': 'Tax',
         'dineIn': 'Dine In',
         'back': 'Back',
@@ -982,7 +994,7 @@ export default {
         'sortPriority': 'Prioritize',
         'employeeCard': 'Employee Card',
         'employeeCardRegistration': 'Register employee card',
-        'settledReceipt':'Settle Payment Receipt'
+        'settledReceipt': 'Settle Payment Receipt'
     },
     reservation: {
         'create': 'Create Reservation',
@@ -1018,11 +1030,11 @@ export default {
         'createSubMenuGroup': 'Create a sub menu group',
         'reportBeforeBatch': 'Print each credit card transaction before batch report ',
         'tipFor': 'Tips Based On',
-        'discountFor':'Discount Base On',
+        'discountFor': 'Discount Base On',
         'howTipCalculate': 'Tip is before tax and discount',
-        'howDiscountCalculate':'Discount is before tax',
-        'lockWhenCompleteOrder':'Lock screen when complete order',
-        'doNotAskReceiptAfterSettle':'Do not prompt "Print Receipt" dialog',
+        'howDiscountCalculate': 'Discount is before tax',
+        'lockWhenCompleteOrder': 'Lock screen when complete order',
+        'doNotAskReceiptAfterSettle': 'Do not prompt "Print Receipt" dialog',
         'table': {
             'actionsOnDone': 'Actions after tapping Done',
             'passwordRequire': 'Password input required before create a new table.',

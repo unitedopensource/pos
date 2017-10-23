@@ -98,7 +98,7 @@ export default {
       }
     },
     enter() {
-      let tip = this.tip;
+      let tip = parseFloat(this.tip);
 
       if (this.unit === "%") {
         tip = toFixed(this.init.payment.subtotal * this.tip / 100, 2);
