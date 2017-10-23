@@ -612,6 +612,7 @@ export default {
         'creditCardTip': 'Credit Card Tips',
         'tax': 'Tax',
         'itemSales': 'Item Sales',
+        'deliveryFee':'Delivery Fee',
         'tips': 'Tips',
         'gratuity': 'Gratuity',
         'thirdParty': 'Third Party',

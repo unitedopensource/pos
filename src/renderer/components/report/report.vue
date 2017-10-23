@@ -289,8 +289,8 @@ export default {
       this.report["GIFT CARD"] = this.giftCard
         ? this.giftCardReport(datas[2])
         : null;
-      this.report["EMPLOYEE"] = this.waitStaff
-        ? this.employeeReport(datas[0])
+      this.report["WAITSTAFF REPORT"] = this.waitStaff
+        ? this.waitStaffReport(datas[0])
         : null;
       this.report["DRIVER"] = this.driver ? this.driverReport(datas[0]) : null;
       this.report["HOURLY REPORT"] = this.hourly
@@ -309,40 +309,35 @@ export default {
         ? this.settleTypeReport(datas[0])
         : null;
     },
-    employeeReport(data) {
-      let staff = {};
-      data.forEach(invoice => {
-        if (invoice.server) {
-          let name = invoice.server;
-          let { subtotal, tax, tip, gratuity, discount } = invoice.payment;
-          let amount =
-            parseFloat(subtotal) + parseFloat(tax) - parseFloat(discount);
+    waitStaffReport(data) {
+      let staffs = {};
+      let staff = new Set();
+      let validOrder = data.filter(invoice => invoice.status === 1);
+      validOrder.forEach(ticket => staff.add(ticket.server));
 
-          if (staff.hasOwnProperty(name)) {
-            staff[name]["amount"] += amount;
-            staff[name]["tip"] += parseFloat(tip);
-            staff[name]["gratuity"] += parseFloat(gratuity);
-            staff[name]["count"]++;
-          } else {
-            staff[name] = {
-              text: name,
-              tip: parseFloat(tip),
-              gratuity: parseFloat(gratuity),
-              amount: amount,
-              count: 1
-            };
-          }
-        }
+      staff.forEach(name => {
+        let order = validOrder.filter(ticket => ticket.server);
+        let count = order.length;
+        let amount = order
+          .map(ticket => parseFloat(ticket.payment.balance))
+          .reduce((a, b) => a + b, 0);
+        let tip = order
+          .map(ticket => parseFloat(ticket.payment.tip))
+          .reduce((a, b) => a + b, 0);
+        let gratuity = order
+          .map(ticket => parseFloat(ticket.payment.gratuity))
+          .reduce((a, b) => a + b, 0);
+
+        staffs[name] = {
+          text: name,
+          tip: toFixed(tip, 2),
+          gratuity: toFixed(gratuity, 2),
+          amount: toFixed(amount, 2),
+          count
+        };
       });
-      Object.keys(staff).forEach(name => {
-        let server = staff[name];
-        server.amount = [
-          { Total: server.amount.toFixed(2) },
-          { Tip: server.tip.toFixed(2) },
-          { Gratuity: server.tip.toFixed(2) }
-        ];
-      });
-      return staff;
+
+      return staffs;
     },
     sourceReport(data) {
       let source = {};
@@ -536,14 +531,7 @@ export default {
       let counter = (a, b) => a + b;
 
       let grossAmount = validPayment
-        .map(
-          ticket =>
-            parseFloat(ticket.subtotal) +
-            parseFloat(ticket.tax) +
-            parseFloat(ticket.delivery) +
-            parseFloat(ticket.tip) +
-            parseFloat(ticket.gratuity)
-        )
+        .map(ticket => parseFloat(ticket.subtotal) + parseFloat(ticket.tax))
         .reduce(counter, 0);
 
       let discount = validPayment.filter(ticket => ticket.discount > 0);
@@ -570,15 +558,19 @@ export default {
         .map(ticket => parseFloat(ticket.gratuity))
         .reduce(counter, 0);
 
+      let deliveryChargeAmount = validPayment
+        .map(ticket => parseFloat(ticket.delivery))
+        .reduce(counter, 0);
+
       // receivable should consider gift card transaction, cash out , and other activities
-      let receivable = toFixed(netAmount, 2);
+      let receivable = toFixed(netAmount + tipAmount + gratuityAmount + deliveryChargeAmount, 2);
 
       this.report["SUMMARY"] = this.summary
         ? [
             {
-              text: this.$t("report.grossSales"),
+              text: this.$t("report.netSales"),
               count: validPayment.length,
-              amount: grossAmount
+              amount: netAmount
             },
             {
               text: this.$t("report.itemSales"),
@@ -604,6 +596,11 @@ export default {
               text: this.$t("report.gratuity"),
               count: 0,
               amount: gratuityAmount
+            },
+            {
+              text:this.$t("report.deliveryFee"),
+              count:0,
+              amount:deliveryChargeAmount
             },
             {
               text: "&nbsp;",

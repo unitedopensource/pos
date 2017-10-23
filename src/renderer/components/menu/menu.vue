@@ -26,6 +26,7 @@
         </section>
         <section class="cart">
             <order-list layout="order" :sort="sort"></order-list>
+            <query-bar :query="queryItem" :items="queryItemResult"></query-bar>
             <grids :layout="ticket.type" @open="openComponent"></grids>
         </section>
         <div :is="component" :init="componentData" @execute="fn"></div>
@@ -33,309 +34,453 @@
 </template> 
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
-import orderList from '../common/orderList'
-import dialoger from '../common/dialoger'
-import payment from '../payment/index'
-import tempItem from './tempItem'
-import request from './request'
-import scaleItem from './scale'
-import builder from './builder'
-import guests from './guests'
-import modify from './modify'
-import course from './course'
-import timer from './timer'
-import grids from './grids'
-import split from './split'
+import { mapGetters, mapActions } from "vuex";
+import queryBar from "./component/queryBar";
+import orderList from "../common/orderList";
+import dialoger from "../common/dialoger";
+import payment from "../payment/index";
+import tempItem from "./tempItem";
+import request from "./request";
+import scaleItem from "./scale";
+import builder from "./builder";
+import guests from "./guests";
+import modify from "./modify";
+import course from "./course";
+import timer from "./timer";
+import grids from "./grids";
+import split from "./split";
 export default {
-    components: { modify, course, request, orderList, dialoger, grids, payment, scaleItem, split, builder, tempItem, timer, guests },
-    data() {
-        return {
-            menuInstance: null,
-            componentData: null,
-            component: null,
-            saveItems: null,
-            itemPage: 0,
-            items: [],
-            sort: 0
+  components: {
+    queryBar,
+    modify,
+    course,
+    request,
+    orderList,
+    dialoger,
+    grids,
+    payment,
+    scaleItem,
+    split,
+    builder,
+    tempItem,
+    timer,
+    guests
+  },
+  data() {
+    return {
+      menuInstance: null,
+      componentData: null,
+      component: null,
+      saveItems: null,
+      itemPage: 0,
+      queryItem: "",
+      queryItemResult: [],
+      items: [],
+      sort: 0
+    };
+  },
+  created() {
+    this.initial();
+    window.addEventListener("keydown", this.entry, false);
+  },
+  mounted() {
+    toggleClass(".category div", "active");
+    this.app.mode === "edit" && this.resetPointer();
+  },
+  beforeDestroy() {
+    window.removeEventListener("keydown", this.entry, false);
+  },
+  methods: {
+    initial() {
+      this.menuInstance = JSON.parse(JSON.stringify(this.menu));
+      this.flatten(this.menuInstance[0].item);
+      this.setSides(this.fillOption([]));
+      this.$socket.emit("[INQUIRY] TICKET_NUMBER", number => {
+        this.app.mode === "create" && this.setTicket({ number });
+      });
+
+      if (this.app.mode === "create") {
+        this.ticket.type === "DINE_IN" && this.configDineIn();
+
+        this.setOrder({
+          _id: ObjectId(),
+          server: this.op.name,
+          station: this.station.alies,
+          type: this.ticket.type
+        });
+      } else {
+        this.saveForDiffs(this.order.content);
+      }
+    },
+    entry(entry) {
+      switch (entry.key) {
+        case "Escape":
+          this.queryItem = "";
+          this.queryItemResult = [];
+          break;
+        case "Enter":
+          this.queryItem &&
+            this.$socket.emit("[QUERY] ITEM", this.queryItem, items => {
+              if (items.length === 1) {
+                this.pick(items[0]);
+              } else {
+                this.queryItemResult = items;
+              }
+            });
+          this.queryItem = "";
+          break;
+        case "Backspace":
+          this.queryItem = this.queryItem.slice(0, -1);
+          break;
+        case "+":
+          if (this.queryItem) return;
+          this.moreQty();
+          break;
+        case "-":
+          if (this.queryItem) return;
+          this.lessQty();
+          break;
+        default:
+          if (this.queryItemResult.length > 1) {
+            if (isNumber(entry.key) && this.queryItemResult[entry.key - 1]) {
+              this.pick(this.queryItemResult[entry.key - 1]);
+              this.queryItemResult = [];
+              this.queryItem = "";
+            }
+          } else {
+            this.queryItem += entry.key;
+          }
+      }
+    },
+    flatten(items) {
+      console.time("clone");
+
+      items = [].concat.apply([], items);
+
+      if (
+        this.config.hasOwnProperty("display") &&
+        this.config.display.favorite &&
+        this.customer._id &&
+        this.customer.hasOwnProperty("extra") &&
+        this.customer.extra.favorite
+      ) {
+        let favorite = this.customer.extra.favorite;
+        items.forEach(item => {
+          item.like = favorite.includes(item._id);
+        });
+      }
+
+      items.forEach(item => {
+        if (item.hasOwnProperty("disable")) {
+          item.clickable = !item.disable;
         }
+      });
+
+      console.timeEnd("clone");
+      this.items = items;
     },
-    created() {
-        this.initial();
+    fillOption(side) {
+      let length = side.length;
+      let array = side.slice();
+      for (let i = length; i < 11; i++) {
+        array.push({ zhCN: "", usEN: "", disable: true });
+      }
+      return array;
     },
-    mounted() {
-        toggleClass(".category div", "active");
-        this.app.mode === 'edit' && this.resetPointer();
+    configDineIn() {
+      this.store.table.seatOrder && (this.sort = 1);
+      this.setOrder({
+        table: this.currentTable.name,
+        tableID: this.currentTable._id,
+        guest: this.currentTable.guest,
+        session: this.currentTable.session,
+        type: this.ticket.type
+      });
     },
-    methods: {
-        initial() {
-            this.menuInstance = JSON.parse(JSON.stringify(this.menu));
-            this.flatten(this.menuInstance[0].item);
-            this.setSides(this.fillOption([]));
-            this.$socket.emit('[INQUIRY] TICKET_NUMBER', number => { this.app.mode === 'create' && this.setTicket({ number }) });
-
-            if (this.app.mode === 'create') {
-                this.ticket.type === 'DINE_IN' && this.configDineIn();
-
-                this.setOrder({
-                    _id: ObjectId(),
-                    server: this.op.name,
-                    station: this.station.alies,
-                    type: this.ticket.type
-                })
-            } else {
-                this.saveForDiffs(this.order.content)
-            }
-        },
-        flatten(items) {
-            console.time("clone");
-
-            items = [].concat.apply([], items);
-
-            if (this.config.hasOwnProperty('display') && this.config.display.favorite &&
-                this.customer._id && this.customer.hasOwnProperty('extra') && this.customer.extra.favorite) {
-                let favorite = this.customer.extra.favorite;
-                items.forEach(item => { item.like = favorite.includes(item._id) })
-            }
-
-            items.forEach(item => {
-                if (item.hasOwnProperty('disable')) {
-                    item.clickable = !item.disable
-                }
-            })
-
-            console.timeEnd("clone");
-            this.items = items;
-        },
-        fillOption(side) {
-            let length = side.length;
-            let array = side.slice();
-            for (let i = length; i < 11; i++) {
-                array.push({ zhCN: "", usEN: "", disable: true })
-            }
-            return array;
-        },
-        configDineIn() {
-            this.store.table.seatOrder && (this.sort = 1);
-            this.setOrder({
-                table: this.currentTable.name,
-                tableID: this.currentTable._id,
-                guest: this.currentTable.guest,
-                session: this.currentTable.session,
-                type: this.ticket.type
-            })
-        },
-        poleDisplay(line1, line2) {
-            if (this.device.poleDisplay) {
-                poleDisplay.write('\f');
-                poleDisplay.write(line(line1, line2));
-            }
-        },
-        setCategory(i, e) {
-            toggleClass(".category .active", "active");
-            e.currentTarget.classList.add("active");
-            this.itemPage = 0;
-            this.saveItems = null;
-            this.flatten(this.menuInstance[i].item);
-        },
-        pick(item) {
-            if (!item.clickable) return;
-            // if (item.disable) {
-            //     this.$dialog({
-            //         title: 'dialog.itemUnavailable',
-            //         msg: ['dialog.itemUnavailableTip', item[this.language]],
-            //         timeout: { duration: 5000, fn: 'resolve' },
-            //         buttons: [{ text: 'button.confirm', fn: 'resolve' }]
-            //     }).then(() => { this.$q() })
-            //     return
-            // }
-            if (this.isSubMenu(item)) return;
-            if (this.isTemporary(item)) return;
-            if (this.isScalable(item)) return;
-            if (this.isOpenFood(item)) return;
-
-            item = JSON.parse(JSON.stringify(item));
-            this.app.mode === 'edit' && (item.new = true);
-            //this.store.table.seatOrder && (item.sort = this.sort);
-            item.hasOwnProperty("prices") && item.prices[this.ticket.type] && (item.price = item.prices[this.ticket.type]);
-
-            this.poleDisplay(item.usEN.slice(0, 20), ["Price:", (item.price[0]).toFixed(2)]);
-            this.setSides(this.fillOption(item.option));
-            this.addToOrder(item);
-
-            this.config.display.autoTemplate && this.sides[0].template && this.callTemplate(this.sides[0], 0);
-        },
-        isSubMenu(item) {
-            if (!item.subItem && !this.saveItems) return false;
-            if (this.isEmptyTicket) return true;
-            let { zhCN, usEN, print, price } = item;
-            let content = {
-                qty: 1,
-                zhCN,
-                usEN,
-                print,
-                single: price,
-                subItem: item.subItem,
-                price: price.toFixed(2),
-                key: item._id.slice(-4)
-            }
-            //apply this subitem print config to item
-            let printer = {};
-            print.forEach(device => {
-                printer[device] = {}
-            })
-            Object.assign(this.item.printer, printer)
-            let subItemCount = Array.isArray(this.item.choiceSet) ?
-                this.item.choiceSet.filter(item => item.subItem).map(item => item.qty).reduce((a, b) => a + b, 0) : 0;
-
-            if (item.subItem && this.item.hasOwnProperty('rules')) {
-                let max = (this.item.rules.maxSubItem * this.item.qty) || Infinity;
-                let overCharge = this.item.rules.overCharge || 0;
-                if (subItemCount >= max && overCharge === 0) {
-                    this.$dialog({
-                        title: 'dialog.unableAdd',
-                        msg: ['dialog.maxSubItem', this.item[this.language], max],
-                        timeout: {
-                            duration: 5000,
-                            fn: 'resolve'
-                        },
-                        buttons: [{ text: 'button.confirm', fn: 'resolve' }]
-                    }).then(() => {
-                        this.$q()
-                    })
-                    return true
-                }
-                content.single += overCharge;
-                content.price = (content.single * content.qty).toFixed(2)
-            }
-
-            let dom = document.querySelector(".sub.target");
-            dom ? this.alertChoiceSet(content) : this.setChoiceSet(content);
-            return true
-        },
-        isTemporary(item) {
-            if (!item.temporary) return false;
-            this.$p("tempItem", { item });
-            return true
-        },
-        isScalable(item) {
-            if (!item.hasOwnProperty('unitPrice')) return false;
-            this.$p("scaleItem", { item });
-            return true
-        },
-        isOpenFood(item) {
-            if (isNumber(item.price[0])) return false;
-            this.$p("modify", { item, openFood: true });
-            return true
-        },
-        setOption(side, index) {
-            if (side.skip) {
-                side.subMenu && this.getSubMenuItem(side)
-                side.template && this.callTemplate(side, index)
-            } else {
-                side.template ? this.callTemplate(side, index) : this.alterItemOption({ side, index });
-                side.subMenu && this.getSubMenuItem(side)
-            }
-        },
-        getSubMenuItem(side) {
-            console.time("sub menu")
-            if (this.saveItems) {
-                this.resetItems();
-                return;
-            }
-
-            let groups = side.subMenu;
-            //if item change to subitem the item itself will depends on subitem printer config
-            Object.assign(this.item, {
-                printer: {},
-                rules: {
-                    maxSubItem: side.maxSubItem,
-                    overCharge: side.overCharge
-                }
-            })
-
-            //save item first;
-            this.saveItems = this.items;
-            this.items = [];
-            let lastIndex = groups.length - 1;
-            groups.forEach((group, index) => {
-                let subItem = this.submenu[group] || []
-                subItem = JSON.parse(JSON.stringify(subItem));
-                let length = subItem.length;
-                let align = 6 - length % 3;
-                align === 6 && (align = 3);
-                index !== lastIndex && Array(align).fill().forEach(_ => { subItem.push({ zhCN: "", usEN: "", clickable: false, group: null }) });
-                this.items.push(...subItem)
-            })
-            let length = this.items.length;
-            length < 33 && Array(33 - length).fill().forEach(_ => { this.items.push({ zhCN: "", usEN: "", clickable: false, group: null }) });
-            console.timeEnd("sub menu")
-        },
-        resetItems() {
-            this.items = this.saveItems;
-            this.saveItems = null;
-        },
-        callTemplate(side, index) {
-            this.$p("builder", { side, index });
-        },
-        openComponent(name, args) {
-            switch (name) {
-                case "modify":
-                    this.$p("modify", { item: this.item });
-                    break;
-                case "course":
-                    this.$p("course", { order: this.order });
-                    break;
-                case "timer":
-                    this.$p("timer", { order: this.order });
-                    break;
-                case "search":
-                    break;
-                case "request":
-                    this.component === 'request' ? this.$q() : this.component = "request";
-                    break;
-                case "settle":
-                    this.$p("payment");
-                    break;
-                case "split":
-                    this.$p("split", { order: this.order });
-                    break;
-                case "guest":
-                    this.switchGuest()
-                    break;
-            }
-        },
-        fn(name) {
-            this[name]();
-        },
-        resetSection() {
-            this.resetMenu();
-            this.flatten(this.menuInstance[0].item);
-            this.setSides(this.fillOption([]));
-            toggleClass(".category .active", "active");
-            toggleClass(".category div", "active");
-        },
-        switchGuest() {
-            let guest = this.order.guest || 1
-            new Promise((resolve, reject) => {
-                this.componentData = { resolve, reject, guest }
-                this.component = "guests"
-            }).then((callback) => {
-                this.$q()
-            }).catch(() => { this.$q() })
-        },
-        ...mapActions(['setApp', 'setOrder', 'setTicket', 'setSides', 'saveForDiffs', 'addToOrder', 'resetPointer', 'alertChoiceSet', 'setChoiceSet', 'resetMenu', 'resetAll', 'alterItemOption', 'resetCurrentTable'])
+    poleDisplay(line1, line2) {
+      if (this.device.poleDisplay) {
+        poleDisplay.write("\f");
+        poleDisplay.write(line(line1, line2));
+      }
     },
-    computed: {
-        page() {
-            if (this.items.length > 33) {
-                let min = this.itemPage * 30;
-                let max = min + 30;
-                return this.items.slice(min, max);
-            }
-            return this.items
-        },
-        ...mapGetters(['op', 'app', 'config', 'menu', 'submenu', 'item', 'device', 'sides', 'store', 'ticket', 'order', 'course', 'customer', 'language', 'station', 'currentTable', 'isEmptyTicket'])
-    }
-}
+    setCategory(i, e) {
+      toggleClass(".category .active", "active");
+      e.currentTarget.classList.add("active");
+      this.itemPage = 0;
+      this.saveItems = null;
+      this.flatten(this.menuInstance[i].item);
+    },
+    pick(item) {
+      if (item.hasOwnProperty("clickable") && !item.clickable) return;
+      // if (item.disable) {
+      //     this.$dialog({
+      //         title: 'dialog.itemUnavailable',
+      //         msg: ['dialog.itemUnavailableTip', item[this.language]],
+      //         timeout: { duration: 5000, fn: 'resolve' },
+      //         buttons: [{ text: 'button.confirm', fn: 'resolve' }]
+      //     }).then(() => { this.$q() })
+      //     return
+      // }
+      if (this.isSubMenu(item)) return;
+      if (this.isTemporary(item)) return;
+      if (this.isScalable(item)) return;
+      if (this.isOpenFood(item)) return;
+
+      item = JSON.parse(JSON.stringify(item));
+      this.app.mode === "edit" && (item.new = true);
+      //this.store.table.seatOrder && (item.sort = this.sort);
+      item.hasOwnProperty("prices") &&
+        item.prices[this.ticket.type] &&
+        (item.price = item.prices[this.ticket.type]);
+
+      this.poleDisplay(item.usEN.slice(0, 20), [
+        "Price:",
+        item.price[0].toFixed(2)
+      ]);
+      this.setSides(this.fillOption(item.option));
+      this.addToOrder(item);
+
+      this.config.display.autoTemplate &&
+        this.sides[0].template &&
+        this.callTemplate(this.sides[0], 0);
+    },
+    isSubMenu(item) {
+      if (!item.subItem && !this.saveItems) return false;
+      if (this.isEmptyTicket) return true;
+      let { zhCN, usEN, print, price } = item;
+      let content = {
+        qty: 1,
+        zhCN,
+        usEN,
+        print,
+        single: price,
+        subItem: item.subItem,
+        price: price.toFixed(2),
+        key: item._id.slice(-4)
+      };
+      //apply this subitem print config to item
+      let printer = {};
+      print.forEach(device => {
+        printer[device] = {};
+      });
+      Object.assign(this.item.printer, printer);
+      let subItemCount = Array.isArray(this.item.choiceSet)
+        ? this.item.choiceSet
+            .filter(item => item.subItem)
+            .map(item => item.qty)
+            .reduce((a, b) => a + b, 0)
+        : 0;
+
+      if (item.subItem && this.item.hasOwnProperty("rules")) {
+        let max = this.item.rules.maxSubItem * this.item.qty || Infinity;
+        let overCharge = this.item.rules.overCharge || 0;
+        if (subItemCount >= max && overCharge === 0) {
+          this.$dialog({
+            title: "dialog.unableAdd",
+            msg: ["dialog.maxSubItem", this.item[this.language], max],
+            timeout: {
+              duration: 5000,
+              fn: "resolve"
+            },
+            buttons: [{ text: "button.confirm", fn: "resolve" }]
+          }).then(() => {
+            this.$q();
+          });
+          return true;
+        }
+        content.single += overCharge;
+        content.price = (content.single * content.qty).toFixed(2);
+      }
+
+      let dom = document.querySelector(".sub.target");
+      dom ? this.alertChoiceSet(content) : this.setChoiceSet(content);
+      return true;
+    },
+    isTemporary(item) {
+      if (!item.temporary) return false;
+      this.$p("tempItem", { item });
+      return true;
+    },
+    isScalable(item) {
+      if (!item.hasOwnProperty("unitPrice")) return false;
+      this.$p("scaleItem", { item });
+      return true;
+    },
+    isOpenFood(item) {
+      if (isNumber(item.price[0])) return false;
+      this.$p("modify", { item, openFood: true });
+      return true;
+    },
+    setOption(side, index) {
+      if (side.skip) {
+        side.subMenu && this.getSubMenuItem(side);
+        side.template && this.callTemplate(side, index);
+      } else {
+        side.template
+          ? this.callTemplate(side, index)
+          : this.alterItemOption({ side, index });
+        side.subMenu && this.getSubMenuItem(side);
+      }
+    },
+    getSubMenuItem(side) {
+      console.time("sub menu");
+      if (this.saveItems) {
+        this.resetItems();
+        return;
+      }
+
+      let groups = side.subMenu;
+      //if item change to subitem the item itself will depends on subitem printer config
+      Object.assign(this.item, {
+        printer: {},
+        rules: {
+          maxSubItem: side.maxSubItem,
+          overCharge: side.overCharge
+        }
+      });
+
+      //save item first;
+      this.saveItems = this.items;
+      this.items = [];
+      let lastIndex = groups.length - 1;
+      groups.forEach((group, index) => {
+        let subItem = this.submenu[group] || [];
+        subItem = JSON.parse(JSON.stringify(subItem));
+        let length = subItem.length;
+        let align = 6 - length % 3;
+        align === 6 && (align = 3);
+        index !== lastIndex &&
+          Array(align)
+            .fill()
+            .forEach(_ => {
+              subItem.push({
+                zhCN: "",
+                usEN: "",
+                clickable: false,
+                group: null
+              });
+            });
+        this.items.push(...subItem);
+      });
+      let length = this.items.length;
+      length < 33 &&
+        Array(33 - length)
+          .fill()
+          .forEach(_ => {
+            this.items.push({
+              zhCN: "",
+              usEN: "",
+              clickable: false,
+              group: null
+            });
+          });
+      console.timeEnd("sub menu");
+    },
+    resetItems() {
+      this.items = this.saveItems;
+      this.saveItems = null;
+    },
+    callTemplate(side, index) {
+      this.$p("builder", { side, index });
+    },
+    openComponent(name, args) {
+      switch (name) {
+        case "modify":
+          this.$p("modify", { item: this.item });
+          break;
+        case "course":
+          this.$p("course", { order: this.order });
+          break;
+        case "timer":
+          this.$p("timer", { order: this.order });
+          break;
+        case "search":
+          break;
+        case "request":
+          this.component === "request"
+            ? this.$q()
+            : (this.component = "request");
+          break;
+        case "settle":
+          this.$p("payment");
+          break;
+        case "split":
+          this.$p("split", { order: this.order });
+          break;
+        case "guest":
+          this.switchGuest();
+          break;
+      }
+    },
+    fn(name) {
+      this[name]();
+    },
+    resetSection() {
+      this.resetMenu();
+      this.flatten(this.menuInstance[0].item);
+      this.setSides(this.fillOption([]));
+      toggleClass(".category .active", "active");
+      toggleClass(".category div", "active");
+    },
+    switchGuest() {
+      let guest = this.order.guest || 1;
+      new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject, guest };
+        this.component = "guests";
+      })
+        .then(callback => {
+          this.$q();
+        })
+        .catch(() => {
+          this.$q();
+        });
+    },
+    ...mapActions([
+      "setApp",
+      "setOrder",
+      "setTicket",
+      "setSides",
+      "lessQty",
+      "moreQty",
+      "saveForDiffs",
+      "addToOrder",
+      "resetPointer",
+      "alertChoiceSet",
+      "setChoiceSet",
+      "resetMenu",
+      "resetAll",
+      "alterItemOption",
+      "resetCurrentTable"
+    ])
+  },
+  computed: {
+    page() {
+      if (this.items.length > 33) {
+        let min = this.itemPage * 30;
+        let max = min + 30;
+        return this.items.slice(min, max);
+      }
+      return this.items;
+    },
+    ...mapGetters([
+      "op",
+      "app",
+      "config",
+      "menu",
+      "submenu",
+      "item",
+      "device",
+      "sides",
+      "store",
+      "ticket",
+      "order",
+      "course",
+      "customer",
+      "language",
+      "station",
+      "currentTable",
+      "isEmptyTicket"
+    ])
+  }
+};
 </script>

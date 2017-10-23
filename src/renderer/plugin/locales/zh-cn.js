@@ -571,6 +571,7 @@ export default {
         'itemSales': '物品销售',
         'tips': '小费',
         'gratuity': '服务费',
+        'deliveryFee':'送餐费',
         'surcharge':'附加费',
         'thirdParty':'第三方',
         'include':' (含)',
