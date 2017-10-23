@@ -130,6 +130,7 @@ export default {
           this.queryItem = "";
           break;
         case "Backspace":
+        case "Delete":
           this.queryItem = this.queryItem.slice(0, -1);
           break;
         case "+":
@@ -148,7 +149,11 @@ export default {
               this.queryItem = "";
             }
           } else {
-            this.queryItem += entry.key;
+            let charCode = entry.which || entry.keyCode;
+            let char = String.fromCharCode(charCode);
+            if (/[a-z0-9]/i.test(char)) {
+              this.queryItem += entry.key;
+            }
           }
       }
     },

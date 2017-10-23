@@ -158,8 +158,6 @@ export default {
     },
     applyCoupon() {
       this.discount = this.redeem.discount.replace(/\D/g, "");
-      this.input("");
-
       this.unit = this.redeem.discount.indexOf("%") !== -1 ? "%" : "$";
     }
   }
