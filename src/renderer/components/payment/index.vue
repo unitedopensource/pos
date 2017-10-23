@@ -1150,11 +1150,12 @@ export default {
     },
     save() {
       if (this.isNewTicket) {
-        this.setOrder(this.order);
+        this.setOrder(Object.assign(this.order, { payment: this.payment }));
         this.exit();
       } else {
         Object.assign(this.order, { payment: this.payment });
-        this.$socket.emit("[SAVE] INVOICE", this.order);
+        this.$socket.emit("[UPDATE] INVOICE", this.order, false);
+        this.exit();
       }
     },
     preview(index) {
