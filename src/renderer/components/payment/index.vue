@@ -861,7 +861,23 @@ export default {
               ]
             })
               .then(() => {
-                Printer.setTarget("Receipt").print(this.order, true);
+                if (this.payInFull) {
+                  Printer.setTarget("Receipt").print(this.order, true);
+                } else {
+                  let index = this.current + 1;
+                  let order = JSON.parse(JSON.stringify(this.order));
+                  order.payment = this.payment;
+                  order.number = order.number + '-' + index;
+                  order.content = this.order.content.filter(item => {
+                    if (Array.isArray(item.sort)) {
+                      return item.sort.includes(index);
+                    } else {
+                      return item.sort === index;
+                    }
+                  });
+                  Printer.setTarget("Receipt").print(order, true);
+                }
+
                 resolve();
                 this.$q();
               })
@@ -1284,7 +1300,7 @@ export default {
       });
       this.getQuickInput(remain);
     },
-    poleDisplay(line1,line2) {
+    poleDisplay(line1, line2) {
       if (!this.device.poleDisplay) return;
       poleDisplay.write("\f");
       poleDisplay.write(line(line1, line2));
