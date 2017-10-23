@@ -219,7 +219,9 @@ export default {
         'reset': 'Reset',
         'later': 'Later',
         'register': 'Register',
-        'unRegister': 'Remove'
+        'unRegister': 'Remove',
+        'combine':'Combine',
+        'select':'Select'
     },
     thead: {
         'orderType': 'Order Type',
@@ -497,7 +499,9 @@ export default {
         'assignPrinterToAllItems': 'Are you wish to assign {i} printer to all items?',
         'splitTicketSettled': 'All Split Ticket Are Settled',
         'splitTicketSettledTip': 'Are you wish to mark this ticket as paid?',
-        'insufficientAmount': 'There is an insufficient amount of balance.'
+        'insufficientAmount': 'There is an insufficient amount of balance.',
+        'combineTickets':'Confirm Ticket Combines',
+        'combineTicketsConfirm':'Are you sure to combine {i} ticket(s) to MAIN ticket #{i}?'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',

@@ -171,17 +171,7 @@ export default {
         });
     },
     combineTicket() {
-      if (!this.currentTable) return;
-      this.$dialog({
-        title: "dialog.conbineTicket",
-        msg: "dialog.conbineTicketTip"
-      })
-        .then(() => {
-          this.$p("combinePreview");
-        })
-        .catch(() => {
-          this.$q();
-        });
+      this.$p("list", { combineMode: true });
     },
     prePayment() {
       if (this.isEmptyTicket) return;
@@ -305,9 +295,6 @@ export default {
     exit() {
       this.resetAll();
       this.$router.push({ path: "/main" });
-    },
-    combineTicket() {
-        this.$p("list")
     },
     clearTable() {
       if (!this.currentTable) return;

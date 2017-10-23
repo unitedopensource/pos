@@ -151,9 +151,16 @@ export default {
       let discount = parseFloat(this.discount);
 
       if (this.unit === "%") {
+        if (!this.redeem) {
+          this.redeem = {
+            discount: this.discount + this.unit,
+            for: "Store Discount",
+            match: [],
+            rules: []
+          };
+        }
         discount = toFixed(this.init.payment.subtotal * this.discount / 100, 2);
       }
-
       this.init.resolve({ discount, coupon: this.redeem });
     },
     applyCoupon() {

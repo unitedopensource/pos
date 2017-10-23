@@ -293,7 +293,7 @@ export default {
 
                 subtotal = toFixed(subtotal + amount, 2);
 
-                if (!this.order.taxFree) tax += taxClass.apply[type] ? toFixed(toFixed(taxClass.rate / 100, 2) * amount, 2) : tax;
+                if (!this.order.taxFree) tax += taxClass.apply[type] ? (taxClass.rate / 100 * amount) : tax;
             })
 
             let { enable, penalty, when } = this.store.table.surcharge;

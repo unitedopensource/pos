@@ -212,7 +212,9 @@ export default {
         'reset': '重置',
         'later': '稍后',
         'register': '注册',
-        'unRegister': '反注册'
+        'unRegister': '反注册',
+        'combine':'合并',
+        'select':'选择'
     },
     title: {
         'markPaymentType': '标记付款方式',
@@ -454,7 +456,9 @@ export default {
         'assignPrinterToAllItems':'您是否将 {i} 打印机应用于所有的物品之上？',
         'splitTicketSettled':'所有分单均已结账',
         'splitTicketSettledTip':'您想要将此订单设置成已付吗？',
-        'insufficientAmount':'所剩余额不足'
+        'insufficientAmount':'所剩余额不足',
+        'combineTickets':'确认合并订单',
+        'combineTicketsConfirm':'您确定要将 {i} 订单合并至 #{i}号 吗？'
     },
     terminal: {
         'initial': '正在初始化 {i}...',

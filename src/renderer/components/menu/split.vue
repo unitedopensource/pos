@@ -60,7 +60,6 @@ export default {
     initial() {
       this.items = this.flatten(this.order.content);
       this.split = this.check(this.items);
-      console.log(this.split);
       this.splitPayment = this.order.split ? this.order.splitPayment : [];
       this.unlock = this.lock = !!this.order.split;
     },
