@@ -612,14 +612,14 @@ export default {
         'creditCardTip': 'Credit Card Tips',
         'tax': 'Tax',
         'itemSales': 'Item Sales',
-        'deliveryFee':'Delivery Fee',
+        'deliveryFee': 'Delivery Fee',
         'tips': 'Tips',
         'gratuity': 'Gratuity',
         'thirdParty': 'Third Party',
         'include': ' (Include)',
         'exclude': ' (Exclude)',
         'receivable': 'Receivable',
-        'actualAmount':'Actual Amount'
+        'actualAmount': 'Actual Amount'
     },
     text: {
         'starter': 'Starter',
@@ -842,7 +842,8 @@ export default {
         'noReceipt': 'No Receipt',
         'ignore': 'Ignore',
         'receiver': 'Receiver',
-        'comment': 'comment'
+        'comment': 'comment',
+        'server': 'Server'
     },
     nav: {
         'store': 'Store',

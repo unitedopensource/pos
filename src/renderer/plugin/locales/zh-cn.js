@@ -835,7 +835,8 @@ export default {
         'noReceipt':'不打印收据',
         'ignore':'忽略',
         'receiver':'收款人',
-        'comment':'注释'
+        'comment':'注释',
+        'server':'服务员'
     },
     nav: {
         'store': '店面',

@@ -60,6 +60,7 @@ export default {
     initial() {
       this.items = this.flatten(this.order.content);
       this.split = this.check(this.items);
+      console.log(this.split);
       this.splitPayment = this.order.split ? this.order.splitPayment : [];
       this.unlock = this.lock = !!this.order.split;
     },
@@ -89,9 +90,9 @@ export default {
       return flattened;
     },
     check(items) {
-      return [].concat
-        .apply([], items.map(item => item.sort))
-        .filter((v, i, s) => s.indexOf(v) === i).length;
+      let splits = [].concat.apply([], items.map(item => item.sort)).filter((v, i, s) => s.indexOf(v) === i)
+      splits[splits.length - 1] === 0 && splits.pop();
+      return splits.length
     },
     newSplit() {
       this.transferItems.length ? this.transfer(++this.split) : this.split++;
