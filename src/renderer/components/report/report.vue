@@ -749,7 +749,7 @@ export default {
 
       let creditTipCount = temp.filter(log => log.tip > 0).length;
       let creditTipAmount = temp
-        .map(log => toFixed(log.tip, 2))
+        .map(log => parseFloat(log.tip || 0))
         .reduce(counter, 0);
       this.report["SALES SOURCE DETAIL"].push({
         text: this.$t("report.creditCardTip"),

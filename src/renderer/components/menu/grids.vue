@@ -358,6 +358,7 @@ export default {
     },
     analyzeDiffs(current) {
       current = JSON.parse(JSON.stringify(current));
+      current.print = true;
 
       let items = [];
       let compare = current.content;
@@ -377,6 +378,7 @@ export default {
             compare[index].print = false;
           } else {
             compare[index].diffs = "unchanged";
+            compare[index].print = true;
           }
           compare[index].origin = prev.qty;
           items.push(compare[index]);
@@ -393,6 +395,7 @@ export default {
           return item;
         })
       );
+      console.log(items)
       return Object.assign(current, { content: items });
     },
     exit() {

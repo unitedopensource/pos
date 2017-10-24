@@ -144,7 +144,7 @@ var Printer = function (plugin, config) {
             let footer = createFooter(this.config.store.table, setting.control, printer, raw);
 
             let html = header + list + footer + style;
-console.log(html)
+
             setting.control.buzzer && this.buzzer(printer);
 
             this.plugin.PRINT_INIT('Ticket Receipt');
@@ -918,6 +918,78 @@ function createHeader(store, ticket) {
             </div>
         </section>`;
 }
+
+// function createList(printer, ctrl, invoice) {
+//     let { sortItem, printMenuID, sortPriority, printMode } = ctrl;
+//     let list = "", items = [];
+//     //print mode decided items
+//     switch (printMode) {
+//         case "normal":
+//             if (!invoice.print) {
+//                 items = invoice.content.filter(item => item.printer[printer]);
+//             } else {
+//                 items = invoice.content.filter(item => item.printer[printer] && item.diffs !== 'removed')
+//             }
+//             break;
+//         case "difference":
+//             if (!invoice.print) {
+//                 items = invoice.content.filter(item => item.printer[printer] && !item.print)
+//             } else {
+//                 items = invoice.content.filter(item => item.printer[printer] && item.diffs !== 'unchanged')
+//             }
+//             break;
+//         case "todo":
+//             if (!invoice.print) {
+//                 items = invoice.content.filter(item => item.printer[printer] && !item.print)
+//             } else {
+//                 items = invoice.content.filter(item => item.printer[printer] && item.diffs === 'unchanged' && item.diffs === 'new')
+//             }
+//             break;
+//         default:
+//             if (!invoice.print) {
+//                 items = invoice.content.filter(item => item.printer[printer]);
+//             } else {
+//                 items = invoice.content.filter(item => item.printer[printer] && item.diffs !== 'removed')
+//             }
+//     }
+
+//     if (list.length === 0) return false;
+//     if (sortPriority) {
+//         list.sort((p, n) => {
+//             let prev = p.priority || 0;
+//             let next = n.priority || 0;
+
+//             return prev < next
+//         })
+//     }
+
+//     if (sortItem) {
+//         let sorted = [];
+//         let categoryMap = [];
+
+//         for (let i = 0; i < list.length; i++) {
+//             let category = list[i].category;
+//             if (!sorted[category]) {
+//                 sorted[category] = [];
+//                 categoryMap[category] = list[i].categoryCN;
+//                 sorted[category].push(list[i]);
+//             } else {
+//                 sorted[category].push(list[i]);
+//             }
+//         }
+//         for (let category in sorted) {
+//             if (sorted.hasOwnProperty(category)) {
+//                 content += `<div class="category">
+//                         <span class="zhCN">${categoryMap[category]}</span>
+//                         <span class="usEN">${category}</span>
+//                       </div>`;
+//                 content += sorted[category].map(mockup).join("").toString();
+//             }
+//         }
+//     } else {
+//         content = list.map(mockup).join("").toString();
+//     }
+// }
 function createList(printer, ctrl, invoice) {
     function mockup(item) {
         let side = item.side.zhCN ? item.side.zhCN : "";

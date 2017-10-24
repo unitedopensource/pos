@@ -54,6 +54,7 @@ export default {
 <style scoped>
 .inner {
   align-items: inherit;
+  min-width: 350px;
 }
 .choice {
   display: flex;
