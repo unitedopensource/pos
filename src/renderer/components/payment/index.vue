@@ -7,7 +7,7 @@
                     <div v-if="!payInFull && order.hasOwnProperty('splitPayment')" class="viewer">
                         <label v-for="(split,index) in order.splitPayment" :key="index">
                             <input type="radio" name="split" :id="'split_'+index" :value="index" v-model="current" @change="switchInvoice(index)">
-                            <label :for="'split_'+index" class="tag">#{{index + 1}}</label>
+                            <label :for="'split_'+index" class="tag">{{index + 1}}</label>
                             <div class="preview" @click="preview(index)">
                                 <i class="fa fa-wpforms"></i>
                                 <span>{{$t('text.preview')}}</span>
@@ -867,7 +867,7 @@ export default {
                   let index = this.current + 1;
                   let order = JSON.parse(JSON.stringify(this.order));
                   order.payment = this.payment;
-                  order.number = order.number + '-' + index;
+                  order.number = order.number + "-" + index;
                   order.content = this.order.content.filter(item => {
                     if (Array.isArray(item.sort)) {
                       return item.sort.includes(index);
@@ -1396,8 +1396,10 @@ nav {
 }
 
 .viewer .tag {
-  padding: 5px 15px;
-  margin: 0 2px;
+  width: 35px;
+  justify-content: center;
+  display: flex;
+  margin-right: 5px;
   cursor: pointer;
   transition: background 0.3s ease;
   border-radius: 4px;
@@ -1416,7 +1418,7 @@ nav {
   visibility: hidden;
   position: absolute;
   bottom: 40px;
-  left: -10px;
+  left: -18px;
   width: 75px;
   height: 70px;
   background-color: #555;

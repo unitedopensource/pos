@@ -155,7 +155,7 @@ export default {
             let to = moment(this.logs[this.logs.length - 1].clockIn).format('MMMDD');
             let csvFile = csvRows.join('\n');
             let blob = new Blob([csvFile], { type: "text/plain;charset=utf-8" });
-            fileSaver.saveAs(blob, `${this.op.name} payroll (${from} - ${to}).csv`)
+            fileSaver.saveAs(blob, `${this.profile.name} payroll (${from} - ${to}).csv`)
         }
     }
 }

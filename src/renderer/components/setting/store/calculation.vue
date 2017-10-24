@@ -36,6 +36,15 @@
                 </div>
             </article>
         </section>
+        <section class="card">
+          <header>
+            <span>{{$t('title.deliveryRelated')}}</span>
+            <span class="tip"></span>
+          </header>
+          <article>
+            <smart-switch v-model="tax.deliveryTax" label="text.taxOnDelivery" tip="tip.taxOnDeliveryCharge"></smart-switch>
+          </article>
+        </section>
         <div :is="component" :init="componentData"></div>
     </div>
 </template>

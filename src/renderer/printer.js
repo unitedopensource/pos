@@ -144,7 +144,7 @@ var Printer = function (plugin, config) {
             let footer = createFooter(this.config.store.table, setting.control, printer, raw);
 
             let html = header + list + footer + style;
-
+console.log(html)
             setting.control.buzzer && this.buzzer(printer);
 
             this.plugin.PRINT_INIT('Ticket Receipt');
@@ -168,7 +168,7 @@ var Printer = function (plugin, config) {
                 this.plugin.PRINT()
             }
 
-            if (setting.double[ticket]) {
+            if (setting.reprint.includes(ticket)) {
                 this.plugin.PRINT_INIT('Reprint ticket')
                 this.plugin.ADD_PRINT_HTM(0, 0, "100%", "100%", html)
                 this.plugin.SET_PRINTER_INDEX(printer)

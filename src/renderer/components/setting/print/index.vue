@@ -2,6 +2,7 @@
     <div class="printer">
         <section class="setting">
             <smart-option label="text.printer" v-model="device" :options="devices"></smart-option>
+            <div class="wrap">
                 <div class="config" v-if="profile">
                     <fieldset class="section">
                         <legend>{{$t('setting.printReceipt')}}</legend>
@@ -20,7 +21,7 @@
                             <checkbox v-model="profile.print.DELAY" label="type.DELAY"></checkbox>
                         </div>
                     </fieldset>
-                    <fieldset class="section">
+                    <!-- <fieldset class="section">
                         <legend>{{$t('setting.doubleReceipt')}}</legend>
                         <div class="selection">
                             <checkbox v-model="profile.double.WALK_IN" label="type.WALK_IN"></checkbox>
@@ -31,7 +32,7 @@
                             <checkbox v-model="profile.double.BUFFET" label="type.BUFFET"></checkbox>
                             <checkbox v-model="profile.double.SALES" label="type.SALES"></checkbox>
                         </div>
-                    </fieldset>
+                    </fieldset> -->
                     <fieldset class="section">
                         <legend>{{$t('setting.printStyle')}}</legend>
                         <div class="selection">
@@ -44,7 +45,6 @@
                             <smart-option v-model="profile.control.secondaryFont" label="setting.font" :options="fonts"></smart-option>
                             <smart-range v-model="profile.control.secondaryFontSize" label="setting.fontSize" min="10" max="40" step="1"></smart-range>
                             <checkbox v-model="profile.control.sortItem" label="setting.sortItem"></checkbox>
-                            <!-- <checkbox v-model="profile.control.duplicate" label="setting.printDuplicate"></checkbox> -->
                             <checkbox v-model="profile.control.difference" label="setting.printDifference"></checkbox>
                             <checkbox v-model="profile.control.printStore" label="setting.printStoreInfo" @input="toggleStore"></checkbox>
                             <checkbox v-model="profile.control.printType" label="setting.printOrderType" @input="toggleType"></checkbox>
@@ -54,32 +54,32 @@
                             <checkbox v-model="profile.control.printPayment" label="setting.printPayment" @input="togglePayment"></checkbox>
                             <checkbox v-model="profile.control.printSuggestion" label="setting.printTipSuggestion"></checkbox>
                             <checkbox v-model="profile.control.buzzer" label="setting.buzzer"></checkbox>
-                            <!-- <checkbox v-model="profile.control.printCoupon" label="PRINT_COUPON"></checkbox> -->
                             <checkbox v-model="profile.control.printMenuID" label="setting.printMenuID"></checkbox>
                             <checkbox v-model="profile.control.sortPriority" label="setting.sortPriority"></checkbox>
                         </div>
                     </fieldset>
                     <!-- new style -->
-                    <!-- <div class="settings-box">
+                    <div class="settings-box">
                       <div class="contain">
                         <h5>{{$t('setting.doubleReceipt')}}</h5>
                         <div class="values">
                           <span class="value" v-for="(type,index) in profile.reprint" :key="index">{{$t('type.'+type)}}</span>
                         </div>
                       </div>
-                      <div class="changer">{{$t('button.change')}}</div>
+                      <div class="changer" @click="changeDoubleReceipt(doubleOptions)">{{$t('button.change')}}</div>
                     </div>
                     <div class="settings-box">
                       <div class="contain">
                         <h5>{{$t('setting.printMode')}}</h5>
                         <div class="values">
-                          <span class="value">Always print new invoice</span>
+                          <span class="value">{{$t('print.' + profile.control.printMode)}}</span>
                         </div>
                       </div>
-                      <div class="changer">{{$t('button.change')}}</div>
-                    </div> -->
+                      <div class="changer" @click="changePrintMode(printModeOptions)">{{$t('button.change')}}</div>
+                    </div>
                     <!-- end of new style -->
                 </div>
+            </div>
             <footer>
                 <div class="btn" @click="back">{{$t('button.back')}}</div>
                 <button class="btn f1" @click="save" :disabled="unchanged">{{$t('button.save')}}</button>
@@ -213,11 +213,12 @@ import { mapGetters, mapActions } from "vuex";
 import smartOption from "../common/smartOption";
 import smartRange from "../common/smartRange";
 import dialoger from "../../common/dialoger";
+import selector from "../common/selector";
 import checkbox from "../common/checkbox";
 import Preset from "../../../preset";
 import editor from "./editor";
 export default {
-  components: { smartOption, smartRange, checkbox, dialoger, editor },
+  components: { smartOption, smartRange, checkbox, dialoger, editor, selector },
   created() {
     this.initial();
   },
@@ -293,7 +294,33 @@ export default {
         zhCN: null,
         usEN: null,
         info: null
-      }
+      },
+      doubleOptions: [
+        { label: this.$t("type.WALK_IN"), value: "WALK_IN", tooltip: "" },
+        { label: this.$t("type.PICK_UP"), value: "PICK_UP", tooltip: "" },
+        { label: this.$t("type.DELIVERY"), value: "DELIVERY", tooltip: "" },
+        { label: this.$t("type.DINE_IN"), value: "DINE_IN", tooltip: "" },
+        { label: this.$t("type.BAR"), value: "BAR", tooltip: "" },
+        { label: this.$t("type.BUFFET"), value: "BUFFET", tooltip: "" },
+        { label: this.$t("type.SALES"), value: "SALES", tooltip: "" }
+      ],
+      printModeOptions: [
+        {
+          label: this.$t("print.normal"),
+          value: "normal",
+          tooltip: "tip.printMode.normal"
+        },
+        {
+          label: this.$t("print.difference"),
+          value: "difference",
+          tooltip: "tip.printMode.difference"
+        },
+        {
+          label: this.$t("print.todo"),
+          value: "todo",
+          tooltip: "tip.printMode.todo"
+        }
+      ]
     };
   },
   methods: {
@@ -379,6 +406,54 @@ export default {
         this.componentData = { resolve, reject };
         this.component = "editor";
       });
+    },
+    changeDoubleReceipt(options) {
+      if (!this.profile.reprint){
+        //hot patch
+        this.profile.reprint = [];
+
+        Object.keys(this.profile.double).forEach(type=>{
+          if(this.profile.double[type] === true) this.profile.reprint.push(type);
+        })
+      }
+
+      new Promise((resolve, reject) => {
+        this.componentData = {
+          resolve,
+          reject,
+          options,
+          type: "checkbox",
+          defaultValue: this.profile.reprint
+        };
+        this.component = "selector";
+      })
+        .then(value => {
+          this.profile.reprint = value;
+          this.$q();
+        })
+        .catch(() => {
+          this.$q();
+        });
+    },
+    changePrintMode(options) {
+      new Promise((resolve, reject) => {
+        this.componentData = {
+          resolve,
+          reject,
+          options,
+          type: "radio",
+          defaultValue: this.profile.control.printMode
+        };
+        this.component = "selector";
+      })
+        .then(value => {
+          console.log(value);
+          this.profile.control.printMode = value;
+          this.$q();
+        })
+        .catch(() => {
+          this.$q();
+        });
     },
     askAssign(printer) {
       let profile = Preset.printer();
@@ -504,6 +579,7 @@ section.setting {
   flex-direction: column;
 }
 
+.wrap,
 .config {
   flex: 1;
 }
@@ -711,7 +787,7 @@ section.preview:hover .action {
   margin: 5px;
   border-radius: 2px;
   background: #fff;
-  padding: 8px;
+  padding: 8px 0 8px 8px;
   display: flex;
 }
 
@@ -732,17 +808,28 @@ section.preview:hover .action {
   align-items: center;
   display: flex;
   padding: 3px 0;
-  color: #666;
+  color: #03a9f4;
   min-height: 18px;
+  flex-wrap: wrap;
 }
 
 .settings-box .changer {
   display: flex;
   align-items: center;
-  padding-left: 8px;
-  border-left: 1px solid #eeeeee;
+  margin: 0 5px;
   cursor: pointer;
   width: 55px;
   justify-content: center;
+  transition: background 0.2ms ease;
+}
+.changer:hover {
+  background: #f3f3f3;
+  border-radius: 4px;
+}
+.changer:active {
+  background: #eee;
+}
+.values .value {
+  margin-right: 5px;
 }
 </style>

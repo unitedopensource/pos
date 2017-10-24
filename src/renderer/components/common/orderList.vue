@@ -95,529 +95,583 @@
     </div>
 </template>
 <script>
-import { mapGetters, mapActions } from 'vuex'
-import dialoger from '../common/dialoger'
-import itemMarker from '../menu/marker'
-import entry from '../menu/entry'
-import listItem from './listItem'
-import config from './config'
+import { mapGetters, mapActions } from "vuex";
+import dialoger from "../common/dialoger";
+import itemMarker from "../menu/marker";
+import entry from "../menu/entry";
+import listItem from "./listItem";
+import config from "./config";
 export default {
-    components: { config, itemMarker, dialoger, listItem, entry },
-    props: ['layout', 'group', 'display', 'sort'],
-    data() {
-        return {
-            payment: {
-                subtotal: 0,
-                tax: 0,
-                total: 0,    // subtotal + tax
-                discount: 0,
-                due: 0,      // total - discount
-                balance: 0,  // due + surcharge
-                paid: 0,
-                remain: 0,   // balance - paid
-                change: 0,   // depreciate
-                tip: 0,
-                gratuity: 0,
-                delivery: 0,
-                surcharge: 0, // tip + gratuity + delivery
-                log: []
-            },
-            lastDelta: 0,
-            offset: 0,
-            component: null,
-            componentData: null,
-            spooler: []
-        }
-    },
-    mounted() {
-        if (this.$route.name === 'Table' && this.order.content.length > 0) {
-            this.payment = this.order.payment
-        } else {
-            this.calculator(this.order.content)
-        }
-    },
-    methods: {
-        resetHighlight() {
-            let dom = document.querySelector('li.item.active');
-            dom && dom.classList.remove('active');
-            dom = document.querySelector('.sub.target');
-            dom && dom.classList.remove("target");
-            this.resetChoiceSet();
-            this.resetPointer();
-        },
-        openConfig() {
-            if (this.component === 'config') return;
-            if (this.$route.name !== 'Menu') return;
-            let taxFree = this.order.taxFree || false;
-            let deliveryFree = this.order.deliveryFree || false;
-            let menuID = this.config.display.menuID;
-            let seatOrder = this.store.table.seatOrder;
-            this.$p("config", { taxFree, deliveryFree, menuID, seatOrder });
-        },
-        openMarker() {
-            if (this.isEmptyTicket) return;
-            this.$p("itemMarker")
-        },
-        addToSpooler(item) {
-            if (item.print) return;
-            for (let i = 0; i < this.spooler.length; i++) {
-                if (this.spooler[i].unique === item.unique) {
-                    item.pending = false;
-                    this.spooler.splice(i, 1);
-                    return;
-                }
-            }
-            item.pending = true;
-            this.spooler.push(item);
-        },
-        directPrint() {
-            if (this.spooler.length === 0) return;
-            let error = false;
-            let sendItem = this.spooler.length;
-            let order = JSON.parse(JSON.stringify(this.order));
-            let items = order.content.map(item => {
-                if (item.pending) item.print = true;
-                return item;
-            });
-            let remain = items.filter(item => !item.print).length;
-            order.content = this.spooler;
-            order.delay = +new Date;
-            Printer.setTarget('Order').print(order)
-            this.spooler.forEach(item => { item.print = true })
-            if (remain === 0) {
-                Object.assign(this.order, { print: true })
-            } else {
-                let txt = remain > 0 ? this.$t('dialog.remainPrintItem', remain) : this.$t('dialog.noRemainItem');
-                this.$dialog({
-                    type: 'info', title: 'dialog.itemSent', msg: ['dialog.printResult', sendItem, txt],
-                    buttons: [{ text: 'button.confirm', fn: 'resolve' }]
-                }).then(() => { this.$q() })
-            }
-            this.spooler = [];
-            this.$socket.emit("[UPDATE] INVOICE", this.order)
-        },
-        move(e) {
-            this.offset = this.lastDelta + e.deltaY;
-        },
-        panStart() {
-            let dom = document.querySelector('.order .scrollable');
-            dom && dom.classList.remove('scrollable')
-        },
-        panEnd() {
-            let dom = document.querySelector('.order .inner');
-            dom && dom.classList.add('scrollable')
-
-            let { top, bottom, height } = dom.getBoundingClientRect();
-            let offset = this.$route.name === 'Menu' ? 55 : 179;
-            top -= offset;
-            bottom -= offset;
-            if (top > 0) {
-                this.offset = 0
-            } else if (height < 350) {
-                this.offset = 0
-            } else if (height > 350 && bottom < 335) {
-                this.offset = - (height - 329)
-            }
-            this.lastDelta = this.offset;
-        },
-        separator() {
-            if (!this.item) return;
-            let dash = {
-                zhCN: `----------`,
-                usEN: `----------`,
-                qty: 1,
-                single: 0,
-                price: '0.00',
-                key: Math.random().toString(36).substr(2, 5)
-            }
-            this.setChoiceSet(dash)
-        },
-        openKeyboard() {
-            if (this.isEmptyTicket) return;
-            this.component === 'entry' ? this.component = null : this.$p('entry');
-        },
-        update(config) {
-            this.setOrder(config);
-            this.calculator(this.cart);
-        },
-        countItems(content) {
-            let count = 0;
-            let undone = 0;
-            content.forEach(item => {
-                count += item.qty;
-                !item.print && undone++;
-            })
-            return [count, undone]
-        },
-        calculator(items) {
-            if (items.length === 0) {
-                let delivery = (this.ticket.type === 'DELIVERY' && this.store.delivery && !this.order.deliveryFree) ? parseFloat(this.store.deliveryCharge) : 0;
-                this.payment = Object.assign(this.order.payment, {
-                    subtotal: 0,
-                    tax: 0,
-                    total: 0,    // subtotal + tax + delivery
-                    discount: 0,
-                    due: 0,      // total - discount
-                    balance: 0,  // due + surcharge
-                    paid: 0,
-                    remain: 0,   // balance - paid
-                    change: 0,   // depreciate
-                    tip: 0,
-                    gratuity: 0,
-                    delivery,
-                    surcharge: 0, // tip + gratuity
-                    log: []
-                })
-                return;
-            }
-
-            let { tip, gratuity, discount, paid } = this.order.payment;
-            let type = this.app.mode === 'create' ? this.ticket.type : this.order.type;
-            let { coupon } = this.order;
-
-            let subtotal = 0, tax = 0;
-
-            items.forEach(item => {
-                if (item.void) return;
-                let single = parseFloat(item.single);
-                let qty = item.qty || 1;
-                let taxClass = this.tax.class[item.taxClass];
-                let amount = toFixed(single * qty, 2);
-
-                item.choiceSet.forEach(set => {
-                    let p = parseFloat(set.single);
-                    let s = set.qty || 1;
-                    let t = toFixed(p * s, 2);
-                    amount = toFixed(amount + t, 2)
-                });
-
-                subtotal = toFixed(subtotal + amount, 2);
-
-                if (!this.order.taxFree) tax += taxClass.apply[type] ? (taxClass.rate / 100 * amount) : tax;
-            })
-
-            let { enable, penalty, when } = this.store.table.surcharge;
-
-            if (this.order.type === 'DINE_IN' && enable && this.order.guest > when) {
-                let value = parseFloat(penalty.replace(/[^0-9.]/g, ""));
-
-                if (penalty.includes("%")) {
-                    value = toFixed(value / 100, 2);
-                    gratuity = toFixed(subtotal * value, 2)
-                } else {
-                    gratuity = value
-                }
-            }
-
-            if (coupon) {
-                /**
-                 * Tax apply Before Discount (For Example: 10% Tax Rate, 20% Discount)
-                 * 
-                 * Subtotal: 10.00
-                 * Tax:       1.00  
-                 * Discount:  2.00
-                 * Total:     9.00
-                 * ------------------------------------------------------------------
-                 */
-                let value = parseFloat(coupon.discount.replace(/\D+/, ""));
-
-                if (coupon.discount.includes("%")) {
-                    value = toFixed(value / 100, 2);
-                    discount = toFixed(value * subtotal, 2)
-                } else {
-                    discount = value
-                }
-            }
-
-            let delivery = (type === 'DELIVERY' && this.store.delivery && !this.order.deliveryFree) ? parseFloat(this.store.deliveryCharge) : 0;
-
-            let total = subtotal + tax + delivery;
-            let due = Math.max(0, total - discount);
-            let surcharge = tip + gratuity;
-            let balance = due + surcharge;
-            let remain = balance - paid;
-
-            this.payment = Object.assign({}, this.payment, {
-                subtotal: toFixed(subtotal, 2),
-                tax: toFixed(tax, 2),
-                total: toFixed(total, 2),
-                discount: toFixed(discount, 2),
-                due: toFixed(due, 2),
-                balance: toFixed(balance, 2),
-                paid :toFixed(paid,2),
-                remain: toFixed(remain, 2),
-                tip: toFixed(tip, 2),
-                gratuity: toFixed(gratuity, 2),
-                delivery: toFixed(delivery, 2),
-                surcharge: toFixed(surcharge, 2)
-            })
-            Object.assign(this.order, { payment: this.payment })
-        },
-        ...mapActions(['setChoiceSet', 'setPointer', 'resetPointer', 'resetChoiceSet', 'setChoiceSetTarget', 'setOrder'])
-    },
-    computed: {
-        scroll() {
-            return { transform: `translate3d(0,${this.offset}px,0)` }
-        },
-        ...mapGetters(['app', 'config', 'store', 'tax', 'order', 'item', 'ticket', 'language', 'isEmptyTicket'])
-    },
-    watch: {
-        'order.content': {
-            handler(items) {
-                this.display ?
-                    this.payment = this.order.payment :
-                    this.calculator(items)
-            }, deep: true
-        },
-        payment() {
-            this.$nextTick(() => {
-                let dom = document.querySelector('.order .inner');
-                let { height } = dom.getBoundingClientRect();
-                height > 329 && dom.classList.add("scrollable");
-                let target = document.querySelector('.item.active');
-
-                if (target && height > 329) {
-                    this.offset -= target.getBoundingClientRect().height;
-                } else {
-                    this.offset = height > 329 ? 329 - height : 0;
-                }
-            })
-        }
+  components: { config, itemMarker, dialoger, listItem, entry },
+  props: ["layout", "group", "display", "sort"],
+  data() {
+    return {
+      payment: {
+        subtotal: 0,
+        tax: 0,
+        total: 0, // subtotal + tax
+        discount: 0,
+        due: 0, // total - discount
+        balance: 0, // due + surcharge
+        paid: 0,
+        remain: 0, // balance - paid
+        change: 0, // depreciate
+        tip: 0,
+        gratuity: 0,
+        delivery: 0,
+        surcharge: 0, // tip + gratuity + delivery
+        log: []
+      },
+      lastDelta: 0,
+      offset: 0,
+      component: null,
+      componentData: null,
+      spooler: []
+    };
+  },
+  mounted() {
+    if (this.$route.name === "Table" && this.order.content.length > 0) {
+      this.payment = this.order.payment;
+    } else {
+      this.calculator(this.order.content);
     }
-}
+  },
+  methods: {
+    resetHighlight() {
+      let dom = document.querySelector("li.item.active");
+      dom && dom.classList.remove("active");
+      dom = document.querySelector(".sub.target");
+      dom && dom.classList.remove("target");
+      this.resetChoiceSet();
+      this.resetPointer();
+    },
+    openConfig() {
+      if (this.component === "config") return;
+      if (this.$route.name !== "Menu") return;
+      let taxFree = this.order.taxFree || false;
+      let deliveryFree = this.order.deliveryFree || false;
+      let menuID = this.config.display.menuID;
+      let seatOrder = this.store.table.seatOrder;
+      this.$p("config", { taxFree, deliveryFree, menuID, seatOrder });
+    },
+    openMarker() {
+      if (this.isEmptyTicket) return;
+      this.$p("itemMarker");
+    },
+    addToSpooler(item) {
+      if (item.print) return;
+      for (let i = 0; i < this.spooler.length; i++) {
+        if (this.spooler[i].unique === item.unique) {
+          item.pending = false;
+          this.spooler.splice(i, 1);
+          return;
+        }
+      }
+      item.pending = true;
+      this.spooler.push(item);
+    },
+    directPrint() {
+      if (this.spooler.length === 0) return;
+      let error = false;
+      let sendItem = this.spooler.length;
+      let order = JSON.parse(JSON.stringify(this.order));
+      let items = order.content.map(item => {
+        if (item.pending) item.print = true;
+        return item;
+      });
+      let remain = items.filter(item => !item.print).length;
+      order.content = this.spooler;
+      order.delay = +new Date();
+      Printer.setTarget("Order").print(order);
+      this.spooler.forEach(item => {
+        item.print = true;
+      });
+      if (remain === 0) {
+        Object.assign(this.order, { print: true });
+      } else {
+        let txt =
+          remain > 0
+            ? this.$t("dialog.remainPrintItem", remain)
+            : this.$t("dialog.noRemainItem");
+        this.$dialog({
+          type: "info",
+          title: "dialog.itemSent",
+          msg: ["dialog.printResult", sendItem, txt],
+          buttons: [{ text: "button.confirm", fn: "resolve" }]
+        }).then(() => {
+          this.$q();
+        });
+      }
+      this.spooler = [];
+      this.$socket.emit("[UPDATE] INVOICE", this.order);
+    },
+    move(e) {
+      this.offset = this.lastDelta + e.deltaY;
+    },
+    panStart() {
+      let dom = document.querySelector(".order .scrollable");
+      dom && dom.classList.remove("scrollable");
+    },
+    panEnd() {
+      let dom = document.querySelector(".order .inner");
+      dom && dom.classList.add("scrollable");
+
+      let { top, bottom, height } = dom.getBoundingClientRect();
+      let offset = this.$route.name === "Menu" ? 55 : 179;
+      top -= offset;
+      bottom -= offset;
+      if (top > 0) {
+        this.offset = 0;
+      } else if (height < 350) {
+        this.offset = 0;
+      } else if (height > 350 && bottom < 335) {
+        this.offset = -(height - 329);
+      }
+      this.lastDelta = this.offset;
+    },
+    separator() {
+      if (!this.item) return;
+      let dash = {
+        zhCN: `----------`,
+        usEN: `----------`,
+        qty: 1,
+        single: 0,
+        price: "0.00",
+        key: Math.random()
+          .toString(36)
+          .substr(2, 5)
+      };
+      this.setChoiceSet(dash);
+    },
+    openKeyboard() {
+      if (this.isEmptyTicket) return;
+      this.component === "entry" ? (this.component = null) : this.$p("entry");
+    },
+    update(config) {
+      this.setOrder(config);
+      this.calculator(this.cart);
+    },
+    countItems(content) {
+      let count = 0;
+      let undone = 0;
+      content.forEach(item => {
+        count += item.qty;
+        !item.print && undone++;
+      });
+      return [count, undone];
+    },
+    calculator(items) {
+      if (items.length === 0) {
+        let delivery =
+          this.ticket.type === "DELIVERY" &&
+          this.store.delivery &&
+          !this.order.deliveryFree
+            ? parseFloat(this.store.deliveryCharge)
+            : 0;
+        this.payment = Object.assign(this.order.payment, {
+          subtotal: 0,
+          tax: 0,
+          total: 0, // subtotal + tax + delivery
+          discount: 0,
+          due: 0, // total - discount
+          balance: 0, // due + surcharge
+          paid: 0,
+          remain: 0, // balance - paid
+          change: 0, // depreciate
+          tip: 0,
+          gratuity: 0,
+          delivery,
+          surcharge: 0, // tip + gratuity
+          log: []
+        });
+        return;
+      }
+
+      let { tip, gratuity, discount, paid } = this.order.payment;
+      let type =
+        this.app.mode === "create" ? this.ticket.type : this.order.type;
+      let { coupon } = this.order;
+
+      let subtotal = 0,
+        tax = 0;
+
+      items.forEach(item => {
+        if (item.void) return;
+        let single = parseFloat(item.single);
+        let qty = item.qty || 1;
+        let taxClass = this.tax.class[item.taxClass];
+        let amount = toFixed(single * qty, 2);
+
+        item.choiceSet.forEach(set => {
+          let p = parseFloat(set.single);
+          let s = set.qty || 1;
+          let t = toFixed(p * s, 2);
+          amount = toFixed(amount + t, 2);
+        });
+
+        subtotal = toFixed(subtotal + amount, 2);
+
+        if (!this.order.taxFree)
+          tax += taxClass.apply[type] ? taxClass.rate / 100 * amount : tax;
+      });
+
+      let { enable, penalty, when } = this.store.table.surcharge;
+
+      if (this.order.type === "DINE_IN" && enable && this.order.guest > when) {
+        let value = parseFloat(penalty.replace(/[^0-9.]/g, ""));
+
+        if (penalty.includes("%")) {
+          value = toFixed(value / 100, 2);
+          gratuity = toFixed(subtotal * value, 2);
+        } else {
+          gratuity = value;
+        }
+      }
+
+      if (coupon) {
+        /**
+         * Tax apply Before Discount (For Example: 10% Tax Rate, 20% Discount)
+         * 
+         * Subtotal: 10.00
+         * Tax:       1.00  
+         * Discount:  2.00
+         * Total:     9.00
+         * ------------------------------------------------------------------
+        **/
+        let value = parseFloat(coupon.discount.replace(/\D+/, ""));
+
+        if (coupon.discount.includes("%")) {
+          value = toFixed(value / 100, 2);
+          discount = toFixed(value * subtotal, 2);
+        } else {
+          discount = value;
+        }
+      }
+
+      let delivery =
+        type === "DELIVERY" && this.store.delivery && !this.order.deliveryFree
+          ? parseFloat(this.store.deliveryCharge)
+          : 0;
+
+      if (this.tax.deliveryTax) {
+        /*
+            is Delivery fee taxable?
+            Find out default tax rate and apply to delivery charge
+        */
+        let taxRate = 0;
+        Object.keys(this.tax.class).forEach(type => {
+          this.tax.class[type].default === true &&
+            (taxRate = this.tax.class[type].rate);
+        });
+
+        tax += toFixed(delivery * taxRate / 100, 2);
+      }
+
+      let total = subtotal + tax + delivery;
+      let due = Math.max(0, total - discount);
+      let surcharge = tip + gratuity;
+      let balance = due + surcharge;
+      let remain = balance - paid;
+
+      this.payment = Object.assign({}, this.payment, {
+        subtotal: toFixed(subtotal, 2),
+        tax: toFixed(tax, 2),
+        total: toFixed(total, 2),
+        discount: toFixed(discount, 2),
+        due: toFixed(due, 2),
+        balance: toFixed(balance, 2),
+        paid: toFixed(paid, 2),
+        remain: toFixed(remain, 2),
+        tip: toFixed(tip, 2),
+        gratuity: toFixed(gratuity, 2),
+        delivery: toFixed(delivery, 2),
+        surcharge: toFixed(surcharge, 2)
+      });
+      Object.assign(this.order, { payment: this.payment });
+    },
+    ...mapActions([
+      "setChoiceSet",
+      "setPointer",
+      "resetPointer",
+      "resetChoiceSet",
+      "setChoiceSetTarget",
+      "setOrder"
+    ])
+  },
+  computed: {
+    scroll() {
+      return { transform: `translate3d(0,${this.offset}px,0)` };
+    },
+    ...mapGetters([
+      "app",
+      "config",
+      "store",
+      "tax",
+      "order",
+      "item",
+      "ticket",
+      "language",
+      "isEmptyTicket"
+    ])
+  },
+  watch: {
+    "order.content": {
+      handler(items) {
+        this.display
+          ? (this.payment = this.order.payment)
+          : this.calculator(items);
+      },
+      deep: true
+    },
+    payment() {
+      this.$nextTick(() => {
+        let dom = document.querySelector(".order .inner");
+        let { height } = dom.getBoundingClientRect();
+        height > 329 && dom.classList.add("scrollable");
+        let target = document.querySelector(".item.active");
+
+        if (target && height > 329) {
+          this.offset -= target.getBoundingClientRect().height;
+        } else {
+          this.offset = height > 329 ? 329 - height : 0;
+        }
+      });
+    }
+  }
+};
 </script>
 
 <style scoped>
 header.simple {
-    display: flex;
-    flex-direction: row;
-    height: 25px;
-    line-height: 25px;
-    border-bottom: 1px solid #ccc;
-    background: #FAFAFA;
-    color: #333;
+  display: flex;
+  flex-direction: row;
+  height: 25px;
+  line-height: 25px;
+  border-bottom: 1px solid #ccc;
+  background: #fafafa;
+  color: #333;
 }
 
 header.info {
-    background: #F5F5F5;
-    color: #555;
-    position: relative;
-    height: 88px;
+  background: #f5f5f5;
+  color: #555;
+  position: relative;
+  height: 88px;
 }
 
 .number {
-    font-family: 'Agency FB';
-    width: 30px;
-    text-align: center;
-    font-weight: bold;
-    text-shadow: 0 1px 1px #333;
-    font-size: 22px;
+  font-family: "Agency FB";
+  width: 30px;
+  text-align: center;
+  font-weight: bold;
+  text-shadow: 0 1px 1px #333;
+  font-size: 22px;
 }
 
 header i {
-    margin-right: 2px;
+  margin-right: 2px;
 }
 
 .bar {
-    height: 26px;
-    background: #03A9F4;
-    display: flex;
-    align-items: center;
-    color: #fff;
-    position: relative;
-    padding: 0 5px;
-    box-shadow: inset 0px -1px 3px -1px rgb(17, 116, 160);
+  height: 26px;
+  background: #03a9f4;
+  display: flex;
+  align-items: center;
+  color: #fff;
+  position: relative;
+  padding: 0 5px;
+  box-shadow: inset 0px -1px 3px -1px rgb(17, 116, 160);
 }
 
 .table {
-    padding: 0 10px;
+  padding: 0 10px;
 }
 
 .simple .qty {
-    width: 40px;
-    text-align: center;
+  width: 40px;
+  text-align: center;
 }
 
 .simple .item {
-    flex: 1;
+  flex: 1;
 }
 
 .simple .price {
-    width: 45px;
-    text-align: center;
+  width: 45px;
+  text-align: center;
 }
 
 .order {
-    height: 329px;
-    width: 285px;
-    background: hsla(0, 9%, 66%, .15);
-    overflow: hidden;
+  height: 329px;
+  width: 285px;
+  background: hsla(0, 9%, 66%, 0.15);
+  overflow: hidden;
 }
 
 .scrollable {
-    transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .mark {
-    position: absolute;
-    width: 100%;
-    top: -9px;
-    font-size: 10px;
-    left: 0;
-    height: 10px;
-    line-height: 10px;
-    text-align: center;
-    font-weight: 700;
-    color: #ff5722;
-    white-space: nowrap;
+  position: absolute;
+  width: 100%;
+  top: -9px;
+  font-size: 10px;
+  left: 0;
+  height: 10px;
+  line-height: 10px;
+  text-align: center;
+  font-weight: 700;
+  color: #ff5722;
+  white-space: nowrap;
 }
 
 .list .price {
-    min-width: 45px;
-    text-align: right;
-    padding-right: 10px;
-    vertical-align: top;
-    font-size: initial;
+  min-width: 45px;
+  text-align: right;
+  padding-right: 10px;
+  vertical-align: top;
+  font-size: initial;
 }
 
 .middle {
-    display: flex;
-    margin-top: 1px;
+  display: flex;
+  margin-top: 1px;
 }
 
 .fnWrap {
-    width: 127px;
-    padding-left: 3px;
+  width: 127px;
+  padding-left: 3px;
 }
 
 .fn {
-    background: linear-gradient(#fefefe, #cfd0d3);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, .7);
-    text-shadow: 0 1px 1px #fff;
-    width: 60px;
-    height: 53px;
-    text-align: center;
-    padding: 16px 0;
-    border-radius: 4px;
-    border: none;
-    font-family: fontAwesome;
-    font-size: 18px;
-    outline: none;
+  background: linear-gradient(#fefefe, #cfd0d3);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+  text-shadow: 0 1px 1px #fff;
+  width: 60px;
+  height: 53px;
+  text-align: center;
+  padding: 16px 0;
+  border-radius: 4px;
+  border: none;
+  font-family: fontAwesome;
+  font-size: 18px;
+  outline: none;
 }
 
-.fn:nth-child(n+3) {
-    margin-top: 4px;
+.fn:nth-child(n + 3) {
+  margin-top: 4px;
 }
 
 .fn:active {
-    background: linear-gradient(#E2E3E4, #AAADB4);
-    color: #333;
+  background: linear-gradient(#e2e3e4, #aaadb4);
+  color: #333;
 }
 
 .settle {
-    width: 155px;
+  width: 155px;
 }
 
 .settle div {
-    border-bottom: 1px solid #eee;
-    background: #fff;
-    padding: 1px;
-    display: flex;
+  border-bottom: 1px solid #eee;
+  background: #fff;
+  padding: 1px;
+  display: flex;
 }
 
 .settle .text {
-    width: 70px;
+  width: 70px;
 }
 
 .settle .value {
-    flex: 1;
-    padding-right: 5px;
-    overflow: hidden;
-    vertical-align: text-top;
-    text-overflow: ellipsis;
+  flex: 1;
+  padding-right: 5px;
+  overflow: hidden;
+  vertical-align: text-top;
+  text-overflow: ellipsis;
 }
 
 .settle .text,
 .settle .value {
-    text-align: right;
+  text-align: right;
 }
 
 .settle div:last-child {
-    font-weight: 700;
-    font-size: larger;
-    padding: 2.5px 0;
+  font-weight: 700;
+  font-size: larger;
+  padding: 2.5px 0;
 }
 
 .timePass {
-    position: absolute;
-    bottom: 0px;
-    right: 0px;
-    padding: 3px 10px;
-    color: #009688;
-    background: #f5f5f5;
-    text-align: center;
-    font-size: 12px;
-    border-top-left-radius: 6px;
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  padding: 3px 10px;
+  color: #009688;
+  background: #f5f5f5;
+  text-align: center;
+  font-size: 12px;
+  border-top-left-radius: 6px;
 }
 
 .print .itemWrap {
-    width: 200px;
+  width: 200px;
 }
 
 .list.print.pending {
-    background: #ECEFF1;
+  background: #eceff1;
 }
 
 .list i {
-    display: none;
-    padding-right: 25px;
+  display: none;
+  padding-right: 25px;
 }
 
 .showCategory .item {
-    position: relative;
+  position: relative;
 }
 
 .showCategory .item:before {
-    content: attr(data-category);
-    position: absolute;
-    top: 0px;
-    right: 0px;
-    font-size: 9px;
-    font-family: 'Microsoft YaHei';
-    background: #009688;
-    color: #fff;
-    padding: 0 5px;
-    -webkit-font-smoothing: antialiased;
-    font-weight: lighter;
+  content: attr(data-category);
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  font-size: 9px;
+  font-family: "Microsoft YaHei";
+  background: #009688;
+  color: #fff;
+  padding: 0 5px;
+  -webkit-font-smoothing: antialiased;
+  font-weight: lighter;
 }
 
 .driver {
-    width: 275px;
-    margin: 5px;
-    height: 40px;
-    font-size: initial;
+  width: 275px;
+  margin: 5px;
+  height: 40px;
+  font-size: initial;
 }
 
-.content>div {
-    display: flex;
+.content > div {
+  display: flex;
 }
 
 .content .text {
-    min-width: 65px;
-    text-align: right;
-    padding-right: 10px;
-    color: #607D8B;
+  min-width: 65px;
+  text-align: right;
+  padding-right: 10px;
+  color: #607d8b;
 }
 
 .content {
-    padding: 3px;
+  padding: 3px;
 }
 
 .content .value {
-    color: #676767;
+  color: #676767;
 }
 
 .hidden span {
-    visibility: hidden;
+  visibility: hidden;
 }
 </style>

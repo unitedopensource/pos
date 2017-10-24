@@ -91,7 +91,7 @@ export default {
         'Invalid Order': 'Invalid Order',
         'Payment Issue': 'Payment Issue',
         'Manager Redemption': 'Manager Redemption',
-        'Order Combined':'Order Combined'
+        'Order Combined': 'Order Combined'
     },
     dashboard: {
         'name': 'Name',
@@ -220,9 +220,9 @@ export default {
         'later': 'Later',
         'register': 'Register',
         'unRegister': 'Remove',
-        'combine':'Combine',
-        'select':'Select',
-        'change':'Change'
+        'combine': 'Combine',
+        'select': 'Select',
+        'change': 'Change'
     },
     thead: {
         'orderType': 'Order Type',
@@ -285,7 +285,9 @@ export default {
         'salary': 'Salary',
         'doneAction': 'Done Action',
         'setDate': 'Set Date',
-        'payOut': 'Pay Out Record'
+        'payOut': 'Pay Out Record',
+        'deliveryRelated':'Delivery Related',
+        'optionList':'Options'
     },
     menu: {
         'course': 'Course',
@@ -501,8 +503,8 @@ export default {
         'splitTicketSettled': 'All Split Ticket Are Settled',
         'splitTicketSettledTip': 'Are you wish to mark this ticket as paid?',
         'insufficientAmount': 'There is an insufficient amount of balance.',
-        'combineTickets':'Confirm Ticket Combines',
-        'combineTicketsConfirm':'Are you sure to combine {i} ticket(s) to MAIN ticket #{i}?'
+        'combineTickets': 'Confirm Ticket Combines',
+        'combineTicketsConfirm': 'Are you sure to combine {i} ticket(s) to MAIN ticket #{i}?'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',
@@ -849,7 +851,8 @@ export default {
         'ignore': 'Ignore',
         'receiver': 'Receiver',
         'comment': 'comment',
-        'server': 'Server'
+        'server': 'Server',
+        'taxOnDelivery':'Tax On Delivery'
     },
     nav: {
         'store': 'Store',
@@ -1003,7 +1006,7 @@ export default {
         'employeeCard': 'Employee Card',
         'employeeCardRegistration': 'Register employee card',
         'settledReceipt': 'Settle Payment Receipt',
-        'printMode':'Print Mode'
+        'printMode': 'Print Mode'
     },
     reservation: {
         'create': 'Create Reservation',
@@ -1033,17 +1036,23 @@ export default {
         'objects': 'Objects',
         'averageSize': 'Average Size'
     },
+    print: {
+        'normal': '',
+        'difference': '',
+        'todo': ''
+    },
     tip: {
         'autoTemplate': 'Auto popup template page',
         'alphabetical': 'Sort menu item by alphabet',
         'createSubMenuGroup': 'Create a sub menu group',
-        'reportBeforeBatch': 'Print each credit card transaction before batch report ',
+        'reportBeforeBatch': 'Print each credit card transaction before batch report',
         'tipFor': 'Tips Based On',
         'discountFor': 'Discount Base On',
         'howTipCalculate': 'Tip is before tax and discount',
         'howDiscountCalculate': 'Discount is before tax',
         'lockWhenCompleteOrder': 'Lock screen when complete order',
         'doNotAskReceiptAfterSettle': 'Do not prompt "Print Receipt" dialog',
+        'taxOnDeliveryCharge':'Tax on delivery charge',
         'table': {
             'actionsOnDone': 'Actions after tapping Done',
             'passwordRequire': 'Password input required before create a new table.',
@@ -1057,6 +1066,11 @@ export default {
         },
         'terminal': {
             'integration': 'Semi-integrated terminal configuration'
+        },
+        'printMode': {
+            'normal': 'Prints all items on the ticket',
+            'difference': 'Only prints out new,deleted,edited item on the ticket',
+            'todo': 'Mark and print printed and new item'
         }
     }
 }
