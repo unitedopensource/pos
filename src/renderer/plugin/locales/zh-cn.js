@@ -214,7 +214,8 @@ export default {
         'register': '注册',
         'unRegister': '反注册',
         'combine':'合并',
-        'select':'选择'
+        'select':'选择',
+        'change':'更改'
     },
     title: {
         'markPaymentType': '标记付款方式',
@@ -559,9 +560,9 @@ export default {
         'giftCardSummary': '礼物卡',
         'countItem': '物品销售',
         'performance': '业绩',
-        'staffSummary': '企台概要',
-        'cashierSummary':'收银员概要',
-        'driverSummary': '司机概要',
+        'staffLiability': '企台责任报告',
+        'cashierLiability':'收银员责任报告',
+        'driverLiability': '司机责任报告',
         'thirdPartySummary': '第三方概要',
         'viaEmail': '发送报表至邮箱',
         'grossSales': '总售额',
@@ -994,7 +995,8 @@ export default {
         'sortPriority': '按优先值',
         'employeeCard': '员工卡',
         'employeeCardRegistration': '注册员工卡',
-        'settledReceipt':'结账收据'
+        'settledReceipt':'结账收据',
+        'printMode':'打印模式'
     },
     reservation: {
         'create': '创建预约',

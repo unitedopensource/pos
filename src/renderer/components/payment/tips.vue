@@ -59,6 +59,9 @@ export default {
     if (this.init.payment.tip) {
       this.tip = this.init.payment.tip.toFixed(2);
       this.unit = "$";
+    } else if (this.init.hasOwnProperty("defaultUnit")) {
+      this.unit = this.init.defaultUnit;
+      this.tip = this.unit === "$" ? "0.00" : "0";
     }
   },
   methods: {

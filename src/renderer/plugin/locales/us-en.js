@@ -221,7 +221,8 @@ export default {
         'register': 'Register',
         'unRegister': 'Remove',
         'combine':'Combine',
-        'select':'Select'
+        'select':'Select',
+        'change':'Change'
     },
     thead: {
         'orderType': 'Order Type',
@@ -594,17 +595,17 @@ export default {
         'details': 'Report Details',
         'statistics': 'Statistics',
         'summary': 'Summary',
-        'salesFrom': 'Sales Analysis Report',
+        'salesFrom': 'Sales Source Analysis',
         'categorySales': 'Category Sales Report',
-        'hourlyReport': 'Hourly Report',
-        'settleType': 'Settle Type Report',
+        'hourlyReport': 'Hourly Summary',
+        'settleType': 'Settle Type Summary',
         'tipSummary': 'Tip Summary Report',
         'giftCardSummary': 'Gift Card Sales Report',
         'countItem': 'Item Sales Report',
         'performance': 'Performance',
-        'staffSummary': 'Staff Summary',
-        'cashierSummary': 'Cashier Summary',
-        'driverSummary': 'Driver Summary',
+        'staffLiability': 'Staff Liability Report',
+        'cashierLiability': 'Cashier Liability Report',
+        'driverLiability': 'Driver Liability Report',
         'thirdPartySummary': 'Third Party Summary',
         'viaEmail': 'Send Report Via Email',
         'grossSales': 'Gross Sales',
@@ -1001,7 +1002,8 @@ export default {
         'sortPriority': 'Prioritize',
         'employeeCard': 'Employee Card',
         'employeeCardRegistration': 'Register employee card',
-        'settledReceipt': 'Settle Payment Receipt'
+        'settledReceipt': 'Settle Payment Receipt',
+        'printMode':'Print Mode'
     },
     reservation: {
         'create': 'Create Reservation',

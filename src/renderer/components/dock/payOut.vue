@@ -19,7 +19,7 @@
             </div>
             <footer>
                 <div class="btn" @click="init.reject(false)">{{$t('button.cancel')}}</div>
-                <button class="btn" @click="confirm" :disabled="isNaN(amount)">{{$t('button.confirm')}}</button>
+                <button class="btn" @click="confirm" :disabled="isNaN(amount) || true">{{$t('button.confirm')}}</button>
             </footer>
         </div>
     </div>

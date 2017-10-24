@@ -11,28 +11,60 @@
         <div class="f1">
           <div class="btn" @click="clear">{{$t("button.clear")}}</div>
         </div>
-        <div class="btn">{{$t('button.setTip')}}</div>
+        <div class="btn" @click="setTip">{{$t('button.setTip')}}</div>
         <div class="btn" @click="confirm">{{$t("button.confirm")}}</div>
       </footer>
     </div>
+    <div :is="component" :init="componentData"></div>
   </div>
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters } from "vuex";
+import tips from "../payment/tips";
 export default {
-  props: ['init'],
+  props: ["init"],
+  components: { tips },
   mounted() {
     if (this.init.driver) {
-      document.querySelector('.' + this.init.driver).classList.add("active");
+      document.querySelector("." + this.init.driver).classList.add("active");
       this.letter = this.init.driver;
     }
   },
   data() {
     return {
-      letters: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'],
-      letter: null
-    }
+      letters: [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "I",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "O",
+        "P",
+        "Q",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V",
+        "W",
+        "X",
+        "Y",
+        "Z"
+      ],
+      letter: null,
+      componentData: null,
+      component: null
+    };
   },
   methods: {
     setDriver(letter, e) {
@@ -47,6 +79,26 @@ export default {
       this.$socket.emit("[UPDATE] INVOICE", this.order);
       this.init.resolve();
     },
+    setTip() {
+      new Promise((resolve, reject) => {
+        this.componentData = {
+          resolve,
+          reject,
+          payment: this.order.payment,
+          defaultUnit: "$"
+        };
+        this.component = "tips";
+      })
+        .then(result => {
+          let { tip } = result;
+          this.order.payment.tip = tip;
+          this.$socket.emit("[UPDATE] INVOICE", this.order);
+          this.$q();
+        })
+        .catch(() => {
+          this.$q();
+        });
+    },
     exit() {
       this.init.reject();
     },
@@ -57,12 +109,12 @@ export default {
       }
       this.init.resolve();
     },
-    ...mapActions(['setOrder'])
+    ...mapActions(["setOrder"])
   },
   computed: {
-    ...mapGetters(['order'])
+    ...mapGetters(["order"])
   }
-}
+};
 </script>
 
 <style scoped>

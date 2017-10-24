@@ -2,7 +2,6 @@
     <div class="printer">
         <section class="setting">
             <smart-option label="text.printer" v-model="device" :options="devices"></smart-option>
-            <div class="wrap">
                 <div class="config" v-if="profile">
                     <fieldset class="section">
                         <legend>{{$t('setting.printReceipt')}}</legend>
@@ -60,8 +59,27 @@
                             <checkbox v-model="profile.control.sortPriority" label="setting.sortPriority"></checkbox>
                         </div>
                     </fieldset>
+                    <!-- new style -->
+                    <!-- <div class="settings-box">
+                      <div class="contain">
+                        <h5>{{$t('setting.doubleReceipt')}}</h5>
+                        <div class="values">
+                          <span class="value" v-for="(type,index) in profile.reprint" :key="index">{{$t('type.'+type)}}</span>
+                        </div>
+                      </div>
+                      <div class="changer">{{$t('button.change')}}</div>
+                    </div>
+                    <div class="settings-box">
+                      <div class="contain">
+                        <h5>{{$t('setting.printMode')}}</h5>
+                        <div class="values">
+                          <span class="value">Always print new invoice</span>
+                        </div>
+                      </div>
+                      <div class="changer">{{$t('button.change')}}</div>
+                    </div> -->
+                    <!-- end of new style -->
                 </div>
-            </div>
             <footer>
                 <div class="btn" @click="back">{{$t('button.back')}}</div>
                 <button class="btn f1" @click="save" :disabled="unchanged">{{$t('button.save')}}</button>
@@ -77,7 +95,6 @@
                         <h5>{{store.contact}}</h5>
                     </div>
                     <div class="type" :class="{hide:!receipt.type}">
-                        <p class="zhCN" :style="style.zhCN">送餐</p>
                         <p class="usEN" :style="style.usEN">DELIVERY</p>
                     </div>
                     <div class="time">
@@ -463,7 +480,7 @@ export default {
 
 .input {
   align-items: center;
-  margin: 7px;
+  margin: 6px;
   background: #fff;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
@@ -483,6 +500,12 @@ legend {
 section.setting {
   background: rgba(238, 238, 238, 0.57);
   width: 360px;
+  display: flex;
+  flex-direction: column;
+}
+
+.config {
+  flex: 1;
 }
 
 .selection .input {
@@ -499,10 +522,6 @@ section.setting {
 
 .range label {
   width: 100px;
-}
-
-.wrap {
-  height: 622px;
 }
 
 .preview {
@@ -524,6 +543,7 @@ section.setting {
 
 footer {
   display: flex;
+  margin-bottom: 5px;
 }
 
 .btn {
@@ -683,5 +703,46 @@ section.preview:hover .action {
 
 .selection > div {
   min-width: 90px;
+}
+
+/*new style*/
+.settings-box {
+  border: 1px solid #ccc;
+  margin: 5px;
+  border-radius: 2px;
+  background: #fff;
+  padding: 8px;
+  display: flex;
+}
+
+.settings-box .contain {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #bdbdbd;
+}
+
+.settings-box h5 {
+  font-size: 16px;
+  font-weight: normal;
+}
+
+.settings-box .values {
+  flex: 1;
+  align-items: center;
+  display: flex;
+  padding: 3px 0;
+  color: #666;
+  min-height: 18px;
+}
+
+.settings-box .changer {
+  display: flex;
+  align-items: center;
+  padding-left: 8px;
+  border-left: 1px solid #eeeeee;
+  cursor: pointer;
+  width: 55px;
+  justify-content: center;
 }
 </style>
