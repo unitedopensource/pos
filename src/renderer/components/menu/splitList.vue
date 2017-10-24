@@ -146,19 +146,33 @@ export default {
 
         if (this.isTax) {
           let taxClass = this.tax.class[item.taxClass];
-          tax += taxClass.apply[type] ? (taxClass.rate / 100 * amount) : tax;
+          tax += taxClass.apply[type] ? taxClass.rate / 100 * amount : tax;
         }
-
-        delivery =
-          type === "DELIVERY" &&
-          this.isChargeDelivery &&
-          this.store.delivery &&
-          !this.invoice.deliveryFree
-            ? this.store.deliveryCharge
-            : 0;
 
         subtotal += amount;
       });
+      
+      delivery =
+        type === "DELIVERY" &&
+        this.isChargeDelivery &&
+        this.store.delivery &&
+        !this.invoice.deliveryFree
+          ? this.store.deliveryCharge
+          : 0;
+
+      if (this.tax.deliveryTax) {
+        /*
+            is Delivery fee taxable?
+            Find out default tax rate and apply to delivery charge
+        */
+        let taxRate = 0;
+        Object.keys(this.tax.class).forEach(type => {
+          this.tax.class[type].default === true &&
+            (taxRate = this.tax.class[type].rate);
+        });
+
+        tax += toFixed(delivery * taxRate / 100, 2);
+      }
 
       tax = toFixed(tax, 2);
 
