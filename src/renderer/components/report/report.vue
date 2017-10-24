@@ -616,7 +616,7 @@ export default {
         : null;
     },
     salesAnalysis(data) {
-      this.report["SALES ANALYZE"] = [];
+      this.report["SALES SOURCE DETAIL"] = [];
       let settled = data.filter(ticket => ticket.settled);
       let unsettled = data.filter(ticket => !ticket.settled);
       let counter = (a, b) => a + b;
@@ -637,7 +637,7 @@ export default {
       let settledAmount = settled
         .map(ticket => ticket.payment.paid)
         .reduce(counter, 0);
-      this.report["SALES ANALYZE"].push({
+      this.report["SALES SOURCE DETAIL"].push({
         text: this.$t("type.settled"),
         count: settledCount,
         amount: settledAmount
@@ -647,13 +647,13 @@ export default {
       let unsettledAmount = unsettled
         .map(ticket => ticket.payment.balance)
         .reduce(counter, 0);
-      this.report["SALES ANALYZE"].push({
+      this.report["SALES SOURCE DETAIL"].push({
         text: this.$t("type.unsettled"),
         count: unsettledCount,
         amount: unsettledAmount
       });
 
-      this.report["SALES ANALYZE"].push({
+      this.report["SALES SOURCE DETAIL"].push({
         text: "&nbsp;",
         count: 0,
         amount: ""
@@ -664,7 +664,7 @@ export default {
       let cashAmount = temp
         .map(log => toFixed(log.paid - log.change, 2))
         .reduce(counter, 0);
-      this.report["SALES ANALYZE"].push({
+      this.report["SALES SOURCE DETAIL"].push({
         text: this.$t("report.cash"),
         count: cashCount,
         amount: cashAmount
@@ -675,7 +675,7 @@ export default {
       let creditAmount = temp
         .map(log => toFixed(log.paid - log.tip, 2))
         .reduce(counter, 0);
-      this.report["SALES ANALYZE"].push({
+      this.report["SALES SOURCE DETAIL"].push({
         text: this.$t("report.creditCard"),
         count: creditCount,
         amount: creditAmount
@@ -685,7 +685,7 @@ export default {
       let creditTipAmount = temp
         .map(log => toFixed(log.tip, 2))
         .reduce(counter, 0);
-      this.report["SALES ANALYZE"].push({
+      this.report["SALES SOURCE DETAIL"].push({
         text: this.$t("report.creditCardTip"),
         count: creditTipCount,
         amount: creditTipAmount
@@ -694,7 +694,7 @@ export default {
       temp = logs.filter(log => log.type === "GIFT");
       let giftCount = temp.length;
       let giftAmount = temp.map(log => toFixed(log.paid, 2)).reduce(counter, 0);
-      this.report["SALES ANALYZE"].push({
+      this.report["SALES SOURCE DETAIL"].push({
         text: this.$t("report.giftCard"),
         count: giftCount,
         amount: giftAmount
@@ -708,23 +708,24 @@ export default {
       let thirdPartyAmount = temp
         .map(log => toFixed(log.paid, 2))
         .reduce(counter, 0);
-      this.report["SALES ANALYZE"].push({
+      this.report["SALES SOURCE DETAIL"].push({
         text: this.$t("report.thirdParty"),
         count: thirdPartyCount,
         amount: thirdPartyAmount
       });
-      this.report["SALES ANALYZE"].push({
+      this.report["SALES SOURCE DETAIL"].push({
         text: "&nbsp;",
         count: 0,
         amount: ""
       });
 
-      let tipAmount = logs.map(log => parseFloat(log.tip)).reduce(counter, 0);
+      let tipAmount = logs.map(log => parseFloat(log.tip || 0)).reduce(counter, 0);
       let gratuityAmount = settled
         .map(ticket => parseFloat(ticket.payment.gratuity))
         .reduce(counter, 0);
-      this.report["SALES ANALYZE"].push({
-        text: this.$t("report.surcharge"),
+
+      this.report["SALES SOURCE DETAIL"].push({
+        text: this.$t("report.tips") + ' + ' + this.$t("report.gratuity"),
         count: 0,
         amount: tipAmount + gratuityAmount
       });
@@ -738,12 +739,12 @@ export default {
         2
       );
 
-      this.report["SALES ANALYZE"].unshift({
+      this.report["SALES SOURCE DETAIL"].unshift({
         text: this.$t("report.actualAmount"),
         count: 0,
         amount: actualAmount
       });
-      this.report["SALES ANALYZE"].push({
+      this.report["SALES SOURCE DETAIL"].push({
         text: "&nbsp;",
         count: 0,
         amount: ""
@@ -764,7 +765,7 @@ export default {
         let amount = order
           .map(ticket => parseFloat(ticket.payment.paid))
           .reduce(counter, 0);
-        this.report["SALES ANALYZE"].push({
+        this.report["SALES SOURCE DETAIL"].push({
           text: this.$t("type." + type),
           count,
           amount
