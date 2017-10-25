@@ -133,7 +133,7 @@ input[type='radio']{
   margin: auto;
   background: skyblue;
   border-radius: 4px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 1px 4px #153444;
 }
 
 .logo span {
@@ -141,7 +141,7 @@ input[type='radio']{
   font-weight: bold;
   color: #fff;
   margin-left: 10px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  text-shadow: 1px 2px 2px rgba(45, 15, 15, 0.5);
 }
 
 .btn {

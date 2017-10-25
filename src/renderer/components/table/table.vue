@@ -73,6 +73,33 @@ export default {
     switchSection(index) {
       this.view = index;
     },
+    //new logic flow methods
+    tap() {
+      this.checkTableStatus()
+        .then(this.checkReservation)
+        .then(this.checkPermission)
+        .then(this.countGuest)
+        .catch(this.createTableFailed);
+    },
+    checkTableStatus() {
+      return new Promise((resolve, reject) => {});
+    },
+    checkReservation() {
+      return new Promise((resolve, reject) => {});
+    },
+    checkPermission() {
+      return new Promise((resolve, reject) => {});
+    },
+    countGuest() {
+      return new Promise((resolve, reject) => {});
+    },
+    createTableFailed(error) {
+      let { type, reason } = error;
+    },
+
+    
+
+    //end
     selectTable(table, e) {
       if (!table._id) return;
 

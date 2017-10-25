@@ -37,11 +37,11 @@ export default {
   border-radius: 3px;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.24);
   color: #fff;
-  display: inline-block;
-  line-height: 20px;
-  margin-top: 8px;
-  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   min-width: 100px;
+  height: 40px;
   text-align: center;
   font-size: 18px;
 }
@@ -51,6 +51,7 @@ ul {
   bottom: 420px;
   left: 10px;
   width: 265px;
+  padding: 4px 0;
   background: rgb(64, 64, 64);
   border-radius: 3px;
   box-shadow: rgba(0, 0, 0, 0.12) 0px 0px 2px, rgba(0, 0, 0, 0.24) 0px 2px 4px;
@@ -63,7 +64,7 @@ li {
 }
 .index {
   width: 20px;
-  padding-right: 10px;
+  padding: 0 5px 0 3px;
   text-align: center;
 }
 .name {

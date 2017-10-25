@@ -239,8 +239,7 @@ header {
   margin-top: 30px;
   display: flex;
   height: 63px;
-  background: #234c75;
-  border-bottom: 1px solid #37417d;
+  background-image: linear-gradient(170deg, rgb(81, 103, 140) 0%, #234c75 100%);
 }
 
 article {
