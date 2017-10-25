@@ -81,7 +81,7 @@ export default {
     };
   },
   created() {
-    this.reportable = this.approval(this.op.access,"report")
+    this.reportable = this.approval(this.op.access, "report");
   },
   methods: {
     isEditable() {
@@ -346,18 +346,15 @@ export default {
         });
     },
     printTicket(order, receipt) {
+      this.updateInvoice(order);
+      order.content.forEach(item => (item.diffs = "unchanged"));
       receipt
         ? Printer.setTarget("Receipt").print(order, true)
         : Printer.setTarget("All").print(order);
-      receipt &&
-        order.content.forEach(item => {
-          delete item.new;
-          item.print = true;
-          item.pending = false;
-        });
-      this.updateInvoice(order);
     },
     splitPrint(order, receipt) {
+      this.updateInvoice(order);
+
       let split = [].concat
         .apply([], order.content.map(item => item.sort))
         .filter((v, i, s) => s.indexOf(v) === i).length;
@@ -367,19 +364,14 @@ export default {
           item =>
             Array.isArray(item.sort) ? item.sort.includes(i) : item.sort === i
         );
+        ticket.content.forEach(item => (item.diffs = "unchanged"));
         ticket.payment = order.splitPayment[i - 1];
         ticket.number = `${order.number}-${i}`;
+
         receipt
           ? Printer.setTarget("Receipt").print(ticket, true)
           : Printer.setTarget("All").print(ticket);
       }
-      !receipt &&
-        order.content.forEach(item => {
-          delete item.new;
-          item.print = true;
-          item.pending = false;
-        });
-      this.updateInvoice(order);
     },
     terminal() {
       this.station.terminal.enable

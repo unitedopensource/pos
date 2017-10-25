@@ -966,12 +966,12 @@ function createList(printer, ctrl, invoice) {
                     .map(item => {
                         switch (item.diffs) {
                             case "unchanged":
-                                item.zhCN = "☑" + item.zhCN;
-                                item.usEN = "☑" + item.usEN;
+                                item.zhCN = "☑ " + item.zhCN;
+                                item.usEN = "☑ " + item.usEN;
                                 break;
                             case "new":
-                                item.zhCN = "☐" + item.zhCN;
-                                item.usEN = "☐" + item.usEN;
+                                item.zhCN = "☐ " + item.zhCN;
+                                item.usEN = "☐ " + item.usEN;
                                 break;
                             default:
                         }
@@ -1027,6 +1027,7 @@ function createList(printer, ctrl, invoice) {
     return `<table>${content}</table>`
 
     function mockup(item) {
+        item = JSON.parse(JSON.stringify(item))
         let nameCN = (item[printer] && item[printer].hasOwnProperty("zhCN")) ? item[printer].zhCN : item.zhCN;
         let nameEN = (item[printer] && item[printer].hasOwnProperty("usEN")) ? item[printer].usEN : item.usEN;
         let sideCN = item.side.zhCN ? item.side.zhCN : "";
@@ -1050,26 +1051,26 @@ function createList(printer, ctrl, invoice) {
         if (diffs === 'removed') {
             firstLine = `<tr class="zhCN">
                             <td><del>${printMenuID ? item.menuID : ''}</del></td>
-                            <td><del>${item.qty !== 1 ? item.qty : ''}</del></td>
+                            <td class="qty"><del>${item.qty !== 1 ? item.qty : ''}</del></td>
                             <td class="item"><del><div class="main">${nameCN} ${sideCN}</div></del><del>${setCN}</del></td>
                             <td class="price"><del>${item.total}</del></td>
                         </tr>`;
             secondLine = `<tr class="usEN">
                             <td><del>${printMenuID ? item.menuID : ''}</del></td>
-                            <td><del>${item.qty !== 1 ? item.qty : ''}</del></td>
+                            <td class="qty"><del>${item.qty !== 1 ? item.qty : ''}</del></td>
                             <td class="item"><del><div class="main">${nameEN} ${sideEN}</div></del><del>${setEN}</del></td>
                             <td class="price"><del>${item.total}</del></td>
                         </tr>`;
         } else {
             firstLine = `<tr class="zhCN">
                         <td>${printMenuID ? item.menuID : ''}</td>
-                        <td>${item.qty !== 1 ? item.qty : ''}</td>
+                        <td class="qty">${item.qty !== 1 ? item.qty : ''}</td>
                         <td class="item"><div class="main">${nameCN} ${sideCN}</div>${setCN}</td>
                         <td class="price">${item.total}</td>
                     </tr>`;
             secondLine = `<tr class="usEN">
                             <td>${printMenuID ? item.menuID : ''}</td>
-                            <td>${item.qty !== 1 ? item.qty : ''}</td>
+                            <td class="qty">${item.qty !== 1 ? item.qty : ''}</td>
                             <td class="item"><div class="main">${nameEN} ${sideEN}</div>${setEN}</td>
                             <td class="price">${item.total}</td>
                         </tr>`;
@@ -1108,12 +1109,12 @@ function createStyle(ctrl) {
               .customer .ext{margin-left:10px;}
               .customer{font-size:1.2em;font-family:'Tensentype RuiHeiJ-W2'}
               section.body{padding:10px 0px;}
-              table{width:100%;border-spacing:0;border-collapse:collapse;margin:5px;}
+              table{width:100%;border-spacing:0;border-collapse:collapse;margin:5px 0;}
               tr{display:flex;position:relative;}
-              tr.remove{}
               td.item{flex:1;display:flex;flex-direction:column;justify-content: center;}
               td .price{text-align:right;}
               td .sub{text-indent:20px;} 
+              td.qty{text-align:center;}
               .zhCN .price{${printPrimaryPrice ? 'display:initial' : 'display:none'}}
               .usEN .price{${printSecondaryPrice ? 'display:initial' : 'display:none'}}          
               footer{font-family:'Agency FB';}
