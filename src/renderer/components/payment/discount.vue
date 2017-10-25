@@ -123,7 +123,7 @@ export default {
       if (this.unit === "%") {
         this.discount = this.reset ? val : value + val;
       } else {
-        if (thi.reset) {
+        if (this.reset) {
           this.discount = (value / 100).toFixed(2);
         } else {
           value = (value * 100).toFixed(0) + val;

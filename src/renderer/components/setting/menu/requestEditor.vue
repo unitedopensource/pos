@@ -31,6 +31,7 @@
                     </div>
                     <div class="default">
                         <checkbox v-model="request.prefix" label="text.prefix"></checkbox>
+                        <checkbox v-model="request.ignoreDefaultPrice" label="text.ignorePrice"></checkbox>
                     </div>
                 </section>
                 <section class="data" v-else>

@@ -286,8 +286,8 @@ export default {
         'doneAction': 'Done Action',
         'setDate': 'Set Date',
         'payOut': 'Pay Out Record',
-        'deliveryRelated':'Delivery Related',
-        'optionList':'Options'
+        'deliveryRelated': 'Delivery Related',
+        'optionList': 'Options'
     },
     menu: {
         'course': 'Course',
@@ -852,7 +852,8 @@ export default {
         'receiver': 'Receiver',
         'comment': 'comment',
         'server': 'Server',
-        'taxOnDelivery':'Tax On Delivery'
+        'taxOnDelivery': 'Tax On Delivery',
+        'ignorePrice':'Ignore Price'
     },
     nav: {
         'store': 'Store',
@@ -1037,9 +1038,10 @@ export default {
         'averageSize': 'Average Size'
     },
     print: {
-        'normal': '',
-        'difference': '',
-        'todo': ''
+        'normal': 'Normal Print',
+        'difference': 'Print Difference',
+        'new': 'Only New',
+        'todo': 'Todo List'
     },
     tip: {
         'autoTemplate': 'Auto popup template page',
@@ -1052,7 +1054,7 @@ export default {
         'howDiscountCalculate': 'Discount is before tax',
         'lockWhenCompleteOrder': 'Lock screen when complete order',
         'doNotAskReceiptAfterSettle': 'Do not prompt "Print Receipt" dialog',
-        'taxOnDeliveryCharge':'Tax on delivery charge',
+        'taxOnDeliveryCharge': 'Tax on delivery charge',
         'table': {
             'actionsOnDone': 'Actions after tapping Done',
             'passwordRequire': 'Password input required before create a new table.',
@@ -1070,7 +1072,8 @@ export default {
         'printMode': {
             'normal': 'Prints all items on the ticket',
             'difference': 'Only prints out new,deleted,edited item on the ticket',
-            'todo': 'Mark and print printed and new item'
+            'new': 'Only prints new items',
+            'todo': 'Mark and print printed,new item'
         }
     }
 }

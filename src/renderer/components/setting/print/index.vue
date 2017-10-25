@@ -72,7 +72,7 @@
                       <div class="contain">
                         <h5>{{$t('setting.printMode')}}</h5>
                         <div class="values">
-                          <span class="value">{{$t('print.' + profile.control.printMode)}}</span>
+                          <span class="value">{{$t('tip.printMode.' + profile.control.printMode)}}</span>
                         </div>
                       </div>
                       <div class="changer" @click="changePrintMode(printModeOptions)">{{$t('button.change')}}</div>
@@ -314,6 +314,11 @@ export default {
           label: this.$t("print.difference"),
           value: "difference",
           tooltip: "tip.printMode.difference"
+        },
+        {
+          label: this.$t("print.new"),
+          value: "new",
+          tooltip: "tip.printMode.new"
         },
         {
           label: this.$t("print.todo"),

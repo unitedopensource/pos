@@ -272,7 +272,7 @@ export default {
     save(print) {
       if (this.isEmptyTicket) return;
       let { doneLock } = this.station;
-      let order = this.combineOrderInfo({ print });
+      let order = this.combineOrderInfo();
 
       if (this.app.mode === "create") {
         this.$socket.emit("[SAVE] INVOICE", order, print, content => {
@@ -300,7 +300,7 @@ export default {
       if (this.isEmptyTicket) return;
       let { doneLock } = this.station;
       let { printOnDone, lockOnDone } = this.store.table;
-      let order = this.combineOrderInfo({ print });
+      let order = this.combineOrderInfo();
 
       if (this.app.mode === "create") {
         Object.assign(this.currentTable, { invoice: [order._id] });
@@ -332,7 +332,6 @@ export default {
     },
     combineOrderInfo(extra) {
       let customer = Object.assign({}, this.customer);
-      let print = extra.hasOwnProperty("print") ? extra.print : true;
       let order = Object.assign({}, this.order);
       if (this.app.mode === "create") {
         delete customer.extra;
@@ -378,7 +377,6 @@ export default {
             compare[index].print = false;
           } else {
             compare[index].diffs = "unchanged";
-            compare[index].print = true;
           }
           compare[index].origin = prev.qty;
           items.push(compare[index]);
@@ -395,7 +393,6 @@ export default {
           return item;
         })
       );
-      console.log(items)
       return Object.assign(current, { content: items });
     },
     exit() {
@@ -455,6 +452,7 @@ export default {
   },
   computed: {
     ...mapGetters([
+      "config",
       "op",
       "app",
       "item",

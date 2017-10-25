@@ -137,7 +137,6 @@ var Printer = function (plugin, config) {
             let { printStore, printType, printCustomer, enlargeDetail } = setting.control;
             let header = createHeader(this.config.store, raw);
             let list = createList(printer, setting.control, raw);
-
             if (!list) return;
 
             let style = createStyle(setting.control);
@@ -168,8 +167,7 @@ var Printer = function (plugin, config) {
                 this.plugin.PRINT()
             }
 
-            //if (setting.reprint.includes(ticket)) {
-            if (setting.double[ticket]) {
+            if (setting.reprint.includes(ticket)) {
                 this.plugin.PRINT_INIT('Reprint ticket')
                 this.plugin.ADD_PRINT_HTM(0, 0, "100%", "100%", html)
                 this.plugin.SET_PRINTER_INDEX(printer)
@@ -920,139 +918,78 @@ function createHeader(store, ticket) {
         </section>`;
 }
 
-// function createList(printer, ctrl, invoice) {
-//     let { sortItem, printMenuID, sortPriority, printMode } = ctrl;
-//     let list = "", items = [];
-//     //print mode decided items
-//     switch (printMode) {
-//         case "normal":
-//             if (!invoice.print) {
-//                 items = invoice.content.filter(item => item.printer[printer]);
-//             } else {
-//                 items = invoice.content.filter(item => item.printer[printer] && item.diffs !== 'removed')
-//             }
-//             break;
-//         case "difference":
-//             if (!invoice.print) {
-//                 items = invoice.content.filter(item => item.printer[printer] && !item.print)
-//             } else {
-//                 items = invoice.content.filter(item => item.printer[printer] && item.diffs !== 'unchanged')
-//             }
-//             break;
-//         case "todo":
-//             if (!invoice.print) {
-//                 items = invoice.content.filter(item => item.printer[printer] && !item.print)
-//             } else {
-//                 items = invoice.content.filter(item => item.printer[printer] && item.diffs === 'unchanged' && item.diffs === 'new')
-//             }
-//             break;
-//         default:
-//             if (!invoice.print) {
-//                 items = invoice.content.filter(item => item.printer[printer]);
-//             } else {
-//                 items = invoice.content.filter(item => item.printer[printer] && item.diffs !== 'removed')
-//             }
-//     }
-
-//     if (list.length === 0) return false;
-//     if (sortPriority) {
-//         list.sort((p, n) => {
-//             let prev = p.priority || 0;
-//             let next = n.priority || 0;
-
-//             return prev < next
-//         })
-//     }
-
-//     if (sortItem) {
-//         let sorted = [];
-//         let categoryMap = [];
-
-//         for (let i = 0; i < list.length; i++) {
-//             let category = list[i].category;
-//             if (!sorted[category]) {
-//                 sorted[category] = [];
-//                 categoryMap[category] = list[i].categoryCN;
-//                 sorted[category].push(list[i]);
-//             } else {
-//                 sorted[category].push(list[i]);
-//             }
-//         }
-//         for (let category in sorted) {
-//             if (sorted.hasOwnProperty(category)) {
-//                 content += `<div class="category">
-//                         <span class="zhCN">${categoryMap[category]}</span>
-//                         <span class="usEN">${category}</span>
-//                       </div>`;
-//                 content += sorted[category].map(mockup).join("").toString();
-//             }
-//         }
-//     } else {
-//         content = list.map(mockup).join("").toString();
-//     }
-// }
 function createList(printer, ctrl, invoice) {
-    function mockup(item) {
-        let side = item.side.zhCN ? item.side.zhCN : "";
-        let qty = item.qty === 1 ? "" : item.qty;
-        let markA = item.mark[0].join(" ");
-        let markB = item.mark[1].join(" ");
-        let mark = (markA || markB) ? "markItem" : "";
-        let setCN = "";
-        let setEN = "";
-        let diffs = item.diffs || '';
-
-        item.choiceSet.forEach(set => {
-            if (set.hasOwnProperty('print') && Array.isArray(set.print) && !set.print.includes(printer)) return;
-
-            setCN += `<p class="list choiceSet zhCN">
-                      <span class="qty">${set.qty === 1 ? " " : set.qty + ' ×'}</span>
-                      <span class="set">${set.zhCN}<span>${parseFloat(set.price) !== 0 ? '(' + set.price.toFixed(2) + ')' : ""}</span></span>
-                    </p>`;
-            setEN += `<p class="list choiceSet usEN">
-                      <span class="qty">${set.qty === 1 ? " " : set.qty + ' ×'}</span>
-                      <span class="set">${set.usEN}<span>${parseFloat(set.price) !== 0 ? '(' + set.price.toFixed(2) + ')' : ""}</span></span>
-                    </p>`;
-        })
-
-        let name = (item[printer] && item[printer].hasOwnProperty("zhCN")) ? item[printer].zhCN : printMenuID ? item.menuID + " " + item.zhCN : item.zhCN;
-        let zhCN = `<p class="list zhCN ${diffs}">
-                    <span class="qty">${qty}</span>
-                    <span class="itemWrap ${mark}">
-                      <span class="item">${name}<span class="mark">${markA}</span></span>
-                      <span class="side">${side}<span class="mark">${markB}</span></span>
-                    </span>
-                    <span class="price">${item.total}</span><del></del><span class="diff">(${item.origin || 0}⇒${item.qty})</span></p>${setCN}`;
-        side = item.side.usEN ? item.side.usEN : "";
-        name = (item[printer] && item[printer].hasOwnProperty("usEN")) ? item[printer].usEN : printMenuID ? item.menuID + " " + item.usEN : item.usEN;
-        let usEN = `<p class="list usEN ${diffs}">
-                      <span class="qty">${qty}</span>
-                      <span class="itemWrap">
-                        <span class="item">${name}<span class="mark">${markA}</span></span>
-                        <span class="side">${side}<span class="mark">${markB}</span></span>
-                      </span>
-                      <span class="price">${item.total}</span><del></del><span class="diff">(${item.origin || 0}⇒${item.qty})</span></p>${setEN}`;
-        return zhCN + usEN;
+    let { sortItem, printMenuID, sortPriority, printMode } = ctrl;
+    let content = [], items = [];
+    //print mode decided items
+    switch (printMode) {
+        case "normal":
+            if (!invoice.print) {
+                items = invoice.content.filter(item => item.printer[printer]);
+            } else {
+                items = invoice.content.filter(item => item.printer[printer] && item.diffs !== 'removed')
+            }
+            break;
+        case "difference":
+            if (!invoice.print) {
+                items = invoice.content.filter(item => item.printer[printer] && !item.print)
+            } else {
+                items = invoice.content.filter(item => item.printer[printer] && item.diffs !== 'unchanged')
+                items.forEach(item => {
+                    switch (item.diffs) {
+                        case "less":
+                        case "more":
+                            item.qty = item.origin + '&rsaquo;' + item.qty
+                            break;
+                        case "removed":
+                            break;
+                    }
+                })
+            }
+            break;
+        case "new":
+            if (!invoice.print) {
+                items = invoice.content.filter(item => item.printer[printer] && !item.print)
+            } else {
+                items = invoice.content.filter(item => item.printer[printer] && item.diffs === 'new');
+                items.forEach(item => {
+                    item.zhCN = "★" + item.zhCN;
+                    item.usEN = "★" + item.usEN;
+                })
+            }
+            break;
+        case "todo":
+            if (!invoice.print) {
+                items = invoice.content.filter(item => item.printer[printer] && !item.print)
+            } else {
+                items = invoice.content.filter(item => item.printer[printer] && (item.diffs === 'unchanged' || item.diffs === 'new'))
+                    .map(item => {
+                        switch (item.diffs) {
+                            case "unchanged":
+                                item.zhCN = "☑" + item.zhCN;
+                                item.usEN = "☑" + item.usEN;
+                                break;
+                            case "new":
+                                item.zhCN = "☐" + item.zhCN;
+                                item.usEN = "☐" + item.usEN;
+                                break;
+                            default:
+                        }
+                        return item
+                    })
+            }
+            break;
+        default:
+            if (!invoice.print) {
+                items = invoice.content.filter(item => item.printer[printer]);
+            } else {
+                items = invoice.content.filter(item => item.printer[printer] && item.diffs !== 'removed')
+            }
     }
 
-    let { sortItem, difference, printMenuID, sortPriority } = ctrl;
-    let content = "", list = [];
-
-    if (invoice.print) {
-        list = difference ?
-            invoice.content.filter(item => item.printer[printer] && !item.print) :
-            invoice.content.filter(item => item.printer[printer] && item.diffs !== 'removed')
-                .map(item => {
-                    delete item.diffs;
-                    return item
-                });
-    } else {
-        list = invoice.content.filter(item => item.printer[printer] && !item.print)
-    }
-
-    if (list.length === 0) return false;
+    if (items.length === 0) return false;
     if (sortPriority) {
-        list.sort((p, n) => {
+        items.sort((p, n) => {
             let prev = p.priority || 0;
             let next = n.priority || 0;
 
@@ -1064,14 +1001,14 @@ function createList(printer, ctrl, invoice) {
         let sorted = [];
         let categoryMap = [];
 
-        for (let i = 0; i < list.length; i++) {
-            let category = list[i].category;
+        for (let i = 0; i < items.length; i++) {
+            let category = items[i].category;
             if (!sorted[category]) {
                 sorted[category] = [];
-                categoryMap[category] = list[i].categoryCN;
-                sorted[category].push(list[i]);
+                categoryMap[category] = items[i].categoryCN;
+                sorted[category].push(items[i]);
             } else {
-                sorted[category].push(list[i]);
+                sorted[category].push(items[i]);
             }
         }
         for (let category in sorted) {
@@ -1084,16 +1021,68 @@ function createList(printer, ctrl, invoice) {
             }
         }
     } else {
-        content = list.map(mockup).join("").toString();
+        content = items.map(mockup).join("").toString();
     }
 
-    return `<section class="body">${content}</section>`;
-};
+    return `<table>${content}</table>`
+
+    function mockup(item) {
+        let nameCN = (item[printer] && item[printer].hasOwnProperty("zhCN")) ? item[printer].zhCN : item.zhCN;
+        let nameEN = (item[printer] && item[printer].hasOwnProperty("usEN")) ? item[printer].usEN : item.usEN;
+        let sideCN = item.side.zhCN ? item.side.zhCN : "";
+        let sideEN = item.side.usEN ? item.side.usEN : "";
+        let qty = item.qty === 1 ? "" : item.qty;
+        let markA = item.mark[0].join(" ");
+        let markB = item.mark[1].join(" ");
+        let mark = (markA || markB) ? "markItem" : "";
+        let setCN = "", setEN = "";
+        let diffs = item.diffs || "";
+        let firstLine, secondLine;
+
+        item.choiceSet.forEach(set => {
+            if (set.hasOwnProperty('print') && Array.isArray(set.print) && !set.print.includes(printer)) return;
+            setCN += `<div class="sub">
+                        <span>${set.qty !== 1 ? set.qty + 'x' : ''}</span>
+                        <span>${set.zhCN}</span>
+                        <span>${parseFloat(set.price) !== 0 ? '(' + set.price.toFixed(2) + ')' : ''}</span>
+                      </div>`
+        })
+        if (diffs === 'removed') {
+            firstLine = `<tr class="zhCN">
+                            <td><del>${printMenuID ? item.menuID : ''}</del></td>
+                            <td><del>${item.qty !== 1 ? item.qty : ''}</del></td>
+                            <td class="item"><del><div class="main">${nameCN} ${sideCN}</div></del><del>${setCN}</del></td>
+                            <td class="price"><del>${item.total}</del></td>
+                        </tr>`;
+            secondLine = `<tr class="usEN">
+                            <td><del>${printMenuID ? item.menuID : ''}</del></td>
+                            <td><del>${item.qty !== 1 ? item.qty : ''}</del></td>
+                            <td class="item"><del><div class="main">${nameEN} ${sideEN}</div></del><del>${setEN}</del></td>
+                            <td class="price"><del>${item.total}</del></td>
+                        </tr>`;
+        } else {
+            firstLine = `<tr class="zhCN">
+                        <td>${printMenuID ? item.menuID : ''}</td>
+                        <td>${item.qty !== 1 ? item.qty : ''}</td>
+                        <td class="item"><div class="main">${nameCN} ${sideCN}</div>${setCN}</td>
+                        <td class="price">${item.total}</td>
+                    </tr>`;
+            secondLine = `<tr class="usEN">
+                            <td>${printMenuID ? item.menuID : ''}</td>
+                            <td>${item.qty !== 1 ? item.qty : ''}</td>
+                            <td class="item"><div class="main">${nameEN} ${sideEN}</div>${setEN}</td>
+                            <td class="price">${item.total}</td>
+                        </tr>`;
+        }
+
+        return firstLine + secondLine;
+    }
+}
+
 function createStyle(ctrl) {
     let { printPrimary, primaryFont, primaryFontSize, printSecondary, secondaryFont, secondaryFontSize, sortItem, printStore, printType,
-        printCustomer, printPrimaryPrice, printSecondaryPrice, printPayment, printCoupon, printActionTime, buzzer, enlargeDetail } = ctrl;
+        printCustomer, printPrimaryPrice, printSecondaryPrice, printPayment, printCoupon, printActionTime, buzzer } = ctrl;
 
-    let enlarge = enlargeDetail ? ".customer .enlarge{font-size:1.2em;font-family:'Tensentype RuiHeiJ-W2'}" : "";
     !primaryFontSize.includes('px') && (primaryFontSize += "px");
     !secondaryFontSize.includes('px') && (secondaryFontSize += "px");
 
@@ -1105,41 +1094,28 @@ function createStyle(ctrl) {
               .header h5{font-size:16px;font-weight:lighter}
               div.type{${printType ? '' : 'display:none;'}font-size:1.3em;font-weight:bold;font-family:"Agency FB"}
               div.number,div.table{position:absolute;bottom:12px;font-size:2em;font-weight:bold;font-family:"Agency FB"}
-              div.number{right:10px;}
-              div.table{left:10px;}
+              div.number{right:10px;}div.table{left:10px;}
               div.time span{display:inline-block;margin:0 10px;font-size:1em;}
               div.time{border-bottom:1px solid #000;position:relative;margin-top:10px;}
               .server{border-bottom:1px solid #000;padding-bottom:1px;text-align:left;}
               .server .wrap{display:flex;padding:0 10px;}
               .server .text{flex:2;}.server .value{flex:3;}
-              .customer{padding:4px 0;${printCustomer ? '' : 'display:none;'}}
+              .customer {${printCustomer ? '' : 'display:none;'}}
               .customer p{text-align:left;padding-bottom:2px;}
               .customer p:last-child{border-bottom:1px solid #000;padding-bottom:0px;}
               .customer .text{display:inline-block;width:32px;margin-left:5px;}
               .customer .tel{letter-spacing:2px;}
               .customer .ext{margin-left:10px;}
-              ${enlarge}
+              .customer{font-size:1.2em;font-family:'Tensentype RuiHeiJ-W2'}
               section.body{padding:10px 0px;}
-              p.list{display:flex;position:relative;}
-              span.qty{min-width:25px;text-align:left;}
-              span.itemWrap{flex:1;display:flex;align-items:center;}
-              span.space{margin-left:10px;}
-              .itemWrap.markItem{margin-top:5px;}
-              span.item,span.side{position:relative;display:inline-block;}
-              span.mark{position:absolute;top:-10px;left:0;font-size:10px;width:100%;text-align:center;display:inline-block;font-weight:bold;}
-              span.side{vertical-align:middle;}
-              span.price{min-width:30px;padding-right:5px;text-align:right;}
-              div.category{border-bottom:1px dashed #000;margin-top:5px;${sortItem ? '' : 'display:none;'}}
-              .list.zhCN{margin-top:5px;}
-              .list.usEN{${printPrimary ? 'margin-top:-5px' : 'margin-bottom:8px'}}
-              .diff{display:none;font-size:16px;}
-              .list.removed del {text-decoration: none;position:absolute;left: 0;right: 0;top: 45%; bottom:45%; border-top: 1px solid #000;border-bottom: 1px solid #000;}
-              .list.less .diff,.list.more .diff{display:block;float:right;}
+              table{width:100%;border-spacing:0;border-collapse:collapse;margin:5px;}
+              tr{display:flex;position:relative;}
+              tr.remove{}
+              td.item{flex:1;display:flex;flex-direction:column;justify-content: center;}
+              td .price{text-align:right;}
+              td .sub{text-indent:20px;} 
               .zhCN .price{${printPrimaryPrice ? 'display:initial' : 'display:none'}}
-              .usEN .price{${printSecondaryPrice ? 'display:initial' : 'display:none'}}
-              .list.choiceSet{margin-top: -5px; display: flex; margin-left: 35px;}
-              .choiceSet .set{flex:1;}
-              .choiceSet .set > span {margin-left:4px;}
+              .usEN .price{${printSecondaryPrice ? 'display:initial' : 'display:none'}}          
               footer{font-family:'Agency FB';}
               section.column{display:flex;}
               .payment{min-width:150px;${printPayment ? 'display:flex;flex-direction:column;' : 'display:none;'}}

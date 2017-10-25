@@ -243,8 +243,8 @@ export default {
         'doneAction': '完成操作',
         'setDate': '设定日期',
         'payOut': '支出记录',
-        'deliveryRelated':'送餐相关',
-        'optionList':'列表选项'
+        'deliveryRelated': '送餐相关',
+        'optionList': '列表选项'
     },
     menu: {
         'course': '定时',
@@ -845,7 +845,8 @@ export default {
         'receiver': '收款人',
         'comment': '注释',
         'server': '服务员',
-        'taxOnDelivery':'送餐税'
+        'taxOnDelivery': '送餐税',
+        'ignorePrice':'忽略价格'
     },
     nav: {
         'store': '店面',
@@ -1029,9 +1030,10 @@ export default {
         'averageSize': '平均大小'
     },
     print: {
-        'normal': '正常模式',
-        'difference': '打印差异',
-        'todo': '代办清单'
+        'normal': '正常打印',
+        'difference': '检测改动',
+        'new': '新增',
+        'todo': '清单列表'
     },
     tip: {
         'autoTemplate': '自动弹出模板选择页面',
@@ -1044,7 +1046,7 @@ export default {
         'howDiscountCalculate': '折扣是按小计进行打折',
         'lockWhenCompleteOrder': '完成订单之后锁定界面',
         'doNotAskReceiptAfterSettle': '结账之后不弹出收据打印确认框',
-        'taxOnDeliveryCharge':'送餐费用加税',
+        'taxOnDeliveryCharge': '送餐费用加税',
         'table': {
             'actionsOnDone': '设定完成订单之后的操作',
             'passwordRequire': '创建座位之前需要输入密码',
@@ -1060,9 +1062,10 @@ export default {
             'integration': '刷卡机半集成连接设置'
         },
         'printMode': {
-            'normal': '正常打印当前收据上的物品',
-            'difference': '只打印收据上做过更改，新增，删除过的物品',
-            'todo':'标识出已经打印的物品和新物品'
+            'normal': '打印当前收据上的 所有 物品',
+            'difference': '只打印 新增, 更改, 删除 的物品',
+            'new': '只打印 已有, 新增 的物品',
+            'todo': '标识出 已有, 新增 的物品'
         }
     }
 }
