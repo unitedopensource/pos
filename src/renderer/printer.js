@@ -169,7 +169,7 @@ var Printer = function (plugin, config) {
             }
 
             //if (setting.reprint.includes(ticket)) {
-            if (setting.double[printer]) {
+            if (setting.double[ticket]) {
                 this.plugin.PRINT_INIT('Reprint ticket')
                 this.plugin.ADD_PRINT_HTM(0, 0, "100%", "100%", html)
                 this.plugin.SET_PRINTER_INDEX(printer)
