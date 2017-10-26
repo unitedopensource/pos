@@ -1104,7 +1104,7 @@ function createStyle(ctrl) {
               .customer {${printCustomer ? '' : 'display:none;'}}
               .customer p{text-align:left;padding-bottom:2px;}
               .customer p:last-child{border-bottom:1px solid #000;padding-bottom:0px;}
-              .customer .text{display:inline-block;width:32px;margin-left:5px;}
+              .customer .text{display:inline-block;min-width:32px;margin-left:5px;}
               .customer .tel{letter-spacing:2px;}
               .customer .ext{margin-left:10px;}
               .customer{font-size:1.2em;font-family:'Tensentype RuiHeiJ-W2'}
