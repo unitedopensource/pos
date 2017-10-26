@@ -25,6 +25,7 @@ export const item = state => state.menu.item
 export const sides = state => state.menu.sides
 export const order = state => state.menu.order
 export const diffs = state => state.menu.diffs
+export const archiveOrder = state => state.menu.archiveOrder
 export const choiceSet = state => state.menu.choiceSetTarget
 export const menu = state => state.initial.config.layout.menu
 export const submenu = state => state.initial.config.layout.submenu

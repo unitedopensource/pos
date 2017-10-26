@@ -11,28 +11,16 @@
                             <checkbox v-model="profile.print.PICK_UP" label="type.PICK_UP"></checkbox>
                             <checkbox v-model="profile.print.DELIVERY" label="type.DELIVERY"></checkbox>
                             <checkbox v-model="profile.print.DINE_IN" label="type.DINE_IN"></checkbox>
+                            <checkbox v-model="profile.print.TO_GO" label="type.TO_GO"></checkbox>
+                            <checkbox v-model="profile.print.BUFFET" label="type.BUFFET"></checkbox>
                             <checkbox v-model="profile.print.BAR" label="type.BAR"></checkbox>
+                            <checkbox v-model="profile.print.SALES" label="type.SALES"></checkbox>
                             <checkbox v-model="profile.print.PRE_PAYMENT" label="type.PRE_PAYMENT"></checkbox>
                             <checkbox v-model="profile.print.PAYMENT" label="type.PAYMENT"></checkbox>
-                            <checkbox v-model="profile.print.REPORT" label="type.REPORT"></checkbox>
-                            <checkbox v-model="profile.print.SALES" label="type.SALES"></checkbox>
-                            <checkbox v-model="profile.print.BUFFET" label="type.BUFFET"></checkbox>
                             <checkbox v-model="profile.print.CREDITCARD" label="type.CREDIT_CARD"></checkbox>
                             <checkbox v-model="profile.print.DELAY" label="type.DELAY"></checkbox>
                         </div>
                     </fieldset>
-                    <!-- <fieldset class="section">
-                        <legend>{{$t('setting.doubleReceipt')}}</legend>
-                        <div class="selection">
-                            <checkbox v-model="profile.double.WALK_IN" label="type.WALK_IN"></checkbox>
-                            <checkbox v-model="profile.double.PICK_UP" label="type.PICK_UP"></checkbox>
-                            <checkbox v-model="profile.double.DELIVERY" label="type.DELIVERY"></checkbox>
-                            <checkbox v-model="profile.double.DINE_IN" label="type.DINE_IN"></checkbox>
-                            <checkbox v-model="profile.double.BAR" label="type.BAR"></checkbox>
-                            <checkbox v-model="profile.double.BUFFET" label="type.BUFFET"></checkbox>
-                            <checkbox v-model="profile.double.SALES" label="type.SALES"></checkbox>
-                        </div>
-                    </fieldset> -->
                     <fieldset class="section">
                         <legend>{{$t('setting.printStyle')}}</legend>
                         <div class="selection">
@@ -58,7 +46,6 @@
                             <checkbox v-model="profile.control.sortPriority" label="setting.sortPriority"></checkbox>
                         </div>
                     </fieldset>
-                    <!-- new style -->
                     <div class="settings-box">
                       <div class="contain">
                         <h5>{{$t('setting.doubleReceipt')}}</h5>
@@ -77,7 +64,6 @@
                       </div>
                       <div class="changer" @click="changePrintMode(printModeOptions)">{{$t('button.change')}}</div>
                     </div>
-                    <!-- end of new style -->
                 </div>
             </div>
             <footer>
@@ -413,13 +399,14 @@ export default {
       });
     },
     changeDoubleReceipt(options) {
-      if (!this.profile.reprint){
+      if (!this.profile.reprint) {
         //hot patch
         this.profile.reprint = [];
 
-        Object.keys(this.profile.double).forEach(type=>{
-          if(this.profile.double[type] === true) this.profile.reprint.push(type);
-        })
+        Object.keys(this.profile.double).forEach(type => {
+          if (this.profile.double[type] === true)
+            this.profile.reprint.push(type);
+        });
       }
 
       new Promise((resolve, reject) => {

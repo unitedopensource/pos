@@ -1628,7 +1628,7 @@ section.field {
   border: none;
   background: none;
   outline: none;
-  font-size: 28px;
+  font-size: 26px;
   text-align: right;
   padding-right: 10px;
   flex: 1;
@@ -1660,7 +1660,7 @@ section.field {
   align-items: center;
   justify-content: flex-end;
   padding-right: 10px;
-  font-size: 28px;
+  font-size: 26px;
   font-family: "Agency FB";
   font-weight: bold;
 }

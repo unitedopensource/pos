@@ -166,8 +166,7 @@ var Printer = function (plugin, config) {
                 })
                 this.plugin.PRINT()
             }
-
-            if (setting.reprint.includes(ticket)) {
+            if (Array.isArray(setting.reprint) && setting.reprint.includes(ticket)) {
                 this.plugin.PRINT_INIT('Reprint ticket')
                 this.plugin.ADD_PRINT_HTM(0, 0, "100%", "100%", html)
                 this.plugin.SET_PRINTER_INDEX(printer)
@@ -1111,7 +1110,7 @@ function createStyle(ctrl) {
               section.body{padding:10px 0px;}
               table{width:100%;border-spacing:0;border-collapse:collapse;margin:5px 0;}
               tbody tr{display:flex;position:relative;}
-              td.item{flex:1;display:flex;flex-direction:column;justify-content: center;}
+              td.item{flex:1;display:flex;flex-direction:column;}
               td .price{text-align:right;}
               td .sub{text-indent:20px;} 
               td.qty{text-align:center;}
@@ -1242,7 +1241,7 @@ function createFooter(table, ctrl, device, ticket) {
     }
 
     let detail = [];
-    ['subtotal', 'discount', 'tax', 'delivery', 'tip', 'gratuity', 'total', 'remain'].forEach(key => {
+    ['subtotal', 'discount', 'tax', 'delivery', 'tip', 'gratuity', 'total'].forEach(key => {
         if (payment[key] > 0) {
             let cls = '';
             let value = payment[key].toFixed(2);
@@ -1250,9 +1249,6 @@ function createFooter(table, ctrl, device, ticket) {
             if (key === 'total') {
                 value = payment.balance.toFixed(2);
                 cls = 'bold';
-            }
-            if(key === 'remain' && payment.paid > 0){
-                key = 'Unpaid';
             }
             detail.push(`<p class="${cls}">
                             <span class="text">${key.toCapitalCase()}:</span>

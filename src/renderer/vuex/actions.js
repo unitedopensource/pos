@@ -401,3 +401,8 @@ export const saveForDiffs = ({
 }, data) => {
   commit(types.SAVE_FOR_DIFFS, data)
 }
+export const archiveOrder = ({
+  commit
+}, data) => {
+  commit(types.ARCHIVE_ORDER, data)
+}

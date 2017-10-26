@@ -39,7 +39,7 @@
         <i class="fa fa-calculator"></i>
         <span class="text">{{$t('button.modify')}}</span>
       </button>
-      <div class="btn" @click="dineInExit">
+      <div class="btn" @click="dineInQuit">
         <i class="fa fa-times"></i>
         <span class="text">{{$t('button.exit')}}</span>
       </div>
@@ -81,7 +81,7 @@
       <i class="fa fa-save"></i>
       <span class="text">{{$t('button.save')}}</span>
     </div>
-    <div class="btn" @click="exit">
+    <div class="btn" @click="quit">
       <i class="fa fa-times"></i>
       <span class="text">{{$t('button.exit')}}</span>
     </div>
@@ -112,7 +112,7 @@
       <i class="fa fa-clock-o"></i>
       <span class="text">{{$t('button.timer')}}</span>
     </div>
-    <button class="btn" @click="save(true)">
+    <button class="btn" @click="done(true)">
       <i class="fa fa-print"></i>
       <span class="text">{{$t('button.print')}}</span>
     </button>
@@ -124,15 +124,15 @@
       <i class="fa fa-columns"></i>
       <span class="text">{{$t("button.split")}}</span>
     </div>
-    <div class="btn" @click="save(false)">
+    <button class="btn" @click="done(false)" :disabled="ticket.type === 'TO_GO'">
       <i class="fa fa-save"></i>
       <span class="text">{{$t("button.save")}}</span>
-    </div>
+    </button>
     <button class="btn" @click="modify">
       <i class="fa fa-calculator"></i>
       <span class="text">{{$t("button.modify")}}</span>
     </button>
-    <div class="btn" @click="exit">
+    <div class="btn" @click="quit">
       <i class="fa fa-times"></i>
       <span class="text">{{$t("button.exit")}}</span>
     </div>
@@ -154,7 +154,6 @@ export default {
   components: { dialoger, unlock, modify },
   data() {
     return {
-      temporary: null,
       isDisplayGuests: false,
       componentData: null,
       component: null
@@ -276,113 +275,187 @@ export default {
     switchGuest() {
       this.callComponent("guest");
     },
-    // done(print){
-    //   this.checkToGo()
-    //     .then(this.save.bind(null,print))
-    //     .then(this.print.bind(null,print))
-    //     .then(this.exit)
-    //     .catch(this.placeFailed)
-    // },
-    // combineTogoItems(){
-    //   //combine togo list to origin dineIn placed items
-    //     this.order.content.forEach(item=>{
-    //         this.temporary.content.push(item)
-    //       })
-    //       //recalculate price
-    //       let {subtotal,tax} = this.order.payment;
-    //       let total = toFixed(subtotal+tax,2);
-
-    //       this.temporary.payment.subtotal += subtotal;
-    //       this.temporary.payment.tax += tax;
-    //       this.temporary.payment.total += total;
-    //       this.temporary.payment.due += total;
-    //       this.temporary.payment.balance += total;
-    //       this.temporary.payment.remain += total;
-    //   return this.temporary;
-    // },
-    // checkToGo(){
-    //   return new Promise((resolve)=>{
-    //     if(this.ticket.type === 'TOGO' && this.order.content.length > 0){
-    //       this.order = Object.assign({},this.combineTogoItems());
-    //       resolve()
-    //     }else{
-    //       resolve()
-    //     }
-    //   })
-    // },
-    // save(print){
-
-    // },
-    // print(boolean){},
-    // exit(){},
-
-
-
-
-
-
-
-    save(print) {
-      if (this.isEmptyTicket) return;
-      let { doneLock } = this.station;
-      let order = this.combineOrderInfo();
-
-      if (this.app.mode === "create") {
-        this.$socket.emit("[SAVE] INVOICE", order, print, content => {
-          print && Printer.setTarget("All").print(content);
-        });
-      } else {
-        if (print) {
-          let diffs = this.analyzeDiffs(order);
-          Printer.setTarget("All").print(diffs);
-          this.$socket.emit("[UPDATE] INVOICE", order, print);
-        } else {
-          this.$socket.emit("[UPDATE] INVOICE", order, print);
-        }
-      }
-      if (doneLock) {
-        this.setOp(null);
-        this.resetAll();
-        this.$router.push({ path: "/main/lock" });
-      } else {
-        this.resetAll();
-        this.$router.push({ path: "/main" });
-      }
-    },
     done(print) {
-      if (this.isEmptyTicket) return;
-      let { doneLock } = this.station;
-      let { printOnDone, lockOnDone } = this.store.table;
-      let order = this.combineOrderInfo();
+      this.checkToGo(print)
+        .then(this.save.bind(null, print))
+        .then(this.exit)
+        .catch(this.placeFailed);
+    },
+    placeFailed(error) {
+      console.error(error);
+    },
+    combineTogoItems() {
+      //combine togo list to origin dineIn placed items
+      let archiveOrder = this.archiveOrder;
 
-      if (this.app.mode === "create") {
-        Object.assign(this.currentTable, { invoice: [order._id] });
-        this.$socket.emit("[TABLE] SETUP", this.currentTable);
-        this.$socket.emit("[SAVE] INVOICE", order, print, content => {
-          if (print) {
-            printOnDone
-              ? Printer.setTarget("All").print(content)
-              : Printer.setTarget("Order").print(content);
-          }
-        });
+      this.order.content.forEach(item => {
+        archiveOrder.content.push(item);
+      });
+      //recalculate price
+      let { subtotal, tax } = this.order.payment;
+      let total = toFixed(subtotal + tax, 2);
+
+      archiveOrder.payment.subtotal += subtotal;
+      archiveOrder.payment.tax += tax;
+      archiveOrder.payment.total += total;
+      archiveOrder.payment.due += total;
+      archiveOrder.payment.balance += total;
+      archiveOrder.payment.remain += total;
+      return archiveOrder;
+    },
+    checkToGo(print) {
+      return new Promise(resolve => {
+        if (this.ticket.type === "TO_GO" && this.order.content.length > 0) {
+          //save togo items
+          let order = this.combineTogoItems();
+          this.$socket.emit("[UPDATE] INVOICE", order, print);
+          resolve();
+        } else {
+          resolve();
+        }
+      });
+    },
+    save(print) {
+      return new Promise((resolve, reject) => {
+        let order = this.combineOrderInfo();
+
+        switch (this.app.mode) {
+          case "create":
+            if (this.ticket.type !== "DINE_IN") {
+              //other type
+              this.$socket.emit("[SAVE] INVOICE", order, print, content => {
+                print && Printer.setTarget("All").print(content);
+              });
+            } else {
+              //dine in needs to update table status
+              let { printOnDone } = this.store.table;
+              Object.assign(this.currentTable, { invoice: [order._id] });
+              this.$socket.emit("[TABLE] SETUP", this.currentTable);
+              this.$socket.emit("[SAVE] INVOICE", order, print, content => {
+                if (print) {
+                  printOnDone
+                    ? Printer.setTarget("All").print(content)
+                    : Printer.setTarget("Order").print(content);
+                }
+              });
+            }
+            break;
+          case "edit":
+            if (this.ticket.type !== "TO_GO") {
+              if (print) {
+                let diffs = this.analyzeDiffs(order);
+                Printer.setTarget("All").print(diffs);
+                this.$socket.emit("[UPDATE] INVOICE", order, print);
+              } else {
+                this.$socket.emit("[UPDATE] INVOICE", order, print);
+              }
+            } else {
+              Printer.setTarget("Order").print(this.order);
+            }
+            break;
+          default:
+        }
+        resolve(false);
+      });
+    },
+    exit(quit) {
+      let { doneLock } = this.station;
+      let { lockOnDone } = this.store.table;
+
+      this.resetAll();
+      if (this.order.type === "DINE_IN") {
+        if (lockOnDone && doneLock) {
+          this.setOp(null);
+          this.$router.push({ path: "/main/lock" });
+        } else {
+          this.setOrder(order);
+          this.$router.push({ name: "Table" });
+        }
       } else {
-        this.$socket.emit("[UPDATE] INVOICE", order, print);
-        if (print) {
-          printOnDone
-            ? Printer.setTarget("All").print(this.analyzeDiffs(order))
-            : Printer.setTarget("Order").print(this.analyzeDiffs(order));
+        if (doneLock) {
+          this.setOp(null);
+          this.$router.push({ path: "/main/lock" });
+        } else {
+          this.$router.push({ path: "/main" });
         }
       }
-
-      if (lockOnDone || doneLock) {
-        this.setOp(null);
-        this.resetAll();
-        this.$router.push({ path: "/main/lock" });
-      } else {
-        this.setOrder(order);
-        this.$router.push({ name: "Table" });
-      }
     },
+    quit() {
+      this.isEmptyTicket
+        ? this.exitOut()
+        : this.$dialog({
+            title: "dialog.exitConfirm",
+            msg: "dialog.exitConfirmTip"
+          })
+            .then(() => {
+              this.exitOut();
+            })
+            .catch(() => {
+              this.$q();
+            });
+    },
+
+    // save(print) {
+    //   if (this.isEmptyTicket) return;
+    //   let { doneLock } = this.station;
+    //   let order = this.combineOrderInfo();
+
+    //   if (this.app.mode === "create") {
+    //     this.$socket.emit("[SAVE] INVOICE", order, print, content => {
+    //       print && Printer.setTarget("All").print(content);
+    //     });
+    //   } else {
+    //     if (print) {
+    //       let diffs = this.analyzeDiffs(order);
+    //       Printer.setTarget("All").print(diffs);
+    //       this.$socket.emit("[UPDATE] INVOICE", order, print);
+    //     } else {
+    //       this.$socket.emit("[UPDATE] INVOICE", order, print);
+    //     }
+    //   }
+    //   if (doneLock) {
+    //     this.setOp(null);
+    //     this.resetAll();
+    //     this.$router.push({ path: "/main/lock" });
+    //   } else {
+    //     this.resetAll();
+    //     this.$router.push({ path: "/main" });
+    //   }
+    // },
+    // done(print) {
+    //   if (this.isEmptyTicket) return;
+    //   let { doneLock } = this.station;
+    //   let { printOnDone, lockOnDone } = this.store.table;
+    //   let order = this.combineOrderInfo();
+
+    //   if (this.app.mode === "create") {
+    //     Object.assign(this.currentTable, { invoice: [order._id] });
+    //     this.$socket.emit("[TABLE] SETUP", this.currentTable);
+    //     this.$socket.emit("[SAVE] INVOICE", order, print, content => {
+    //       if (print) {
+    //         printOnDone
+    //           ? Printer.setTarget("All").print(content)
+    //           : Printer.setTarget("Order").print(content);
+    //       }
+    //     });
+    //   } else {
+    //     this.$socket.emit("[UPDATE] INVOICE", order, print);
+    //     if (print) {
+    //       printOnDone
+    //         ? Printer.setTarget("All").print(this.analyzeDiffs(order))
+    //         : Printer.setTarget("Order").print(this.analyzeDiffs(order));
+    //     }
+    //   }
+
+    //   if (lockOnDone || doneLock) {
+    //     this.setOp(null);
+    //     this.resetAll();
+    //     this.$router.push({ path: "/main/lock" });
+    //   } else {
+    //     this.setOrder(order);
+    //     this.$router.push({ name: "Table" });
+    //   }
+    // },
     combineOrderInfo(extra) {
       let customer = Object.assign({}, this.customer);
       let order = Object.assign({}, this.order);
@@ -453,26 +526,12 @@ export default {
       Object.assign(this.ticket, { type: "TO_GO" });
       this.setOrder({ type: "TO_GO", content: [] });
     },
-    exit() {
-      this.isEmptyTicket
-        ? this.exitOut()
-        : this.$dialog({
-            title: "dialog.exitConfirm",
-            msg: "dialog.exitConfirmTip"
-          })
-            .then(() => {
-              this.exitOut();
-            })
-            .catch(() => {
-              this.$q();
-            });
-    },
     exitOut() {
       this.resetAll();
       this.setApp({ mode: "create" });
       this.$router.push({ path: "/main" });
     },
-    dineInExit() {
+    dineInQuit() {
       this.isEmptyTicket
         ? this.resetTableExit()
         : this.$dialog({
@@ -510,17 +569,17 @@ export default {
   },
   computed: {
     ...mapGetters([
-      "config",
       "op",
       "app",
       "item",
       "diffs",
-      "language",
       "order",
-      "ticket",
       "store",
-      "customer",
+      "ticket",
       "station",
+      "customer",
+      "language",
+      "archiveOrder",
       "isEmptyTicket",
       "currentTable",
       "choiceSet"

@@ -17,7 +17,7 @@
                 <i class="fa fa-cutlery"></i>
                 <span>{{$t('type.DINE_IN')}}</span>
             </li>
-            <li v-show="false && type ==='DINE_IN' && app.mode === 'edit'" @click="togo">
+            <li v-show="type ==='DINE_IN' && app.mode === 'edit'" @click="togo">
                 <i class="fa fa-hand-o-right"></i>
                 <span>{{$t('type.TO_GO')}}</span>
             </li>
