@@ -20,6 +20,7 @@
                         <checkbox v-model="category.apply.PICK_UP" label="type.PICK_UP"></checkbox>
                         <checkbox v-model="category.apply.DELIVERY" label="type.DELIVERY"></checkbox>
                         <checkbox v-model="category.apply.DINE_IN" label="type.DINE_IN"></checkbox>
+                        <checkbox v-model="category.apply.TO_GO" label="type.TO_GO"></checkbox>
                         <checkbox v-model="category.apply.BAR" label="type.BAR"></checkbox>
                         <checkbox v-model="category.apply.BUFFET" label="type.BUFFET"></checkbox>
                         <checkbox v-model="category.apply.SALES" label="type.SALES"></checkbox>

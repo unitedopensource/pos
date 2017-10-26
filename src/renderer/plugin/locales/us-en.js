@@ -223,7 +223,9 @@ export default {
         'unRegister': 'Remove',
         'combine': 'Combine',
         'select': 'Select',
-        'change': 'Change'
+        'change': 'Change',
+        'resetTable':'Reset Table',
+        'sync':'Sync Tickets'
     },
     thead: {
         'orderType': 'Order Type',
@@ -471,7 +473,7 @@ export default {
         'removeCarryNote': 'Remove Carry Note',
         'removeCarryNoteTip': 'Are you sure to remove this carry note?',
         'invoiceNotFound': 'Invoice Not Found',
-        'resetTableStatus': 'Do you want to reset this table?',
+        'actionProcess': 'How do you want to proceed?',
         'templateRemove': 'Template Remove',
         'templateRemoveTip': 'Are you sure to remove this template?',
         'unableAdd': 'Unable to Add',
@@ -1045,6 +1047,12 @@ export default {
         'difference': 'Print Difference',
         'new': 'Only New',
         'todo': 'Todo List'
+    },    
+    context:{
+        'sync':'Sync',
+        'resetPrint':'Reset Print',
+        'resetPayment':'Reset Payment',
+        'resetTable':'Reset Table'
     },
     tip: {
         'autoTemplate': 'Auto popup template page',

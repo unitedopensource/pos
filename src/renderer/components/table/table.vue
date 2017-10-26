@@ -74,30 +74,34 @@ export default {
       this.view = index;
     },
     //new logic flow methods
-    tap() {
-      this.checkTableStatus()
-        .then(this.checkReservation)
-        .then(this.checkPermission)
-        .then(this.countGuest)
-        .catch(this.createTableFailed);
-    },
-    checkTableStatus() {
-      return new Promise((resolve, reject) => {});
-    },
-    checkReservation() {
-      return new Promise((resolve, reject) => {});
-    },
-    checkPermission() {
-      return new Promise((resolve, reject) => {});
-    },
-    countGuest() {
-      return new Promise((resolve, reject) => {});
-    },
-    createTableFailed(error) {
-      let { type, reason } = error;
-    },
-
-    
+    // tap(table) {
+    //   table.status === 1
+    //     ? this.checkOperation()
+    //         .then(this.checkPermission)
+    //         .then(this.countGuest)
+    //         .then(this.createTable.bind(null, table))
+    //         .then(this.checkOccupy)
+    //         .catch(this.createTableFailed)
+    //     : this.checkPermission()
+    //         .then(this.checkTicket)
+    //         .catch(this.viewTicketFailed);
+    // },
+    // checkOccupy() {
+    //   return new Promise((resolve, reject) => {});
+    // },
+    // checkPermission() {
+    //   return new Promise((resolve, reject) => {});
+    // },
+    // countGuest() {
+    //   return new Promise((resolve, reject) => {});
+    // },
+    // createTableFailed(error) {
+    //   let { type, reason } = error;
+    //   switch (type) {
+    //     case "viewTicket":
+    //       break;
+    //   }
+    // },
 
     //end
     selectTable(table, e) {
@@ -122,17 +126,18 @@ export default {
               ? this.setViewOrder(JSON.parse(JSON.stringify(invoice)))
               : this.$dialog({
                   title: "dialog.invoiceNotFound",
-                  msg: "dialog.resetTableStatus",
+                  msg: "dialog.actionProcess",
                   buttons: [
-                    { text: "button.cancel", fn: "reject" },
-                    { text: "button.confirm", fn: "resolve" }
+                    { text: "button.resetTable", fn: "reject" },
+                    { text: "button.sync", fn: "resolve" }
                   ]
                 })
                   .then(() => {
-                    this.$socket.emit("[TABLE] RESET", { _id: table._id });
+                    this.$socket.emit("[SYNC] ORDER_LIST");
                     this.$q();
                   })
                   .catch(() => {
+                    this.$socket.emit("[TABLE] RESET", { _id: table._id });
                     this.$q();
                   });
           } else {

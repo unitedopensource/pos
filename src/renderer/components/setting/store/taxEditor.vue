@@ -21,6 +21,7 @@
                         <checkbox v-model="tax.apply.PICK_UP" label="type.PICK_UP"></checkbox>
                         <checkbox v-model="tax.apply.DELIVERY" label="type.DELIVERY"></checkbox>
                         <checkbox v-model="tax.apply.DINE_IN" label="type.DINE_IN"></checkbox>
+                        <checkbox v-model="tax.apply.TO_GO" label="type.TO_GO"></checkbox>
                         <checkbox v-model="tax.apply.BAR" label="type.BAR"></checkbox>
                         <checkbox v-model="tax.apply.SALES" label="type.SALES"></checkbox>
                     </div>

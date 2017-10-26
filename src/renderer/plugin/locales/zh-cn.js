@@ -216,7 +216,9 @@ export default {
         'unRegister': '反注册',
         'combine': '合并',
         'select': '选择',
-        'change': '更改'
+        'change': '更改',
+        'resetTable':'重置座位',
+        'sync':'同步订单'
     },
     title: {
         'markPaymentType': '标记付款方式',
@@ -428,7 +430,7 @@ export default {
         'removeCarryNote': '移除手抄',
         'removeCarryNoteTip': '您确定要移除这份手抄吗？',
         'invoiceNotFound': '无法找到订单',
-        'resetTableStatus': '您是否需要还原座位状态?',
+        'actionProcess': '您要如何处理这个情况?',
         'templateRemove': '移除模版',
         'templateRemoveTip': '您确定要移除这个模版吗?',
         'unableAdd': '无法添加',
@@ -1037,6 +1039,12 @@ export default {
         'difference': '检测改动',
         'new': '新增',
         'todo': '清单列表'
+    },
+    context:{
+        'sync':'同步',
+        'resetPrint':'重置打印',
+        'resetPayment':'重置付款',
+        'resetTable':'还原座位'
     },
     tip: {
         'autoTemplate': '自动弹出模板选择页面',

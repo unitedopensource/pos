@@ -1024,7 +1024,7 @@ function createList(printer, ctrl, invoice) {
         content = items.map(mockup).join("").toString();
     }
 
-    return `<table>${content}</table>`
+    return `<table><tbody class="receipt">${content}</tbody></table>`
 
     function mockup(item) {
         let nameCN = (item[printer] && item[printer].hasOwnProperty("zhCN")) ? item[printer].zhCN : item.zhCN;
@@ -1109,7 +1109,7 @@ function createStyle(ctrl) {
               .customer{font-size:1.2em;font-family:'Tensentype RuiHeiJ-W2'}
               section.body{padding:10px 0px;}
               table{width:100%;border-spacing:0;border-collapse:collapse;margin:5px 0;}
-              tbody tr{display:flex;position:relative;}
+              tbody.receipt tr{display:flex;position:relative;}
               td.item{flex:1;display:flex;flex-direction:column;}
               td .price{text-align:right;}
               td .sub{text-indent:20px;} 
