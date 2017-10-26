@@ -1242,7 +1242,7 @@ function createFooter(table, ctrl, device, ticket) {
     }
 
     let detail = [];
-    ['subtotal', 'discount', 'tax', 'delivery', 'tip', 'gratuity', 'total'].forEach(key => {
+    ['subtotal', 'discount', 'tax', 'delivery', 'tip', 'gratuity', 'total', 'remain'].forEach(key => {
         if (payment[key] > 0) {
             let cls = '';
             let value = payment[key].toFixed(2);
@@ -1250,6 +1250,9 @@ function createFooter(table, ctrl, device, ticket) {
             if (key === 'total') {
                 value = payment.balance.toFixed(2);
                 cls = 'bold';
+            }
+            if(key === 'remain' && payment.paid > 0){
+                key = 'Unpaid';
             }
             detail.push(`<p class="${cls}">
                             <span class="text">${key.toCapitalCase()}:</span>
