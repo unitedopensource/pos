@@ -683,14 +683,18 @@ export default {
     },
     salesAnalysis(data) {
       this.report["SALES SOURCE DETAIL"] = [];
-      let settled = data.filter(ticket => ticket.settled);
-      let unsettled = data.filter(ticket => !ticket.settled);
+      let settled = data.filter(
+        ticket => ticket.settled && ticket.status === 1
+      );
+      let unsettled = data.filter(
+        ticket => !ticket.settled && ticket.status === 1
+      );
       let counter = (a, b) => a + b;
       let logs = [];
       let temp;
 
       settled.map(ticket => {
-        if (ticket.hasOwnProperty("splitPayment")) {
+        if (ticket.payment.type === "MULTIPLE") {
           ticket.splitPayment.forEach(split => {
             logs.push(...split.log);
           });
