@@ -19,7 +19,7 @@ const state = {
     content: []
   },
   diffs: null,
-  archiveOrder: null,
+  archivedOrder: null,
   item: null,
   sides: [],
   choiceSetTarget: null,
@@ -48,7 +48,7 @@ const mutations = {
     state.item = null;
     state.choiceSetTarget = null;
     state.diffs = null,
-    state.archiveOrder = null;
+    state.archivedOrder = null;
     state.sides = Array(11).fill({ zhCN: "", usEN: "", disable: true })
   },
   [types.SET_VIEW_ORDER](state, order) {
@@ -292,7 +292,7 @@ const mutations = {
     state.diffs = JSON.parse(JSON.stringify(data))
   },
   [types.ARCHIVE_ORDER](state,data){
-    state.archiveOrder = JSON.parse(JSON.stringify(data))
+    state.archivedOrder = JSON.parse(JSON.stringify(data))
   }
 }
 

@@ -920,20 +920,21 @@ function createHeader(store, ticket) {
 function createList(printer, ctrl, invoice) {
     let { sortItem, printMenuID, sortPriority, printMode } = ctrl;
     let content = [], items = [];
+    let list = JSON.parse(JSON.stringify(invoice.content));
     //print mode decided items
     switch (printMode) {
         case "normal":
             if (!invoice.print) {
-                items = invoice.content.filter(item => item.printer[printer]);
+                items = list.filter(item => item.printer[printer]);
             } else {
-                items = invoice.content.filter(item => item.printer[printer] && item.diffs !== 'removed')
+                items = list.filter(item => item.printer[printer] && item.diffs !== 'removed')
             }
             break;
         case "difference":
             if (!invoice.print) {
-                items = invoice.content.filter(item => item.printer[printer] && !item.print)
+                items = list.filter(item => item.printer[printer] && !item.print)
             } else {
-                items = invoice.content.filter(item => item.printer[printer] && item.diffs !== 'unchanged')
+                items = list.filter(item => item.printer[printer] && item.diffs !== 'unchanged')
                 items.forEach(item => {
                     switch (item.diffs) {
                         case "less":
@@ -948,9 +949,9 @@ function createList(printer, ctrl, invoice) {
             break;
         case "new":
             if (!invoice.print) {
-                items = invoice.content.filter(item => item.printer[printer] && !item.print)
+                items = list.filter(item => item.printer[printer] && !item.print)
             } else {
-                items = invoice.content.filter(item => item.printer[printer] && item.diffs === 'new');
+                items = list.filter(item => item.printer[printer] && item.diffs === 'new');
                 items.forEach(item => {
                     item.zhCN = "★" + item.zhCN;
                     item.usEN = "★" + item.usEN;
@@ -959,9 +960,9 @@ function createList(printer, ctrl, invoice) {
             break;
         case "todo":
             if (!invoice.print) {
-                items = invoice.content.filter(item => item.printer[printer] && !item.print)
+                items = list.filter(item => item.printer[printer] && !item.print)
             } else {
-                items = invoice.content.filter(item => item.printer[printer] && (item.diffs === 'unchanged' || item.diffs === 'new'))
+                items = list.filter(item => item.printer[printer] && (item.diffs === 'unchanged' || item.diffs === 'new'))
                     .map(item => {
                         switch (item.diffs) {
                             case "unchanged":
@@ -980,9 +981,9 @@ function createList(printer, ctrl, invoice) {
             break;
         default:
             if (!invoice.print) {
-                items = invoice.content.filter(item => item.printer[printer]);
+                items = list.filter(item => item.printer[printer]);
             } else {
-                items = invoice.content.filter(item => item.printer[printer] && item.diffs !== 'removed')
+                items = list.filter(item => item.printer[printer] && item.diffs !== 'removed')
             }
     }
 
@@ -1026,7 +1027,6 @@ function createList(printer, ctrl, invoice) {
     return `<table>${content}</table>`
 
     function mockup(item) {
-        item = JSON.parse(JSON.stringify(item))
         let nameCN = (item[printer] && item[printer].hasOwnProperty("zhCN")) ? item[printer].zhCN : item.zhCN;
         let nameEN = (item[printer] && item[printer].hasOwnProperty("usEN")) ? item[printer].usEN : item.usEN;
         let sideCN = item.side.zhCN ? item.side.zhCN : "";

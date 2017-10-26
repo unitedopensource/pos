@@ -104,10 +104,10 @@
       <i class="fa fa-commenting-o"></i>
       <span class="text">{{$t('button.request')}}</span>
     </div>
-    <div class="btn" @click="settle">
+    <button class="btn" @click="settle" :disabled="op.cashCtrl === 'disable' || isEmptyTicket">
       <i class="fa fa-money"></i>
       <span class="text">{{$t('button.payment')}}</span>
-    </div>
+    </button>
     <div class="btn" @click="timer">
       <i class="fa fa-clock-o"></i>
       <span class="text">{{$t('button.timer')}}</span>
@@ -147,11 +147,12 @@
 <script>
 import { mapGetters, mapActions } from "vuex";
 import dialoger from "../common/dialoger";
+import payment from "../payment/index";
 import unlock from "../common/unlock";
 import modify from "./modify";
 export default {
   props: ["layout"],
-  components: { dialoger, unlock, modify },
+  components: { dialoger, unlock, modify, payment },
   data() {
     return {
       isDisplayGuests: false,
@@ -255,10 +256,9 @@ export default {
       this.callComponent("course");
     },
     settle() {
-      if (this.isEmptyTicket) return;
-      if (this.op.cashCtrl !== "enable" && this.op.cashCtrl !== "staffBank")
-        return;
-      this.callComponent("settle");
+      this.ticket.type === "TO_GO"
+        ? this.$p("payment", { order: this.combineTogoItems() })
+        : this.$p("payment");
     },
     request() {
       this.callComponent("request");
@@ -282,13 +282,21 @@ export default {
         .catch(this.placeFailed);
     },
     placeFailed(error) {
-      console.error(error);
+      this.$dialog({
+        type: "error",
+        title: "dialog.somethingWrong",
+        msg: "dialog.somethingWrongTip",
+        buttons: [{ text: "button.confirm", fn: "resolve" }]
+      }).then(() => {
+        this.$q();
+      });
     },
     combineTogoItems() {
       //combine togo list to origin dineIn placed items
-      let archiveOrder = this.archiveOrder;
+      let archiveOrder = this.archivedOrder;
 
       this.order.content.forEach(item => {
+        item.diffs = "new";
         archiveOrder.content.push(item);
       });
       //recalculate price
@@ -522,7 +530,7 @@ export default {
       return Object.assign(current, { content: items });
     },
     createTogo() {
-      this.temporary = JSON.parse(JSON.stringify(this.order));
+      this.archiveOrder(this.order);
       Object.assign(this.ticket, { type: "TO_GO" });
       this.setOrder({ type: "TO_GO", content: [] });
     },
@@ -564,7 +572,8 @@ export default {
       "moreQty",
       "resetAll",
       "setOrder",
-      "setTableInfo"
+      "setTableInfo",
+      "archiveOrder"
     ])
   },
   computed: {
@@ -579,7 +588,7 @@ export default {
       "station",
       "customer",
       "language",
-      "archiveOrder",
+      "archivedOrder",
       "isEmptyTicket",
       "currentTable",
       "choiceSet"
