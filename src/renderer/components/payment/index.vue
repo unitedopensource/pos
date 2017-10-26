@@ -1281,7 +1281,7 @@ export default {
         tip,
         gratuity
       } = this.payment;
-      let total = toFixed(subtotal + tax, 2);
+      let total = toFixed(subtotal + tax + delivery, 2);
       let due = toFixed(total - discount, 2);
       let surcharge = toFixed(tip + gratuity, 2);
       let balance = toFixed(due + surcharge, 2);
