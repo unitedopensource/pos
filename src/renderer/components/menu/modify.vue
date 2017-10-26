@@ -61,9 +61,9 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions } from "vuex";
 export default {
-  props: ['init'],
+  props: ["init"],
   data() {
     return {
       target: "single",
@@ -71,14 +71,14 @@ export default {
       reset: true,
       unit: true,
       discount: "0.00"
-    }
+    };
   },
   created() {
     this.initial();
   },
   mounted() {
-    !this.approval(this.op.modify, 'price') && this.banPrice();
-    !this.approval(this.op.modify, 'discount') && this.banModify();
+    !this.approval(this.op.modify, "price") && this.banPrice();
+    !this.approval(this.op.modify, "discount") && this.banModify();
   },
   methods: {
     initial() {
@@ -91,24 +91,26 @@ export default {
           choiceSet: [],
           mark: [[], []],
           sort: 0,
-          unique: Math.random().toString(36).substr(2, 5),
+          unique: Math.random()
+            .toString(36)
+            .substr(2, 5),
           print: false,
           pending: false,
           void: false,
           total: "0.00",
           side: ""
-        })
+        });
       }
     },
     banPrice() {
       let dom = document.querySelector(".column.target");
-      dom && dom.classList.remove('target');
-      this.$refs.price.classList.add('ban');
-      this.$refs.qty.classList.add('target');
-      this.target = 'qty';
+      dom && dom.classList.remove("target");
+      this.$refs.price.classList.add("ban");
+      this.$refs.qty.classList.add("target");
+      this.target = "qty";
     },
     banModify() {
-      this.$refs.discount.classList.add('ban');
+      this.$refs.discount.classList.add("ban");
     },
     input(num) {
       switch (this.target) {
@@ -123,8 +125,11 @@ export default {
           }
           break;
         case "qty":
-          if (this.reset && num === '0' || num === '00') return;
-          this.reset ? this.item.qty = num : (this.item.qty + num < 1000) && (this.item.qty = String(this.item.qty) + num);
+          if ((this.reset && num === "0") || num === "00") return;
+          this.reset
+            ? (this.item.qty = num)
+            : this.item.qty + num < 1000 &&
+              (this.item.qty = String(this.item.qty) + num);
           break;
         case "discount":
           if (this.reset) {
@@ -180,8 +185,9 @@ export default {
       this.discount = this.unit ? "0.00" : "0";
     },
     confirm() {
-      this.init.type === 'choiceSet' ?
-        this.adjustChoiceSetItem() : this.adjustMenuItem();
+      this.init.type === "choiceSet"
+        ? this.adjustChoiceSetItem()
+        : this.adjustMenuItem();
     },
     adjustChoiceSetItem() {
       let single = parseFloat(this.item.single);
@@ -194,43 +200,59 @@ export default {
     },
     adjustMenuItem() {
       let single = parseFloat(this.item.single);
-      let discount = this.unit ? this.discount : single * this.item.qty * (this.discount / 100);
+      let discount = this.unit
+        ? this.discount
+        : single * this.item.qty * (this.discount / 100);
       let item = Object.assign({}, this.item, {
         single,
         price: [single],
         qty: ~~this.item.qty,
-        total: (single * this.item.qty).toFixed(2),
+        total: (single * this.item.qty).toFixed(2)
       });
-      discount > 0 && item.choiceSet.push({
-        qty: 1,
-        zhCN: `${this.unit ? '$' + this.discount.toFixed(2) : this.discount + ' %'} Discount`,
-        usEN: `${this.unit ? '$' + this.discount.toFixed(2) : this.discount + ' %'} Discount`,
-        single: -discount,
-        price: -discount
-      });
-      this.init.openFood ? (this.addToOrder(item), this.setSides(this.fillOption(item.option))) : this.alterItem(item);
+      discount > 0 &&
+        item.choiceSet.push({
+          qty: 1,
+          zhCN: `${this.unit
+            ? "$" + this.discount.toFixed(2)
+            : this.discount + " %"} Discount`,
+          usEN: `${this.unit
+            ? "$" + this.discount.toFixed(2)
+            : this.discount + " %"} Discount`,
+          single: -discount,
+          price: -discount
+        });
+      this.init.openFood
+        ? (this.addToOrder(item), this.setSides(this.fillOption(item.option)))
+        : this.alterItem(item);
       this.init.resolve();
     },
     fillOption(side) {
       let length = side.length;
       let array = side.slice();
       for (let i = length; i < 11; i++) {
-        array.push({ zhCN: "", usEN: "", disable: true })
+        array.push({ zhCN: "", usEN: "", disable: true });
       }
       return array;
     },
-    ...mapActions(['setSides', 'alterItem', 'addToOrder', 'setPriceForChoiceSet'])
+    ...mapActions([
+      "setSides",
+      "alterItem",
+      "addToOrder",
+      "setPriceForChoiceSet"
+    ])
   },
   computed: {
     total() {
       let single = parseFloat(this.item.single);
       let qty = parseFloat(this.item.qty);
-      let discount = this.unit ? this.discount : single * qty * (this.discount / 100);
-      return (single * qty - discount).toFixed(2)
+      let discount = this.unit
+        ? this.discount
+        : single * qty * (this.discount / 100);
+      return (single * qty - discount).toFixed(2);
     },
-    ...mapGetters(['op', 'language'])
+    ...mapGetters(["op", "language"])
   }
-}
+};
 </script>
 
 <style scoped>
@@ -250,10 +272,15 @@ export default {
   display: flex;
 }
 
-span.price {
-  color: #EEEEEE;
+.price {
+  color: #fff;
   float: right;
-  border-bottom: 1px dotted #80c3f7;
+  background: #0069bd;
+  padding: 0 5px;
+  border-radius: 4px;
+  box-shadow: 0 1px 1px #005294;
+  font-family: "Agency FB";
+  font-weight: bold;
 }
 
 section.numpad {
@@ -284,7 +311,7 @@ section.numpad div:last-child {
 
 .column.target {
   color: #fff;
-  background: #5C6BC0;
+  background: #5c6bc0;
   text-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
   font-weight: bold;
   flex: 2;
@@ -296,10 +323,11 @@ section.numpad div:last-child {
   font-weight: lighter;
 }
 
-.column>div {
+.column > div {
   text-align: right;
   padding-right: 5px;
   font-size: 1.25em;
+  font-family: "Agency FB";
 }
 
 .target .value {
@@ -310,7 +338,7 @@ section.numpad div:last-child {
   height: 2px;
   width: 100%;
   background: #fff;
-  content: ' ';
+  content: " ";
   position: absolute;
   left: 0;
   bottom: -3px;
@@ -339,7 +367,7 @@ section.numpad div:last-child {
   position: absolute;
   right: -5px;
   top: 13px;
-  font-size: 16px!important;
+  font-size: 16px !important;
   font-weight: lighter;
 }
 
@@ -354,22 +382,22 @@ section.numpad div:last-child {
 .unit label {
   color: #b6beea;
   padding: 5px 10px;
+  font-weight: bold;
 }
 
-input:checked+label {
+input:checked + label {
   color: #fff;
-  border-radius: 4px;
 }
 
 @keyframes flash {
   0% {
-    opacity: 0
+    opacity: 0;
   }
   50% {
-    opacity: 1
+    opacity: 1;
   }
   100% {
-    opacity: 0
+    opacity: 0;
   }
 }
 </style>

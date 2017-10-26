@@ -22,6 +22,7 @@ export default {
         'BAR': '酒吧',
         'BUFFET': '自助餐',
         'SALES': '销售',
+        'TO_GO': '带走',
         'PRE_PAYMENT': '预付款',
         'CREDIT_CARD': '信用卡',
         'RECEIPT': '收据',
@@ -461,7 +462,9 @@ export default {
         'splitTicketSettledTip': '您想要将此订单设置成已付吗？',
         'insufficientAmount': '所剩余额不足',
         'combineTickets': '确认合并订单',
-        'combineTicketsConfirm': '您确定要将 {i} 订单合并至 #{i}号 吗？'
+        'combineTicketsConfirm': '您确定要将 {i} 订单合并至 #{i}号 吗？',
+        'foodTogo':'创建带走物品',
+        'togoConfirm':'您确定需要创建一个带走物品列表吗?'
     },
     terminal: {
         'initial': '正在初始化 {i}...',
@@ -846,7 +849,7 @@ export default {
         'comment': '注释',
         'server': '服务员',
         'taxOnDelivery': '送餐税',
-        'ignorePrice':'忽略价格'
+        'ignorePrice': '忽略价格'
     },
     nav: {
         'store': '店面',

@@ -28,6 +28,7 @@ export default {
         'BAR': 'Bar',
         'BUFFET': 'Buffet',
         'SALES': 'Sales',
+        'TO_GO': 'To Go',
         'PRE_PAYMENT': 'Pre Pay.',
         'CREDIT_CARD': 'Credit Card',
         'RECEIPT': 'Receipt',
@@ -504,7 +505,9 @@ export default {
         'splitTicketSettledTip': 'Are you wish to mark this ticket as paid?',
         'insufficientAmount': 'There is an insufficient amount of balance.',
         'combineTickets': 'Confirm Ticket Combines',
-        'combineTicketsConfirm': 'Are you sure to combine {i} ticket(s) to MAIN ticket #{i}?'
+        'combineTicketsConfirm': 'Are you sure to combine {i} ticket(s) to MAIN ticket #{i}?',
+        'foodTogo':'Create A ToGo List',
+        'togoConfirm':'Are you wish to create a new list for togo items?'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',

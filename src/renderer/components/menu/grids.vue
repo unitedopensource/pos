@@ -154,10 +154,17 @@ export default {
   components: { dialoger, unlock, modify },
   data() {
     return {
+      temporary: null,
       isDisplayGuests: false,
       componentData: null,
       component: null
     };
+  },
+  created() {
+    this.$bus.on("FOOD_TOGO", this.createTogo);
+  },
+  beforeDestroy() {
+    this.$bus.off("FOOD_TOGO", this.createTogo);
   },
   methods: {
     callComponent(name) {
@@ -269,6 +276,52 @@ export default {
     switchGuest() {
       this.callComponent("guest");
     },
+    // done(print){
+    //   this.checkToGo()
+    //     .then(this.save.bind(null,print))
+    //     .then(this.print.bind(null,print))
+    //     .then(this.exit)
+    //     .catch(this.placeFailed)
+    // },
+    // combineTogoItems(){
+    //   //combine togo list to origin dineIn placed items
+    //     this.order.content.forEach(item=>{
+    //         this.temporary.content.push(item)
+    //       })
+    //       //recalculate price
+    //       let {subtotal,tax} = this.order.payment;
+    //       let total = toFixed(subtotal+tax,2);
+
+    //       this.temporary.payment.subtotal += subtotal;
+    //       this.temporary.payment.tax += tax;
+    //       this.temporary.payment.total += total;
+    //       this.temporary.payment.due += total;
+    //       this.temporary.payment.balance += total;
+    //       this.temporary.payment.remain += total;
+    //   return this.temporary;
+    // },
+    // checkToGo(){
+    //   return new Promise((resolve)=>{
+    //     if(this.ticket.type === 'TOGO' && this.order.content.length > 0){
+    //       this.order = Object.assign({},this.combineTogoItems());
+    //       resolve()
+    //     }else{
+    //       resolve()
+    //     }
+    //   })
+    // },
+    // save(print){
+
+    // },
+    // print(boolean){},
+    // exit(){},
+
+
+
+
+
+
+
     save(print) {
       if (this.isEmptyTicket) return;
       let { doneLock } = this.station;
@@ -394,6 +447,11 @@ export default {
         })
       );
       return Object.assign(current, { content: items });
+    },
+    createTogo() {
+      this.temporary = JSON.parse(JSON.stringify(this.order));
+      Object.assign(this.ticket, { type: "TO_GO" });
+      this.setOrder({ type: "TO_GO", content: [] });
     },
     exit() {
       this.isEmptyTicket

@@ -29,8 +29,8 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
-import modify from './modify'
+import { mapGetters, mapActions } from "vuex";
+import modify from "./modify";
 export default {
   components: { modify },
   data() {
@@ -39,7 +39,7 @@ export default {
       action: null,
       component: null,
       componentData: null
-    }
+    };
   },
   mounted() {
     this.items = [].concat.apply([], this.request[0].item);
@@ -49,8 +49,8 @@ export default {
       this.items = [].concat.apply([], category.item);
     },
     getPrefix(action, e) {
-      let dom = document.querySelector('.acting');
-      dom && dom.classList.remove('acting');
+      let dom = document.querySelector(".acting");
+      dom && dom.classList.remove("acting");
       this.action = action;
       e.currentTarget.classList.add("acting");
     },
@@ -66,7 +66,9 @@ export default {
           usEN = usEN + " " + this.action.usEN;
         }
       }
-      price = isNumber(price) ? parseFloat(price) : 0;
+      price = (this.action && this.action.ignoreDefaultPrice)
+        ? 0
+        : isNumber(price) ? parseFloat(price) : 0;
       let content = {
         qty: 1,
         zhCN,
@@ -74,30 +76,36 @@ export default {
         single: price,
         price: price.toFixed(2),
         key: item._id.slice(-4)
-      }
+      };
       this.action = null;
       let dom = document.querySelector(".sub.target");
       dom ? this.alertChoiceSet(content) : this.setChoiceSet(content);
-      dom = document.querySelector('.acting');
-      dom && dom.classList.remove('acting');
+      dom = document.querySelector(".acting");
+      dom && dom.classList.remove("acting");
     },
     setPrice(total) {
-      total ?
-        this.setPriceForChoiceSet({ total }) :
-        this.$p("modify", {
-          item: {
-            qty: 1,
-            single: 0,
-            discount: 0
-          }, type: 'choiceSet'
-        });
+      total
+        ? this.setPriceForChoiceSet({ total })
+        : this.$p("modify", {
+            item: {
+              qty: 1,
+              single: 0,
+              discount: 0
+            },
+            type: "choiceSet"
+          });
     },
-    ...mapActions(['setChoiceSet', 'alertChoiceSet', 'setPriceForChoiceSet', 'setChoiceSetTarget'])
+    ...mapActions([
+      "setChoiceSet",
+      "alertChoiceSet",
+      "setPriceForChoiceSet",
+      "setChoiceSetTarget"
+    ])
   },
   computed: {
-    ...mapGetters(['request', 'language', 'actions'])
+    ...mapGetters(["request", "language", "actions"])
   }
-}
+};
 </script>
 
 <style scoped>
@@ -133,13 +141,13 @@ div.prefix div {
 }
 
 .category div {
-  border: 1px solid #2196F3;
-  background: #29B6F6;
+  border: 1px solid #2196f3;
+  background: #29b6f6;
 }
 
 .prefix div {
-  border: 1px solid #607D8B;
-  background: #B0BEC5;
+  border: 1px solid #607d8b;
+  background: #b0bec5;
 }
 
 .prefix div.acting {
@@ -190,7 +198,7 @@ div.shortCut div {
   margin: 1px;
   vertical-align: top;
   font-size: 1.15em;
-  border: 1px solid #9E9E9E;
+  border: 1px solid #9e9e9e;
   background: rgba(206, 206, 206, 0.66);
   justify-content: center;
   align-items: center;

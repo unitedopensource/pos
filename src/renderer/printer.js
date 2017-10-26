@@ -1110,7 +1110,7 @@ function createStyle(ctrl) {
               .customer{font-size:1.2em;font-family:'Tensentype RuiHeiJ-W2'}
               section.body{padding:10px 0px;}
               table{width:100%;border-spacing:0;border-collapse:collapse;margin:5px 0;}
-              tr{display:flex;position:relative;}
+              tbody tr{display:flex;position:relative;}
               td.item{flex:1;display:flex;flex-direction:column;justify-content: center;}
               td .price{text-align:right;}
               td .sub{text-indent:20px;} 
