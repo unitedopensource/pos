@@ -1045,32 +1045,39 @@ function createList(printer, ctrl, invoice) {
                         <span>${set.qty !== 1 ? set.qty + 'x' : ''}</span>
                         <span>${set.zhCN}</span>
                         <span>${parseFloat(set.price) !== 0 ? '(' + set.price.toFixed(2) + ')' : ''}</span>
-                      </div>`
+                      </div>`;
+            setEN += `<div class="sub">
+                        <span>${set.qty !== 1 ? set.qty + 'x' : ''}</span>
+                        <span>${set.usEN}</span>
+                        <span>${parseFloat(set.price) !== 0 ? '(' + set.price.toFixed(2) + ')' : ''}</span>
+                    </div>`;
         })
         if (diffs === 'removed') {
             firstLine = `<tr class="zhCN">
-                            <td><del>${printMenuID ? item.menuID : ''}</del></td>
                             <td class="qty"><del>${item.qty !== 1 ? item.qty : ''}</del></td>
-                            <td class="item"><del><div class="main">${nameCN} ${sideCN}</div></del><del>${setCN}</del></td>
+                            <td class="item">
+                                <del><div class="main">${printMenuID ? item.menuID : ''}${nameCN} ${sideCN}</div></del>
+                                <del>${setCN}</del>
+                            </td>
                             <td class="price"><del>${item.total}</del></td>
                         </tr>`;
             secondLine = `<tr class="usEN">
-                            <td><del>${printMenuID ? item.menuID : ''}</del></td>
                             <td class="qty"><del>${item.qty !== 1 ? item.qty : ''}</del></td>
-                            <td class="item"><del><div class="main">${nameEN} ${sideEN}</div></del><del>${setEN}</del></td>
+                            <td class="item">
+                                el><div class="main">${printMenuID ? item.menuID : ''}${nameEN} ${sideEN}</div></del>
+                                <del>${setEN}</del>
+                            </td>
                             <td class="price"><del>${item.total}</del></td>
                         </tr>`;
         } else {
             firstLine = `<tr class="zhCN">
-                        <td>${printMenuID ? item.menuID : ''}</td>
                         <td class="qty">${item.qty !== 1 ? item.qty : ''}</td>
-                        <td class="item"><div class="main">${nameCN} ${sideCN}</div>${setCN}</td>
+                        <td class="item"><div class="main">${printMenuID ? item.menuID : ''}${nameCN} ${sideCN}</div>${setCN}</td>
                         <td class="price">${item.total}</td>
                     </tr>`;
             secondLine = `<tr class="usEN">
-                            <td>${printMenuID ? item.menuID : ''}</td>
                             <td class="qty">${item.qty !== 1 ? item.qty : ''}</td>
-                            <td class="item"><div class="main">${nameEN} ${sideEN}</div>${setEN}</td>
+                            <td class="item"><div class="main">${printMenuID ? item.menuID : ''}${nameEN} ${sideEN}</div>${setEN}</td>
                             <td class="price">${item.total}</td>
                         </tr>`;
         }
@@ -1110,9 +1117,11 @@ function createStyle(ctrl) {
               section.body{padding:10px 0px;}
               table{width:100%;border-spacing:0;border-collapse:collapse;margin:5px 0;}
               tbody.receipt tr{display:flex;position:relative;}
+              td.qty{font-weight:bold;}
               td.item{flex:1;display:flex;flex-direction:column;}
-              td .price{text-align:right;}
-              td .sub{text-indent:20px;} 
+              td.item .main{width:100%;}
+              td.price{text-align:right;}
+              .sub{text-indent:20px;} 
               td.qty{text-align:center;}
               .zhCN .price{${printPrimaryPrice ? 'display:initial' : 'display:none'}}
               .usEN .price{${printSecondaryPrice ? 'display:initial' : 'display:none'}}          

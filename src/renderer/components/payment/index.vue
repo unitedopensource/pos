@@ -1036,7 +1036,7 @@ export default {
     },
     checkBalance() {
       if (this.payInFull) {
-        if (this.payment.remain > 0) {
+        if (toFixed(this.payment.remain.toFixed(2), 2) > 0) {
           this.poleDisplay("Thank You", [
             "Due:",
             this.payment.remain.toFixed(2)
@@ -1062,7 +1062,7 @@ export default {
     },
     checkGiftCardBalance() {
       return new Promise((resolve, reject) => {
-        if (this.giftCard.balance <= 0) {
+        if (toFixed(this.giftCard.balance.toFixed(2), 2) <= 0) {
           this.$dialog({
             type: "error",
             title: "dialog.paymentFailed",

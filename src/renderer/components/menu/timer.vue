@@ -42,166 +42,183 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
-import checkbox from '../setting/common/checkbox'
-import dialoger from '../common/dialoger'
+import { mapGetters, mapActions } from "vuex";
+import checkbox from "../setting/common/checkbox";
+import dialoger from "../common/dialoger";
 
 export default {
-    props: ['init'],
-    components: { dialoger, checkbox },
-    data() {
-        return {
-            timer:moment(),
-            time: null,
-            componentData: null,
-            component: null,
-            ahead: true,
-            current: +new Date()
-        }
+  props: ["init"],
+  components: { dialoger, checkbox },
+  data() {
+    return {
+      timer: moment(),
+      time: null,
+      componentData: null,
+      component: null,
+      ahead: true,
+      current: +new Date()
+    };
+  },
+  created() {
+    this.time = this.timer.format("HHmm").split("");
+  },
+  methods: {
+    addHour(t) {
+      this.timer.add(t, "hours");
+      this.time = this.timer.format("HHmm").split("");
     },
-    created(){
-        this.time = this.timer.format('HHmm').split("")
+    subHour(t) {
+      this.timer.subtract(t, "hours");
+      this.time = this.timer.format("HHmm").split("");
     },
-    methods: {
-        addHour(t){
-            this.timer.add(t,'hours');
-            this.time = this.timer.format('HHmm').split("");
-        },
-        subHour(t){
-            this.timer.subtract(t,'hours');
-            this.time = this.timer.format('HHmm').split("");
-        },
-        addMin(t){
-            this.timer.add(t,'minutes');
-            this.time = this.timer.format('HHmm').split("");
-        },
-        subMin(t){
-            this.timer.subtract(t,'minutes');
-            this.time = this.timer.format('HHmm').split("");
-        },
-        confirm() {
-            let hour = Number(String(this.time[0]) + String(this.time[1]));
-            let minute = Number(String(this.time[2]) + String(this.time[3]));
-            let schedule = moment().hour(hour).minute(minute);
-            this.ahead && schedule.subtract(10, 'minutes');
-            schedule > this.current ? this.confirmTime(schedule) : this.timeError();
-        },
-        timeError() {
-            this.$dialog({
-                title: 'dialog.scheduleError', msg: 'dialog.scheduleErrorTip',
-                buttons: [{ text: 'button.confirm', fn: 'resolve' }]
-            }).then(() => { this.$q() })
-        },
-        confirmTime(schedule) {
-            let now = moment();
-            let duration = moment.duration(schedule.diff(now)).humanize();
-            this.$dialog({
-                title: 'dialog.scheduleConfirm', msg: ['dialog.scheduleConfirmTip', schedule.format('hh:mm a'), duration]
-            }).then(() => { this.submit(schedule) }).catch(() => { this.$q() })
-        },
-        submit(schedule) {
-            this.$q();
-            delete this.customer.extra;
-            if (this.app.mode === 'create') {
-                Object.assign(this.order, {
-                    customer: this.customer,
-                    type: this.ticket.type,
-                    number: this.ticket.number,
-                    modify: 0,
-                    time: +new Date(),
-                    delay: +schedule,
-                    status: 1,
-                    date: today(),
-                    timer:true,
-                    schedule: +schedule,
-                    source: this.op.role !== 'ThirdParty' ? "POS" : this.op.name,
-                    print: false,
-                    content: this.order.content.map(item => {
-                        item.pending = true;
-                        return item
-                    })
-                });
-                this.$socket.emit("[SAVE] INVOICE", this.order);
-            } else {
-                Object.assign(this.order, {
-                    customer: this.customer,
-                    type: this.ticket.type,
-                    lastEdit: +new Date(),
-                    editor: this.op.name,
-                    schedule: +schedule,
-                    modify: isNumber(this.order.modify) ? this.order.modify + 1 : 1
-                });
-                this.$socket.emit("[UPDATE] INVOICE", this.order);
-            }
-            this.delayPrint(this.order);
-            this.resetAll();
-            this.setApp({ opLastAction: new Date(), mode: "create" });
-            this.$router.push({ path: "/main" });
-        },
-        ...mapActions(['setApp', 'delayPrint', 'resetAll'])
+    addMin(t) {
+      this.timer.add(t, "minutes");
+      this.time = this.timer.format("HHmm").split("");
     },
-    computed: {
-        ...mapGetters(['op', 'app', 'order', 'ticket', 'customer', 'language'])
-    }
-}
+    subMin(t) {
+      this.timer.subtract(t, "minutes");
+      this.time = this.timer.format("HHmm").split("");
+    },
+    confirm() {
+      let hour = Number(String(this.time[0]) + String(this.time[1]));
+      let minute = Number(String(this.time[2]) + String(this.time[3]));
+      let schedule = moment()
+        .hour(hour)
+        .minute(minute);
+      this.ahead && schedule.subtract(10, "minutes");
+      schedule > this.current ? this.confirmTime(schedule) : this.timeError();
+    },
+    timeError() {
+      this.$dialog({
+        title: "dialog.scheduleError",
+        msg: "dialog.scheduleErrorTip",
+        buttons: [{ text: "button.confirm", fn: "resolve" }]
+      }).then(() => {
+        this.$q();
+      });
+    },
+    confirmTime(schedule) {
+      let now = moment();
+      let duration = moment.duration(schedule.diff(now)).humanize();
+      this.$dialog({
+        title: "dialog.scheduleConfirm",
+        msg: ["dialog.scheduleConfirmTip", schedule.format("hh:mm a"), duration]
+      })
+        .then(() => {
+          this.submit(schedule);
+        })
+        .catch(() => {
+          this.$q();
+        });
+    },
+    submit(schedule) {
+      this.$q();
+      delete this.customer.extra;
+      if (this.app.mode === "create") {
+        Object.assign(this.order, {
+          customer: this.customer,
+          type: this.ticket.type,
+          number: this.ticket.number,
+          modify: 0,
+          time: +new Date,
+          delay: +schedule,
+          status: 1,
+          date: today(),
+          timer: true,
+          schedule: +schedule,
+          source: this.op.role !== "ThirdParty" ? "POS" : this.op.name,
+          print: false,
+          content: this.order.content.map(item => {
+            item.pending = true;
+            return item;
+          })
+        });
+        this.$socket.emit("[SAVE] INVOICE", this.order, false, content => {
+          this.delayPrint(content);
+          this.resetAll();
+          this.setApp({ opLastAction: new Date(), mode: "create" });
+          this.$router.push({ path: "/main" });
+        });
+      } else {
+        Object.assign(this.order, {
+          customer: this.customer,
+          type: this.ticket.type,
+          lastEdit: +new Date,
+          editor: this.op.name,
+          schedule: +schedule,
+          modify: isNumber(this.order.modify) ? this.order.modify + 1 : 1
+        });
+        this.$socket.emit("[UPDATE] INVOICE", this.order);
+        this.delayPrint(this.order);
+        this.resetAll();
+        this.setApp({ opLastAction: new Date(), mode: "create" });
+        this.$router.push({ path: "/main" });
+      }
+    },
+    ...mapActions(["setApp", "delayPrint", "resetAll"])
+  },
+  computed: {
+    ...mapGetters(["op", "app", "order", "ticket", "customer", "language"])
+  }
+};
 </script>
 
 <style scoped>
 .inner {
-    width: 400px;
+  width: 400px;
 }
 
 .timer {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
 }
 
 .blink {
-    line-height: 185px;
-    font-size: 5em;
-    animation: blinker 1s infinite;
+  line-height: 185px;
+  font-size: 5em;
+  animation: blinker 1s infinite;
 }
 
 @keyframes blinker {
-    50% {
-        opacity: 0;
-    }
+  50% {
+    opacity: 0;
+  }
 }
 
 .timer .wrap {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    margin: 5px 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin: 5px 10px;
 }
 
 span.time {
-    padding: 10px;
-    font-family: 'Agency FB';
-    font-weight: bold;
-    color: #fff;
-    background: #333;
-    font-size: 3em;
-    width: 50px;
-    border-radius: 6px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  padding: 10px;
+  font-family: "Agency FB";
+  font-weight: bold;
+  color: #fff;
+  background: #333;
+  font-size: 3em;
+  width: 50px;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 
 .wrap i {
-    padding: 10px 29px;
-    background: linear-gradient(#fefefe, #cfd0d3);
-    margin: 8px 0;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  padding: 10px 29px;
+  background: linear-gradient(#fefefe, #cfd0d3);
+  margin: 8px 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .wrap i:active {
-    background: linear-gradient(#E2E3E4, #AAADB4);
+  background: linear-gradient(#e2e3e4, #aaadb4);
 }
 
 .f1 {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 </style>
