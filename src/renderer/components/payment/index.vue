@@ -965,8 +965,7 @@ export default {
             status: 1,
             date: today(),
             time: +new Date(),
-            settled,
-            print: true
+            settled
           });
 
           this.$socket.emit("[SAVE] INVOICE", this.order, false, content => {
