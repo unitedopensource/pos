@@ -50,8 +50,8 @@ export default {
   props: ["init"],
   data() {
     return {
-      unit: "%",
-      tip: "0",
+      unit: "$",
+      tip: "0.00",
       reset: true
     };
   },

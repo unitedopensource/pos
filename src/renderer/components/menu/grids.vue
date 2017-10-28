@@ -352,7 +352,11 @@ export default {
             if (this.ticket.type !== "TO_GO") {
               if (print) {
                 let diffs = this.analyzeDiffs(order);
-                Printer.setTarget("All").print(diffs);
+
+                (this.order.type === "DINE_IN" && this.store.table.printOnDone)
+                  ? Printer.setTarget("All").print(diffs)
+                  : Printer.setTarget("Order").print(diffs);
+
                 this.$socket.emit("[UPDATE] INVOICE", order, print);
               } else {
                 this.$socket.emit("[UPDATE] INVOICE", order, print);
@@ -402,68 +406,6 @@ export default {
               this.$q();
             });
     },
-
-    // save(print) {
-    //   if (this.isEmptyTicket) return;
-    //   let { doneLock } = this.station;
-    //   let order = this.combineOrderInfo();
-
-    //   if (this.app.mode === "create") {
-    //     this.$socket.emit("[SAVE] INVOICE", order, print, content => {
-    //       print && Printer.setTarget("All").print(content);
-    //     });
-    //   } else {
-    //     if (print) {
-    //       let diffs = this.analyzeDiffs(order);
-    //       Printer.setTarget("All").print(diffs);
-    //       this.$socket.emit("[UPDATE] INVOICE", order, print);
-    //     } else {
-    //       this.$socket.emit("[UPDATE] INVOICE", order, print);
-    //     }
-    //   }
-    //   if (doneLock) {
-    //     this.setOp(null);
-    //     this.resetAll();
-    //     this.$router.push({ path: "/main/lock" });
-    //   } else {
-    //     this.resetAll();
-    //     this.$router.push({ path: "/main" });
-    //   }
-    // },
-    // done(print) {
-    //   if (this.isEmptyTicket) return;
-    //   let { doneLock } = this.station;
-    //   let { printOnDone, lockOnDone } = this.store.table;
-    //   let order = this.combineOrderInfo();
-
-    //   if (this.app.mode === "create") {
-    //     Object.assign(this.currentTable, { invoice: [order._id] });
-    //     this.$socket.emit("[TABLE] SETUP", this.currentTable);
-    //     this.$socket.emit("[SAVE] INVOICE", order, print, content => {
-    //       if (print) {
-    //         printOnDone
-    //           ? Printer.setTarget("All").print(content)
-    //           : Printer.setTarget("Order").print(content);
-    //       }
-    //     });
-    //   } else {
-    //     this.$socket.emit("[UPDATE] INVOICE", order, print);
-    //     if (print) {
-    //       printOnDone
-    //         ? Printer.setTarget("All").print(this.analyzeDiffs(order))
-    //         : Printer.setTarget("Order").print(this.analyzeDiffs(order));
-    //     }
-    //   }
-
-    //   if (lockOnDone || doneLock) {
-    //     this.setOp(null);
-    //     this.resetAll();
-    //     this.$router.push({ path: "/main/lock" });
-    //   } else {
-    //     this.setOrder(order);
-    //     this.$router.push({ name: "Table" });
-    //   }
-    // },
     combineOrderInfo(extra) {
       let customer = Object.assign({}, this.customer);
       let order = Object.assign({}, this.order);
