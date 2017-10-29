@@ -377,11 +377,26 @@ export default {
       this.initialized();
     },
     initialized() {
-      this.getQuickInput(this.payment.remain);
-      this.poleDisplay(
-        ["Balance Due:", ""],
-        ["", this.payment.remain.toFixed(2)]
-      );
+      if (isNumber(this.payment.remain)) {
+        this.getQuickInput(this.payment.remain);
+        this.poleDisplay(
+          ["Balance Due:", ""],
+          ["", this.payment.remain.toFixed(2)]
+        );
+      }else{
+        this.$dialog({
+          type:'error',
+          title:'dialog.paymentFailed',
+          msg:'dialog.balanceDueAmountIncorrect',
+          buttons:[{text:'button.cancel',fn:'reject'},{text:'button.fix',fn:'resolve'}]
+        }).then(()=>{
+          this.recalculatePayment();
+          this.$q();
+          this.initialized()
+        }).catch(()=>{
+          this.exit()
+        })
+      }
     },
     initialFailed(reason) {
       let { error, data } = reason;
@@ -1045,8 +1060,8 @@ export default {
         } else {
           this.poleDisplay("Thank You", "Please Come Again!");
           if (this.isNewTicket) {
-            this.$socket.emit("[UPDATE] INVOICE", this.order, true);
             Printer.setTarget("Order").print(this.order);
+            this.$socket.emit("[UPDATE] INVOICE", this.order, true);
             this.exitPayment();
           } else {
             this.exitPayment();
