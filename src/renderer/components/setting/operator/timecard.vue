@@ -48,7 +48,8 @@
                         <td v-if="approval" class="editable" @click="edit(log)">{{log.clockOut | moment('HH:mm:ss')}}</td>
                         <td v-else>{{log.clockOut | moment('HH:mm:ss')}}</td>
                         <td>{{calculate(log.clockIn,log.clockOut)}}</td>
-                        <td>{{log.wage}}</td>
+                        <td v-if="log.verified">${{log.wage | decimal}}</td>
+                        <td v-else class="unverified">${{profile.wage | decimal}}</td>
                         <td>{{salary(log.clockIn,log.clockOut)}}</td>
                         <td v-if="approval" class="editable">
                             <!-- <i class="fa fa-pencil-square"></i> -->
@@ -240,5 +241,9 @@ tbody tr:nth-child(even) {
 
 tr {
     height: 40px;
+}
+.unverified{
+    opacity: 0.8;
+    color:#3c3c3c;
 }
 </style>

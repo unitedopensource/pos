@@ -34,7 +34,7 @@ import paymentMark from "../payment/mark";
 import discount from "../payment/discount";
 import dialoger from "../common/dialoger";
 import payment from "../payment/index";
-import driver from "../history/driver";
+import driver from "./component/driver";
 import split from "../menu/split";
 export default {
   props: ["date"],
@@ -98,10 +98,7 @@ export default {
         });
     },
     driver() {
-      this.$p("driver", {
-        driver: this.order.driver,
-        ticket: this.ticket.number
-      });
+      this.$p("driver", {ticket: this.ticket.number});
     },
     exit() {
       this.resetMenu();

@@ -941,6 +941,9 @@ function createList(printer, ctrl, invoice) {
                         case "more":
                             item.qty = item.origin + '&rsaquo;' + item.qty
                             break;
+                        case "new":
+                            item.zhCN = "★" + item.zhCN;
+                            item.usEN = "★" + item.usEN;
                         case "removed":
                             break;
                     }

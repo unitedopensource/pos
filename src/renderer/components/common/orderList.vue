@@ -366,8 +366,8 @@ export default {
 
         tax += toFixed(delivery * taxRate / 100, 2);
       }
-
-      let total = subtotal + tax + delivery;
+      
+      let total = parseFloat(subtotal.toFixed(2)) + toFixed(tax,2) + delivery;
       let due = Math.max(0, total - discount);
       let surcharge = tip + gratuity;
       let balance = due + surcharge;

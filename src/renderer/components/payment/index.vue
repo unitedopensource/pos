@@ -99,7 +99,7 @@
                             <aside class="numpad">
                                 <div @click="del">&#8592;</div>
                                 <div @click="clear">C</div>
-                                <div @click="charge">&#8626;</div>
+                                <div @click="charge" :class="{disabled:payment.remain <= 0}">&#8626;</div>
                             </aside>
                         </template>
                         <template v-else-if="paymentType === 'CREDIT'">
@@ -383,19 +383,24 @@ export default {
           ["Balance Due:", ""],
           ["", this.payment.remain.toFixed(2)]
         );
-      }else{
+      } else {
         this.$dialog({
-          type:'error',
-          title:'dialog.paymentFailed',
-          msg:'dialog.balanceDueAmountIncorrect',
-          buttons:[{text:'button.cancel',fn:'reject'},{text:'button.fix',fn:'resolve'}]
-        }).then(()=>{
-          this.recalculatePayment();
-          this.$q();
-          this.initialized()
-        }).catch(()=>{
-          this.exit()
+          type: "error",
+          title: "dialog.paymentFailed",
+          msg: "dialog.balanceDueAmountIncorrect",
+          buttons: [
+            { text: "button.cancel", fn: "reject" },
+            { text: "button.fix", fn: "resolve" }
+          ]
         })
+          .then(() => {
+            this.recalculatePayment();
+            this.$q();
+            this.initialized();
+          })
+          .catch(() => {
+            this.exit();
+          });
       }
     },
     initialFailed(reason) {
@@ -478,10 +483,10 @@ export default {
         case "CASH":
           this.checkCashDrawer()
             .then(this.chargeCash)
+            .then(this.postToDatabase)
             .then(this.tenderCash)
             .then(this.saveLogs)
-            .then(this.postToDatabase)
-            .then(this.askReceipt)
+            //.then(this.askReceipt)
             .then(this.checkBalance)
             .catch(this.payFailed);
           break;
@@ -536,12 +541,12 @@ export default {
         case "CREDIT":
         case "THIRD":
           this.paid = this.payment.remain.toFixed(2);
-          this.tip = this.payment.tip.toFixed(2);
+          this.tip = "0.00";
           break;
         case "GIFT":
           this.giftCard = "";
           this.paid = this.payment.remain.toFixed(2);
-          this.tip = this.payment.tip.toFixed(2);
+          this.tip = "0.00";
 
           this.swipeGiftCard()
             .then(this.checkGiftCard)
@@ -557,14 +562,13 @@ export default {
     },
     checkOverPay() {
       return new Promise((resolve, reject) => {
-        let error = {
+        let paidZeroError = {
           type: "error",
           title: "dialog.paymentFailed",
           msg: "dialog.canNotPayZeroAmount",
           buttons: [{ text: "button.confirm", fn: "resolve" }]
         };
-
-        if (this.paid === "0.00") throw error;
+        if (this.paid === "0.00") throw paidZeroError;
         if (this.paid > this.payment.remain) {
           let extra = toFixed(this.paid - this.payment.remain, 2);
           this.$dialog({
@@ -742,17 +746,61 @@ export default {
           ["Change Due:", this.cashTender.toFixed(2)]
         );
 
+        let askReceipt = this.store.noReceipt;
+        let tenderWithoutPrint = {
+          title: ["dialog.cashChange", this.cashTender.toFixed(2)],
+          msg: ["dialog.cashChangeTip", this.paid.toFixed(2)],
+          buttons: [{ text: "button.confirm", fn: "resolve" }]
+        };
+        let tenderWithPrintDialog = {
+          title: ["dialog.cashChange", this.cashTender.toFixed(2)],
+          msg: ["dialog.cashChangeTip", this.paid.toFixed(2)],
+          buttons: [
+            { text: "button.noReceipt", fn: "reject" },
+            { text: "button.printReceipt",fn:"resolve" }
+          ]
+        };
+
         if (this.cashTender > 0) {
-          this.$dialog({
-            title: ["dialog.cashChange", this.cashTender.toFixed(2)],
-            msg: ["dialog.cashChangeTip", this.paid.toFixed(2)],
-            buttons: [{ text: "button.confirm", fn: "resolve" }]
-          }).then(() => {
-            this.$q();
-            resolve(type);
-          });
+          !askReceipt
+            ? this.$dialog(tenderWithPrintDialog)
+                .then(() => {
+                  
+                  if (this.payInFull) {
+                    Printer.setTarget("Receipt").print(this.order, true);
+                  } else {
+                    let index = this.current + 1;
+                    let order = JSON.parse(JSON.stringify(this.order));
+                    order.payment = this.payment;
+                    order.number = order.number + "-" + index;
+                    order.content = this.order.content.filter(item => {
+                      if (Array.isArray(item.sort)) {
+                        return item.sort.includes(index);
+                      } else {
+                        return item.sort === index;
+                      }
+                    });
+                    Printer.setTarget("Receipt").print(order, true);
+                  }
+
+                  resolve(type);
+                  this.$q();
+                })
+                .catch(() => {
+                  this.$q();
+                  resolve(type);
+                })
+            : this.$dialog(tenderWithoutPrint)
+                .then(() => {
+                  this.$q();
+                  resolve(type);
+                })
         } else {
-          resolve(type);
+          askReceipt
+            ? this.askReceipt().then(() => {
+                resolve(type);
+              })
+            : resolve(type);
         }
       });
     },
