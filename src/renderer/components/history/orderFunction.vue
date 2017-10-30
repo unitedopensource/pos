@@ -98,7 +98,7 @@ export default {
         });
     },
     driver() {
-      this.$p("driver", {ticket: this.ticket.number});
+      this.$p("driver", {ticket: this.order.number});
     },
     exit() {
       this.resetMenu();

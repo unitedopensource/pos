@@ -1,34 +1,41 @@
 <template>
-    <div class="popupMask center dark" @click.self="init.reject">
+    <div class="popupMask center dark">
         <div class="driver window">
             <header class="title">
                 <span>{{$t('title.setDriver')}}</span>
                 <i class="fa fa-times" @click="init.reject"></i>
             </header>
             <div class="inner">
-                <ul class="orders">
+              <section class="outer">
+                <v-touch tag="ul" class="orders" :style="scroll" @panup="move" @pandown="move" @panstart="panStart" @panend="panEnd">
                     <li v-for="(order,index) in orders" :key="index" :data-ticket="order.number" @click="setTarget(order,$event)">
                         <span class="number">{{order.number}}</span>
                         <div class="info">
                             <span class="phone">{{order.customer.phone | phone}}</span>
                             <span class="address">{{order.customer.address}}</span>
                         </div>
-                        <span class="price">{{order.payment.total}}</span>
+                        <div class="prices">
+                          <span class="total">{{order.payment.total | decimal}}</span>
+                          <span class="tip" v-show="order.payment.tip > 0">({{order.payment.tip | decimal}})</span>
+                        </div>
                         <span class="driver">{{order.driver}}</span>
                     </li>
-                </ul>
+                </v-touch>
+              </section>
                 <ul class="letters">
                     <li v-for="(letter,index) in letters" :key="letter" @click="setDriver(letter,$event)" :class="letter" :data-letter="letter">{{letter}}</li>
-                    <li class="clear">{{$t('button.clear')}}</li>
+                    <li class="clear" @click="clear">{{$t('button.clear')}}</li>
                 </ul>
             </div>
             <footer>
                 <div class="f1">
-                    <checkbox v-model="loop" label="text.autoNextTicket"></checkbox>
+                    <checkbox v-model="loop" label="text.autoNext"></checkbox>
                 </div>
-                <div class="btn">{{$t('button.next')}}</div>
+                <div class="btn" @click="setTip">{{$t('button.setTip')}}</div>
+                <div class="btn" @click="init.resolve">{{$t('button.done')}}</div>
             </footer>
         </div>
+        <div :is="component" :init="componentData"></div>
     </div>
 </template>
 
@@ -40,6 +47,9 @@ export default {
   props: ["init"],
   components: { tips, checkbox },
   computed: {
+    scroll() {
+      return { transform: `translate3d(0,${this.offset}px,0)` };
+    },
     ...mapGetters(["op", "history"])
   },
   data() {
@@ -77,12 +87,15 @@ export default {
       orders: null,
       order: null,
       loop: true,
+      offset: 0,
+      lastDelta: 0,
       componentData: null,
       component: null
     };
   },
   created() {
     this.initialData();
+    this.init.hasOwnProperty("ticket") && this.next(this.init.ticket);
   },
   methods: {
     initialData() {
@@ -103,19 +116,111 @@ export default {
       e.currentTarget.classList.add("active");
       this.order = order;
     },
+    move(e) {
+      this.offset = this.lastDelta + e.deltaY;
+    },
+    panStart() {
+      let dom = document.querySelector(".orders.scrollable");
+      dom && dom.classList.remove("scrollable");
+    },
+    panEnd(e) {
+      let dom = document.querySelector("ul.orders");
+      dom && dom.classList.add("scrollable");
+
+      let { top, bottom, height } = dom.getBoundingClientRect();
+      let offset = this.$route.name === "Menu" ? 55 : 179;
+      top -= offset;
+      bottom -= offset;
+      if (top > 0) {
+        this.offset = 0;
+      } else if (height < 322) {
+        this.offset = 0;
+      } else if (height > 322 && bottom < 440) {
+        this.offset = -(height - 448);
+      }
+      this.lastDelta = this.offset;
+    },
+    clear() {
+      if (!this.order) return;
+      Object.assign(this.order, { driver: "" });
+      
+      let dom = document.querySelector("ul.letters .active");
+      dom && dom.classList.remove("active");
+
+      this.$socket.emit("[UPDATE] INVOICE", this.order, false);
+    },
     setDriver(letter) {
       if (!this.order) return;
 
       Object.assign(this.order, { driver: letter });
+      this.$socket.emit("[UPDATE] INVOICE", this.order, false);
 
       this.loop && this.next();
     },
-    next() {}
+    setTip() {
+      new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject, payment: this.order.payment };
+        this.component = "tips";
+      })
+        .then(value => {
+          let { tip } = value;
+
+          this.order.payment.tip = tip;
+          this.order.payment.surcharge = toFixed(
+            this.order.payment.gratuity + tip,
+            2
+          );
+
+          this.order.payment.balance = toFixed(
+            this.order.payment.total -
+              this.order.payment.discount +
+              this.order.payment.surcharge,
+            2
+          );
+
+          this.order.payment.remain = toFixed(
+            this.order.payment.balance - this.order.payment.paid,
+            2
+          );
+
+          this.$socket.emit("[UPDATE] INVOICE", this.order, false);
+          this.$q();
+        })
+        .catch(() => {
+          this.$q();
+        });
+    },
+    next(number) {
+      if (number) {
+        this.order = this.orders.find(ticket => ticket.number === number);
+      } else {
+        let next = this.orders.find(ticket => !ticket.driver);
+
+        if (next) {
+          this.order = next;
+
+          this.$nextTick(() => {
+            let dom = document.querySelector("ul.orders .active");
+            let { top, height } = dom.getBoundingClientRect();
+
+            if (top > 560.5) {
+              this.offset = -height;
+            }
+          });
+        }
+      }
+    }
   },
   watch: {
     order(n) {
       let dom = document.querySelector("ul.letters .active");
       dom && dom.classList.remove("active");
+      dom = document.querySelector("ul.orders .active");
+      dom && dom.classList.remove("active");
+
+      document
+        .querySelector(`[data-ticket="${n.number}"]`)
+        .classList.add("active");
 
       if (n.driver) {
         document
@@ -151,6 +256,15 @@ ul.letters {
   cursor: pointer;
 }
 
+.letters .active {
+  background: #009688;
+  color: #fff;
+}
+
+section.outer {
+  height: 448px;
+  overflow: hidden;
+}
 ul.orders {
   width: 320px;
   margin-right: 2px;
@@ -165,7 +279,7 @@ span.address {
   align-items: center;
   color: #3c3c3c;
   border-bottom: 1px solid #eeeeee;
-  height: 50px;
+  height: 45px;
   background: #fff;
 }
 
@@ -183,9 +297,19 @@ span.address {
   flex: 1;
 }
 
-.orders .price {
+.orders .prices {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.orders .total {
   min-width: 50px;
   text-align: center;
+}
+.orders .tip {
+  color: lightgray;
+  font-size: 14px;
 }
 
 .f1 {
@@ -207,5 +331,22 @@ li.clear {
 
 .orders .active .address {
   color: #fff;
+}
+
+span.driver {
+  width: 24px;
+  height: 24px;
+  text-indent: 2px;
+  border: 2px solid #00897b;
+  text-align: center;
+  line-height: 24px;
+  background: #fafafa;
+  border-radius: 50%;
+  color: #009688;
+  text-shadow: 0 1px 1px #607d8b;
+}
+
+.scrollable {
+  transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 </style>

@@ -858,7 +858,8 @@ export default {
         'comment': 'comment',
         'server': 'Server',
         'taxOnDelivery': 'Tax On Delivery',
-        'ignorePrice':'Ignore Price'
+        'ignorePrice':'Ignore Price',
+        'autoNext':'Auto Next'
     },
     nav: {
         'store': 'Store',

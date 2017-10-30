@@ -472,50 +472,62 @@ export default {
         All: {
           text: this.$t("text.allDeliveries"),
           amount: 0,
-          tip: 0,
-          fee: 0,
           count: 0
         }
       };
-      data.forEach(invoice => {
-        let { subtotal, tax, discount, tip, delivery } = invoice.payment;
-        let amount =
-          parseFloat(subtotal) + parseFloat(tax) - parseFloat(discount);
 
-        if (invoice.driver && invoice.status === 1) {
-          let name = invoice.driver;
+      let driver = new Set();
 
-          if (drivers.hasOwnProperty(name)) {
-            drivers[name]["amount"] += amount;
-            drivers[name]["tip"] += parseFloat(tip);
-            drivers[name]["fee"] += parseFloat(delivery);
-            drivers[name]["count"]++;
-          } else {
-            drivers[name] = {
-              text: "#" + name,
-              tip: parseFloat(tip),
-              amount: amount,
-              count: 1,
-              fee: parseFloat(delivery)
-            };
-          }
-        }
+      let deliveries = data.filter(invoice => invoice.type === "DELIVERY");
 
-        if (invoice.type === "DELIVERY" && invoice.status === 1) {
-          drivers.All.amount += amount;
-          drivers.All.tip += parseFloat(tip);
-          drivers.All.fee += parseFloat(delivery);
+      deliveries.forEach(invoice => {
+        if (invoice.type === "DELIVERY" && invoice.driver) {
+          driver.add(invoice.driver);
+
+          drivers.All.amount +=
+            parseFloat(invoice.payment.subtotal) +
+            parseFloat(invoice.payment.tax) -
+            parseFloat(invoice.payment.discount);
           drivers.All.count++;
         }
       });
 
-      Object.keys(drivers).forEach(name => {
-        let driver = drivers[name];
-        driver.amount = [
-          { Total: driver.amount.toFixed(2) },
-          { Tip: driver.tip.toFixed(2) },
-          { Fee: driver.fee.toFixed(2) }
-        ];
+      driver.forEach(name => {
+        let order = deliveries.filter(invoice => invoice.driver === name);
+        let amount = order
+          .map(
+            invoice =>
+              parseFloat(invoice.payment.subtotal) +
+              parseFloat(invoice.payment.tax) -
+              parseFloat(invoice.payment.discount)
+          )
+          .reduce((a, b) => a + b, 0);
+        let unsettle = order
+          .filter(
+            invoice =>
+              parseFloat(invoice.payment.remain.toFixed(2)) > 0 ||
+              !invoice.settled
+          )
+          .map(invoice => parseFloat(invoice.payment.remain))
+          .reduce((a, b) => a + b, 0);
+
+        let tip = order
+          .map(invoice => parseFloat(invoice.payment.tip))
+          .reduce((a, b) => a + b, 0);
+        let fee = order
+          .map(invoice => parseFloat(invoice.payment.delivery))
+          .reduce((a, b) => a + b, 0);
+
+        drivers[name] = {
+          text: "#" + name,
+          count: order.length,
+          amount: [
+            { Total: amount.toFixed(2) },
+            { Cash: unsettle.toFixed(2) },
+            { Tip: tip.toFixed(2) },
+            { Fee: fee.toFixed(2) }
+          ]
+        };
       });
       return drivers;
     },

@@ -851,7 +851,8 @@ export default {
         'comment': '注释',
         'server': '服务员',
         'taxOnDelivery': '送餐税',
-        'ignorePrice': '忽略价格'
+        'ignorePrice': '忽略价格',
+        'autoNext':'自动下移'
     },
     nav: {
         'store': '店面',
