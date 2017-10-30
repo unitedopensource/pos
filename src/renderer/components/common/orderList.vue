@@ -311,8 +311,9 @@ export default {
 
         subtotal = toFixed(subtotal + amount, 2);
 
-        if (!this.order.taxFree)
-          tax += taxClass.apply[type] ? taxClass.rate / 100 * amount : tax;
+        if (!this.order.taxFree || taxClass.apply[type]) {
+          tax += taxClass.rate / 100 * amount;
+        }
       });
 
       let { enable, penalty, when } = this.store.table.surcharge;
@@ -366,8 +367,8 @@ export default {
 
         tax += toFixed(delivery * taxRate / 100, 2);
       }
-      
-      let total = parseFloat(subtotal.toFixed(2)) + toFixed(tax,2) + delivery;
+
+      let total = parseFloat(subtotal.toFixed(2)) + toFixed(tax, 2) + delivery;
       let due = Math.max(0, total - discount);
       let surcharge = tip + gratuity;
       let balance = due + surcharge;
