@@ -4,7 +4,7 @@
         <h3>{{msg}}</h3>
         <h5>{{tip}}</h5>
         <footer>
-            <div class="btn" @click="exit">{{$t('button.cancelAction')}}</div>
+            <button class="btn" @click="exit" :disabled="!cancelable">{{$t('button.cancelAction')}}</button>
         </footer>
     </div>
 </template>
@@ -23,7 +23,8 @@ export default {
       transacting: null,
       terminal: null,
       device: null,
-      url: null
+      url: null,
+      cancelable: false
     };
   },
   created() {
