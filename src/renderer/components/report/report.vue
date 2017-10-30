@@ -481,9 +481,9 @@ export default {
       let deliveries = data.filter(invoice => invoice.type === "DELIVERY");
 
       deliveries.forEach(invoice => {
-        if (invoice.type === "DELIVERY" && invoice.driver) {
-          driver.add(invoice.driver);
+        invoice.driver && driver.add(invoice.driver);
 
+        if (invoice.type === "DELIVERY") {
           drivers.All.amount +=
             parseFloat(invoice.payment.subtotal) +
             parseFloat(invoice.payment.tax) -
@@ -522,10 +522,10 @@ export default {
           text: "#" + name,
           count: order.length,
           amount: [
-            { Total: amount.toFixed(2) },
-            { Cash: unsettle.toFixed(2) },
+            { Fee: fee.toFixed(2) },
             { Tip: tip.toFixed(2) },
-            { Fee: fee.toFixed(2) }
+            { Cash: unsettle.toFixed(2) },
+            { Total: amount.toFixed(2) }
           ]
         };
       });
@@ -646,11 +646,6 @@ export default {
       this.report["SUMMARY"] = this.summary
         ? [
             {
-              text: this.$t("report.netSales"),
-              count: validPayment.length,
-              amount: netAmount
-            },
-            {
               text: this.$t("report.itemSales"),
               count: 0,
               amount: itemSalesAmount
@@ -664,6 +659,16 @@ export default {
               text: this.$t("report.discount"),
               count: discount.length,
               amount: -discountAmount
+            },
+            {
+              text: this.$t("report.netSales"),
+              count: validPayment.length,
+              amount: netAmount
+            },
+            {
+              text: "&nbsp;",
+              count: 0,
+              amount: ""
             },
             {
               text: this.$t("report.tips"),

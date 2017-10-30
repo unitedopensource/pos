@@ -462,7 +462,7 @@ var Printer = function (plugin, config) {
                       div.type{margin:10px;border-bottom:1px solid #000;}
                       div.type h3{font-weight:lighter;font-size:1.3em;}
                       div.type h5{margin-top:5px;font-size:1.25em;}
-                      .data {margin:0;padding:0 5px;display:flex}
+                      .data {margin-bottom:0px;padding:0 5px;display:flex}
                       section.type{margin-bottom:10px;}
                       section h4{text-align:center;border-bottom:1px dashed #000;border-top:1px dashed #000;margin-bottom:10px;letter-spacing:1px;}
                       .data .amount{flex:1;text-align:right;}
