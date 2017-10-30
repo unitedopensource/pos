@@ -19,7 +19,7 @@
             <article>
                 <smart-switch v-model="store.delivery" label="text.delivery"></smart-switch>
                 <smart-input v-model.number="store.deliveryCharge" label="text.deliveryFee" :disable="!store.delivery"></smart-input>
-                <smart-input v-model="store.fuelSurcharge" label="text.fuelSurcharge" :disable="!store.delivery"></smart-input>
+                <!-- <smart-input v-model="store.fuelSurcharge" label="text.fuelSurcharge" :disable="!store.delivery"></smart-input> -->
             </article>
         </section>
         <section class="card">
