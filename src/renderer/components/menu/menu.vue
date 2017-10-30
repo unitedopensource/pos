@@ -150,9 +150,7 @@ export default {
               this.queryItem = "";
             }
           } else {
-            let charCode = e.which || e.keyCode;
-            let char = String.fromCharCode(charCode);
-            if (/[a-z0-9]/i.test(char)) {
+            if (/[a-z0-9]/i.test(e.key) && e.key.length === 1) {
               this.queryItem += e.key;
             }
           }
