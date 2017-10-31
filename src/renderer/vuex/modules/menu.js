@@ -48,7 +48,7 @@ const mutations = {
     state.item = null;
     state.choiceSetTarget = null;
     state.diffs = null,
-    state.archivedOrder = null;
+      state.archivedOrder = null;
     state.sides = Array(11).fill({ zhCN: "", usEN: "", disable: true })
   },
   [types.SET_VIEW_ORDER](state, order) {
@@ -215,6 +215,7 @@ const mutations = {
   },
   [types.SET_CHOICE_SET](state, set) {
     if (state.order.content.length === 0) return;
+    set.unique = Math.random().toString(36).substr(2, 5);
 
     let dom = document.querySelector(".sub.target");
     if (dom) {
@@ -231,6 +232,7 @@ const mutations = {
     let { zhCN, usEN } = set;
     state.choiceSetTarget.zhCN = `${state.choiceSetTarget.zhCN} ${zhCN}`;
     state.choiceSetTarget.usEN = `${state.choiceSetTarget.usEN} ${usEN}`;
+    state.choiceSetTarget.unique = Math.random().toString(36).substr(2, 5);
   },
   [types.RESET_CHOICE_SET](state) {
     state.choiceSetTarget = null;
@@ -291,7 +293,7 @@ const mutations = {
   [types.SAVE_FOR_DIFFS](state, data) {
     state.diffs = JSON.parse(JSON.stringify(data))
   },
-  [types.ARCHIVE_ORDER](state,data){
+  [types.ARCHIVE_ORDER](state, data) {
     state.archivedOrder = JSON.parse(JSON.stringify(data))
   }
 }

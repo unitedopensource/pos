@@ -947,6 +947,12 @@ function createList(printer, ctrl, invoice) {
                             item.usEN = "★" + item.usEN;
                         case "removed":
                             break;
+                        case "insert":
+                            item.choiceSet.forEach(set => {
+                                set.zhCN = "★" + set.zhCN;
+                                set.usEN = "★" + set.usEN;
+                            })
+                            break;
                     }
                 })
             }
@@ -955,10 +961,22 @@ function createList(printer, ctrl, invoice) {
             if (!invoice.print) {
                 items = list.filter(item => item.printer[printer] && !item.print)
             } else {
-                items = list.filter(item => item.printer[printer] && item.diffs === 'new');
+                items = list.filter(item => item.printer[printer] && (item.diffs === 'new' || item.diffs === 'inserted'));
+
                 items.forEach(item => {
-                    item.zhCN = "★" + item.zhCN;
-                    item.usEN = "★" + item.usEN;
+                    switch (item.diffs) {
+                        case "new":
+                            item.zhCN = "★" + item.zhCN;
+                            item.usEN = "★" + item.usEN;
+                            break;
+                        case "inserted":
+                            item.choiceSet.forEach(set => {
+                                set.zhCN = "★" + set.zhCN;
+                                set.usEN = "★" + set.usEN;
+                            })
+                            break;
+                    }
+
                 })
             }
             break;
@@ -1060,7 +1078,7 @@ function createList(printer, ctrl, invoice) {
             firstLine = `<tr class="zhCN">
                             <td class="qty"><del>${item.qty !== 1 ? item.qty : ''}</del></td>
                             <td class="item">
-                                <del><div class="main">${printMenuID ? item.menuID : ''}${nameCN} ${sideCN}</div></del>
+                                <del><div class="main">${printMenuID ? item.menuID : ''}${nameCN} <span class="side">${sideCN}</span></div></del>
                                 <del>${setCN}</del>
                             </td>
                             <td class="price"><del>${item.total}</del></td>
@@ -1068,7 +1086,7 @@ function createList(printer, ctrl, invoice) {
             secondLine = `<tr class="usEN">
                             <td class="qty"><del>${item.qty !== 1 ? item.qty : ''}</del></td>
                             <td class="item">
-                                el><div class="main">${printMenuID ? item.menuID : ''}${nameEN} ${sideEN}</div></del>
+                                <del><div class="main">${printMenuID ? item.menuID : ''}${nameEN} <span class="side">${sideEN}</span></div></del>
                                 <del>${setEN}</del>
                             </td>
                             <td class="price"><del>${item.total}</del></td>
@@ -1076,12 +1094,12 @@ function createList(printer, ctrl, invoice) {
         } else {
             firstLine = `<tr class="zhCN">
                         <td class="qty">${item.qty !== 1 ? item.qty : ''}</td>
-                        <td class="item"><div class="main">${printMenuID ? item.menuID : ''}${nameCN} ${sideCN}</div>${setCN}</td>
+                        <td class="item"><div class="main">${printMenuID ? item.menuID : ''}${nameCN} <span class="side">${sideCN}</span></div>${setCN}</td>
                         <td class="price">${item.total}</td>
                     </tr>`;
             secondLine = `<tr class="usEN">
                             <td class="qty">${item.qty !== 1 ? item.qty : ''}</td>
-                            <td class="item"><div class="main">${printMenuID ? item.menuID : ''}${nameEN} ${sideEN}</div>${setEN}</td>
+                            <td class="item"><div class="main">${printMenuID ? item.menuID : ''}${nameEN} <span class="side">${sideEN}</span></div>${setEN}</td>
                             <td class="price">${item.total}</td>
                         </tr>`;
         }
@@ -1124,6 +1142,7 @@ function createStyle(ctrl) {
               td.qty{font-weight:bold;}
               td.item{flex:1;display:flex;flex-direction:column;}
               td.item .main{width:100%;}
+              .main .side{font-size:0.9em;margin-left:2px;}
               td.price{text-align:right;}
               .sub{text-indent:20px;} 
               td.qty{text-align:center;}

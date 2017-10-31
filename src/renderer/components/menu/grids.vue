@@ -353,7 +353,7 @@ export default {
               if (print) {
                 let diffs = this.analyzeDiffs(order);
 
-                (this.order.type === "DINE_IN" && this.store.table.printOnDone)
+                this.order.type === "DINE_IN" && this.store.table.printOnDone
                   ? Printer.setTarget("All").print(diffs)
                   : Printer.setTarget("Order").print(diffs);
 
@@ -452,7 +452,36 @@ export default {
             compare[index].diffs = "more";
             compare[index].print = false;
           } else {
-            compare[index].diffs = "unchanged";
+            //compare unchanged item find out if choiceSet is different
+            let nowSet = now.choiceSet.map(set => set.unique);
+            let prevSet = prev.choiceSet.map(set => set.unique);
+
+            let sameSet = nowSet.reduce(
+              (a, b) => a && prevSet.includes(b),
+              true
+            );
+
+            if (sameSet) {
+              compare[index].diffs = "unchanged";
+            } else {
+              compare[index].diffs = "inserted";
+              //filter insert choiceSet
+              compare[index].choiceSet = now.choiceSet.filter(
+                set => prevSet.indexOf(set.unique) < 0
+              );
+              //combine printer setting
+              let printer = new Set();
+              compare[index].choiceSet.forEach(set => {
+                set.print.forEach(name => {
+                  printer.add(name);
+                });
+              });
+              //apply to item printer setting
+              compare[index].printer = {};
+              printer.forEach(name => {
+                compare[index].printer[name] = {};
+              });
+            }
           }
           compare[index].origin = prev.qty;
           items.push(compare[index]);
