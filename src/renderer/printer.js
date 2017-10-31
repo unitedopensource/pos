@@ -728,6 +728,7 @@ var Printer = function (plugin, config) {
     }
 
     this.printCashOutReport = function (data, detail) {
+        console.log(data)
         let store = this.config.store;
         let date = moment().format("MM/DD/YYYY");
         let time = moment().format("hh:mm:ss");

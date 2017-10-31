@@ -843,7 +843,10 @@ export default {
             inflow: parseFloat(record.amount.approve),
             outflow: 0,
             time: +new Date(),
-            ticket: this.order.ticket,
+            ticket: {
+              number: this.order.number || this.ticket.number,
+              type: this.order.type || this.ticket.type
+            },
             cardBin: record.account.number,
             operator: this.op.name
           };
@@ -868,7 +871,10 @@ export default {
           inflow: paid,
           outflow: 0,
           time: +new Date(),
-          ticket: this.order.ticket,
+          ticket: {
+            number: this.order.number || this.ticket.number,
+            type: this.order.type || this.ticket.type
+          },
           operator: this.op.name
         };
 
@@ -966,7 +972,10 @@ export default {
               inflow: parseFloat(this.paid),
               outflow: parseFloat(this.cashTender),
               time: +new Date(),
-              ticket: this.order.ticket,
+              ticket: {
+                number: this.order.number || this.ticket.number,
+                type: this.order.type || this.ticket.type
+              },
               operator: this.op.name
             };
             break;
@@ -978,7 +987,10 @@ export default {
               inflow: parseFloat(this.paid),
               outflow: 0,
               time: +new Date(),
-              ticket: this.order.ticket,
+              ticket: {
+                number: this.order.number || this.ticket.number,
+                type: this.order.type || this.ticket.type
+              },
               operator: this.op.name
             };
         }
