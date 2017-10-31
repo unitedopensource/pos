@@ -947,7 +947,7 @@ function createList(printer, ctrl, invoice) {
                             item.usEN = "★" + item.usEN;
                         case "removed":
                             break;
-                        case "insert":
+                        case "inserted":
                             item.choiceSet.forEach(set => {
                                 set.zhCN = "★" + set.zhCN;
                                 set.usEN = "★" + set.usEN;
