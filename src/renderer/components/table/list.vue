@@ -141,46 +141,52 @@ export default {
       this.$dialog({
         type: "question",
         title: "dialog.combineTickets",
-        msg: ["dialog.combineTicketsConfirm", queue.map(i => "#" + i).join(","), number]
+        msg: [
+          "dialog.combineTicketsConfirm",
+          queue.map(i => "#" + i).join(","),
+          number
+        ]
       })
         .then(() => {
-            try{
- let master = this.history.find(invoice => invoice.number === number);
-          let slaves = [];
+          try {
+            let master = this.history.find(
+              invoice => invoice.number === number
+            );
+            let slaves = [];
 
-          queue.forEach(num => {
-            let ticket = this.history.find(invoice => invoice.number === num);
-            ticket.content.forEach(item => {
-              master.content.push(item);
+            queue.forEach(num => {
+              let ticket = this.history.find(invoice => invoice.number === num);
+              ticket.content.forEach(item => {
+                master.content.push(item);
+              });
+              //combine payment
+              master.payment.subtotal += ticket.payment.subtotal;
+              master.payment.tax += ticket.payment.tax;
+              master.payment.total += ticket.payment.total;
+              master.payment.due += ticket.payment.due;
+              master.payment.balance += ticket.payment.balance;
+              master.payment.paid += ticket.payment.paid;
+              master.payment.change += ticket.payment.change;
+
+              //should we ignore surcharge?
+              master.payment.gratuity += ticket.payment.gratuity;
+              master.payment.tip += ticket.payment.tip;
+              master.payment.surcharge += ticket.payment.surcharge;
+
+              master.payment.discount += ticket.payment.discount;
+              master.payment.remain += ticket.payment.remain;
+
+              slaves.push(ticket);
             });
-            //combine payment
-            master.payment.subtotal += ticket.payment.subtotal;
-            master.payment.tax += ticket.payment.tax;
-            master.payment.total += ticket.payment.total;
-            master.payment.due += ticket.payment.due;
-            master.payment.balance += ticket.payment.balance;
-            master.payment.paid += ticket.payment.paid;
-            master.payment.change += ticket.payment.change;
-
-            //should we ignore surcharge?
-            master.payment.gratuity += ticket.payment.gratuity;
-            master.payment.tip += ticket.payment.tip;
-            master.payment.surcharge += ticket.payment.surcharge;
-
-            master.payment.discount += ticket.payment.discount;
-            master.payment.remain += ticket.payment.remain;
-
-            slaves.push(ticket);
-          });
-          this.$socket.emit("[COMBINE] TABLE_INVOICE", {
-            master,
-            slaves,
-            op: this.op.name
-          });
-            }catch(e){
-                console.log(e)
-            }
-         
+            this.$socket.emit("[COMBINE] TABLE_INVOICE", {
+              master,
+              slaves,
+              op: this.op.name
+            });
+          } catch (e) {
+            console.log(e);
+          }
+          this.combineOrders = [];
           this.$q();
         })
         .catch(() => {

@@ -483,10 +483,9 @@ export default {
         case "CASH":
           this.checkCashDrawer()
             .then(this.chargeCash)
+            .then(this.saveLogs)
             .then(this.postToDatabase)
             .then(this.tenderCash)
-            .then(this.saveLogs)
-            //.then(this.askReceipt)
             .then(this.checkBalance)
             .catch(this.payFailed);
           break;
@@ -757,7 +756,7 @@ export default {
           msg: ["dialog.cashChangeTip", this.paid.toFixed(2)],
           buttons: [
             { text: "button.noReceipt", fn: "reject" },
-            { text: "button.printReceipt",fn:"resolve" }
+            { text: "button.printReceipt", fn: "resolve" }
           ]
         };
 
@@ -765,7 +764,6 @@ export default {
           !askReceipt
             ? this.$dialog(tenderWithPrintDialog)
                 .then(() => {
-                  
                   if (this.payInFull) {
                     Printer.setTarget("Receipt").print(this.order, true);
                   } else {
@@ -790,11 +788,10 @@ export default {
                   this.$q();
                   resolve(type);
                 })
-            : this.$dialog(tenderWithoutPrint)
-                .then(() => {
-                  this.$q();
-                  resolve(type);
-                })
+            : this.$dialog(tenderWithoutPrint).then(() => {
+                this.$q();
+                resolve(type);
+              });
         } else {
           askReceipt
             ? this.askReceipt().then(() => {

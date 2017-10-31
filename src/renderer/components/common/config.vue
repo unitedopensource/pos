@@ -32,7 +32,7 @@
       <div class="option">
         <span class="text">{{$t('text.seatOrder')}}</span>
         <label class="input-toggle" @change="toggleSeatOrder">
-          <input type="checkbox" v-model="init.seatOrder">
+          <input type="checkbox" v-model="init.seatOrder" :disabled="true">
           <span></span>
         </label>
       </div>
@@ -40,22 +40,25 @@
   </div>
 </template>
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters } from "vuex";
 export default {
-  props: ['init'],
+  props: ["init"],
   mounted() {
-    let dom = document.querySelector('.order.showCategory');
+    let dom = document.querySelector(".order.showCategory");
     dom && (this.viewCategory = true);
-    dom = document.querySelector('.middle');
+    let { top, height } = document
+      .querySelector(".middle")
+      .getBoundingClientRect();
+      console.log(top,height)
     this.offsetTop = {
-      bottom: (dom.offsetParent.offsetHeight - dom.offsetTop + 3) + 'px'
+      bottom: top - 5 + "px"
     };
   },
   data() {
     return {
       viewCategory: false,
       offsetTop: {}
-    }
+    };
   },
   methods: {
     toggleTax() {
@@ -66,27 +69,29 @@ export default {
     toggleDelivery() {
       this.$emit("trigger", {
         deliveryFree: this.init.deliveryFree
-      })
+      });
     },
     toggleMenuID() {
-      let display = Object.assign({}, this.config.display, { menuID: this.init.menuID });
+      let display = Object.assign({}, this.config.display, {
+        menuID: this.init.menuID
+      });
       this.setConfig({ display });
     },
     toggleViewCategory() {
-      let dom = document.querySelector('.order');
-      this.viewCategory ?
-        dom.classList.add("showCategory") :
-        dom.classList.remove("showCategory");
+      let dom = document.querySelector(".order");
+      this.viewCategory
+        ? dom.classList.add("showCategory")
+        : dom.classList.remove("showCategory");
     },
-    toggleSeatOrder(){
+    toggleSeatOrder() {
       this.init.seatOrder = false;
     },
-    ...mapActions(['setConfig'])
+    ...mapActions(["setConfig"])
   },
   computed: {
-    ...mapGetters(['config'])
+    ...mapGetters(["config"])
   }
-}
+};
 </script>
 <style scoped>
 .popupMask {
@@ -106,7 +111,7 @@ export default {
   justify-content: center;
   align-items: center;
   border-bottom: 1px solid #ddd;
-  border-left: 3px solid #00BCD4;
+  border-left: 3px solid #00bcd4;
 }
 
 .option:last-child {

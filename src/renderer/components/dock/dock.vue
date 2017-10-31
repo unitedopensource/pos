@@ -39,7 +39,6 @@ import dialoger from "../common/dialoger";
 import { ipcRenderer } from "electron";
 import messenger from "./messenger";
 import switcher from "./switcher";
-//import Printer from '../../print'
 import caller from "./caller";
 import panel from "./panel";
 import disc from "./disc";
@@ -150,7 +149,7 @@ export default {
       this.spooler[i].content.forEach(item => {
         items.push(item.unique);
       });
-      Printer.setTarget("All").print(this.spooler[0]);
+      Printer.setTarget("Order").print(this.spooler[0]);
       this.removeSpooler(i);
       let index = this.history.findIndex(order => order._id === _id);
       let order = Object.assign({}, this.history[index]);
@@ -214,7 +213,6 @@ export default {
     },
     TICKET_NUMBER(number) {
       this.app.mode !== "edit" && this.setTicket({ number });
-      console.log("receipt number");
     },
     UPDATE_TABLE_STATUS(data) {
       this.updateTable(data);
@@ -270,7 +268,6 @@ export default {
     SYNC_RESERVATIONS(data) {
       this.setReservation(data);
     },
-    // GOOGLE_ADDRESS_DISTANCE(data) { this.setAddressDistance(data) },
     SHUTDOWN() {
       ipcRenderer.send("Shutdown");
     },
