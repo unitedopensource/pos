@@ -278,11 +278,11 @@ export default {
     done(print) {
       this.checkToGo(print)
         .then(this.save.bind(null, print))
-        .then(this.exit)
-        .catch(this.placeFailed);
+        .then(this.exit);
+      //.catch(this.placeFailed);
     },
     placeFailed(error) {
-      console.error(error)
+      console.error(error);
       this.$dialog({
         type: "error",
         title: "dialog.somethingWrong",
@@ -473,10 +473,12 @@ export default {
               //combine printer setting
               let printer = new Set();
               compare[index].choiceSet.forEach(set => {
+                !Array.isArray(set.print) && (set.print = []);
                 set.print.forEach(name => {
                   printer.add(name);
                 });
               });
+
               //apply to item printer setting
               compare[index].printer = {};
               printer.forEach(name => {
