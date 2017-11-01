@@ -18,6 +18,10 @@
                     <i class="fa fa-phone-square"></i>
                     <span class="text">{{$t('nav.callLog')}}</span>
                 </router-link>
+                <router-link tag="li" :to="{name:'Setting.database.cashFlow'}">
+                    <i class="fa fa-exchange"></i>
+                    <span class="text">{{$t('nav.cashFlow')}}</span>
+                </router-link>
             </div>
             <router-link tag="li" :to="{name:'Setting.index'}">
                 <i class="fa fa-arrow-circle-left"></i>

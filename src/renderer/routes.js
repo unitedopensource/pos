@@ -219,6 +219,10 @@ export default [{
         path: 'Call',
         name: 'Setting.database.call',
         component: require('./components/setting/database/call')
+      }, {
+        path: 'CashFlow',
+        name: 'Setting.database.cashFlow',
+        component: require('./components/setting/database/cashFlow')
       }]
     }]
   }]

@@ -1144,6 +1144,7 @@ section.content{
   display: flex;
   flex-direction: column;
   height: 738px;
+  width: 949px;
 }
 
 .content .page{

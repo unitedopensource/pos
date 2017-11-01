@@ -217,8 +217,9 @@ export default {
         'combine': '合并',
         'select': '选择',
         'change': '更改',
-        'resetTable':'重置座位',
-        'sync':'同步订单'
+        'resetTable': '重置座位',
+        'sync': '同步订单',
+        'fix':'修复'
     },
     title: {
         'markPaymentType': '标记付款方式',
@@ -455,6 +456,7 @@ export default {
         'reserveDateIsPassed': '选定的预约日期无效',
         'paymentFailed': '付款失败',
         'canNotPayZeroAmount': '支付数额必须大于 $ 0.00 ',
+        'balanceDueAmountIncorrect':'此订单的支付数额存在问题',
         'invalidCreditCard': '无效的信用卡',
         'creditCardLengthIncorrect': '信用卡号码长度不正确',
         'expirationDateIncorrect': '信用卡日期格式不正确',
@@ -465,8 +467,10 @@ export default {
         'insufficientAmount': '所剩余额不足',
         'combineTickets': '确认合并订单',
         'combineTicketsConfirm': '您确定要将 {i} 订单合并至 #{i}号 吗？',
-        'foodTogo':'创建带走物品',
-        'togoConfirm':'您确定需要创建一个带走物品列表吗?'
+        'foodTogo': '创建带走物品',
+        'togoConfirm': '您确定需要创建一个带走物品列表吗?',
+        'somethingWrong':'发生了一个错误',
+        'somethingWrongTip':'此订单在保存的过程中产生了一个错误，保存被取消'
     },
     terminal: {
         'initial': '正在初始化 {i}...',
@@ -593,7 +597,7 @@ export default {
         'actualAmount': '实收款'
     },
     thead: {
-        'orderType': '订单种类',
+        'orderType': '订单类别',
         'paymentType': '付款种类',
         'ticket': '订单号',
         'type': '类别',
@@ -626,7 +630,26 @@ export default {
         'workHour': '工时',
         'wage': '时薪',
         'salary': '工资',
-        'verify': '认证'
+        'verify': '认证',
+        'time': '时间',
+        'operator': '经手',
+        'inflow': '收',
+        'outflow': '出',
+        'beginTime':'开始时间',
+        'endTime':'结束时间',
+        'cashDrawer':'钱箱',
+        'depositor':'开启',
+        'beginAmount':'起始金额',
+        'endAmount':'结束金额',
+        'records':'记录(笔)',
+        'detail':'详细'
+    },
+    flow: {
+        'START': '初始金额',
+        'OPEN': '开钱箱',
+        'CREDITFLOW': '信用卡',
+        'CASHFLOW': '现金',
+        'GIFTFLOW': '礼物卡'
     },
     text: {
         'starter': '起始',
@@ -852,7 +875,7 @@ export default {
         'server': '服务员',
         'taxOnDelivery': '送餐税',
         'ignorePrice': '忽略价格',
-        'autoNext':'自动下移'
+        'autoNext': '自动下移'
     },
     nav: {
         'store': '店面',
@@ -883,7 +906,8 @@ export default {
         'event': '事件',
         'timecard': '打卡',
         'giftCard': '礼物卡',
-        'subMenu': '子菜单'
+        'subMenu': '子菜单',
+        'cashFlow': '现金流'
     },
     setting: {
         'softwareSetting': 'UnitedPOS 后台设置',
@@ -1041,11 +1065,11 @@ export default {
         'new': '新增',
         'todo': '清单列表'
     },
-    context:{
-        'sync':'同步',
-        'resetPrint':'重置打印',
-        'resetPayment':'重置付款',
-        'resetTable':'还原座位'
+    context: {
+        'sync': '同步',
+        'resetPrint': '重置打印',
+        'resetPayment': '重置付款',
+        'resetTable': '还原座位'
     },
     tip: {
         'autoTemplate': '自动弹出模板选择页面',

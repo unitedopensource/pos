@@ -355,7 +355,7 @@ export default {
     paySplit() {
       this.payInFull = false;
       let index = this.order.splitPayment.findIndex(
-        split => toFixed(split.remain.toFixed(2), 2) > 0
+        split => parseFloat(split.remain.toFixed(2)) > 0
       );
 
       if (index === -1) {
@@ -368,13 +368,35 @@ export default {
     },
     payWhole() {
       let paid = this.payment.log
-        .map(log => log.paid - log.change)
+        .map(log => (log.paid || 0) - (log.change || 0))
         .reduce((a, b) => a + b, 0);
       this.payment.remain = Math.max(
         0,
         this.payment.balance - toFixed(paid, 2)
       );
-      this.initialized();
+      if (parseFloat(this.payment.remain.toFixed(2)) > 0) {
+        this.initialized();
+      } else if (parseFloat(this.payment.remain.toFixed(2)) === 0) {
+        this.handleFloatingIssue();
+      } else {
+        this.$dialog({
+          type: "error",
+          title: "dialog.paymentFailed",
+          msg: "dialog.balanceDueAmountIncorrect",
+          buttons: [
+            { text: "button.cancel", fn: "reject" },
+            { text: "button.fix", fn: "resolve" }
+          ]
+        })
+          .then(() => {
+            this.$q();
+            this.recalculatePayment();
+            this.initialized();
+          })
+          .catch(() => {
+            this.exit();
+          });
+      }
     },
     initialized() {
       if (isNumber(this.payment.remain)) {
@@ -394,8 +416,8 @@ export default {
           ]
         })
           .then(() => {
-            this.recalculatePayment();
             this.$q();
+            this.recalculatePayment();
             this.initialized();
           })
           .catch(() => {

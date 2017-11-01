@@ -27,38 +27,23 @@
             </div>
         </section>
         <section class="dataList">
-            <table>
-                <thead>
-                    <tr>
-                        <th class="period"></th>
-                        <th class="date">{{$t('thead.date')}}</th>
-                        <th>{{$t('thead.start')}}</th>
-                        <th>{{$t('thead.end')}}</th>
-                        <th>{{$t('thead.workHour')}}</th>
-                        <th>{{$t('thead.wage')}}</th>
-                        <th>{{$t('thead.salary')}}</th>
-                        <th>{{$t('thead.verify')}}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="(log,index) in logs" :key="index">
-                        <td></td>
-                        <td>{{log.clockIn | moment('YYYY-MM-DD')}}</td>
-                        <td v-if="approval" class="editable" @click="editClockIn(log)">{{log.clockIn | moment('HH:mm:ss')}}</td>
-                        <td v-else>{{log.clockIn | moment('HH:mm:ss')}}</td>
-                        <td v-if="approval" class="editable" @click="editClockOut(log)">{{log.clockOut | moment('HH:mm:ss')}}</td>
-                        <td v-else>{{log.clockOut | moment('HH:mm:ss')}}</td>
-                        <td>{{calculate(log.clockIn,log.clockOut)}}</td>
-                        <td v-if="log.verified">${{log.wage | decimal}}</td>
-                        <td v-else class="unverified">${{(profile.wage || 0) | decimal}}</td>
-                        <td>{{salary(log.clockIn,log.clockOut)}}</td>
-                        <td v-if="approval" class="editable">
-                            <!-- <i class="fa fa-pencil-square"></i> -->
-                        </td>
-                        <td v-else></td>
-                    </tr>
-                </tbody>
-            </table>
+            <ul>
+                <li class="header">
+                    <span class="status">{{$t('thead.status')}}</span>
+                    <span class="date">{{$t('thead.date')}}</span>
+                    <span class="time">{{$t('thead.beginTime')}}</span>
+                    <span class="time">{{$t('thead.endTime')}}</span>
+                    <span class="text">{{$t('thead.cashDrawer')}}</span>
+                    <span class="text">{{$t('thead.depositor')}}</span>
+                    <span class="amount">{{$t('thead.beginAmount')}}</span>
+                    <span class="amount">{{$t('thead.endAmount')}}</span>
+                    <span class="count">{{$t('thead.records')}}</span>
+                    <span class="text">{{$t('thead.detail')}}</span>
+                </li>
+                <li class="lists" v-for="(log,index) in logs" :key="index">
+                    <record :log="log"></record>
+                </li>
+            </ul>
         </section>
         <div :is="component" :init="componentData" @refresh="fetchData"></div>
     </div>
@@ -67,10 +52,10 @@
 <script>
 import { mapGetters } from "vuex";
 import fileSaver from "file-saver";
-import editor from "./editor";
+import record from "./component/cashFlowList";
 export default {
   props: ["profile"],
-  components: { editor },
+  components: { record },
   computed: {
     ...mapGetters(["op"])
   },
@@ -80,7 +65,6 @@ export default {
       component: null,
       approval: false,
       period: "week",
-      defaultWage: 0,
       from: "",
       to: "",
       logs: []
@@ -88,47 +72,8 @@ export default {
   },
   created() {
     this.fetchData();
-    this.approval = this.op.permission
-      ? this.op.permission.includes("timecard")
-      : false;
-    this.defaultWage = isNumber(this.profile.wage) ? this.profile.wage : 0;
   },
   methods: {
-    calculate(clockIn, clockOut) {
-      clockOut = clockOut || +new Date();
-      let duration = clockOut - clockIn;
-      if (isNumber(duration)) {
-        let hh = ("00" +
-          Math.floor((duration % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-        ).slice(-2);
-        let mm = ("00" + Math.floor((duration % (1000 * 60 * 60)) / (1000 * 60))
-        ).slice(-2);
-        let ss = ("00" + Math.floor((duration % (1000 * 60)) / 1000)).slice(-2);
-
-        return (
-          hh +
-          " " +
-          this.$t("text.hour") +
-          " " +
-          mm +
-          " " +
-          this.$t("text.minute") +
-          " " +
-          ss +
-          " " +
-          this.$t("text.second")
-        );
-      }
-    },
-    salary(clockIn, clockOut) {
-      let hour = isNumber(clockOut)
-        ? toFixed((clockOut - clockIn) / 3600000, 2)
-        : 0;
-      let wage = isNumber(this.profile.wage)
-        ? parseFloat(this.profile.wage)
-        : 0;
-      return "$ " + toFixed(wage * hour, 2).toFixed(2);
-    },
     fetchData() {
       switch (this.period) {
         case "week":
@@ -195,21 +140,12 @@ export default {
           break;
       }
       this.$socket.emit(
-        "[TIMECARD] RECORDS",
-        { _id: this.profile._id, from: this.from, to: this.to },
+        "[CASHFLOW] QUERY",
+        { from: this.from, to: this.to },
         logs => {
           this.logs = logs;
         }
       );
-    },
-    edit(log) {
-      this.$p("editor", { log });
-    },
-    editClockIn(log) {
-      this.$p("editor", { log, clockIn: true });
-    },
-    editClockOut(log) {
-      this.$p("editor", { log, clockOut: true });
     },
     generateExcel() {
       let excel = [
@@ -325,37 +261,50 @@ input:checked + label {
   border-bottom: 2px solid #ffb74d;
 }
 
-table {
-  table-layout: auto;
-  border-spacing: 0;
-  width: 100%;
+.activities {
+  display: block;
 }
 
-thead {
-  background: #5389a0;
+li.header {
+  display: flex;
+  text-align: center;
+  background: #607d8b;
   color: #fff;
-  text-shadow: 0 1px 1px #555;
+  padding:10px 0;
 }
 
-td {
+li.lists {
+  display: flex;
+}
+
+.status {
+  width: 50px;
   text-align: center;
 }
 
-td.editable:hover {
-  color: #ff5722;
-  cursor: pointer;
-  text-decoration: underline;
+.date {
+  width: 120px;
+  text-align: center;
 }
 
-tbody tr:nth-child(even) {
-  background: #eceff1;
+.time {
+  width: 90px;
+  text-align: center;
 }
 
-tr {
-  height: 40px;
+.text {
+  width: 100px;
+  text-align: center;
 }
-.unverified {
-  opacity: 0.8;
-  color: #3c3c3c;
+
+.amount {
+  width: 110px;
+}
+.count {
+  width: 80px;
+  text-align: center;
+}
+li.lists:nth-child(odd) {
+  background: #f5f5f5;
 }
 </style>

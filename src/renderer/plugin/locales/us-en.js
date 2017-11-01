@@ -224,8 +224,9 @@ export default {
         'combine': 'Combine',
         'select': 'Select',
         'change': 'Change',
-        'resetTable':'Reset Table',
-        'sync':'Sync Tickets'
+        'resetTable': 'Reset Table',
+        'sync': 'Sync Tickets',
+        'fix': 'Fix'
     },
     thead: {
         'orderType': 'Order Type',
@@ -261,7 +262,26 @@ export default {
         'workHour': 'Work Hour',
         'wage': 'Wage',
         'salary': 'Salary',
-        'verify': 'Verify'
+        'verify': 'Verify',
+        'time': 'Time',
+        'operator': 'Operator',
+        'inflow': 'Inflow',
+        'outflow': 'Outflow',
+        'beginTime': 'Begin',
+        'endTime': 'End',
+        'cashDrawer': 'Cash Drawer',
+        'depositor': 'Depositor',
+        'beginAmount': 'Begin Amount',
+        'endAmount': 'End Amount',
+        'records': 'Records',
+        'detail': 'Detail'
+    },
+    flow: {
+        'START': 'Deposit',
+        'OPEN': 'No Sales',
+        'CREDITFLOW': 'Credit Card',
+        'CASHFLOW': 'Cash',
+        'GIFTFLOW': 'Gift Card'
     },
     title: {
         'markPaymentType': 'Mark Payment Type',
@@ -498,6 +518,7 @@ export default {
         'reserveDateIsPassed': 'Reserve Date is passed!',
         'paymentFailed': 'Payment Failed',
         'canNotPayZeroAmount': 'Paid amount must grater than $ 0.00',
+        'balanceDueAmountIncorrect': 'Balance due amount format incorrect!',
         'invalidCreditCard': 'Invalid Credit Card',
         'creditCardLengthIncorrect': 'Credit card length incorrect',
         'expirationDateIncorrect': 'Credit card expiration date incorrect',
@@ -508,8 +529,10 @@ export default {
         'insufficientAmount': 'There is an insufficient amount of balance.',
         'combineTickets': 'Confirm Ticket Combines',
         'combineTicketsConfirm': 'Are you sure to combine {i} ticket(s) to MAIN ticket #{i}?',
-        'foodTogo':'Create A ToGo List',
-        'togoConfirm':'Are you wish to create a new list for togo items?'
+        'foodTogo': 'Create A ToGo List',
+        'togoConfirm': 'Are you wish to create a new list for togo items?',
+        'somethingWrong':'Error Occurred',
+        'somethingWrongTip':'An unknown error occurred while saving this order.'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',
@@ -858,8 +881,8 @@ export default {
         'comment': 'comment',
         'server': 'Server',
         'taxOnDelivery': 'Tax On Delivery',
-        'ignorePrice':'Ignore Price',
-        'autoNext':'Auto Next'
+        'ignorePrice': 'Ignore Price',
+        'autoNext': 'Auto Next'
     },
     nav: {
         'store': 'Store',
@@ -890,7 +913,8 @@ export default {
         'event': 'Event',
         'timecard': 'TimeCard',
         'giftCard': 'GiftCard',
-        'subMenu': 'Sub Menu'
+        'subMenu': 'Sub Menu',
+        'cashFlow': 'Cash Flow'
     },
     setting: {
         'softwareSetting': 'UnitedPOS Setting',
@@ -1048,12 +1072,12 @@ export default {
         'difference': 'Print Difference',
         'new': 'Only New',
         'todo': 'Todo List'
-    },    
-    context:{
-        'sync':'Sync',
-        'resetPrint':'Reset Print',
-        'resetPayment':'Reset Payment',
-        'resetTable':'Reset Table'
+    },
+    context: {
+        'sync': 'Sync',
+        'resetPrint': 'Reset Print',
+        'resetPayment': 'Reset Payment',
+        'resetTable': 'Reset Table'
     },
     tip: {
         'autoTemplate': 'Auto popup template page',

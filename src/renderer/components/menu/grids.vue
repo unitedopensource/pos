@@ -282,6 +282,7 @@ export default {
         .catch(this.placeFailed);
     },
     placeFailed(error) {
+      console.error(error)
       this.$dialog({
         type: "error",
         title: "dialog.somethingWrong",
