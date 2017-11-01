@@ -86,7 +86,9 @@ export default {
           this.delPin();
           break;
         default:
-          /[a-zA-Z0-9]/i.test(e.key) && this.setPin(e.key);
+          e.key.length === 1 &&
+            /[a-zA-Z0-9]/i.test(e.key) &&
+            this.setPin(e.key);
       }
     },
     login() {

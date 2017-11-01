@@ -48,7 +48,9 @@ export default {
         default:
           // let charCode = e.which || e.keyCode;
           // let char = String.fromCharCode(charCode);
-          /[a-zA-Z0-9]/i.test(e.key) && this.setPin(e.key);
+          e.key.length === 1 &&
+            /[a-zA-Z0-9]/i.test(e.key) &&
+            this.setPin(e.key);
       }
     },
     login() {
