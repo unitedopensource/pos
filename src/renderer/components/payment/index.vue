@@ -965,7 +965,6 @@ export default {
                   });
                   Printer.setTarget("Receipt").print(order, true);
                 }
-
                 resolve();
                 this.$q();
               })

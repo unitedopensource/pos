@@ -159,7 +159,11 @@ export default [{
       children: [{
         path: '/',
         name: 'Setting.operator.index',
-        component: require('./components/setting/operator/index'),
+        component: require('./components/setting/operator/index')
+      }, {
+        path: 'report',
+        name: 'Setting.operator.report',
+        component: require('./components/setting/operator/report')
       }, {
         path: 'profile',
         name: 'Setting.operator.profile',

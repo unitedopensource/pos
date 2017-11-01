@@ -86,9 +86,7 @@ export default {
           this.delPin();
           break;
         default:
-          let charCode = e.which || e.keyCode;
-          let char = String.fromCharCode(charCode);
-          /[a-zA-Z0-9]/i.test(char) && this.setPin(char);
+          /[a-zA-Z0-9]/i.test(e.key) && this.setPin(e.key);
       }
     },
     login() {

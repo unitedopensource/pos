@@ -6,6 +6,10 @@
                     <i class="fa fa-users"></i>
                     <span class="text">{{$t('nav.index')}}</span>
                 </router-link>
+                <router-link tag="li" :to="{name:'Setting.operator.report'}">
+                    <i class="fa fa-files-o"></i>
+                    <span class="text">{{$t('nav.report')}}</span>
+                </router-link>
                 <div v-show="profile">
                     <router-link tag="li" :to="{name:'Setting.operator.profile'}">
                         <i class="fa fa-user-circle-o"></i>
