@@ -1,5 +1,5 @@
 <template>
-  <div class="summary" :class="{hide:!isDisplay}">
+  <div class="summary" :class="{hide:!viewable}">
     <div class="filter active" @click="setFilter('',$event)">
       <div class="text">{{$t('type.allInvoice')}}<span class="count">{{summary.total}}</span></div>
       <div class="value">$ {{summary.totalAmount | decimal}}</div>
@@ -12,9 +12,15 @@
       <div class="text">{{$t('type.pickUpInvoice')}}<span class="count">{{summary.pickUp}}</span></div>
       <div class="value">$ {{summary.pickUpAmount | decimal}}</div>
     </div>
-    <div class="filter" @click="setFilter('DELIVERY',$event)" v-show="summary.deliveries">
+    <div class="filter dropDown" @click="setFilter('DELIVERY',$event)" v-show="summary.deliveries">
       <div class="text">{{$t('type.deliveryInvoice')}}<span class="count">{{summary.deliveries}}</span></div>
       <div class="value">$ {{summary.deliveryAmount | decimal}}</div>
+      <div class="drivers" v-show="!driver">
+        <div class="driver" v-for="(value,key,index) in summary.driver" :key="index" @click.stop="setDriver(key)">
+          <span>{{$t('text.driver')}} #{{key}}</span>
+          <span class="price">$ {{value.total.toFixed(2)}}</span>
+        </div>
+      </div>
     </div>
     <div class="filter" @click="setFilter('DINE_IN',$event)" v-show="summary.dineIn">
       <div class="text">{{$t('type.dineInInvoice')}}<span class="count">{{summary.dineIn}}</span></div>
@@ -24,20 +30,9 @@
       <div class="text">{{$t('type.unpaidInvoice')}}<span class="count">{{summary.unsettle}}</span></div>
       <div class="value">$ {{summary.unsettleAmount |decimal}}</div>
     </div>
-    <div class="filter dropDown" @click="setFilter('DRIVER',$event)" v-show="Object.keys(summary.driver).length !== 0">
-      <div class="text">{{$t('type.driverInvoice')}}<span v-if="driver" class="count">{{driver}} ({{summary.driver[driver].count}})</span></div>
-      <div class="value">{{driver ? '$ '+summary.driver[driver].total.toFixed(2) : Object.keys(summary.driver).length}}</div>
-      <div class="drivers" v-show="!driver">
-        <div class="driver" v-for="(value,key,index) in summary.driver" :key="index" @click.stop="setDriver(key)">
-          <span>{{$t('text.driver')}} #{{key}}</span>
-          <span class="price">$ {{value.total.toFixed(2)}}</span>
-        </div>
-      </div>
-    </div>
     <transition name="fadeDown" appear>
       <div class="date">{{date}}</div>
     </transition>
-
   </div>
 </template>
 
@@ -47,23 +42,25 @@ export default {
   props: ["data", "date"],
   data() {
     return {
-      isDisplay: false,
-      driver: null
+      viewable: false,
+      driver: null,
+      type: null
     };
   },
   created() {
-    this.isDisplay =
+    this.viewable =
       (this.op.view && this.op.view.includes("summary")) ||
       this.op.role === "Admin";
   },
   methods: {
     setFilter(type, e) {
-      this.driver = null;
       document.querySelector(".filter.active").classList.remove("active");
       e.currentTarget.classList.add("active");
       let dom = document.querySelector(".invoice.active");
       dom && dom.classList.add("active");
+      this.type === type && type === 'DELIVERY' && (this.driver = !this.driver);
       this.$emit("filter", type);
+      this.type = type;
     },
     setDriver(id) {
       this.driver = id;

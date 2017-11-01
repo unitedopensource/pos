@@ -22,7 +22,7 @@
             <div class="fn">
                 <button :disabled="true">
                     <i class="fa fa-calendar-check-o"></i>Calendar</button>
-                <button :disabled="logs.length ===0" @click="generateExcel">
+                <button :disabled="true" @click="generateExcel">
                     <i class="fa fa-external-link"></i>Export</button>
             </div>
         </section>

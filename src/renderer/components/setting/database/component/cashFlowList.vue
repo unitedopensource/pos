@@ -11,7 +11,7 @@
             <span class="text">{{log.cashDrawer}}</span>
             <span class="text">{{log.operator}}</span>
             <span class="amount">$ {{log.begin | decimal}}</span>
-            <span class="amount">$ {{log.end | decimal}}</span>
+            <span class="amount">{{log.end | money}}</span>
             <span class="count">{{log.activity.length}}</span>
             <span class="more" @click="toggleDetail"><i class="fa fa-angle-double-down"></i></span>
         </div>
@@ -81,6 +81,11 @@ export default {
       this.$socket.emit("[VIEW] INVOICE", id, ticket => {
         this.$emit("view",ticket)
       });
+    }
+  },
+  filters:{
+    money(val){
+      return isNumber(val) ? '$ ' + val.toFixed(2) : ''
     }
   },
   computed: {

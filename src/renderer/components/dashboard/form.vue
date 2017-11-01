@@ -222,7 +222,8 @@ export default {
             });
             this.predict.address = predict;
           } else if (addresses.length === 1) {
-            let address = addresses[0].split(",")[0].trim().toUpperCase();
+            let address = addresses[0].split(",")[0];
+            address && (address = address.trim().toUpperCase());
             let city = addresses[0]
               .split(",")[1]
               .trim()
