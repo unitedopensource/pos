@@ -267,27 +267,28 @@ export default {
       this.$socket.emit("[UPDATE] INVOICE", ticket);
     },
     adjustTip(record) {
-      let tip = record.amount.tip;
+      let { tip, approve } = record.amount;
       this.approval(this.op.modify, "transaction")
         ? new Promise((resolve, reject) => {
-            this.componentData = { tip, resolve, reject };
+            this.componentData = { tip, approve, resolve, reject };
             this.component = "tipper";
           })
-            .then(value => {
+            .then(result => {
+              let creditTip = result.tip;
               this.$q();
-              value = isNumber(value) ? value : 0;
-              let total = parseFloat(record.amount.approve) + value;
+              creditTip = isNumber(creditTip) ? creditTip : 0;
+              let total = parseFloat(record.amount.approve) + creditTip;
               this.$dialog({
                 title: "dialog.tipAdjustment",
                 msg: [
                   "dialog.tipAdjustmentTip",
-                  value.toFixed(2),
+                  creditTip.toFixed(2),
                   total.toFixed(2)
                 ]
               })
                 .then(() => {
                   this.$p("processor", { timeout: 30000 });
-                  let amount = Math.round(value * 100);
+                  let amount = Math.round(creditTip * 100);
                   let invoice = record.order.number;
                   let trans = record.trace.trans;
                   this.terminal
@@ -297,7 +298,7 @@ export default {
                       this.$q();
                       let result = this.terminal.explainTransaction(response);
                       result.code === "000000"
-                        ? this.applyAdjustTip(record, result, value)
+                        ? this.applyAdjustTip(record, result, creditTip)
                         : this.adjustTipFailed(result.code);
                     });
                 })

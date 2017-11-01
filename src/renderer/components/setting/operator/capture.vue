@@ -34,8 +34,6 @@ export default {
         this.read = "";
       }, 300);
 
-      let charCode = e.which || e.keyCode;
-      let char = String.fromCharCode(charCode);
       e.key.length === 1 && /[a-zA-Z0-9]/i.test(e.key) && (this.read += e.key);
       e.code === "Enter" && this.parser(this.read);
     },

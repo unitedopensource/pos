@@ -257,7 +257,7 @@ export default {
 
 <style scoped>
 .window {
-  width: 459px;
+  width: 425px;
   transform: translateY(-41px);
 }
 
@@ -295,7 +295,7 @@ section.numpad {
 }
 
 section.numpad div:last-child {
-  width: 223px;
+  width: 205px;
 }
 
 .column {

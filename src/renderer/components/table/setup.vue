@@ -29,18 +29,20 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions } from "vuex";
 export default {
-  props: ['init'],
+  props: ["init"],
   data() {
     return {
       guest: 1,
       reset: true
-    }
+    };
   },
   methods: {
     input(num) {
-      this.guest = this.reset ? num : (this.guest + num > 99 ? this.guest : this.guest + num);
+      this.guest = this.reset
+        ? num
+        : this.guest + num > 99 ? this.guest : this.guest + num;
       this.reset = false;
     },
     del() {
@@ -51,27 +53,26 @@ export default {
       this.reset = true;
     },
     done() {
-      this.setTicket({ type: 'DINE_IN' })
+      this.setTicket({ type: "DINE_IN" });
       this.setTableInfo({
         status: 2,
         session: ObjectId(),
         guest: ~~this.guest,
         server: this.op.name,
-        time: +new Date,
+        time: +new Date(),
         invoice: []
-      })
+      });
       this.resetMenu();
-      this.setApp({ mode: 'create' });
+      this.setApp({ mode: "create" });
       this.$socket.emit("[TABLE] SETUP", this.currentTable);
-      this.$router.push({ path: '/main/menu' });
+      this.$router.push({ path: "/main/menu" });
     },
-    ...mapActions(['setApp', 'resetMenu', 'setTicket', 'setTableInfo'])
+    ...mapActions(["setApp", "resetMenu", "setTicket", "setTableInfo"])
   },
   computed: {
-    ...mapGetters(['op', 'store', 'currentTable'])
+    ...mapGetters(["op", "store", "currentTable"])
   }
-
-}
+};
 </script>
 
 <style scoped>
@@ -100,14 +101,14 @@ input {
 }
 
 section.numpad {
-  width: 342px;
+  width: 315px;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
 }
 
 section.numpad div:last-child {
-  width: 337px;
+  width: 310px;
 }
 
 .table {

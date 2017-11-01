@@ -1470,7 +1470,7 @@ export default {
 
 <style scoped>
 .window {
-  width: 916px;
+  width: 862px;
 }
 
 nav {
@@ -1552,8 +1552,8 @@ nav {
 
 .paymentTypes label {
   display: block;
-  width: 104px;
-  margin: 4px 6px 4px 0;
+  width: 97px;
+  margin: 4px 4px 4px 0;
   background: #fff;
   border: 2px solid #e0e0e0;
   position: relative;
@@ -1674,7 +1674,7 @@ nav {
 .fn .btn {
   height: 48px;
   margin: 6px 2px;
-  width: 106px;
+  width: 97px;
 }
 
 article {
@@ -1685,14 +1685,11 @@ article {
 section.numpad {
   display: flex;
   flex-wrap: wrap;
-  width: 342px;
-}
-.double {
-  width: 223px;
+  width: 315px;
 }
 section.field {
   display: flex;
-  width: 339px;
+  width: 330px;
 }
 .input {
   position: relative;
@@ -1767,7 +1764,7 @@ section.quickInput {
   display: flex;
   flex-wrap: wrap;
   height: 353px;
-  width: 228px;
+  width: 210px;
 }
 .disabled {
   opacity: 0.5;

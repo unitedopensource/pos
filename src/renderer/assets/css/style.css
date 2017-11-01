@@ -183,7 +183,7 @@ section.numpad div,
   background: #03a9f4;
   color: #fff;
   vertical-align: top;
-  width: 109px;
+  width: 100px;
   height: 50px;
   padding: 17px 0;
   margin: 0px 5px 5px 0;
@@ -196,7 +196,7 @@ section.numpad div,
 }
 
 .numpad .double {
-  width: 223px;
+  width: 205px;
 }
 
 section.numpad div:active,
@@ -213,7 +213,7 @@ aside.numpad div {
   background: #78909C;
   color: #fff;
   vertical-align: top;
-  width: 109px;
+  width: 100px;
   height: 50px;
   padding: 17px 0;
   margin-bottom: 5px;
@@ -595,7 +595,7 @@ label.input-toggle > input {
 }
 .inputter .wrap{
   display:flex;
-  width:453px;
+  width:417px;
 }
 .inputter section.numpad{
   flex: 3;
@@ -663,7 +663,7 @@ label.input-toggle > input {
   border: none;
   outline: none;
   background: none;
-  flex: 1;
+  width:344px;
   font-size: 46px;
   font-family: "Agency FB";
   font-weight: bold;
@@ -1085,7 +1085,7 @@ section.cart {
 
 /* Pin input */
 .accessor {
-  width: 337px;
+  width: 310px;
   background-color: #f9f9f9;
   border-radius: 4px;
   color: rgba(0, 0, 0, 0.87);
