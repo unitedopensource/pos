@@ -278,7 +278,7 @@ export default {
     },
     flow: {
         'START': 'Deposit',
-        'OPEN': 'No Sales',
+        'OPEN': 'No Sale',
         'CREDITFLOW': 'Credit Card',
         'CASHFLOW': 'Cash',
         'GIFTFLOW': 'Gift Card'

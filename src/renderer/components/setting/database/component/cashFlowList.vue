@@ -30,7 +30,7 @@
                 <td>{{$t('flow.'+record.type)}}</td>
                 <td>{{record.time | moment("HH:mm:ss")}}</td>
                 <td>{{record.ticket && $t('type.'+record.ticket.type)}}</td>
-                <td>{{record.ticket && "#"+record.ticket.number}}</td>
+                <td @click="viewTicket(record.order)">{{record.ticket && "#"+record.ticket.number}}</td>
                 <td :class="{zero:record.inflow ===0,inflow:record.inflow>0}" class="amount">{{record.inflow.toFixed(2)}}</td>
                 <td :class="{zero:record.outflow ===0,outflow:record.outflow>0}" class="amount">{{record.outflow.toFixed(2)}}</td>
                 <td :class="{zero:record.inflow - record.outflow === 0}">{{(record.inflow - record.outflow).toFixed(2)}}</td>
@@ -74,6 +74,13 @@ export default {
         this.types = Array.from(types);
         this.option = this.types.slice(0);
       }
+    },
+    viewTicket(id) {
+      if (!id) return;
+      console.log("trigger")
+      this.$socket.emit("[VIEW] INVOICE", id, ticket => {
+        this.$emit("view",ticket)
+      });
     }
   },
   computed: {

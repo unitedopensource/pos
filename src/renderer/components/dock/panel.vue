@@ -183,19 +183,22 @@ export default {
     },
     cashOut(cashDrawer) {
       this.$q();
-      this.$socket.emit("[CASHFLOW] SETTLE", cashDrawer);
-      new Promise(resolve => {
-        this.$options.sockets["CASHFLOW_SETTLE"] = cashflow => {
-          resolve(cashflow);
-        };
-      }).then(cashflow => {
-        this.reconciliation(cashflow);
+      this.$socket.emit("[CASHFLOW] SETTLE", cashDrawer, cashFlow => {
+        this.reconciliation(cashFlow);
       });
     },
     reconciliation(cashflow) {
       this.recordCashDrawerAction();
       let diff = (parseFloat(cashflow.end) - parseFloat(cashflow.begin)
       ).toFixed(2);
+
+      cashflow.activity = cashflow.activity.filter(
+        log =>
+          log.type === "START" ||
+          log.type === "CASHFLOW" ||
+          log.type === "PAYOUT"
+      );
+
       this.$dialog({
         type: "question",
         title: ["dialog.cashOutSettle", cashflow.end],

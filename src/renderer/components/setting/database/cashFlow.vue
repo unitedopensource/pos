@@ -41,21 +41,26 @@
                     <span class="text">{{$t('thead.detail')}}</span>
                 </li>
                 <li class="lists" v-for="(log,index) in logs" :key="index">
-                    <record :log="log"></record>
+                    <record :log="log" @view="viewInvoice"></record>
                 </li>
             </ul>
         </section>
-        <div :is="component" :init="componentData" @refresh="fetchData"></div>
+        <transition name="fadeUp">
+            <div class="popupMask center dark" @click.self="component = null" v-if="component">
+                <div :is="component" :init="componentData" @refresh="fetchData"></div>
+            </div>
+        </transition>
     </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
 import fileSaver from "file-saver";
+import ticket from "../../common/ticket";
 import record from "./component/cashFlowList";
 export default {
   props: ["profile"],
-  components: { record },
+  components: { record, ticket },
   computed: {
     ...mapGetters(["op"])
   },
@@ -146,6 +151,9 @@ export default {
           this.logs = logs;
         }
       );
+    },
+    viewInvoice(ticket) {
+      this.$p("ticket", { ticket, exit: true });
     },
     generateExcel() {
       let excel = [
@@ -270,7 +278,7 @@ li.header {
   text-align: center;
   background: #607d8b;
   color: #fff;
-  padding:10px 0;
+  padding: 10px 0;
 }
 
 li.lists {
