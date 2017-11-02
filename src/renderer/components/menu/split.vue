@@ -88,7 +88,7 @@ export default {
               let sub = JSON.parse(JSON.stringify(item));
               sub.qty = 1;
               sub.total = sub.price = sub.single.toFixed(2);
-              console.log(sub)
+              console.log(sub);
               clone.choiceSet.push(sub);
             } else {
               object.splice(index, 1);
@@ -143,13 +143,13 @@ export default {
     splitEvenly() {
       this.split > 1 && this.transfer([], true);
     },
-    transfer(index, even) {
+    transfer(index, isEvenSplit) {
       let doms = document.querySelectorAll(".split .active");
       doms.forEach(dom => {
         dom && dom.classList.remove("active");
       });
 
-      if (even) {
+      if (isEvenSplit) {
         for (let i = 1; i < this.split + 1; i++) {
           index.push(i);
         }
@@ -157,10 +157,16 @@ export default {
       this.items.forEach(item => {
         if (this.transferItems.includes(item.unique)) {
           item.sort = index;
-          if (even) {
+          if (isEvenSplit) {
             if (item.total.includes("/")) return;
             item.single = parseFloat((item.single / index.length).toFixed(2));
             item.total = item.total + "/" + index.length;
+
+            //update subItem
+            item.choiceSet.forEach(set => {
+              set.single = toFixed(set.single / index.length, 2);
+              set.total = set.price = set.single.toFixed(2);
+            });
           } else if (item.total.includes("/")) {
             let split = item.total.split("/")[1];
             item.single = parseFloat((item.single * split).toFixed(2));
