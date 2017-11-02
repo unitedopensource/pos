@@ -58,35 +58,43 @@ export default {
   },
   methods: {
     initial() {
-      this.items = this.flatten(this.order.content);
+      this.items = this.flatten(JSON.parse(JSON.stringify(this.order.content)));
       this.split = this.check(this.items);
       this.splitPayment = this.order.split ? this.order.splitPayment : [];
       this.unlock = this.lock = !!this.order.split;
     },
     flatten(items) {
       let flattened = [];
+
       items.forEach(item => {
         let { qty, sort = 0, single } = item;
+        let subItems = item.choiceSet;
         while (qty > 0) {
-          let addition = 0;
-          item.choiceSet.forEach(set => {
-            addition += toFixed(set.qty * set.price, 2);
-            if (set.price > 0) {
-              set.zhCN = set.zhCN + `(${set.price})`;
-              set.usEN = set.usEN + `(${set.price})`;
-              set.price = 0;
-            }
-          });
-          let single = (parseFloat(item.single) + addition).toFixed(2);
           let clone = Object.assign({}, item, {
             qty: 1,
             sort,
-            single,
-            total: single,
+            single: parseFloat(item.single),
+            total: item.single.toFixed(2),
+            choiceSet: [],
             unique: Math.random()
               .toString(36)
               .substr(2, 5)
           });
+          let choiceSet = [];
+          subItems.forEach((item, index, object) => {
+            if (item.qty >= 1) {
+              --item.qty;
+
+              let sub = JSON.parse(JSON.stringify(item));
+              sub.qty = 1;
+              sub.total = sub.price = sub.single.toFixed(2);
+              console.log(sub)
+              clone.choiceSet.push(sub);
+            } else {
+              object.splice(index, 1);
+            }
+          });
+
           flattened.push(clone);
           qty--;
         }

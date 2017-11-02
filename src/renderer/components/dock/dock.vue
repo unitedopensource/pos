@@ -210,6 +210,8 @@ export default {
       this.$socket.emit("[INQUIRY] TICKET_NUMBER", number => {
         this.setTicket({ number });
       });
+      this.$socket.emit("[SYNC] ORDER_LIST");
+      this.$socket.emit("[SYNC] TABLE_LIST");
     },
     TICKET_NUMBER(number) {
       this.app.mode !== "edit" && this.setTicket({ number });

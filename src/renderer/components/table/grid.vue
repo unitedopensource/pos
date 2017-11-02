@@ -255,7 +255,7 @@ export default {
         );
         ticket.payment = this.order.splitPayment[i - 1];
         ticket.number = `${this.order.number}-${i}`;
-        Printer.setTarget("Receipt").print(ticket);
+        Printer.setTarget("Receipt").print(ticket, true);
       }
       this.$socket.emit("[TABLE] UPDATE", {
         _id: this.order.tableID,
