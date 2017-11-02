@@ -6,7 +6,7 @@
                     <i class="fa fa-users"></i>
                     <span class="text">{{$t('nav.index')}}</span>
                 </router-link>
-                <router-link tag="li" :to="{name:'Setting.operator.report'}">
+                <router-link tag="li" :to="{name:'Setting.operator.report'}" v-show="false">
                     <i class="fa fa-files-o"></i>
                     <span class="text">{{$t('nav.report')}}</span>
                 </router-link>

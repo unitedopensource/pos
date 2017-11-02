@@ -81,8 +81,9 @@ export default {
         });
     },
     clockIn() {
-      this.setOp({ clockIn: this.time, timeCard: ObjectId() });
+      this.setOp({ clockIn: this.time, session: ObjectId() });
       this.$socket.emit("[TIMECARD] CLOCK_IN", this.op);
+
       this.$dialog({
         type: "question",
         title: "dialog.clockInConfirm",
@@ -399,7 +400,7 @@ export default {
   height: 100%;
   top: 0;
   left: 0;
-  background: rgba(255, 255, 255,0.9);
+  background: rgba(255, 255, 255, 0.9);
   z-index: 1;
   content: " ";
 }
