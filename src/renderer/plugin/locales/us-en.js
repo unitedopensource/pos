@@ -157,7 +157,7 @@ export default {
         'clear': 'Clear',
         'setTip': 'Set Tip',
         'setGratuity': 'Set Gratuity',
-        'setDiscount': 'Set Discount',
+        'setDiscount': 'Discount',
         'changeDate': 'Change Date',
         'edit': 'Edit',
         'recover': 'Recover',
