@@ -846,16 +846,18 @@ export default {
 
         Printer.printCreditCard(record);
 
+        let log = {
+          type: "CREDIT",
+          change: "0.00",
+          paid: parseFloat(record.amount.approve),
+          balance: parseFloat(this.payment.remain),
+          number: record.account.number,
+          tip: parseFloat(record.amount.tip)
+        };
+
         this.$socket.emit("[SAVE] TRANSACTION", record, _id => {
-          this.payment.log.push({
-            _id,
-            type: "CREDIT",
-            change: "0.00",
-            paid: record.amount.approve,
-            balance: this.payment.remain,
-            number: record.account.number,
-            tip: record.amount.tip
-          });
+          log._id = _id;
+          this.payment.log.push(log);
 
           let activity = {
             _id: ObjectId(),
@@ -1371,7 +1373,8 @@ export default {
         paid,
         delivery,
         tip,
-        gratuity
+        gratuity,
+        type
       } = this.payment;
       let total = toFixed(subtotal + tax + delivery, 2);
       let due = toFixed(total - discount, 2);
@@ -1380,10 +1383,23 @@ export default {
       let remain = Math.max(0, toFixed(balance - paid, 2));
       let settled = remain === 0;
 
+      let types = new Set();
+      if (this.payment.log.length > 1) {
+        this.payment.log.forEach(log => {
+          types.add(log.type);
+        });
+        let temp = Array.from(types);
+
+        if (temp.length !== 1) {
+          type = "MULTIPLE";
+        }
+      }
+
       this.payment = Object.assign({}, this.payment, {
         total,
         due,
         tip,
+        type,
         discount,
         surcharge,
         balance,

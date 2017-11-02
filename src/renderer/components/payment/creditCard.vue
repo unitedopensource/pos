@@ -39,6 +39,9 @@ export default {
             { text: "button.markAsPaid", fn: "resolve" }
           ]
         });
+    setTimeout(()=>{
+      this.cancelable = true;
+    },30000)
   },
   methods: {
     initTerminal() {
