@@ -223,7 +223,7 @@ export default {
         type: "PRE_PAYMENT",
         cashier: this.op.name
       });
-      Printer.setTarget("Receipt").print(order);
+      Printer.setTarget("Receipt").print(order, true);
       this.$socket.emit("[TABLE] UPDATE", { _id: order.tableID, status: 3 });
     },
     askSplitPrePayment() {

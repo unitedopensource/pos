@@ -71,6 +71,11 @@ export default {
           let addition = 0;
           item.choiceSet.forEach(set => {
             addition += toFixed(set.qty * set.price, 2);
+            if (set.price > 0) {
+              set.zhCN = set.zhCN + `(${set.price})`;
+              set.usEN = set.usEN + `(${set.price})`;
+              set.price = 0;
+            }
           });
           let single = (parseFloat(item.single) + addition).toFixed(2);
           let clone = Object.assign({}, item, {
@@ -89,9 +94,11 @@ export default {
       return flattened;
     },
     check(items) {
-      let splits = [].concat.apply([], items.map(item => item.sort)).filter((v, i, s) => s.indexOf(v) === i)
+      let splits = [].concat
+        .apply([], items.map(item => item.sort))
+        .filter((v, i, s) => s.indexOf(v) === i);
       splits[splits.length - 1] === 0 && splits.pop();
-      return splits.length
+      return splits.length;
     },
     newSplit() {
       this.transferItems.length ? this.transfer(++this.split) : this.split++;
@@ -205,7 +212,7 @@ export default {
         payment: this.$children[index].payment,
         time: +new Date()
       });
-      Printer.setTarget("All").print(order);
+      Printer.setTarget("All").print(order, true);
       this.items.forEach(item => {
         Array.isArray(item.sort)
           ? item.sort.includes(index) && (item.print = true)
