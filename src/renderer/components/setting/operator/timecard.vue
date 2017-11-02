@@ -261,8 +261,10 @@ export default {
       for (let i = 0; i < excel.length; i++) {
         csvRows.push(excel[i].join(","));
       }
-      let from = moment(this.logs[0].clockIn).format("MMMDD");
-      let to = moment(this.logs[this.logs.length - 1].clockIn).format("MMMDD");
+      let to = moment(this.logs[0].clockIn).format("MMMDD");
+      let from = moment(this.logs[this.logs.length - 1].clockIn).format(
+        "MMMDD"
+      );
       let csvFile = csvRows.join("\n");
       let blob = new Blob([csvFile], { type: "text/plain;charset=utf-8" });
       fileSaver.saveAs(

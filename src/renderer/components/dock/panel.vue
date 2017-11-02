@@ -97,7 +97,7 @@ export default {
         msg: ["dialog.clockInTip", moment(this.time).format("hh:mm:ss a")]
       })
         .then(() => {
-          this.setOp({ clockIn: this.time, section: ObjectId() });
+          this.setOp({ clockIn: this.time, session: ObjectId() });
           this.$socket.emit("[TIMECARD] CLOCK_IN", this.op);
           this.$q();
         })
@@ -123,7 +123,7 @@ export default {
       })
         .then(() => {
           this.$socket.emit("[TIMECARD] CLOCK_OUT", this.op);
-          this.setOp({ clockIn: null, timeCard: null });
+          this.setOp({ clockIn: null, session: null });
           this.$router.push({ path: "/main/lock" });
           this.init.resolve();
         })
