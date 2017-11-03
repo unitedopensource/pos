@@ -72,23 +72,33 @@ export default {
         this.component = "discount";
       })
         .then(result => {
-          let due =
-            parseFloat(this.order.payment.total) +
-            parseFloat(this.order.payment.tip) +
-            parseFloat(this.order.payment.gratuity) -
-            parseFloat(result.discount);
-          let balance =
-            isNumber(this.order.payment.paid) && this.order.payment.paid > 0
-              ? Math.max(0, toFixed(due - this.order.payment.paid, 2))
-              : due;
+          let {
+            subtotal,
+            tax,
+            tip,
+            gratuity,
+            delivery,
+            paid
+          } = this.order.payment;
+
+          let total = parseFloat(subtotal) + toFixed(tax, 2) + delivery;
+          let discount = result.discount;
+          let due = Math.max(0, total - discount);
+          let surcharge = tip + gratuity;
+          let balance = due + surcharge;
+          let remain = Math.max(0, balance - paid);
+
           result.coupon
             ? Object.assign(this.order, { coupon: result.coupon })
             : Object.assign(this.order, { coupon: null });
 
           Object.assign(this.order.payment, {
-            due,
-            balance,
-            discount: parseFloat(result.discount)
+            total: toFixed(total, 2),
+            discount: toFixed(discount, 2),
+            due: toFixed(due, 2),
+            balance: toFixed(balance, 2),
+            paid: toFixed(paid, 2),
+            remain: toFixed(remain, 2)
           });
           this.$socket.emit("[UPDATE] INVOICE", this.order);
           this.$q();
@@ -98,7 +108,7 @@ export default {
         });
     },
     driver() {
-      this.$p("driver", {ticket: this.order.number});
+      this.$p("driver", { ticket: this.order.number });
     },
     exit() {
       this.resetMenu();
