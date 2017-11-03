@@ -1135,12 +1135,13 @@ function createStyle(ctrl) {
               .customer .text{display:inline-block;min-width:32px;margin-left:5px;}
               .customer .tel{letter-spacing:2px;}
               .customer .ext{margin-left:10px;}
-              .customer{font-size:1.2em;font-family:'Tensentype RuiHeiJ-W2'}
+              .customer {font-size:1.2em;font-family:'Tensentype RuiHeiJ-W2'}
+              .customer .space{ margin-left:5px; }
               section.body{padding:10px 0px;}
               table.receipt{width:100%;border-spacing:0;border-collapse:collapse;margin:5px 0;}
-              .receipt tbody tr{display:flex;position:relative;}
+              .receipt tbody tr{display:flex;position:relative;align-items:flex-start;vertical-align:text-top;}
               td.qty{font-weight:bold;}
-              td.item{flex:1;display:flex;flex-direction:column;}
+              td.item{flex:1;display:flex;flex-direction:column;margin-left:2px}
               td.item .main{width:100%;}
               .main .side{font-size:0.9em;margin-left:2px;}
               td.price{text-align:right;}
