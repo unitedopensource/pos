@@ -1277,13 +1277,17 @@ function createFooter(table, ctrl, device, ticket) {
         if (payment[key] > 0) {
             let cls = '';
             let value = payment[key].toFixed(2);
+            let text = key.toCapitalCase();
             key === 'discount' && (value = '- ' + value);
             if (key === 'total') {
                 value = payment.balance.toFixed(2);
                 cls = 'bold';
             }
+            if (key === 'gratuity') {
+                text = 'Service Fee';
+            }
             detail.push(`<p class="${cls}">
-                            <span class="text">${key.toCapitalCase()}:</span>
+                            <span class="text">${text}:</span>
                             <span class="value">${value}</span>
                         </p>`)
         }

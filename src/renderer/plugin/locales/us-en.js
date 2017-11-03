@@ -531,8 +531,8 @@ export default {
         'combineTicketsConfirm': 'Are you sure to combine {i} ticket(s) to MAIN ticket #{i}?',
         'foodTogo': 'Create A ToGo List',
         'togoConfirm': 'Are you wish to create a new list for togo items?',
-        'somethingWrong':'Error Occurred',
-        'somethingWrongTip':'An unknown error occurred while saving this order.'
+        'somethingWrong': 'Error Occurred',
+        'somethingWrongTip': 'An unknown error occurred while saving this order.'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',
@@ -956,8 +956,8 @@ export default {
         'dineIn': 'Dine In',
         'station': 'Station Setting',
         'staffBank': 'Staff Bank',
-        'autoCharge': 'Auto Surcharge',
-        'autoChargeTip': 'Auto charge gratuity',
+        'autoCharge': 'Auto Service Fee',
+        'autoChargeTip': 'Setup auto charge service fee condition',
         'terminal': 'Terminal',
         'terminalTip': 'SEMI-Integrated Terminal Configuration',
         'poleDisplay': 'Pole Display Setting',
