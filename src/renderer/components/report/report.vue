@@ -722,7 +722,7 @@ export default {
 
       let settledCount = settled.length;
       let settledAmount = settled
-        .map(ticket => ticket.payment.paid)
+        .map(ticket => parseFloat(ticket.payment.paid))
         .reduce(counter, 0);
       this.report["SALES SOURCE DETAIL"].push({
         text: this.$t("type.settled"),
@@ -732,7 +732,7 @@ export default {
 
       let unsettledCount = unsettled.length;
       let unsettledAmount = unsettled
-        .map(ticket => ticket.payment.balance)
+        .map(ticket => parseFloat(ticket.payment.balance))
         .reduce(counter, 0);
       this.report["SALES SOURCE DETAIL"].push({
         text: this.$t("type.unsettled"),
@@ -760,7 +760,7 @@ export default {
       temp = logs.filter(log => log.type === "CREDIT");
       let creditCount = temp.length;
       let creditAmount = temp
-        .map(log => toFixed(log.paid - log.tip, 2))
+        .map(log => toFixed(log.paid - (log.tip || 0), 2))
         .reduce(counter, 0);
       this.report["SALES SOURCE DETAIL"].push({
         text: this.$t("report.creditCard"),
