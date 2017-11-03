@@ -1152,7 +1152,7 @@ function createStyle(ctrl) {
               section.column{display:flex;}
               .payment{min-width:150px;${printPayment ? 'display:flex;flex-direction:column;' : 'display:none;'}}
               .empty{flex:1}
-              .payment p{display:flex;font-family:'Tensentype RuiHeiJ-W2';}
+              .payment p{display:flex;font-family:'Tensentype RuiHeiJ-W2';width:200px;}
               .payment .text{flex:1;text-align:right;}
               .payment .value{min-width:40%;text-align:right;padding:0 5px;}
               .settle{${printPayment ? '' : 'display:none;'}}
