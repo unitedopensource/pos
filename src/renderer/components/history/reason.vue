@@ -6,7 +6,7 @@
         <ul>
           <li class="flag" @click="setReason('Customer No-Show',$event)">{{$t('reason.Customer No-Show')}}</li>
           <li @click="setReason('Cancel By Customer',$event)">{{$t('reason.Cancel By Customer')}}</li>
-          <li @click="setReason('operatorCancel',$event)">{{$t('reason.Cancel By Staff')}}</li>
+          <li @click="setReason('Cancel By Staff',$event)">{{$t('reason.Cancel By Staff')}}</li>
           <li class="flag" @click="setReason('Malice Order',$event)">{{$t('reason.Malice Order')}}</li>
           <li @click="setReason('Invalid Order',$event)">{{$t('reason.Invalid Order')}}</li>
           <li class="flag" @click="setReason('Payment Issue',$event)">{{$t('reason.Payment Issue')}}</li>
