@@ -107,6 +107,7 @@ export default {
 .pagination .page {
   margin: 5px;
   flex: 1;
+  max-width: 50px;
   text-align: center;
   cursor: pointer;
   padding: 10px 10px;
