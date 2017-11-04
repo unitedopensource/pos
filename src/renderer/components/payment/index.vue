@@ -399,7 +399,9 @@ export default {
       }
     },
     initialized() {
-      if (isNumber(this.payment.remain)) {
+      if (this.payment.remain === 0) {
+        this.handleFloatingIssue();
+      } else if (isNumber(this.payment.remain)) {
         this.getQuickInput(this.payment.remain);
         this.poleDisplay(
           ["Balance Due:", ""],
@@ -1460,22 +1462,25 @@ export default {
     handleFloatingIssue() {
       this.$dialog({
         type: "alert",
-        title: "dialog.splitTicketSettled",
-        msg: "dialog.splitTicketSettledTip",
+        title: "dialog.ticketSettled",
+        msg: "dialog.ticketSettledTip",
         buttons: [
           { text: "button.cancel", fn: "reject" },
           { text: "button.markAsPaid", fn: "resolve" }
         ]
-      })
-        .then(() => {
+      }).then(() => {
+        if (this.order.split) {
           let payment = this.combineSplitPayment();
-          Object.assign(this.order, { payment });
-          this.$socket.emit("[UPDATE] INVOICE", this.order, false);
-          this.exit();
-        })
-        .catch(() => {
-          this.exit();
-        });
+          Object.assign(this.order, { payment, settled: true });
+        } else {
+          Object.assign(this.order, { settled: true });
+        }
+        this.$socket.emit("[UPDATE] INVOICE", this.order, false);
+        this.exit();
+      })
+      .catch(() => {
+        this.exit();
+      });
     },
     ...mapActions(["setOp", "setOrder", "resetAll", "resetMenu"])
   },

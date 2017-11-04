@@ -935,7 +935,7 @@ function createList(printer, ctrl, invoice) {
             if (!invoice.print) {
                 items = list.filter(item => item.printer[printer] && !item.print)
             } else {
-                items = list.filter(item => item.printer[printer] && item.diffs !== 'unchanged')
+                items = list.filter(item => item.printer[printer] && !item.print && item.diffs !== 'unchanged')
                 items.forEach(item => {
                     switch (item.diffs) {
                         case "less":
@@ -961,7 +961,7 @@ function createList(printer, ctrl, invoice) {
             if (!invoice.print) {
                 items = list.filter(item => item.printer[printer] && !item.print)
             } else {
-                items = list.filter(item => item.printer[printer] && (item.diffs === 'new' || item.diffs === 'inserted'));
+                items = list.filter(item => item.printer[printer] && !item.print && (item.diffs === 'new' || item.diffs === 'inserted'));
 
                 items.forEach(item => {
                     switch (item.diffs) {
@@ -1146,7 +1146,7 @@ function createStyle(ctrl) {
               .main .side{font-size:0.9em;margin-left:2px;}
               td.price{text-align:right;}
               .sub{text-indent:20px;} 
-              td.qty{text-align:center;font-weight:bold;min-width:35px;}
+              td.qty{text-align:center;font-weight:bold;min-width:20px;padding:0 5px 0 0;}
               .zhCN .price{${printPrimaryPrice ? 'display:initial' : 'display:none'}}
               .usEN .price{${printSecondaryPrice ? 'display:initial' : 'display:none'}}          
               footer{font-family:'Agency FB';}
