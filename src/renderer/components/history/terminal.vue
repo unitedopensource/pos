@@ -61,7 +61,7 @@
                         <i class="fa fa-angle-right"></i>
                     </div>
                 </div> -->
-                <pagination :of="transactions" @page="setPage" :contain="10" :max="12"></pagination>
+                <pagination :of="transactions" @page="setPage" :contain="12" :max="12"></pagination>
                 <div>
                     <div class="btn" @click="init.resolve">{{$t('button.exit')}}</div>
                 </div>
