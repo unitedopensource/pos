@@ -416,7 +416,6 @@ export default {
           customer,
           type: this.ticket.type,
           number: this.ticket.number,
-          source: this.op.role !== "ThirdParty" ? "POS" : this.op.name,
           modify: 0,
           status: 1,
           time: +new Date(),

@@ -52,8 +52,7 @@
             </div>
             <footer>
                 <button class="btn" @click="batch" :disabled="!ready">{{$t('button.batch')}}</button>
-                <!-- <button class="btn" @click="verify" :disabled="!ready">{{$t('button.verify')}}</button> -->
-                <div class="pagination">
+                <!-- <div class="pagination">
                     <div class="page" @click="page = page > 0 ? page - 1 : 0">
                         <i class="fa fa-angle-left"></i>
                     </div>
@@ -61,7 +60,8 @@
                     <div class="page" @click="page = page === (totalPage-1) ? page : page + 1">
                         <i class="fa fa-angle-right"></i>
                     </div>
-                </div>
+                </div> -->
+                <pagination :of="transactions" @page="setPage" :contain="10" :max="12"></pagination>
                 <div>
                     <div class="btn" @click="init.resolve">{{$t('button.exit')}}</div>
                 </div>
@@ -75,10 +75,11 @@
 import { mapGetters } from "vuex";
 import dialoger from "../common/dialoger";
 import processor from "../common/processor";
+import pagination from "../common/pagination";
 import tipper from "./tipper";
 export default {
   props: ["init"],
-  components: { dialoger, tipper, processor },
+  components: { dialoger, tipper, processor, pagination },
   data() {
     return {
       transactions: [],
@@ -133,6 +134,9 @@ export default {
         "[TERM] TRANSACTION_BY_DATE",
         this.date.format("YYYY-MM-DD")
       );
+    },
+    setPage(number){
+      this.page = number;
     },
     getFile(device) {
       switch (device) {
@@ -550,10 +554,6 @@ export default {
       let max = min + 12;
       return this.transactions.slice(min, max);
     },
-    totalPage() {
-      let length = this.transactions.length;
-      return Math.ceil(length / 12);
-    },
     ...mapGetters(["op", "config", "language", "history", "station"])
   },
   sockets: {
@@ -770,25 +770,5 @@ li.void,
   align-items: center;
   padding: 0 10px;
   justify-content: center;
-}
-
-.pagination .page {
-  margin: 5px;
-  width: 20px;
-  text-align: center;
-  cursor: pointer;
-  padding: 10px 10px;
-  border-radius: 4px;
-  text-shadow: 0 1px 1px #fff;
-  background: linear-gradient(#fefefe, #cfd0d3);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
-}
-
-.page.active {
-  font-weight: bold;
-  background: #676767;
-  color: #fff;
-  text-shadow: 0 1px 1px #000;
-  box-shadow: rgba(0, 0, 0, 0.75) 0 0 0 0 inset;
 }
 </style>

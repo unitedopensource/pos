@@ -21,6 +21,10 @@
                 <i class="fa fa-hand-o-right"></i>
                 <span>{{$t('type.TO_GO')}}</span>
             </li>
+            <li @click="thirdParty" class="thirdParty" v-show="false">
+              <i class="fa fa-edge"></i>
+              <span>{{$t('type.THIRD')}}</span>
+            </li>
         </ul>
         <div :is="component" :init="componentData"></div>
     </div>
@@ -29,9 +33,10 @@
 <script>
 import { mapGetters, mapActions } from "vuex";
 import dialoger from "../common/dialoger";
+import tpp from "./source";
 export default {
   props: ["init"],
-  components: { dialoger },
+  components: { dialoger, tpp },
   data() {
     return {
       componentData: null,
@@ -86,16 +91,18 @@ export default {
       this.init.resolve();
     },
     togo() {
-        this.$dialog({
-            type:"question",
-            title:'dialog.foodTogo',
-            msg:'dialog.togoConfirm'
-        }).then(()=>{
-            this.$bus.emit("FOOD_TOGO");
-            this.init.resolve();
-        }).catch(()=>{
-            this.$q()
+      this.$dialog({
+        type: "question",
+        title: "dialog.foodTogo",
+        msg: "dialog.togoConfirm"
+      })
+        .then(() => {
+          this.$bus.emit("FOOD_TOGO");
+          this.init.resolve();
         })
+        .catch(() => {
+          this.$q();
+        });
     },
     applyPrice(type) {
       let content = this.order.content.map(item => {
@@ -104,6 +111,19 @@ export default {
         return item;
       });
       this.setOrder({ content });
+    },
+    thirdParty() {
+      new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject };
+        this.component = "tpp";
+      })
+        .then(type => {
+          this.setOrder({ source: type });
+          this.init.resolve();
+        })
+        .catch(() => {
+          this.$q();
+        });
     },
     ...mapActions(["setOrder", "setTicket", "resetTable", "resetCurrentTable"])
   }

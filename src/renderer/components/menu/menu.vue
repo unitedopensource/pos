@@ -106,14 +106,15 @@ export default {
           _id: ObjectId(),
           server: this.op.name,
           station: this.station.alies,
-          type: this.ticket.type
+          type: this.ticket.type,
+          source: this.op.role !== "ThirdParty" ? "POS" : this.op.name
         });
       } else {
         this.saveForDiffs(this.order.content);
       }
     },
     entry(e) {
-      if(this.component) return;
+      if (this.component) return;
       switch (e.key) {
         case "Escape":
           this.queryItem = "";

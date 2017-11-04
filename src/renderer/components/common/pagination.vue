@@ -3,7 +3,26 @@
         <div class="page">
             <i class="fa fa-angle-left"></i>
         </div>
-        <div class="page" v-for="i in pages" :key="i" :class="{active:i === page}" @click="setPage(i)">{{i}}</div>
+        <template v-if="style==='full'">
+            <div class="page" v-for="i in pages" :key="i" :class="{active:i === page}" @click="setPage(i)">{{i}}</div>
+        </template>
+        <template v-else-if="style==='side'">
+            <div class="page" v-for="i in first(pages)" :key="i" :class="{active:i === page}" @click="setPage(i)">{{i}}</div>
+            <div>......</div>
+            <div class="page" v-for="i in last(pages)" :key="i" :class="{active:i === page}" @click="setPage(i)">{{i}}</div>
+        </template>
+        <template v-else-if="style==='end'">
+            <div class="page" @click="setPage(1)">1</div>
+            <div>......</div>
+            <div class="page" v-for="i in rear(pages)" :key="i" :class="{active:i === page}" @click="setPage(i)">{{i}}</div>
+        </template>
+        <template v-else>
+            <div class="page" @click="setPage(1)">1</div>
+            <div>......</div>
+            <div class="page" v-for="i in middle(pages)" :key="i" :class="{active:i === page}" @click="setPage(i)">{{i}}</div>
+            <div>......</div>
+            <div class="page" v-for="i in last(pages)" :key="i" :class="{active:i === page}" @click="setPage(i)">{{i}}</div>
+        </template>
         <div class="page">
             <i class="fa fa-angle-right"></i>
         </div>
@@ -12,79 +31,97 @@
 
 <script>
 export default {
-    props: ['of', 'contain', 'max'],
-    data() {
-        return {
-            pages: [],
-            page: 1
-        }
+  props: ["of", "contain", "max"],
+  data() {
+    return {
+      pages: [],
+      page: 1,
+      style: "full"
+    };
+  },
+  created() {
+    this.format(this.page);
+  },
+  methods: {
+    first(pages) {
+      let min = 0;
+      let max = 10;
+      return pages.slice(min, max);
     },
-    created() {
-        this.format(this.page)
+    last(pages) {
+      let length = pages.length - 1;
+      return pages.slice(length - 1, length);
     },
-    methods: {
-        format(page) {
-            let array;
-            if (this.totalPage <= this.max) {
-                this.pages = [...Array(this.totalPage).keys()].map((e, i) => i + 1);
-            } else if (page <= 4 || page >= this.totalPage - 6) {
-                array = [1, 2, 3, 4, 5, 6];
-                for (let i = this.totalPage - 6; i < this.totalPage; i++) {
-                    array.push(i)
-                }
-                this.pages = array;
-            } else {
-                array = [1, 2, 3, 4, page - 2, page - 1, page, page + 1, page + 2];
-                for (let i = this.totalPage - 3; i < this.totalPage; i++) {
-                    array.push(i)
-                }
-                this.pages = array;
-            }
-        },
-        setPage(number) {
-            this.$emit('page', number - 1);
-            this.page = number;
-            this.format(number);
-        }
+    middle(pages) {
+      let page = this.page;
+      let min = page - 4;
+      let max = page + 4;
+      return pages.slice(min, max);
     },
-    computed: {
-        totalPage() {
-            return Math.ceil(this.of.length / this.contain)
-        }
+    rear(pages){
+        let max = this.pages.length;
+        let min = max - 10;
+        return pages.slice(min,max)
     },
-    watch: {
-        of() {
-            this.page = 1;
-            this.format(0)
-        }
+    format(page) {
+      let array;
+      this.pages = [...Array(this.totalPage).keys()].map((e, i) => i + 1);
+
+      if (this.totalPage <= this.max) {
+        this.style = "full";
+      } else if (page <= 6) {
+        this.style = "side";
+      } else if (page > this.totalPage - 6) {
+        this.style = "end";
+      } else {
+        this.style = "middle";
+      }
+      console.log(this.style);
+    },
+    setPage(number) {
+      this.$emit("page", number - 1);
+      this.page = number;
+      this.format(number);
     }
-}
+  },
+  computed: {
+    totalPage() {
+      return Math.ceil(this.of.length / this.contain);
+    }
+  },
+  watch: {
+    of() {
+      this.page = 1;
+      this.format(0);
+    }
+  }
+};
 </script>
 
 <style scoped>
 .pagination {
-    justify-content: center;
-    align-items: center;
-    display: flex;
+  justify-content: center;
+  align-items: center;
+  display: flex;
 }
 
 .pagination .page {
-    margin: 5px;
-    width: 20px;
-    text-align: center;
-    cursor: pointer;
-    padding: 10px 10px;
-    border-radius: 4px;
-    text-shadow: 0 1px 1px #fff;
-    background: linear-gradient(#fefefe, #cfd0d3);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, .7);
+  margin: 5px;
+  flex: 1;
+  text-align: center;
+  cursor: pointer;
+  padding: 10px 10px;
+  border-radius: 4px;
+  text-shadow: 0 1px 1px #fff;
+  background: linear-gradient(#fefefe, #cfd0d3);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
 }
 
 .page.active {
-    font-weight: bold;
-    background: #676767;
-    color: #fff;
-    text-shadow: 0 1px 1px #000;
-    box-shadow: rgba(0, 0, 0, 0.75) 0 0 0 0 inset;
+  font-weight: bold;
+  background: #676767;
+  color: #fff;
+  text-shadow: 0 1px 1px #000;
+  box-shadow: rgba(0, 0, 0, 0.75) 0 0 0 0 inset;
 }
 </style>
