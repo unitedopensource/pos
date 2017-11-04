@@ -41,125 +41,119 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions } from "vuex";
 export default {
-    props: ['init'],
-    data() {
-        return {
-            item: null,
-            scale: "0.00"
-        }
+  props: ["init"],
+  data() {
+    return {
+      item: null,
+      scale: "0.00"
+    };
+  },
+  created() {
+    this.item = JSON.parse(JSON.stringify(this.init.item));
+  },
+  mounted() {
+    this.$refs.scale.focus();
+  },
+  methods: {
+    input(num) {
+      let value = Math.round(parseFloat(this.scale) * 100);
+      if (value + num > 99999) return;
+      this.scale = ((value + num) / 100).toFixed(2);
     },
-    created() {
-        this.item = JSON.parse(JSON.stringify(this.init.item))
+    del() {
+      this.scale = (String(this.scale * 100)
+        .toFixed(0)
+        .slice(0, -1) / 100
+      ).toFixed(2);
     },
-    mounted() {
-        this.$refs.scale.focus();
+    done() {
+      let price = parseFloat(this.total);
+      Object.assign(this.item, {
+        single: price,
+        price: [price],
+        total: this.total,
+        prices: {},
+        choiceSet: [
+          {
+            qty: 1,
+            zhCN: `${this.scale} @ ${this.item.unitPrice.toFixed(
+              2
+            )} / per Unit`,
+            usEN: `${this.scale} @ ${this.item.unitPrice.toFixed(
+              2
+            )} / per Unit`,
+            single: 0,
+            price: 0
+          }
+        ]
+      });
+      this.addToOrder(this.item);
+      this.init.resolve();
     },
-    methods: {
-        input(num) {
-            let value = Math.round(parseFloat(this.scale) * 100);
-            if(value + num > 99999)return;
-            this.scale = ((value + num) / 100).toFixed(2);
-        },
-        del() {
-            this.scale = (String(this.scale * 100).toFixed(0).slice(0, -1) / 100).toFixed(2)
-        },
-        done() {
-            let price = parseFloat(this.total);
-            Object.assign(this.item, {
-                single: price,
-                price: [price],
-                total: this.total,
-                prices: {},
-                choiceSet: [{
-                    qty: 1,
-                    zhCN: `${this.scale} @ ${this.item.unitPrice.toFixed(2)} / ` + this.$t('text.perUnit'),
-                    usEN: `${this.scale} @ ${this.item.unitPrice.toFixed(2)} / per Unit`,
-                    single: 0,
-                    price: 0
-                }]
-            })
-            this.addToOrder(this.item);
-            this.init.resolve();
-        },
-        ...mapActions(['addToOrder'])
+    ...mapActions(["addToOrder"])
+  },
+  computed: {
+    total() {
+      return (this.scale * this.item.unitPrice).toFixed(2);
     },
-    computed: {
-        total() {
-            return (this.scale * this.item.unitPrice).toFixed(2)
-        },
-        ...mapGetters(['language'])
-    }
-
-}
+    ...mapGetters(["language"])
+  }
+};
 </script>
 
 <style scoped>
 .input {
-    display: flex;
-    width: 460px;
+  display: flex;
+  width: 423px;
 }
 
 .wrap {
-    display: flex;
-    padding: 0 1px 0 4px;
+  display: flex;
+  padding: 0 1px 0 4px;
 }
 
 section.numpad {
-    display: flex;
-    flex-wrap: wrap;
-    width: 342px;
+  display: flex;
+  flex-wrap: wrap;
+  width: 315px;
 }
 
 .zero {
-    width: 337px;
+  width: 310px;
 }
 
 .input div {
-    flex: 1;
-    height: 90px;
-    margin: 6px;
-    border-radius: 2px;
-    background: #fff;
-    box-shadow: var(--shadow);
+  flex: 1;
+  height: 90px;
+  margin: 5px;
+  border-radius: 2px;
+  background: #fff;
+  box-shadow: var(--shadow);
 }
 
 h3 {
-    padding: 8px 5px;
-    border-bottom: 1px solid #eee;
-    background: #607D8B;
-    color: #fff;
-    text-align: center;
-    font-weight: normal;
+  padding: 8px 5px;
+  border-bottom: 1px solid #eee;
+  background: #607d8b;
+  color: #fff;
+  text-align: center;
+  font-weight: normal;
 }
 
 input {
-    width: 100%;
-    border: none;
+  width: 100%;
+  border: none;
 }
 
 .value {
-    font-size: 43px;
-    font-family: 'Agency FB';
-    font-weight: bold;
-    color: #616161;
-    letter-spacing: 4px;
-    text-align: right;
-    display: block;
+  font-size: 43px;
+  font-family: "Agency FB";
+  font-weight: bold;
+  color: #616161;
+  letter-spacing: 4px;
+  text-align: right;
+  display: block;
 }
-
-
-
-
-/* .input {
-    display: flex;
-    margin-left: 3em;
-    align-items: center;
-}
-
-.input input {
-    font-size: 2em;
-    width: 100px;
-} */
 </style>

@@ -58,10 +58,10 @@ export default {
       let max = page + 4;
       return pages.slice(min, max);
     },
-    rear(pages){
-        let max = this.pages.length;
-        let min = max - 10;
-        return pages.slice(min,max)
+    rear(pages) {
+      let max = this.pages.length;
+      let min = max - 10;
+      return pages.slice(min, max);
     },
     format(page) {
       let array;
@@ -76,7 +76,6 @@ export default {
       } else {
         this.style = "middle";
       }
-      console.log(this.style);
     },
     setPage(number) {
       this.$emit("page", number - 1);
