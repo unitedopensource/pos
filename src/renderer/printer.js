@@ -1053,7 +1053,7 @@ function createList(printer, ctrl, invoice) {
         let nameEN = (item[printer] && item[printer].hasOwnProperty("usEN")) ? item[printer].usEN : item.usEN;
         let sideCN = item.side.zhCN ? item.side.zhCN : "";
         let sideEN = item.side.usEN ? item.side.usEN : "";
-        let qty = item.qty === 1 ? "" : item.qty;
+        let qty = item.qty !== 1 ? `<td class="qty">${item.qty}</td>` : `<td></td>`;
         let markA = item.mark[0].join(" ");
         let markB = item.mark[1].join(" ");
         let mark = (markA || markB) ? "markItem" : "";
@@ -1092,13 +1092,14 @@ function createList(printer, ctrl, invoice) {
                             <td class="price"><del>${item.total}</del></td>
                         </tr>`;
         } else {
+
             firstLine = `<tr class="zhCN">
-                        <td class="qty">${item.qty !== 1 ? item.qty : ''}</td>
+                        ${qty}
                         <td class="item"><div class="main">${printMenuID ? item.menuID : ''}${nameCN} <span class="side">${sideCN}</span></div>${setCN}</td>
                         <td class="price">${item.total}</td>
                     </tr>`;
             secondLine = `<tr class="usEN">
-                            <td class="qty">${item.qty !== 1 ? item.qty : ''}</td>
+                            ${qty}
                             <td class="item"><div class="main">${printMenuID ? item.menuID : ''}${nameEN} <span class="side">${sideEN}</span></div>${setEN}</td>
                             <td class="price">${item.total}</td>
                         </tr>`;
@@ -1140,13 +1141,12 @@ function createStyle(ctrl) {
               section.body{padding:10px 0px;}
               table.receipt{width:100%;border-spacing:0;border-collapse:collapse;margin:5px 0;}
               .receipt tbody tr{display:flex;position:relative;align-items:flex-start;vertical-align:text-top;}
-              td.qty{font-weight:bold;}
               td.item{flex:1;display:flex;flex-direction:column;margin-left:5px}
               td.item .main{width:100%;}
               .main .side{font-size:0.9em;margin-left:2px;}
               td.price{text-align:right;}
               .sub{text-indent:20px;} 
-              td.qty{text-align:center;}
+              td.qty{text-align:center;font-weight:bold;min-width:35px;}
               .zhCN .price{${printPrimaryPrice ? 'display:initial' : 'display:none'}}
               .usEN .price{${printSecondaryPrice ? 'display:initial' : 'display:none'}}          
               footer{font-family:'Agency FB';}

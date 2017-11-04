@@ -371,6 +371,7 @@ export default {
       this.$socket.emit("[CMS] REMOVE_PRINTER", printer);
       this.removePrinter(printer);
       this.device = null;
+      this.initial();
       this.$q();
     },
     save() {
@@ -459,7 +460,7 @@ export default {
       this.$dialog({
         type: "question",
         title: "dialog.assignPrinter",
-        msg: "dialog.assignPrinterToAllItems",
+        msg: ["dialog.assignPrinterToAllItems", printer.name],
         buttons: [
           { text: "button.cancel", fn: "reject" },
           { text: "button.apply", fn: "resolve" }

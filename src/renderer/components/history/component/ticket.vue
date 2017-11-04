@@ -7,7 +7,10 @@
             <span>{{invoice.customer.phone | phone}}</span>
         </div>
         <span class="info" v-else-if="invoice.type === 'DINE_IN'">{{invoice.table}}</span>
-        <span class="info" v-else>{{invoice.customer.name}}</span>
+        <div class="info" v-else>
+          <span>{{invoice.customer.name}}</span>
+          <span>{{invoice.customer.phone | phone}}</span>
+        </div>
         <span class="note" v-if="invoice.status === 0">{{$t('reason.'+invoice.void.note)}}</span>
         <span class="price">$ {{invoice.payment.due | decimal}}</span>
     </div>
