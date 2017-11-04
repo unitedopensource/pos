@@ -65,9 +65,9 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions } from "vuex";
 export default {
-  props: ['init'],
+  props: ["init"],
   data() {
     return {
       component: null,
@@ -75,31 +75,31 @@ export default {
       list: [],
       steps: [
         {
-          name: 'starter',
+          name: "starter",
           delay: null,
           contain: []
         },
         {
-          name: 'appetizer',
+          name: "appetizer",
           delay: null,
           contain: []
         },
         {
-          name: 'entree',
+          name: "entree",
           delay: null,
           contain: []
         },
         {
-          name: 'dessert',
+          name: "dessert",
           delay: null,
           contain: []
         }
       ],
       step: 0,
-      target: 'minute',
+      target: "minute",
       hour: "00",
       minute: "00"
-    }
+    };
   },
   created() {
     this.initial();
@@ -113,11 +113,15 @@ export default {
       let hour = this.hour;
       let minute = this.minute;
       if (this.list.length === 0 && (hour !== "00" || minute !== "00"))
-        this.steps[current].delay = moment().add(~~hour, 'h').add(~~minute, 'm').format('x');
+        this.steps[current].delay = moment()
+          .add(~~hour, "h")
+          .add(~~minute, "m")
+          .format("x");
       if (this.steps[index].delay) {
-        let minutes = moment(Number(this.steps[index].delay)).diff(moment(), "minutes") + 1;
+        let minutes =
+          moment(Number(this.steps[index].delay)).diff(moment(), "minutes") + 1;
         this.hour = ("0" + Math.floor(minutes / 60)).slice(-2);
-        this.minute = ("0" + (minutes % 60)).slice(-2);
+        this.minute = ("0" + minutes % 60).slice(-2);
       } else {
         this.hour = "00";
         this.minute = "00";
@@ -147,26 +151,30 @@ export default {
     confirm() {
       if (this.list.length !== 0) return;
       this.jumpStep(3);
-      this.steps.filter(step => step.contain.length).map(schedule => {
-        let delay = Number(schedule.delay);
-        let order = JSON.parse(JSON.stringify(this.init.order));
-        delete order.payment;
-        Object.assign(order, {
-          type: this.app.mode === 'create' ? this.ticket.type : order.type,
-          number: this.app.mode === 'create' ? this.ticket.number : order.number,
-          customer: this.customer,
-          course: schedule.name,
-          delay,
-          time: delay,
-          content: schedule.contain.map(item => {
-            item.pending = true;
-            return item
-          })
+      this.steps
+        .filter(step => step.contain.length)
+        .map(schedule => {
+          let delay = Number(schedule.delay);
+          let order = JSON.parse(JSON.stringify(this.init.order));
+          delete order.payment;
+          Object.assign(order, {
+            type: this.app.mode === "create" ? this.ticket.type : order.type,
+            number:
+              this.app.mode === "create" ? this.ticket.number : order.number,
+            customer: this.customer,
+            course: schedule.name,
+            delay,
+            time: delay,
+            content: schedule.contain.map(item => {
+              item.pending = true;
+              return item;
+            })
+          });
+          return order;
         })
-        return order
-      }).forEach(task => {
-        this.delayPrint(task)
-      });
+        .forEach(task => {
+          this.delayPrint(task);
+        });
       this.exit();
     },
     exit() {
@@ -174,10 +182,10 @@ export default {
       let customer = this.customer;
       delete customer.extra;
       Object.assign(order, {
-        type: this.app.mode === 'create' ? this.ticket.type : order.type,
-        number: this.app.mode === 'create' ? this.ticket.number : order.number,
-        modify: this.app.mode === 'create' ? 0 : order.modify++,
-        source: this.op.role !== 'ThirdParty' ? "POS" : this.op.name,
+        type: this.app.mode === "create" ? this.ticket.type : order.type,
+        number: this.app.mode === "create" ? this.ticket.number : order.number,
+        modify: this.app.mode === "create" ? 0 : order.modify++,
+        source: this.op.role !== "ThirdParty" ? "POS" : this.op.name,
         status: 1,
         settle: false,
         customer,
@@ -185,21 +193,30 @@ export default {
         time: +new Date(),
         content: order.content.map(item => {
           item.pending = true;
-          return item
+          return item;
         })
       });
-      this.app.mode === 'create' ? this.$socket.emit("[TABLE] INVOICE", order) : this.$socket.emit("[UPDATE] INVOICE", order);
+      this.app.mode === "create"
+        ? this.$socket.emit("[TABLE] INVOICE", order)
+        : this.$socket.emit("[UPDATE] INVOICE", order);
       this.init.resolve();
       this.resetAll();
       this.setOrder(order);
-      this.$router.push({ path: "/main/table" })
+      this.$router.push({ path: "/main/table" });
     },
-    ...mapActions(['setOrder', 'resetAll', 'delayPrint', 'setTableInfo'])
+    ...mapActions(["setOrder", "resetAll", "delayPrint", "setTableInfo"])
   },
   computed: {
-    ...mapGetters(['op', 'app', 'ticket', 'customer', 'language', 'currentTable'])
+    ...mapGetters([
+      "op",
+      "app",
+      "ticket",
+      "customer",
+      "language",
+      "currentTable"
+    ])
   }
-}
+};
 </script>
 
 <style scoped>
@@ -208,7 +225,6 @@ export default {
 }
 
 .btn {
-  margin: 5px 10px;
   flex: 1;
 }
 
@@ -244,7 +260,7 @@ export default {
 }
 
 .step:before {
-  content: '\f10c';
+  content: "\f10c";
   font-family: fontAwesome;
   position: absolute;
   top: 16px;
@@ -253,23 +269,23 @@ export default {
 }
 
 .step.done:before {
-  content: '\f058';
-  color: #4CAF50;
+  content: "\f058";
+  color: #4caf50;
 }
 
 .step.active {
-  color: #2196F3;
+  color: #2196f3;
 }
 
 .step.active:before {
-  content: '\f111';
-  color: #2196F3;
+  content: "\f111";
+  color: #2196f3;
 }
 
 .step:after {
-  content: ' ';
+  content: " ";
   width: 2px;
-  background: #607D8B;
+  background: #607d8b;
   height: 100%;
   position: absolute;
   left: 18px;
@@ -297,7 +313,7 @@ ul {
 
 .indicator li i {
   display: none;
-  color: #FF7043;
+  color: #ff7043;
   float: right;
   padding-right: 10px;
 }
@@ -313,7 +329,7 @@ ul {
 }
 
 .content li:nth-child(2n) {
-  background: #ECEFF1;
+  background: #eceff1;
 }
 
 section.numpad {
@@ -323,7 +339,7 @@ section.numpad {
 }
 
 .timer {
-  width: 347px;
+  width: 320px;
 }
 
 .timer article {
@@ -347,20 +363,20 @@ header.display {
 h3 {
   padding: 8px 5px;
   border-bottom: 1px solid #eee;
-  background: #B0BEC5;
+  background: #b0bec5;
   color: #fff;
 }
 
 .value {
   font-size: 43px;
-  font-family: 'Agency FB';
+  font-family: "Agency FB";
   font-weight: bold;
-  color: #CFD8DC;
+  color: #cfd8dc;
   letter-spacing: 4px;
 }
 
 .active h3 {
-  background: #607D8B;
+  background: #607d8b;
 }
 
 .active .value {
@@ -368,8 +384,8 @@ h3 {
 }
 
 .del {
-  width: 223px;
-  background: #78909C;
+  width: 205px;
+  background: #78909c;
 }
 
 span.delay {

@@ -276,10 +276,11 @@ export default {
       this.callComponent("guest");
     },
     done(print) {
+      if (this.isEmptyTicket) return;
       this.checkToGo(print)
         .then(this.save.bind(null, print))
-        .then(this.exit);
-      //.catch(this.placeFailed);
+        .then(this.exit)
+        .catch(this.placeFailed);
     },
     placeFailed(error) {
       console.error(error);

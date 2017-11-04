@@ -154,6 +154,14 @@ export default [{
       name: 'Setting.print',
       component: require('./components/setting/print/index')
     }, {
+      path: 'thirdParty',
+      component: require('./components/setting/thirdParty/nav'),
+      children: [{
+        path: '/',
+        name: 'Setting.thirdParty.index',
+        component: require('./components/setting/thirdParty/index')
+      }]
+    }, {
       path: 'operator',
       component: require('./components/setting/operator/nav'),
       children: [{

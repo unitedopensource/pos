@@ -37,7 +37,7 @@
                 <figcaption>{{$t('setting.database')}}</figcaption>
                 <span class="intro">{{$t('setting.databaseTip')}}</span>
             </figure>
-            <figure>
+            <figure @click="go('Setting.thirdParty.index')">
                 <i class="fa fa-2x fa-list-alt"></i>
                 <figcaption>{{$t('setting.thirdParty')}}</figcaption>
                 <span class="intro">{{$t('setting.thirdPartyTip')}}</span>

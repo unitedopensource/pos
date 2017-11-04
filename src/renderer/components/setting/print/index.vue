@@ -391,7 +391,9 @@ export default {
     addPrinter() {
       this.openEditor()
         .then(this.askAssign)
-        .catch(this.$q);
+        .catch(() => {
+          this.$q();
+        });
     },
     openEditor() {
       return new Promise((resolve, reject) => {

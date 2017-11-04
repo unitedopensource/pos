@@ -310,7 +310,8 @@ export default {
         'setDate': 'Set Date',
         'payOut': 'Pay Out Record',
         'deliveryRelated': 'Delivery Related',
-        'optionList': 'Options'
+        'optionList': 'Options',
+        'thirdPartyOrder':'Third Party Order'
     },
     menu: {
         'course': 'Course',
@@ -1091,6 +1092,7 @@ export default {
         'lockWhenCompleteOrder': 'Lock screen when complete order',
         'doNotAskReceiptAfterSettle': 'Do not prompt "Print Receipt" dialog',
         'taxOnDeliveryCharge': 'Tax on delivery charge',
+        'thirdPartyProvider':'Select your third party service provider',
         'table': {
             'actionsOnDone': 'Actions after tapping Done',
             'passwordRequire': 'Password input required before create a new table.',

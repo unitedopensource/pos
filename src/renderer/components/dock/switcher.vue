@@ -21,7 +21,7 @@
                 <i class="fa fa-hand-o-right"></i>
                 <span>{{$t('type.TO_GO')}}</span>
             </li>
-            <li @click="thirdParty" class="thirdParty" v-show="false">
+            <li @click="thirdParty" class="thirdParty">
               <i class="fa fa-edge"></i>
               <span>{{$t('type.THIRD')}}</span>
             </li>
@@ -114,7 +114,7 @@ export default {
     },
     thirdParty() {
       new Promise((resolve, reject) => {
-        this.componentData = { resolve, reject };
+        this.componentData = { resolve, reject, source: this.order.source };
         this.component = "tpp";
       })
         .then(type => {
@@ -156,5 +156,9 @@ li {
 li i {
   width: 25px;
   text-align: center;
+}
+
+li.thirdParty {
+  margin-top: 17px;
 }
 </style>

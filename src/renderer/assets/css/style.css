@@ -399,6 +399,16 @@ header.dock{
   font-size: 22px;
 }
 
+.dock .thirdPartyDisplay {
+  background: linear-gradient(to bottom, #455A64 20%, #263238 100%);
+  color: #fff;
+  text-shadow: 0 1px 1px #90A4AE;
+  padding: 1px 7px;
+  border-radius: 4px;
+  font-family: monospace;
+  box-shadow: 0 1px 1px #ECEFF1;
+}
+
 .dock .type{
   min-width: 100px;
   text-shadow: 0 1px 1px #fff;

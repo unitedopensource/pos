@@ -248,7 +248,8 @@ export default {
         'setDate': '设定日期',
         'payOut': '支出记录',
         'deliveryRelated': '送餐相关',
-        'optionList': '列表选项'
+        'optionList': '列表选项',
+        'thirdPartyOrder':'第三方订单'
     },
     menu: {
         'course': '定时',
@@ -1083,6 +1084,7 @@ export default {
         'lockWhenCompleteOrder': '完成订单之后锁定界面',
         'doNotAskReceiptAfterSettle': '结账之后不弹出收据打印确认框',
         'taxOnDeliveryCharge': '送餐费用加税',
+        'thirdPartyProvider':'请选择一个第三方提供商',
         'table': {
             'actionsOnDone': '设定完成订单之后的操作',
             'passwordRequire': '创建座位之前需要输入密码',

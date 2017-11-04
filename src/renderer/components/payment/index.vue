@@ -505,7 +505,7 @@ export default {
         case "CASH":
           this.checkCashDrawer()
             .then(this.chargeCash)
-            .then(this.saveLogs)
+            .then(this.saveLogs.bind(null, false))
             .then(this.postToDatabase)
             .then(this.tenderCash)
             .then(this.checkBalance)
@@ -524,7 +524,7 @@ export default {
         case "THIRD":
           this.checkOverPay()
             .then(this.chargeThirdParty)
-            .then(this.saveLogs)
+            .then(this.saveLogs.bind(null, true))
             .then(this.postToDatabase)
             .then(this.askReceipt)
             .then(this.checkBalance)
@@ -641,7 +641,7 @@ export default {
           this.payment.paid = toFixed(this.payment.paid + paid, 2);
           this.payment.type = this.thirdPartyType;
           this.recalculatePayment();
-          charge(this.thirdPartyType);
+          charge(this.thirdPartyType, true);
         } else {
           new Promise((resolve, reject) => {
             this.componentData = { resolve, reject, callback: true };
@@ -652,7 +652,7 @@ export default {
               this.payment.paid = toFixed(this.payment.paid + paid, 2);
               this.payment.type = type;
               this.recalculatePayment();
-              charge(type);
+              charge(type, true);
             })
             .catch(() => {
               this.component = null;
@@ -976,7 +976,7 @@ export default {
               });
       });
     },
-    saveLogs(type) {
+    saveLogs(thirdParty, type) {
       return new Promise(resolve => {
         let activity;
         let _id = ObjectId();
@@ -1025,12 +1025,20 @@ export default {
             : parseFloat(this.paid);
 
         let balance = Math.max(0, this.payment.remain);
+        let change = 0;
+
+        if (type === "CASH") {
+          change = this.cashTender;
+          if (thirdParty) {
+            change = 0;
+          }
+        }
 
         let log = {
           _id: null,
           type,
           paid: parseFloat(this.paid),
-          change: type === "CASH" ? this.cashTender : 0,
+          change,
           actual,
           balance,
           tip: parseFloat(this.tip),
@@ -1055,7 +1063,6 @@ export default {
             type: this.ticket.type,
             station: this.station.alies,
             cashier: this.op.name,
-            source: this.op.role === "ThirdParty" ? this.op.name : "POS",
             modify: 0,
             status: 1,
             date: today(),

@@ -3,6 +3,7 @@
         <header class="dock">
             <span class="number">{{ticket.number}}</span>
             <span class="type" v-show="ticket.type" @click="changeType">{{type}}</span>
+            <span class="thirdPartyDisplay" v-show="$route.name === 'Menu' && order.source !== 'POS'">{{order.source}}</span>
             <div class="info">
                 <div class="customer" v-if="$route.name === 'Menu'" @click="editCustomer">
                     <span class="phone" v-show="customer.phone">{{customer.phone | phone}}</span>
