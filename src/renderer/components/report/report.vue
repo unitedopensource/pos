@@ -464,8 +464,8 @@ export default {
       let settle = {};
       let tip = 0;
       let logs = [];
-
-      data.forEach(invoice => {
+      let invoices = data.filter(invoice=>invoice.status === 1);
+      invoices.forEach(invoice => {
         if (invoice.settled) {
           if (invoice.payment.type === "MULTIPLE") {
             invoice.splitPayment.forEach(split => {
@@ -476,6 +476,7 @@ export default {
           }
         }
       });
+      invoices = null;
 
       let types = new Set();
       logs.forEach(log => {
