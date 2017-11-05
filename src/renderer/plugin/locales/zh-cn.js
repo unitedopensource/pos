@@ -876,7 +876,9 @@ export default {
         'server': '服务员',
         'taxOnDelivery': '送餐税',
         'ignorePrice': '忽略价格',
-        'autoNext': '自动下移'
+        'autoNext': '自动下移',
+        'removeItem':'移除物品',
+        'historyInvoice':'历史订单'
     },
     nav: {
         'store': '店面',

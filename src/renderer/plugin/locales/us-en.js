@@ -883,7 +883,9 @@ export default {
         'server': 'Server',
         'taxOnDelivery': 'Tax On Delivery',
         'ignorePrice': 'Ignore Price',
-        'autoNext': 'Auto Next'
+        'autoNext': 'Auto Next',
+        'removeItem':'Remove Item',
+        'historyInvoice':'History Invoice'
     },
     nav: {
         'store': 'Store',

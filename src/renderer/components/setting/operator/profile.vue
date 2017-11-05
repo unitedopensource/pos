@@ -36,6 +36,7 @@
                         <checkbox v-model="operator.access" val="setting" label="text.setting" :multiple="true"></checkbox>
                         <checkbox v-model="operator.access" val="report" label="text.report" :multiple="true"></checkbox>
                         <checkbox v-model="operator.access" val="terminal" label="text.terminal" :multiple="true"></checkbox>
+                        <checkbox v-model="operator.access" val="history" label="text.historyInvoice" :multiple="true"></checkbox>
                     </div>
                 </div>
                 <div class="datalist">
@@ -50,7 +51,7 @@
                     <span class="name">{{$t('setting.modify')}}</span>
                     <div class="f1">
                         <checkbox v-model="operator.modify" val="price" label="text.price" :multiple="true"></checkbox>
-                        <checkbox v-model="operator.modify" val="item" label="text.item" :multiple="true"></checkbox>
+                        <checkbox v-model="operator.modify" val="item" label="text.removeItem" :multiple="true"></checkbox>
                         <checkbox v-model="operator.modify" val="order" label="text.order" :multiple="true"></checkbox>
                         <checkbox v-model="operator.modify" val="discount" label="text.discount" :multiple="true"></checkbox>
                         <checkbox v-model="operator.modify" val="driver" label="text.driver" :multiple="true"></checkbox>

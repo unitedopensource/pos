@@ -20,12 +20,13 @@
 import { mapActions, mapGetters } from "vuex";
 import dialoger from "./common/dialoger";
 import counter from "./common/counter";
+import unlock from "./common/unlock";
 import toast from "./dashboard/toast";
 import Preset from "../preset";
 import MAC from "getmac";
 
 export default {
-  components: { dialoger, counter, toast },
+  components: { dialoger, counter, toast, unlock },
   data() {
     return {
       componentData: null,
@@ -135,7 +136,20 @@ export default {
           this.$router.push({ path: "/main/list" });
           break;
         case "history":
-          this.$router.push({ path: "/main/history" });
+          this.approval(this.op.access, route)
+            ? this.$router.push({ path: "/main/history" })
+            : this.$denyAccess(true)
+                .then(op => {
+                  console.log(op);
+                  if (this.approval(op.access, route)) {
+                    this.$router.push({ path: "/main/history" });
+                  } else {
+                    this.$denyAccess();
+                  }
+                })
+                .catch(() => {
+                  this.$denyAccess();
+                });
           break;
         case "setting":
           this.approval(this.op.access, route)
