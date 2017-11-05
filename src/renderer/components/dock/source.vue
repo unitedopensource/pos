@@ -27,11 +27,11 @@ export default {
         { name: "Seamless", img: "static/image/provider/seamless.png" },
         { name: "Eat 24", img: "static/image/provider/eat24.png" },
         {
-          name: "Beyond Menu",
+          name: "BeyondMenu",
           img: "static/image/provider/beyondmenu.png"
         },
         { name: "Uber Eats", img: "static/image/provider/ubereats.png" },
-        { name: "Eat Street", img: "static/image/provider/eatstreet.png" },
+        { name: "EatStreet", img: "static/image/provider/eatstreet.png" },
         { name: "Postmates", img: "static/image/provider/postmates.png" }
       ],
       service: null

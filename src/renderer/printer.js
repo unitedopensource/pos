@@ -410,7 +410,7 @@ var Printer = function (plugin, config) {
                     } else {
                         for (let value in report[key]) {
                             let { text, count, amount } = report[key][value];
-                            amount = isNumber(amount) ? "$ " + toFixed(amount, 2).toFixed(2) : amount ? flatten(amount) : "";
+                            amount = isNumber(amount) ? "$ " + toFixed(amount, 2).toFixed(2) : amount ? flatten(amount) : '';
                             count = count > 0 ? count : "";
                             section += `<div class="data">
                                <div class="text">${text}</div>
@@ -445,6 +445,7 @@ var Printer = function (plugin, config) {
             Array.isArray(array) ?
                 array.forEach(data => {
                     for (let key in data) {
+                        if (isNumber(data[key]) && parseFloat(data[key]) === 0) continue;
                         html += `<div class="row">
                         <span class="text">${key}:</span>
                         <span class="value">${isNumber(data[key]) ? '$ ' + data[key] : data[key]}</span>
@@ -1146,7 +1147,7 @@ function createStyle(ctrl) {
               .main .side{font-size:0.9em;margin-left:2px;}
               td.price{text-align:right;}
               .sub{text-indent:20px;} 
-              td.qty{text-align:center;font-weight:bold;min-width:20px;padding:0 5px 0 0;}
+              td.qty{text-align:center;font-weight:bold;width:17px;padding-right:5px;}
               .zhCN .price{${printPrimaryPrice ? 'display:initial' : 'display:none'}}
               .usEN .price{${printSecondaryPrice ? 'display:initial' : 'display:none'}}          
               footer{font-family:'Agency FB';}
@@ -1170,6 +1171,8 @@ function createStyle(ctrl) {
               .tips{margin-left:15px;}
               section.note{text-align:center;font-weight:lighter;margin-top:10px;border-top:1px solid #000;}
               .printTime{${printActionTime ? '' : 'display:none;'}font-weight:bold;text-align:center;}
+              .tm{text-align: center;margin:5px;}
+              .tradeMark {font-weight: bold;display: inline-block;padding: 5px 7px;background: #000;color: #fff;}
               .zhCN{font-family:'${primaryFont}';font-size:${primaryFontSize};${printPrimary ? '' : 'display:none!important;'}}
               .usEN{font-family:'${secondaryFont}';font-size:${secondaryFontSize};${printSecondary ? '' : 'display:none!important;'}}
           </style>`
@@ -1300,6 +1303,12 @@ function createFooter(table, ctrl, device, ticket) {
     let gratuity = parseFloat(payment.gratuity) > 0 ?
         `<p><span class="text">Gratuity:</span><span class="value">${payment.gratuity}</span></p>` : "";
 
+    let tradeMark = '';
+
+    if (ticket.source !== 'POS' && (/cashier/i).test(device)) {
+        tradeMark = `<p class="tm"><span class="tradeMark">${ticket.source}</span></p>`;
+    }
+
     return `<footer>
               <section class="column">
                 <div class="empty"></div>
@@ -1311,6 +1320,7 @@ function createFooter(table, ctrl, device, ticket) {
                 ${suggestion + settle.join("").toString()}
               </div>
               <section class="note">${note}</section>
+              ${tradeMark}
               <p class="printTime">${device} print @ ${moment().format('hh:mm:ss')}</p>
             </footer>`
 }

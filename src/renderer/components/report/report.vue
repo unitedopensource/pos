@@ -403,27 +403,62 @@ export default {
       return cashiers;
     },
     sourceReport(data) {
-      let source = {};
-      data.forEach(invoice => {
-        let name = invoice.source;
-        let { subtotal, tax, discount, tip } = invoice.payment;
-        let amount =
-          parseFloat(subtotal) + parseFloat(tax) - parseFloat(discount);
+      let sources = {};
+      let source = new Set();
+      let validInvoice = data.filter(invoice => invoice.status === 1);
 
-        if (source.hasOwnProperty(name)) {
-          source[name]["amount"] += amount;
-          source[name]["tip"] += parseFloat(tip);
-          source[name]["count"]++;
-        } else {
-          source[name] = {
-            text: name,
-            tip: parseFloat(tip),
-            amount: amount,
-            count: 1
-          };
-        }
+      validInvoice.forEach(invoice => {
+        source.add(invoice.source);
       });
-      return source;
+
+      Array.from(source).forEach(provider => {
+        let invoices = validInvoice.filter(
+          invoice => invoice.source === provider
+        );
+        let tip = invoices
+          .map(invoice => parseFloat(invoice.payment.tip))
+          .reduce((a, b) => a + b, 0);
+        let fee = invoices
+          .map(invoice => parseFloat(invoice.payment.delivery))
+          .reduce((a, b) => a + b, 0);
+
+        let uncollected = invoices
+          .filter(
+            invoice => !invoice.settled || invoice.payment.type === "CASH"
+          )
+          .map(
+            invoice =>
+              parseFloat(invoice.payment.subtotal) +
+              parseFloat(invoice.payment.tax)
+          )
+          .reduce((a, b) => a + b, 0);
+
+        let collected = invoices
+          .filter(invoice => invoice.settled)
+          .map(
+            invoice =>
+              parseFloat(invoice.payment.subtotal) +
+              parseFloat(invoice.payment.tax)
+          )
+          .reduce((a, b) => a + b, 0);
+
+        let total = invoices
+          .map(invoice => invoice.payment.balance)
+          .reduce((a, b) => a + b, 0);
+
+        sources[provider] = {
+          text: provider,
+          amount: [
+            { Tip: toFixed(tip, 2).toFixed(2) },
+            { Fee: toFixed(fee, 2).toFixed(2) },
+            { Cash: toFixed(uncollected, 2).toFixed(2) },
+            { Credit: toFixed(collected, 2).toFixed(2) },
+            { Total: toFixed(total, 2).toFixed(2) }
+          ],
+          count: invoices.length
+        };
+      });
+      return sources
     },
     settleTypeReport(data) {
       let settle = {};

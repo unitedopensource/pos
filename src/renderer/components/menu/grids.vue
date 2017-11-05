@@ -69,10 +69,10 @@
       <i class="fa fa-calculator"></i>
       <span class="text">{{$t('button.modify')}}</span>
     </button>
-    <div class="btn settle" @click="settle">
+      <button class="btn settle" @click="settle" :disabled="op.cashCtrl === 'disable' || isEmptyTicket">
       <i class="fa fa-money"></i>
       <span class="text">{{$t('button.payment')}}</span>
-    </div>
+    </button>
     <div class="btn split" @click="split">
       <i class="fa fa-columns"></i>
       <span class="text">{{$t('button.split')}}</span>

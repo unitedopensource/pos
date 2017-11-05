@@ -12,9 +12,6 @@
                 </div>
             </div>
             <footer>
-              <div class="f1">
-                <div class="btn">{{$t('button.view')}}</div>
-              </div>
                 <div class="btn" @click="init.reject(false)">{{$t('button.cancel')}}</div>
                 <div class="btn" @click="confirm">{{$t('button.confirm')}}</div>
             </footer>
@@ -32,18 +29,22 @@ export default {
   data() {
     return {
       options: [
-        "Seamless",
         "GrubHub",
+        "Seamless",
         "Eat 24",
-        "Uber Eat",
+        "Uber Eats",
         "Postmates",
+        "EatStreet",
+        "BeyondMenu",
         "Simpon",
+        "ChowNow",
         "UnionPay",
+        "Online Order",
+        "CASH",
         "Visa",
         "Master",
         "Discover",
-        "AE",
-        "CASH"
+        "AE"
       ],
       type: "CASH",
       orders: [],
@@ -68,6 +69,11 @@ export default {
         component: "thirdParty",
         lock: this.order._id
       });
+  },
+  mounted() {
+    if (this.order.source !== "POS") {
+      this.type = this.order.source;
+    }
   },
   methods: {
     checkComponentUsage() {
@@ -152,7 +158,6 @@ export default {
                 change: 0,
                 balance: 0,
                 actual: split.remain,
-                //potential bug here
                 tip: 0,
                 number: "N/A"
               };

@@ -286,7 +286,9 @@ export default {
       });
   },
   mounted() {
-    this.setPaymentType("CASH");
+    this.order.source === "POS"
+      ? this.setPaymentType("CASH")
+      : this.setPaymentType("THIRD");
   },
   beforeDestroy() {
     this.releaseComponentLock &&
@@ -303,7 +305,8 @@ export default {
           : JSON.parse(JSON.stringify(this.$store.getters.order));
 
         this.payment = this.order.payment;
-        this.thirdPartyPayment = !this.station.terminal.enable;
+        this.thirdPartyPayment =
+          !this.station.terminal.enable || this.order.source !== "POS";
         resolve();
       });
     },
@@ -1468,19 +1471,20 @@ export default {
           { text: "button.cancel", fn: "reject" },
           { text: "button.markAsPaid", fn: "resolve" }
         ]
-      }).then(() => {
-        if (this.order.split) {
-          let payment = this.combineSplitPayment();
-          Object.assign(this.order, { payment, settled: true });
-        } else {
-          Object.assign(this.order, { settled: true });
-        }
-        this.$socket.emit("[UPDATE] INVOICE", this.order, false);
-        this.exit();
       })
-      .catch(() => {
-        this.exit();
-      });
+        .then(() => {
+          if (this.order.split) {
+            let payment = this.combineSplitPayment();
+            Object.assign(this.order, { payment, settled: true });
+          } else {
+            Object.assign(this.order, { settled: true });
+          }
+          this.$socket.emit("[UPDATE] INVOICE", this.order, false);
+          this.exit();
+        })
+        .catch(() => {
+          this.exit();
+        });
     },
     ...mapActions(["setOp", "setOrder", "resetAll", "resetMenu"])
   },

@@ -52,15 +52,6 @@
             </div>
             <footer>
                 <button class="btn" @click="batch" :disabled="!ready">{{$t('button.batch')}}</button>
-                <!-- <div class="pagination">
-                    <div class="page" @click="page = page > 0 ? page - 1 : 0">
-                        <i class="fa fa-angle-left"></i>
-                    </div>
-                    <div class="page" v-for="i in totalPage" @click="page = (i-1)" :key="i" :class="{active:page === (i-1)}">{{i}}</div>
-                    <div class="page" @click="page = page === (totalPage-1) ? page : page + 1">
-                        <i class="fa fa-angle-right"></i>
-                    </div>
-                </div> -->
                 <pagination :of="transactions" @page="setPage" :contain="12" :max="12"></pagination>
                 <div>
                     <div class="btn" @click="init.resolve">{{$t('button.exit')}}</div>
@@ -135,7 +126,7 @@ export default {
         this.date.format("YYYY-MM-DD")
       );
     },
-    setPage(number){
+    setPage(number) {
       this.page = number;
     },
     getFile(device) {
