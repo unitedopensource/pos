@@ -140,7 +140,6 @@ export default {
             ? this.$router.push({ path: "/main/history" })
             : this.$denyAccess(true)
                 .then(op => {
-                  console.log(op);
                   if (this.approval(op.access, route)) {
                     this.$router.push({ path: "/main/history" });
                   } else {

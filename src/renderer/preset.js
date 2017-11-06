@@ -98,14 +98,9 @@ var Preset = function () {
         "PAYMENT": true,
         "REPORT": true,
         'SALES': true
-      },
-      "double": {
-        "WALK_IN": false,
-        "PICK_UP": false,
-        "DELIVERY": true,
-        "DINE_IN": false,
-        "BAR": false
-      },
+      }, 
+      "printMode":"normal",
+      "reprint":[],
       "control": {
         "printPrimary": true,
         "primaryFont": "QingYuan",
@@ -116,7 +111,6 @@ var Preset = function () {
         "secondaryFont": "Agency FB",
         "secondaryFontSize": "16",
         "sortItem": true,
-        "duplicate": true,
         "printStore": true,
         "printType": true,
         "printCustomer": true,
@@ -126,7 +120,6 @@ var Preset = function () {
         "printCoupon": false,
         "printActionTime": false,
         "buzzer": false,
-        "enlargeDetail": true,
         "footer": [
           "Thank You Very Much"
         ]
@@ -181,7 +174,8 @@ var Preset = function () {
       access: [],
       review: [],
       modify: [],
-      view: []
+      view: [],
+      permission:[]
     }
   };
   this.giftCard = function (number, seller, amount, bouns) {
