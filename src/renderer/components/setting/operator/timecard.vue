@@ -52,8 +52,8 @@
                         <td v-if="log.verified">${{log.wage | decimal}}</td>
                         <td v-else class="unverified">${{(profile.wage || 0) | decimal}}</td>
                         <td>{{salary(log.clockIn,log.clockOut)}}</td>
-                        <td v-if="approval" class="editable">
-                            <!-- <i class="fa fa-pencil-square"></i> -->
+                        <td v-if="approval" class="editable" @click="verification(log)">
+                            <i class="fa fa-pencil-square"></i>
                         </td>
                         <td v-else></td>
                     </tr>
@@ -68,9 +68,10 @@
 import { mapGetters } from "vuex";
 import fileSaver from "file-saver";
 import editor from "./editor";
+import verify from "./verify";
 export default {
   props: ["profile"],
-  components: { editor },
+  components: { editor, verify },
   computed: {
     ...mapGetters(["op"])
   },
@@ -210,6 +211,9 @@ export default {
     },
     editClockOut(log) {
       this.$p("editor", { log, clockOut: true });
+    },
+    verification(log) {
+      this.$p("verify", { log, profile: this.profile });
     },
     generateExcel() {
       let excel = [
@@ -358,6 +362,6 @@ tr {
 }
 .unverified {
   opacity: 0.8;
-  color: #3c3c3c;
+  color: #9e9e9e;
 }
 </style>

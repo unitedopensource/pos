@@ -293,11 +293,11 @@ export const updateTable = ({
 export const insertOrder = ({
   commit, rootState
 }, data) => {
-  let { number, sync, order } = data;
+  let { number, sync, order, refresh } = data;
   commit(types.SET_TICKET, { number });
   commit(types.SET_LASTSYNC, sync);
   commit(types.UPSERT_INVOICE, order);
-  commit(types.REFRESH_CURRENT_ORDER, rootState.initial.orders);
+  refresh && commit(types.REFRESH_CURRENT_ORDER, rootState.initial.orders);
 }
 export const updateOrder = ({
   commit, rootState

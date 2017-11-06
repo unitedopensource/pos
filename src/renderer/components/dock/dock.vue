@@ -221,6 +221,7 @@ export default {
       this.updateTable(data);
     },
     INSERT_ORDER(data) {
+      data.refresh = this.$route.name !== "Menu";
       this.insertOrder(data);
     },
     UPDATE_ORDER(data) {
