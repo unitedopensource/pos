@@ -1203,9 +1203,12 @@ export default {
     },
     switchInvoice(index) {
       this.current = index;
-      this.payment = this.order.splitPayment[index];
+      this.payment = Object.assign({}, this.order.splitPayment[index]);
       this.setPaymentType("CASH");
       this.getQuickInput(this.payment.remain);
+      this.$nextTick(() => {
+        this.paid = "0.00";
+      });
     },
     input(val) {
       let { anchor, format } = document.querySelector(".input.active").dataset;
@@ -1314,6 +1317,7 @@ export default {
       anchor === "tip"
         ? (this.tip = val.toFixed(2))
         : (this.paid = val.toFixed(2));
+      console.log(this.tip, this.paid);
 
       this.reset = true;
     },
