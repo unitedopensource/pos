@@ -20,6 +20,10 @@
                 </div>
             </div>
             <div class="fn">
+              <button v-show="approval" @click="newRecord">
+                <i class="fa fa-plus-square"></i>
+                New Record
+              </button>
                 <button :disabled="true">
                     <i class="fa fa-calendar-check-o"></i>Calendar</button>
                 <button :disabled="logs.length ===0" @click="generateExcel">
@@ -213,6 +217,20 @@ export default {
       this.$p("editor", { log, clockOut: true });
     },
     verification(log) {
+      this.$p("verify", { log, profile: this.profile });
+    },
+    newRecord(){
+      let log = {
+        clockIn:+new Date,
+        clockOut:+new Date,
+        date:today(),
+        op:this.profile._id,
+        valid:false,
+        verifier:this.op.name,
+        verified:false,
+        verifyDate:null,
+        wage:this.profile.wage
+      }
       this.$p("verify", { log, profile: this.profile });
     },
     generateExcel() {

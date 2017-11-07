@@ -711,8 +711,8 @@ export default {
         } else {
           this.$dialog({
             type: "error",
-            title: "title.giftCardActivation",
-            msg: ["title.giftCardNotActivated", number],
+            title: "dialog.giftCardActivation",
+            msg: ["dialog.giftCardNotActivated", number],
             buttons: [{ text: "button.confirm", fn: "resolve" }]
           }).then(reject);
         }

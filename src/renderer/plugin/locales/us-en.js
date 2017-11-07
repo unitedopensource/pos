@@ -503,6 +503,7 @@ export default {
         'timeoutTip': 'An unknown error occurred, please retry later',
         'giftCardActivation': 'Gift Card Activation',
         'giftCardActivationTip': 'Are you sure to activate gift card {i}?',
+        'giftCardNotActivated':'This gift card is not activated.',
         'giftCardRegistered': 'Gift Card Activated',
         'giftCardRegisteredInfo': 'This gift card already activated.',
         'giftCardReload': 'Gift Card Reload',

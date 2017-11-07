@@ -441,6 +441,7 @@ export default {
         'timeoutTip': '发生某个未知的错误导致操作超时，请重新尝试',
         'giftCardActivation': '激活礼物卡',
         'giftCardActivationTip': '您确定要激活礼物卡 {i} 吗？',
+        'giftCardNotActivated':'此礼物卡没有激活过',
         'giftCardRegistered': '礼物卡已激活',
         'giftCardRegisteredInfo': '这个礼物卡已经激活过',
         'giftCardReload': '礼物卡充值',
