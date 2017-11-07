@@ -12,21 +12,24 @@
             <div class="date">{{time | moment('dddd MMM D')}}</div>
         </div>
         <toast></toast>
-        <div :is="component" :init="componentData"></div>
+        <div class="popupMask center dark" v-if="component">
+          <div :is="component" :init="componentData"></div>
+        </div>  
     </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from "vuex";
 import dialoger from "./common/dialoger";
+import thirdParty from "./dock/source";
 import counter from "./common/counter";
-import unlock from "./common/unlock";
 import toast from "./dashboard/toast";
+import unlock from "./common/unlock";
 import Preset from "../preset";
 import MAC from "getmac";
 
 export default {
-  components: { dialoger, counter, toast, unlock },
+  components: { dialoger, counter, toast, unlock, thirdParty },
   data() {
     return {
       componentData: null,
@@ -120,6 +123,21 @@ export default {
           this.setTicket({ type: "DELIVERY" });
           this.ring && this.setCustomer(this.callLog[0]);
           this.$router.push({ path: "/main/info" });
+          break;
+        case "thirdParty":
+          new Promise((resolve, reject) => {
+            this.componentData = { resolve, reject };
+            this.component = "thirdParty";
+          })
+            .then(source => {
+              this.$q();
+              this.setOrder({source});
+              this.setTicket({ type: "DELIVERY" });
+              this.$router.push({ path: "/main/info" });
+            })
+            .catch(() => {
+              this.$q();
+            });
           break;
         case "table":
           this.store.table.layout
@@ -356,6 +374,7 @@ export default {
       "setOp",
       "setApp",
       "setTicket",
+      "setOrder",
       "setCustomer",
       "setStation",
       "setStations",

@@ -102,12 +102,14 @@ export default {
       if (this.app.mode === "create") {
         this.ticket.type === "DINE_IN" && this.configDineIn();
 
+        !this.order.hasOwnProperty("source") &&
+          Object.assign(this.order, { source: this.op.name });
+
         this.setOrder({
           _id: ObjectId(),
           server: this.op.name,
           station: this.station.alies,
-          type: this.ticket.type,
-          source: this.op.role !== "ThirdParty" ? "POS" : this.op.name
+          type: this.ticket.type
         });
       } else {
         this.saveForDiffs(this.order.content);
