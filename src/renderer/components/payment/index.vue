@@ -772,7 +772,7 @@ export default {
           ["Change Due:", this.cashTender.toFixed(2)]
         );
 
-        let askReceipt = this.store.noReceipt;
+        //let askReceipt = this.store.noReceipt;
         let tenderWithoutPrint = {
           title: ["dialog.cashChange", this.cashTender.toFixed(2)],
           msg: ["dialog.cashChangeTip", this.paid.toFixed(2)],
@@ -788,7 +788,7 @@ export default {
         };
 
         if (this.cashTender > 0) {
-          !askReceipt
+          !this.store.noReceipt
             ? this.$dialog(tenderWithPrintDialog)
                 .then(() => {
                   if (this.payInFull) {
@@ -820,7 +820,7 @@ export default {
                 resolve(type);
               });
         } else {
-          askReceipt
+          !this.store.noReceipt
             ? this.askReceipt().then(() => {
                 resolve(type);
               })

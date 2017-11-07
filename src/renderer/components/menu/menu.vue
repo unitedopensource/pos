@@ -103,7 +103,7 @@ export default {
         this.ticket.type === "DINE_IN" && this.configDineIn();
 
         !this.order.hasOwnProperty("source") &&
-          Object.assign(this.order, { source: this.op.name });
+          Object.assign(this.order, { source: "POS" });
 
         this.setOrder({
           _id: ObjectId(),
