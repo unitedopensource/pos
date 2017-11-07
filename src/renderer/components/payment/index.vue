@@ -99,7 +99,7 @@
                             <aside class="numpad">
                                 <div @click="del">&#8592;</div>
                                 <div @click="clear">C</div>
-                                <div @click="charge" :class="{disabled:payment.remain <= 0}">&#8626;</div>
+                                <div @click="charge" :class="{disabled:payment.remain <= 0 || paid === '0.00'}">&#8626;</div>
                             </aside>
                         </template>
                         <template v-else-if="paymentType === 'CREDIT'">
@@ -1234,6 +1234,7 @@ export default {
           this.tip = tip.toFixed(2);
           Object.assign(this.payment, { tip });
           this.recalculatePayment();
+          this.paid = "0.00";
           this.$q();
         })
         .catch(() => {
@@ -1258,6 +1259,7 @@ export default {
 
           Object.assign(this.payment, { discount });
           this.recalculatePayment();
+          this.paid = "0.00";
 
           this.poleDisplay(
             ["Discount:", -discount.toFixed(2)],
