@@ -491,6 +491,7 @@ export default {
           this[anchor] = val.length > 0 ? val.slice(0, -1) : val;
           break;
       }
+      this.reset = false;
     },
     clear() {
       let { anchor, format } = document.querySelector(".input.active").dataset;
