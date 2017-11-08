@@ -525,7 +525,7 @@ export default {
             .then(this.postToDatabase)
             .then(this.askReceipt)
             .then(this.checkBalance)
-            //.catch(this.payFailed);
+            .catch(this.payFailed);
           break;
         case "THIRD":
           this.checkOverPay()
