@@ -216,6 +216,15 @@ export default {
                 Printer.printCreditCard(voidSale);
                 Object.assign(record, voidSale, { status: 0, order });
                 this.$socket.emit("[TERM] UPDATE_TRANSACTION", record);
+              } else {
+                this.$dialog({
+                  type: "error",
+                  title: voidSale.msg,
+                  msg: ["terminal.error", voidSale.code],
+                  buttons: [{ text: "button.confirm", fn: "resolve" }]
+                }).then(() => {
+                  this.$q();
+                });
               }
             });
           this.$q();

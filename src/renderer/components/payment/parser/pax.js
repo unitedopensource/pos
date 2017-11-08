@@ -129,6 +129,11 @@ const Pax = function () {
           code,
           msg: 'terminal.creditCard.errorCode'
         }
+      case "100004":
+        return {
+          code,
+          msg:'terminal.creditCard.unsupportedTrans'
+        }
       case "000100":
         return {
           code,
