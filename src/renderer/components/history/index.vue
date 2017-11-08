@@ -104,13 +104,13 @@ export default {
     },
     resetViewOrder() {
       this.$nextTick(() => {
-        this.orders.length && this.getInvoice(this.orders[0]);
-        let dom = document.querySelector(".invoice");
+        this.orders.length && this.getInvoice(this.invoices[0]);
+        let dom = document.querySelector(".ticket");
         dom && dom.classList.add("active");
       });
     },
     setPage(number) {
-      let dom = document.querySelector(".invoice.active");
+      let dom = document.querySelector(".ticket.active");
       dom && dom.classList.remove("active");
       this.page = number;
       this.resetViewOrder();
@@ -127,12 +127,14 @@ export default {
         let dom = document.querySelector(".ticket.active");
         dom && dom.classList.remove("active");
         dom = document.querySelectorAll(".ticket");
+
         for (let i = 0; i < dom.length; i++) {
           if (~~dom[i].dataset.number === number) {
             dom[i] && dom[i].classList.add("active");
             break;
           }
         }
+
       });
     },
     getConsole() {

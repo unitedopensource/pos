@@ -64,6 +64,7 @@ export default {
           ipcRenderer.send("Loading", this.$t("initial.hardwareIssue"));
         } else {
           this.findStation(mac);
+          this.station && this.$socket.emit("[SYS] STATION", this.station);
           this.initDevices();
           this.initPrinter();
           ipcRenderer.send("Initialized");

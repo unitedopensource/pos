@@ -1,6 +1,6 @@
 <template>
     <div class="pagination" v-show="totalPage > 1">
-        <div class="page">
+        <div class="page" @click="prev">
             <i class="fa fa-angle-left"></i>
         </div>
         <template v-if="style==='full'">
@@ -23,7 +23,7 @@
             <div>......</div>
             <div class="page" v-for="i in last(pages)" :key="i" :class="{active:i === page}" @click="setPage(i)">{{i}}</div>
         </template>
-        <div class="page">
+        <div class="page" @click="next">
             <i class="fa fa-angle-right"></i>
         </div>
     </div>
@@ -81,6 +81,12 @@ export default {
       this.$emit("page", number - 1);
       this.page = number;
       this.format(number);
+    },
+    prev() {
+      this.page > 1 && this.setPage(--this.page);
+    },
+    next() {
+      this.page < this.totalPage && this.setPage(++this.page);
     }
   },
   computed: {

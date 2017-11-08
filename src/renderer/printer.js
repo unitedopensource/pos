@@ -1156,7 +1156,7 @@ function createStyle(ctrl) {
               .empty{flex:1}
               .payment p{display:flex;font-family:'Tensentype RuiHeiJ-W2';width:200px;}
               .payment .text{flex:1;text-align:right;}
-              .payment .value{min-width:40%;text-align:right;padding:0 5px;}
+              .payment .value{min-width:40%;text-align:right;}
               .settle{${printPayment ? '' : 'display:none;'}}
               .payment p.bold{font-weight:bold;font-size:22px;}
               section.details{border:1px dashed #000;margin-top:5px;text-align:center;}
