@@ -1040,7 +1040,7 @@ function createList(printer, ctrl, invoice) {
                         <span class="zhCN">${categoryMap[category]}</span>
                         <span class="usEN">${category}</span>
                       </div>`;
-                content += sorted[category].map(item => mockup(item.printer)).join("").toString();
+                content += sorted[category].map(item => mockup(item, printer)).join("").toString();
             }
         }
     } else {
@@ -1049,7 +1049,7 @@ function createList(printer, ctrl, invoice) {
 
     return `<table class="receipt"><tbody>${content}</tbody></table>`
 
-    function mockup(item,name) {
+    function mockup(item, name) {
         let nameCN = (item.printer[name] && item.printer[name].hasOwnProperty("zhCN")) ? item.printer[name].zhCN : item.zhCN;
         let nameEN = (item.printer[name] && item.printer[name].hasOwnProperty("usEN")) ? item.printer[name].usEN : item.usEN;
         let sideCN = item.side.zhCN ? item.side.zhCN : "";
