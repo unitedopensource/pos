@@ -213,6 +213,8 @@ export default {
       });
       this.$socket.emit("[SYNC] ORDER_LIST");
       this.$socket.emit("[SYNC] TABLE_LIST");
+
+      this.station && this.$socket.emit("[SYS] STATION", this.station);
     },
     TICKET_NUMBER(number) {
       this.app.mode !== "edit" && this.setTicket({ number });
