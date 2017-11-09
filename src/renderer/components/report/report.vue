@@ -458,13 +458,13 @@ export default {
           count: invoices.length
         };
       });
-      return sources
+      return sources;
     },
     settleTypeReport(data) {
       let settle = {};
       let tip = 0;
       let logs = [];
-      let invoices = data.filter(invoice=>invoice.status === 1);
+      let invoices = data.filter(invoice => invoice.status === 1);
       invoices.forEach(invoice => {
         if (invoice.settled) {
           if (invoice.payment.type === "MULTIPLE") {
@@ -766,14 +766,21 @@ export default {
         amount: settledAmount
       });
 
-      let unsettledCount = unsettled.length;
-      let unsettledAmount = unsettled
-        .map(ticket => parseFloat(ticket.payment.balance))
-        .reduce(counter, 0);
       this.report["SALES SOURCE DETAIL"].push({
         text: this.$t("type.unsettled"),
-        count: unsettledCount,
-        amount: unsettledAmount
+        count: unsettled.length,
+        amount: unsettled
+          .map(ticket => parseFloat(ticket.payment.balance))
+          .reduce(counter, 0)
+      });
+
+      let voided = data.filter(ticket => ticket.status === 0);
+      this.report["SALES SOURCE DETAIL"].push({
+        text: this.$t("type.voided"),
+        count: voided.length,
+        amount: voided
+          .map(ticket => parseFloat(ticket.payment.total))
+          .reduce(counter, 0)
       });
 
       this.report["SALES SOURCE DETAIL"].push({
