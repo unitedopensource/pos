@@ -61,6 +61,7 @@ export default {
   },
   created() {
     this.checkSync();
+    this.$bus.on("CALENDAR", this.setCalendar);
   },
   mounted() {
     if (this.orders.length) {
@@ -68,6 +69,9 @@ export default {
       let dom = document.querySelector(".invoice");
       dom && dom.classList.add("active");
     }
+  },
+  beforeDestroy() {
+    this.$bus.off("CALENDAR", this.setCalendar);
   },
   methods: {
     checkSync() {
@@ -120,7 +124,19 @@ export default {
     },
     setCalendar(date) {
       this.calendarDate = date;
-      this.$socket.emit("[INQUIRY] HISTORY_ORDER", date);
+      this.$socket.emit("[INQUIRY] HISTORY_ORDER", date, invoices => {
+        this.prevHistory = invoices;
+        this.$q();
+
+        invoices.length === 0 &&
+          this.$dialog({
+            title: "dialog.noInvoice",
+            msg: ["dialog.noInvoiceTip", this.calendarDate],
+            buttons: [{ text: "button.confirm", fn: "resolve" }]
+          }).then(() => {
+            this.$q();
+          });
+      });
     },
     highlightTicket(number) {
       this.$nextTick(() => {
@@ -134,7 +150,6 @@ export default {
             break;
           }
         }
-
       });
     },
     getConsole() {
@@ -209,21 +224,6 @@ export default {
   watch: {
     order(ticket) {
       this.highlightTicket(ticket.number);
-    }
-  },
-  sockets: {
-    HISTORY_ORDER(data) {
-      this.prevHistory = data.orders;
-      this.$q();
-      data.orders.length === 0 &&
-        this.$dialog({
-          title: "dialog.noInvoice",
-          msg: ["dialog.noInvoiceTip", this.calendarDate],
-          buttons: [{ text: "button.confirm", fn: "resolve" }]
-        }).then(() => {
-          this.calendarDate = null;
-          this.$q();
-        });
     }
   }
 };

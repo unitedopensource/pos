@@ -29,9 +29,9 @@
 
 <script>
 export default {
-  props: ['init'],
+  props: ["init"],
   created() {
-    this.generateCalendar();
+    this.initial();
   },
   data() {
     return {
@@ -40,20 +40,31 @@ export default {
       loading: false,
       flip: "M",
       days: null
-    }
+    };
   },
   methods: {
+    initial() {
+      let dom = document.getElementById("calendar");
+      let calendar = dom.innerText;
+      
+      this.calendarDay = +moment(calendar,"YYYY-MM-DD")
+      this.generateCalendar();
+    },
     setTarget(flip, e) {
-      document.querySelector('.target').classList.remove('target');
-      e.currentTarget.classList.add('target');
+      document.querySelector(".target").classList.remove("target");
+      e.currentTarget.classList.add("target");
       this.flip = flip;
     },
     prev() {
-      this.calendarDay = +moment(this.calendarDay).subtract(1, this.flip).format('x');
+      this.calendarDay = +moment(this.calendarDay)
+        .subtract(1, this.flip)
+        .format("x");
       this.generateCalendar();
     },
     next() {
-      this.calendarDay = +moment(this.calendarDay).add(1, this.flip).format('x');
+      this.calendarDay = +moment(this.calendarDay)
+        .add(1, this.flip)
+        .format("x");
       this.generateCalendar();
     },
     setCalendar(date) {
@@ -61,21 +72,31 @@ export default {
     },
     generateCalendar() {
       let time = this.calendarDay;
-      let isCurrentMonth = moment(this.today).format("YYYY-MM-DD") === moment(time).format('YYYY-MM-DD');
+      let isCurrentMonth =
+        moment(this.today).format("YYYY-MM-DD") ===
+        moment(time).format("YYYY-MM-DD");
       let days = moment(time).daysInMonth();
-      let start = +moment(time).startOf('month').format('d');
+      let start = +moment(time)
+        .startOf("month")
+        .format("d");
       start = start === 0 ? 6 : start - 1;
-      let lastMonthDay = +moment(time).subtract(1, 'M').endOf('month').format('D') - start;
+      let lastMonthDay =
+        +moment(time)
+          .subtract(1, "M")
+          .endOf("month")
+          .format("D") - start;
       let calendar = [];
-      let date = moment(time).subtract(1, 'M').format('YYYY-MM-');
+      let date = moment(time)
+        .subtract(1, "M")
+        .format("YYYY-MM-");
       for (let i = 1; i <= start; i++) {
         calendar.push({
           current: false,
           day: lastMonthDay + i,
           date: date + ("0" + (lastMonthDay + i)).slice(-2)
-        })
+        });
       }
-      date = moment(time).format('YYYY-MM-');
+      date = moment(time).format("YYYY-MM-");
       for (let i = 0; i < days; i++) {
         calendar.push({
           current: true,
@@ -83,34 +104,36 @@ export default {
           date: date + ("0" + (i + 1)).slice(-2)
         });
       }
-      date = moment(time).add(1, 'M').format('YYYY-MM-');
+      date = moment(time)
+        .add(1, "M")
+        .format("YYYY-MM-");
       for (let i = 1; calendar.length < 42; i++) {
         calendar.push({
           current: false,
           day: i,
           date: date + ("0" + i).slice(-2)
-        })
+        });
       }
       this.days = calendar;
 
       this.$nextTick(() => {
-        let dom = document.querySelector('.currentMonth');
-        dom && dom.classList.remove('currentMonth');
-        dom = document.querySelector('.day.today');
-        dom && dom.classList.remove('today');
+        let dom = document.querySelector(".currentMonth");
+        dom && dom.classList.remove("currentMonth");
+        dom = document.querySelector(".day.today");
+        dom && dom.classList.remove("today");
         if (isCurrentMonth) {
-          document.querySelector('.dayWrap').classList.add("currentMonth");
-          let today = moment().format('D') - 1;
-          today = document.querySelectorAll('[data-day]')[(start + today)];
+          document.querySelector(".dayWrap").classList.add("currentMonth");
+          let today = moment().format("D") - 1;
+          today = document.querySelectorAll("[data-day]")[start + today];
           today.classList.add("today");
         }
-      })
+      });
     },
     exit() {
-      this.init.reject()
+      this.init.reject();
     }
   }
-}
+};
 </script>
 
 <style scoped>
@@ -118,10 +141,10 @@ export default {
   width: 685px;
 }
 
-.calendar>header {
+.calendar > header {
   text-align: center;
   display: flex;
-  border-bottom: 1px solid #BDBDBD;
+  border-bottom: 1px solid #bdbdbd;
 }
 
 .calendar header i {
@@ -152,7 +175,7 @@ i.fa-chevron-left {
 
 .display span {
   color: #444;
-  text-shadow: 0 1px 1px #64B5F6;
+  text-shadow: 0 1px 1px #64b5f6;
   cursor: pointer;
 }
 
@@ -180,7 +203,7 @@ i.fa-chevron-left {
 }
 
 .day.today {
-  background: #4FC3F7!important;
+  background: #4fc3f7 !important;
   color: #fcfcfc;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
 }
@@ -192,14 +215,14 @@ i.fa-chevron-left {
 .wk {
   display: flex;
   padding: 5px 0;
-  background: #CFD8DC;
-  color: #455A64;
+  background: #cfd8dc;
+  color: #455a64;
 }
 
 .wk span {
   flex: 1;
   text-align: center;
-  font-family: 'Microsoft YaHei';
+  font-family: "Microsoft YaHei";
   font-size: 20px;
 }
 </style>

@@ -249,19 +249,19 @@ export default {
       "store",
       "ticket",
       "device",
-      "customer",
-      "station"
+      "station",
+      "customer"
     ])
   },
   data() {
     return {
       releaseComponentLock: true,
-      componentData: null,
-      component: null,
-      discountable: false,
-      order: null,
       thirdPartyPayment: true,
       thirdPartyType: null,
+      discountable: false,
+      componentData: null,
+      component: null,
+      order: null,
       paymentType: "CASH",
       payInFull: true,
       quickInput: [],
@@ -320,7 +320,11 @@ export default {
           exp: +new Date() + 1000 * 120
         };
         this.$socket.emit("[COMPONENT] LOCK", data, lock => {
-          lock ? reject({ error: "paymentPending", data }) : resolve();
+          if (lock) {
+            reject({ error: "paymentPending", data });
+          } else {
+            resolve();
+          }
         });
       });
     },
@@ -440,7 +444,7 @@ export default {
           this.releaseComponentLock = false;
 
           this.$socket.emit("[SYS] RECORD", {
-            type: "User",
+            type: "Software",
             event: "payment",
             status: 0,
             cause: "paymentOccupy",
@@ -457,6 +461,14 @@ export default {
           });
           break;
         case "accessDenied":
+          this.$socket.emit("[SYS] RECORD", {
+            type: "User",
+            event: "payment",
+            status: 0,
+            cause: "permissionDenied",
+            data: this.order._id
+          });
+
           this.$dialog({
             type: "warning",
             title: "dialog.accessDenied",

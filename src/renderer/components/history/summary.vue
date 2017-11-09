@@ -31,7 +31,11 @@
       <div class="value">$ {{summary.unsettleAmount |decimal}}</div>
     </div>
     <transition name="fadeDown" appear>
-      <div class="date">{{date}}</div>
+      <div class="date" id="calendar">
+        <i class="fa fa-angle-left" @click="prev" v-show="shortCut"></i>
+        <span class="text" @click="shortCut = !shortCut">{{date}}</span>
+        <i class="fa fa-angle-right" @click="next" v-show="shortCut"></i>
+      </div>
     </transition>
   </div>
 </template>
@@ -43,6 +47,7 @@ export default {
   data() {
     return {
       viewable: false,
+      shortCut: false,
       driver: null,
       type: null
     };
@@ -58,16 +63,23 @@ export default {
       e.currentTarget.classList.add("active");
       let dom = document.querySelector(".invoice.active");
       dom && dom.classList.add("active");
-      this.type === type && type === 'DELIVERY' && (this.driver = !this.driver);
+      this.type === type && type === "DELIVERY" && (this.driver = !this.driver);
       this.$emit("filter", type);
       this.type = type;
     },
     setDriver(id) {
       this.driver = id;
       this.$emit("filter", "DRIVER", id);
+    },
+    prev() {
+      let date = moment(this.date, "YYYY-MM-DD").subtract(1, "d").format("YYYY-MM-DD");
+      this.$bus.emit("CALENDAR", date);
+    },
+    next() {
+      let date = moment(this.date, "YYYY-MM-DD").add(1, "d").format("YYYY-MM-DD");
+      this.$bus.emit("CALENDAR", date);
     }
   },
-
   computed: {
     summary() {
       let totalAmount = 0,
@@ -268,10 +280,20 @@ export default {
 
 .date {
   position: absolute;
-  right: 0;
+  right: 0px;
+  min-width: 250px;
+  text-align: center;
+}
+
+.date i {
+  color: #fff;
+  padding: 9px 20px;
+  cursor: pointer;
+}
+
+.date .text {
   font-size: 3em;
   font-style: italic;
-  padding: 0px 20px;
   font-family: "Agency FB";
   color: #fff;
   font-weight: bold;
