@@ -87,7 +87,7 @@
 <script>
 import { mapGetters } from "vuex";
 import fileSaver from "file-saver";
-import editor from "./editor";
+import editor from "./component/editor";
 export default {
   props: ["profile"],
   components: { editor },

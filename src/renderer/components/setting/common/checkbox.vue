@@ -9,24 +9,30 @@
 
 <script>
 export default {
-  props: ['val', 'label', 'value', 'multiple'],
+  props: ["val", "label", "value", "multiple"],
   data() {
     return {
-      id: Math.random().toString(36).substring(3, 6)
-    }
+      id: Math.random()
+        .toString(36)
+        .substring(3, 6)
+    };
   },
   methods: {
     has(value) {
-      return this.value.includes(value)
+      return this.value.includes(value);
     },
     toggle(e) {
-      let value = this.value;
+      let value = this.value || [];
+
+      Array.isArray(value) && (value = value.filter(i => !!i));
+
       let index = value.indexOf(e.target.value);
       index === -1 ? value.push(e.target.value) : value.splice(index, 1);
-      this.$emit('input', value)
+
+      this.$emit("input", value);
     }
   }
-}
+};
 </script>
 
 <style scoped>
@@ -40,12 +46,12 @@ input {
   display: none;
 }
 
-input:checked+label {
+input:checked + label {
   background: #009688;
   border-color: #009688;
 }
 
-input:checked+label:after {
+input:checked + label:after {
   transform: scale(1.3);
 }
 
@@ -54,16 +60,16 @@ input:checked+label:after {
   box-sizing: border-box;
   width: 20px;
   height: 20px;
-  background: #EEE;
-  border: 2px solid #7A7A7A;
+  background: #eee;
+  border: 2px solid #7a7a7a;
   border-radius: 10%;
   position: relative;
   cursor: pointer;
-  transition: .2s;
+  transition: 0.2s;
 }
 
 .box:before {
-  content: '';
+  content: "";
   position: absolute;
   display: block;
   height: 200%;
@@ -72,18 +78,18 @@ input:checked+label:after {
   left: -50%;
   z-index: 0;
   border-radius: 50%;
-  transition: .3s;
+  transition: 0.3s;
 }
 
 .box:after {
-  content: '';
+  content: "";
   display: block;
   height: 100%;
   width: 100%;
   background: url(../../../assets/image/check.svg) center center no-repeat;
   background-size: contain;
   transform: scale(0);
-  transition: .2s;
+  transition: 0.2s;
 }
 
 .box:active:before {

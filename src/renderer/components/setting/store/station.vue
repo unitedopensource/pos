@@ -64,7 +64,7 @@
                 <div class="options">
                   <label class="center">{{$t('text.stationPrinters')}}</label>
                   <div class="wrap">
-                    <checkbox v-model="workStation.printerGroup" :label="device" :multiple="true" v-for="(device,index) in printers" :key="index"></checkbox>
+                    <checkbox v-model="workStation.printerGroup" :val="device" :label="device" :multiple="true" v-for="(device,index) in printers" :key="index"></checkbox>
                   </div>
                 </div>
             </article>
@@ -100,14 +100,15 @@
 
 <script>
 import { mapGetters } from "vuex";
+import search from "./search";
+import editor from "./uiEditor";
 import draggable from "vuedraggable";
+import checkbox from "../common/checkbox";
 import smartInput from "../common/smartInput";
 import smartRange from "../common/smartRange";
 import smartSwitch from "../common/smartSwitch";
 import smartOption from "../common/smartOption";
-import checkbox from "../common/checkbox";
-import search from "./search";
-import editor from "./uiEditor";
+
 export default {
   components: {
     checkbox,
@@ -124,7 +125,8 @@ export default {
     this.printers = Object.keys(this.config.printer);
 
     //patch
-    Object.assign(this.workStation, { printerGroup: [] });
+    !this.workStation.hasOwnProperty("printerGroup") &&
+      Object.assign(this.workStation, { printerGroup: [] });
   },
   data() {
     return {
@@ -217,6 +219,9 @@ export default {
         }
       },
       deep: true
+    },
+    "workStation.printerGroup"(n){
+      console.log(n)
     }
   },
   computed: {
@@ -278,7 +283,7 @@ export default {
   display: flex;
 }
 .options .wrap {
-    display: flex;
+  display: flex;
 }
 .options label {
   width: 130px;

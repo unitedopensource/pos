@@ -38,7 +38,7 @@
 
 <script>
 import { mapGetters } from "vuex";
-import checkbox from "../common/checkbox";
+import checkbox from "../../common/checkbox";
 
 export default {
   props: ["init"],
