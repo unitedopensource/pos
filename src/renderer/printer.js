@@ -23,7 +23,7 @@ var Printer = function (plugin, config) {
         this.config = config;
         this.station = config.station;
         this.setting = config.printer;
-        this.devices = Object.keys(config.printer);
+        this.devices = config.station.printerGroup || Object.keys(config.printer);
     }
 
     this.setTarget = function (name) {

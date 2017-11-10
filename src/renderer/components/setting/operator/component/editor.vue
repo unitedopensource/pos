@@ -107,10 +107,14 @@ export default {
       });
     },
     update() {
-      this.init.new &&
-        Object.assign(this.log, {
-          _id: ObjectId()
-        });
+      this.init.new
+        ? Object.assign(this.log, {
+            _id: ObjectId()
+          })
+        : Object.assign(this.log, {
+            edit: +new Date(),
+            editor: this.op.name
+          });
 
       this.log.valid &&
         Object.assign(this.log, {
