@@ -1,6 +1,6 @@
 <template>
         <div class="popupMask center dark" @click.self="init.reject">
-        <div class="editor">
+        <div class="editor" v-show="!component">
             <header>
                 <h2>{{$t('title.timeSession')}}</h2>
                 <h4></h4>
@@ -8,7 +8,7 @@
             <div class="inner">
                 <div class="input">
                     <label>{{$t('text.date')}}</label>
-                    <input v-model="log.date" :placeholder="log.date">
+                    <input v-model="log.date" placeholder="YYYY-MM-DD">
                 </div>
                 <div class="input">
                     <label>{{$t('text.clockIn')}}</label>
@@ -19,11 +19,15 @@
                     <input v-model="log.clockOut" placeholder="YYYY-MM-DD HH:mm:ss">
                 </div>
                 <div class="input">
-                    <label>{{$t('text.wage')}}</label>
-                    <input v-model.number="wage">
+                    <label>{{$t('text.wage',init.profile.wage || 0)}}</label>
+                    <input v-model.number="log.wage">
+                </div>
+                <div class="input">
+                    <label>{{$t('text.note')}}</label>
+                    <input v-model="log.note">
                 </div>
                 <div class="default">
-                  <checkbox v-model="log.verified" label="text.verify"></checkbox>
+                  <checkbox v-model="log.valid" label="button.valid"></checkbox>
                 </div>
             </div>
             <footer>
@@ -49,9 +53,9 @@ export default {
     return {
       componentData: null,
       component: null,
+      lock: false,
       log: {},
-      wage: 0,
-      lock: false
+      wage: 0
     };
   },
   created() {
@@ -67,30 +71,81 @@ export default {
       );
     }
 
-    this.wage = this.init.log.hasOwnProperty("wage")
-      ? this.init.log.wage
-      : this.init.profile.wage || 0;
+    if (!this.log.wage) {
+      this.log.wage = this.init.profile.wage || 0;
+    }
   },
   methods: {
     confirm() {
-      let timecard = Object.assign({}, this.init.log, {
-        valid: true,
-        verifier: this.op.name,
-        verifyDate: +new Date()
+      this.sealSession()
+        .then(this.update)
+        .catch(this.failed);
+    },
+    sealSession() {
+      return new Promise((resolve, reject) => {
+        !this.lock
+          ? resolve()
+          : this.$dialog({
+              type: "question",
+              title: "dialog.lockSession",
+              msg: "dialog.lockSessionTip",
+              buttons: [
+                { text: "button.cancel", fn: "reject" },
+                { text: "button.lock", fn: "resolve" }
+              ]
+            })
+              .then(() => {
+                this.$q();
+                Object.assign(this.log, { lock: true });
+                resolve();
+              })
+              .catch(() => {
+                this.$q();
+                this.lock = false;
+                reject();
+              });
+      });
+    },
+    update() {
+      this.init.new &&
+        Object.assign(this.log, {
+          _id: ObjectId()
+        });
+
+      this.log.valid &&
+        Object.assign(this.log, {
+          verifier: this.op.name,
+          verifyDate: +new Date()
+        });
+
+      Object.assign(this.log, {
+        clockIn: +moment(this.log.clockIn, "YYYY-MM-DD HH:mm:ss"),
+        clockOut: +moment(this.log.clockOut, "YYYY-MM-DD HH:mm:ss")
       });
 
-      this.$socket.emit("[TIMECARD] VERIFY", timecard, () => {
+      if (!isNumber(this.log.wage)) {
+        this.log.wage = this.init.profile.wage || 0;
+      }
+
+      this.$socket.emit("[TIMECARD] UPDATE", this.log, () => {
         this.$emit("refresh");
         this.init.resolve();
       });
+    },
+    failed() {
+      this.$q();
     }
   },
   computed: {
     valid() {
       return (
-        isNumber(this.wage) &&
+        isNumber(this.log.wage) &&
+        this.log.wage > 0 &&
         moment(this.log.clockIn, "YYYY-MM-DD HH:mm:ss", true).isValid() &&
-        moment(this.log.clockOut, "YYYY-MM-DD HH:mm:ss", true).isValid()
+        moment(this.log.clockOut, "YYYY-MM-DD HH:mm:ss", true).isValid() &&
+        moment(this.log.clockOut, "YYYY-MM-DD HH:mm:ss").isAfter(
+          moment(this.log.clockIn, "YYYY-MM-DD HH:mm:ss")
+        )
       );
     },
     ...mapGetters(["op"])

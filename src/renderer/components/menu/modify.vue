@@ -224,6 +224,15 @@ export default {
       this.init.openFood
         ? (this.addToOrder(item), this.setSides(this.fillOption(item.option)))
         : this.alterItem(item);
+
+      this.$socket.emit("[SYS] RECORD", {
+        type: "User",
+        event: "modifyItem",
+        status: 1,
+        data: this.item,
+        backup: this.init.item
+      });
+
       this.init.resolve();
     },
     fillOption(side) {
@@ -250,7 +259,7 @@ export default {
         : single * qty * (this.discount / 100);
       return (single * qty - discount).toFixed(2);
     },
-    ...mapGetters(["op", "language"])
+    ...mapGetters(["op", "app", "language"])
   }
 };
 </script>

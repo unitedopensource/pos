@@ -234,7 +234,7 @@ export default {
       if (this.isOpenFood(item)) return;
 
       item = JSON.parse(JSON.stringify(item));
-      this.app.mode === "edit" && (item.new = true);
+      this.app.mode === "edit" && Object.assign(item, { new: true });
       //this.store.table.seatOrder && (item.sort = this.sort);
       item.hasOwnProperty("prices") &&
         item.prices[this.ticket.type] &&
@@ -305,16 +305,19 @@ export default {
     },
     isTemporary(item) {
       if (!item.temporary) return false;
+      this.app.mode === "edit" && Object.assign(item, { new: true });
       this.$p("tempItem", { item });
       return true;
     },
     isScalable(item) {
       if (!item.hasOwnProperty("unitPrice")) return false;
+      this.app.mode === "edit" && Object.assign(item, { new: true });
       this.$p("scaleItem", { item });
       return true;
     },
     isOpenFood(item) {
       if (isNumber(item.price[0])) return false;
+      this.app.mode === "edit" && Object.assign(item, { new: true });
       this.$p("modify", { item, openFood: true });
       return true;
     },
@@ -330,7 +333,6 @@ export default {
       }
     },
     getSubMenuItem(side) {
-      console.time("sub menu");
       if (this.saveItems) {
         this.resetItems();
         return;

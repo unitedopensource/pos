@@ -283,7 +283,6 @@ export default {
         .catch(this.placeFailed);
     },
     placeFailed(error) {
-      console.error(error);
       this.$dialog({
         type: "error",
         title: "dialog.somethingWrong",
@@ -440,8 +439,8 @@ export default {
       let compare = current.content;
 
       this.diffs.forEach(prev => {
-        let key = prev.unique;
-        let index = compare.findIndex(item => item.unique === key);
+        let index = compare.findIndex(item => item.unique === prev.unique);
+
         if (index !== -1) {
           let now = compare[index];
 

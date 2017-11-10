@@ -98,7 +98,7 @@ export default {
     total() {
       return (this.scale * this.item.unitPrice).toFixed(2);
     },
-    ...mapGetters(["language"])
+    ...mapGetters([ "language"])
   }
 };
 </script>

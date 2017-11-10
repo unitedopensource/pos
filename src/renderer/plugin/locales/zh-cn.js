@@ -219,7 +219,10 @@ export default {
         'change': '更改',
         'resetTable': '重置座位',
         'sync': '同步订单',
-        'fix': '修复'
+        'fix': '修复',
+        'newRecord': '新记录',
+        'setDate': '选择日期',
+        'export': '导出'
     },
     title: {
         'markPaymentType': '标记付款方式',
@@ -361,8 +364,8 @@ export default {
         'cashChangeTip': '客人支付现金 ($ {i})',
         'printReceiptConfirm': '打印收据',
         'printReceiptConfirmTip': '是否需要打印收据给客人？',
-        'noInvoice': '没有任何订单',
-        'noInvoiceTip': '{i} 没有找到任何订单',
+        'lockSession': '锁定打卡时段',
+        'lockSessionTip': '您将无法编辑已锁定的打卡时段！',
         'unableEdit': '无法修改',
         'editPrevOrderTip': '您无法修改过去的订单',
         'editVoidOrderTip': '您无法修改已经删除的订单。(此订单被 {i} 删除)',
@@ -872,7 +875,7 @@ export default {
         'issueCoupon': '发行折扣卷',
         'preview': '预览',
         'seatOrder': '按位点餐',
-        'wage': '工资(小时)',
+        'wage': '工资 (${i} / 小时)',
         'calcTips': '小费为: $ {i}',
         'fuelSurcharge': '燃油附加费',
         'noReceipt': '不打印收据',

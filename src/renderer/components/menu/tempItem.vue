@@ -25,76 +25,76 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions } from "vuex";
 export default {
-    props: ['init'],
-    data() {
-        return {
-            item: "",
-            single: 0,
-            comment: ""
+  props: ["init"],
+  data() {
+    return {
+      item: "",
+      single: 0,
+      comment: ""
+    };
+  },
+  mounted() {
+    this.$refs.item.focus();
+  },
+  methods: {
+    confirm() {
+      let item = JSON.parse(JSON.stringify(this.init.item));
+      let single = isNumber(this.single) ? this.single : 0;
+      let name = this.item.replace(/\b[a-z]/g, t => t.toUpperCase());
+      Object.assign(item, {
+        zhCN: `* ${name} *`,
+        usEN: `* ${name} *`,
+        single,
+        price: [single],
+        comment: this.comment,
+        temporary: true,
+        prices: {
+          DEFAULT: [single]
         }
+      });
+      this.addToOrder(item);
+      this.init.resolve();
     },
-    mounted() {
-        this.$refs.item.focus();
-    },
-    methods: {
-        confirm() {
-            let item = JSON.parse(JSON.stringify(this.init.item));
-            let single = isNumber(this.single) ? this.single : 0;
-            let name = this.item.replace(/\b[a-z]/g, t => t.toUpperCase());
-            Object.assign(item, {
-                zhCN: `* ${name} *`,
-                usEN: `* ${name} *`,
-                single,
-                price: [single],
-                comment: this.comment,
-                temporary: true,
-                prices: {
-                    DEFAULT: [single]
-                }
-            })
-            this.addToOrder(item);
-            this.init.resolve();
-        },
-        ...mapActions(['addToOrder'])
-    }
-}
+    ...mapActions(["addToOrder"])
+  }
+};
 </script>
 
 <style scoped>
 .inner {
-    padding: 10px;
+  padding: 10px;
 }
 
 section.item {
-    display: flex;
-    padding: 0 0 10px;
+  display: flex;
+  padding: 0 0 10px;
 }
 
 section.item div {
-    flex: 1;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  flex: 1;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 textarea {
-    width: 450px;
-    height: 150px;
-    margin: auto;
-    display: block;
-    padding: 10px;
-    border: 1px solid #ddd;
+  width: 450px;
+  height: 150px;
+  margin: auto;
+  display: block;
+  padding: 10px;
+  border: 1px solid #ddd;
 }
 
 input {
-    font-size: 24px;
-    width: 180px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    text-indent: 5px;
-    text-transform: capitalize;
+  font-size: 24px;
+  width: 180px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  text-indent: 5px;
+  text-transform: capitalize;
 }
 </style>

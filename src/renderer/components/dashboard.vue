@@ -131,7 +131,7 @@ export default {
           })
             .then(source => {
               this.$q();
-              this.setOrder({source});
+              this.setOrder({ source });
               this.setTicket({ type: "DELIVERY" });
               this.$router.push({ path: "/main/info" });
             })
@@ -181,6 +181,11 @@ export default {
         case "lock":
           this.resetDashboard();
           this.setOp(null);
+          this.$socket.emit("[SYS] RECORD", {
+            type: "User",
+            event: "lockStation",
+            status: 1
+          });
           this.$router.push({ path: "/main/lock" });
           break;
         default:

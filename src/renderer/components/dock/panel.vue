@@ -262,6 +262,11 @@ export default {
     },
     exit() {
       this.$router.push({ name: "Login" });
+      this.$socket.emit("[SYS] RECORD", {
+        type: "User",
+        event: "logOut",
+        status: 1
+      });
     },
     ...mapActions(["setOp", "setApp"])
   }

@@ -226,7 +226,10 @@ export default {
         'change': 'Change',
         'resetTable': 'Reset Table',
         'sync': 'Sync Tickets',
-        'fix': 'Fix'
+        'fix': 'Fix',
+        'newRecord': 'New Record',
+        'setDate': 'Set Date',
+        'export': 'Export'
     },
     thead: {
         'orderType': 'Order Type',
@@ -424,8 +427,8 @@ export default {
         'cashChangeTip': 'Customer has paid ($ {i})',
         'printReceiptConfirm': 'Print Receipt',
         'printReceiptConfirmTip': 'Do you want to print a receipt to customer?',
-        'noInvoice': 'No Result',
-        'noInvoiceTip': 'There is no invoice on selected date',
+        'lockSession': 'Lock Time Session',
+        'lockSessionTip': 'You will no longer be able to edit a locked timecard!',
         'unableEdit': 'Unable Edit',
         'editPrevOrderTip': 'You can not edit previous ticket.',
         'editVoidOrderTip': 'You can not edit voided ticket ( Voided By: {i} )',
@@ -879,7 +882,7 @@ export default {
         'issueCoupon': 'Issue Coupon',
         'preview': 'Preview',
         'seatOrder': 'Seat Order',
-        'wage': 'Wage(Hour)',
+        'wage': 'Wage (${i} / Hour)',
         'calcTips': 'Current Tips: $ {i}',
         'fuelSurcharge': 'Fuel Surcharge',
         'noReceipt': 'No Receipt',

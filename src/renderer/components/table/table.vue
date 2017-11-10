@@ -362,7 +362,7 @@ export default {
   height: 771px;
   width: 1024px;
   padding-top: 63px;
-  background: url(../../assets/image/table.png) #ebeff1;
+  background: url(../../assets/image/floor.png) #ebeff1;
 }
 
 .blueprint {

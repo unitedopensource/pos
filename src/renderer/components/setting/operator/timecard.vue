@@ -49,30 +49,39 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(log,index) in logs" :key="index" :class="{lock:log.lock}">
+                    <tr v-for="(log,index) in logs" :key="index">
                         <td v-if="log.valid" class="icon"><i class="fa fa-check-circle"></i></td>
                         <td v-else class="icon"><i class="fa fa-check-circle-o"></i></td>
                         <td class="date">{{log.date}}</td>
                         <td>{{log.clockIn | moment('HH:mm:ss')}}</td>
                         <td>{{log.clockOut | moment('HH:mm:ss')}}</td>
                         <td class="hours">{{calculate(log.clockIn,log.clockOut)}}</td>
-                        <td v-if="log.verified">${{log.wage | decimal}}</td>
-                        <td v-else class="unverified">${{(profile.wage || 0) | decimal}}</td>
-                        <td>{{salary(log.clockIn,log.clockOut)}}</td>
-                        <td v-if="editable" class="editable" @click="edit(log)">
+                        <td v-if="log.valid" :title="log.note" class="wage">$ {{log.wage | decimal}}<i class="fa fa-exclamation-circle" v-if="log.note"></i></td>
+                        <td v-else class="invalid">${{(profile.wage || 0) | decimal}}</td>
+                        <td>$ {{salary(log) | decimal}}</td>
+                        <td v-if="editable && !log.lock" class="edit" @click="edit(log)">
                             <i class="fa fa-pencil-square"></i>
                         </td>
                         <td v-else></td>
                     </tr>
                 </tbody>
                 <tfoot>
-                    <tr>
+                    <tr v-if="validSession">
+                        <td class="icon"><span>{{validSession}}</span></td>
+                        <td class="date"></td>
                         <td></td>
                         <td></td>
+                        <td class="hours">{{totalHours}}</td>
+                        <td></td>
+                        <td class="salary">$ {{totalSalary | decimal}}</td>
+                        <td></td>
+                    </tr>
+                    <tr v-else>
+                      <td class="icon"><span>{{validSession}}</span></td>
+                        <td class="date"></td>
                         <td></td>
                         <td></td>
-                        <td></td>
-                        <td></td>
+                        <td class="hours"></td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -80,7 +89,7 @@
                 </tfoot>
             </table>
         </section>
-        <div :is="component" :init="componentData"></div>
+        <div :is="component" :init="componentData" @refresh="fetchData"></div>
     </div>
 </template>
 
@@ -92,6 +101,22 @@ export default {
   props: ["profile"],
   components: { editor },
   computed: {
+    validSession() {
+      return this.logs.filter(log => log.valid).length;
+    },
+    totalHours() {
+      let total = this.logs
+        .filter(log => log.valid)
+        .map(log => log.clockOut - log.clockIn)
+        .reduce((a, b) => a + b, 0);
+      return this.calculate(0, total);
+    },
+    totalSalary() {
+      return this.logs
+        .filter(log => log.valid)
+        .map(log => this.salary(log))
+        .reduce((a, b) => a + b, 0);
+    },
     ...mapGetters(["op"])
   },
   data() {
@@ -210,14 +235,13 @@ export default {
         );
       }
     },
-    salary(clockIn, clockOut) {
-      let hour = isNumber(clockOut)
-        ? toFixed((clockOut - clockIn) / 3600000, 2)
-        : 0;
-      let wage = isNumber(this.profile.wage)
-        ? parseFloat(this.profile.wage)
-        : 0;
-      return "$ " + toFixed(wage * hour, 2).toFixed(2);
+    salary(session) {
+      let { clockIn, clockOut, wage } = session;
+      if (!clockOut) return "$ 0.00";
+
+      let hour = toFixed((clockOut - clockIn) / 3600000, 2);
+
+      return toFixed((wage || this.profile.wage || 0) * hour, 2);
     },
     edit(log) {
       this.$p("editor", { log, profile: this.profile, new: false });
@@ -231,7 +255,6 @@ export default {
         valid: false,
         wage: this.profile.wage || 0,
         verifier: null,
-        verified: false,
         verifyDate: null
       };
       this.$p("editor", { log, profile: this.profile, new: true });
@@ -246,6 +269,7 @@ export default {
           "Work Hours",
           "Wage",
           "Salary",
+          "Note",
           "Editor",
           "Edit Time"
         ]
@@ -258,7 +282,7 @@ export default {
         .slice(0)
         .reverse()
         .forEach((log, index) => {
-          let { date, clockIn, clockOut, wage } = log;
+          let { date, clockIn, clockOut, wage, note } = log;
           let timeIn = moment(clockIn).format("HH:mm:ss");
           let timeOut = clockOut ? moment(clockOut).format("HH:mm:ss") : "";
           let workHour = isNumber(clockOut)
@@ -278,6 +302,7 @@ export default {
             workHour,
             wage,
             salary,
+            note,
             editor,
             editTime
           ]);
@@ -330,6 +355,7 @@ nav {
   display: flex;
   align-items: center;
   outline: none;
+  font-family: "Yuanti-SC";
 }
 
 .functions i {
@@ -364,10 +390,12 @@ thead {
 
 thead th {
   padding: 5px 0;
+  border-bottom: 1px solid #eee;
 }
 
 thead,
-tbody tr {
+tbody tr,
+tfoot tr {
   display: table;
   table-layout: fixed;
   width: 100%;
@@ -375,7 +403,7 @@ tbody tr {
 
 tbody {
   background: #fafafa;
-  max-height: 616px;
+  height: 629px;
   overflow: auto;
   display: block;
 }
@@ -392,6 +420,12 @@ tbody tr:nth-child(even) {
   background: #eee;
 }
 
+tfoot tr {
+  height: 28px;
+  background: #ffffff;
+  border-top: 1px solid #f5f5f5;
+}
+
 .fa-check-circle-o {
   color: rgba(0, 0, 0, 0.4);
 }
@@ -404,17 +438,47 @@ tbody tr:nth-child(even) {
   width: 100px;
 }
 
-.lock {
-  pointer-events: none;
-  opacity: 0.8;
-}
 .icon {
   width: 65px;
+  text-align: center;
 }
-.padding{
+
+.icon span {
+  padding: 3px 10px;
+  background: #ff9800;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+  border-radius: 4px;
+  color: #fff;
+  text-shadow: 0 1px 1px #555;
+}
+
+.padding {
   padding-right: 5px;
 }
-.hours{
+
+.hours {
   width: 200px;
+  text-align: center;
+}
+
+.wage {
+  position: relative;
+}
+
+.wage i {
+  position: absolute;
+  right: 5px;
+  color: #ff9800;
+}
+
+.edit i {
+  cursor: pointer;
+}
+
+.salary {
+  color:#333;
+  text-align: center;
+  font-weight: bold;
+  font-family: "Agency FB";
 }
 </style>

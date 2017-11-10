@@ -4,7 +4,7 @@
             <div class="logo" @click.ctrl="getConsole">
                 <span>U</span>
             </div>
-            <order-summary :data="prevHistory.length ? prevHistory : history" :date="calendarDate || today" @filter="setFilter"></order-summary>
+            <order-summary :data="Array.isArray(this.prevHistory) ? prevHistory : history" :date="calendarDate || today" @filter="setFilter"></order-summary>
         </header>
         <article>
             <side-function :date="calendarDate || today" @change="setCalendar"></side-function>
@@ -51,7 +51,7 @@ export default {
       component: null,
       componentData: null,
       calendarDate: null,
-      prevHistory: [],
+      prevHistory: null,
       summary: {},
       page: 0,
       view: "",
@@ -127,15 +127,14 @@ export default {
       this.$socket.emit("[INQUIRY] HISTORY_ORDER", date, invoices => {
         this.prevHistory = invoices;
         this.$q();
-
-        invoices.length === 0 &&
-          this.$dialog({
-            title: "dialog.noInvoice",
-            msg: ["dialog.noInvoiceTip", this.calendarDate],
-            buttons: [{ text: "button.confirm", fn: "resolve" }]
-          }).then(() => {
-            this.$q();
-          });
+        // invoices.length === 0 &&
+        //   this.$dialog({
+        //     title: "dialog.noInvoice",
+        //     msg: ["dialog.noInvoiceTip", this.calendarDate],
+        //     buttons: [{ text: "button.confirm", fn: "resolve" }]
+        //   }).then(() => {
+        //     this.$q();
+        //   });
       });
     },
     highlightTicket(number) {
@@ -167,7 +166,7 @@ export default {
         case "DELIVERY":
         case "DINE_IN":
         case "BAR":
-          return this.prevHistory.length
+          return Array.isArray(this.prevHistory)
             ? this.prevHistory.filter(
                 invoice => invoice.type === this.filter && view(invoice.server)
               )
@@ -175,7 +174,7 @@ export default {
                 invoice => invoice.type === this.filter && view(invoice.server)
               );
         case "UNSETTLE":
-          return this.prevHistory.length
+          return Array.isArray(this.prevHistory)
             ? this.prevHistory.filter(
                 invoice =>
                   invoice.status === 1 &&
@@ -189,7 +188,7 @@ export default {
                   view(invoice.server)
               );
         case "DRIVER":
-          return this.prevHistory.length
+          return Array.isArray(this.prevHistory)
             ? this.prevHistory.filter(
                 invoice =>
                   (this.driver
@@ -203,7 +202,7 @@ export default {
                     : invoice.type === "DELIVERY") && view(invoice.server)
               );
         default:
-          return this.prevHistory.length
+          return Array.isArray(this.prevHistory)
             ? this.prevHistory.filter(invoice => view(invoice.server))
             : this.history.filter(invoice => view(invoice.server));
       }

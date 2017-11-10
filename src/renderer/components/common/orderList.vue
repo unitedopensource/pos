@@ -25,22 +25,18 @@
                 </div>
                 <div>
                     <span class="text">{{$t('text.time')}}</span>
-                    <span class="value">{{order.time | moment('HH:mm:ss MM/DD/YY')}}</span>
+                    <span class="value">{{order.time | moment('YY-MM-DD HH:mm:ss')}}</span>
                 </div>
             </div>
             <div class="content" v-else>
+                <span class="time">{{order.time | moment('YYYY-MM-DD HH:mm:ss')}}</span>
                 <div>
-                    <span class="text">{{$t('text.phone')}}</span>
                     <span class="value">{{order.customer && order.customer.phone}}</span>
                 </div>
                 <div>
-                    <span class="text">{{$t('text.address')}}</span>
                     <span class="value">{{order.customer && order.customer.address}}</span>
                 </div>
-                <div>
-                    <span class="text">{{$t('text.time')}}</span>
-                    <span class="value">{{order.time | moment('HH:mm:ss MM/DD/YY')}}</span>
-                </div>
+          
             </div>
         </header>
         <div class="order" @click.self="resetHighlight" v-if="layout === 'order'">
@@ -470,7 +466,7 @@ header.info {
 }
 
 header i {
-  margin-right: 2px;
+  margin-right: 5px;
 }
 
 .bar {
@@ -605,14 +601,9 @@ header i {
 
 .timePass {
   position: absolute;
-  bottom: 0px;
-  right: 0px;
-  padding: 3px 10px;
-  color: #009688;
-  background: #f5f5f5;
+  right: 5px;
   text-align: center;
   font-size: 12px;
-  border-top-left-radius: 6px;
 }
 
 .print .itemWrap {
@@ -655,6 +646,14 @@ header i {
 
 .content > div {
   display: flex;
+}
+
+.content .time {
+  position: absolute;
+  right: 5px;
+  color: #607d8b;
+  font-family: "Agency FB";
+  font-weight: bold;
 }
 
 .content .text {

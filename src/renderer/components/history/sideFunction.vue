@@ -101,10 +101,10 @@ export default {
         boolean
           ? resolve()
           : reject({
-              type:"warning",
+              type: "warning",
               title: "dialog.accessDenied",
               msg: "dialog.accessDeniedTip",
-              timeout:{duration:5000,fn:"reject"},
+              timeout: { duration: 5000, fn: "reject" },
               buttons: [{ text: "button.confirm", fn: "reject" }]
             });
       });
@@ -134,7 +134,7 @@ export default {
     checkSettlement() {
       return new Promise((resolve, reject) => {
         !this.order.settled
-          ? resolve
+          ? resolve()
           : reject({
               type: "question",
               title: "dialog.paymentRemove",
