@@ -1,7 +1,7 @@
 <template>
     <div>
         <section class="period">
-            <nav>
+            <div class="wrap">
                 <div>
                     <input type="radio" name="period" id="week" v-model="period" value="week" @change="fetchData">
                     <label for="week">{{$t('thead.currentWeek')}}</label>
@@ -18,27 +18,23 @@
                     <input type="radio" name="period" id="lastMonth" v-model="period" value="lastMonth" @change="fetchData">
                     <label for="lastMonth">{{$t('thead.lastMonth')}}</label>
                 </div>
-            </nav>
-            <div class="functions">
-                <button v-show="editable" @click="newRecord">
-                    <i class="fa fa-plus-square"></i>
-                    <span>{{$t('button.newRecord')}}</span>
-                </button>
+            </div>
+            <div class="fn">
+              <button v-show="approval" @click="newRecord">
+                <i class="fa fa-plus-square"></i>
+                {{$t('button.newRecord')}}
+              </button>
                 <button :disabled="true">
-                    <i class="fa fa-calendar-check-o"></i>
-                    <span>{{$t('button.setDate')}}</span>
-                </button>
+                    <i class="fa fa-calendar-check-o"></i>{{$t('button.setDate')}}</button>
                 <button :disabled="logs.length ===0" @click="generateExcel">
-                    <i class="fa fa-external-link"></i>
-                    <span>{{$t('button.export')}}</span>
-                </button>
+                    <i class="fa fa-external-link"></i>{{$t('button.export')}}</button>
             </div>
         </section>
-        <section class="data">
+        <section class="dataList">
             <table>
                 <thead>
                     <tr>
-                        <th>{{$t('thead.valid')}}</th>
+                        <th class="period"></th>
                         <th class="date">{{$t('thead.date')}}</th>
                         <th>{{$t('thead.start')}}</th>
                         <th>{{$t('thead.end')}}</th>
@@ -50,11 +46,12 @@
                 </thead>
                 <tbody>
                     <tr v-for="(log,index) in logs" :key="index">
-                        <td v-if="log.valid"><i class="fa fa-check-circle-o"></i></td>
-                        <td v-else><i class="fa fa-check-circle"></i></td>
-                        <td class="date">{{log.date}}</td>
-                        <td>{{log.clockIn | moment('HH:mm:ss')}}</td>
-                        <td>{{log.clockOut | moment('HH:mm:ss')}}</td>
+                        <td></td>
+                        <td>{{log.clockIn | moment('YYYY-MM-DD')}}</td>
+                        <td v-if="editable" class="editable" @click="editClockIn(log)">{{log.clockIn | moment('HH:mm:ss')}}</td>
+                        <td v-else>{{log.clockIn | moment('HH:mm:ss')}}</td>
+                        <td v-if="editable" class="editable" @click="editClockOut(log)">{{log.clockOut | moment('HH:mm:ss')}}</td>
+                        <td v-else>{{log.clockOut | moment('HH:mm:ss')}}</td>
                         <td>{{calculate(log.clockIn,log.clockOut)}}</td>
                         <td v-if="log.verified">${{log.wage | decimal}}</td>
                         <td v-else class="unverified">${{(profile.wage || 0) | decimal}}</td>
@@ -65,22 +62,9 @@
                         <td v-else></td>
                     </tr>
                 </tbody>
-                <tfood>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                </tfood>
             </table>
         </section>
-        <div :is="component" :init="componentData"></div>
+        <div :is="component" :init="componentData" @refresh="fetchData"></div>
     </div>
 </template>
 
@@ -108,10 +92,47 @@ export default {
   },
   created() {
     this.fetchData();
-    this.editable = this.approval(this.op.permission, "timecard");
+    this.editable = this.op.permission
+      ? this.op.permission.includes("timecard")
+      : false;
     this.defaultWage = isNumber(this.profile.wage) ? this.profile.wage : 0;
   },
   methods: {
+    calculate(clockIn, clockOut) {
+      clockOut = clockOut || +new Date();
+      let duration = clockOut - clockIn;
+      if (isNumber(duration)) {
+        let hh = ("00" +
+          Math.floor((duration % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+        ).slice(-2);
+        let mm = ("00" + Math.floor((duration % (1000 * 60 * 60)) / (1000 * 60))
+        ).slice(-2);
+        let ss = ("00" + Math.floor((duration % (1000 * 60)) / 1000)).slice(-2);
+
+        return (
+          hh +
+          " " +
+          this.$t("text.hour") +
+          " " +
+          mm +
+          " " +
+          this.$t("text.minute") +
+          " " +
+          ss +
+          " " +
+          this.$t("text.second")
+        );
+      }
+    },
+    salary(clockIn, clockOut) {
+      let hour = isNumber(clockOut)
+        ? toFixed((clockOut - clockIn) / 3600000, 2)
+        : 0;
+      let wage = isNumber(this.profile.wage)
+        ? parseFloat(this.profile.wage)
+        : 0;
+      return "$ " + toFixed(wage * hour, 2).toFixed(2);
+    },
     fetchData() {
       switch (this.period) {
         case "week":
@@ -119,14 +140,14 @@ export default {
             .subtract(4, "hours")
             .startOf("week")
             .hours(4);
-
           this.to = +moment()
             .subtract(4, "hours")
             .endOf("week")
-            .add(1, "days")
+            .add("1", "days")
             .hours(3)
             .minutes(59)
-            .seconds(59);
+            .seconds(59)
+            .milliseconds(0);
           break;
         case "lastWeek":
           this.from = +moment()
@@ -138,10 +159,11 @@ export default {
             .subtract(4, "hours")
             .subtract(1, "weeks")
             .endOf("week")
-            .add(1, "days")
+            .add("1", "days")
             .hours(3)
             .minutes(59)
-            .seconds(59);
+            .seconds(59)
+            .milliseconds(0);
           break;
         case "month":
           this.from = +moment()
@@ -151,10 +173,11 @@ export default {
           this.to = +moment()
             .subtract(4, "hours")
             .endOf("month")
-            .add(1, "days")
+            .add("1", "days")
             .hours(3)
             .minutes(59)
-            .seconds(59);
+            .seconds(59)
+            .milliseconds(0);
           break;
         case "lastMonth":
           this.from = +moment()
@@ -166,15 +189,15 @@ export default {
             .subtract(4, "hours")
             .subtract(1, "months")
             .endOf("month")
-            .add(1, "days")
+            .add("1", "days")
             .hours(3)
             .minutes(59)
-            .seconds(59);
+            .seconds(59)
+            .milliseconds(0);
           break;
-        case "specified":
+        case "any":
           break;
       }
-
       this.$socket.emit(
         "[TIMECARD] RECORDS",
         { _id: this.profile._id, from: this.from, to: this.to },
@@ -184,21 +207,30 @@ export default {
       );
     },
     edit(log) {
-      this.$p("editor", { log, profile: this.profile, new: false });
+      this.$p("editor", { log });
+    },
+    editClockIn(log) {
+      this.$p("editor", { log, clockIn: true });
+    },
+    editClockOut(log) {
+      this.$p("editor", { log, clockOut: true });
+    },
+    verification(log) {
+      this.$p("verify", { log, profile: this.profile });
     },
     newRecord() {
       let log = {
-        date: today(),
         clockIn: +new Date(),
         clockOut: +new Date(),
+        date: today(),
         op: this.profile._id,
         valid: false,
-        wage: this.profile.wage || 0,
-        verifier: null,
+        verifier: this.op.name,
         verified: false,
-        verifyDate: null
+        verifyDate: null,
+        wage: this.profile.wage
       };
-      this.$p("editor", { log, profile: this.profile, new: true });
+      this.$p("verify", { log, profile: this.profile });
     },
     generateExcel() {
       let excel = [
@@ -265,4 +297,88 @@ export default {
 };
 </script>
 
-<style scoped></style>
+
+<style scoped>
+section.period {
+  display: flex;
+}
+
+.period .wrap {
+  display: flex;
+}
+
+.fn {
+  flex: 1;
+  background: #2196f3;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.fn button {
+  padding: 10px 20px;
+  margin: 0 5px;
+  background: #e1f5fe;
+  border: none;
+  border-radius: 4px;
+  box-shadow: 0 1px 1px #333;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  outline: none;
+}
+
+.fn i {
+  margin-right: 5px;
+}
+
+.period label {
+  padding: 20px;
+  display: block;
+  border-bottom: 2px solid transparent;
+  background: #2196f3;
+  color: #bbdefb;
+  transition: all 0.3s ease;
+}
+
+input:checked + label {
+  background: #42a5f5;
+  color: #fff;
+  text-shadow: 0 1px 1px #0d47a1;
+  border-bottom: 2px solid #ffb74d;
+}
+
+table {
+  table-layout: auto;
+  border-spacing: 0;
+  width: 100%;
+}
+
+thead {
+  background: #5389a0;
+  color: #fff;
+  text-shadow: 0 1px 1px #555;
+}
+
+td {
+  text-align: center;
+}
+
+td.editable:hover {
+  color: #ff5722;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+tbody tr:nth-child(even) {
+  background: #eceff1;
+}
+
+tr {
+  height: 40px;
+}
+.unverified {
+  opacity: 0.8;
+  color: #9e9e9e;
+}
+</style>

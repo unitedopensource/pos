@@ -45,7 +45,8 @@
                         <div class="left">
                             <h5>{{$t('report.statistics')}}</h5>
                             <checkbox v-model="summary" label="report.summary"></checkbox>
-                            <checkbox v-model="salesFrom" label="report.salesFrom"></checkbox>
+                            <checkbox v-model="salesFrom" label="report.salesFromDep"></checkbox>
+                            <checkbox v-model="salesSource" label="report.salesFrom"></checkbox>
                             <checkbox v-model="settleType" label="report.settleType"></checkbox>
                             <checkbox v-model="hourly" label="report.hourlyReport"></checkbox>
                             <checkbox v-model="countCategory" label="report.categorySales"></checkbox>
@@ -104,6 +105,7 @@ export default {
       componentData: null,
       countCategory: false,
       salesFrom: false,
+      salesSource: false,
       report: {}
     };
   },
@@ -283,9 +285,11 @@ export default {
     handler(datas) {
       this.summarize(datas[0]);
       this.report["SALES ANALYSIS"] = this.salesFrom
-        ? this.salesAnalysis(datas[0])
+        ? this.salesAnalysisOld(datas[0])
         : null;
-      //this.report["CREDIT CARD"] = this.creditCardReport(datas[1]);
+      this.report["SALES SOURCE"] = this.salesSource
+        ? this.salesAnalysis()
+        : null;
       this.report["GIFT CARD"] = this.giftCard
         ? this.giftCardReport(datas[2])
         : null;
@@ -736,7 +740,8 @@ export default {
           ]
         : null;
     },
-    salesAnalysis(data) {
+    salesAnalysis() {},
+    salesAnalysisOld(data) {
       this.report["SALES SOURCE DETAIL"] = [];
       let settled = data.filter(
         ticket => ticket.settled && ticket.status === 1

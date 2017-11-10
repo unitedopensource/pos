@@ -33,12 +33,10 @@
                             <smart-option v-model="profile.control.secondaryFont" label="setting.font" :options="fonts"></smart-option>
                             <smart-range v-model="profile.control.secondaryFontSize" label="setting.fontSize" min="10" max="40" step="1"></smart-range>
                             <checkbox v-model="profile.control.sortItem" label="setting.sortItem"></checkbox>
-                            <!-- <checkbox v-model="profile.control.difference" label="setting.printDifference"></checkbox> -->
                             <checkbox v-model="profile.control.printStore" label="setting.printStoreInfo" @input="toggleStore"></checkbox>
                             <checkbox v-model="profile.control.printType" label="setting.printOrderType" @input="toggleType"></checkbox>
                             <checkbox v-model="profile.control.printCustomer" label="setting.printCustomerInfo" @input="toggleCustomer"></checkbox>
                             <checkbox v-model="profile.control.printActionTime" label="setting.printActionTime"></checkbox>
-                            <!-- <checkbox v-model="profile.control.enlargeDetail" label="setting.enlargeCustomerInfo"></checkbox> -->
                             <checkbox v-model="profile.control.printPayment" label="setting.printPayment" @input="togglePayment"></checkbox>
                             <checkbox v-model="profile.control.printSuggestion" label="setting.printTipSuggestion"></checkbox>
                             <checkbox v-model="profile.control.buzzer" label="setting.buzzer"></checkbox>

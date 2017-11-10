@@ -32,6 +32,8 @@ export default {
 <style scoped>
 .checkbox {
   margin: 0 10px;
+  display: flex;
+  align-items: center;
 }
 
 input {
@@ -90,5 +92,6 @@ input:checked+label:after {
 
 .text {
   vertical-align: top;
+  margin-left: 5px;
 }
 </style>

@@ -60,7 +60,13 @@
         <section class="card">
             <header>{{$t('setting.printer')}}</header>
             <article>
-                <smart-option v-model="workStation.printer" label="text.printer" :options="printers"></smart-option>
+                <smart-option v-model="workStation.printer" label="text.receiptPrinter" :options="printers"></smart-option>
+                <div class="options">
+                  <label class="center">{{$t('text.stationPrinters')}}</label>
+                  <div class="wrap">
+                    <checkbox v-model="workStation.printerGroup" :label="device" :multiple="true" v-for="(device,index) in printers" :key="index"></checkbox>
+                  </div>
+                </div>
             </article>
         </section>
         <section class="card">
@@ -99,10 +105,12 @@ import smartInput from "../common/smartInput";
 import smartRange from "../common/smartRange";
 import smartSwitch from "../common/smartSwitch";
 import smartOption from "../common/smartOption";
+import checkbox from "../common/checkbox";
 import search from "./search";
 import editor from "./uiEditor";
 export default {
   components: {
+    checkbox,
     smartInput,
     smartRange,
     smartSwitch,
@@ -114,6 +122,9 @@ export default {
   created() {
     this.workStation = JSON.parse(JSON.stringify(this.station));
     this.printers = Object.keys(this.config.printer);
+
+    //patch
+    Object.assign(this.workStation, { printerGroup: [] });
   },
   data() {
     return {
@@ -259,5 +270,20 @@ export default {
 
 .disable h4 {
   color: #f5f5f5;
+}
+
+.options {
+  align-items: center;
+  padding: 8px 0;
+  display: flex;
+}
+.options .wrap {
+    display: flex;
+}
+.options label {
+  width: 130px;
+  padding-right: 20px;
+  text-align: right;
+  color: #666;
 }
 </style>
