@@ -219,7 +219,7 @@ export default {
         'change': '更改',
         'resetTable': '重置座位',
         'sync': '同步订单',
-        'fix':'修复'
+        'fix': '修复'
     },
     title: {
         'markPaymentType': '标记付款方式',
@@ -249,7 +249,8 @@ export default {
         'payOut': '支出记录',
         'deliveryRelated': '送餐相关',
         'optionList': '列表选项',
-        'thirdPartyOrder':'第三方订单'
+        'thirdPartyOrder': '第三方订单',
+        'timeSession': '修改打卡时间'
     },
     menu: {
         'course': '定时',
@@ -441,7 +442,7 @@ export default {
         'timeoutTip': '发生某个未知的错误导致操作超时，请重新尝试',
         'giftCardActivation': '激活礼物卡',
         'giftCardActivationTip': '您确定要激活礼物卡 {i} 吗？',
-        'giftCardNotActivated':'此礼物卡没有激活过',
+        'giftCardNotActivated': '此礼物卡没有激活过',
         'giftCardRegistered': '礼物卡已激活',
         'giftCardRegisteredInfo': '这个礼物卡已经激活过',
         'giftCardReload': '礼物卡充值',
@@ -458,7 +459,7 @@ export default {
         'reserveDateIsPassed': '选定的预约日期无效',
         'paymentFailed': '付款失败',
         'canNotPayZeroAmount': '支付数额必须大于 $ 0.00 ',
-        'balanceDueAmountIncorrect':'此订单的支付数额存在问题',
+        'balanceDueAmountIncorrect': '此订单的支付数额存在问题',
         'invalidCreditCard': '无效的信用卡',
         'creditCardLengthIncorrect': '信用卡号码长度不正确',
         'expirationDateIncorrect': '信用卡日期格式不正确',
@@ -471,8 +472,8 @@ export default {
         'combineTicketsConfirm': '您确定要将 {i} 订单合并至 #{i}号 吗？',
         'foodTogo': '创建带走物品',
         'togoConfirm': '您确定需要创建一个带走物品列表吗?',
-        'somethingWrong':'发生了一个错误',
-        'somethingWrongTip':'此订单在保存的过程中产生了一个错误，保存被取消'
+        'somethingWrong': '发生了一个错误',
+        'somethingWrongTip': '此订单在保存的过程中产生了一个错误，保存被取消'
     },
     terminal: {
         'initial': '正在初始化 {i}...',
@@ -566,7 +567,7 @@ export default {
         'statistics': '数据',
         'summary': '简要报告',
         'salesFrom': '款项来源明细',
-        'salesFromDep':'款项来源明细(遗弃)',
+        'salesFromDep': '款项来源明细(遗弃)',
         'categorySales': '菜单类别销售',
         'hourlyReport': '按小时统计销售',
         'settleType': '支付类别明细',
@@ -638,14 +639,15 @@ export default {
         'operator': '经手',
         'inflow': '收',
         'outflow': '出',
-        'beginTime':'开始时间',
-        'endTime':'结束时间',
-        'cashDrawer':'钱箱',
-        'depositor':'开启',
-        'beginAmount':'起始金额',
-        'endAmount':'结束金额',
-        'records':'记录(笔)',
-        'detail':'详细'
+        'beginTime': '开始时间',
+        'endTime': '结束时间',
+        'cashDrawer': '钱箱',
+        'depositor': '开启',
+        'beginAmount': '起始金额',
+        'endAmount': '结束金额',
+        'records': '记录(笔)',
+        'detail': '详细',
+        'edit': '修改'
     },
     flow: {
         'START': '初始金额',
@@ -706,8 +708,8 @@ export default {
         'separate': '人均',
         'autoComplete': '自动完成',
         'printer': '打印机',
-        'receiptPrinter':'收据打印机',
-        'stationPrinters':'工作站打印机',
+        'receiptPrinter': '收据打印机',
+        'stationPrinters': '工作站打印机',
         'redirect': '打印重定向',
         'storeName': '店名',
         'address': '地址',
@@ -881,8 +883,12 @@ export default {
         'taxOnDelivery': '送餐税',
         'ignorePrice': '忽略价格',
         'autoNext': '自动下移',
-        'removeItem':'移除物品',
-        'historyInvoice':'历史订单'
+        'removeItem': '移除物品',
+        'historyInvoice': '历史订单',
+        'clockIn': '上班时间',
+        'clockOut': '下班时间',
+        'verify': '认证',
+        'lock': '锁定'
     },
     nav: {
         'store': '店面',
@@ -1090,7 +1096,7 @@ export default {
         'lockWhenCompleteOrder': '完成订单之后锁定界面',
         'doNotAskReceiptAfterSettle': '结账之后不弹出收据打印确认框',
         'taxOnDeliveryCharge': '送餐费用加税',
-        'thirdPartyProvider':'请选择一个第三方提供商',
+        'thirdPartyProvider': '请选择一个第三方提供商',
         'table': {
             'actionsOnDone': '设定完成订单之后的操作',
             'passwordRequire': '创建座位之前需要输入密码',

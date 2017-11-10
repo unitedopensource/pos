@@ -33,18 +33,22 @@
                 <button class="btn" @click="confirm" :disabled="!valid">{{$t('button.confirm')}}</button>
             </footer>
         </div>
+        <div :is="component" :init="componentData"></div>
     </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
 import checkbox from "../../common/checkbox";
+import dialoger from "../../../common/dialoger";
 
 export default {
   props: ["init"],
-  components: { checkbox },
+  components: { checkbox, dialoger },
   data() {
     return {
+      componentData: null,
+      component: null,
       log: {},
       wage: 0,
       lock: false

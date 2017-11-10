@@ -34,38 +34,38 @@
                 </button>
             </div>
         </section>
-        <section class="data">
+        <section>
             <table>
                 <thead>
                     <tr>
-                        <th>{{$t('thead.valid')}}</th>
+                        <th class="icon">{{$t('thead.verify')}}</th>
                         <th class="date">{{$t('thead.date')}}</th>
                         <th>{{$t('thead.start')}}</th>
                         <th>{{$t('thead.end')}}</th>
-                        <th>{{$t('thead.workHour')}}</th>
+                        <th class="hours">{{$t('thead.workHour')}}</th>
                         <th>{{$t('thead.wage')}}</th>
                         <th>{{$t('thead.salary')}}</th>
-                        <th>{{$t('thead.verify')}}</th>
+                        <th class="padding">{{$t('thead.edit')}}</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(log,index) in logs" :key="index">
-                        <td v-if="log.valid"><i class="fa fa-check-circle-o"></i></td>
-                        <td v-else><i class="fa fa-check-circle"></i></td>
+                    <tr v-for="(log,index) in logs" :key="index" :class="{lock:log.lock}">
+                        <td v-if="log.valid" class="icon"><i class="fa fa-check-circle"></i></td>
+                        <td v-else class="icon"><i class="fa fa-check-circle-o"></i></td>
                         <td class="date">{{log.date}}</td>
                         <td>{{log.clockIn | moment('HH:mm:ss')}}</td>
                         <td>{{log.clockOut | moment('HH:mm:ss')}}</td>
-                        <td>{{calculate(log.clockIn,log.clockOut)}}</td>
+                        <td class="hours">{{calculate(log.clockIn,log.clockOut)}}</td>
                         <td v-if="log.verified">${{log.wage | decimal}}</td>
                         <td v-else class="unverified">${{(profile.wage || 0) | decimal}}</td>
                         <td>{{salary(log.clockIn,log.clockOut)}}</td>
-                        <td v-if="editable" class="editable" @click="verification(log)">
+                        <td v-if="editable" class="editable" @click="edit(log)">
                             <i class="fa fa-pencil-square"></i>
                         </td>
                         <td v-else></td>
                     </tr>
                 </tbody>
-                <tfood>
+                <tfoot>
                     <tr>
                         <td></td>
                         <td></td>
@@ -77,7 +77,7 @@
                         <td></td>
                         <td></td>
                     </tr>
-                </tfood>
+                </tfoot>
             </table>
         </section>
         <div :is="component" :init="componentData"></div>
@@ -183,6 +183,42 @@ export default {
         }
       );
     },
+    calculate(clockIn, clockOut) {
+      clockOut = clockOut || +new Date();
+      let duration = clockOut - clockIn;
+
+      if (isNumber(duration)) {
+        let hh = ("00" +
+          Math.floor((duration % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+        ).slice(-2);
+        let mm = ("00" + Math.floor((duration % (1000 * 60 * 60)) / (1000 * 60))
+        ).slice(-2);
+        let ss = ("00" + Math.floor((duration % (1000 * 60)) / 1000)).slice(-2);
+
+        return (
+          hh +
+          " " +
+          this.$t("text.hour") +
+          " " +
+          mm +
+          " " +
+          this.$t("text.minute") +
+          " " +
+          ss +
+          " " +
+          this.$t("text.second")
+        );
+      }
+    },
+    salary(clockIn, clockOut) {
+      let hour = isNumber(clockOut)
+        ? toFixed((clockOut - clockIn) / 3600000, 2)
+        : 0;
+      let wage = isNumber(this.profile.wage)
+        ? parseFloat(this.profile.wage)
+        : 0;
+      return "$ " + toFixed(wage * hour, 2).toFixed(2);
+    },
     edit(log) {
       this.$p("editor", { log, profile: this.profile, new: false });
     },
@@ -265,4 +301,120 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.period {
+  display: flex;
+  background: #607d8b;
+  color: aliceblue;
+  align-items: center;
+}
+
+nav {
+  display: flex;
+  flex: 1;
+}
+
+.functions {
+  padding: 0 5px;
+  display: flex;
+}
+
+.functions button {
+  padding: 10px 20px;
+  margin: 0 5px;
+  background: #fdfeff;
+  border: none;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px #333;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  outline: none;
+}
+
+.functions i {
+  margin-right: 5px;
+}
+
+label {
+  padding: 15px 5px;
+  width: 100px;
+  text-align: center;
+  cursor: pointer;
+  display: block;
+  transition: all 0.3s ease-out;
+  border-bottom: 3px solid transparent;
+}
+
+input:checked + label {
+  background: #768f9a;
+  border-bottom: 3px solid #ff9800;
+}
+
+table {
+  table-layout: auto;
+  border-spacing: 0;
+  width: 100%;
+}
+
+thead {
+  background: #fff;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
+}
+
+thead th {
+  padding: 5px 0;
+}
+
+thead,
+tbody tr {
+  display: table;
+  table-layout: fixed;
+  width: 100%;
+}
+
+tbody {
+  background: #fafafa;
+  max-height: 616px;
+  overflow: auto;
+  display: block;
+}
+tbody td {
+  text-align: center;
+  padding: 10px 0;
+}
+
+tbody tr {
+  background: #fafafa;
+}
+
+tbody tr:nth-child(even) {
+  background: #eee;
+}
+
+.fa-check-circle-o {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.fa-check-circle {
+  color: #009688;
+}
+
+.date {
+  width: 100px;
+}
+
+.lock {
+  pointer-events: none;
+  opacity: 0.8;
+}
+.icon {
+  width: 65px;
+}
+.padding{
+  padding-right: 5px;
+}
+.hours{
+  width: 200px;
+}
+</style>

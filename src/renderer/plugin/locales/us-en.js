@@ -274,7 +274,8 @@ export default {
         'beginAmount': 'Begin Amount',
         'endAmount': 'End Amount',
         'records': 'Records',
-        'detail': 'Detail'
+        'detail': 'Detail',
+        'edit': 'Edit'
     },
     flow: {
         'START': 'Deposit',
@@ -311,7 +312,8 @@ export default {
         'payOut': 'Pay Out Record',
         'deliveryRelated': 'Delivery Related',
         'optionList': 'Options',
-        'thirdPartyOrder':'Third Party Order'
+        'thirdPartyOrder': 'Third Party Order',
+        'timeSession': 'Time Session Editor'
     },
     menu: {
         'course': 'Course',
@@ -503,7 +505,7 @@ export default {
         'timeoutTip': 'An unknown error occurred, please retry later',
         'giftCardActivation': 'Gift Card Activation',
         'giftCardActivationTip': 'Are you sure to activate gift card {i}?',
-        'giftCardNotActivated':'This gift card is not activated.',
+        'giftCardNotActivated': 'This gift card is not activated.',
         'giftCardRegistered': 'Gift Card Activated',
         'giftCardRegisteredInfo': 'This gift card already activated.',
         'giftCardReload': 'Gift Card Reload',
@@ -628,7 +630,7 @@ export default {
         'statistics': 'Statistics',
         'summary': 'Summary',
         'salesFrom': 'Sales Source',
-        'salesFromDep':'Sales Source (Deprecated)',
+        'salesFromDep': 'Sales Source (Deprecated)',
         'categorySales': 'Category Sales Report',
         'hourlyReport': 'Hourly Summary',
         'settleType': 'Settle Type Summary',
@@ -712,8 +714,8 @@ export default {
         'separate': 'Separate',
         'autoComplete': 'Auto Complete',
         'printer': 'Printer',
-        'receiptPrinter':'Receipt Printer',
-        'stationPrinters':'Station Printers',
+        'receiptPrinter': 'Receipt Printer',
+        'stationPrinters': 'Station Printers',
         'redirect': 'Redirect',
         'storeName': 'Store Name',
         'address': 'Address',
@@ -888,8 +890,12 @@ export default {
         'taxOnDelivery': 'Tax On Delivery',
         'ignorePrice': 'Ignore Price',
         'autoNext': 'Auto Next',
-        'removeItem':'Remove Item',
-        'historyInvoice':'History Invoice'
+        'removeItem': 'Remove Item',
+        'historyInvoice': 'History Invoice',
+        'clockIn': 'Clock In',
+        'clockOut': 'Clock Out',
+        'verify': 'Verify',
+        'lock': 'Lock'
     },
     nav: {
         'store': 'Store',
@@ -1098,7 +1104,7 @@ export default {
         'lockWhenCompleteOrder': 'Lock screen when complete order',
         'doNotAskReceiptAfterSettle': 'Do not prompt "Print Receipt" dialog',
         'taxOnDeliveryCharge': 'Tax on delivery charge',
-        'thirdPartyProvider':'Select your third party service provider',
+        'thirdPartyProvider': 'Select your third party service provider',
         'table': {
             'actionsOnDone': 'Actions after tapping Done',
             'passwordRequire': 'Password input required before create a new table.',
