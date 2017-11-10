@@ -492,6 +492,8 @@ export default {
           .map(log => parseFloat(log.tip || 0))
           .reduce((a, b) => a + b, 0);
 
+        list.map(log => parseFloat(log.tip || 0)).reduce((a, b) => a + b, 0);
+
         settle[type] = {
           text: type,
           amount: [

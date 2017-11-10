@@ -3,7 +3,7 @@
     <div class="window">
       <header class="title">
         <span>{{$t("menu.modify")}}</span>
-        <span>{{item[language]}}</span>
+        <span class="name">{{item[language]}}</span>
         <span class="price">${{total}}</span>
       </header>
       <section class="display">
@@ -261,6 +261,19 @@ export default {
   transform: translateY(-41px);
 }
 
+.title {
+  display: flex;
+  align-content: center;
+}
+
+.name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin: 0 5px;
+}
+
 .inner {
   display: flex;
   padding: 0 2px 0 2px;
@@ -377,6 +390,7 @@ section.numpad div:last-child {
 
 .ban {
   pointer-events: none;
+  opacity: 0.8;
 }
 
 .unit label {

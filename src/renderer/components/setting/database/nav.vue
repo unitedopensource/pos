@@ -22,6 +22,10 @@
                     <i class="fa fa-exchange"></i>
                     <span class="text">{{$t('nav.cashFlow')}}</span>
                 </router-link>
+                <router-link tag="li" :to="{name:'Setting.database.events'}">
+                    <i class="fa fa-sort-alpha-asc"></i>
+                    <span class="text">{{$t('nav.events')}}</span>
+                </router-link>
             </div>
             <router-link tag="li" :to="{name:'Setting.index'}">
                 <i class="fa fa-arrow-circle-left"></i>

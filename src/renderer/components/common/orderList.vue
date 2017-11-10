@@ -73,9 +73,9 @@
                     <span class="text">{{$t("text.deliveryFee")}}:</span>
                     <span class="value">{{payment.delivery | decimal}}</span>
                 </div>
-                <div v-else-if="order.type === 'DINE_IN'" :class="{hidden:parseFloat(payment.gratuity) === 0}">
-                    <span class="text">{{$t("text.gratuity")}}:</span>
-                    <span class="value">{{payment.gratuity | decimal}}</span>
+                <div v-else-if="order.type === 'DINE_IN'" :class="{hidden:parseFloat(payment.tip) === 0}">
+                    <span class="text">{{$t("text.tip")}}:</span>
+                    <span class="value">{{payment.tip | decimal}}</span>
                 </div>
                 <div v-else :class="{hidden:parseFloat(payment.delivery) === 0}">
                     <span class="text">{{$t("text.deliveryFee")}}:</span>
@@ -83,7 +83,7 @@
                 </div>
                 <div :class="{hidden:parseFloat(payment.discount) === 0}">
                     <span class="text">{{$t("text.discount")}}:</span>
-                    <span class="value">{{payment.discount | decimal}}</span>
+                    <span class="value">- {{payment.discount | decimal}}</span>
                 </div>
                 <div>
                     <span class="text">{{$t("text.total")}}:</span>

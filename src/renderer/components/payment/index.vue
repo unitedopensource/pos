@@ -442,15 +442,7 @@ export default {
           let exp = data.exp;
           let duration = exp - current;
           this.releaseComponentLock = false;
-
-          this.$socket.emit("[SYS] RECORD", {
-            type: "Software",
-            event: "payment",
-            status: 0,
-            cause: "paymentOccupy",
-            data: this.order._id
-          });
-
+          
           this.$dialog({
             title: "dialog.pending",
             msg: "dialog.pendingOrderAccessDenied",

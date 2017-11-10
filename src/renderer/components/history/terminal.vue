@@ -51,8 +51,11 @@
                 </section>
             </div>
             <footer>
-                <button class="btn" @click="batch" :disabled="!ready">{{$t('button.batch')}}</button>
-                <pagination :of="transactions" @page="setPage" :contain="12" :max="12"></pagination>
+                <!-- <button class="btn" @click="batch" :disabled="!ready">{{$t('button.batch')}}</button> -->
+                <button class="btn" @click="adjustAllTips">{{$t('button.adjustTips')}}</button>
+                <div class="f1">
+                  <pagination :of="transactions" @page="setPage" :contain="12" :max="12"></pagination>
+                </div>
                 <div>
                     <div class="btn" @click="init.resolve">{{$t('button.exit')}}</div>
                 </div>
@@ -64,13 +67,14 @@
 
 <script>
 import { mapGetters } from "vuex";
+import tipper from "./tipper";
+import looper from "./component/looper";
 import dialoger from "../common/dialoger";
 import processor from "../common/processor";
 import pagination from "../common/pagination";
-import tipper from "./tipper";
 export default {
   props: ["init"],
-  components: { dialoger, tipper, processor, pagination },
+  components: { dialoger, tipper, processor, pagination, looper },
   data() {
     return {
       transactions: [],
@@ -314,6 +318,19 @@ export default {
               this.$q();
             })
         : this.$denyAccess();
+    },
+    adjustAllTips() {
+      new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject, transaction: this.transaction };
+        this.component = "looper";
+      })
+        .then(() => {
+          this.$q();
+          this.batch();
+        })
+        .catch(() => {
+          this.$q();
+        });
     },
     applyAdjustTip(record, result, value) {
       this.$dialog({
