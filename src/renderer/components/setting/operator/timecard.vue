@@ -68,13 +68,12 @@
                 <tfoot>
                     <tr v-if="validSession">
                         <td class="icon"><span>{{validSession}}</span></td>
-                        <td class="date"></td>
-                        <td></td>
-                        <td></td>
-                        <td class="hours">{{totalHours}}</td>
-                        <td></td>
-                        <td class="salary">$ {{totalSalary | decimal}}</td>
-                        <td></td>
+                        <td class="profile">{{profile.name}}</td>
+                        <td>
+                          <span>{{dateRange}}</span>
+                        </td>
+                        <td colspan="3" class="hours">{{totalHours}}</td>
+                        <td class="salary"><span class="text">Total Salary:</span>$ {{totalSalary | decimal}}</td>
                     </tr>
                     <tr v-else>
                       <td class="icon"><span>{{validSession}}</span></td>
@@ -116,6 +115,11 @@ export default {
         .filter(log => log.valid)
         .map(log => this.salary(log))
         .reduce((a, b) => a + b, 0);
+    },
+    dateRange() {
+      let to = this.logs[0].date;
+      let from = this.logs[this.logs.length - 1].date;
+      return `${from} ~ ${to}`;
     },
     ...mapGetters(["op"])
   },
@@ -444,7 +448,10 @@ tfoot tr {
 }
 
 .icon span {
-  padding: 3px 10px;
+  padding: 3px 0;
+  min-width: 30px;
+  display: inline-flex;
+  justify-content: center;
   background: #ff9800;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
   border-radius: 4px;
@@ -476,9 +483,22 @@ tfoot tr {
 }
 
 .salary {
-  color:#333;
+  color: #000;
   text-align: center;
   font-weight: bold;
-  font-family: "Agency FB";
+}
+
+.salary .text {
+  padding-right: 7px;
+  font-weight: initial;
+  font-family: "Yuanti-SC";
+  color: #333;
+}
+
+.profile {
+  font-weight: bold;
+  width: 100px;
+  padding-right: 20px;
+  text-align: center;
 }
 </style>

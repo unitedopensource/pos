@@ -131,7 +131,7 @@ export default {
 
 <style scoped>
 div {
-  padding: 4px 0px 0px 4px;
+  padding: 3px 0px 0px 3px;
 }
 
 div button {

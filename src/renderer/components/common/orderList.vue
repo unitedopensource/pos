@@ -15,17 +15,12 @@
                 </span>
             </div>
             <div class="content" v-if="order.type === 'DINE_IN'">
+                <span class="time">{{order.time | moment('YYYY-MM-DD HH:mm:ss')}}</span>
+                <span class="corner" v-if="undoneItems">{{$t('text.progressTicket',undoneItems)}}</span>
+                <span class="corner" v-else>{{$t('text.doneTicket')}}</span>
                 <div>
                     <span class="text">{{$t('text.guest')}}</span>
                     <span class="value">{{order.guest}}</span>
-                </div>
-                <div>
-                    <span class="text">{{$t('text.item')}}</span>
-                    <span class="value">{{$t('text.handleItem',...countItems(order.content))}}</span>
-                </div>
-                <div>
-                    <span class="text">{{$t('text.time')}}</span>
-                    <span class="value">{{order.time | moment('YY-MM-DD HH:mm:ss')}}</span>
                 </div>
             </div>
             <div class="content" v-else>
@@ -247,15 +242,18 @@ export default {
       this.setOrder(config);
       this.calculator(this.cart);
     },
-    countItems(content) {
-      let count = 0;
-      let undone = 0;
-      content.forEach(item => {
-        count += item.qty;
-        !item.print && undone++;
-      });
-      return [count, undone];
-    },
+    // undoneItem(items) {
+    //   return items.map(i => !i.print).reduce((a, b) => a + b, 0);
+    // },
+    // countItems(content) {
+    //   let count = 0;
+    //   let undone = 0;
+    //   content.forEach(item => {
+    //     count += item.qty;
+    //     !item.print && undone++;
+    //   });
+    //   return [count, undone];
+    // },
     calculator(items) {
       if (items.length === 0) {
         let delivery =
@@ -399,6 +397,9 @@ export default {
     scroll() {
       return { transform: `translate3d(0,${this.offset}px,0)` };
     },
+    undoneItems() {
+      return this.order.content.map(i => !i.print).reduce((a, b) => a + b, 0);
+    },
     ...mapGetters([
       "app",
       "config",
@@ -453,7 +454,7 @@ header.info {
   background: #f5f5f5;
   color: #555;
   position: relative;
-  height: 88px;
+  height: 93px;
 }
 
 .number {
@@ -461,7 +462,6 @@ header.info {
   width: 30px;
   text-align: center;
   font-weight: bold;
-  text-shadow: 0 1px 1px #333;
   font-size: 22px;
 }
 
@@ -477,6 +477,7 @@ header i {
   color: #fff;
   position: relative;
   padding: 0 5px;
+  text-shadow: 0 1px 1px #333;
   box-shadow: inset 0px -1px 3px -1px rgb(17, 116, 160);
 }
 
@@ -653,6 +654,16 @@ header i {
   right: 5px;
   color: #607d8b;
   font-family: "Agency FB";
+  font-weight: bold;
+}
+
+.content .corner {
+  position: absolute;
+  right: 5px;
+  bottom: 2px;
+  color: #e06d40;
+  font-size: 14px;
+  font-style: italic;
   font-weight: bold;
 }
 

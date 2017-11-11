@@ -8,7 +8,7 @@
             <i class="fa fa-ban"></i>
             <span class="text">{{$t('button.recover')}}</span>
         </div>
-        <div class="btn" @click="isVoidable" v-else>
+        <div class="btn" @click="voidOrder" v-else>
             <i class="fa fa-ban"></i>
             <span class="text">{{$t('button.void')}}</span>
         </div>
@@ -96,6 +96,15 @@ export default {
         .then(this.edit)
         .catch(this.editFailed);
     },
+    voidOrder() {
+      if (this.isEmptyTicket) return;
+
+      this.checkPermission(this.editable)
+        .then(this.checkDate)
+        .then(this.checkSettlement)
+        .then(this.voidTicket)
+        .catch(this.voidFailed);
+    },
     checkPermission(boolean) {
       return new Promise((resolve, reject) => {
         boolean
@@ -159,59 +168,14 @@ export default {
     editFailed(reason) {
       this.$dialog(reason)
         .then(() => {
-          this.confirmPaymentRemoval();
           this.$q();
+          this.confirmPaymentRemoval();
         })
         .catch(() => {
           this.$q();
         });
     },
-
-    // isEditable() {
-    //   if (this.isEmptyTicket) return;
-    //   if (!this.approval(this.op.modify, "order")) {
-    //     this.$denyAccess();
-    //     return;
-    //   }
-    //   if (this.date !== this.today) {
-    //     this.$dialog({
-    //       title: "dialog.unableEdit",
-    //       msg: "dialog.editPrevOrderTip",
-    //       buttons: [{ text: "button.confirm", fn: "resolve" }]
-    //     }).then(() => {
-    //       this.$q();
-    //     });
-    //     return;
-    //   }
-    //   if (this.order.status === 0) {
-    //     this.$dialog({
-    //       title: "dialog.unableEdit",
-    //       msg: ["dialog.editVoidOrderTip", this.order.void.by],
-    //       buttons: [{ text: "button.confirm", fn: "resolve" }]
-    //     }).then(() => {
-    //       this.$q();
-    //     });
-    //     return;
-    //   }
-    //   if (this.order.settled) {
-    //     this.confirmPaymentRemoval();
-    //     return;
-    //   }
-    //   this.editOrder();
-    // },
-    isVoidable() {
-      !this.isEmptyTicket && this.approval(this.op.modify, "order")
-        ? this.order.settled ? this.confirmPaymentRemoval() : this.voidOrder()
-        : this.$denyAccess();
-    },
-    // editOrder() {
-    //   this.setTicket({ type: this.order.type, number: this.order.number });
-    //   this.setApp({ mode: "edit" });
-    //   this.setCustomer(this.order.customer);
-    //   this.setOrder(JSON.parse(JSON.stringify(this.order)));
-    //   this.$router.push({ path: "/main/menu" });
-    // },
-    voidOrder() {
+    voidTicket() {
       this.$dialog({
         type: "warning",
         title: [
@@ -232,6 +196,16 @@ export default {
           this.$q();
         });
     },
+    voidFailed(reason) {
+      this.$dialog(reason)
+        .then(() => {
+          this.$q();
+          this.removeOrderPayment();
+        })
+        .catch(() => {
+          this.$q();
+        });
+    },
     confirmPaymentRemoval() {
       this.$dialog({
         type: "question",
@@ -247,9 +221,7 @@ export default {
       })
         .then(() => {
           this.$q();
-          this.$nextTick(() => {
-            this.removeOrderPayment();
-          });
+          this.removeOrderPayment();
         })
         .catch(() => {
           this.$q();
@@ -477,7 +449,7 @@ export default {
       this.$socket.emit("[UPDATE] INVOICE", ticket, true);
     },
     stats() {
-      this.$parent.prevHistory.length > 0
+      Array.isArray(this.$parent.prevHistory)
         ? this.$p("statistic", { history: this.$parent.prevHistory })
         : this.$p("statistic");
     },
