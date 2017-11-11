@@ -18,7 +18,7 @@
             </header>
             <article>
                 <smart-switch v-model="operator.timecard" label="text.timeCard"></smart-switch>
-                <smart-input v-model.number="operator.wage" label="text.wage" :disable="!operator.timecard"></smart-input>
+                <smart-input v-model.number="operator.wage" label="thead.wage" :disable="!operator.timecard"></smart-input>
             </article>
         </section>
         <section class="card list">

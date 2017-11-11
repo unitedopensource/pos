@@ -102,16 +102,16 @@ var Printer = function (plugin, config) {
         switch (this.target) {
             case 'All':
                 printer = this.devices.filter(device => !(/cashier/i).test(device));
-                printer.splice(0, 0, this.station.printer || 'cashier')
+                printer.splice(0, 0, this.station.printer || 'cashier');
                 break;
             case 'Receipt':
-                printer = [this.station.printer || 'cashier']
+                printer = [this.station.printer || 'cashier'];
                 break;
             case 'Order':
                 printer = this.devices.filter(device => !(/cashier/i).test(device));
                 break;
         }
-        return this.targetDevices.length > 0 ? this.targetDevices : printer
+        return this.targetDevices.length > 0 ? this.targetDevices : printer;
     }
 
     this.print = function (raw, receipt) {

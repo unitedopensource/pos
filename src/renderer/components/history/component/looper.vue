@@ -9,7 +9,11 @@
               <section class="outer">
                 <v-touch tag="ul" class="orders" :style="scroll" @panup="move" @pandown="move" @panstart="panStart" @panend="panEnd">
                     <li v-for="(transaction,index) in init.transaction" :key="index">
-                        <span></span>
+                        <span>#{{transaction.trace.trans}}</span>
+                        <span>{{$t('type.'+transaction.order.type)}}</span>
+                        <span class="ticket">(#{{transaction.order.number}})</span>
+                        <span>{{transaction.account.number}}</span>
+                        <span>{{transaction.host.auth}}</span>
                         <span></span>
                     </li>
                 </v-touch>
@@ -43,7 +47,7 @@
             </div>
             <footer>
                 <div class="f1">
-                    <checkbox v-model="finish" label="text.allTipsEntered"></checkbox>
+                    <checkbox v-model="finish" label="text.doneTipEnter"></checkbox>
                 </div>
                 <div class="btn" @click="done">{{$t('button.done')}}</div>
             </footer>
@@ -77,14 +81,8 @@ export default {
       componentData: null
     };
   },
-  created() {
-    this.initialData();
-    this.init.hasOwnProperty("ticket") && this.next(this.init.ticket);
-  },
+  created() {},
   methods: {
-    initialData() {
-      let viewable = this.approval(this.op.view, "invoices");
-    },
     setTarget(order, e) {
       let { number, driver } = order;
 
@@ -241,23 +239,40 @@ section.outer {
   height: 448px;
   overflow: hidden;
 }
+
 ul.orders {
   width: 320px;
   margin-right: 2px;
 }
+
 .wrap {
   flex: 1;
 }
+
+.input input {
+  border: none;
+  font-family: "Agency FB";
+  font-weight: bold;
+  text-align: right;
+  width: 395px;
+  padding: 10px;
+  font-size: 35px;
+  outline: none;
+}
+
 .wrap .pad {
   display: flex;
 }
+
 .numpad {
   display: flex;
   flex-wrap: wrap;
 }
+
 span.address {
   color: #009688;
 }
+
 .orders li {
   display: flex;
   padding: 5px;

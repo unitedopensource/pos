@@ -64,7 +64,7 @@
                 <div class="options">
                   <label class="center">{{$t('text.stationPrinters')}}</label>
                   <div class="wrap">
-                    <checkbox v-model="workStation.printerGroup" :val="device" :label="device" :multiple="true" v-for="(device,index) in printers" :key="index"></checkbox>
+                    <checkbox v-model="workStation.printerGroup" :val="device" :label="device" :multiple="true" v-for="(device,index) in printerGroup" :key="index"></checkbox>
                   </div>
                 </div>
             </article>
@@ -123,7 +123,7 @@ export default {
   created() {
     this.workStation = JSON.parse(JSON.stringify(this.station));
     this.printers = Object.keys(this.config.printer);
-
+    this.printerGroup = this.printers.filter(name => !/cashier/i.test(name));
     //patch
     !this.workStation.hasOwnProperty("printerGroup") &&
       Object.assign(this.workStation, { printerGroup: [] });
@@ -148,6 +148,7 @@ export default {
       ],
       commands: ["AT#CID=1", "AT+VCID=1", "AT%CCID=1"],
       printers: [],
+      printerGroup: [],
       dragtions: {
         animation: 300,
         ghostClass: "ghost"
@@ -219,9 +220,6 @@ export default {
         }
       },
       deep: true
-    },
-    "workStation.printerGroup"(n){
-      console.log(n)
     }
   },
   computed: {

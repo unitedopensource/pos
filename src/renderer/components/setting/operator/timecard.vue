@@ -364,7 +364,7 @@ nav {
 
 label {
   padding: 15px 5px;
-  width: 100px;
+  min-width: 100px;
   text-align: center;
   cursor: pointer;
   display: block;
@@ -457,7 +457,7 @@ tfoot tr {
 }
 
 .hours {
-  width: 200px;
+  width: 250px;
   text-align: center;
 }
 
