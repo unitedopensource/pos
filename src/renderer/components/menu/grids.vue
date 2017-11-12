@@ -365,6 +365,14 @@ export default {
             } else {
               Printer.setTarget("Order").print(this.order);
             }
+
+            this.$socket.emit("[SYS] RECORD", {
+              type: "User",
+              event: "editInvoice",
+              status: 1,
+              data: order,
+              backup: this.diffs
+            });
             break;
           default:
         }

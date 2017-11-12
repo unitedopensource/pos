@@ -39,9 +39,9 @@ export default {
             { text: "button.markAsPaid", fn: "resolve" }
           ]
         });
-    setTimeout(()=>{
+    setTimeout(() => {
       this.cancelable = true;
-    },30000)
+    }, 30000);
   },
   methods: {
     initTerminal() {
@@ -135,10 +135,8 @@ export default {
       if (this.transacting) {
         this.msg = this.$t("terminal.aborting");
         this.transacting.abort();
-        setTimeout(() => {
-          this.terminal.abort();
-          this.init.reject(false);
-        }, 5000);
+        this.terminal.abort();
+        this.init.reject(false);
       } else {
         this.init.reject(false);
       }
