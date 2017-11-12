@@ -229,7 +229,9 @@ export default {
         'fix': 'Fix',
         'newRecord': 'New Record',
         'setDate': 'Set Date',
-        'export': 'Export'
+        'export': 'Export',
+        'close': 'Close',
+        'removeAll': 'Remove All'
     },
     thead: {
         'orderType': 'Order Type',
@@ -278,7 +280,8 @@ export default {
         'endAmount': 'End Amount',
         'records': 'Records',
         'detail': 'Detail',
-        'edit': 'Edit'
+        'edit': 'Edit',
+        'amount': 'Amount'
     },
     flow: {
         'START': 'Deposit',
@@ -316,7 +319,8 @@ export default {
         'deliveryRelated': 'Delivery Related',
         'optionList': 'Options',
         'thirdPartyOrder': 'Third Party Order',
-        'timeSession': 'Time Session Editor'
+        'timeSession': 'Time Session Editor',
+        'payLog': 'Payment History'
     },
     menu: {
         'course': 'Course',
@@ -691,7 +695,7 @@ export default {
         'gratuity': 'Gratuity',
         'includeTip': 'Tips',
         'includeGratuity': 'Fees',
-        'includeDiscount':'Disc.',
+        'includeDiscount': 'Disc.',
         'itemComment': 'Customer Comment',
         'balanceDue': 'Balance Due',
         'reservation': 'Reservation',
@@ -1112,6 +1116,7 @@ export default {
         'doNotAskReceiptAfterSettle': 'Do not prompt "Print Receipt" dialog',
         'taxOnDeliveryCharge': 'Tax on delivery charge',
         'thirdPartyProvider': 'Select your third party service provider',
+        'paidRecords': 'This ticket has {i} payment records',
         'table': {
             'actionsOnDone': 'Actions after tapping Done',
             'passwordRequire': 'Password input required before create a new table.',

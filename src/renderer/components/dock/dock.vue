@@ -208,13 +208,19 @@ export default {
     connect() {
       this.component === "disc" && this.$q();
       this.setApp({ database: true });
+
+      this.station &&
+        this.$socket.emit("[SYS] CONNECT", {
+          alias: this.station.alies,
+          mac: this.station.mac,
+          operator: this.op.name
+        });
+
+      this.$socket.emit("[SYNC] ORDER_LIST");
+      this.$socket.emit("[SYNC] TABLE_LIST");
       this.$socket.emit("[INQUIRY] TICKET_NUMBER", number => {
         this.setTicket({ number });
       });
-      this.$socket.emit("[SYNC] ORDER_LIST");
-      this.$socket.emit("[SYNC] TABLE_LIST");
-
-      this.station && this.$socket.emit("[SYS] STATION", this.station);
     },
     TICKET_NUMBER(number) {
       this.app.mode !== "edit" && this.setTicket({ number });

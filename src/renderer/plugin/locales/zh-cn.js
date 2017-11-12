@@ -184,7 +184,7 @@ export default {
         'combineTicket': '合单',
         'receipt': '收据',
         'clearTable': '清桌',
-        'removePayment': '移除付款',
+        'removePayment': '移除付款记录',
         'cancelAction': '取消操作',
         'markAsPaid': '设为已付',
         'confirmPrint': '确定并打印',
@@ -222,7 +222,9 @@ export default {
         'fix': '修复',
         'newRecord': '新记录',
         'setDate': '选择日期',
-        'export': '导出'
+        'export': '导出',
+        'close': '关闭',
+        'removeAll': '全部移除'
     },
     title: {
         'markPaymentType': '标记付款方式',
@@ -253,7 +255,8 @@ export default {
         'deliveryRelated': '送餐相关',
         'optionList': '列表选项',
         'thirdPartyOrder': '第三方订单',
-        'timeSession': '修改打卡时间'
+        'timeSession': '修改打卡时间',
+        'payLog': '付款记录'
     },
     menu: {
         'course': '定时',
@@ -650,7 +653,8 @@ export default {
         'endAmount': '结束金额',
         'records': '记录(笔)',
         'detail': '详细',
-        'edit': '修改'
+        'edit': '修改',
+        'amount': '数额'
     },
     flow: {
         'START': '初始金额',
@@ -695,9 +699,9 @@ export default {
         'total': '总数',
         'tip': '小费',
         'gratuity': '服务费',
-        'includeTip':'含小费',
-        'includeGratuity':'含服务费',
-        'includeDiscount':'含折扣',
+        'includeTip': '含小费',
+        'includeGratuity': '含服务费',
+        'includeDiscount': '含折扣',
         'taxFree': '免税',
         'taxClass': '税率种类',
         'deliveryFree': '免送餐费',
@@ -849,7 +853,7 @@ export default {
         'anyQty': '任意选择',
         'autoAwake': '自动开机',
         'progressTicket': '订单处理中 - {i} 个未打印',
-        'doneTicket':'订单完成',
+        'doneTicket': '订单完成',
         'guest': '人数',
         'delayTask': '有{i}个打印任务',
         'sales': '销售',
@@ -1104,6 +1108,7 @@ export default {
         'doNotAskReceiptAfterSettle': '结账之后不弹出收据打印确认框',
         'taxOnDeliveryCharge': '送餐费用加税',
         'thirdPartyProvider': '请选择一个第三方提供商',
+        'paidRecords': '此订单一共有 {i} 个付款记录',
         'table': {
             'actionsOnDone': '设定完成订单之后的操作',
             'passwordRequire': '创建座位之前需要输入密码',

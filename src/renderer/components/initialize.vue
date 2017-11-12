@@ -64,9 +64,15 @@ export default {
           ipcRenderer.send("Loading", this.$t("initial.hardwareIssue"));
         } else {
           this.findStation(mac);
-          this.station && this.$socket.emit("[SYS] STATION", this.station);
           this.initDevices();
           this.initPrinter();
+
+          this.station &&
+            this.$socket.emit("[SYS] CONNECT", {
+              alias: this.station.alies,
+              mac: this.station.mac
+            });
+
           ipcRenderer.send("Initialized");
           this.$router.push("Login");
         }

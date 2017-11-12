@@ -127,14 +127,7 @@ export default {
       this.$socket.emit("[INQUIRY] HISTORY_ORDER", date, invoices => {
         this.prevHistory = invoices;
         this.$q();
-        // invoices.length === 0 &&
-        //   this.$dialog({
-        //     title: "dialog.noInvoice",
-        //     msg: ["dialog.noInvoiceTip", this.calendarDate],
-        //     buttons: [{ text: "button.confirm", fn: "resolve" }]
-        //   }).then(() => {
-        //     this.$q();
-        //   });
+        this.resetViewOrder();
       });
     },
     highlightTicket(number) {

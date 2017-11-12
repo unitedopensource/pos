@@ -37,7 +37,7 @@ export default {
 
 <style scoped>
 .checkbox {
-  margin: 0 10px;
+  margin: 2px 10px;
   display: flex;
   align-items: center;
 }

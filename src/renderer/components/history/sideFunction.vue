@@ -53,6 +53,7 @@ import { mapGetters, mapActions } from "vuex";
 import paymentMark from "../payment/mark";
 import Dialoger from "../common/dialoger";
 import Payment from "../payment/index";
+import payLog from "./component/payLog";
 import Report from "../report/report";
 import statistic from "./statistic";
 import Calendar from "./calendar";
@@ -70,7 +71,8 @@ export default {
     Reason,
     Report,
     paymentMark,
-    statistic
+    statistic,
+    payLog
   },
   data() {
     return {
@@ -168,8 +170,7 @@ export default {
     editFailed(reason) {
       this.$dialog(reason)
         .then(() => {
-          this.$q();
-          this.confirmPaymentRemoval();
+          this.removeRecordFromList();
         })
         .catch(() => {
           this.$q();
@@ -206,26 +207,15 @@ export default {
           this.$q();
         });
     },
-    confirmPaymentRemoval() {
-      this.$dialog({
-        type: "question",
-        title: "dialog.paymentRemove",
-        msg: [
-          "dialog.paymentRemoveTip",
-          this.$t("type." + this.order.payment.type)
-        ],
-        buttons: [
-          { text: "button.removePayment", fn: "resolve" },
-          { text: "button.cancel", fn: "reject" }
-        ]
-      })
-        .then(() => {
-          this.$q();
-          this.removeOrderPayment();
-        })
-        .catch(() => {
-          this.$q();
+    removeRecordFromList() {
+      new Promise((resolve, reject) => {
+        this.$socket.emit("[PAYMENT] GET_LOG", this.order._id, logs => {
+          this.componentData = { resolve, reject, logs };
+          this.component = "payLog";
         });
+      }).then(() => {
+        this.$q();
+      });
     },
     removeOrderPayment() {
       this.$dialog({

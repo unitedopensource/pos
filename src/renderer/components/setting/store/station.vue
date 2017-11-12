@@ -277,7 +277,7 @@ export default {
 
 .options {
   align-items: center;
-  padding: 8px 0;
+  padding: 5px 0;
   display: flex;
 }
 .options .wrap {

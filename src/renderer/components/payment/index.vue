@@ -622,7 +622,7 @@ export default {
         this.isThirdPartyPayment =
           !this.station.terminal.enable || this.order.source !== "POS";
 
-        this.$socket.emit("[PAYMENT] GET_TRANSACTION", this.order._id, paid => {
+        this.$socket.emit("[PAYMENT] CHECK_PAY", this.order._id, paid => {
           console.log("receive", paid);
           let remain = toFixed(this.payment.balance - paid, 2);
           this.payment.remain = Math.max(0, remain);
@@ -1047,7 +1047,8 @@ export default {
               cashDrawer,
               type: "CASH",
               subType: null,
-              credential: null
+              credential: null,
+              lfd:null
             };
             break;
           case "CREDIT":
@@ -1083,7 +1084,8 @@ export default {
               cashDrawer,
               type: "CREDIT",
               subType: data.account.type,
-              credential: data._id
+              credential: data._id,
+              lfd: data.account.number
             };
 
             this.$socket.emit("[TERM] TRANSACTION", data);
@@ -1102,7 +1104,8 @@ export default {
               cashDrawer,
               type: "THIRD",
               subType: this.thirdPartyType,
-              credential: null
+              credential: null,
+              lfd:null
             };
             break;
           case "GIFT":
@@ -1119,7 +1122,8 @@ export default {
               cashDrawer,
               type: "GIFT",
               subType: null,
-              credential: data
+              credential: data,
+              lfd:this.giftCard.number.replace(/\D/g, "").slice(12,16)
             };
             break;
         }
