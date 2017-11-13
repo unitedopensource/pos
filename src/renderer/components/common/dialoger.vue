@@ -6,45 +6,54 @@
       <h3>{{title}}</h3>
       <h5>{{msg}}</h5>
       <footer>
-        <div class="btn" v-for="(button,index) in init.buttons" @click="trigger(button)" :key="index">{{$t(button.text)}}</div>
+        <div class="btn" v-for="(button,index) in init.buttons" @click="trigger(button,$event)" :key="index">{{$t(button.text)}}</div>
       </footer>
     </div>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 export default {
-  props: ['init'],
+  props: ["init"],
   data() {
     return {
-      loader: '',
-      title: '',
-      msg: '',
+      loader: "",
+      title: "",
+      msg: "",
       bar: null,
       pct: 90,
       step: 0
-    }
+    };
   },
   created() {
-    this.initial()
+    this.initial();
   },
   methods: {
     initial() {
-      this.title = typeof this.init.title === 'string' ? this.$t(this.init.title) : this.$t(...this.init.title);
-      this.msg = typeof this.init.msg === 'string' ? this.$t(this.init.msg) : this.$t(...this.init.msg);
+      this.title =
+        typeof this.init.title === "string"
+          ? this.$t(this.init.title)
+          : this.$t(...this.init.title);
+      this.msg =
+        typeof this.init.msg === "string"
+          ? this.$t(this.init.msg)
+          : this.$t(...this.init.msg);
       if (this.init.timeout) {
         this.timeout = setTimeout(() => {
-          typeof this.init.timeout.fn === 'function' ? this.init.timeout.fn() : eval(this.init.timeout.fn);
+          typeof this.init.timeout.fn === "function"
+            ? this.init.timeout.fn()
+            : eval(this.init.timeout.fn);
         }, this.init.timeout.duration);
-        this.loader = 'loader';
+        this.loader = "loader";
         this.step = 90 / (this.init.timeout.duration / 1000);
         this.bar = {
           transform: `translate3d(-100%,0,0)`
-        }
+        };
       }
     },
-    trigger(button) {
+    trigger(button, e) {
+      button.load && e.currentTarget.classList.add("loading");
       clearTimeout(this.timeout);
       typeof button.fn === "function" ? button.fn() : eval(button.fn);
     },
@@ -54,20 +63,20 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['time'])
+    ...mapGetters(["time"])
   },
   watch: {
-    'init.title'(n) {
-      this.initial()
+    "init.title"(n) {
+      this.initial();
     },
     time(n) {
       if (this.init.timeout && this.pct > 0) {
         this.pct = this.pct - this.step;
-        this.bar = { transform: `translate3d(${-this.pct}%,0,0)` }
+        this.bar = { transform: `translate3d(${-this.pct}%,0,0)` };
       }
     }
   }
-}
+};
 </script>
 
 <style scoped>
@@ -93,7 +102,7 @@ export default {
   top: -7px;
   width: 50px;
   height: 2px;
-  content: ' ';
+  content: " ";
   z-index: 0;
   transform: rotate(3deg) translate(0, 4px);
 }
@@ -107,48 +116,46 @@ export default {
   position: absolute;
   top: 10px;
   right: 10px;
-  content: ' ';
+  content: " ";
   animation: spinner 400ms linear infinite;
 }
 
 .alert .progress {
-  background: #FF9800;
+  background: #ff9800;
 }
 
 .alert .progress:after {
-  box-shadow: 0 0 10px #EF6C00, 0 0 7px #FB8C00;
+  box-shadow: 0 0 10px #ef6c00, 0 0 7px #fb8c00;
 }
 
 .alert.loader:after {
-  border-top-color: #FF9800;
-  border-left-color: #FF9800;
+  border-top-color: #ff9800;
+  border-left-color: #ff9800;
 }
 
 .warning .progress {
-  background: #F44336
+  background: #f44336;
 }
 
 .warning .progress:after {
-  box-shadow: 0 0px 10px #F44336, 0 0 7px #E64A19;
+  box-shadow: 0 0px 10px #f44336, 0 0 7px #e64a19;
 }
 
 .warning.loader:after {
-  border-top-color: #F44336;
-  border-left-color: #F44336;
+  border-top-color: #f44336;
+  border-left-color: #f44336;
 }
-
-
 
 .dialog.success {
   border-top: 2px solid #13ce66;
 }
 
 .dialog.question {
-  border-top: 2px solid #8BC34A;
+  border-top: 2px solid #8bc34a;
 }
 
 .dialog.info {
-  border-top: 2px solid #FFA726;
+  border-top: 2px solid #ffa726;
 }
 
 .dialog.error {
@@ -162,32 +169,32 @@ i.fa {
 }
 
 .alert i::before {
-  content: '\F06a';
-  color: #FFCA28;
+  content: "\F06a";
+  color: #ffca28;
 }
 
 .question i::before {
-  content: '\F059';
-  color: #8BC34A;
+  content: "\F059";
+  color: #8bc34a;
 }
 
 .warning i::before {
-  content: '\F071';
-  color: #F44336;
+  content: "\F071";
+  color: #f44336;
 }
 
 .success i::before {
-  content: '\F05d';
+  content: "\F05d";
   color: #13ce66;
 }
 
 .info i::before {
-  content: '\F05a';
-  color: #FFA726;
+  content: "\F05a";
+  color: #ffa726;
 }
 
 .error i::before {
-  content: '\f12a';
+  content: "\f12a";
   color: #f51900;
 }
 
@@ -217,6 +224,27 @@ h5 {
   font-size: 13.3px;
   text-shadow: none;
   font-weight: normal;
+}
+
+.btn.loading {
+  text-shadow: none;
+  color: transparent !important;
+  position: relative;
+}
+
+.btn.loading:before {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: auto;
+  border: 4px solid;
+  border-color: lightgray #5d5b5b #5d5b5b #5d5b5b;
+  box-shadow: 0 1px 1px #fff;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  content: " ";
+  animation: spinner 1.2s cubic-bezier(0.465, 0.183, 0.153, 0.946) infinite;
 }
 
 @keyframes spinner {

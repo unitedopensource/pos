@@ -224,7 +224,9 @@ export default {
         'setDate': '选择日期',
         'export': '导出',
         'close': '关闭',
-        'removeAll': '全部移除'
+        'removeAll': '全部移除',
+        'payBalanceDue':'支付余额',
+        'adjustTips':'调整小费'
     },
     title: {
         'markPaymentType': '标记付款方式',
@@ -256,7 +258,8 @@ export default {
         'optionList': '列表选项',
         'thirdPartyOrder': '第三方订单',
         'timeSession': '修改打卡时间',
-        'payLog': '付款记录'
+        'payLog': '付款记录',
+        'giftCardReload':'礼物卡充值'
     },
     menu: {
         'course': '定时',
@@ -339,6 +342,8 @@ export default {
         'paymentRemoveTip': '若要进行操作请先移除此订单的付款记录',
         'paymentRemoveConfirm': '确定移除付款记录？',
         'paymentRemoveConfirmTip': '您确定要移除订单的 {i} 付款记录吗？',
+        'removeAllPaymentConfirm': '移除所有付款记录？',
+        'removeAllPaymentConfirmTip': '您确定要移除所有的付款记录吗？',
         'paymentRemoved': '付款记录已移除',
         'paymentRemovedTip': '#{i} 订单的付款记录已经移除',
         'switchTable': '换桌',
@@ -454,7 +459,7 @@ export default {
         'giftCardReload': '礼物卡充值',
         'confirmEntryValue': '请确认要充值价格 $ {i} 到这张礼物卡上',
         'entryInvalid': '格式不正确',
-        'entryMustBeNumber': '格式必须为数字',
+        'entryMustBeNumber': '必须输入有效的数字',
         'subMenuRemoveConfirm': '移除子菜单组',
         'subMenuRemoveConfirmTip': '您确定要移除整个 ({i}) 子菜单组以及其包含的物品吗？',
         'itemUnavailable': '物品不可用',
@@ -492,6 +497,7 @@ export default {
         'paymentFailedTip': '此工作站没有设定信用卡终端机',
         'aborting': '正在取消操作...',
         'error': '错误代码: {i}',
+        'connecting': '正在连接至终端',
         'connectError': '无法连接至终端',
         'disableBatch': '过账功能被临时停用',
         'creditCard': {
@@ -499,9 +505,10 @@ export default {
             'aborted': '交易被取消',
             'errorCode': '交易过程中发生一个错误。信息: {i}',
             'declined': '信用卡交易被拒绝',
-            'commError': '在与信用卡伺服器的通信发生错误',
+            'commError': '信用卡伺服器通信错误',
             'duplicated': '信用卡重单',
-            'badTrack': '无法读取信用卡磁条信息',
+            'badTrack': '信用卡磁条信息无效',
+            'notFound': '找不到此笔交易记录',
             'unknown': '发生一个未知的错误'
         },
         'batch': {
@@ -899,7 +906,9 @@ export default {
         'clockIn': '上班时间',
         'clockOut': '下班时间',
         'verify': '认证',
-        'lock': '锁定'
+        'lock': '锁定',
+        'tenderDetail':'支付: $ {i}\n找零: ${i}',
+        'readyBatch':'准备过账'
     },
     nav: {
         'store': '店面',
@@ -1108,7 +1117,8 @@ export default {
         'doNotAskReceiptAfterSettle': '结账之后不弹出收据打印确认框',
         'taxOnDeliveryCharge': '送餐费用加税',
         'thirdPartyProvider': '请选择一个第三方提供商',
-        'paidRecords': '此订单一共有 {i} 个付款记录',
+        'paidRecords': '#{i} 号订单一共有 {i} 个付款记录',
+        'forGiftCard':'礼物卡 ( {i} )',
         'table': {
             'actionsOnDone': '设定完成订单之后的操作',
             'passwordRequire': '创建座位之前需要输入密码',

@@ -9,6 +9,7 @@ html {
   touch-action: manipulation;
 }
 
+
 /*:lang(zhCN) {
   font-family: "Yuanti-SC", "Microsoft YaHei";
 }*/
@@ -25,9 +26,15 @@ ul {
   user-select: none;
 }
 
-#app.admin{
+#app.admin {
   background: url(../image/17.jpg) center center;
-  background-size:cover; 
+  background-size: cover;
+}
+
+button:disabled {
+  opacity: 0.8;
+  filter: grayscale(0.15);
+  cursor: not-allowed!important;
 }
 
 div {
@@ -65,9 +72,11 @@ i.warning::before {
   content: '\F071';
   color: #f44336;
 }
-i.loader{
+
+i.loader {
   position: relative;
 }
+
 i.loader:after {
   content: ' ';
   position: absolute;
@@ -81,11 +90,12 @@ i.loader:after {
   transform-origin: 50% 50%;
   animation: rotate 1.5s linear 0s infinite normal;
 }
+
 .relative {
   position: relative;
 }
 
-input[type='radio']{
+input[type='radio'] {
   display: none;
 }
 
@@ -162,8 +172,8 @@ input[type='radio']{
   margin-bottom: 5px;
 }
 
-footer .btn{
-  margin:5px;
+footer .btn {
+  margin: 5px;
 }
 
 button.btn {
@@ -264,7 +274,7 @@ section.card {
   color: #78909C;
 }
 
-.listHeader{
+.listHeader {
   padding: 10px 0;
   background: #4D6D83;
   color: #fff;
@@ -320,6 +330,8 @@ input[type="text"]:disabled {
 .ghost {
   opacity: 0.5;
 }
+
+
 /* Define window */
 
 .window {
@@ -343,7 +355,7 @@ input[type="text"]:disabled {
   border-top-right-radius: 4px;
 }
 
-.title > i {
+.title>i {
   color: #fff;
   font-style: normal;
   cursor: pointer;
@@ -360,12 +372,14 @@ input[type="text"]:disabled {
   justify-content: flex-end;
 }
 
-.receipt footer{
+.receipt footer {
   display: initial;
 }
 
+
 /* Define Dock Style */
-header.dock{
+
+header.dock {
   width: 100%;
   height: 30px;
   background: linear-gradient(to bottom, rgb(255, 255, 255) 20%, #aba9a9 100%);
@@ -385,7 +399,7 @@ header.dock{
 .dock .address,
 .dock .name,
 .dock .op,
-.dock .time{
+.dock .time {
   font-family: 'Agency FB';
   font-weight: bold;
   text-shadow: 0 1px 1px #fff;
@@ -393,7 +407,7 @@ header.dock{
   text-align: center;
 }
 
-.dock .number{
+.dock .number {
   width: 60px;
   letter-spacing: 1px;
   font-size: 22px;
@@ -409,52 +423,52 @@ header.dock{
   box-shadow: 0 1px 1px #ECEFF1;
 }
 
-.dock .type{
+.dock .type {
   min-width: 100px;
   text-shadow: 0 1px 1px #fff;
   font-weight: bold;
   text-align: center;
 }
 
-.dock .op{
+.dock .op {
   min-width: 150px;
 }
 
-.dock > .info{
-  flex:1;
+.dock>.info {
+  flex: 1;
   display: flex;
 }
 
-.dock .info .customer{
-  flex:1;
+.dock .info .customer {
+  flex: 1;
   display: flex;
   justify-content: center;
 }
 
-.dock .info .customer span{
-  padding:0 10px;
-  margin:0 5px;
+.dock .info .customer span {
+  padding: 0 10px;
+  margin: 0 5px;
 }
 
-.dock .corner{
-  padding:0 10px;
+.dock .corner {
+  padding: 0 10px;
   min-width: 135px;
   display: flex;
   justify-content: center;
   align-content: center;
 }
 
-.dock .status{
+.dock .status {
   padding: 0 10px;
   text-align: right;
   text-shadow: 0 1px 1px #fff;
 }
 
-.dock .misc{
+.dock .misc {
   min-width: 150px;
 }
 
-.dock .na{
+.dock .na {
   color: #9E9E9E;
 }
 
@@ -481,13 +495,15 @@ header.dock{
   font-weight: bold;
 }
 
-.dock .clock{
+.dock .clock {
   display: flex;
   justify-content: flex-end;
   align-items: center;
   padding: 0 10px;
   min-width: 100px;
 }
+
+
 /*Define Tabs style*/
 
 .form.multiple {
@@ -529,7 +545,7 @@ label.input-toggle {
   text-align: right;
 }
 
-label.input-toggle > span {
+label.input-toggle>span {
   display: inline-block;
   position: relative;
   background-image: linear-gradient(to right, #848484 0%, #848484 50%, #7cbcbf 50%, #7cbcbf 100%);
@@ -542,11 +558,11 @@ label.input-toggle > span {
   transition: background-position 0.2s ease-in;
 }
 
-label.input-toggle > input:checked + span {
+label.input-toggle>input:checked+span {
   background-position: -100%;
 }
 
-label.input-toggle > span:after {
+label.input-toggle>span:after {
   content: "";
   display: block;
   position: absolute;
@@ -562,32 +578,32 @@ label.input-toggle > span:after {
   transition: left 0.2s ease-in, background-color 0.2s ease-in, transform 0.3s ease;
 }
 
-label.input-toggle > input:checked + span:after {
+label.input-toggle>input:checked+span:after {
   left: calc(100% - 18px);
   background-color: #1D8B90;
 }
 
-label.input-toggle > span:active:after {
+label.input-toggle>span:active:after {
   transform: translateY(-50%) scale3d(1.15, 0.85, 1);
 }
 
-label.input-toggle > input:disabled + span:active:after {
+label.input-toggle>input:disabled+span:active:after {
   transform: translateY(-50%);
 }
 
-label.input-toggle > input:disabled + span {
+label.input-toggle>input:disabled+span {
   cursor: default;
 }
 
-label.input-toggle > input:disabled + span {
+label.input-toggle>input:disabled+span {
   background: #D5D5D5;
 }
 
-label.input-toggle > input:disabled + span:after {
+label.input-toggle>input:disabled+span:after {
   background: #BDBDBD;
 }
 
-label.input-toggle > input {
+label.input-toggle>input {
   display: block;
   position: absolute;
   opacity: 0;
@@ -595,41 +611,51 @@ label.input-toggle > input {
   height: 0;
 }
 
+
 /*Define input form*/
-.inputter .inner{
-  padding:0 2px 0 4px;
+
+.inputter .inner {
+  padding: 0 2px 0 4px;
+  width: 417px;
 }
-.inputter .display{
+
+.inputter .display {
   height: 160px;
-  text-align:center;
+  text-align: center;
 }
-.inputter .wrap{
-  display:flex;
-  width:417px;
+
+.inputter .wrap {
+  display: flex;
+  width: 417px;
 }
-.inputter section.numpad{
+
+.inputter section.numpad {
   flex: 3;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
 }
-.inputter h5{
+
+.inputter h5 {
   padding: 20px 0 0;
   font-size: 16px;
   color: #545050;
 }
-.inputter .symbol{
+
+.inputter .symbol {
   color: #009688;
   font-size: 28px;
   margin-right: 3px;
 }
-.inputter .due{
+
+.inputter .due {
   font-size: 38px;
   font-weight: bold;
   color: #444;
   font-family: "Agency FB";
   position: relative;
 }
+
 .inputter i.tooltip {
   color: #ff5722;
   font-size: 18px;
@@ -638,9 +664,11 @@ label.input-toggle > input {
   top: 15px;
   cursor: help;
 }
+
 .inputter i.tooltip:hover .content {
   opacity: 1;
 }
+
 .inputter span.content {
   position: absolute;
   opacity: 0;
@@ -669,11 +697,13 @@ label.input-toggle > input {
   border-radius: 4px;
   box-shadow: 0 1px 1px #b5aaaa;
 }
+
 .entry input {
   border: none;
   outline: none;
   background: none;
-  width:344px;
+  flex: 1;
+  width: 100px;
   font-size: 46px;
   font-family: "Agency FB";
   font-weight: bold;
@@ -682,8 +712,8 @@ label.input-toggle > input {
 }
 
 .entry .unit {
-  padding: 8px 0;
-  width: 55px;
+  padding: 8px 3px;
+  min-width: 55px;
   background: #607d8b;
   color: #fff;
   border-radius: 4px;
@@ -693,6 +723,7 @@ label.input-toggle > input {
   box-shadow: 0px 2px 1px #123344;
   cursor: pointer;
 }
+
 
 /*dataList*/
 
@@ -733,15 +764,16 @@ section.dataList {
   float: right;
 }
 
-.editor{
+.editor {
   background: #fafafa;
   box-sizing: border-box;
   overflow: hidden;
   border-top: 1px solid #3a948c;
-  box-shadow: 0px 25px 35px 0px rgba(0, 0, 0, 0.35);;
+  box-shadow: 0px 25px 35px 0px rgba(0, 0, 0, 0.35);
+  ;
 }
 
-.editor header{
+.editor header {
   position: relative;
   padding: 10px 20px;
   height: 84px;
@@ -784,18 +816,18 @@ i.tip {
   color: #B2DFDB;
 }
 
-.editor .inner{
+.editor .inner {
   padding: 15px 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.editor .input{
+.editor .input {
   position: relative;
 }
 
-.editor .input label{
+.editor .input label {
   position: absolute;
   left: 15px;
   top: -3px;
@@ -866,7 +898,7 @@ i.tip {
   margin-top: 15px;
 }
 
-.editor footer{
+.editor footer {
   display: flex;
   justify-content: flex-end;
   background: #eee;
@@ -907,16 +939,20 @@ section.category {
   font-size: 1.15em;
   text-align: center;
 }
+
 .category .active {
   background: rgba(9, 177, 255, 0.35);
   border: 1px dashed #2196F3;
 }
+
 section.items {
   flex: 6
 }
+
 .items .disable {
   background: rgba(207, 216, 220, 0.5);
 }
+
 .items div {
   display: inline-flex;
   text-align: center;
@@ -932,9 +968,11 @@ section.items {
   will-change: background;
   position: relative;
 }
+
 .sub.items div {
   border: 1px solid #FF9800;
 }
+
 .items div:before {
   position: absolute;
   bottom: 0;
@@ -944,9 +982,11 @@ section.items {
   color: #F5F5F5;
   min-width: 25px;
 }
-.items .like{
+
+.items .like {
   position: relative;
 }
+
 .like:after {
   content: '\f004';
   font-family: fontAwesome;
@@ -955,6 +995,7 @@ section.items {
   position: absolute;
   color: #F44336;
 }
+
 div.pageButton {
   width: 109.6px;
   background: blanchedalmond;
@@ -1005,7 +1046,9 @@ section.cart {
   padding: 3px 0 0 3px;
 }
 
+
 /* keyboard layout */
+
 .keyboard {
   position: fixed;
   bottom: 0;
@@ -1094,6 +1137,7 @@ section.cart {
 
 
 /* Pin input */
+
 .accessor {
   width: 310px;
   background-color: #f9f9f9;
@@ -1143,13 +1187,13 @@ section.cart {
 }
 
 
-
 /* setting style */
+
 section.route {
   display: flex;
 }
 
-section.content{
+section.content {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -1157,12 +1201,12 @@ section.content{
   width: 949px;
 }
 
-.content .page{
+.content .page {
   flex: 1;
   overflow-y: auto;
 }
 
-ul.nav{
+ul.nav {
   width: 75px;
   height: 738px;
   background: #009688;
@@ -1191,43 +1235,44 @@ ul.nav .text {
 }
 
 .router-link-exact-active {
-    border-left: 3px solid #FF5722;
-    box-shadow: inset 1px 0 0px #358e86;
-    background: rgba(236, 235, 235, 0.5);
-    color: #004D40!important;
+  border-left: 3px solid #FF5722;
+  box-shadow: inset 1px 0 0px #358e86;
+  background: rgba(236, 235, 235, 0.5);
+  color: #004D40!important;
 }
 
 footer.update {
-    background: #445359;
-    color: #F7F9F8;
-    padding: 0 50px;
-    height: 58px;
-    display: flex;
-    align-items: center;
+  background: #445359;
+  color: #F7F9F8;
+  padding: 0 50px;
+  height: 58px;
+  display: flex;
+  align-items: center;
 }
 
 footer.update i {
-    color: #fdd333;
-    margin-right: 5px;
+  color: #fdd333;
+  margin-right: 5px;
 }
 
 footer.update .save {
-    color: #fdd333;
+  color: #fdd333;
 }
 
 footer.update span {
-    cursor: pointer;
-    padding: 20px 15px;
+  cursor: pointer;
+  padding: 20px 15px;
 }
 
 @keyframes rotate {
   0% {
-      transform: rotate(0deg);
+    transform: rotate(0deg);
   }
   100% {
-      transform: rotate(360deg);
+    transform: rotate(360deg);
   }
 }
+
 
 /* vue transition animation */
 
@@ -1238,9 +1283,9 @@ footer.update span {
   transition-delay: 0.3s;
 }
 
-.payment-enter-active{
+.payment-enter-active {
   opacity: 1;
-  transition:opacity 0.3s ease;
+  transition: opacity 0.3s ease;
 }
 
 .fade-enter,
@@ -1264,8 +1309,8 @@ footer.update span {
 }
 
 .menu-enter,
-.menu-leave{
-  opacity:0;
+.menu-leave {
+  opacity: 0;
 }
 
 .slideDown-enter-active,
@@ -1280,13 +1325,13 @@ footer.update span {
 }
 
 .fadeDown-enter-active,
-.fadeDown-leave-active{
+.fadeDown-leave-active {
   transition: all .5s
 }
 
 .fadeUp-enter-active,
-.fadeUp-leave-active{
-  transition:all 0.22s ease;
+.fadeUp-leave-active {
+  transition: all 0.22s ease;
 }
 
 .fadeDown-enter,
@@ -1303,16 +1348,14 @@ footer.update span {
 
 .switch-enter-active,
 .switch-leave-active {
-    transition: opacity 0.25s;
+  transition: opacity 0.25s;
 }
 
 .switch-enter-active {
-    transition-delay: .25s;
+  transition-delay: .25s;
 }
 
 .switch-enter,
 .switch-leave-active {
-    opacity: 0
+  opacity: 0
 }
-
-

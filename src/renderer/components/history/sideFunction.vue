@@ -169,9 +169,7 @@ export default {
     },
     editFailed(reason) {
       this.$dialog(reason)
-        .then(() => {
-          this.removeRecordFromList();
-        })
+        .then(this.removeRecordFromList)
         .catch(() => {
           this.$q();
         });
@@ -199,10 +197,7 @@ export default {
     },
     voidFailed(reason) {
       this.$dialog(reason)
-        .then(() => {
-          this.$q();
-          this.removeOrderPayment();
-        })
+        .then(this.removeRecordFromList)
         .catch(() => {
           this.$q();
         });
@@ -210,58 +205,17 @@ export default {
     removeRecordFromList() {
       new Promise((resolve, reject) => {
         this.$socket.emit("[PAYMENT] GET_LOG", this.order._id, logs => {
-          this.componentData = { resolve, reject, logs };
+          this.componentData = {
+            resolve,
+            reject,
+            number: this.order.number,
+            logs
+          };
           this.component = "payLog";
         });
       }).then(() => {
         this.$q();
       });
-    },
-    removeOrderPayment() {
-      this.$dialog({
-        type: "warning",
-        title: "dialog.paymentRemoveConfirm",
-        msg: [
-          "dialog.paymentRemoveConfirmTip",
-          this.$t("type." + this.order.payment.type)
-        ]
-      })
-        .then(() => {
-          this.$q();
-          this.order.payment.type === "GIFT" && this.issueGiftCardRefund();
-          this.removePayment();
-          this.updateInvoice(this.order);
-          this.$nextTick(() => {
-            this.$dialog({
-              title: "dialog.paymentRemoved",
-              msg: ["dialog.paymentRemovedTip", this.order.number],
-              buttons: [
-                { text: "button.done", fn: "reject" },
-                { text: "button.edit", fn: "resolve" }
-              ]
-            })
-              .then(() => {
-                this.editOrder();
-              })
-              .catch(() => {
-                this.$q();
-              });
-          });
-        })
-        .catch(() => {
-          this.$q();
-        });
-    },
-    issueGiftCardRefund() {
-      this.order.payment.log
-        .filter(log => log.type === "GIFT")
-        .map(log => log._id)
-        .forEach(_id => {
-          this.$socket.emit("[GIFTCARD] REFUND", {
-            cashier: this.op.name,
-            _id
-          });
-        });
     },
     reOpenOrder() {
       if (this.isEmptyTicket) return;

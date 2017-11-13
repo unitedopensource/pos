@@ -154,6 +154,11 @@ const Pax = function () {
           code,
           msg: 'terminal.creditCard.badTrack'
         }
+      case "100023":
+        return {
+          code,
+          msg: 'terminal.creditCard.notFound'
+        }
       default:
         return {
           code,

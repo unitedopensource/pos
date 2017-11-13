@@ -1,4 +1,5 @@
 <template>
+  <div class="popupMask center dark">
     <div class="creditCard">
         <i class="fa loader" :class="[icon]"></i>
         <h3>{{msg}}</h3>
@@ -7,6 +8,7 @@
             <button class="btn" @click="exit" :disabled="!cancelable">{{$t('button.cancelAction')}}</button>
         </footer>
     </div>
+  </div>
 </template>
 
 <script>

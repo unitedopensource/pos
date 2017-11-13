@@ -55,9 +55,10 @@ export default {
         }
       });
       this.addToOrder(item);
+      this.setSides(Array(11).fill({ zhCN: "", usEN: "", disable: true }));
       this.init.resolve();
     },
-    ...mapActions(["addToOrder"])
+    ...mapActions(["addToOrder", "setSides"])
   }
 };
 </script>

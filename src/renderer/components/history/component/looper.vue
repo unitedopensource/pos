@@ -8,17 +8,23 @@
             <div class="inner">
               <section class="outer">
                 <v-touch tag="ul" class="orders" :style="scroll" @panup="move" @pandown="move" @panstart="panStart" @panend="panEnd">
-                    <li v-for="(transaction,index) in init.transaction" :key="index">
-                        <span>#{{transaction.trace.trans}}</span>
-                        <span>{{$t('type.'+transaction.order.type)}}</span>
-                        <span class="ticket">(#{{transaction.order.number}})</span>
-                        <span>{{transaction.account.number}}</span>
-                        <span>{{transaction.host.auth}}</span>
+                    <li v-for="(record,index) in transactions" :key="index" :title="record.host.auth">
+                        <span>#{{record.trace.trans}}</span>
+                        <div v-if="record.order">
+                          <span>{{$t('type.'+record.order.type)}}</span>
+                          <span class="ticket">(#{{record.order.number}})</span>
+                        </div>
+                        <span>{{record.account.type}}</span>
+                        <span>{{record.account.number}}</span>
                         <span></span>
                     </li>
                 </v-touch>
               </section>
             <div class="wrap">
+                <div>
+                  <h3>hello world</h3>
+                  <h5>this is heading</h5>
+                </div>
                 <div class="input">
                     <input type="text" v-model="tip">
                 </div>
@@ -47,9 +53,10 @@
             </div>
             <footer>
                 <div class="f1">
-                    <checkbox v-model="finish" label="text.doneTipEnter"></checkbox>
+                    <checkbox v-model="done" label="text.readyBatch" @change="toggleBatch"></checkbox>
                 </div>
-                <div class="btn" @click="done">{{$t('button.done')}}</div>
+                <div class="btn" @click="init.resolve" v-if="!done">{{$t('button.done')}}</div>
+                <div class="btn" @click="batch" v-else>{{$t('button.batch')}}</div>
             </footer>
         </div>
         <div :is="component" :init="componentData"></div>
@@ -73,15 +80,18 @@ export default {
       letter: null,
       orders: null,
       order: null,
-      finish: false,
+      done: false,
       offset: 0,
       tip: 0,
       lastDelta: 0,
+      transactions:[],
       component: null,
       componentData: null
     };
   },
-  created() {},
+  created() {
+    this.transactions = this.init.transaction.filter(t=>t.status !== 0 && !t.close)
+  },
   methods: {
     setTarget(order, e) {
       let { number, driver } = order;
@@ -112,7 +122,7 @@ export default {
       } else if (height < 322) {
         this.offset = 0;
       } else if (height > 322 && bottom < 440) {
-        this.offset = -(height - 448);
+        this.offset = -(height - 504);
       }
       this.lastDelta = this.offset;
     },
@@ -120,46 +130,8 @@ export default {
     del() {},
     enter() {},
     clear() {},
-    setDriver(letter) {
-      if (!this.order) return;
+    toggleBatch(){
 
-      Object.assign(this.order, { driver: letter });
-      this.$socket.emit("[UPDATE] INVOICE", this.order, false);
-
-      this.loop && this.next();
-    },
-    setTip() {
-      new Promise((resolve, reject) => {
-        this.componentData = { resolve, reject, payment: this.order.payment };
-        this.component = "tips";
-      })
-        .then(value => {
-          let { tip } = value;
-
-          this.order.payment.tip = tip;
-          this.order.payment.surcharge = toFixed(
-            this.order.payment.gratuity + tip,
-            2
-          );
-
-          this.order.payment.balance = toFixed(
-            this.order.payment.total -
-              this.order.payment.discount +
-              this.order.payment.surcharge,
-            2
-          );
-
-          this.order.payment.remain = toFixed(
-            this.order.payment.balance - this.order.payment.paid,
-            2
-          );
-
-          this.$socket.emit("[UPDATE] INVOICE", this.order, false);
-          this.$q();
-        })
-        .catch(() => {
-          this.$q();
-        });
     },
     next(number) {
       if (number) {
@@ -181,8 +153,8 @@ export default {
         }
       }
     },
-    done() {
-      this.finish ? this.init.resolve() : this.init.reject();
+    batch(){
+
     }
   },
   watch: {
@@ -236,7 +208,7 @@ ul.letters {
 }
 
 section.outer {
-  height: 448px;
+  height: 506px;
   overflow: hidden;
 }
 

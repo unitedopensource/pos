@@ -26,7 +26,7 @@
             <div class="content" v-else>
                 <span class="time">{{order.time | moment('YYYY-MM-DD HH:mm:ss')}}</span>
                 <div>
-                    <span class="value">{{order.customer && order.customer.phone}}</span>
+                    <span class="value">{{(order.customer && order.customer.phone) | phone}}</span>
                 </div>
                 <div>
                     <span class="value">{{order.customer && order.customer.address}}</span>

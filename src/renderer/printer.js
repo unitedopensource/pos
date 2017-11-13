@@ -3,7 +3,7 @@ var Printer = function (plugin, config) {
     this.config = config;
     this.station = config.station;
     this.setting = config.printer;
-    this.devices = Object.keys(config.printer);
+    this.devices = config.station.printerGroup || Object.keys(config.printer);
     this.targetDevices = [];
     this.template = null;
     this.target = 'Receipt';
@@ -58,7 +58,14 @@ var Printer = function (plugin, config) {
     }
 
     this.testPage = function (device) {
-        let { name, address, city, state, zipCode, contact } = this.config.store;
+        let {
+            name,
+            address,
+            city,
+            state,
+            zipCode,
+            contact
+        } = this.config.store;
 
         this.plugin.PRINT_INIT('Test Page');
         this.plugin.PRINT_INITA(0, 0, 270, 2000, "");
@@ -118,7 +125,8 @@ var Printer = function (plugin, config) {
         let printers = this.getPrinters();
         printers.forEach(printer => {
             let setting = this.setting[printer];
-            let ticket = raw.type, skip;
+            let ticket = raw.type,
+                skip;
 
             if (!receipt) {
                 skip = setting.print.hasOwnProperty(raw.type) ? !setting.print[ticket] : true
@@ -126,7 +134,10 @@ var Printer = function (plugin, config) {
                 skip = !setting.print[ticket] && setting.print[receipt]
             }
 
-            if (skip) { this.skip(); return }
+            if (skip) {
+                this.skip();
+                return
+            }
             if (setting.labelPrinter) {
                 this.printLabel(printer, raw);
                 return;
@@ -134,7 +145,12 @@ var Printer = function (plugin, config) {
             let items = raw.content.filter(item => item.printer[printer]);
             if (items.length === 0) return false;
             //change incoming
-            let { printStore, printType, printCustomer, enlargeDetail } = setting.control;
+            let {
+                printStore,
+                printType,
+                printCustomer,
+                enlargeDetail
+            } = setting.control;
             let header = createHeader(this.config.store, raw);
             let list = createList(printer, setting.control, raw);
             if (!list) return;
@@ -181,7 +197,12 @@ var Printer = function (plugin, config) {
         let printer = 'cashier';
         let setting = this.setting.cashier;
 
-        let { printStore, printType, printCustomer, enlargeDetail } = setting.control;
+        let {
+            printStore,
+            printType,
+            printCustomer,
+            enlargeDetail
+        } = setting.control;
         let header = createHeader(this.config.store, raw);
         let list = createList(printer, setting.control, raw);
         let style = createStyle(setting.control);
@@ -193,7 +214,14 @@ var Printer = function (plugin, config) {
     }
 
     this.printLabel = function (name, order) {
-        let { printPrimary, printSecondary, primaryFont, secondaryFont, primaryFontSize, secondaryFontSize } = this.config.printer[name]['control'];
+        let {
+            printPrimary,
+            printSecondary,
+            primaryFont,
+            secondaryFont,
+            primaryFontSize,
+            secondaryFontSize
+        } = this.config.printer[name]['control'];
         let style = `<style>
                     .item{text-align:center;display:inline-block;}
                     .number{float:right;}
@@ -223,7 +251,10 @@ var Printer = function (plugin, config) {
     }
 
     this.printCreditCard = function (trans, reprint) {
-        let { store, printer } = this.config;
+        let {
+            store,
+            printer
+        } = this.config;
         let device = this.station.printer || 'cashier';
 
         if (!printer[device]['print']['CREDITCARD']) return;
@@ -286,6 +317,7 @@ var Printer = function (plugin, config) {
                     ${duplicate}
                   </footer>`;
         }
+
         function createStyle() {
             return `<style>
                   *{margin:0;padding:0;font-family:'Agency FB';}
@@ -310,7 +342,14 @@ var Printer = function (plugin, config) {
     }
 
     this.printGiftCard = function (title, card) {
-        let { name, address, city, state, zipCode, contact } = this.config.store;
+        let {
+            name,
+            address,
+            city,
+            state,
+            zipCode,
+            contact
+        } = this.config.store;
 
         CLODOP.PRINT_INIT('Gift Card');
         CLODOP.PRINT_INITA(0, 0, 260, 2000, "");
@@ -380,7 +419,10 @@ var Printer = function (plugin, config) {
 
     this.printReport = function (data) {
         let store = this.config.store;
-        let { date, report } = data;
+        let {
+            date,
+            report
+        } = data;
         let from = moment(date.from).format("M/D/YY HH:mm");
         let to = moment(date.to).format("M/D/YY HH:mm");
         let html = createReport();
@@ -398,7 +440,11 @@ var Printer = function (plugin, config) {
                     let section = "";
                     if (Array.isArray(report[key])) {
                         section += report[key].map(record => {
-                            let { text, count, amount } = record;
+                            let {
+                                text,
+                                count,
+                                amount
+                            } = record;
                             amount = isNumber(amount) ? "$ " + toFixed(amount, 2).toFixed(2) : amount ? flatten(amount) : "";
                             count = count > 0 ? count : "";
                             return `<div class="data">
@@ -409,7 +455,11 @@ var Printer = function (plugin, config) {
                         }).join("").toString();
                     } else {
                         for (let value in report[key]) {
-                            let { text, count, amount } = report[key][value];
+                            let {
+                                text,
+                                count,
+                                amount
+                            } = report[key][value];
                             amount = isNumber(amount) ? "$ " + toFixed(amount, 2).toFixed(2) : amount ? flatten(amount) : '';
                             count = count > 0 ? count : "";
                             section += `<div class="data">
@@ -440,6 +490,7 @@ var Printer = function (plugin, config) {
                   <p>Powered by United POS&reg;</p>
                 </footer>`;
         }
+
         function flatten(array) {
             let html = "";
             Array.isArray(array) ?
@@ -454,6 +505,7 @@ var Printer = function (plugin, config) {
                 }) : null;
             return html;
         }
+
         function createStyle() {
             return `<style>
                     *{margin:0;padding:0;font-family:'Agency FB';}
@@ -564,7 +616,11 @@ var Printer = function (plugin, config) {
         let batchTime = moment(Number(data.time), 'YYYYMMDDHHmmss')
         let date = batchTime.format("MM/DD/YYYY");
         let time = batchTime.format("hh:mm:ss");
-        let { credit, debit, ebt } = data.amount;
+        let {
+            credit,
+            debit,
+            ebt
+        } = data.amount;
         let total = (parseFloat(credit) + parseFloat(debit) + parseFloat(ebt)).toFixed(2);
 
         let html = `<article>
@@ -729,7 +785,6 @@ var Printer = function (plugin, config) {
     }
 
     this.printCashOutReport = function (data, detail) {
-        console.log(data)
         let store = this.config.store;
         let date = moment().format("MM/DD/YYYY");
         let time = moment().format("hh:mm:ss");
@@ -814,7 +869,10 @@ var Printer = function (plugin, config) {
 
     this.printReservationTicket = function (data) {
         let store = this.config.store;
-        let { queue, name } = data;
+        let {
+            queue,
+            name
+        } = data;
         let date = moment().format("MM/DD/YYYY");
         let time = moment().format("hh:mm:ss");
         let html = `<section class="header">
@@ -866,7 +924,17 @@ var Printer = function (plugin, config) {
 */
 
 function createHeader(store, ticket) {
-    let { type, time, number, server, cashier, station, table, guest, customer } = ticket;
+    let {
+        type,
+        time,
+        number,
+        server,
+        cashier,
+        station,
+        table,
+        guest,
+        customer
+    } = ticket;
     let phone = '';
     try {
         phone = customer.phone && customer.phone.replace(/^\D?(\d{3})\D?\D?(\d{3})\D?(\d{4})/, "$1.$2.$3");
@@ -920,8 +988,14 @@ function createHeader(store, ticket) {
 }
 
 function createList(printer, ctrl, invoice) {
-    let { sortItem, printMenuID, sortPriority, printMode } = ctrl;
-    let content = [], items = [];
+    let {
+        sortItem,
+        printMenuID,
+        sortPriority,
+        printMode
+    } = ctrl;
+    let content = [],
+        items = [];
     let list = JSON.parse(JSON.stringify(invoice.content));
     //print mode decided items
     switch (printMode) {
@@ -963,7 +1037,6 @@ function createList(printer, ctrl, invoice) {
                 items = list.filter(item => item.printer[printer] && !item.print)
             } else {
                 items = list.filter(item => item.printer[printer] && !item.print && (item.diffs === 'new' || item.diffs === 'inserted'));
-
                 items.forEach(item => {
                     switch (item.diffs) {
                         case "new":
@@ -1050,15 +1123,17 @@ function createList(printer, ctrl, invoice) {
     return `<table class="receipt"><tbody>${content}</tbody></table>`
 
     function mockup(item, name) {
-        let nameCN = (item.printer[name] && item.printer[name].hasOwnProperty("zhCN")) ? item.printer[name].zhCN : item.zhCN;
-        let nameEN = (item.printer[name] && item.printer[name].hasOwnProperty("usEN")) ? item.printer[name].usEN : item.usEN;
+        let nameCN = (item.printer[name] && item.printer[name].zhCN) ? item.printer[name].zhCN : item.zhCN;
+        let nameEN = (item.printer[name] && item.printer[name].usEN) ? item.printer[name].usEN : item.usEN;
+        let note = (item.printer[name] && item.printer[name].note) || null;
         let sideCN = item.side.zhCN ? item.side.zhCN : "";
         let sideEN = item.side.usEN ? item.side.usEN : "";
         let qty = item.qty !== 1 ? `<td class="qty">${item.qty}</td>` : `<td></td>`;
         let markA = item.mark[0].join(" ");
         let markB = item.mark[1].join(" ");
         let mark = (markA || markB) ? "markItem" : "";
-        let setCN = "", setEN = "";
+        let setCN = "",
+            setEN = "";
         let diffs = item.diffs || "";
         let firstLine, secondLine;
 
@@ -1093,17 +1168,20 @@ function createList(printer, ctrl, invoice) {
                             <td class="price"><del>${item.total}</del></td>
                         </tr>`;
         } else {
-
+            note = note ? `<tr><td></td><td class="note">${note}</td><td></td></tr>` : '';
             firstLine = `<tr class="zhCN">
                         ${qty}
                         <td class="item"><div class="main">${printMenuID ? item.menuID : ''}${nameCN} <span class="side">${sideCN}</span></div>${setCN}</td>
                         <td class="price">${item.total}</td>
-                    </tr>`;
+                        </tr>
+                        ${note}`;
+
             secondLine = `<tr class="usEN">
                             ${qty}
                             <td class="item"><div class="main">${printMenuID ? item.menuID : ''}${nameEN} <span class="side">${sideEN}</span></div>${setEN}</td>
                             <td class="price">${item.total}</td>
-                        </tr>`;
+                        </tr>
+                        ${note}`;
         }
 
         return firstLine + secondLine;
@@ -1111,8 +1189,24 @@ function createList(printer, ctrl, invoice) {
 }
 
 function createStyle(ctrl) {
-    let { printPrimary, primaryFont, primaryFontSize, printSecondary, secondaryFont, secondaryFontSize, sortItem, printStore, printType,
-        printCustomer, printPrimaryPrice, printSecondaryPrice, printPayment, printCoupon, printActionTime, buzzer } = ctrl;
+    let {
+        printPrimary,
+        primaryFont,
+        primaryFontSize,
+        printSecondary,
+        secondaryFont,
+        secondaryFontSize,
+        sortItem,
+        printStore,
+        printType,
+        printCustomer,
+        printPrimaryPrice,
+        printSecondaryPrice,
+        printPayment,
+        printCoupon,
+        printActionTime,
+        buzzer
+    } = ctrl;
 
     !primaryFontSize.includes('px') && (primaryFontSize += "px");
     !secondaryFontSize.includes('px') && (secondaryFontSize += "px");
@@ -1148,6 +1242,7 @@ function createStyle(ctrl) {
               td.price{text-align:right;}
               .sub{text-indent:20px;} 
               td.qty{text-align:center;font-weight:bold;width:17px;padding-right:5px;}
+              td.note{font-style:italic;font-size:0.8em;}
               .zhCN .price{${printPrimaryPrice ? 'display:initial' : 'display:none'}}
               .usEN .price{${printSecondaryPrice ? 'display:initial' : 'display:none'}}          
               footer{font-family:'Agency FB';}
@@ -1177,11 +1272,16 @@ function createStyle(ctrl) {
               .usEN{font-family:'${secondaryFont}';font-size:${secondaryFontSize};${printSecondary ? '' : 'display:none!important;'}}
           </style>`
 }
+
 function createFooter(table, ctrl, device, ticket) {
     if (!ticket.hasOwnProperty('payment')) return "";
 
-    let { footer } = ctrl;
-    let { payment } = ticket;
+    let {
+        footer
+    } = ctrl;
+    let {
+        payment
+    } = ticket;
     let suggestion = '';
 
     if (table.tipSuggestion && ticket.type === 'PRE_PAYMENT') {

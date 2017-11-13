@@ -623,7 +623,6 @@ export default {
           !this.station.terminal.enable || this.order.source !== "POS";
 
         this.$socket.emit("[PAYMENT] CHECK_PAY", this.order._id, paid => {
-          console.log("receive", paid);
           let remain = toFixed(this.payment.balance - paid, 2);
           this.payment.remain = Math.max(0, remain);
 
@@ -888,7 +887,6 @@ export default {
             ]
           })
             .then(() => {
-              //this.paid = this.payment.remain.toFixed(2);
               this.payment.tip = extra;
               this.tip = extra.toFixed(2);
 
@@ -971,6 +969,48 @@ export default {
         this.component = "creditCard";
       });
     },
+    swipeGiftCard(number) {
+      return new Promise((resolve, reject) => {
+        if (typeof this.giftCard === "string") {
+          this.componentData = number
+            ? { resolve, reject, number }
+            : { resolve, reject };
+          this.component = "capture";
+        } else {
+          resolve({
+            number: this.giftCard.number,
+            result: this.giftCard
+          });
+        }
+      });
+    },
+    queryGiftCard() {
+      this.swipeGiftCard(this.giftCard)
+        .then(this.checkGiftCard)
+        .catch(() => {
+          this.$q();
+        });
+    },
+    checkGiftCard(card) {
+      this.$q();
+      return new Promise((resolve, reject) => {
+        let { number, result } = card;
+
+        if (result) {
+          this.giftCard = result;
+          this.setAnchor("paid");
+          this.$forceUpdate();
+          resolve();
+        } else {
+          this.$dialog({
+            type: "error",
+            title: "dialog.giftCardActivation",
+            msg: ["dialog.giftCardNotActivated", number],
+            buttons: [{ text: "button.confirm", fn: "resolve" }]
+          }).then(reject);
+        }
+      });
+    },
     chargeGiftCard() {
       return new Promise((resolve, reject) => {
         let paid = parseFloat(this.paid);
@@ -1045,10 +1085,24 @@ export default {
               tip: 0,
               cashier: this.op.name,
               cashDrawer,
+              station: this.station.alies,
               type: "CASH",
+              for: "Order",
               subType: null,
               credential: null,
-              lfd:null
+              lfd: null
+            };
+
+            let activity = {
+              type: "CASHFLOW",
+              inflow: parseFloat(this.paid),
+              outflow: change,
+              time: +new Date(),
+              ticket: {
+                number: this.order.number || this.ticket.number,
+                type: this.order.type || this.ticket.type
+              },
+              operator: this.op.name
             };
             break;
           case "CREDIT":
@@ -1082,7 +1136,9 @@ export default {
               tip: parseFloat(this.tip),
               cashier: this.op.name,
               cashDrawer,
+              station: this.station.alies,
               type: "CREDIT",
+              for: "Order",
               subType: data.account.type,
               credential: data._id,
               lfd: data.account.number
@@ -1102,10 +1158,12 @@ export default {
               tip: parseFloat(this.tip),
               cashier: this.op.name,
               cashDrawer,
+              station: this.station.alies,
               type: "THIRD",
+              for: "Order",
               subType: this.thirdPartyType,
               credential: null,
-              lfd:null
+              lfd: null
             };
             break;
           case "GIFT":
@@ -1120,13 +1178,21 @@ export default {
               tip: parseFloat(this.tip),
               cashier: this.op.name,
               cashDrawer,
+              station: this.station.alies,
               type: "GIFT",
+              for: "Order",
               subType: null,
               credential: data,
-              lfd:this.giftCard.number.replace(/\D/g, "").slice(12,16)
+              lfd: this.giftCard.number.replace(/\D/g, "").slice(12, 16)
             };
             break;
         }
+
+        //if pay by split
+        !this.payInFull &&
+          Object.assign(transaction, {
+            splitPayment: this.current
+          });
 
         this.payment.log.push(transaction);
         this.$socket.emit("[SAVE] TRANSACTION", transaction);
@@ -1493,7 +1559,6 @@ export default {
       anchor === "tip"
         ? (this.tip = val.toFixed(2))
         : (this.paid = val.toFixed(2));
-      console.log(this.tip, this.paid);
 
       this.reset = true;
     },

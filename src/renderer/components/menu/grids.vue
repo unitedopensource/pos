@@ -472,6 +472,7 @@ export default {
             if (sameSet) {
               compare[index].diffs = "unchanged";
             } else {
+              compare[index].print = false;
               compare[index].diffs = "inserted";
               //filter insert choiceSet
               compare[index].choiceSet = now.choiceSet.filter(

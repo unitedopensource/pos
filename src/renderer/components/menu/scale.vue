@@ -90,15 +90,16 @@ export default {
         ]
       });
       this.addToOrder(this.item);
+      this.setSides(Array(11).fill({ zhCN: "", usEN: "", disable: true }));
       this.init.resolve();
     },
-    ...mapActions(["addToOrder"])
+    ...mapActions(["addToOrder", "setSides"])
   },
   computed: {
     total() {
       return (this.scale * this.item.unitPrice).toFixed(2);
     },
-    ...mapGetters([ "language"])
+    ...mapGetters(["language"])
   }
 };
 </script>

@@ -116,7 +116,9 @@ export default {
       }
     },
     entry(e) {
-      if (this.component) return;
+      let noVisual = document.querySelector("div.popupMask");
+      if (noVisual) return;
+
       switch (e.key) {
         case "Escape":
           this.queryItem = "";

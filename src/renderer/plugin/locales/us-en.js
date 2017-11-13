@@ -231,7 +231,9 @@ export default {
         'setDate': 'Set Date',
         'export': 'Export',
         'close': 'Close',
-        'removeAll': 'Remove All'
+        'removeAll': 'Remove All',
+        'payBalanceDue':'Pay Balance Due',
+        'adjustTips':'Adj. Tips'
     },
     thead: {
         'orderType': 'Order Type',
@@ -320,7 +322,8 @@ export default {
         'optionList': 'Options',
         'thirdPartyOrder': 'Third Party Order',
         'timeSession': 'Time Session Editor',
-        'payLog': 'Payment History'
+        'payLog': 'Payment History',
+        'giftCardReload':'Gift Card Reload'
     },
     menu: {
         'course': 'Course',
@@ -403,6 +406,8 @@ export default {
         'paymentRemoveTip': 'If you wish to reopen this ticket, please remove payment record first.',
         'paymentRemoveConfirm': 'Payment Removal',
         'paymentRemoveConfirmTip': 'Are you sure you want to remove ({i}) record?',
+        'removeAllPaymentConfirm': 'Remove All Payments',
+        'removeAllPaymentConfirmTip': 'Are you sure to remove all payment records?',
         'paymentRemoved': 'Payment Removed',
         'paymentRemovedTip': "#{i} invoice 's payment record has been removed.",
         'switchTable': 'Select Table',
@@ -556,6 +561,7 @@ export default {
         'paymentFailedTip': 'There is no terminal device attach to current station',
         'aborting': 'Aborting...',
         'error': 'Error Code: {i}',
+        'connecting': 'Connecting to terminal',
         'connectError': 'Unable Connect to Terminal',
         'disableBatch': 'Temporary Disable Batch Function',
         'creditCard': {
@@ -566,6 +572,7 @@ export default {
             'commError': 'Communication Error',
             'duplicated': 'Transaction Duplicated',
             'badTrack': 'Bad Track',
+            'notFound': 'Transaction Not Found',
             'unknown': 'An Unknown Error Occurred'
         },
         'batch': {
@@ -906,7 +913,9 @@ export default {
         'clockIn': 'Clock In',
         'clockOut': 'Clock Out',
         'verify': 'Verify',
-        'lock': 'Lock'
+        'lock': 'Lock',
+        'tenderDetail':'Paid: $ {i}\nTendered: ${i}',
+        'readyBatch':'Ready For Batch'
     },
     nav: {
         'store': 'Store',
@@ -1116,7 +1125,8 @@ export default {
         'doNotAskReceiptAfterSettle': 'Do not prompt "Print Receipt" dialog',
         'taxOnDeliveryCharge': 'Tax on delivery charge',
         'thirdPartyProvider': 'Select your third party service provider',
-        'paidRecords': 'This ticket has {i} payment records',
+        'paidRecords': '#{i} ticket has {i} payment records',
+        'forGiftCard':'Gift Card ( {i} )',
         'table': {
             'actionsOnDone': 'Actions after tapping Done',
             'passwordRequire': 'Password input required before create a new table.',
