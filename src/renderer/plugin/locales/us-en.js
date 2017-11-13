@@ -323,7 +323,8 @@ export default {
         'thirdPartyOrder': 'Third Party Order',
         'timeSession': 'Time Session Editor',
         'payLog': 'Payment History',
-        'giftCardReload':'Gift Card Reload'
+        'giftCardReload':'Gift Card Reload',
+        'setTips':'Set Tips'
     },
     menu: {
         'course': 'Course',

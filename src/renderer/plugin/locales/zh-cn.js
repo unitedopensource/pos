@@ -259,7 +259,8 @@ export default {
         'thirdPartyOrder': '第三方订单',
         'timeSession': '修改打卡时间',
         'payLog': '付款记录',
-        'giftCardReload':'礼物卡充值'
+        'giftCardReload':'礼物卡充值',
+        'setTips':'调整小费'
     },
     menu: {
         'course': '定时',

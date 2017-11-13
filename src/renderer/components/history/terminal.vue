@@ -238,41 +238,41 @@ export default {
         });
     },
     removePayment(ticket) {
-      delete ticket.payment.type;
-      delete ticket.settled;
+      // delete ticket.payment.type;
+      // delete ticket.settled;
 
-      if (ticket.payment.splitPayment) {
-        delete ticket.payment.splitPayment;
-        delete ticket.split;
-        ticket.content.forEach(item => (item.sort = 0));
-      }
+      // if (ticket.payment.splitPayment) {
+      //   delete ticket.payment.splitPayment;
+      //   delete ticket.split;
+      //   ticket.content.forEach(item => (item.sort = 0));
+      // }
 
-      let { subtotal, tax, discount, delivery, tip, gratuity } = ticket.payment;
+      // let { subtotal, tax, discount, delivery, tip, gratuity } = ticket.payment;
 
-      let surcharge = toFixed(tip + gratuity, 2);
-      let total = toFixed(subtotal + tax + delivery, 2);
-      let due = toFixed(total - discount, 2);
-      let balance = toFixed(due + surcharge, 2);
-      let remain = toFixed(balance, 2);
+      // let surcharge = toFixed(tip + gratuity, 2);
+      // let total = toFixed(subtotal + tax + delivery, 2);
+      // let due = toFixed(total - discount, 2);
+      // let balance = toFixed(due + surcharge, 2);
+      // let remain = toFixed(balance, 2);
 
-      Object.assign(ticket.payment, {
-        subtotal,
-        tax,
-        delivery,
-        discount,
-        tip,
-        gratuity,
-        surcharge,
-        total,
-        due,
-        balance,
-        paid: 0,
-        remain,
-        settled: false,
-        log: []
-      });
+      // Object.assign(ticket.payment, {
+      //   subtotal,
+      //   tax,
+      //   delivery,
+      //   discount,
+      //   tip,
+      //   gratuity,
+      //   surcharge,
+      //   total,
+      //   due,
+      //   balance,
+      //   paid: 0,
+      //   remain,
+      //   settled: false,
+      //   log: []
+      // });
 
-      this.$socket.emit("[UPDATE] INVOICE", ticket);
+      // this.$socket.emit("[UPDATE] INVOICE", ticket);
     },
     adjustTip(record) {
       let { tip, approve } = record.amount;
@@ -325,7 +325,6 @@ export default {
         this.component = "looper";
       })
         .then(() => {
-          this.$q();
           this.batch();
         })
         .catch(() => {
