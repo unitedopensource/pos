@@ -492,8 +492,8 @@ export default {
             ).toFixed(2),
             tip: parseFloat(trans.amount.tip),
             time: moment(trans.trace.time, "YYYYMMDDHHmmss").format("HH:mm"),
-            orderType: this.text(trans.order.type),
-            ticket: "#" + trans.order.number
+            orderType: trans.order ? this.$t('type.'+trans.order.type) : "",
+            ticket: trans.order ? "#" + trans.order.number : ""
           };
         });
       if (content.length === 0) {
