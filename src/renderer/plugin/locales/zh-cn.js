@@ -504,7 +504,7 @@ export default {
         'creditCard': {
             'timeout': '交易超时',
             'aborted': '交易被取消',
-            'errorCode': '交易过程中发生一个错误。信息: {i}',
+            'errorCode': '交易过程中发生一个错误!',
             'declined': '信用卡交易被拒绝',
             'commError': '信用卡伺服器通信错误',
             'duplicated': '信用卡重单',

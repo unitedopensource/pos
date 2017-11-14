@@ -99,7 +99,7 @@ export default {
                 );
                 result.code === "000000"
                   ? this.init.resolve(result)
-                  : this.terminalError(this.$t(result.msg));
+                  : this.terminalError(result.msg, result.error);
               }
             }
           };
@@ -113,10 +113,10 @@ export default {
         });
       }, 10000);
     },
-    terminalError(msg, tip) {
+    terminalError(msg, error) {
       this.icon = "error";
-      this.msg = msg;
-      this.tip = tip;
+      this.msg = this.$t(msg);
+      this.tip = error ? error : "";
       setTimeout(() => {
         this.init.reject(false);
       }, 2500);

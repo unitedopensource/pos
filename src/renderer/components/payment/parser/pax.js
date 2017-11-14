@@ -18,7 +18,8 @@ const Pax = function () {
     'Fuelman',
     'Gascard',
     'Voyager',
-    'WrightExpress'];
+    'WrightExpress'
+  ];
 
   this.initial = function (ip, port, sn, alies) {
     url = `http://${ip}:${port}?`;
@@ -29,10 +30,11 @@ const Pax = function () {
 
   this.check = function (d) {
     let data = d.split(String.fromCharCode(28));
-    let sn = data[5].replace(/[^a-z0-9]/gi, '');
+    let sn = data[5] ? data[5].replace(/[^a-z0-9]/gi, '') : "";
     let msg = data[4].indexOf(String.fromCharCode(3) !== -1) ? data[4].split(String.fromCharCode(3))[0] : data[4];
     device = {
-      msg, sn,
+      msg,
+      sn,
       code: data[3],
       model: data[6],
       mac: data[8]
@@ -40,7 +42,10 @@ const Pax = function () {
     return device;
   };
   this.charge = function (data, ticket) {
-    let { number, date } = data.creditCard;
+    let {
+      number,
+      date
+    } = data.creditCard;
     let amount = toFixed(data.amount * 100, 0);
     let tip = toFixed(data.tip * 100, 0);
     if (!number && !date) {
@@ -127,12 +132,13 @@ const Pax = function () {
         let error = data[4].split(String.fromCharCode(3))[0];
         return {
           code,
-          msg: 'terminal.creditCard.errorCode'
+          msg: 'terminal.creditCard.errorCode',
+          error,
         }
       case "100004":
         return {
           code,
-          msg:'terminal.creditCard.unsupportedTrans'
+          msg: 'terminal.creditCard.unsupportedTrans'
         }
       case "000100":
         return {
@@ -166,7 +172,7 @@ const Pax = function () {
         }
     }
   }
-  this.getLocalReport = function(){
+  this.getLocalReport = function () {
     let command = this.parser(`R00_1.26_01_`);
     return fetch(command)
   }
@@ -190,7 +196,11 @@ const Pax = function () {
           code,
           resMsg: data[4],
           date: today(),
-          time, tid, mid, device, station,
+          time,
+          tid,
+          mid,
+          device,
+          station,
           count: {
             credit: count[0],
             debit: count[1],

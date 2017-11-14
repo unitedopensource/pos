@@ -568,7 +568,7 @@ export default {
         'creditCard': {
             'timeout': 'Transaction Timeout',
             'aborted': 'Transaction Aborted',
-            'errorCode': 'An Error Occurred. Message: {i}',
+            'errorCode': 'An Error Occurred!',
             'declined': 'Transaction Declined',
             'commError': 'Communication Error',
             'duplicated': 'Transaction Duplicated',

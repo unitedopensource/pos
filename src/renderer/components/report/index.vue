@@ -268,7 +268,7 @@ export default {
 
       if (this.reportDetail === "simple") return report;
 
-      let orderPayment = this.transactions.filter(t=>t.for="Order");
+      let orderPayment = transactions.filter(t=>t.for="Order");
 
       let cashTotal = orderPayment
         .filter(t => t.type === "CASH")
@@ -385,8 +385,8 @@ export default {
         } else {
           report.push({
             text: this.$t("report.tipTotal"),
-            style: "",
-            value: ""
+            style: "bold",
+            value: "$ " + tipTotal.toFixed(2)
           });
 
           Array.from(tipFrom).forEach(type => {
@@ -398,14 +398,8 @@ export default {
             report.push({
               text: this.$t("report.from", type),
               style: "indent",
-              value: total.toFixed(2)
+              value: `( ${total.toFixed(2)} )`
             });
-          });
-
-          report.push({
-            text: "",
-            style: "total bold space",
-            value: tipTotal.toFixed(2)
           });
         }
       } else {
@@ -425,7 +419,7 @@ export default {
       report.push({
         text: this.$t("report.others"),
         style: "bold",
-        value: (deliveryFee + gratuity).toFixed(2)
+        value: "$ " + (deliveryFee + gratuity).toFixed(2)
       });
 
       report.push({
