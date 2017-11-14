@@ -31,12 +31,11 @@
                 <div>
                     <span class="value">{{order.customer && order.customer.address}}</span>
                 </div>
-          
             </div>
         </header>
         <div class="order" @click.self="resetHighlight" v-if="layout === 'order'">
             <v-touch class="inner" :style="scroll" @panup="move" @pandown="move" @panstart="panStart" @panend="panEnd" tag="ul">
-                <list-item v-for="(item,index) in order.content" :data-category="item.category" :key="index" :item="item"></list-item>
+                <list-item v-for="(item,index) in order.content" :data-category="item.category" :key="index" :item="item" :checkbox="todo"></list-item>
             </v-touch>
         </div>
         <div class="order" v-else>
@@ -49,7 +48,7 @@
                 <button class="fn fa fa-shopping-basket" @click="openMarker" :disabled="$route.name !== 'Menu'"></button>
                 <button class="fn" @click="separator" :disabled="$route.name !== 'Menu'">-----</button>
                 <button class="fn fa fa-print" @click="directPrint" v-if="$route.name !=='Menu'"></button>
-                <button class="fn fa fa-check-square-o" v-else @click="toggleCheckbox"></button>
+                <button class="fn fa fa-check-square-o" v-else @click="toggleTodoList" :disabled="app.mode ==='edit'"></button>
                 <button class="fn fa fa-keyboard-o" @click="openKeyboard" :disabled="$route.name !== 'Menu'"></button>
             </div>
             <div class="settle" @click="openConfig">
@@ -116,6 +115,7 @@ export default {
       },
       lastDelta: 0,
       offset: 0,
+      todo: false,
       component: null,
       componentData: null,
       spooler: []
@@ -240,11 +240,16 @@ export default {
       this.component === "entry" ? (this.component = null) : this.$p("entry");
     },
     update(config) {
+      console.log(config)
       this.setOrder(config);
-      this.calculator(this.cart);
+      this.calculator(this.order.content);
     },
-    toggleCheckbox(){
-      
+    toggleTodoList() {
+      this.todo = !this.todo;
+
+      if (!this.todo) {
+        this.order.content.forEach(item => (item.pending = false));
+      }
     },
     calculator(items) {
       if (items.length === 0) {
@@ -297,7 +302,7 @@ export default {
 
         subtotal = toFixed(subtotal + amount, 2);
 
-        if (!this.order.taxFree || taxClass.apply[type]) {
+        if (!this.order.taxFree && taxClass.apply[type]) {
           tax += taxClass.rate / 100 * amount;
         }
       });

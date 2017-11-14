@@ -1,5 +1,5 @@
 <template>
-    <li class="item" @click="select(item,$event)">
+    <li class="item" @click="select(item,$event)" v-if="!checkbox">
         <div class="main">
             <span class="qty">{{item.qty}}</span>
             <div class="wrap">
@@ -20,12 +20,19 @@
             <span class="price" :class="{hide:parseFloat(set.price) === 0}" @click.stop>({{set.price | decimal}})</span>
         </div>
     </li>
+    <li class="item todo" v-else>
+        <div class="main">
+            <checkbox v-model="item.pending" :label="item[language]" :disabled="item.print"></checkbox>
+        </div>
+    </li>
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import checkbox from '../setting/common/checkbox'
 export default {
-    props: ['item'],
+    props: ['item','checkbox'],
+    components:{ checkbox },
     computed: {
         ...mapGetters(['language', 'choiceSet'])
     },
@@ -192,5 +199,9 @@ li {
 
 .hide {
     visibility: hidden;
+}
+
+.todo{
+    height: 18px;
 }
 </style>

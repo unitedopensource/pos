@@ -189,6 +189,7 @@ export default {
     },
     enter() {
       if (!isNumber(this.tip)) return;
+      if (!this.transaction) return;
 
       if (parseFloat(this.tip) > 0) {
         let record = this.transaction;
@@ -250,7 +251,7 @@ export default {
       let next = this.transactions[this.index + 1];
 
       if (next) {
-        this.index ++;
+        this.index++;
         this.transaction = next;
 
         this.$nextTick(() => {

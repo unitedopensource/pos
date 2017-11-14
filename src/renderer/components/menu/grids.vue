@@ -277,12 +277,21 @@ export default {
     },
     done(print) {
       if (this.isEmptyTicket) return;
-      this.checkToGo(print)
+
+      this.initialPrint(print)
         .then(this.save.bind(null, print))
-        .then(this.exit)
-        .catch(this.placeFailed);
+        .then(this.exit);
+      //.catch(this.placeFailed);
     },
     placeFailed(error) {
+      this.$socket.emit("[SYS] RECORD", {
+        type: "System",
+        event: "",
+        status: 0,
+        cause: error,
+        data: this.order
+      });
+
       this.$dialog({
         type: "error",
         title: "dialog.somethingWrong",
@@ -312,7 +321,7 @@ export default {
       archiveOrder.payment.remain += total;
       return archiveOrder;
     },
-    checkToGo(print) {
+    initialPrint(print) {
       return new Promise(resolve => {
         if (this.ticket.type === "TO_GO" && this.order.content.length > 0) {
           //save togo items
@@ -330,7 +339,25 @@ export default {
 
         switch (this.app.mode) {
           case "create":
-            if (this.ticket.type !== "DINE_IN") {
+            let todo = !!document.querySelector(".item.todo");
+            if (todo) {
+              let items = [];
+              order.content.forEach(item => {
+                if (item.pending) {
+                  items.push(JSON.parse(JSON.stringify(item)));
+                  item.print = true;
+                }
+              });
+
+              this.$socket.emit("[SAVE] INVOICE", order, false, content => {
+                Printer.setTarget("Order").print(
+                  Object.assign(order, {
+                    delay: +new Date(),
+                    content: items
+                  })
+                );
+              });
+            } else if (this.ticket.type !== "DINE_IN") {
               //other type
               this.$socket.emit("[SAVE] INVOICE", order, print, content => {
                 print && Printer.setTarget("All").print(content);
