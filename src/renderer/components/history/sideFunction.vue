@@ -40,7 +40,7 @@
             <i class="fa fa-file-text"></i>
             <span class="text">{{$t('button.report')}}</span>
         </div>
-        <button class="btn" @click="stats" :disabled="!reportable">
+        <button class="btn" @click="paymentHistory" :disabled="!reportable">
             <i class="fa fa-bar-chart"></i>
             <span class="text">{{$t('button.stats')}}</span>
         </button>
@@ -50,28 +50,29 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
+
 import paymentMark from "../payment/mark";
 import Dialoger from "../common/dialoger";
 import Payment from "../payment/index";
 import payLog from "./component/payLog";
 import Report from "../report/index";
-import statistic from "./statistic";
 import Calendar from "./calendar";
 import Terminal from "./terminal";
+import history from "./history";
 import Reason from "./reason";
 import Search from "./search";
 
 export default {
   props: ["date"],
   components: {
+    paymentMark,
+    history,
     Calendar,
     Dialoger,
     Terminal,
     Payment,
     Reason,
     Report,
-    paymentMark,
-    statistic,
     payLog
   },
   data() {
@@ -399,16 +400,11 @@ export default {
     updateInvoice(ticket) {
       this.$socket.emit("[UPDATE] INVOICE", ticket, true);
     },
-    stats() {
-      Array.isArray(this.$parent.prevHistory)
-        ? this.$p("statistic", { history: this.$parent.prevHistory })
-        : this.$p("statistic");
-    },
     paymentHistory() {
       let date = document.querySelector("#calendar .text").innerText;
 
       this.$socket.emit("[PAYMENT] VIEW_TRANSACTIONS", date, data => {
-        this.$p("paymentHistory", { data });
+        this.$p("history", { data });
       });
     },
     ...mapActions([

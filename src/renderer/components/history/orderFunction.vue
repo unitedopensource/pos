@@ -4,7 +4,7 @@
             <i class="fa fa-money"></i>
             <span class="text">{{$t('button.payment')}}</span>
         </button>
-        <button class="btn" @click="thirdParty" :disabled="disable">
+        <button class="btn" @click="thirdParty" :disabled="disable || order.split">
             <i class="fa fa-google-wallet"></i>
             <span class="text">{{$t('button.thirdParty')}}</span>
         </button>
@@ -67,45 +67,47 @@ export default {
       this.$p("split");
     },
     discount() {
-      new Promise((resolve, reject) => {
-        this.componentData = { payment: this.order.payment, resolve, reject };
-        this.component = "discount";
-      })
-        .then(result => {
-          let {
-            subtotal,
-            tax,
-            tip,
-            gratuity,
-            delivery,
-            paid
-          } = this.order.payment;
-
-          let total = parseFloat(subtotal) + toFixed(tax, 2) + delivery;
-          let discount = result.discount;
-          let due = Math.max(0, total - discount);
-          let surcharge = tip + gratuity;
-          let balance = due + surcharge;
-          let remain = Math.max(0, balance - paid);
-
-          result.coupon
-            ? Object.assign(this.order, { coupon: result.coupon })
-            : Object.assign(this.order, { coupon: null });
-
-          Object.assign(this.order.payment, {
-            total: toFixed(total, 2),
-            discount: toFixed(discount, 2),
-            due: toFixed(due, 2),
-            balance: toFixed(balance, 2),
-            paid: toFixed(paid, 2),
-            remain: toFixed(remain, 2)
-          });
-          this.$socket.emit("[UPDATE] INVOICE", this.order);
-          this.$q();
+      this.$socket.emit("[COUPON] LIST", coupons => {
+        new Promise((resolve, reject) => {
+          this.componentData = {
+            payment: this.order.payment,
+            coupons,
+            resolve,
+            reject
+          };
+          this.component = "discount";
         })
-        .catch(() => {
-          this.$q();
-        });
+          .then(this.updatePayment)
+          .catch(() => {
+            this.$q();
+          });
+      });
+    },
+    updatePayment(result) {
+      let { subtotal, tax, tip, gratuity, delivery, paid } = this.order.payment;
+
+      let total = parseFloat(subtotal) + toFixed(tax, 2) + delivery;
+      let discount = result.discount;
+      let due = Math.max(0, total - discount);
+      let surcharge = tip + gratuity;
+      let balance = due + surcharge;
+      let remain = Math.max(0, balance - paid);
+
+      result.coupon
+        ? Object.assign(this.order, { coupon: result.coupon })
+        : Object.assign(this.order, { coupon: null });
+
+      Object.assign(this.order.payment, {
+        total: toFixed(total, 2),
+        discount: toFixed(discount, 2),
+        due: toFixed(due, 2),
+        balance: toFixed(balance, 2),
+        paid: toFixed(paid, 2),
+        remain: toFixed(remain, 2)
+      });
+      
+      this.$socket.emit("[UPDATE] INVOICE", this.order);
+      this.$q();
     },
     driver() {
       this.$p("driver", { ticket: this.order.number });

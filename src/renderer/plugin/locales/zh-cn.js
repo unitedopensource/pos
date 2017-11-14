@@ -604,7 +604,7 @@ export default {
         'creditCardTip': '信用卡小费',
         'tax': '税',
         'itemSales': '物品销售',
-        'tips': '小费',
+        
         'gratuity': '服务费',
         'deliveryFee': '送餐费',
         'surcharge': '附加费',
@@ -614,14 +614,16 @@ export default {
 
         'detailPayment':'付款类别',
         'tipsSource':'显示小费来源',
+        'giftCardSales':'礼物卡销售',
         'from':'来自 {i}',
         'fromDate':'从',
         'toDate':'至',
-        'foodSales':'物品销售',
         'salesTotal':'销售总额',
         'cashTotal':'现金',
         'creditTotal':'信用卡',
+        'thirdPartyTotal':'第三方',
         'tipTotal':'总小费',
+        'tips': '小费',
         'payout':'支付',
         'others':'其它',
         'overallTotal':'总数'

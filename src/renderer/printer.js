@@ -468,8 +468,9 @@ var Printer = function (plugin, config) {
                   <p>Powered by United POS&reg;</p>
                 </footer>`;
         }
-    function createStyle() {
-        return `<style>
+
+        function createStyle() {
+            return `<style>
                 *{margin:0;padding:0;font-family:'Agency FB';}
                     section.header{text-align:center;}
                     .header h3{font-size:1.25em;}
@@ -483,7 +484,7 @@ var Printer = function (plugin, config) {
                     p .text{flex:1;}
                     .indent .text{text-indent:1.5em;font-style:italic;}
                     .bold .value{font-weight:bold;}
-                    .space{margin-bottom:5px;}
+                    .space{margin-bottom:10px;}
                     .total .value{font-weight:bold;border-top:1px dashed #000;}
                     .value{min-width:90px;text-align:right;}
                     footer p{text-align:center;border-top:1px solid #000;margin-top:15px;display:block;}
@@ -1396,11 +1397,10 @@ function createFooter(table, ctrl, device, ticket) {
                     </section>`)
     }
 
-    if (payment.settled) {
-        payment.log.forEach(log => {
-            switch (log.type) {
-                case 'CASH':
-                    settle.push(`<section class="details">
+    payment.log.forEach(log => {
+        switch (log.type) {
+            case 'CASH':
+                settle.push(`<section class="details">
                                 <h3>Paid by Cash - Thank You</h3>
                                 <p>
                                 <span class="text">Paid:</span>
@@ -1411,32 +1411,36 @@ function createFooter(table, ctrl, device, ticket) {
                                 <span class="value">$${log.change.toFixed(2)}</span>
                                 </p>
                             </section>`)
-                    break;
-                case 'CREDIT':
-                    let cc = log.number ? `(${log.number})` : '';
-                    settle.push(`<section class="details">
+                break;
+            case 'CREDIT':
+                let cc = log.number ? `(${log.number})` : '';
+                settle.push(`<section class="details">
                                 <h3>Paid by CREDIT Card ${cc} - Thank You</h3>
                                 <p>
                                 <span class="text">Paid:</span>
                                 <span class="value">$${log.paid.toFixed(2)}</span>
                                 </p>
                             </section>`)
-                    break;
-                case 'GIFT':
-                    settle.push(`<section class="details">
+                break;
+            case 'GIFT':
+                settle.push(`<section class="details">
                                 <h3>Paid by GIFT Card - Thank You</h3>
                                 <p>
                                 <span class="text">Paid:</span>
                                 <span class="value">$${log.paid.toFixed(2)}</span>
                                 </p>
                             </section>`)
-                    break;
-                default:
-                    settle.push(`<section class="details">
+                break;
+            default:
+                settle.push(`<section class="details">
                                     <h3>Paid by ${log.type} - Thank You</h3>
                                 </section>`)
-            }
-        })
+        }
+    })
+    if (!payment.settled) {
+        settle.push(`<section class="details">
+                        <h3>Balance Due: ${payment.remain.toFixed(2)}</h3>
+                    </section>`)
     }
 
     if (ticket.status === 0) {
@@ -1451,7 +1455,7 @@ function createFooter(table, ctrl, device, ticket) {
     }
 
     let detail = [];
-    ['subtotal', 'discount', 'tax', 'delivery', 'tip', 'gratuity', 'total'].forEach(key => {
+    ['subtotal', 'discount', 'tax', 'delivery', 'tip', 'gratuity', 'total', 'remain'].forEach(key => {
         if (payment[key] > 0) {
             let cls = '';
             let value = payment[key].toFixed(2);

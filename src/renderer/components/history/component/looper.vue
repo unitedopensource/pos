@@ -380,8 +380,6 @@ h5 {
   position: absolute;
   bottom: 0;
   right: 2px;
-  font-weight: bold;
-  font-family: "Agency FB";
   color: #3c3c3c;
 }
 

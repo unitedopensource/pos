@@ -22,9 +22,10 @@
 <script>
 import { mapActions, mapGetters } from "vuex";
 import tips from "../payment/tips";
+import dialoger from "../common/dialoger";
 export default {
   props: ["init"],
-  components: { tips },
+  components: { tips, dialoger },
   mounted() {
     if (this.init.driver) {
       document.querySelector("." + this.init.driver).classList.add("active");

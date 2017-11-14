@@ -30,6 +30,10 @@
             <td v-else-if="log.type ==='GIFT'">
               <span>{{$t('type.'+log.type)}}<span class="last">({{log.lfd}})</span></span>
             </td>
+            <td v-else class="info">
+              <span>{{$t('type.'+log.type)}}</span>
+              <span>{{log.subType}}</span>
+            </td>
             <td class="amount" :title="tenderDetail(log)">$ {{log.actual | decimal}}</td>
             <td>
               <button @click="removeConfirm(log,index)" :disabled="log.type === 'CREDIT' && !terminalAvailable">{{$t("button.remove")}}</button>

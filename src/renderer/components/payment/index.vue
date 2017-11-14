@@ -217,7 +217,7 @@
 
 <style scoped>
 .window {
-  width: 862px;
+  width: 918px;
 }
 
 nav {
@@ -362,7 +362,7 @@ nav {
 }
 
 .balanceDue {
-  width: 219px;
+  width: 275px;
   height: 42px;
   margin: 10px 0 4px;
   border-radius: 4px;
@@ -395,6 +395,7 @@ nav {
 
 .symbol {
   font-size: 26px;
+  margin-right: 1px;
   font-weight: normal;
   color: #009688;
   text-shadow: 0 1px 1px #ddd;
@@ -436,13 +437,13 @@ section.numpad {
 }
 section.field {
   display: flex;
-  width: 330px;
+  width: 386px;
 }
 .input {
   position: relative;
   display: flex;
   flex-direction: column;
-  width: 223px;
+  width: 279px;
   height: 83px;
   border-radius: 2px;
   margin-bottom: 6px;
@@ -464,7 +465,7 @@ section.field {
   border: none;
   background: none;
   outline: none;
-  font-size: 26px;
+  font-size: 28px;
   text-align: right;
   padding-right: 10px;
   flex: 1;
@@ -480,6 +481,7 @@ section.field {
 }
 .people {
   font-family: "Agency FB";
+  font-weight: bold;
   font-size: 17px;
   color: #fafafa;
   padding: 1px 8px;
@@ -496,7 +498,7 @@ section.field {
   align-items: center;
   justify-content: flex-end;
   padding-right: 10px;
-  font-size: 26px;
+  font-size: 28px;
   font-family: "Agency FB";
   font-weight: bold;
 }
@@ -513,6 +515,7 @@ section.quickInput {
   height: 353px;
   width: 210px;
 }
+
 .disabled {
   opacity: 0.5;
   pointer-events: none;
@@ -1064,6 +1067,7 @@ export default {
         this.op.cashCtrl === "staffBank"
           ? this.op.name
           : this.station.cashDrawer.name;
+
       let actual = Math.min(this.paid, this.payment.remain),
         change,
         tip,
@@ -1073,7 +1077,10 @@ export default {
       return new Promise((resolve, reject) => {
         switch (this.paymentType) {
           case "CASH":
-            change = Math.max(0, toFixed(this.paid - this.payment.remain, 2));
+            this.currentTender = change = Math.max(
+              0,
+              toFixed(this.paid - this.payment.remain, 2)
+            );
             transaction = {
               _id,
               date: today(),
@@ -1108,6 +1115,8 @@ export default {
               },
               operator: this.op.name
             };
+
+            this.$socket.emit("[CASHFLOW] ACTIVITY", { cashDrawer, activity });
             break;
           case "CREDIT":
             Object.assign(data, {
@@ -1301,20 +1310,18 @@ export default {
     },
     tenderCash() {
       return new Promise(resolve => {
-        let tender = Math.max(0, toFixed(this.paid - this.payment.remain, 2));
-
         this.poleDisplay(
           ["Paid CASH", this.paid.toFixed(2)],
-          ["Change Due", tender.toFixed(2)]
+          ["Change Due", this.currentTender.toFixed(2)]
         );
 
         let tenderWithoutDialog = {
-          title: ["dialog.cashChange", tender.toFixed(2)],
+          title: ["dialog.cashChange", this.currentTender.toFixed(2)],
           msg: ["dialog.cashChangeTip", this.paid.toFixed(2)],
           buttons: [{ text: "button.confirm", fn: "resolve" }]
         };
         let tenderWithDialog = {
-          title: ["dialog.cashChange", tender.toFixed(2)],
+          title: ["dialog.cashChange", this.currentTender.toFixed(2)],
           msg: ["dialog.cashChangeTip", this.paid.toFixed(2)],
           buttons: [
             { text: "button.noReceipt", fn: "reject" },
@@ -1322,7 +1329,7 @@ export default {
           ]
         };
 
-        if (tender > 0) {
+        if (this.currentTender > 0) {
           !this.store.noReceipt
             ? this.$dialog(tenderWithDialog)
                 .then(() => {
@@ -1507,35 +1514,42 @@ export default {
         });
     },
     setDiscount() {
-      new Promise((resolve, reject) => {
-        this.componentData = { resolve, reject, payment: this.payment };
-        this.component = "discount";
-      })
-        .then(result => {
-          let { discount, coupon } = result;
-
-          if (coupon) {
-            this.setOrder({ coupon });
-            Object.assign(this.order, { coupon });
-          } else {
-            this.setOrder({ coupon: undefined });
-            Object.assign(this.order, { coupon: undefined });
-          }
-
-          Object.assign(this.payment, { discount });
-          this.recalculatePayment();
-          this.paid = "0.00";
-
-          this.poleDisplay(
-            ["Discount:", -discount.toFixed(2)],
-            ["Due:", this.payment.remain.toFixed(2)]
-          );
-
-          this.$q();
+      this.$socket.emit("[COUPON] LIST", coupons => {
+        new Promise((resolve, reject) => {
+          this.componentData = {
+            resolve,
+            reject,
+            coupons,
+            payment: this.payment
+          };
+          this.component = "discount";
         })
-        .catch(() => {
-          this.$q();
-        });
+          .then(result => {
+            let { discount, coupon } = result;
+
+            if (coupon) {
+              this.setOrder({ coupon });
+              Object.assign(this.order, { coupon });
+            } else {
+              this.setOrder({ coupon: undefined });
+              Object.assign(this.order, { coupon: undefined });
+            }
+
+            Object.assign(this.payment, { discount });
+            this.recalculatePayment();
+            this.paid = "0.00";
+
+            this.poleDisplay(
+              ["Discount:", -discount.toFixed(2)],
+              ["Due:", this.payment.remain.toFixed(2)]
+            );
+
+            this.$q();
+          })
+          .catch(() => {
+            this.$q();
+          });
+      });
     },
     preview(index) {
       let ticket = JSON.parse(JSON.stringify(this.order));

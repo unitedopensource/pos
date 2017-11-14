@@ -104,9 +104,7 @@ export default {
     };
   },
   created() {
-    this.$socket.emit("[COUPON] LIST", coupons => {
-      this.coupons = coupons;
-    });
+    this.coupons = this.init.coupons;
   },
   methods: {
     switchUnit(unit) {

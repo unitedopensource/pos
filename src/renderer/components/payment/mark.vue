@@ -147,70 +147,57 @@ export default {
       }
     },
     confirm() {
-      if (!this.init.hasOwnProperty("callback")) {
-        if (this.order.hasOwnProperty("splitPayment")) {
-          this.order.splitPayment.forEach(split => {
-            if (toFixed(split.remain.toFixed(2), 2) !== 0) {
-              let log = {
-                _id: "",
-                type: this.type,
-                paid: split.remain,
-                change: 0,
-                balance: 0,
-                actual: split.remain,
-                tip: 0,
-                number: "N/A"
-              };
-              split.log.push(log);
-
-              Object.assign(split, {
-                paid: split.remain,
-                remain: 0,
-                type: this.type,
-                settled: true
-              });
-            }
-          });
-          Object.assign(this.order.payment, {
-            paid: this.order.payment.remain,
-            remain: 0,
-            type: "MULTIPLE",
-            settled: true
-          });
-        } else {
-          Object.assign(this.order.payment, {
-            paid: this.order.payment.balance,
-            remain: 0,
-            type: this.type,
-            settled: true
-          });
-        }
-
-        Object.assign(this.order, { settled: true, cashier: this.op.name });
-
-        this.order.payment.log.push({
-          _id: "",
-          type: this.type,
-          paid: this.order.payment.balance,
-          change: 0,
-          balance: 0,
-          actual: this.order.payment.balance,
-          tip: this.order.payment.tip,
-          number: "N/A"
-        });
-
-        this.$socket.emit("[UPDATE] INVOICE", this.order, false);
-      }
-      this.init.resolve(this.type);
+      this.init.hasOwnProperty("callback")
+        ? this.init.resolve(this.type)
+        : this.saveToDatabase();
     },
-    checkSplit() {},
-    checkCallback() {},
+    saveToDatabase() {
+      let transaction = {
+        _id: ObjectId(),
+        date: today(),
+        time: +new Date(),
+        order: this.order._id,
+        ticket: {
+          number: this.order.number || this.ticket.number,
+          type: this.order.type || this.ticket.type
+        },
+        paid: this.order.payment.remain,
+        change: 0,
+        actual: this.order.payment.remain,
+        tip: 0,
+        cashier: this.op.name,
+        cashDrawer:
+          this.op.cashCtrl === "staffBank"
+            ? this.op.name
+            : this.station.cashDrawer.name,
+        station: this.station.alies,
+        type: "THIRD",
+        for: "Order",
+        subType: this.type,
+        credential: null,
+        lfd: null
+      };
+
+      Object.assign(this.order.payment, {
+        paid: this.order.payment.remain,
+        remain: 0,
+        type: this.type,
+        settled: true
+      });
+
+      this.order.payment.log.push(transaction);
+      Object.assign(this.order, { settled: true, cashier: this.op.name });
+
+      this.$socket.emit("[UPDATE] INVOICE", this.order, false);
+      this.$socket.emit("[SAVE] TRANSACTION", transaction);
+      this.init.resolve();
+    },
     exit() {
       this.init.resolve();
     }
   },
   computed: {
-    ...mapGetters(["op", "store", "order"])
+    ...mapGetters(["op", "store", "order", "station"])
   }
 };
 </script>

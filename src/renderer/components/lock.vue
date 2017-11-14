@@ -2,9 +2,9 @@
   <div class="container">
     <div class="accessor shadow">
       <h2>{{store.name}}</h2>
-      <div class="input">
-        <span v-for="(circle,index) in password" :key="index"></span>
-      </div>
+        <transition-group tag="div" class="input" name="pin">
+          <span v-for="(circle,index) in password" :key="index"></span>
+        </transition-group>
       <section class="numpad">
         <div @click="setPin(7)">7</div>
         <div @click="setPin(8)">8</div>
@@ -46,8 +46,6 @@ export default {
           this.delPin();
           break;
         default:
-          // let charCode = e.which || e.keyCode;
-          // let char = String.fromCharCode(charCode);
           e.key.length === 1 &&
             /[a-zA-Z0-9]/i.test(e.key) &&
             this.setPin(e.key);
