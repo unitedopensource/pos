@@ -407,7 +407,7 @@ tfoot tr {
 
 tbody {
   background: #fafafa;
-  height: 629px;
+  height: 623px;
   overflow: auto;
   display: block;
 }

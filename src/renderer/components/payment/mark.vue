@@ -166,6 +166,7 @@ export default {
         actual: this.order.payment.remain,
         tip: 0,
         cashier: this.op.name,
+        server: this.order.server || this.op.name,
         cashDrawer:
           this.op.cashCtrl === "staffBank"
             ? this.op.name

@@ -317,7 +317,7 @@ nav {
 
 .options label {
   display: flex;
-  width: 103px;
+  width: 131px;
   height: 50px;
   margin: 2px;
   justify-content: center;
@@ -1095,6 +1095,7 @@ export default {
               actual: parseFloat(actual),
               tip: 0,
               cashier: this.op.name,
+              server: this.order.server || this.op.name,
               cashDrawer,
               station: this.station.alies,
               type: "CASH",
@@ -1148,6 +1149,7 @@ export default {
               actual: parseFloat(this.paid),
               tip: parseFloat(this.tip),
               cashier: this.op.name,
+              server: this.order.server || this.op.name,
               cashDrawer,
               station: this.station.alies,
               type: "CREDIT",
@@ -1174,11 +1176,12 @@ export default {
               actual: parseFloat(this.paid),
               tip: parseFloat(this.tip),
               cashier: this.op.name,
+              server: this.order.server || this.op.name,
               cashDrawer,
               station: this.station.alies,
               type: "THIRD",
               for: "Order",
-              subType: this.thirdPartyType,
+              subType: this.thirdPartyType || data,
               credential: null,
               lfd: null
             };
@@ -1198,6 +1201,7 @@ export default {
               actual: parseFloat(this.paid),
               tip: parseFloat(this.tip),
               cashier: this.op.name,
+              server: this.order.server || this.op.name,
               cashDrawer,
               station: this.station.alies,
               type: "GIFT",

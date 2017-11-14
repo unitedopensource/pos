@@ -1147,8 +1147,7 @@ function createList(printer, ctrl, invoice) {
                             ${qty}
                             <td class="item"><div class="main">${printMenuID ? item.menuID : ''}${nameEN} <span class="side">${sideEN}</span></div>${setEN}</td>
                             <td class="price">${item.total}</td>
-                        </tr>
-                        ${note}`;
+                        </tr>`;
         }
 
         return firstLine + secondLine;
@@ -1209,7 +1208,7 @@ function createStyle(ctrl) {
               td.price{text-align:right;}
               .sub{text-indent:20px;} 
               td.qty{text-align:center;font-weight:bold;width:17px;padding-right:5px;}
-              td.note{font-style:italic;font-size:0.8em;}
+              td.note{font-style:italic;font-size:0.8em;text-indent:1em;}
               .zhCN .price{${printPrimaryPrice ? 'display:initial' : 'display:none'}}
               .usEN .price{${printSecondaryPrice ? 'display:initial' : 'display:none'}}          
               footer{font-family:'Agency FB';}
@@ -1347,7 +1346,7 @@ function createFooter(table, ctrl, device, ticket) {
     }
 
     let detail = [];
-    ['subtotal', 'discount', 'tax', 'delivery', 'tip', 'gratuity', 'total',].forEach(key => {
+    ['subtotal', 'discount', 'tax', 'delivery', 'tip', 'gratuity', 'total', ].forEach(key => {
         if (payment[key] > 0) {
             let cls = '';
             let value = payment[key].toFixed(2);

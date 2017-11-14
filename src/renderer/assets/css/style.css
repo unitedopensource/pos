@@ -207,6 +207,10 @@ section.numpad div,
   box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.12), 0px 1px 2px 0px rgba(0, 0, 0, 0.24);
 }
 
+.next {
+  background: linear-gradient(#e2edf3, #888ea0)!important;
+}
+
 .numpad .double {
   width: 205px;
 }
@@ -1277,6 +1281,7 @@ footer.update span {
 
 
 /* vue transition animation */
+
 .pin-move {
   transition: all 200ms cubic-bezier(0.19, 1, 0.22, 1);
 }
