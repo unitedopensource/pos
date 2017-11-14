@@ -1079,6 +1079,10 @@ export default {
               date: today(),
               time: +new Date(),
               order: this.order._id,
+              ticket: {
+                number: this.order.number || this.ticket.number,
+                type: this.order.type || this.ticket.type
+              },
               paid: parseFloat(this.paid),
               change,
               actual: parseFloat(actual),
@@ -1119,10 +1123,6 @@ export default {
               _id: ObjectId()
             });
 
-            // if (this.tip > 0)
-            //   data.amount.approve = (data.amount.approve - data.amount.tip
-            //   ).toFixed(2);
-
             Printer.printCreditCard(data);
 
             transaction = {
@@ -1130,6 +1130,10 @@ export default {
               date: today(),
               time: +new Date(),
               order: this.order._id,
+              ticket: {
+                number: this.order.number || this.ticket.number,
+                type: this.order.type || this.ticket.type
+              },
               paid: parseFloat(this.paid),
               change: 0,
               actual: parseFloat(this.paid),
@@ -1152,6 +1156,10 @@ export default {
               date: today(),
               time: +new Date(),
               order: this.order._id,
+              ticket: {
+                number: this.order.number || this.ticket.number,
+                type: this.order.type || this.ticket.type
+              },
               paid: parseFloat(this.paid),
               change: 0,
               actual: parseFloat(this.paid),
@@ -1172,6 +1180,10 @@ export default {
               date: today(),
               time: +new Date(),
               order: this.order._id,
+              ticket: {
+                number: this.order.number || this.ticket.number,
+                type: this.order.type || this.ticket.type
+              },
               paid: parseFloat(this.paid),
               change: 0,
               actual: parseFloat(this.paid),

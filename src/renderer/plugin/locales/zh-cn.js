@@ -260,7 +260,8 @@ export default {
         'timeSession': '修改打卡时间',
         'payLog': '付款记录',
         'giftCardReload':'礼物卡充值',
-        'setTips':'调整小费'
+        'setTips':'调整小费',
+        'report':'报表'
     },
     menu: {
         'course': '定时',
@@ -337,10 +338,9 @@ export default {
         'forceClearTableTip': '{i} 正在操作 {i} 桌, 您确定要还原状态吗',
         'invoiceSettled': '此订单已经结账',
         'invoiceSettledTip': '您不能改动已经结账的订单',
-        'settledOrderReopen': '#{i} 订单已经结账',
-        'settledOrderReopenTip': '您要先移除此单的 {i} 结账记录才能修改订单',
-        'paymentRemove': '订单已经结账',
-        'paymentRemoveTip': '若要进行操作请先移除此订单的付款记录',
+        'ticketClosed':'订单已经结账',
+        'paymentFound':'订单有付款记录',
+        'removePaymentRecordFirst':'请先移除此订单的付款记录',
         'paymentRemoveConfirm': '确定移除付款记录？',
         'paymentRemoveConfirmTip': '您确定要移除订单的 {i} 付款记录吗？',
         'removeAllPaymentConfirm': '移除所有付款记录？',
@@ -569,7 +569,7 @@ export default {
         'sun': '周日'
     },
     report: {
-        'configuration': '报表打印设置',
+        'configuration': '报表格式',
         'range': '报告范围',
         'dailyReport': '按天打印',
         'today': '今日',
@@ -579,9 +579,9 @@ export default {
         'setDate': '自定日期',
         'details': '报表内容',
         'statistics': '数据',
-        'summary': '简要报告',
+        'simple': '简要报告',
+        'customize': '自定义报告',
         'salesFrom': '款项来源明细',
-        'salesFromDep': '款项来源明细(遗弃)',
         'categorySales': '菜单类别销售',
         'hourlyReport': '按小时统计销售',
         'settleType': '支付类别明细',
@@ -609,10 +609,22 @@ export default {
         'deliveryFee': '送餐费',
         'surcharge': '附加费',
         'thirdParty': '第三方',
-        'include': ' (含)',
-        'exclude': ' (不含)',
         'receivable': '应收款',
-        'actualAmount': '实收款'
+        'actualAmount': '实收款',
+
+        'detailPayment':'付款类别',
+        'tipsSource':'显示小费来源',
+        'from':'来自 {i}',
+        'fromDate':'从',
+        'toDate':'至',
+        'foodSales':'物品销售',
+        'salesTotal':'销售总额',
+        'cashTotal':'现金',
+        'creditTotal':'信用卡',
+        'tipTotal':'总小费',
+        'payout':'支付',
+        'others':'其它',
+        'overallTotal':'总数'
     },
     thead: {
         'orderType': '订单类别',

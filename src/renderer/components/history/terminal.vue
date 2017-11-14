@@ -38,7 +38,7 @@
                                 <span class="auth">{{trans.host.auth}}</span>
                             </div>
                             <div class="amount">
-                                <span>$ {{(parseFloat(trans.amount.approve) + parseFloat(trans.amount.tip)).toFixed(2)}}</span>
+                                <span>$ {{trans.amount.approve}}</span>
                                 <span v-show="parseFloat(trans.amount.tip) > 0" class="tip">(Tip: $ {{trans.amount.tip}})</span>
                             </div>
                             <div class="action">
@@ -51,8 +51,7 @@
                 </section>
             </div>
             <footer>
-                <!-- <button class="btn" @click="batch" :disabled="!ready">{{$t('button.batch')}}</button> -->
-                <button class="btn" @click="adjustAllTips">{{$t('button.adjustTips')}}</button>
+                <button class="btn" @click="adjustAllTips" :disabled="!ready">{{$t('button.adjustTips')}}</button>
                 <div class="f1">
                   <pagination :of="transactions" @page="setPage" :contain="12" :max="12"></pagination>
                 </div>
@@ -67,7 +66,7 @@
 
 <script>
 import { mapGetters } from "vuex";
-import tipper from "./tipper";
+import tipper from "./component/tipper";
 import looper from "./component/looper";
 import dialoger from "../common/dialoger";
 import processor from "../common/processor";
@@ -80,6 +79,7 @@ export default {
       transactions: [],
       componentData: null,
       component: null,
+      adjustable: false,
       filter: "all",
       device: null,
       date: moment().subtract(4, "hours"),
@@ -89,6 +89,7 @@ export default {
   },
   created() {
     this.station.terminal.enable ? this.initialTerminal() : this.missTerminal();
+    this.adjustable = this.approval(this.op.modify, "transaction");
   },
   methods: {
     initialTerminal() {
@@ -190,7 +191,7 @@ export default {
       Printer.printCreditCard(receipt, true);
     },
     voidSale(record) {
-      this.$dialog({
+      let data = {
         title: "dialog.voidCreditSale",
         msg: [
           "dialog.voidCreditSaleTip",
@@ -201,25 +202,24 @@ export default {
           { text: "button.cancel", fn: "reject" },
           { text: "button.confirmPrint", fn: "resolve" }
         ]
-      })
+      };
+
+      this.$dialog(data)
         .then(() => {
           let invoice = record.order.number;
           let transaction = record.trace.trans;
           let _id = record.order._id;
+
           this.terminal
             .voidSale(invoice, transaction)
             .then(r => r.text())
             .then(data => {
-              let order = this.history.find(
-                ticket => ticket._id === record.order._id
-              );
-              this.removePayment(order);
               let voidSale = this.terminal.explainTransaction(data);
               delete voidSale.order;
               if (voidSale.code === "000000") {
                 Printer.printCreditCard(voidSale);
-                Object.assign(record, voidSale, { status: 0, order });
-                this.$socket.emit("[TERM] UPDATE_TRANSACTION", record);
+                Object.assign(record, voidSale, { status: 0 });
+                this.$socket.emit("[TERM] VOID_TRANSACTION", record);
               } else {
                 this.$dialog({
                   type: "error",
@@ -237,78 +237,30 @@ export default {
           this.$q();
         });
     },
-    removePayment(ticket) {
-      // delete ticket.payment.type;
-      // delete ticket.settled;
-
-      // if (ticket.payment.splitPayment) {
-      //   delete ticket.payment.splitPayment;
-      //   delete ticket.split;
-      //   ticket.content.forEach(item => (item.sort = 0));
-      // }
-
-      // let { subtotal, tax, discount, delivery, tip, gratuity } = ticket.payment;
-
-      // let surcharge = toFixed(tip + gratuity, 2);
-      // let total = toFixed(subtotal + tax + delivery, 2);
-      // let due = toFixed(total - discount, 2);
-      // let balance = toFixed(due + surcharge, 2);
-      // let remain = toFixed(balance, 2);
-
-      // Object.assign(ticket.payment, {
-      //   subtotal,
-      //   tax,
-      //   delivery,
-      //   discount,
-      //   tip,
-      //   gratuity,
-      //   surcharge,
-      //   total,
-      //   due,
-      //   balance,
-      //   paid: 0,
-      //   remain,
-      //   settled: false,
-      //   log: []
-      // });
-
-      // this.$socket.emit("[UPDATE] INVOICE", ticket);
-    },
     adjustTip(record) {
       let { tip, approve } = record.amount;
-      this.approval(this.op.modify, "transaction")
-        ? new Promise((resolve, reject) => {
+
+      !this.adjustable
+        ? this.$denyAccess()
+        : new Promise((resolve, reject) => {
             this.componentData = { tip, approve, resolve, reject };
             this.component = "tipper";
           })
             .then(result => {
-              let creditTip = result.tip;
-              this.$q();
-              creditTip = isNumber(creditTip) ? creditTip : 0;
-              let total = parseFloat(record.amount.approve) + creditTip;
-              this.$dialog({
+              let adjustedTip = result.tip;
+              let adjustedTotal = parseFloat(approve) + adjustedTip;
+              let data = {
                 title: "dialog.tipAdjustment",
                 msg: [
                   "dialog.tipAdjustmentTip",
-                  creditTip.toFixed(2),
-                  total.toFixed(2)
+                  adjustedTip.toFixed(2),
+                  adjustedTotal.toFixed(2)
                 ]
-              })
+              };
+
+              this.$dialog(data)
                 .then(() => {
-                  this.$p("processor", { timeout: 30000 });
-                  let amount = Math.round(creditTip * 100);
-                  let invoice = record.order.number;
-                  let trans = record.trace.trans;
-                  this.terminal
-                    .adjust(invoice, trans, amount)
-                    .then(r => r.text())
-                    .then(response => {
-                      this.$q();
-                      let result = this.terminal.explainTransaction(response);
-                      result.code === "000000"
-                        ? this.applyAdjustTip(record, result, creditTip)
-                        : this.adjustTipFailed(result.code);
-                    });
+                  this.executeTipAdjustment({ record, tip: adjustedTip });
                 })
                 .catch(() => {
                   this.$q();
@@ -316,12 +268,33 @@ export default {
             })
             .catch(() => {
               this.$q();
-            })
-        : this.$denyAccess();
+            });
+    },
+    executeTipAdjustment(data) {
+      let { record, tip } = data;
+      this.$p("processor", { timeout: 30000 });
+      let amount = Math.round(tip * 100);
+      let invoice = record.order.number;
+      let trans = record.trace.trans;
+      this.terminal
+        .adjust(invoice, trans, amount)
+        .then(r => r.text())
+        .then(response => {
+          this.$q();
+          let result = this.terminal.explainTransaction(response);
+          result.code === "000000"
+            ? this.applyAdjustTip(record, result)
+            : this.adjustTipFailed(result.code);
+        });
     },
     adjustAllTips() {
       new Promise((resolve, reject) => {
-        this.componentData = { resolve, reject, transaction: this.transaction };
+        this.componentData = {
+          resolve,
+          reject,
+          transaction: this.transaction,
+          terminal: this.terminal
+        };
         this.component = "looper";
       })
         .then(() => {
@@ -331,16 +304,22 @@ export default {
           this.$q();
         });
     },
-    applyAdjustTip(record, result, value) {
+    applyAdjustTip(record, result) {
       this.$dialog({
         title: "dialog.tipAdjusted",
-        msg: ["dialog.tipAdjustedTip", value, result.amount.approve],
+        msg: [
+          "dialog.tipAdjustedTip",
+          result.amount.tip,
+          result.amount.approve
+        ],
         buttons: [{ text: "button.confirm", fn: "resolve" }]
       }).then(() => {
         this.$q();
-        record.status = 2;
-        record.amount.tip = value;
-        this.$socket.emit("[TERM] UPDATE_TRANSACTION", record);
+        Object.assign(record, {
+          amount: result.amount,
+          status: 2
+        });
+        this.$socket.emit("[TERM] ADJUST_TRANSACTION", record);
       });
     },
     adjustTipFailed(code) {
@@ -492,7 +471,7 @@ export default {
             ).toFixed(2),
             tip: parseFloat(trans.amount.tip),
             time: moment(trans.trace.time, "YYYYMMDDHHmmss").format("HH:mm"),
-            orderType: trans.order ? this.$t('type.'+trans.order.type) : "",
+            orderType: trans.order ? this.$t("type." + trans.order.type) : "",
             ticket: trans.order ? "#" + trans.order.number : ""
           };
         });

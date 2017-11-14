@@ -1,9 +1,9 @@
 <template>
-  <div class="popupMask center dark" @click.self="init.reject">
+  <div class="popupMask center dark">
     <div class="window inputter">
       <header class="title">
         <span>{{$t('text.adjustTip')}}</span>
-        <i class="fa fa-times" @click="init.reject"></i>
+        <i class="fa fa-times" @click="init.reject(false)"></i>
       </header>
       <div class="inner">
         <div class="display">

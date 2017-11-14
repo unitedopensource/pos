@@ -25,6 +25,7 @@
                   <h5 v-if="transaction">{{$t('text.authCode')}}: {{transaction.host.auth}}</h5>
                 </div>
                 <div class="input">
+                    <span class="was" v-if="transaction">{{transaction.amount.tip}}</span>
                     <input type="text" v-model="tip">
                 </div>
                 <div class="pad">
@@ -65,10 +66,10 @@
 import { mapActions, mapGetters } from "vuex";
 import dialoger from "../../common/dialoger";
 import checkbox from "../../setting/common/checkbox";
-
+import processor from "../../common/processor";
 export default {
   props: ["init"],
-  components: { checkbox, dialoger },
+  components: { checkbox, dialoger, processor },
   computed: {
     scroll() {
       return { transform: `translate3d(0,${this.offset}px,0)` };
@@ -92,6 +93,14 @@ export default {
     this.transactions = this.init.transaction.filter(
       t => t.status !== 0 && !t.close
     );
+
+    if (this.transactions.length !== 0) {
+      let index = this.transactions.findIndex(t => t.status === 1);
+      if (index !== -1) {
+        this.index = index - 1;
+        this.next();
+      }
+    }
   },
   mounted() {
     window.addEventListener("keydown", this.entry, false);
@@ -137,7 +146,6 @@ export default {
     },
     entry(e) {
       e.preventDefault();
-      console.log(e.key);
       switch (e.key) {
         case "Enter":
           this.enter();
@@ -145,11 +153,20 @@ export default {
         case "Backspace":
           this.tip = this.tip.slice(0, -1);
           break;
+        case "Escape":
         case "-":
           this.clear();
           break;
         case "+":
           this.prev();
+          break;
+        case "ArrowUp":
+          this.clear();
+          this.prev();
+          break;
+        case "ArrowDown":
+          this.clear();
+          this.next();
           break;
         default:
           if (e.key.length === 1 && /[0-9.]/i.test(e.key)) {
@@ -167,9 +184,43 @@ export default {
       }
       this.reset = false;
     },
-    del() {},
+    del() {
+      this.tip = (this.tip.slice(0, -1) / 10).toFixed(2);
+    },
     enter() {
+      if (!isNumber(this.tip)) return;
+
       if (parseFloat(this.tip) > 0) {
+        console.log("trigger")
+        let record = this.transaction;
+        this.$p("processor", { timeout: 30000 });
+        let amount = Math.round(this.tip * 100);
+        let invoice = record.order.number;
+        let trans = record.trace.trans;
+        this.init.terminal
+          .adjust(invoice, trans, amount)
+          .then(r => r.text())
+          .then(response => {
+            this.$q();
+            let result = this.init.terminal.explainTransaction(response);
+            if (result.code === "000000") {
+              Object.assign(record, {
+                amount: result.amount,
+                status: 2
+              });
+              this.$socket.emit("[TERM] ADJUST_TRANSACTION", record);
+              this.next();
+            } else {
+              this.$dialog({
+                type: "error",
+                title: "dialog.tipAdjustDenied",
+                msg: ["dialog.tipAdjustDeniedTip", code],
+                buttons: [{ text: "button.confirm", fn: "resolve" }]
+              }).then(() => {
+                this.$q();
+              });
+            }
+          });
       } else {
         this.next();
       }
@@ -179,9 +230,10 @@ export default {
       this.reset = true;
     },
     prev() {
-      let next = this.transactions[--this.index];
+      let next = this.transactions[this.index - 1];
 
       if (next) {
+        this.index--;
         this.transaction = next;
 
         this.$nextTick(() => {
@@ -196,9 +248,10 @@ export default {
       }
     },
     next() {
-      let next = this.transactions[++this.index];
+      let next = this.transactions[this.index + 1];
 
       if (next) {
+        this.index ++;
         this.transaction = next;
 
         this.$nextTick(() => {
@@ -213,7 +266,7 @@ export default {
       }
     },
     batch() {
-      this.init.resolve()
+      this.init.resolve();
     }
   },
   watch: {
@@ -378,6 +431,19 @@ span.amount {
   font-size: 22px;
   text-align: center;
   color: #009688;
+}
+
+.input {
+  position: relative;
+}
+
+.was {
+  position: absolute;
+  padding: 10px;
+  font-family: "Agency FB";
+  font-weight: bold;
+  font-size: 35px;
+  color: #ff9800;
 }
 
 .scrollable {

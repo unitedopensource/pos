@@ -167,6 +167,7 @@ export default {
         date,
         time,
         order: null,
+        ticket:null,
         paid: parseFloat(this.reload),
         change: 0,
         actual: parseFloat(this.reload),

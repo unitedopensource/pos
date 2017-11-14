@@ -54,7 +54,7 @@ import paymentMark from "../payment/mark";
 import Dialoger from "../common/dialoger";
 import Payment from "../payment/index";
 import payLog from "./component/payLog";
-import Report from "../report/report";
+import Report from "../report/index";
 import statistic from "./statistic";
 import Calendar from "./calendar";
 import Terminal from "./terminal";
@@ -144,20 +144,29 @@ export default {
     },
     checkSettlement() {
       return new Promise((resolve, reject) => {
-        !this.order.settled
-          ? resolve()
-          : reject({
-              type: "question",
-              title: "dialog.paymentRemove",
-              msg: [
-                "dialog.paymentRemoveTip",
-                this.$t("type." + this.order.payment.type)
-              ],
-              buttons: [
-                { text: "button.removePayment", fn: "resolve" },
-                { text: "button.cancel", fn: "reject" }
-              ]
-            });
+        let ticketSettledError = {
+          type: "question",
+          title: "dialog.ticketClosed",
+          msg: "dialog.removePaymentRecordFirst",
+          buttons: [
+            { text: "button.removePayment", fn: "resolve" },
+            { text: "button.cancel", fn: "reject" }
+          ]
+        };
+        let paymentFoundError = {
+          type: "question",
+          title: "dialog.paymentFound",
+          msg: "dialog.removePaymentRecordFirst",
+          buttons: [
+            { text: "button.removePayment", fn: "resolve" },
+            { text: "button.cancel", fn: "reject" }
+          ]
+        };
+        if (this.order.settled) throw ticketSettledError;
+
+        this.$socket.emit("[PAYMENT] CHECK", this.order._id, count => {
+          count > 0 ? reject(paymentFoundError) : resolve();
+        });
       });
     },
     edit() {
@@ -384,9 +393,7 @@ export default {
           });
     },
     report() {
-      this.approval(this.op.access, "report")
-        ? this.$p("Report")
-        : this.$denyAccess();
+      this.reportable ? this.$p("Report") : this.$denyAccess()
     },
     search() {},
     updateInvoice(ticket) {
@@ -396,6 +403,13 @@ export default {
       Array.isArray(this.$parent.prevHistory)
         ? this.$p("statistic", { history: this.$parent.prevHistory })
         : this.$p("statistic");
+    },
+    paymentHistory() {
+      let date = document.querySelector("#calendar .text").innerText;
+
+      this.$socket.emit("[PAYMENT] VIEW_TRANSACTIONS", date, data => {
+        this.$p("paymentHistory", { data });
+      });
     },
     ...mapActions([
       "setApp",
