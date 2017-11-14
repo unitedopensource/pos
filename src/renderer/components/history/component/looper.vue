@@ -191,7 +191,6 @@ export default {
       if (!isNumber(this.tip)) return;
 
       if (parseFloat(this.tip) > 0) {
-        console.log("trigger")
         let record = this.transaction;
         this.$p("processor", { timeout: 30000 });
         let amount = Math.round(this.tip * 100);

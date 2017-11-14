@@ -202,7 +202,7 @@ export default {
           transactions = this.getTransactionsFromInvoices(invoices);
         }
 
-        this.report["Sales Report"] = this.salesAnalysis(data);
+        this.report["General Report"] = this.salesAnalysis(data);
         next();
       });
     },
@@ -412,6 +412,7 @@ export default {
     },
     printReport() {
       Printer.printReport(this.report);
+      this.init.resolve();
     },
     reportError(error) {
       console.log(error);
