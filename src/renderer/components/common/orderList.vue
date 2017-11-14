@@ -48,7 +48,8 @@
             <div class="fnWrap">
                 <button class="fn fa fa-shopping-basket" @click="openMarker" :disabled="$route.name !== 'Menu'"></button>
                 <button class="fn" @click="separator" :disabled="$route.name !== 'Menu'">-----</button>
-                <button class="fn fa fa-print" @click="directPrint"></button>
+                <button class="fn fa fa-print" @click="directPrint" v-if="$route.name !=='Menu'"></button>
+                <button class="fn fa fa-check-square-o" v-else @click="toggleCheckbox"></button>
                 <button class="fn fa fa-keyboard-o" @click="openKeyboard" :disabled="$route.name !== 'Menu'"></button>
             </div>
             <div class="settle" @click="openConfig">
@@ -242,18 +243,9 @@ export default {
       this.setOrder(config);
       this.calculator(this.cart);
     },
-    // undoneItem(items) {
-    //   return items.map(i => !i.print).reduce((a, b) => a + b, 0);
-    // },
-    // countItems(content) {
-    //   let count = 0;
-    //   let undone = 0;
-    //   content.forEach(item => {
-    //     count += item.qty;
-    //     !item.print && undone++;
-    //   });
-    //   return [count, undone];
-    // },
+    toggleCheckbox(){
+      
+    },
     calculator(items) {
       if (items.length === 0) {
         let delivery =
