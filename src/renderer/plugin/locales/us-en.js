@@ -232,8 +232,8 @@ export default {
         'export': 'Export',
         'close': 'Close',
         'removeAll': 'Remove All',
-        'payBalanceDue':'Pay Balance Due',
-        'adjustTips':'Adj. Tips'
+        'payBalanceDue': 'Pay Balance Due',
+        'adjustTips': 'Adj. Tips'
     },
     thead: {
         'orderType': 'Order Type',
@@ -323,9 +323,10 @@ export default {
         'thirdPartyOrder': 'Third Party Order',
         'timeSession': 'Time Session Editor',
         'payLog': 'Payment History',
-        'giftCardReload':'Gift Card Reload',
-        'setTips':'Set Tips',
-        'report':'Report'
+        'giftCardReload': 'Gift Card Reload',
+        'setTips': 'Set Tips',
+        'report': 'Report',
+        'paymentHistory': 'Payment History'
     },
     menu: {
         'course': 'Course',
@@ -402,9 +403,9 @@ export default {
         'forceClearTableTip': '{i} is operating table: {i}. Are you still want to process?',
         'invoiceSettled': 'Invoice Settled',
         'invoiceSettledTip': 'You can not modify a settled invoice',
-        'ticketClosed':'Ticket Is Closed',
-        'paymentFound':'Payment Record',
-        'removePaymentRecordFirst':'Please remove payment record before all actions',
+        'ticketClosed': 'Ticket Is Closed',
+        'paymentFound': 'Payment Record',
+        'removePaymentRecordFirst': 'Please remove payment record before all actions',
         'paymentRemoveConfirm': 'Payment Removal',
         'paymentRemoveConfirmTip': 'Are you sure you want to remove ({i}) record?',
         'removeAllPaymentConfirm': 'Remove All Payments',
@@ -669,28 +670,28 @@ export default {
         'creditCardTip': 'Credit Card Tips',
         'tax': 'Tax',
         'deliveryFee': 'Delivery Fee',
-        
+
         'gratuity': 'Gratuity',
         'thirdParty': 'Third Party',
         'receivable': 'Receivable',
         'actualAmount': 'Actual Amount',
 
-        'detailPayment':'Detail payment type',
-        'tipsSource':'Show tips from',
-        'giftCardSales':'Gift Card Sales',
-        'from':'From {i}',
-        'fromDate':'From',
-        'toDate':'To',
+        'detailPayment': 'Detail payment type',
+        'tipsSource': 'Show tips from',
+        'giftCardSales': 'Gift Card Sales',
+        'from': 'From {i}',
+        'fromDate': 'From',
+        'toDate': 'To',
         'itemSales': 'Item Sales',
-        'salesTotal':'Sales Total',
-        'cashTotal':'Cash Total',
-        'creditTotal':'Credit Card Total',
-        'thirdPartyTotal':'Third Party Total',
+        'salesTotal': 'Sales Total',
+        'cashTotal': 'Cash Total',
+        'creditTotal': 'Credit Card Total',
+        'thirdPartyTotal': 'Third Party Total',
         'tips': 'Tips',
-        'tipTotal':'Tip Total',
-        'payout':'Payout',
-        'others':'Others',
-        'overallTotal':'Overall Total'
+        'tipTotal': 'Tip Total',
+        'payout': 'Payout',
+        'others': 'Others',
+        'overallTotal': 'Overall Total'
     },
     text: {
         'starter': 'Starter',
@@ -930,8 +931,8 @@ export default {
         'clockOut': 'Clock Out',
         'verify': 'Verify',
         'lock': 'Lock',
-        'tenderDetail':'Paid: $ {i}\nTendered: ${i}',
-        'readyBatch':'Ready For Batch'
+        'tenderDetail': 'Paid: $ {i}\nTendered: ${i}',
+        'readyBatch': 'Ready For Batch'
     },
     nav: {
         'store': 'Store',
@@ -1142,7 +1143,8 @@ export default {
         'taxOnDeliveryCharge': 'Tax on delivery charge',
         'thirdPartyProvider': 'Select your third party service provider',
         'paidRecords': '#{i} ticket has {i} payment records',
-        'forGiftCard':'Gift Card ( {i} )',
+        'foundPaymentRecords': 'Found {i} payment records',
+        'forGiftCard': 'Gift Card ( {i} )',
         'table': {
             'actionsOnDone': 'Actions after tapping Done',
             'passwordRequire': 'Password input required before create a new table.',

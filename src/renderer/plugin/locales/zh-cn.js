@@ -261,7 +261,8 @@ export default {
         'payLog': '付款记录',
         'giftCardReload':'礼物卡充值',
         'setTips':'调整小费',
-        'report':'报表'
+        'report':'报表',
+        'paymentHistory':'付款交易记录'
     },
     menu: {
         'course': '定时',
@@ -1133,6 +1134,7 @@ export default {
         'taxOnDeliveryCharge': '送餐费用加税',
         'thirdPartyProvider': '请选择一个第三方提供商',
         'paidRecords': '#{i} 号订单一共有 {i} 个付款记录',
+        'foundPaymentRecords':'一共找到 {i} 笔付款记录',
         'forGiftCard':'礼物卡 ( {i} )',
         'table': {
             'actionsOnDone': '设定完成订单之后的操作',

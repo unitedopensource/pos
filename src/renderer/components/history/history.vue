@@ -3,8 +3,8 @@
         <div class="wrap">
         <header>
             <div>
-                <h3>Payment History</h3>
-                <h5>Found 10 Records </h5>
+                <h3>{{$t('title.paymentHistory')}}</h3>
+                <h5>{{$t('tip.foundPaymentRecords',transactions.length)}}</h5>
             </div>
             <nav class="filter">
 
@@ -69,20 +69,27 @@ export default {
   props: ["init"],
   components: { pagination },
   computed: {
+    filteredTransactions() {
+      return this.transactions;
+    },
     records() {
       let min = this.page * 13;
       let max = min + 13;
 
-      return this.transactions.slice(min, max);
+      return this.filteredTransactions.slice(min, max);
     },
     totalCount() {
       return this.records.length;
     },
     totalTip() {
-      return this.records.map(t => t.tip).reduce((a, b) => a + b, 0);
+      return this.filteredTransactions
+        .map(t => t.tip)
+        .reduce((a, b) => a + b, 0);
     },
     totalAmount() {
-      return this.records.map(t => t.actual).reduce((a, b) => a + b, 0);
+      return this.filteredTransactions
+        .map(t => t.actual)
+        .reduce((a, b) => a + b, 0);
     },
     ...mapGetters(["op"])
   },
@@ -123,6 +130,13 @@ export default {
   width: 900px;
   border-radius: 4px 4px 0 0;
 }
+
+h5 {
+  color: #666;
+  font-weight: normal;
+  margin-top: 2px;
+}
+
 table {
   border-spacing: 0;
   table-layout: auto;

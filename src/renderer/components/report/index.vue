@@ -50,8 +50,10 @@
                                 <template v-if="reportDetail === 'customize'">
                                     <checkbox v-model="detailPayment" label="report.detailPayment" :key="1"></checkbox>
                                     <checkbox v-model="tipsSource" label="report.tipsSource" :key="2"></checkbox>
-                                    <checkbox v-model="hourly" label="report.hourlyReport" :key="3"></checkbox>
-                                    <checkbox v-model="giftCard" label="report.giftCardSales" :key="4"></checkbox>
+                                    <checkbox v-model="giftCard" label="report.giftCardSales" :key="3"></checkbox>
+                                    <checkbox v-model="hourly" label="report.hourlyReport" :key="4"></checkbox>
+                                    <checkbox v-model="itemSales" label="report.itemSales" :key="5" :disabled="true"></checkbox>
+                                    <checkbox v-model="categorySales" label="report.categorySales" :key="6" :disabled="true"></checkbox>
                                 </template>
                             </transition-group>
                         </div>
@@ -98,7 +100,9 @@ export default {
       report: {},
       daily: false,
       hourly: false,
-      giftCard: false
+      giftCard: false,
+      itemSales: false,
+      categorySales: false
     };
   },
   created() {
@@ -203,6 +207,8 @@ export default {
         }
 
         this.report["General Report"] = this.salesAnalysis(data);
+        if (this.hourly)
+          this.report["Hourly Report"] = this.hourlySalesReport(invoices);
         next();
       });
     },
@@ -268,7 +274,7 @@ export default {
 
       if (this.reportDetail === "simple") return report;
 
-      let orderPayment = transactions.filter(t=>t.for="Order");
+      let orderPayment = transactions.filter(t => (t.for = "Order"));
 
       let cashTotal = orderPayment
         .filter(t => t.type === "CASH")
@@ -319,7 +325,7 @@ export default {
           value: creditTotal.toFixed(2)
         });
       }
-      
+
       //release memory
       creditTransactions = null;
 
@@ -339,7 +345,7 @@ export default {
           style: this.thirdPartyTotal > 0 ? "bold" : "",
           value: thirdPartyTotal.toFixed(2)
         });
-        
+
         Array.from(thirdType).forEach(type => {
           let total = thirdPartyTransactions
             .filter(t => t.subType === type)
@@ -447,6 +453,7 @@ export default {
 
       return report;
     },
+    hourlySalesReport() {},
     printReport() {
       Printer.printReport(this.report);
       this.init.resolve();
