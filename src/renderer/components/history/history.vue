@@ -31,7 +31,9 @@
                     <td>{{record.time | moment("HH:mm:ss")}}</td>
                     <td>{{record.cashier}}</td>
                     <td>{{record.server}}</td>
-                    <td class="settlement">{{$t('type.'+record.type)}}<span class="subType">{{record.subType}}</span></td>
+                    <td class="settlement">
+                        <span class="main">{{$t('type.'+record.type)}}</span><span class="sub">{{record.subType}}</span>
+                    </td>
                     <td class="amount adjustable" :class="{zero:record.tip === 0}" v-if="record.type ==='THIRD' && editable">$ {{record.tip | decimal}}</td>
                     <td class="amount" :class="{zero:record.tip === 0}" v-else>$ {{record.tip | decimal}}</td>
                     <td class="amount">$ {{record.actual | decimal}}</td>
@@ -228,7 +230,7 @@ tfoot td {
   width: 180px;
 }
 
-.subType {
+.sub {
   margin-left: 5px;
   color: gray;
 }

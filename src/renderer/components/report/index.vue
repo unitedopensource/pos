@@ -278,7 +278,7 @@ export default {
 
       let cashTotal = orderPayment
         .filter(t => t.type === "CASH")
-        .map(t => t.actual)
+        .map(t => t.actual - t.tip)
         .reduce(sum, 0);
 
       report.push({
@@ -288,7 +288,9 @@ export default {
       });
 
       let creditTransactions = orderPayment.filter(t => t.type === "CREDIT");
-      let creditTotal = creditTransactions.map(t => t.actual).reduce(sum, 0);
+      let creditTotal = creditTransactions
+        .map(t => t.actual - t.tip)
+        .reduce(sum, 0);
 
       if (this.detailPayment) {
         let creditType = new Set();
@@ -303,7 +305,7 @@ export default {
         Array.from(creditType).forEach(type => {
           let total = creditTransactions
             .filter(t => t.subType === type)
-            .map(t => t.actual)
+            .map(t => t.actual - t.tip)
             .reduce(sum, 0);
 
           report.push({
@@ -331,7 +333,7 @@ export default {
 
       let thirdPartyTransactions = orderPayment.filter(t => t.type === "THIRD");
       let thirdPartyTotal = thirdPartyTransactions
-        .map(t => t.actual)
+        .map(t => t.actual - t.tip)
         .reduce(sum, 0);
 
       if (this.detailPayment) {
@@ -349,7 +351,7 @@ export default {
         Array.from(thirdType).forEach(type => {
           let total = thirdPartyTransactions
             .filter(t => t.subType === type)
-            .map(t => t.actual)
+            .map(t => t.actual - t.tip)
             .reduce(sum, 0);
 
           report.push({
