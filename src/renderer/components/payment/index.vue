@@ -665,7 +665,7 @@ export default {
         title: "dialog.splitPayment",
         msg: "dialog.splitPaymentTip",
         buttons: [
-          { text: "button.payBalanceDue", fn: "reject" },
+          // { text: "button.payBalanceDue", fn: "reject" },
           { text: "button.splitPay", fn: "resolve" }
         ]
       };
@@ -1093,7 +1093,7 @@ export default {
               paid: parseFloat(this.paid),
               change,
               actual: parseFloat(actual),
-              tip: 0,
+              tip: parseFloat(this.tip),
               cashier: this.op.name,
               server: this.order.server || this.op.name,
               cashDrawer,
