@@ -200,7 +200,7 @@ export default {
     move(e) {
       this.offset = this.lastDelta + e.deltaY;
     },
-    panStart() {
+    panStart(e) {
       let dom = document.querySelector(".order .scrollable");
       dom && dom.classList.remove("scrollable");
     },
@@ -240,7 +240,6 @@ export default {
       this.component === "entry" ? (this.component = null) : this.$p("entry");
     },
     update(config) {
-      console.log(config)
       this.setOrder(config);
       this.calculator(this.order.content);
     },
@@ -424,12 +423,13 @@ export default {
         let { height } = dom.getBoundingClientRect();
         height > 329 && dom.classList.add("scrollable");
         let target = document.querySelector(".item.active");
-
+        if(this.todo)return;
         if (target && height > 329) {
           this.offset -= target.getBoundingClientRect().height;
         } else {
           this.offset = height > 329 ? 329 - height : 0;
         }
+
       });
     }
   }
