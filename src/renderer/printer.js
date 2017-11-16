@@ -473,9 +473,8 @@ var Printer = function (plugin, config) {
             return `<style>
                 *{margin:0;padding:0;font-family:'Agency FB';}
                     section.header{text-align:center;}
-                    .header h3{font-size:1.25em;}
-                    .header h5{font-size:16px;font-weight:lighter}
-                    div.type{margin:10px;border-bottom:1px solid #000;}
+                    .header h3{font-size:1.25em;font-weight:bold;}
+                    div.type{margin:10px;}
                     div.type h3{font-weight:lighter;font-size:1.3em;}
                     div.type h5{margin-top:5px;font-size:1.25em;}
                     section.type{margin-bottom:10px;}
@@ -1346,7 +1345,7 @@ function createFooter(table, ctrl, device, ticket) {
     }
 
     let detail = [];
-    ['subtotal', 'discount', 'tax', 'delivery', 'tip', 'gratuity', 'total', ].forEach(key => {
+    ['subtotal', 'discount', 'tax', 'delivery', 'tip', 'gratuity', 'total',].forEach(key => {
         if (payment[key] > 0) {
             let cls = '';
             let value = payment[key].toFixed(2);

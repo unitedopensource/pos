@@ -198,7 +198,7 @@ tbody tr:nth-child(even) {
 footer {
   display: flex;
   align-items: center;
-  background: #eceff1;
+  background: #f5f5f5;
   border-top: 1px solid #eeeeee;
 }
 

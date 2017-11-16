@@ -15,7 +15,7 @@
                         <input type="type" v-model="amount" id="Price" placeholder="0.00" @keydown.enter="confirm">
                     </div>
                 </section>
-                <textarea v-model="comment" :placeholder="$t('text.comment')"></textarea>
+                  <textarea v-model="comment" :placeholder="$t('text.comment')"></textarea>
             </div>
             <footer>
                 <div class="btn" @click="init.reject(false)">{{$t('button.cancel')}}</div>
@@ -48,10 +48,6 @@ export default {
 </script>
 
 <style scoped>
-.inner {
-  padding: 10px;
-}
-
 section.item {
   display: flex;
   padding: 0 0 10px;
@@ -66,12 +62,25 @@ section.item div {
 }
 
 textarea {
-  width: 450px;
   height: 150px;
-  margin: auto;
   display: block;
-  padding: 10px;
-  border: 1px solid #ddd;
+  border: none;
+  box-sizing: border-box;
+  box-shadow: none;
+  color: rgb(33, 33, 33);
+  flex-grow: 1;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: 400;
+  font-stretch: normal;
+  font-size: 18px;
+  line-height: normal;
+  max-width: 100%;
+  outline: none;
+  padding: 18px 16px 0px;
+  resize: none;
+  width: 100%;
+  font-family: Yuanti-SC;
 }
 
 input {
