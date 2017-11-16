@@ -43,7 +43,7 @@ export default {
                     this.$router.push({ name: 'Note' });
                     break;
                 case "customer":
-                    this.customer.phone.length === 10 && this.$router.push({ name: 'Customer' });
+                    this.customer.phone.length === 10 && this.$router.push({ name: 'Profile' });
                     break;
                 case "history":
                     this.customer.phone.length === 10 && this.$router.push({ name: 'OrderHistory' });

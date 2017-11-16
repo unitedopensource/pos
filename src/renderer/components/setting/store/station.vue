@@ -126,7 +126,7 @@ export default {
     this.printerGroup = this.printers.filter(name => !/cashier/i.test(name));
     //patch
     !this.workStation.hasOwnProperty("printerGroup") &&
-      Object.assign(this.workStation, { printerGroup: [] });
+      Object.assign(this.workStation, { printerGroup: this.printerGroup });
   },
   data() {
     return {

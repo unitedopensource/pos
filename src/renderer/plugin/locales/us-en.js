@@ -650,7 +650,6 @@ export default {
         'salesFromDep': 'Sales Source (Deprecated)',
         'categorySales': 'Category Sales Report',
         'hourlyReport': 'Hourly Summary',
-        'settleType': 'Settle Type Summary',
         'tipSummary': 'Tip Summary Report',
         'giftCardSummary': 'Gift Card Sales Report',
         'countItem': 'Item Sales Report',
@@ -691,7 +690,8 @@ export default {
         'tipTotal': 'Tip Total',
         'payout': 'Payout',
         'others': 'Others',
-        'overallTotal': 'Overall Total'
+        'overallTotal': 'Overall Total',
+        'redemptionReport':'Redemption Summary'
     },
     text: {
         'starter': 'Starter',
@@ -932,7 +932,8 @@ export default {
         'verify': 'Verify',
         'lock': 'Lock',
         'tenderDetail': 'Paid: $ {i}\nTendered: ${i}',
-        'readyBatch': 'Ready For Batch'
+        'readyBatch': 'Ready For Batch',
+        'commission':'Commission'
     },
     nav: {
         'store': 'Store',

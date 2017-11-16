@@ -473,7 +473,15 @@ export default {
       let items = [];
       let compare = current.content;
 
+      //push unprinted item
+
       this.diffs.forEach(prev => {
+        if(!prev.print){
+          prev.diffs = "new";
+          items.push(prev);
+          return;
+        }
+
         let index = compare.findIndex(item => item.unique === prev.unique);
 
         if (index !== -1) {

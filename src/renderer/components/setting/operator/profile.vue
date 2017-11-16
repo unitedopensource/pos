@@ -34,6 +34,7 @@
                     <span class="name">{{$t('setting.access')}}</span>
                     <div class="f1">
                         <checkbox v-model="operator.access" val="setting" label="text.setting" :multiple="true"></checkbox>
+                        <checkbox v-model="operator.access" val="employee" label="text.employee" :multiple="true"></checkbox>
                         <checkbox v-model="operator.access" val="report" label="text.report" :multiple="true"></checkbox>
                         <checkbox v-model="operator.access" val="terminal" label="text.terminal" :multiple="true"></checkbox>
                         <checkbox v-model="operator.access" val="history" label="text.historyInvoice" :multiple="true"></checkbox>

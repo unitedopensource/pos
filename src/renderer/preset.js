@@ -1,7 +1,7 @@
 var Preset = function () {
-  this.station = function (alies, mac) {
+  this.station = function (alias, mac) {
     return {
-      alies,
+      alies:alias,
       mac,
       terminal: {
         enable: false,
@@ -25,9 +25,10 @@ var Preset = function () {
         port: 'COM3'
       },
       printer: null,
+      printerGroup:[],
       cashDrawer: {
         enable: false,
-        name: alies,
+        name: alias,
         bind: '',
         cashFlowCtrl: false,
         initialAmount: 0
@@ -108,7 +109,7 @@ var Preset = function () {
         "printPrimaryPrice": false,
         "printSecondary": true,
         "printSecondaryPrice": true,
-        "secondaryFont": "Agency FB",
+        "secondaryFont": "Roboto Condensed",
         "secondaryFontSize": "16",
         "sortItem": true,
         "printStore": true,

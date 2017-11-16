@@ -28,9 +28,9 @@ export default [{
       name: 'Note',
       component: require('./components/dashboard/notes')
     }, {
-      path: 'customer',
-      name: 'Customer',
-      component: require('./components/dashboard/customer')
+      path: 'profile',
+      name: 'Profile',
+      component: require('./components/dashboard/profile')
     }, {
       path: 'history',
       name: 'OrderHistory',

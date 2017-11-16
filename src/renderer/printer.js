@@ -260,7 +260,7 @@ var Printer = function (plugin, config) {
         if (!printer[device]['print']['CREDITCARD']) return;
 
         let timestamp = moment(Number(trans.trace.time), 'YYYYMMDDHHmmss');
-        let date = timestamp.format("MM/DD/YYYY");
+        let date = timestamp.format("MM / DD / YYYY");
         let time = timestamp.format("HH:mm:ss");
         let html = createHtml();
         let style = createStyle();
@@ -292,7 +292,7 @@ var Printer = function (plugin, config) {
                   </section>
                   <article>
                     <p class="time"><span class="text">${date}</span><span class="value">${time}</span></p>
-                    <p><span class="text">Transcation #:</span><span class="value">${trans.trace.trans}</span></p>
+                    <p><span class="text">Transaction:</span><span class="value"># ${trans.trace.trans}</span></p>
                     <p><span class="text">Card Type</span><span class="value">${trans.account.type}</span></p>
                     <p><span class="text">Account</span><span class="value">**** **** **** ${trans.account.number}</span></p>
                     <p><span class="text">Entry</span><span class="value">${trans.account.entry}</span></p>
@@ -303,7 +303,7 @@ var Printer = function (plugin, config) {
                     <p class="bold"><span class="text">Total:</span><span class="value ul">$</span></p>
                     <p><span class="text">Auth Code</span><span class="value">${trans.host.auth}</span></p>
                     <p><span class="text">Response</span><span class="value">${trans.host.msg}</span></p>
-                    <p><span class="text">Station</span><span class="value">${trans.station}</span></p>
+                    <p><span class="text">From Station</span><span class="value">${trans.station}</span></p>
                   </article>
                   <footer>
                     <div class="agreement">
@@ -1075,20 +1075,17 @@ function createList(printer, ctrl, invoice) {
         }
         for (let category in sorted) {
             if (sorted.hasOwnProperty(category)) {
-                content += `<div class="category">
-                        <span class="zhCN">${categoryMap[category]}</span>
-                        <span class="usEN">${category}</span>
-                      </div>`;
-                content += sorted[category].map(item => mockup(item, printer)).join("").toString();
+                content += `<tr class="category"><td colspan="3"><span class="zhCN">${categoryMap[category]}</span><span class="usEN">${category}</span></td></tr>`;
+                content += sorted[category].map(item => mockup(item, printer, true)).join("").toString();
             }
         }
     } else {
-        content = items.map(item => mockup(item, printer)).join("").toString();
+        content = items.map(item => mockup(item, printer, false)).join("").toString();
     }
 
     return `<table class="receipt"><tbody>${content}</tbody></table>`
 
-    function mockup(item, name) {
+    function mockup(item, name, sort) {
         let nameCN = (item.printer[name] && item.printer[name].zhCN) ? item.printer[name].zhCN : item.zhCN;
         let nameEN = (item.printer[name] && item.printer[name].usEN) ? item.printer[name].usEN : item.usEN;
         let note = (item.printer[name] && item.printer[name].note) || null;
@@ -1101,6 +1098,7 @@ function createList(printer, ctrl, invoice) {
         let setCN = "",
             setEN = "";
         let diffs = item.diffs || "";
+        let indent = sort ? 'indent' : '';
         let firstLine, secondLine;
 
         item.choiceSet.forEach(set => {
@@ -1117,7 +1115,7 @@ function createList(printer, ctrl, invoice) {
                     </div>`;
         })
         if (diffs === 'removed') {
-            firstLine = `<tr class="zhCN">
+            firstLine = `<tr class="zhCN ${indent}">
                             <td class="qty"><del>${item.qty !== 1 ? item.qty : ''}</del></td>
                             <td class="item">
                                 <del><div class="main">${printMenuID ? item.menuID : ''}${nameCN} <span class="side">${sideCN}</span></div></del>
@@ -1125,7 +1123,7 @@ function createList(printer, ctrl, invoice) {
                             </td>
                             <td class="price"><del>${item.total}</del></td>
                         </tr>`;
-            secondLine = `<tr class="usEN">
+            secondLine = `<tr class="usEN ${indent}">
                             <td class="qty"><del>${item.qty !== 1 ? item.qty : ''}</del></td>
                             <td class="item">
                                 <del><div class="main">${printMenuID ? item.menuID : ''}${nameEN} <span class="side">${sideEN}</span></div></del>
@@ -1134,15 +1132,16 @@ function createList(printer, ctrl, invoice) {
                             <td class="price"><del>${item.total}</del></td>
                         </tr>`;
         } else {
-            note = note ? `<tr><td></td><td class="note">${note}</td><td></td></tr>` : '';
-            firstLine = `<tr class="zhCN">
+            note = note ? `<tr class="zhCN"><td></td><td class="note">${note}</td><td></td></tr>` : '';
+            firstLine = `<tr class="zhCN ${indent}">
                         ${qty}
                         <td class="item"><div class="main">${printMenuID ? item.menuID : ''}${nameCN} <span class="side">${sideCN}</span></div>${setCN}</td>
                         <td class="price">${item.total}</td>
                         </tr>
                         ${note}`;
 
-            secondLine = `<tr class="usEN">
+            note = note ? `<tr class="usEN"><td></td><td class="note">${note}</td><td></td></tr>` : '';
+            secondLine = `<tr class="usEN ${indent}">
                             ${qty}
                             <td class="item"><div class="main">${printMenuID ? item.menuID : ''}${nameEN} <span class="side">${sideEN}</span></div>${setEN}</td>
                             <td class="price">${item.total}</td>
@@ -1199,6 +1198,8 @@ function createStyle(ctrl) {
               .customer {font-size:1.2em;font-family:'Tensentype RuiHeiJ-W2'}
               .customer .space{ margin-left:5px; }
               section.body{padding:10px 0px;}
+              .category td{border-bottom:1px dashed #000;font-weight:bold;}
+              .indent .item{text-indent:10px;}
               table.receipt{width:100%;border-spacing:0;border-collapse:collapse;margin:5px 0;}
               .receipt tbody tr{display:flex;position:relative;align-items:flex-start;vertical-align:text-top;}
               td.item{flex:1;display:flex;flex-direction:column;margin-left:5px}
@@ -1329,7 +1330,7 @@ function createFooter(table, ctrl, device, ticket) {
     })
     if (!payment.settled) {
         settle.push(`<section class="details">
-                        <h3>Balance Due: ${payment.remain.toFixed(2)}</h3>
+                        <h3>Balance Due: $ ${payment.remain.toFixed(2)}</h3>
                     </section>`)
     }
 
@@ -1345,7 +1346,7 @@ function createFooter(table, ctrl, device, ticket) {
     }
 
     let detail = [];
-    ['subtotal', 'discount', 'tax', 'delivery', 'tip', 'gratuity', 'total',].forEach(key => {
+    ['subtotal', 'discount', 'tax', 'delivery', 'tip', 'gratuity', 'total', ].forEach(key => {
         if (payment[key] > 0) {
             let cls = '';
             let value = payment[key].toFixed(2);

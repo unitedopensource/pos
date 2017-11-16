@@ -60,11 +60,15 @@
                     <span class="text">{{$t("text.tax")}}:</span>
                     <span class="value">{{payment.tax | decimal}}</span>
                 </div>
-                <div v-if="order.type === 'DELIVERY'">
-                    <span class="text">{{$t("text.deliveryFee")}}:</span>
+                <div v-if="order.type === 'DELIVERY' && payment.delivery === 0 && payment.tip > 0">
+                    <span class="text">{{$t("text.tip")}}:</span>
+                    <span class="value">{{payment.tip | decimal}}</span>
+                </div>
+                <div v-else-if="order.type === 'DELIVERY'">
+                  <span class="text">{{$t("text.deliveryFee")}}:</span>
                     <span class="value">{{payment.delivery | decimal}}</span>
                 </div>
-                <div v-else-if="order.type === 'DINE_IN'" :class="{hidden:parseFloat(payment.tip) === 0}">
+                <div v-else-if="order.type === 'DINE_IN'" :class="{hidden:payment.tip === 0}">
                     <span class="text">{{$t("text.tip")}}:</span>
                     <span class="value">{{payment.tip | decimal}}</span>
                 </div>
@@ -423,13 +427,12 @@ export default {
         let { height } = dom.getBoundingClientRect();
         height > 329 && dom.classList.add("scrollable");
         let target = document.querySelector(".item.active");
-        if(this.todo)return;
+        if (this.todo) return;
         if (target && height > 329) {
           this.offset -= target.getBoundingClientRect().height;
         } else {
           this.offset = height > 329 ? 329 - height : 0;
         }
-
       });
     }
   }

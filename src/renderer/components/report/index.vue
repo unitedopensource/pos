@@ -52,8 +52,9 @@
                                     <checkbox v-model="tipsSource" label="report.tipsSource" :key="2"></checkbox>
                                     <checkbox v-model="giftCard" label="report.giftCardSales" :key="3"></checkbox>
                                     <checkbox v-model="hourly" label="report.hourlyReport" :key="4"></checkbox>
-                                    <checkbox v-model="itemSales" label="report.itemSales" :key="5" :disabled="true"></checkbox>
-                                    <checkbox v-model="categorySales" label="report.categorySales" :key="6" :disabled="true"></checkbox>
+                                    <checkbox v-model="houseAccount" label="report.redemptionReport" :key="5"></checkbox>
+                                    <checkbox v-model="itemSales" label="report.itemSales" :key="6" :disabled="true"></checkbox>
+                                    <checkbox v-model="categorySales" label="report.categorySales" :key="7" :disabled="true"></checkbox>
                                 </template>
                             </transition-group>
                         </div>
@@ -102,7 +103,8 @@ export default {
       hourly: false,
       giftCard: false,
       itemSales: false,
-      categorySales: false
+      categorySales: false,
+      houseAccount: false
     };
   },
   created() {
@@ -209,6 +211,11 @@ export default {
         this.report["General Report"] = this.salesAnalysis(data);
         if (this.hourly)
           this.report["Hourly Report"] = this.hourlySalesReport(invoices);
+        if (this.houseAccount)
+          this.report["House Account"] = this.houseAccountReport(invoices);
+
+        if (this.cashier)
+          this.report["Cashier Report"] = this.cashierReport(transactions);
         next();
       });
     },
@@ -455,13 +462,75 @@ export default {
 
       return report;
     },
-    hourlySalesReport() {},
+    hourlySalesReport(invoices) {
+      let hours = {};
+
+      invoices.forEach(invoice => {
+        if (invoice.status === 1) {
+          let hour = new Date(invoice.time).getHours();
+          let { total, discount } = invoice.payment;
+          if (hours.hasOwnProperty(hour)) {
+            hours[hour].value += total;
+            hours[hour].count++;
+          } else {
+            hours[hour] = {
+              count: 1,
+              value: total - discount
+            };
+          }
+        }
+      });
+
+      let report = [];
+
+      Object.keys(hours).forEach(hour => {
+        report.push({
+          text: `${hour}:00 (${hours[hour].count})`,
+          style: "",
+          value: hours[hour].value.toFixed(2)
+        });
+      });
+
+      return report;
+    },
+    houseAccountReport(invoices) {
+      let records = {};
+
+      invoices.forEach(invoice => {
+        if (invoice.status === 0 && invoice.void.note === 'Manager Redemption') {
+          let { total } = invoice.payment;
+          if (records.hasOwnProperty(invoice.void.by)) {
+            records[invoice.void.by].count++;
+            records[invoice.void.by].value += total;
+          } else {
+            records[invoice.void.by] = {
+              count: 1,
+              value: total
+            };
+          }
+        }
+      });
+
+      let report = [];
+
+      Object.keys(records).forEach(manager => {
+        report.push({
+          text: manager + ` ( ${records[manager].count} )`,
+          style: "",
+          value: records[manager].value.toFixed(2)
+        });
+      });
+
+      return report;
+    },
+    cashierReport(transactions) {
+
+    },
     printReport() {
       Printer.printReport(this.report);
       this.init.resolve();
     },
     reportError(error) {
-      console.log(error);
       this.$socket.emit("[SYS] RECORD", {
         type: "Software",
         event: "reportError",
@@ -511,7 +580,7 @@ export default {
   background: #fff;
   border-radius: 4px;
   width: 500px;
-  height: 200px;
+  height: 250px;
 }
 
 .detailWrap > div {

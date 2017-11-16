@@ -53,6 +53,7 @@
                             <smart-input v-model.number="item.priority" label="text.priority"></smart-input>
                             <smart-input v-model="item.inventory" label="text.inventory"></smart-input>
                             <smart-input v-model="item.rewardPoint" label="text.rewardPoint"></smart-input>
+                            <smart-input v-model="item.commission" label="text.commission"></smart-input>
                         </div>
                     </article>
                 </section>

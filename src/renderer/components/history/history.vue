@@ -37,7 +37,8 @@
                     <td class="amount adjustable" :class="{zero:record.tip === 0}" v-if="record.type ==='THIRD' && editable">$ {{record.tip | decimal}}</td>
                     <td class="amount" :class="{zero:record.tip === 0}" v-else>$ {{record.tip | decimal}}</td>
                     <td class="amount">$ {{record.actual | decimal}}</td>
-                    <td>{{record.splitPayment}}</td>
+                    <td v-if="!isNaN(record.splitPayment)">#{{record.splitPayment + 1}}</td>
+                    <td v-else></td>
                 </tr>
             </tbody>
             <tfoot>

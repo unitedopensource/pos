@@ -53,13 +53,13 @@ import { mapGetters, mapActions } from "vuex";
 
 import paymentMark from "../payment/mark";
 import Dialoger from "../common/dialoger";
-import Payment from "../payment/index";
+import Reason from "./component/reason";
 import payLog from "./component/payLog";
+import Payment from "../payment/index";
 import Report from "../report/index";
 import Calendar from "./calendar";
 import Terminal from "./terminal";
 import history from "./history";
-import Reason from "./reason";
 import Search from "./search";
 
 export default {

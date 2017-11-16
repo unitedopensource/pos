@@ -234,20 +234,16 @@ export default {
           value: "Futura LT Condensed"
         },
         {
+          label: "Roboto Condensed (English)",
+          value: "Roboto Condensed"
+        },
+        {
           label: "Noto Sans SC Light (中文)",
           value: "Noto Sans SC Light"
         },
         {
-          label: "PingFang SC Regular (中文)",
-          value: "PingFang SC Regular"
-        },
-        {
           label: "QingYuan (中文)",
           value: "QingYuan"
-        },
-        {
-          label: "PingFang Light (中文)",
-          value: "PingFang Light"
         }
       ],
       time: moment()

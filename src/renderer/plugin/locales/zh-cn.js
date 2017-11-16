@@ -232,7 +232,7 @@ export default {
         'markPaymentType': '标记付款方式',
         'terminalRecord': '刷卡记录',
         'stats': '数据',
-        'voidNote': '删除原因',
+        'voidNote': '作废原因',
         'search': '搜索',
         'databaseHealth': '关于 {i} 数据库健康报告',
         'softwareOperator': '软件用户管理',
@@ -584,8 +584,7 @@ export default {
         'customize': '自定义报告',
         'salesFrom': '款项来源明细',
         'categorySales': '菜单类别销售',
-        'hourlyReport': '按小时统计销售',
-        'settleType': '支付类别明细',
+        'hourlyReport': '统计每小时销售',
         'tipSummary': '统计小费',
         'giftCardSummary': '礼物卡',
         'countItem': '物品销售',
@@ -613,7 +612,7 @@ export default {
         'receivable': '应收款',
         'actualAmount': '实收款',
 
-        'detailPayment':'付款类别',
+        'detailPayment':'细分款项',
         'tipsSource':'显示小费来源',
         'giftCardSales':'礼物卡销售',
         'from':'来自 {i}',
@@ -627,7 +626,8 @@ export default {
         'tips': '小费',
         'payout':'支付',
         'others':'其它',
-        'overallTotal':'总数'
+        'overallTotal':'总数',
+        'redemptionReport':'经理买单'
     },
     thead: {
         'orderType': '订单类别',
@@ -924,7 +924,8 @@ export default {
         'verify': '认证',
         'lock': '锁定',
         'tenderDetail':'支付: $ {i}\n找零: ${i}',
-        'readyBatch':'准备过账'
+        'readyBatch':'准备过账',
+        'commission':'佣金'
     },
     nav: {
         'store': '店面',
