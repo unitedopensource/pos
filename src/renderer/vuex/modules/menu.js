@@ -9,14 +9,16 @@ const state = {
       due: 0,
       balance: 0,
       paid: 0,
-      change: 0,
       gratuity: 0,
       tip: 0,
       discount: 0,
       delivery: 0,
+      surcharge:0,
+      remain:0,
       log: []
     },
-    content: []
+    content: [],
+    source:"POS"
   },
   diffs: null,
   archivedOrder: null,
@@ -36,14 +38,16 @@ const mutations = {
         due: 0,
         balance: 0,
         paid: 0,
-        change: 0,
         gratuity: 0,
         tip: 0,
         discount: 0,
         delivery: 0,
+        surcharge:0,
+        remain:0,
         log: []
       },
-      content: []
+      content: [],
+      source:"POS"
     };
     state.item = null;
     state.choiceSetTarget = null;
