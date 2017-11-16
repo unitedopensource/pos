@@ -292,7 +292,7 @@ export default {
         this.componentData = {
           resolve,
           reject,
-          transaction: this.transaction,
+          transactions: this.transactions,
           terminal: this.terminal
         };
         this.component = "looper";

@@ -90,7 +90,7 @@ export default {
     };
   },
   created() {
-    this.transactions = this.init.transaction.filter(
+    this.transactions = this.init.transactions.filter(
       t => t.status !== 0 && !t.close
     );
 
