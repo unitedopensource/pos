@@ -389,7 +389,7 @@ export default {
       if (this.tipsSource) {
         let tipFrom = new Set();
         let tipTrans = orderPayment.filter(t => t.tip > 0);
-        tipTrans.forEach(t => tipFrom.add(t.type));
+        tipTrans.forEach(t => tipFrom.add(t.subType || t.type));
 
         if (tipTotal === 0) {
           report.push({
@@ -406,7 +406,7 @@ export default {
 
           Array.from(tipFrom).forEach(type => {
             let total = tipTrans
-              .filter(t => t.type === type)
+              .filter(t => (t.subType ? t.subType === type : t.type === type))
               .map(t => t.tip)
               .reduce(sum, 0);
 
@@ -497,7 +497,10 @@ export default {
       let records = {};
 
       invoices.forEach(invoice => {
-        if (invoice.status === 0 && invoice.void.note === 'Manager Redemption') {
+        if (
+          invoice.status === 0 &&
+          invoice.void.note === "Manager Redemption"
+        ) {
           let { total } = invoice.payment;
           if (records.hasOwnProperty(invoice.void.by)) {
             records[invoice.void.by].count++;
@@ -523,9 +526,7 @@ export default {
 
       return report;
     },
-    cashierReport(transactions) {
-
-    },
+    cashierReport(transactions) {},
     printReport() {
       Printer.printReport(this.report);
       this.init.resolve();
