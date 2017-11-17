@@ -60,6 +60,12 @@ export default {
         'Activation': '激活',
         'Deactivation': '注销'
     },
+    filter:{
+        'cashier':'按收银员',
+        'server':'按服务员',
+        'order':'按订单类别',
+        'payment':'按付款方式'
+    },
     tag: {
         'goodCustomer': '好客人',
         'badCustomer': '坏客人',

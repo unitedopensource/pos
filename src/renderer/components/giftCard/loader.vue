@@ -303,5 +303,6 @@ export default {
 .balance {
   width: 100px;
   display: inline-block;
+  text-align: left;
 }
 </style>

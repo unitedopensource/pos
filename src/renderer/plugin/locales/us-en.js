@@ -67,6 +67,12 @@ export default {
         'Activation': 'Activation',
         'Deactivation': 'Deactivation'
     },
+    filter:{
+        'cashier':'By Cashier',
+        'server':'By Server',
+        'order':'By Order Type',
+        'payment':'By Payment Type'
+    },
     tag: {
         'goodCustomer': 'Good',
         'badCustomer': 'Bad',

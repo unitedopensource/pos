@@ -660,6 +660,7 @@ label.input-toggle>input {
   color: #444;
   font-family: "Agency FB";
   position: relative;
+  margin-left:25px;
 }
 
 .inputter i.tooltip {

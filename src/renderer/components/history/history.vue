@@ -1,13 +1,16 @@
 <template>
     <div class="popupMask center dark">
-        <div class="wrap">
+        <div class="wrap" v-show="!component">
         <header>
             <div>
                 <h3>{{$t('title.paymentHistory')}}</h3>
                 <h5>{{$t('tip.foundPaymentRecords',transactions.length)}}</h5>
             </div>
             <nav class="filter">
-
+              <dropdown label="filter.cashier" :options="cashiers" filter="cashier"></dropdown>
+              <dropdown label="filter.server" :options="servers" filter="server"></dropdown>
+              <dropdown label="filter.order" :options="types" filter="type"></dropdown>
+              <dropdown label="filter.payment" :options="payments" filter="payment"></dropdown>
             </nav>
         </header>
         <table>
@@ -34,7 +37,7 @@
                     <td class="settlement">
                         <span class="main">{{$t('type.'+record.type)}}</span><span class="sub">{{record.subType}}</span>
                     </td>
-                    <td class="amount adjustable" :class="{zero:record.tip === 0}" v-if="record.type ==='THIRD' && editable">$ {{record.tip | decimal}}</td>
+                    <td class="amount adjustable" :class="{zero:record.tip === 0}" v-if="record.type ==='THIRD' && editable" @click="setTip(record)">$ {{record.tip | decimal}}</td>
                     <td class="amount" :class="{zero:record.tip === 0}" v-else>$ {{record.tip | decimal}}</td>
                     <td class="amount">$ {{record.actual | decimal}}</td>
                     <td v-if="!isNaN(record.splitPayment)">#{{record.splitPayment + 1}}</td>
@@ -62,18 +65,27 @@
             <div class="btn" @click="init.resolve">{{$t('button.exit')}}</div>
         </footer>
         </div>
+        <div :is="component" :init="componentData"></div>
     </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
+import tip from "./component/tipper";
+import dropdown from "./component/dropdown";
 import pagination from "../common/pagination";
 export default {
   props: ["init"],
-  components: { pagination },
+  components: { tip, pagination, dropdown },
   computed: {
     filteredTransactions() {
-      return this.transactions;
+      let data = this.transactions;
+      if (this.cashier) data = data.filter(t => t.cashier === this.cashier);
+      if (this.server) data = data.filter(t => t.server === this.server);
+      if (this.type) data = data.filter(t => t.ticket.type === this.type);
+      if (this.payment)
+        data = data.filter(t => this.payment === (t.subType || t.type));
+      return data;
     },
     records() {
       let min = this.page * 13;
@@ -98,8 +110,18 @@ export default {
   },
   data() {
     return {
+      componentData: null,
+      component: null,
       transactions: [],
       editable: false,
+      cashiers: [],
+      servers: [],
+      payments: [],
+      types: [],
+      cashier: null,
+      server: null,
+      payment: null,
+      type: null,
       page: 0
     };
   },
@@ -107,6 +129,11 @@ export default {
     this.checkPermission()
       .then(this.initialData)
       .catch(this.initialFailed);
+
+    this.$bus.on("filter", this.applyFilter);
+  },
+  beforeDestroy() {
+    this.$bus.off("filter", this.applyFilter);
   },
   methods: {
     checkPermission() {
@@ -117,8 +144,62 @@ export default {
     },
     initialData() {
       this.transactions = this.init.data.filter(t => t.for === "Order");
+
+      let cashiers = new Set();
+      let servers = new Set();
+      let payments = new Set();
+      let types = new Set();
+      this.transactions.forEach(transaction => {
+        cashiers.add(transaction.cashier);
+        servers.add(transaction.server);
+        payments.add(transaction.subType || transaction.type);
+        types.add(transaction.ticket.type);
+      });
+
+      this.cashiers = Array.from(cashiers).map(cashier => {
+        return {
+          text: cashier,
+          value: cashier
+        };
+      });
+      this.servers = Array.from(servers).map(server => {
+        return {
+          text: server,
+          value: server
+        };
+      });
+      this.payments = Array.from(payments).map(payment => {
+        return {
+          text: this.$t("type." + payment),
+          value: payment
+        };
+      });
+      this.types = Array.from(types).map(type => {
+        return {
+          text: this.$t("type." + type),
+          value: type
+        };
+      });
+    },
+    applyFilter(data) {
+      let { value, type } = data;
+      this[type] = value;
+
+      this.$nextTick(() => {
+        this.$bus.emit("applied");
+      });
     },
     initialFailed() {},
+    setTip(record){
+      new Promise((resolve,reject)=>{
+
+      }).then((result)=>{
+        
+        this.$q()
+      }).catch(()=>{
+        this.$q()
+      })
+    },
     setPage(number) {
       this.page = number;
     }
@@ -140,6 +221,15 @@ h5 {
   margin-top: 2px;
 }
 
+nav.filter {
+  flex: 1;
+  position: relative;
+  align-items: center;
+  margin-left: 35px;
+  display: flex;
+  justify-content: flex-end;
+}
+
 table {
   border-spacing: 0;
   table-layout: auto;
@@ -152,6 +242,7 @@ thead tr {
 }
 
 thead th {
+  font-weight: normal;
   padding: 3px 0;
   border-bottom: 1px solid #eeeeee;
 }
