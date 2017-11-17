@@ -256,6 +256,7 @@ export default {
     isSubMenu(item) {
       if (!item.subItem && !this.saveItems) return false;
       if (this.isEmptyTicket) return true;
+
       let { zhCN, usEN, print, price } = item;
       let content = {
         qty: 1,
@@ -267,12 +268,13 @@ export default {
         price: price.toFixed(2),
         key: item._id.slice(-4)
       };
-      //apply this subitem print config to item
+
       let printer = {};
       print.forEach(device => {
         printer[device] = {};
       });
       Object.assign(this.item.printer, printer);
+
       let subItemCount = Array.isArray(this.item.choiceSet)
         ? this.item.choiceSet
             .filter(item => item.subItem)
@@ -283,27 +285,31 @@ export default {
       if (item.subItem && this.item.hasOwnProperty("rules")) {
         let max = this.item.rules.maxSubItem * this.item.qty || Infinity;
         let overCharge = this.item.rules.overCharge || 0;
-        if (subItemCount >= max && overCharge === 0) {
-          this.$dialog({
-            title: "dialog.unableAdd",
-            msg: ["dialog.maxSubItem", this.item[this.language], max],
-            timeout: {
-              duration: 5000,
-              fn: "resolve"
-            },
-            buttons: [{ text: "button.confirm", fn: "resolve" }]
-          }).then(() => {
-            this.$q();
-          });
-          return true;
-        }
-        content.single += overCharge;
-        content.price = (content.single * content.qty).toFixed(2);
-      }
 
-      let dom = document.querySelector(".sub.target");
-      dom ? this.alertChoiceSet(content) : this.setChoiceSet(content);
-      return true;
+        if (subItemCount >= max) {
+          if (parseFloat(overCharge) === 0) {
+            this.$dialog({
+              title: "dialog.unableAdd",
+              msg: ["dialog.maxSubItem", this.item[this.language], max],
+              timeout: {
+                duration: 5000,
+                fn: "resolve"
+              },
+              buttons: [{ text: "button.confirm", fn: "resolve" }]
+            }).then(() => {
+              this.$q();
+            });
+            return true;
+          } else {
+            content.single += overCharge;
+            content.price = (content.single * content.qty).toFixed(2);
+          }
+        }
+
+        let dom = document.querySelector(".sub.target");
+        dom ? this.alertChoiceSet(content) : this.setChoiceSet(content);
+        return true;
+      }
     },
     isTemporary(item) {
       if (!item.temporary) return false;

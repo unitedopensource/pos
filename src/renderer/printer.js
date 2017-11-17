@@ -1181,7 +1181,7 @@ function createStyle(ctrl) {
               div.store{margin-bottom:10px;${printStore ? '' : 'display:none;'}}
               .header h3{font-size:1.25em;}
               .header h5{font-size:16px;font-weight:lighter}
-              div.type{${printType ? '' : 'display:none;'}font-size:1.3em;font-weight:bold;font-family:"Agency FB"}
+              div.type{${printType ? '' : 'display:none;'}font-size:1.5em;font-weight:bold;font-family:"Agency FB"}
               div.number,div.table{position:absolute;bottom:12px;font-size:2em;font-weight:bold;font-family:"Agency FB"}
               div.number{right:10px;}div.table{left:10px;}
               div.time span{display:inline-block;margin:0 10px;font-size:1em;}
