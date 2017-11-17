@@ -234,6 +234,10 @@ export default [{
         name: 'Setting.database.cashFlow',
         component: require('./components/setting/database/cashFlow')
       }, {
+        path: 'Batch',
+        name: 'Setting.database.batch',
+        component: require('./components/setting/database/batch')
+      }, {
         path: 'events',
         name: 'Setting.database.events',
         component: require('./components/setting/database/events')

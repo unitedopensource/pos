@@ -304,19 +304,18 @@ export default {
         creditTransactions.map(t => t.subType).forEach(t => creditType.add(t));
 
         report.push({
-          text: this.$t("report.creditTotal"),
+          text:
+            this.$t("report.creditTotal") + ` ( ${creditTransactions.length} )`,
           style: this.creditTotal > 0 ? "bold" : "",
           value: creditTotal.toFixed(2)
         });
 
         Array.from(creditType).forEach(type => {
-          let total = creditTransactions
-            .filter(t => t.subType === type)
-            .map(t => t.actual - t.tip)
-            .reduce(sum, 0);
+          let tmp = creditTransactions.filter(t => t.subType === type);
+          let total = tmp.map(t => t.actual - t.tip).reduce(sum, 0);
 
           report.push({
-            text: type,
+            text: type + ` ( ${tmp.length} )`,
             style: "indent",
             value: `( ${total.toFixed(2)} )`
           });
@@ -384,7 +383,7 @@ export default {
       //release memory
       thirdPartyTransactions = null;
 
-      let tipTotal = validInvoices.map(t => t.payment.tip).reduce(sum, 0);
+      let tipTotal = orderPayment.map(t => t.tip).reduce(sum, 0);
 
       if (this.tipsSource) {
         let tipFrom = new Set();
