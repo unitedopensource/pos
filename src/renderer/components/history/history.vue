@@ -190,15 +190,20 @@ export default {
       });
     },
     initialFailed() {},
-    setTip(record){
-      new Promise((resolve,reject)=>{
-
-      }).then((result)=>{
-        
-        this.$q()
-      }).catch(()=>{
-        this.$q()
+    setTip(record) {
+      new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject,approve:record.tip };
+        this.component = "tip";
       })
+        .then(result => {
+          let { tip } = result;
+          Object.assign(record, {tip});
+          this.$socket.emit("[UPDATE] TRANSACTION_TIP", record);
+          this.$q();
+        })
+        .catch(() => {
+          this.$q();
+        });
     },
     setPage(number) {
       this.page = number;
