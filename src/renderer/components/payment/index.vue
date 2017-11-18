@@ -1093,7 +1093,7 @@ export default {
               paid: parseFloat(this.paid),
               change,
               actual: parseFloat(actual),
-              tip: parseFloat(this.tip),
+              tip: parseFloat(this.tip) || this.payment.tip,
               cashier: this.op.name,
               server: this.order.server || this.op.name,
               cashDrawer,
@@ -1147,7 +1147,7 @@ export default {
               paid: parseFloat(this.paid),
               change: 0,
               actual: parseFloat(this.paid),
-              tip: parseFloat(this.tip),
+              tip: parseFloat(this.tip) || this.payment.tip,
               cashier: this.op.name,
               server: this.order.server || this.op.name,
               cashDrawer,
@@ -1174,7 +1174,7 @@ export default {
               paid: parseFloat(this.paid),
               change: 0,
               actual: parseFloat(this.paid),
-              tip: parseFloat(this.tip),
+              tip: parseFloat(this.tip) || this.payment.tip,
               cashier: this.op.name,
               server: this.order.server || this.op.name,
               cashDrawer,
@@ -1199,7 +1199,7 @@ export default {
               paid: parseFloat(this.paid),
               change: 0,
               actual: parseFloat(this.paid),
-              tip: parseFloat(this.tip),
+              tip: parseFloat(this.tip) || this.payment.tip,
               cashier: this.op.name,
               server: this.order.server || this.op.name,
               cashDrawer,
@@ -1591,6 +1591,7 @@ export default {
         : (this.paid = val.toFixed(2));
 
       this.reset = true;
+      this.setAnchor("paid")
     },
     getQuickInput(amount) {
       let preset = [
@@ -1672,23 +1673,10 @@ export default {
       let remain = Math.max(0, toFixed(balance - paid, 2));
       let settled = remain === 0;
 
-      let types = new Set();
-      if (this.payment.log.length > 1) {
-        this.payment.log.forEach(log => {
-          types.add(log.type);
-        });
-        let temp = Array.from(types);
-
-        if (temp.length !== 1) {
-          type = "MULTIPLE";
-        }
-      }
-
       this.payment = Object.assign({}, this.payment, {
         total,
         due,
         tip,
-        type,
         discount,
         surcharge,
         balance,

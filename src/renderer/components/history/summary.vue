@@ -17,7 +17,7 @@
       <div class="value">$ {{summary.deliveryAmount | decimal}}</div>
       <div class="drivers" v-show="!driver">
         <div class="driver" v-for="(value,key,index) in summary.driver" :key="index" @click.stop="setDriver(key)">
-          <span>{{$t('text.driver')}} #{{key}}</span>
+          <span>{{key}}{{$t('text.driver')}} ({{value.count}})</span>
           <span class="price">$ {{value.total.toFixed(2)}}</span>
         </div>
       </div>

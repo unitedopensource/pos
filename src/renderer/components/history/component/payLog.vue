@@ -118,11 +118,8 @@ export default {
     removeConfirm(payment, index) {
       let data = {
         type: "warning",
-        title: "dialog.paymentRemoveConfirm",
-        msg: [
-          "dialog.paymentRemoveConfirmTip",
-          this.$t("type." + payment.type)
-        ],
+        title: ["dialog.paymentRemoveConfirm", this.$t("type." + payment.type)],
+        msg: ["dialog.paymentRemoveConfirmTip", payment.actual.toFixed(2)],
         buttons: [
           { text: "button.cancel", fn: "reject" },
           { text: "button.remove", fn: "resolve", load: true }
@@ -170,7 +167,6 @@ export default {
                 "[GIFTCARD] REFUND",
                 payment.credential,
                 callback => {
-                  console.log("callback");
                   this.$q();
                   this.remove(payment, index);
                 }

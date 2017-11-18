@@ -660,7 +660,7 @@ label.input-toggle>input {
   color: #444;
   font-family: "Agency FB";
   position: relative;
-  margin-left:15px;
+  margin-left: 15px;
 }
 
 .inputter i.tooltip {
@@ -1324,8 +1324,21 @@ footer.update span {
   opacity: 0;
 }
 
+.dropdown-enter-active,
+.drodown-leave-active {
+  transition: all 0.22s ease-out;
+}
+
+.dropdown-enter,
+.dropdown-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
 .slideDown-enter-active,
-.slideDown-leave-active {
+.slideDown-leave-active,
+.fadeDown-enter-active,
+.fadeDown-leave-active {
   transition: all .5s ease-in-out;
 }
 
@@ -1333,11 +1346,6 @@ footer.update span {
 .slideDown-leave-to {
   opacity: 0;
   transform: translateY(-35px);
-}
-
-.fadeDown-enter-active,
-.fadeDown-leave-active {
-  transition: all .5s
 }
 
 .fadeUp-enter-active,

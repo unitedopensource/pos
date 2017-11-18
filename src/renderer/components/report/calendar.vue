@@ -79,297 +79,333 @@
 </template>
 
 <script>
-import moment from 'moment'
-import checkbox from '../setting/common/checkbox'
-import dialoger from '../common/dialoger'
+import moment from "moment";
+import checkbox from "../setting/common/checkbox";
+import dialoger from "../common/dialoger";
 export default {
-    props: ['init'],
-    components: { checkbox, dialoger },
-    data() {
-        return {
-            date: null,
-            days: [],
-            to: null,
-            from: null,
-            range: {},
-            toPeriod: false,
-            fromPeriod: true,
-            allDay: true,
-            tab: 'calendar',
-            today: +moment().subtract(4, 'hours').startOf('day'),
-            calendarDay: +moment().subtract(4, 'hours').startOf('day'),
-            component: null,
-            componentData: null,
-            selected: [],
-            clock: [12, 1, 2, 3, 4, 5, 7, 8, 9, 10, 11]
-        }
+  props: ["init"],
+  components: { checkbox, dialoger },
+  data() {
+    return {
+      date: null,
+      days: [],
+      to: null,
+      from: null,
+      range: {},
+      toPeriod: false,
+      fromPeriod: true,
+      allDay: true,
+      tab: "calendar",
+      today: +moment()
+        .subtract(4, "hours")
+        .startOf("day"),
+      calendarDay: +moment()
+        .subtract(4, "hours")
+        .startOf("day"),
+      component: null,
+      componentData: null,
+      selected: [],
+      clock: [12, 1, 2, 3, 4, 5, 7, 8, 9, 10, 11]
+    };
+  },
+  created() {
+    this.generateCalendar();
+    this.getRange();
+  },
+  methods: {
+    setDay(date) {
+      let index = this.selected.indexOf(date);
+      index === -1 ? this.selected.push(date) : this.selected.splice(index, 1);
+      this.getRange();
     },
-    created() {
-        this.generateCalendar();
-        this.getRange();
+    prev() {
+      this.calendarDay = +moment(this.calendarDay)
+        .subtract(1, "M")
+        .format("x");
+      this.generateCalendar();
     },
-    methods: {
-        setDay(date) {
-            let index = this.selected.indexOf(date);
-            index === -1 ? this.selected.push(date) : this.selected.splice(index, 1);
-            this.getRange();
-        },
-        prev() {
-            this.calendarDay = +moment(this.calendarDay).subtract(1, 'M').format('x');
-            this.generateCalendar();
-        },
-        next() {
-            this.calendarDay = +moment(this.calendarDay).add(1, 'M').format('x');
-            this.generateCalendar();
-        },
-        generateCalendar() {
-            let time = this.calendarDay;
-            let isCurrentMonth = moment(this.today).format("YYYY-MM-DD") === moment(time).format('YYYY-MM-DD');
-            let days = moment(time).daysInMonth();
-            let start = +moment(time).startOf('month').format('d');
-            start = start === 0 ? 6 : start - 1;
-            let lastMonthDay = +moment(time).subtract(1, 'M').endOf('month').format('D') - start;
-            let calendar = [];
-            let date = moment(time).subtract(1, 'M').format('YYYY-MM-');
-            for (let i = 1; i <= start; i++) {
-                calendar.push({
-                    current: false,
-                    day: lastMonthDay + i,
-                    date: date + ("0" + (lastMonthDay + i)).slice(-2)
-                })
-            }
-            date = moment(time).format('YYYY-MM-');
-            for (let i = 0; i < days; i++) {
-                calendar.push({
-                    current: true,
-                    day: i + 1,
-                    date: date + ("0" + (i + 1)).slice(-2)
-                });
-            }
-            date = moment(time).add(1, 'M').format('YYYY-MM-');
-            for (let i = 1; calendar.length < 42; i++) {
-                calendar.push({
-                    current: false,
-                    day: i,
-                    date: date + ("0" + i).slice(-2)
-                })
-            }
-            this.days = calendar;
+    next() {
+      this.calendarDay = +moment(this.calendarDay)
+        .add(1, "M")
+        .format("x");
+      this.generateCalendar();
+    },
+    generateCalendar() {
+      let time = this.calendarDay;
+      let isCurrentMonth =
+        moment(this.today).format("YYYY-MM-DD") ===
+        moment(time).format("YYYY-MM-DD");
+      let days = moment(time).daysInMonth();
+      let start = +moment(time)
+        .startOf("month")
+        .format("d");
+      start = start === 0 ? 6 : start - 1;
+      let lastMonthDay =
+        +moment(time)
+          .subtract(1, "M")
+          .endOf("month")
+          .format("D") - start;
+      let calendar = [];
+      let date = moment(time)
+        .subtract(1, "M")
+        .format("YYYY-MM-");
+      for (let i = 1; i <= start; i++) {
+        calendar.push({
+          current: false,
+          day: lastMonthDay + i,
+          date: date + ("0" + (lastMonthDay + i)).slice(-2)
+        });
+      }
+      date = moment(time).format("YYYY-MM-");
+      for (let i = 0; i < days; i++) {
+        calendar.push({
+          current: true,
+          day: i + 1,
+          date: date + ("0" + (i + 1)).slice(-2)
+        });
+      }
+      date = moment(time)
+        .add(1, "M")
+        .format("YYYY-MM-");
+      for (let i = 1; calendar.length < 42; i++) {
+        calendar.push({
+          current: false,
+          day: i,
+          date: date + ("0" + i).slice(-2)
+        });
+      }
+      this.days = calendar;
 
-            this.$nextTick(() => {
-                let dom = document.querySelector('.currentMonth');
-                dom && dom.classList.remove('currentMonth');
-                dom = document.querySelector('.day.today');
-                dom && dom.classList.remove('today');
-                if (isCurrentMonth) {
-                    document.querySelector('.dayWrap').classList.add("currentMonth");
-                    let today = moment().format('D') - 1;
-                    today = document.querySelectorAll('[data-day]')[(start + today)];
-                    today.classList.add("today");
-                }
-            })
-        },
-        confirm() {
-            this.checkTime() ? this.init.resolve(this.date) : this.invalidDate();
-        },
-        invalidDate() {
-            this.$dialog({ type: "error", title: "INVALID_DATE", msg: "INVALID_DATE_TIP", buttons: [{ text: "CONFIRM", fn: "resolve" }] }).then(() => { this.$exitComponent() })
-        },
-        checkTime() {
-            let from, to;
-            if (!this.allDay) {
-                from = +moment(this.range.from, "YYYY-MM-DD").hours(this.fromPeriod ? this.from : this.from + 12);
-                to = +moment(this.range.to, "YYYY-MM-DD").hours(this.toPeriod ? this.to : this.to + 12);
-            } else {
-                from = +moment(this.range.from, "YYYY-MM-DD").hours(4);
-                to = +moment(this.range.to, "YYYY-MM-DD").add(1, 'days').hours(3).minutes(59).seconds(59)
-            }
-            this.date = { from, to };
-            return from < to;
-        },
-        getRange() {
-            let temp = this.selected.sort((a, b) => new Date(a) > new Date(b));
-            this.range = {
-                from: temp[0] || today(),
-                to: temp[temp.length - 1] || today(1)
-            }
+      this.$nextTick(() => {
+        let dom = document.querySelector(".currentMonth");
+        dom && dom.classList.remove("currentMonth");
+        dom = document.querySelector(".day.today");
+        dom && dom.classList.remove("today");
+        if (isCurrentMonth) {
+          document.querySelector(".dayWrap").classList.add("currentMonth");
+          let today = moment().format("D") - 1;
+          today = document.querySelectorAll("[data-day]")[start + today];
+          today.classList.add("today");
         }
+      });
+    },
+    confirm() {
+      this.checkTime() ? this.init.resolve(this.date) : this.invalidDate();
+    },
+    invalidDate() {
+      this.$dialog({
+        type: "error",
+        title: "INVALID_DATE",
+        msg: "INVALID_DATE_TIP",
+        buttons: [{ text: "CONFIRM", fn: "resolve" }]
+      }).then(() => {
+        this.$exitComponent();
+      });
+    },
+    checkTime() {
+      let from, to;
+      if (!this.allDay) {
+        from = +moment(this.range.from, "YYYY-MM-DD").hours(
+          this.fromPeriod ? this.from : this.from + 12
+        );
+        to = +moment(this.range.to, "YYYY-MM-DD").hours(
+          this.toPeriod ? this.to : this.to + 12
+        );
+      } else {
+        from = +moment(this.range.from, "YYYY-MM-DD").hours(4);
+        to = +moment(this.range.to, "YYYY-MM-DD")
+          .add(1, "days")
+          .hours(3)
+          .minutes(59)
+          .seconds(59);
+      }
+      this.date = { from, to };
+      return from < to;
+    },
+    getRange() {
+      let temp = this.selected.sort((a, b) => new Date(a) > new Date(b));
+      this.range = {
+        from: temp[0] || today(),
+        to: temp[temp.length - 1] || today(1)
+      };
     }
-}
+  }
+};
 </script>
 
 <style scoped>
 .window {
-    width: 500px;
-    background: #fff;
-    display: flex;
-    flex-direction: column
+  width: 500px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
 }
 
 header.tab {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.tab>div {
-    flex: 1;
+.tab > div {
+  flex: 1;
 }
 
 .tab input {
-    display: none;
+  display: none;
 }
 
 main {
-    flex: 1;
-    background: #FAFAFA;
+  flex: 1;
+  background: #fafafa;
 }
 
 .tab label {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    padding: 10px 0;
-    color: #E0E0E0;
-    border-bottom: 2px solid #FAFAFA;
-    cursor: pointer;
-    transition:all 0.3s ease;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 10px 0;
+  color: #e0e0e0;
+  border-bottom: 2px solid #fafafa;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-.tab input:checked+label {
-    border-bottom: 2px solid #2196F3;
-    background: #fff;
+.tab input:checked + label {
+  border-bottom: 2px solid #2196f3;
+  background: #fff;
 }
 
-.tab input:checked+label i {
-    color: #42A5F5;
+.tab input:checked + label i {
+  color: #42a5f5;
 }
 
 .calendar header {
-    display: flex;
-    border-bottom: 1px solid #ddd;
-    background: #fff;
+  display: flex;
+  border-bottom: 1px solid #ddd;
+  background: #fff;
 }
 
 .calendar header span {
-    flex: 1;
-    text-align: center;
-    padding: 5px 0;
+  flex: 1;
+  text-align: center;
+  padding: 5px 0;
 }
 
 .dayWrap {
-    display: flex;
-    flex-wrap: wrap;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .day {
-    width: 71.4px;
-    text-align: center;
-    padding: 19.7px 0;
-    color: lightgray;
-    font-weight: lighter;
+  width: 71.4px;
+  text-align: center;
+  padding: 19.7px 0;
+  color: lightgray;
+  font-weight: lighter;
 }
 
 .current.day {
-    color: #333;
-    background: #EEEEEE;
-    font-weight: bold;
+  color: #333;
+  background: #eeeeee;
+  font-weight: bold;
 }
 
 div.current.today {
-    color: #009688;
+  color: #009688;
 }
 
 .selector {
-    display: flex;
-    justify-content: center;
-    background: #607D8B;
-    color: #fff;
-    align-items: center;
-    justify-content: center;
-    height: 40px;
+  display: flex;
+  justify-content: center;
+  background: #607d8b;
+  color: #fff;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
 }
 
 .selector i {
-    flex: 1;
-    text-align: center;
-    cursor: pointer;
-    padding: 12px;
+  flex: 1;
+  text-align: center;
+  cursor: pointer;
+  padding: 12px;
 }
 
 div.day.selected {
-    background: #009688;
-    color: #fff;
+  background: #009688;
+  color: #fff;
 }
 
 .time {
-    margin: 10px auto;
-    display: flex;
-    position: relative;
+  margin: 10px auto;
+  display: flex;
+  position: relative;
 }
 
 .time input {
-    display: none;
+  display: none;
 }
 
 .time .picker {
-    flex: 1;
-    padding: 0 10px;
+  flex: 1;
+  padding: 0 10px;
 }
 
 .time h5 {
-    text-align: center;
-    margin-bottom: 10px;
-    color: #FF5722;
+  text-align: center;
+  margin-bottom: 10px;
+  color: #ff5722;
 }
 
 .timer .option {
-    border: 1px dashed #ddd;
-    padding: 10px 15px 5px;
-    width: 200px;
-    text-align: center;
-    margin: 10px auto;
+  border: 1px dashed #ddd;
+  padding: 10px 15px 5px;
+  width: 200px;
+  margin: 10px auto;
+  display: flex;
+  justify-content: center;
 }
 
 .time label {
-    width: 25px;
-    display: block;
-    padding: 23px;
-    background: #fff;
-    margin: 2px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  width: 25px;
+  display: block;
+  padding: 23px;
+  background: #fff;
+  margin: 2px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .picker .inner {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .picker .inner div {
-    text-align: center;
+  text-align: center;
 }
 
-.picker input:checked+label {
-    background: #009688;
-    color: #fff;
+.picker input:checked + label {
+  background: #009688;
+  color: #fff;
 }
 
 label.am {
-    background: #FF9800;
-    color: #fff;
+  background: #ff9800;
+  color: #fff;
 }
 
 label.pm {
-    background: #FF5722;
-    color: #fff;
+  background: #ff5722;
+  color: #fff;
 }
 
 .mask {
-    width: 500px;
-    position: absolute;
-    height: 297px;
-    background: rgba(255, 255, 255, 0.5);
-    cursor: not-allowed;
+  width: 500px;
+  position: absolute;
+  height: 297px;
+  background: rgba(255, 255, 255, 0.5);
+  cursor: not-allowed;
 }
 </style>

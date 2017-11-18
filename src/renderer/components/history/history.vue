@@ -24,7 +24,7 @@
                     <th class="settlement">{{$t('thead.paymentType')}}</th>
                     <th>{{$t('thead.tip')}}</th>
                     <th>{{$t('thead.amount')}}</th>
-                    <th></th>
+                    <th class="split"></th>
                 </tr>
             </thead>
             <tbody>
@@ -40,8 +40,8 @@
                     <td class="amount adjustable" :class="{zero:record.tip === 0}" v-if="record.type ==='THIRD' && editable" @click="setTip(record)">$ {{record.tip | decimal}}</td>
                     <td class="amount" :class="{zero:record.tip === 0}" v-else>$ {{record.tip | decimal}}</td>
                     <td class="amount">$ {{record.actual | decimal}}</td>
-                    <td v-if="!isNaN(record.splitPayment)">#{{record.splitPayment + 1}}</td>
-                    <td v-else></td>
+                    <td class="split" v-if="!isNaN(record.splitPayment)">#{{record.splitPayment + 1}}</td>
+                    <td class="split" v-else></td>
                 </tr>
             </tbody>
             <tfoot>
@@ -54,13 +54,13 @@
                     <td class="settlement"></td>
                     <td class="amount">$ {{totalTip | decimal}}</td>
                     <td class="amount">$ {{totalAmount | decimal}}</td>
-                    <td></td>
+                    <td class="split"></td>
                 </tr>
             </tfoot>
         </table>
         <footer>
             <div class="f1">
-                <pagination :of="transactions" :max="12" :contain="13" @page="setPage"></pagination>
+                <pagination :of="filteredTransactions" :max="12" :contain="13" @page="setPage"></pagination>
             </div>
             <div class="btn" @click="init.resolve">{{$t('button.exit')}}</div>
         </footer>
@@ -149,6 +149,7 @@ export default {
       let servers = new Set();
       let payments = new Set();
       let types = new Set();
+    
       this.transactions.forEach(transaction => {
         cashiers.add(transaction.cashier);
         servers.add(transaction.server);
@@ -192,12 +193,14 @@ export default {
     initialFailed() {},
     setTip(record) {
       new Promise((resolve, reject) => {
-        this.componentData = { resolve, reject,approve:record.tip };
+        this.componentData = { resolve, reject, approve: record.tip };
         this.component = "tip";
       })
         .then(result => {
           let { tip } = result;
-          Object.assign(record, {tip});
+          let actual = record.actual - record.tip + tip;
+          let paid = actual;
+          Object.assign(record, { tip, actual, paid });
           this.$socket.emit("[UPDATE] TRANSACTION_TIP", record);
           this.$q();
         })
@@ -330,5 +333,9 @@ tfoot td {
 .sub {
   margin-left: 5px;
   color: gray;
+}
+
+.split {
+  width: 35px;
 }
 </style>

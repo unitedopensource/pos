@@ -7,7 +7,7 @@
             </div>
             <i class="fa fa-times" @click.stop="resetFilter" v-show="selected"></i>
         </div>
-        <transition name="fadeDown">
+        <transition name="dropdown">
         <ul v-show="isShowDropdown" class="content">
             <li v-for="(option,index) in options" :key="index" @click="select(option)" :class="{active:option.value === (selected && selected.value)}">{{option.text}}</li>
         </ul>

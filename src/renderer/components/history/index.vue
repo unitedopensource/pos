@@ -36,13 +36,13 @@ import ticket from "./component/ticket";
 
 export default {
   components: {
-    sideFunction,
     orderFunction,
-    orderList,
+    sideFunction,
     orderSummary,
     Maintenance,
-    dialoger,
     pagination,
+    orderList,
+    dialoger,
     ticket
   },
   data() {

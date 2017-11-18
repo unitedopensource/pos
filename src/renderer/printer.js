@@ -1295,11 +1295,11 @@ function createFooter(table, ctrl, device, ticket) {
                                 <h3>Paid by Cash - Thank You</h3>
                                 <p>
                                 <span class="text">Paid:</span>
-                                <span class="value">$${log.paid.toFixed(2)}</span>
+                                <span class="value">$ ${log.paid.toFixed(2)}</span>
                                 </p>
                                 <p>
                                 <span class="text">Change:</span>
-                                <span class="value">$${log.change.toFixed(2)}</span>
+                                <span class="value">$ ${log.change.toFixed(2)}</span>
                                 </p>
                             </section>`)
                 break;
@@ -1309,7 +1309,7 @@ function createFooter(table, ctrl, device, ticket) {
                                 <h3>Paid by CREDIT Card ${cc} - Thank You</h3>
                                 <p>
                                 <span class="text">Paid:</span>
-                                <span class="value">$${log.paid.toFixed(2)}</span>
+                                <span class="value">$ ${log.paid.toFixed(2)}</span>
                                 </p>
                             </section>`)
                 break;
@@ -1318,13 +1318,13 @@ function createFooter(table, ctrl, device, ticket) {
                                 <h3>Paid by GIFT Card - Thank You</h3>
                                 <p>
                                 <span class="text">Paid:</span>
-                                <span class="value">$${log.paid.toFixed(2)}</span>
+                                <span class="value">$ ${log.paid.toFixed(2)}</span>
                                 </p>
                             </section>`)
                 break;
             default:
                 settle.push(`<section class="details">
-                                    <h3>Paid by ${log.type} - Thank You</h3>
+                                    <h3>Paid by ${log.subType} - Thank You</h3>
                                 </section>`)
         }
     })
