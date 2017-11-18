@@ -327,7 +327,7 @@ tfoot td {
 }
 
 .settlement {
-  width: 180px;
+  width: 215px;
 }
 
 .sub {
