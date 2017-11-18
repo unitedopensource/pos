@@ -94,7 +94,7 @@ export default {
       return this.filteredTransactions.slice(min, max);
     },
     totalCount() {
-      return this.records.length;
+      return this.filteredTransactions.length;
     },
     totalTip() {
       return this.filteredTransactions
@@ -149,7 +149,7 @@ export default {
       let servers = new Set();
       let payments = new Set();
       let types = new Set();
-    
+
       this.transactions.forEach(transaction => {
         cashiers.add(transaction.cashier);
         servers.add(transaction.server);
