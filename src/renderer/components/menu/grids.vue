@@ -381,14 +381,15 @@ export default {
               if (print) {
                 let diffs = this.analyzeDiffs(order);
 
-                this.order.type === "DINE_IN" && this.store.table.printOnDone
-                  ? Printer.setTarget("All").print(diffs)
-                  : Printer.setTarget("Order").print(diffs);
-
-                this.$socket.emit("[UPDATE] INVOICE", order, print);
-              } else {
-                this.$socket.emit("[UPDATE] INVOICE", order, print);
+                if (this.order.type !== "DINE_IN") {
+                  Printer.setTarget("All").print(diffs);
+                } else {
+                  this.store.table.printOnDone
+                    ? Printer.setTarget("All").print(diffs)
+                    : Printer.setTarget("Order").print(diffs);
+                }
               }
+              this.$socket.emit("[UPDATE] INVOICE", order, print);
             } else {
               Printer.setTarget("Order").print(this.order);
             }
@@ -476,7 +477,7 @@ export default {
       //push unprinted item
 
       this.diffs.forEach(prev => {
-        if(!prev.print){
+        if (!prev.print) {
           prev.diffs = "new";
           items.push(prev);
           return;

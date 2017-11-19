@@ -598,6 +598,7 @@ export default {
   created() {
     this.initialData()
       .then(this.checkComponentOccupy)
+      .then(this.checkDate)
       .then(this.checkPermission)
       .then(this.checkSplit)
       .catch(this.initialFailed);
@@ -646,6 +647,11 @@ export default {
         this.$socket.emit("[COMPONENT] LOCK", data, lock => {
           lock ? reject({ error: "paymentPending", data }) : resolve();
         });
+      });
+    },
+    checkDate() {
+      return new Promise((resolve, reject) => {
+        this.order.date === today() ? resolve() : reject({ error: "expired" });
       });
     },
     checkPermission() {
@@ -743,6 +749,15 @@ export default {
             this.exit();
           });
           break;
+        case "expired":
+          this.$dialog({
+            type: "error",
+            title: "dialog.paymentFailed",
+            msg: "dialog.canNotPayPrevTicket",
+            buttons: [{ text: "button.confirm", fn: "resolve" }]
+          }).then(() => {
+            this.exit();
+          });
       }
     },
     setAnchor(target) {

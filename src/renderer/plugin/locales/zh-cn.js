@@ -478,6 +478,7 @@ export default {
         'reserveDateIsPassed': '选定的预约日期无效',
         'paymentFailed': '付款失败',
         'canNotPayZeroAmount': '支付数额必须大于 $ 0.00 ',
+        'canNotPayPrevTicket': '您无法支付过期的订单',
         'balanceDueAmountIncorrect': '此订单的支付数额存在问题',
         'invalidCreditCard': '无效的信用卡',
         'creditCardLengthIncorrect': '信用卡号码长度不正确',

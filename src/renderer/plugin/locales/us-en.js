@@ -542,6 +542,7 @@ export default {
         'reserveDateIsPassed': 'Reserve Date is passed!',
         'paymentFailed': 'Payment Failed',
         'canNotPayZeroAmount': 'Paid amount must grater than $ 0.00',
+        'canNotPayPrevTicket': 'You can not pay a previous ticket',
         'balanceDueAmountIncorrect': 'Balance due amount format incorrect!',
         'invalidCreditCard': 'Invalid Credit Card',
         'creditCardLengthIncorrect': 'Credit card length incorrect',
