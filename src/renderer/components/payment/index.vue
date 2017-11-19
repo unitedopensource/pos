@@ -1070,9 +1070,10 @@ export default {
 
       let actual = Math.min(this.paid, this.payment.remain),
         change,
-        tip,
+        paid = parseFloat(this.paid);
+      (tip = parseFloat(this.tip) || this.payment.tip),
         transaction,
-        _id = ObjectId();
+        (_id = ObjectId());
 
       return new Promise((resolve, reject) => {
         switch (this.paymentType) {
@@ -1090,10 +1091,10 @@ export default {
                 number: this.order.number || this.ticket.number,
                 type: this.order.type || this.ticket.type
               },
-              paid: parseFloat(this.paid),
+              paid,
               change,
-              actual: parseFloat(actual),
-              tip: parseFloat(this.tip) || this.payment.tip,
+              actual: parseFloat(actual) - tip,
+              tip,
               cashier: this.op.name,
               server: this.order.server || this.op.name,
               cashDrawer,
@@ -1144,10 +1145,10 @@ export default {
                 number: this.order.number || this.ticket.number,
                 type: this.order.type || this.ticket.type
               },
-              paid: parseFloat(this.paid),
+              paid,
               change: 0,
-              actual: parseFloat(this.paid),
-              tip: parseFloat(this.tip) || this.payment.tip,
+              actual: paid - tip,
+              tip,
               cashier: this.op.name,
               server: this.order.server || this.op.name,
               cashDrawer,
@@ -1171,9 +1172,9 @@ export default {
                 number: this.order.number || this.ticket.number,
                 type: this.order.type || this.ticket.type
               },
-              paid: parseFloat(this.paid),
+              paid,
               change: 0,
-              actual: parseFloat(this.paid),
+              actual: paid - tip,
               tip: parseFloat(this.tip) || this.payment.tip,
               cashier: this.op.name,
               server: this.order.server || this.op.name,
@@ -1196,9 +1197,9 @@ export default {
                 number: this.order.number || this.ticket.number,
                 type: this.order.type || this.ticket.type
               },
-              paid: parseFloat(this.paid),
+              paid,
               change: 0,
-              actual: parseFloat(this.paid),
+              actual: paid - tip,
               tip: parseFloat(this.tip) || this.payment.tip,
               cashier: this.op.name,
               server: this.order.server || this.op.name,
@@ -1591,7 +1592,7 @@ export default {
         : (this.paid = val.toFixed(2));
 
       this.reset = true;
-      this.setAnchor("paid")
+      this.setAnchor("paid");
     },
     getQuickInput(amount) {
       let preset = [

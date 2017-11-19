@@ -766,4 +766,8 @@ li.void,
   padding: 0 10px;
   justify-content: center;
 }
+
+.f1 {
+  display: flex;
+}
 </style>

@@ -300,7 +300,7 @@ export default {
 
       let creditTransactions = orderPayment.filter(t => t.type === "CREDIT");
       let creditTotal = creditTransactions
-        .map(t => t.actual - t.tip)
+        .map(t => t.actual)
         .reduce(sum, 0);
 
       if (this.detailPayment) {
@@ -316,7 +316,7 @@ export default {
 
         Array.from(creditType).forEach(type => {
           let tmp = creditTransactions.filter(t => t.subType === type);
-          let total = tmp.map(t => t.actual - t.tip).reduce(sum, 0);
+          let total = tmp.map(t => t.actual).reduce(sum, 0);
 
           report.push({
             text: type + ` ( ${tmp.length} )`,

@@ -9,7 +9,7 @@
         </div>
         <transition name="dropdown">
         <ul v-show="isShowDropdown" class="content">
-            <li v-for="(option,index) in options" :key="index" @click="select(option)" :class="{active:option.value === (selected && selected.value)}">{{option.text}}</li>
+            <li v-for="(option,index) in options" :key="index" @click="select(option)" @contextmenu="reverseSelect(option)" :class="{active:option.value === (selected && selected.value)}">{{option.text}}</li>
         </ul>
         </transition>
     </div>
@@ -38,6 +38,9 @@ export default {
         type: this.filter,
         value: this.selected.value
       });
+    },
+    reverseSelect(value){
+      console.log(value)
     },
     resetFilter() {
       this.selected = null;
@@ -85,7 +88,7 @@ ul {
   width: 150px;
   border: 1px solid #eee;
   border-top: none;
-  top: 38px;
+  top: 45px;
   box-shadow: 0 3px 6px -2px rgba(0, 0, 0, 0.4);
 }
 
