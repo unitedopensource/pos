@@ -697,7 +697,11 @@ export default {
         'payout': 'Payout',
         'others': 'Others',
         'overallTotal': 'Overall Total',
-        'redemptionReport':'Redemption Summary'
+        'redemptionReport':'Redemption Summary',
+        'settled':'Settled',
+        'unsettled':'Unsettled',
+        'count':'Invoice Count',
+        'driver':'Driver'
     },
     text: {
         'starter': 'Starter',

@@ -58,7 +58,7 @@
                 <span class="intro">{{$t('setting.exitTip')}}</span>
             </figure>
         </section>
-        <section class="about">
+        <section class="about" @dblclick="showCredit">
             <div>
                 <span class="text">{{$t('setting.host')}}:</span>
                 <span class="value">{{about.host}}</span>
@@ -74,19 +74,24 @@
                 <span class="value">{{about.support}}</span>
             </div>
         </section>
+        <div :is="component" :init="componentData"></div>
     </section>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
 import Electron from "electron";
+import credit from "./credit";
 export default {
   data() {
     return {
+      component: null,
+      componentData: null,
       about: {},
       app: null
     };
   },
+  components: { credit },
   created() {
     this.app = Electron.remote.app.getVersion();
     this.$socket.emit("ABOUT", us => {
@@ -99,6 +104,9 @@ export default {
     },
     time(value) {
       return moment(value).fromNow();
+    },
+    showCredit() {
+      this.$p("credit");
     }
   },
   computed: {

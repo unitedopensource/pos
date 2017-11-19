@@ -213,9 +213,13 @@ export default {
           this.report["Hourly Report"] = this.hourlySalesReport(invoices);
         if (this.houseAccount)
           this.report["House Account"] = this.houseAccountReport(invoices);
-
+        if (this.itemSales)
+          this.report["Item Sales"] = this.itemSalesReport(invoices);
+        if (this.categorySales)
+          this.report["Category Sales"] = this.categorySalesReport(invoices);
         if (this.cashier)
           this.report["Cashier Report"] = this.cashierReport(transactions);
+        if (this.driver) this.report["Driver Report"] = this.driverReport(data);
         next();
       });
     },
@@ -469,7 +473,7 @@ export default {
           let hour = new Date(invoice.time).getHours();
           let { total, discount } = invoice.payment;
           if (hours.hasOwnProperty(hour)) {
-            hours[hour].value += total;
+            hours[hour].value += total - discount;
             hours[hour].count++;
           } else {
             hours[hour] = {
@@ -525,7 +529,115 @@ export default {
 
       return report;
     },
+    itemSalesReport(invoices) {
+      let items = invoices
+        .filter(invoice => invoice.status === 1)
+        .map(invoice => invoice.content)
+        .reduce((a, b) => a.push(...b), []);
+
+      let records = {};
+
+      items.forEach(item => {
+        if (records.hasOwnProperty(item._id)) {
+          records[item._id].count += item.qty;
+          records[item._id].value += item.single * item.qty;
+        } else {
+          records[item._id] = {
+            text: item[this.language],
+            count: item.qty,
+            value: item.single * item.qty
+          };
+        }
+      });
+
+      let report = [];
+
+      Object.keys(records).forEach(item => {
+        report.push({
+          text: records[item].text,
+          style: "",
+          value: records[item].value.toFixed(2)
+        });
+      });
+
+      return report;
+    },
+    categorySalesReport(data) {},
     cashierReport(transactions) {},
+    driverReport(data) {
+      let { invoices, transactions } = data;
+      let drivers = new Set();
+      let deliveries = invoices.filter(
+        invoice => invoice.type === "DELIVERY" && invoice.status === 1
+      );
+
+      deliveries.forEach(invoice => {
+        invoice.driver && drivers.add(invoice.driver);
+      });
+
+      let report = [];
+
+      drivers.forEach(driver => {
+        let order = deliveries.filter(invoice => invoice.driver === driver);
+        let count = order.length;
+        let value = order
+          .map(invoice => invoice.payment.total - invoice.payment.discount)
+          .reduce((a, b) => a + b, 0);
+        let tips = order
+          .map(invoice => invoice.payment.tip)
+          .reduce((a, b) => a + b, 0);
+        let fees = order
+          .map(invoice => invoice.payment.delivery)
+          .reduce((a, b) => a + b, 0);
+        let settled = order
+          .filter(invoice => invoice.settled)
+          .map(invoice => invoice.payment.total - invoice.payment.discount)
+          .reduce((a, b) => a + b, 0);
+
+        let unsettled = order
+          .filter(invoice => !invoice.settled)
+          .map(invoice => invoice.payment.total - invoice.payment.discount)
+          .reduce((a, b) => a + b, 0);
+
+        report.push({
+          text: this.$t("report.driver"),
+          style: "bold",
+          value: "# " + driver
+        });
+
+        report.push({
+          text: this.$t("report.count"),
+          style: "",
+          value: count
+        });
+
+        report.push({
+          text: this.$t("report.deliveryFee"),
+          style: "",
+          value: fees.toFixed(2)
+        });
+
+        report.push({
+          text: this.$t("text.tip"),
+          style: "",
+          value: tips.toFixed(2)
+        });
+
+        report.push({
+          text: this.$t("report.settled"),
+          style: "",
+          value: settled.toFixed(2)
+        });
+
+        report.push({
+          text: this.$t("report.unsettled"),
+          style: "bold",
+          value: unsettled.toFixed(2)
+        });
+      });
+
+      return report;
+    },
     printReport() {
       Printer.printReport(this.report);
       this.init.resolve();

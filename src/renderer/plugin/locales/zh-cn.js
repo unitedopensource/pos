@@ -633,7 +633,11 @@ export default {
         'payout':'支付',
         'others':'其它',
         'overallTotal':'总数',
-        'redemptionReport':'经理买单'
+        'redemptionReport':'经理买单',
+        'settled':'已结账',
+        'unsettled':'未结账',
+        'count':'订单数',
+        'driver':'司机'
     },
     thead: {
         'orderType': '订单类别',

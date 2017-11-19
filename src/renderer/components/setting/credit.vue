@@ -1,5 +1,9 @@
 <template>
-    <div class="background">
+    <div class="popupMask center">
+        <div class="wrap">
+        <header>
+            <span>About United Point of Sales</span>
+        </header>
         <ul>
             <li><h1>United POS</h1></li>
             <li>
@@ -31,28 +35,39 @@
                 <h3>Super China</h3>
             </li>
         </ul>
+        </div>
     </div>
 </template>
 
 <script>
-export default {};
+export default {
+  props: ["init"],
+  data() {
+    return {};
+  },
+  methods: {}
+};
 </script>
 
 <style scoped>
-.background {
-  height: 100vh;
+/* .wrap {
   background: radial-gradient(circle at top center, #333 0%, #111 100%);
   overflow: hidden;
+} */
+.wrap {
+  background: #fff;
+  box-shadow: var(--shadow);
+  width: 600px;
 }
-ul{
-    animation: 60s credits linear infinite;
+ul {
+  animation: 60s credits linear infinite;
 }
 @keyframes credits {
-    0%{
-        transform: translate3d(0px, 0px, 0px)
-    }
-    100%{
-        transform: translate3d(0px, 500px, 0px)
-    }
+  0% {
+    transform: translate3d(0px, 0px, 0px);
+  }
+  100% {
+    transform: translate3d(0px, 500px, 0px);
+  }
 }
 </style>
