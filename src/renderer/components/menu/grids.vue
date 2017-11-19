@@ -280,8 +280,8 @@ export default {
 
       this.initialPrint(print)
         .then(this.save.bind(null, print))
-        .then(this.exit);
-      //.catch(this.placeFailed);
+        .then(this.exit)
+        .catch(this.placeFailed);
     },
     placeFailed(error) {
       this.$socket.emit("[SYS] RECORD", {
@@ -349,14 +349,37 @@ export default {
                 }
               });
 
-              this.$socket.emit("[SAVE] INVOICE", order, false, content => {
-                Printer.setTarget("Order").print(
-                  Object.assign(order, {
-                    delay: +new Date(),
-                    content: items
-                  })
-                );
-              });
+              if (this.ticket.type !== "DINE_IN") {
+                this.$socket.emit("[SAVE] INVOICE", order, false, content => {
+                  Printer.setTarget("Order").print(
+                    Object.assign(order, {
+                      delay: +new Date(),
+                      content: items
+                    })
+                  );
+                });
+              } else {
+                let { printOnDone } = this.store.table;
+                Object.assign(this.currentTable, { invoice: [order._id] });
+                this.$socket.emit("[TABLE] SETUP", this.currentTable);
+                this.$socket.emit("[SAVE] INVOICE", order, false, content => {
+                  if (print) {
+                    printOnDone
+                      ? Printer.setTarget("All").print(
+                          Object.assign(order, {
+                            delay: +new Date(),
+                            content: items
+                          })
+                        )
+                      : Printer.setTarget("Order").print(
+                          Object.assign(order, {
+                            delay: +new Date(),
+                            content: items
+                          })
+                        );
+                  }
+                });
+              }
             } else if (this.ticket.type !== "DINE_IN") {
               //other type
               this.$socket.emit("[SAVE] INVOICE", order, print, content => {
