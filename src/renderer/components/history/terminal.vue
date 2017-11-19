@@ -420,7 +420,7 @@ export default {
             summary.voidSaleAmount += approve;
           } else {
             summary.sales++;
-            summary.salesAmount += approve + tip;
+            summary.salesAmount += approve;
 
             if (tip > 0) {
               summary.tip++;
@@ -432,31 +432,31 @@ export default {
             case "Visa":
               if (trans.status === 1 || trans.status === 2) {
                 summary.visa++;
-                summary.visaAmount += approve + tip;
+                summary.visaAmount += approve;
               }
               break;
             case "MasterCard":
               if (trans.status === 1 || trans.status === 2) {
                 summary.master++;
-                summary.masterAmount += approve + tip;
+                summary.masterAmount += approve;
               }
               break;
             case "Discover":
               if (trans.status === 1 || trans.status === 2) {
                 summary.discover++;
-                summary.discoverAmount += approve + tip;
+                summary.discoverAmount += approve;
               }
               break;
             case "American Express":
               if (trans.status === 1 || trans.status === 2) {
                 summary.amex++;
-                summary.amexAmount += approve + tip;
+                summary.amexAmount += approve;
               }
               break;
             default:
               if (trans.status === 1 || trans.status === 2) {
                 summary.other++;
-                summary.otherAmount += approve + tip;
+                summary.otherAmount += approve;
               }
           }
           return trans.status !== 0;

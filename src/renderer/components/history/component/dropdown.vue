@@ -39,8 +39,8 @@ export default {
         value: this.selected.value
       });
     },
-    reverseSelect(value){
-      console.log(value)
+    reverseSelect(value) {
+      console.log(value);
     },
     resetFilter() {
       this.selected = null;
@@ -67,7 +67,7 @@ export default {
 
 .wrap {
   padding: 10px;
-  width: 130px;
+  width: 134px;
   border: 1px solid #eee;
   background: #f5f5f5;
   display: flex;
@@ -76,6 +76,10 @@ export default {
 
 .wrap .text {
   flex: 1;
+}
+
+.wrap .value {
+  white-space: nowrap;
 }
 
 .placeholder {

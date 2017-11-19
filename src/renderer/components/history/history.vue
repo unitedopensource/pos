@@ -185,6 +185,7 @@ export default {
     applyFilter(data) {
       let { value, type } = data;
       this[type] = value;
+      this.page = 0;
 
       this.$nextTick(() => {
         this.$bus.emit("applied");
@@ -219,7 +220,7 @@ export default {
 .wrap {
   box-shadow: var(--shadow);
   background: #fff;
-  width: 900px;
+  width: 905px;
   border-radius: 4px 4px 0 0;
 }
 
@@ -286,31 +287,31 @@ tbody tr:nth-child(even) {
   background: #eeeeee;
 }
 
-.amount {
+.amount,
+tfoot .num {
   font-family: "Agency FB";
   font-weight: bold;
 }
 
 .zero {
-  color: gray;
+  color: #979797;
 }
 
 footer {
   display: flex;
   align-items: center;
   background: #f5f5f5;
-  border-top: 1px solid #eeeeee;
+  border-top: 1px solid #e0e0e0;
 }
 
 tfoot tr {
-  background: #ffffff;
-  text-align: center;
-  border-top: 1px solid #f5f5f5;
+  border-top: 1px solid #e0e0e0;
   text-align: center;
 }
 
 tfoot td {
   padding: 5px 0;
+  background: #eeeeee;
 }
 
 .num {
@@ -337,5 +338,8 @@ tfoot td {
 
 .split {
   width: 35px;
+  font-style: italic;
+  text-align: left;
+  color: #979797;
 }
 </style>
