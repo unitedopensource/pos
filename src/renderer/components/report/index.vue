@@ -229,20 +229,25 @@ export default {
       let validInvoices = invoices.filter(invoice => invoice.status === 1);
       let sum = (a, b) => a + b;
 
-      let from = moment(this.reportRange.from).format("YYYY-MM-DD HH:mm");
-      let to = moment(this.reportRange.to).format("YYYY-MM-DD HH:mm");
+      if (this.range === "today") {
+        report.push({
+          text: this.$t("report.date"),
+          style: "bold space",
+          value: today()
+        });
+      } else {
+        report.push({
+          text: this.$t("report.fromDate"),
+          style: "bold",
+          value: moment(this.reportRange.from).format("YYYY-MM-DD HH:mm")
+        });
 
-      report.push({
-        text: this.$t("report.fromDate"),
-        style: "bold",
-        value: from
-      });
-
-      report.push({
-        text: this.$t("report.toDate"),
-        style: "bold space",
-        value: to
-      });
+        report.push({
+          text: this.$t("report.toDate"),
+          style: "bold space",
+          value: moment(this.reportRange.to).format("YYYY-MM-DD HH:mm")
+        });
+      }
 
       let foodSales = validInvoices
         .map(invoice => invoice.payment.subtotal)
@@ -299,9 +304,7 @@ export default {
       });
 
       let creditTransactions = orderPayment.filter(t => t.type === "CREDIT");
-      let creditTotal = creditTransactions
-        .map(t => t.actual)
-        .reduce(sum, 0);
+      let creditTotal = creditTransactions.map(t => t.actual).reduce(sum, 0);
 
       if (this.detailPayment) {
         let creditType = new Set();
@@ -589,14 +592,25 @@ export default {
         let fees = order
           .map(invoice => invoice.payment.delivery)
           .reduce((a, b) => a + b, 0);
-        let settled = order
-          .filter(invoice => invoice.settled)
-          .map(invoice => invoice.payment.total - invoice.payment.discount)
+        let settledInvoice = order.filter(invoice => invoice.settled);
+
+        let settled = settledInvoice
+          .map(
+            invoice =>
+              invoice.payment.total -
+              invoice.payment.discount -
+              invoice.payment.delivery
+          )
           .reduce((a, b) => a + b, 0);
 
-        let unsettled = order
-          .filter(invoice => !invoice.settled)
-          .map(invoice => invoice.payment.total - invoice.payment.discount)
+        let unsettledInvoice = order.filter(invoice => !invoice.settled);
+        let unsettled = unsettledInvoice
+          .map(
+            invoice =>
+              invoice.payment.total -
+              invoice.payment.discount -
+              invoice.payment.delivery
+          )
           .reduce((a, b) => a + b, 0);
 
         report.push({
@@ -624,15 +638,15 @@ export default {
         });
 
         report.push({
-          text: this.$t("report.settled"),
+          text: this.$t("report.settled") + ` ( ${settledInvoice.length} )`,
           style: "",
           value: settled.toFixed(2)
         });
 
         report.push({
-          text: this.$t("report.unsettled"),
-          style: "bold",
-          value: unsettled.toFixed(2)
+          text: this.$t("report.unsettled") + ` ( ${unsettledInvoice.length} )`,
+          style: "bold space",
+          value: "$ " + unsettled.toFixed(2)
         });
       });
 

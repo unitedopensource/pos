@@ -89,10 +89,10 @@ export default {
 ul {
   position: absolute;
   background: #fff;
-  width: 150px;
+  width: 154px;
   border: 1px solid #eee;
   border-top: none;
-  top: 45px;
+  top: 38px;
   box-shadow: 0 3px 6px -2px rgba(0, 0, 0, 0.4);
 }
 

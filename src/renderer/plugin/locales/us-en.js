@@ -67,11 +67,11 @@ export default {
         'Activation': 'Activation',
         'Deactivation': 'Deactivation'
     },
-    filter:{
-        'cashier':'By Cashier',
-        'server':'By Server',
-        'order':'By Order Type',
-        'payment':'By Payment Type'
+    filter: {
+        'cashier': 'By Cashier',
+        'server': 'By Server',
+        'order': 'By Order Type',
+        'payment': 'By Payment Type'
     },
     tag: {
         'goodCustomer': 'Good',
@@ -697,11 +697,12 @@ export default {
         'payout': 'Payout',
         'others': 'Others',
         'overallTotal': 'Overall Total',
-        'redemptionReport':'Redemption Summary',
-        'settled':'Settled',
-        'unsettled':'Unsettled',
-        'count':'Invoice Count',
-        'driver':'Driver'
+        'redemptionReport': 'Redemption Summary',
+        'settled': 'Settled',
+        'unsettled': 'Unsettled',
+        'count': 'Invoice Count',
+        'driver': 'Driver',
+        'date': 'Date'
     },
     text: {
         'starter': 'Starter',
@@ -943,7 +944,7 @@ export default {
         'lock': 'Lock',
         'tenderDetail': 'Paid: $ {i}\nTendered: ${i}',
         'readyBatch': 'Ready For Batch',
-        'commission':'Commission'
+        'commission': 'Commission'
     },
     nav: {
         'store': 'Store',

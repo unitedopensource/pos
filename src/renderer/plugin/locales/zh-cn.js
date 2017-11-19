@@ -60,11 +60,11 @@ export default {
         'Activation': '激活',
         'Deactivation': '注销'
     },
-    filter:{
-        'cashier':'按收银员',
-        'server':'按服务员',
-        'order':'按订单类别',
-        'payment':'按付款方式'
+    filter: {
+        'cashier': '按收银员',
+        'server': '按服务员',
+        'order': '按订单类别',
+        'payment': '按付款方式'
     },
     tag: {
         'goodCustomer': '好客人',
@@ -231,8 +231,8 @@ export default {
         'export': '导出',
         'close': '关闭',
         'removeAll': '全部移除',
-        'payBalanceDue':'支付余额',
-        'adjustTips':'调整小费'
+        'payBalanceDue': '支付余额',
+        'adjustTips': '调整小费'
     },
     title: {
         'markPaymentType': '标记付款方式',
@@ -265,10 +265,10 @@ export default {
         'thirdPartyOrder': '第三方订单',
         'timeSession': '修改打卡时间',
         'payLog': '付款记录',
-        'giftCardReload':'礼物卡充值',
-        'setTips':'调整小费',
-        'report':'报表',
-        'paymentHistory':'付款交易记录'
+        'giftCardReload': '礼物卡充值',
+        'setTips': '调整小费',
+        'report': '报表',
+        'paymentHistory': '付款交易记录'
     },
     menu: {
         'course': '定时',
@@ -345,9 +345,9 @@ export default {
         'forceClearTableTip': '{i} 正在操作 {i} 桌, 您确定要还原状态吗',
         'invoiceSettled': '此订单已经结账',
         'invoiceSettledTip': '您不能改动已经结账的订单',
-        'ticketClosed':'订单已经结账',
-        'paymentFound':'订单有付款记录',
-        'removePaymentRecordFirst':'请先移除此订单的付款记录',
+        'ticketClosed': '订单已经结账',
+        'paymentFound': '订单有付款记录',
+        'removePaymentRecordFirst': '请先移除此订单的付款记录',
         'paymentRemoveConfirm': '移除{i}付款记录',
         'paymentRemoveConfirmTip': '您确定要移除这笔 $ {i} 的付款记录吗？',
         'removeAllPaymentConfirm': '移除所有付款记录？',
@@ -610,7 +610,7 @@ export default {
         'creditCardTip': '信用卡小费',
         'tax': '税',
         'itemSales': '物品销售',
-        
+
         'gratuity': '服务费',
         'deliveryFee': '送餐费',
         'surcharge': '附加费',
@@ -618,26 +618,27 @@ export default {
         'receivable': '应收款',
         'actualAmount': '实收款',
 
-        'detailPayment':'细分款项',
-        'tipsSource':'显示小费来源',
-        'giftCardSales':'礼物卡销售',
-        'from':'来自 {i}',
-        'fromDate':'从',
-        'toDate':'至',
-        'salesTotal':'销售总额',
-        'cashTotal':'现金',
-        'creditTotal':'信用卡',
-        'thirdPartyTotal':'第三方',
-        'tipTotal':'总小费',
+        'detailPayment': '细分款项',
+        'tipsSource': '显示小费来源',
+        'giftCardSales': '礼物卡销售',
+        'from': '来自 {i}',
+        'fromDate': '从',
+        'toDate': '至',
+        'salesTotal': '销售总额',
+        'cashTotal': '现金',
+        'creditTotal': '信用卡',
+        'thirdPartyTotal': '第三方',
+        'tipTotal': '总小费',
         'tips': '小费',
-        'payout':'支付',
-        'others':'其它',
-        'overallTotal':'总数',
-        'redemptionReport':'经理买单',
-        'settled':'已结账',
-        'unsettled':'未结账',
-        'count':'订单数',
-        'driver':'司机'
+        'payout': '支付',
+        'others': '其它',
+        'overallTotal': '总数',
+        'redemptionReport': '经理买单',
+        'settled': '已结账',
+        'unsettled': '未结账',
+        'count': '订单数',
+        'driver': '司机',
+        'date': '日期'
     },
     thead: {
         'orderType': '订单类别',
@@ -933,9 +934,9 @@ export default {
         'clockOut': '下班时间',
         'verify': '认证',
         'lock': '锁定',
-        'tenderDetail':'支付: $ {i}\n找零: ${i}',
-        'readyBatch':'准备过账',
-        'commission':'佣金'
+        'tenderDetail': '支付: $ {i}\n找零: ${i}',
+        'readyBatch': '准备过账',
+        'commission': '佣金'
     },
     nav: {
         'store': '店面',
@@ -1145,8 +1146,8 @@ export default {
         'taxOnDeliveryCharge': '送餐费用加税',
         'thirdPartyProvider': '请选择一个第三方提供商',
         'paidRecords': '#{i} 号订单一共有 {i} 个付款记录',
-        'foundPaymentRecords':'一共找到 {i} 笔付款记录',
-        'forGiftCard':'礼物卡 ( {i} )',
+        'foundPaymentRecords': '一共找到 {i} 笔付款记录',
+        'forGiftCard': '礼物卡 ( {i} )',
         'table': {
             'actionsOnDone': '设定完成订单之后的操作',
             'passwordRequire': '创建座位之前需要输入密码',

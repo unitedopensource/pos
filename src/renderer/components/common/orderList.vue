@@ -104,7 +104,7 @@ export default {
       payment: {
         subtotal: 0,
         tax: 0,
-        total: 0, // subtotal + tax
+        total: 0, // subtotal + tax + delivery
         discount: 0,
         due: 0, // total - discount
         balance: 0, // due + surcharge
