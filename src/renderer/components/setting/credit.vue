@@ -33,13 +33,15 @@
                     </li>
                     <li>
                         <h5>Special Thanks To</h5>
-                        <br>
                         <img src="static/image/credit/amano.png" class="store black">
-                        <h3>Amano Sushi</h3>
-                        <h3>New China One</h3>
+                        <h3 class="restaurant">Amano Sushi</h3>
+                        <img src="static/image/credit/hwaYuan.jpg" class="store">
+                        <h3 class="restaurant">Hwa Yuan</h3>
                         <img src="static/image/credit/lotusBlue.jpg" class="store">
-                        <h3>Lotus Blue Dongtian Kitchen Bar</h3>
-                        <h3>Super China</h3>
+                        <h3 class="restaurant">Lotus Blue Dongtian Kitchen Bar</h3>
+                        <br>
+                        <h3 class="restaurant">Super China</h3>
+                        <h3 class="restaurant">New China One</h3>
                     </li>
                 </ul>
             </div>
@@ -122,7 +124,7 @@ ul {
 }
 
 ul.scroll {
-  animation: credit 30s linear infinite forwards;
+  animation: credit 35s linear infinite forwards;
 }
 
 li {
@@ -144,6 +146,12 @@ li {
   border: 3px solid #fff;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
+
+.restaurant{
+  margin-bottom: 15px;
+  color:#111;
+}
+
 .black {
   background: #333;
 }
