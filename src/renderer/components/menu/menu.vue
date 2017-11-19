@@ -109,7 +109,8 @@ export default {
           _id: ObjectId(),
           server: this.op.name,
           station: this.station.alies,
-          type: this.ticket.type
+          type: this.ticket.type,
+          date: today()
         });
       } else {
         this.saveForDiffs(this.order.content);

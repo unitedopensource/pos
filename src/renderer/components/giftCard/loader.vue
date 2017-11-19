@@ -167,7 +167,7 @@ export default {
         date,
         time,
         order: null,
-        ticket:null,
+        ticket: null,
         paid: parseFloat(this.reload),
         change: 0,
         actual: parseFloat(this.reload),
@@ -304,5 +304,8 @@ export default {
   width: 100px;
   display: inline-block;
   text-align: left;
+}
+.due {
+  margin-left: 20px;
 }
 </style>

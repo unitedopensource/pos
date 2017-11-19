@@ -58,7 +58,7 @@
                 <span class="intro">{{$t('setting.exitTip')}}</span>
             </figure>
         </section>
-        <section class="about" @dblclick="showCredit">
+        <section class="about" @contextmenu="showCredit">
             <div>
                 <span class="text">{{$t('setting.host')}}:</span>
                 <span class="value">{{about.host}}</span>
