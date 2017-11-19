@@ -797,8 +797,8 @@ export default {
             .then(this.saveTransaction)
             .then(this.postToDatabase)
             .then(this.tenderCash)
-            .then(this.checkBalance);
-          //.catch(this.payFailed);
+            .then(this.checkBalance)
+            .catch(this.payFailed);
           break;
         case "CREDIT":
           this.checkOverPay()
