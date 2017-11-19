@@ -584,7 +584,12 @@ export default {
         let order = deliveries.filter(invoice => invoice.driver === driver);
         let count = order.length;
         let value = order
-          .map(invoice => invoice.payment.total - invoice.payment.discount)
+          .map(
+            invoice =>
+              invoice.payment.subtotal +
+              invoice.payment.tax -
+              invoice.payment.discount
+          )
           .reduce((a, b) => a + b, 0);
         let tips = order
           .map(invoice => invoice.payment.tip)
@@ -597,9 +602,9 @@ export default {
         let settled = settledInvoice
           .map(
             invoice =>
-              invoice.payment.total -
-              invoice.payment.discount -
-              invoice.payment.delivery
+              invoice.payment.subtotal +
+              invoice.payment.tax -
+              invoice.payment.discount
           )
           .reduce((a, b) => a + b, 0);
 
@@ -607,9 +612,9 @@ export default {
         let unsettled = unsettledInvoice
           .map(
             invoice =>
-              invoice.payment.total -
-              invoice.payment.discount -
-              invoice.payment.delivery
+              invoice.payment.subtotal +
+              invoice.payment.tax -
+              invoice.payment.discount
           )
           .reduce((a, b) => a + b, 0);
 
@@ -621,7 +626,7 @@ export default {
 
         report.push({
           text: this.$t("report.count"),
-          style: "",
+          style: "total",
           value: count
         });
 
