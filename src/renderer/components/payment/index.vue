@@ -797,8 +797,8 @@ export default {
             .then(this.saveTransaction)
             .then(this.postToDatabase)
             .then(this.tenderCash)
-            .then(this.checkBalance)
-            .catch(this.payFailed);
+            .then(this.checkBalance);
+          //.catch(this.payFailed);
           break;
         case "CREDIT":
           this.checkOverPay()
@@ -1070,10 +1070,10 @@ export default {
 
       let actual = Math.min(this.paid, this.payment.remain),
         change,
-        paid = parseFloat(this.paid);
-      (tip = parseFloat(this.tip) || this.payment.tip),
+        paid = parseFloat(this.paid),
+        tip = parseFloat(this.tip) || this.payment.tip,
         transaction,
-        (_id = ObjectId());
+        _id = ObjectId();
 
       return new Promise((resolve, reject) => {
         switch (this.paymentType) {
@@ -1093,7 +1093,7 @@ export default {
               },
               paid,
               change,
-              actual: parseFloat(actual) - tip,
+              actual: toFixed(parseFloat(actual) - tip, 2),
               tip,
               cashier: this.op.name,
               server: this.order.server || this.op.name,
@@ -1108,7 +1108,7 @@ export default {
 
             let activity = {
               type: "CASHFLOW",
-              inflow: parseFloat(this.paid),
+              inflow: paid,
               outflow: change,
               time: +new Date(),
               ticket: {
@@ -1147,7 +1147,7 @@ export default {
               },
               paid,
               change: 0,
-              actual: paid - tip,
+              actual: toFixed(paid - tip, 2),
               tip,
               cashier: this.op.name,
               server: this.order.server || this.op.name,
@@ -1174,8 +1174,8 @@ export default {
               },
               paid,
               change: 0,
-              actual: paid - tip,
-              tip: parseFloat(this.tip) || this.payment.tip,
+              actual: toFixed(paid - tip, 2),
+              tip,
               cashier: this.op.name,
               server: this.order.server || this.op.name,
               cashDrawer,
@@ -1199,8 +1199,8 @@ export default {
               },
               paid,
               change: 0,
-              actual: paid - tip,
-              tip: parseFloat(this.tip) || this.payment.tip,
+              actual: toFixed(paid - tip, 2),
+              tip,
               cashier: this.op.name,
               server: this.order.server || this.op.name,
               cashDrawer,
