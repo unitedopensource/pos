@@ -45,7 +45,7 @@
                         <h3 class="restaurant">Red 8</h3>
                         <h3 class="restaurant">The Dining Room</h3>
                         <h3 class="restaurant">Super China</h3>
-                        <h3 class="restaurant">New China One</h3>
+                        <h3 class="restaurant">New Number One Tasty</h3>
                     </li>
                 </ul>
             </div>
