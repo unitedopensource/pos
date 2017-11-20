@@ -493,7 +493,9 @@ export default {
         'foodTogo': '创建带走物品',
         'togoConfirm': '您确定需要创建一个带走物品列表吗?',
         'somethingWrong': '发生了一个错误',
-        'somethingWrongTip': '此订单在保存的过程中产生了一个错误，保存被取消'
+        'somethingWrongTip': '此订单在保存的过程中产生了一个错误，保存被取消',
+        'updateNeeded': '软件需要升级',
+        'versionRequirement': '伺服器要求最低版本为 {i}, 您当前使用的版本是 {i}'
     },
     terminal: {
         'initial': '正在初始化 {i}...',

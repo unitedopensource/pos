@@ -557,7 +557,9 @@ export default {
         'foodTogo': 'Create A ToGo List',
         'togoConfirm': 'Are you wish to create a new list for togo items?',
         'somethingWrong': 'Error Occurred',
-        'somethingWrongTip': 'An unknown error occurred while saving this order.'
+        'somethingWrongTip': 'An unknown error occurred while saving this order.',
+        'updateNeeded': 'Software Update Needed',
+        'versionRequirement': 'Server requires minimum version is {i}, but your current version is {i}.'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',
