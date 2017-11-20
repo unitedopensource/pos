@@ -336,7 +336,7 @@ export default {
       } else {
         report.push({
           text: this.$t("report.creditTotal"),
-          style: "space",
+          style: "",
           value: creditTotal.toFixed(2)
         });
       }
@@ -346,7 +346,7 @@ export default {
 
       let thirdPartyTransactions = orderPayment.filter(t => t.type === "THIRD");
       let thirdPartyTotal = thirdPartyTransactions
-        .map(t => t.actual - t.tip)
+        .map(t => t.actual)
         .reduce(sum, 0);
 
       if (this.detailPayment) {
@@ -364,7 +364,7 @@ export default {
         Array.from(thirdType).forEach(type => {
           let total = thirdPartyTransactions
             .filter(t => t.subType === type)
-            .map(t => t.actual - t.tip)
+            .map(t => t.actual)
             .reduce(sum, 0);
 
           report.push({
@@ -389,6 +389,27 @@ export default {
 
       //release memory
       thirdPartyTransactions = null;
+
+      let settledTotal = transactions
+        .map(transaction => transaction.actual)
+        .reduce(sum, 0);
+
+      report.push({
+        text: this.$t("report.settled"),
+        style: "",
+        value: settledTotal.toFixed(2)
+      });
+
+      let unsettled = invoices.filter(invoice => !invoice.settled && invoice.status === 1);
+
+      report.push({
+        text: this.$t("report.unsettled") + ` ( ${unsettled.length} )`,
+        style: "space",
+        value: unsettled
+          .map(invoice => invoice.payment.subtotal + invoice.payment.tax)
+          .reduce(sum, 0)
+          .toFixed(2)
+      });
 
       let tipTotal = orderPayment.map(t => t.tip).reduce(sum, 0);
 
@@ -421,6 +442,12 @@ export default {
               style: "indent",
               value: `( ${total.toFixed(2)} )`
             });
+          });
+
+          report.push({
+            text: "",
+            style: "space",
+            value: ""
           });
         }
       } else {
