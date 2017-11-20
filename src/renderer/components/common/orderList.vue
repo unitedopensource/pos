@@ -463,6 +463,7 @@ header.info {
   text-align: center;
   font-weight: bold;
   font-size: 22px;
+  margin:0 5px;
 }
 
 header i {
@@ -476,7 +477,6 @@ header i {
   align-items: center;
   color: #fff;
   position: relative;
-  padding: 0 5px;
   text-shadow: 0 1px 1px #333;
   box-shadow: inset 0px -1px 3px -1px rgb(17, 116, 160);
 }

@@ -3,13 +3,13 @@
         <header class="title">{{$t('title.setDate')}}</header>
         <header class="tab">
             <div>
-                <input type="radio" v-model="tab" id="calendar" value="calendar">
+                <input type="radio" v-model="tab" name="bar" id="calendar" value="calendar">
                 <label for="calendar">
                     <i class="fa fa-2x fa-calendar"></i>
                 </label>
             </div>
             <div>
-                <input type="radio" v-model="tab" id="timer" value="timer">
+                <input type="radio" v-model="tab" name="bar" id="timer" value="timer">
                 <label for="timer">
                     <i class="fa fa-2x fa-clock-o"></i>
                 </label>
@@ -175,19 +175,20 @@ export default {
         });
       }
       this.days = calendar;
-
-      this.$nextTick(() => {
-        let dom = document.querySelector(".currentMonth");
-        dom && dom.classList.remove("currentMonth");
-        dom = document.querySelector(".day.today");
-        dom && dom.classList.remove("today");
-        if (isCurrentMonth) {
-          document.querySelector(".dayWrap").classList.add("currentMonth");
-          let today = moment().format("D") - 1;
-          today = document.querySelectorAll("[data-day]")[start + today];
-          today.classList.add("today");
-        }
-      });
+      this.tab === "timer" &&
+        this.$nextTick(() => {
+          let dom = document.querySelector(".currentMonth");
+          dom && dom.classList.remove("currentMonth");
+          dom = document.querySelector(".day.today");
+          dom && dom.classList.remove("today");
+          if (isCurrentMonth) {
+            dom = document.querySelector(".dayWrap");
+            dom && dom.classList.add("currentMonth");
+            let today = moment().format("D") - 1;
+            today = document.querySelectorAll("[data-day]")[start + today];
+            today && today.classList.add("today");
+          }
+        });
     },
     confirm() {
       this.checkTime() ? this.init.resolve(this.date) : this.invalidDate();

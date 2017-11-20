@@ -11,11 +11,11 @@
                     </li>
                     <li>
                         <h5>Program Design</h5>
-                        <h3>Xuewu Huang</h3>
+                        <h3>XueWu Huang</h3>
                     </li>
                     <li>
                         <h5>User Interface Design</h5>
-                        <h3>Xuewu Huang</h3>
+                        <h3>XueWu Huang</h3>
                     </li>
                     <li>
                         <h5>Project Manager</h5>
@@ -40,6 +40,10 @@
                         <img src="static/image/credit/lotusBlue.jpg" class="store">
                         <h3 class="restaurant">Lotus Blue Dongtian Kitchen Bar</h3>
                         <br>
+                        <img src="static/image/credit/tokyo.png" class="store">
+                        <h3 class="restaurant">Tokyo Asian Kitchen</h3>
+                        <h3 class="restaurant">Red 8</h3>
+                        <h3 class="restaurant">The Dining Room</h3>
                         <h3 class="restaurant">Super China</h3>
                         <h3 class="restaurant">New China One</h3>
                     </li>
@@ -120,11 +124,10 @@ ul {
   flex-direction: column;
   justify-content: center;
   width: 100%;
-  transition: all 10s linear infinite;
 }
 
 ul.scroll {
-  animation: credit 35s linear infinite forwards;
+  animation: credit 40s linear infinite forwards;
 }
 
 li {
@@ -161,7 +164,7 @@ li {
     transform: translate3d(0px, 0%, 0px);
   }
   to {
-    transform: translate3d(0px, -200%, 0px);
+    transform: translate3d(0px, -130%, 0px);
   }
 }
 </style>
