@@ -400,7 +400,7 @@ export default {
         value: settledTotal.toFixed(2)
       });
 
-      let unsettled = invoices.filter(invoice => !invoice.settled && invoice.status === 1);
+      let unsettled = validInvoices.filter(invoice => !invoice.settled);
 
       report.push({
         text: this.$t("report.unsettled") + ` ( ${unsettled.length} )`,
