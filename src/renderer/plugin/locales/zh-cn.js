@@ -593,7 +593,7 @@ export default {
         'customize': '自定义报告',
         'salesFrom': '款项来源明细',
         'categorySales': '菜单类别统计',
-        'hourlyReport': '统计每小时统计',
+        'hourlyReport': '统计每小时销售',
         'tipSummary': '统计小费',
         'giftCardSummary': '礼物卡',
         'countItem': '物品销售',
@@ -611,14 +611,10 @@ export default {
         'creditCardTip': '信用卡小费',
         'tax': '税',
         'itemSales': '物品销售',
-
         'gratuity': '服务费',
         'deliveryFee': '送餐费',
         'surcharge': '附加费',
         'thirdParty': '第三方',
-        'receivable': '应收款',
-        'actualAmount': '实收款',
-
         'detailPayment': '细分款项',
         'tipsSource': '显示小费来源',
         'giftCardSales': '礼物卡销售',
@@ -639,7 +635,8 @@ export default {
         'unsettled': '未结账',
         'count': '订单数',
         'driver': '司机',
-        'date': '日期'
+        'date': '日期',
+        'cashier':'收银员'
     },
     thead: {
         'orderType': '订单类别',

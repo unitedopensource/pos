@@ -221,7 +221,7 @@ export default {
         if (this.categorySales)
           this.report["Category Sales"] = this.categorySalesReport(invoices);
         if (this.cashier)
-          this.report["Cashier Report"] = this.cashierReport(transactions);
+          this.report["Cashier Report"] = this.cashierReport(data);
         if (this.driver) this.report["Driver Report"] = this.driverReport(data);
         next();
       });
@@ -253,7 +253,7 @@ export default {
       }
 
       let foodSales = validInvoices
-        .map(invoice => invoice.payment.subtotal)
+        .map(invoice => parseFloat(invoice.payment.subtotal))
         .reduce(sum, 0);
 
       report.push({
@@ -263,7 +263,7 @@ export default {
       });
 
       let tax = validInvoices
-        .map(invoice => invoice.payment.tax)
+        .map(invoice => parseFloat(invoice.payment.tax))
         .reduce(sum, 0);
 
       report.push({
@@ -273,7 +273,7 @@ export default {
       });
 
       let discount = validInvoices
-        .map(invoice => invoice.payment.discount)
+        .map(invoice => parseFloat(invoice.payment.discount))
         .reduce(sum, 0);
 
       report.push({
@@ -628,7 +628,75 @@ export default {
 
       return report;
     },
-    cashierReport(transactions) {},
+    cashierReport(data) {
+      let { invoices, transactions } = data;
+      let cashiers = new Set();
+      invoices
+        .filter(invoice => invoice.status === 1 && invoice.cashier)
+        .forEach(invoice => {
+          cashiers.add(invoice.cashier);
+        });
+
+      let report = [];
+
+      Array.from(cashiers).forEach(cashier => {
+        let handledInvoice = invoices.filter(
+          invoice => invoice.status === 1 && invoice.cashier === cashier
+        );
+        report.push({
+          text: this.$t("report.cashier"),
+          style: "bold",
+          value: cashier
+        });
+
+        report.push({
+          text: this.$t("report.handle"),
+          style: "total",
+          value: handledInvoice.length
+        });
+
+        report.push({
+          text: this.$t("report.total"),
+          style: "",
+          value: handledInvoice
+            .map(i => i.payment.subtotal + i.payment.tax)
+            .reduce((a, b) => a + b, 0)
+            .toFixed(2)
+        });
+
+        let handledTrans = transactions.filter(t => t.cashier === cashier);
+
+        let types = new Set();
+        handledTrans.filter(t => t !== "CASH").forEach(t => {
+          types.add(t.subType || t.type);
+        });
+
+        Array.from(types).forEach(type => {
+          let amount = handledTrans
+            .filter(t => t.subType === type || t.type === type)
+            .map(t => t.actual)
+            .reduce((a, b) => a + b, 0)
+            .toFixed(2);
+
+          report.push({
+            text: type,
+            style: "indent",
+            value: `( ${amount} )`
+          });
+        });
+
+        report.push({
+          text: this.$t("report.tips"),
+          style: "",
+          value: handledTrans
+            .map(t => t.tip)
+            .reduce((a, b) => a + b, 0)
+            .toFixed(2)
+        });
+      });
+
+      return report;
+    },
     driverReport(data) {
       let { invoices, transactions } = data;
       let drivers = new Set();

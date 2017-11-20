@@ -677,12 +677,8 @@ export default {
         'creditCardTip': 'Credit Card Tips',
         'tax': 'Tax',
         'deliveryFee': 'Delivery Fee',
-
         'gratuity': 'Gratuity',
         'thirdParty': 'Third Party',
-        'receivable': 'Receivable',
-        'actualAmount': 'Actual Amount',
-
         'detailPayment': 'Detail payment type',
         'tipsSource': 'Show tips from',
         'giftCardSales': 'Gift Card Sales',
@@ -704,7 +700,8 @@ export default {
         'unsettled': 'Unsettled',
         'count': 'Invoice Count',
         'driver': 'Driver',
-        'date': 'Date'
+        'date': 'Date',
+        'cashier': 'Cashier'
     },
     text: {
         'starter': 'Starter',
