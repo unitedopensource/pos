@@ -57,7 +57,7 @@
 import { mapActions, mapGetters } from "vuex";
 import dialoger from "./common/dialoger";
 import _debounce from "lodash.debounce";
-import { ipcRenderer } from "electron";
+import Electron from "electron";
 import vsc from "semver";
 export default {
   components: { dialoger },
@@ -118,14 +118,12 @@ export default {
         });
     },
     shutdown() {
-      ipcRenderer.send("Shutdown");
+      Electron.ipcRenderer.send("Shutdown");
     },
     restart() {
-      ipcRenderer.send("Relaunch");
+      Electron.ipcRenderer.send("Relaunch");
     },
     exit() {
-      //add flow control on next patch
-      //Promise.all([this.checkTerminal(),this.checkSettlement()]).then()
       ipcRenderer.send("Exit");
     },
     checkVersionCompatible() {
@@ -136,8 +134,8 @@ export default {
         if (!result && process.env.NODE_ENV !== "development") {
           this.$dialog({
             type: "warning",
-            title: "updateNeeded",
-            msg: ["versionRequirement", vsc.clean(requireVersion), appVersion],
+            title: "dialog.updateNeeded",
+            msg: ["dialog.versionRequirement", vsc.clean(requireVersion), appVersion],
             buttons: [{ text: "button.confirm", fn: "resolve" }]
           }).then(() => {
             this.$q();
@@ -174,7 +172,7 @@ export default {
       }
     },
     SHUTDOWN() {
-      ipcRenderer.send("Shutdown");
+      Electron.ipcRenderer.send("Shutdown");
     }
   },
   watch: {
