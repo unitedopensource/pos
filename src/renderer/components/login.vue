@@ -124,7 +124,7 @@ export default {
       Electron.ipcRenderer.send("Relaunch");
     },
     exit() {
-      ipcRenderer.send("Exit");
+      Electron.ipcRenderer.send("Exit");
     },
     checkVersionCompatible() {
       this.$socket.emit("[SYS] GET_VERSION", requireVersion => {
@@ -135,7 +135,11 @@ export default {
           this.$dialog({
             type: "warning",
             title: "dialog.updateNeeded",
-            msg: ["dialog.versionRequirement", vsc.clean(requireVersion), appVersion],
+            msg: [
+              "dialog.versionRequirement",
+              vsc.clean(requireVersion,true),
+              appVersion
+            ],
             buttons: [{ text: "button.confirm", fn: "resolve" }]
           }).then(() => {
             this.$q();
