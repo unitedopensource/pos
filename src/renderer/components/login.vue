@@ -18,7 +18,7 @@
           <div @click="setPin(3)">3</div>
           <div @click="setPin()">X</div>
           <div @click="setPin(0)">0</div>
-          <div @click="login">√</div>
+          <div @click="access">√</div>
         </section>
       </div>
       <div class="ctrl">
@@ -28,7 +28,7 @@
         </label>
         <transition name="menu">
           <ul v-show="toggleMenu">
-            <li @click="massiveShutdown" v-if="host">
+            <li @click="massiveShutdown" v-if="isHost">
               <i class="fa fa-plug"></i>
               <span>{{$t('login.massiveShutdown')}}</span>
             </li>
@@ -52,143 +52,6 @@
     </div>
   </transition>
 </template>
-
-<script>
-import { mapActions, mapGetters } from "vuex";
-import dialoger from "./common/dialoger";
-import _debounce from "lodash.debounce";
-import Electron from "electron";
-import vsc from "semver";
-export default {
-  components: { dialoger },
-  data() {
-    return {
-      host: false,
-      reset: false,
-      component: null,
-      componentData: null,
-      toggleMenu: false
-    };
-  },
-  created() {
-    this.host = window.server === true;
-  },
-  mounted() {
-    window.addEventListener("keydown", this.input, false);
-    this.checkVersionCompatible();
-  },
-  methods: {
-    input(e) {
-      e.preventDefault();
-      switch (e.key) {
-        case "Enter":
-          this.login();
-          break;
-        case "Backspace":
-          this.delPin();
-          break;
-        default:
-          e.key.length === 1 &&
-            /[a-zA-Z0-9]/i.test(e.key) &&
-            this.setPin(e.key);
-      }
-    },
-    login() {
-      this.reset = true;
-      this.$socket.emit("INQUIRY_LOGIN", this.password.join(""));
-    },
-    autoLogin: _debounce(function() {
-      if (this.$route.name === "Login") {
-        this.login();
-        this.reset = false;
-      }
-    }, 500),
-    massiveShutdown() {
-      this.$dialog({
-        type: "question",
-        title: "dialog.massiveShutdownConfirm",
-        msg: "dialog.massiveShutdownConfirmTip"
-      })
-        .then(() => {
-          this.$socket.emit("[CTRL] MASSIVE_SHUTDOWN");
-          this.$q();
-        })
-        .catch(() => {
-          this.$q();
-        });
-    },
-    shutdown() {
-      Electron.ipcRenderer.send("Shutdown");
-    },
-    restart() {
-      Electron.ipcRenderer.send("Relaunch");
-    },
-    exit() {
-      Electron.ipcRenderer.send("Exit");
-    },
-    checkVersionCompatible() {
-      this.$socket.emit("[SYS] GET_VERSION", requireVersion => {
-        let appVersion = Electron.remote.app.getVersion();
-        let result = vsc.satisfies(appVersion, requireVersion);
-
-        if (!result && process.env.NODE_ENV !== "development") {
-          this.$dialog({
-            type: "warning",
-            title: "dialog.updateNeeded",
-            msg: [
-              "dialog.versionRequirement",
-              vsc.clean(requireVersion,true),
-              appVersion
-            ],
-            buttons: [{ text: "button.confirm", fn: "resolve" }]
-          }).then(() => {
-            this.$q();
-          });
-        }
-      });
-    },
-    checkTerminal() {},
-    checkSettlement() {},
-    ...mapActions(["setPin", "delPin", "setOp", "setApp"])
-  },
-  beforeDestroy() {
-    window.removeEventListener("keydown", this.input, false);
-  },
-  sockets: {
-    LOGIN_AUTH(result) {
-      if (result.auth) {
-        document.querySelector(".ctrl").classList.add("hide");
-        let language = result.op.language || "usEN";
-        moment.locale(language === "usEN" ? "en" : "zh-cn");
-        this.$setLanguage(language);
-        this.setApp({ language, mode: "create" });
-        this.setOp(result.op);
-        this.setPin();
-        this.$router.push({ path: "/main" });
-        this.$socket.emit("[SYNC] POS", sync => {
-          if (this.sync !== sync) {
-            this.$socket.emit("[SYNC] ORDER_LIST");
-            this.$socket.emit("[SYNC] TABLE_LIST");
-          }
-        });
-      } else {
-        this.reset && this.setPin();
-      }
-    },
-    SHUTDOWN() {
-      Electron.ipcRenderer.send("Shutdown");
-    }
-  },
-  watch: {
-    password(n) {
-      this.autoLogin();
-    }
-  },
-  computed: {
-    ...mapGetters(["sync", "store", "password", "station"])
-  }
-};
-</script>
 
 <style scoped>
 .ctrl {
@@ -280,6 +143,185 @@ export default {
   left: 0;
   width: 50px;
   height: 50px;
+  cursor: pointer;
   -webkit-app-region: drag;
 }
+
+#drag:hover {
+  background: rgba(0, 0, 0, 0.4);
+}
 </style>
+
+<script>
+import { mapActions, mapGetters } from "vuex";
+import dialoger from "./common/dialoger";
+import _debounce from "lodash.debounce";
+import Electron from "electron";
+import versionCtrl from "semver";
+export default {
+  components: { dialoger },
+  data() {
+    return {
+      isHost: false,
+      reset: false,
+      component: null,
+      toggleMenu: false,
+      componentData: null,
+      disableAccess: false
+    };
+  },
+  created() {
+    this.checkVersion()
+      .then(this.checkActivation)
+      .then(this.initialized)
+      .catch(this.initialFailed);
+  },
+  mounted() {
+    window.addEventListener("keydown", this.entry, false);
+  },
+  beforeDestroy() {
+    window.removeEventListener("keydown", this.entry, false);
+  },
+  methods: {
+    checkVersion() {
+      return new Promise((resolve, reject) => {
+        this.$socket.emit("[SYS] GET_VERSION", requireVersion => {
+          let appVersion = Electron.remote.app.getVersion();
+          let fulfilled = versionCtrl.satisfies(appVersion, requireVersion);
+          let error = {
+            reason: "outDatedVersion",
+            data: {
+              type: "warning",
+              title: "dialog.updateNeeded",
+              msg: [
+                "dialog.versionRequirement",
+                versionCtrl.clean(requireVersion, true),
+                appVersion
+              ],
+              buttons: [{ text: "button.confirm", fn: "resolve" }]
+            }
+          };
+
+          process.env.NODE_ENV !== "development" && !fulfilled
+            ? reject(error)
+            : resolve();
+        });
+      });
+    },
+    checkActivation() {
+      return new Promise((resolve, reject) => {
+        resolve();
+      });
+    },
+    initialized() {
+      this.isHost = window.server === true;
+    },
+    initialFailed(error) {
+      let { data, reason } = error;
+      switch (reason) {
+        case "outDatedVersion":
+          this.$dialog(data).then(() => {
+            this.disableAccess = true;
+            this.$q();
+          });
+          break;
+        case "notActivated":
+          //needs to input activation code before enter
+          break;
+      }
+    },
+    entry(e) {
+      e.preventDefault();
+      switch (e.key) {
+        case "Enter":
+          this.access();
+          break;
+        case "Escape":
+        case "Backspace":
+          this.delPin();
+          break;
+        default:
+          e.key.length === 1 &&
+            /[a-zA-Z0-9]/i.test(e.key) &&
+            this.setPin(e.key);
+      }
+    },
+    access() {
+      if (this.disableAccess) return;
+
+      this.reset = true;
+      this.$socket.emit("[ACCESS] PIN", this.password.join(""));
+    },
+    autoAccess: _debounce(function() {
+      if (this.$route.name === "Login") {
+        this.access();
+        this.reset = false;
+      }
+    }, 300),
+    shutdownStations() {
+      let data = {
+        type: "question",
+        title: "dialog.shutdownStations",
+        msg: "dialog.shutdownStationsConfirm",
+        buttons: [
+          { text: "button.cancel", fn: "reject" },
+          { text: "button.confirm", fn: "resolve", load: true }
+        ]
+      };
+
+      this.$dialog(data)
+        .then(() => {
+          this.$socket.emit("[CTRL] SHUTDOWN_ALL");
+          this.$q();
+        })
+        .catch(() => {
+          this.$q();
+        });
+    },
+    shutdown() {
+      Electron.ipcRenderer.send("Shutdown");
+    },
+    restart() {
+      Electron.ipcRenderer.send("Relaunch");
+    },
+    exit() {
+      Electron.ipcRenderer.send("Exit");
+    },
+    ...mapActions(["setPin", "delPin", "setOp", "setApp"])
+  },
+  watch: {
+    password(n) {
+      this.autoAccess();
+    }
+  },
+  computed: {
+    ...mapGetters(["sync", "store", "password", "station"])
+  },
+  sockets: {
+    AUTHORIZATION(data) {
+      let { auth, op } = data;
+      if (auth) {
+        document.querySelector(".ctrl").classList.add("hide");
+        let language = op.language || "usEN";
+        moment.locale(language === "usEN" ? "en" : "zh-cn");
+        this.$setLanguage(language);
+        this.setApp({ language, mode: "create" });
+        this.setOp(op);
+        this.setPin();
+        this.$router.push({ path: "/main" });
+        this.$socket.emit("[SYNC] POS", sync => {
+          if (this.sync !== sync) {
+            this.$socket.emit("[SYNC] ORDER_LIST");
+            this.$socket.emit("[SYNC] TABLE_LIST");
+          }
+        });
+      } else {
+        this.reset && this.setPin();
+      }
+    },
+    SHUTDOWN() {
+      this.shutdown();
+    }
+  }
+};
+</script>

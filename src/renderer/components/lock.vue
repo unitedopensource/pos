@@ -17,7 +17,7 @@
         <div @click="setPin(3)">3</div>
         <div @click="setPin()">X</div>
         <div @click="setPin(0)">0</div>
-        <div @click="login">√</div>
+        <div @click="access">√</div>
       </section>
     </div>
   </div>
@@ -40,7 +40,7 @@ export default {
       e.preventDefault();
       switch (e.key) {
         case "Enter":
-          this.login();
+          this.access();
           break;
         case "Backspace":
           this.delPin();
@@ -51,32 +51,30 @@ export default {
             this.setPin(e.key);
       }
     },
-    login() {
+    access() {
       this.reset = true;
-      this.$socket.emit("INQUIRY_LOGIN", this.password.join(""));
+      this.$socket.emit("[ACCESS] PIN", this.password.join(""));
     },
-    autoLogin: _debounce(function() {
+    autoAccess: _debounce(function() {
       if (this.$route.name === "Lock") {
-        this.login();
+        this.access();
         this.reset = false;
       }
-    }, 500),
-    shutdown() {
-      this.$socket.emit("SHUTDOWN");
-    },
+    }, 300),
     ...mapActions(["setPin", "delPin", "setOp", "setApp"])
   },
   beforeDestroy() {
     window.removeEventListener("keydown", this.input, false);
   },
   sockets: {
-    LOGIN_AUTH(result) {
-      if (result.auth) {
-        let language = result.op.language || "usEN";
+    AUTHORIZATION(data) {
+      let { auth, op } = data;
+      if (auth) {
+        let language = op.language || "usEN";
         moment.locale(language === "usEN" ? "en" : "zh-cn");
         this.$setLanguage(language);
         this.setApp({ language, mode: "create" });
-        this.setOp(result.op);
+        this.setOp(op);
         this.setPin();
         this.$router.push({ path: "/main" });
       } else {
@@ -86,7 +84,7 @@ export default {
   },
   watch: {
     password(n) {
-      this.autoLogin();
+      this.autoAccess();
     }
   },
   computed: {

@@ -25,47 +25,48 @@
 
 <script>
 export default {
-    props: ['init'],
-    data() {
-        return {
-            pin: []
-        }
+  props: ["init"],
+  data() {
+    return {
+      pin: []
+    };
+  },
+  mounted() {
+    window.addEventListener("keydown", this.entry, false);
+  },
+  methods: {
+    setPin(num) {
+      this.pin.push(num);
     },
-    mounted() {
-        window.addEventListener("keydown", this.input, false);
+    reset() {
+      this.pin = [];
     },
-    methods: {
-        setPin(num) {
-            this.pin.push(num)
-        },
-        reset() {
-            this.pin = []
-        },
-        delPin() {
-            this.pin.pop()
-        },
-        input(e) {
-            e.preventDefault();
-            switch (e.key) {
-                case "Enter":
-                    this.access()
-                    break;
-                case "Backspace":
-                    this.delPin()
-                    break;
-                default:
-                    /^[a-z,A-z,0-9]$/.test(e.key) && this.setPin(e.key);
-            }
-        },
-        access() {
-            this.$socket.emit("[ACCESS] CODE", this.pin.join(""), (op) => {
-                op ? this.init.resolve(op) : this.init.reject()
-            })
-
-        }
+    delPin() {
+      this.pin.pop();
     },
-    beforeDestroy() {
-        window.removeEventListener("keydown", this.input, false);
+    entry(e) {
+      e.preventDefault();
+      switch (e.key) {
+        case "Enter":
+          this.access();
+          break;
+        case "Backspace":
+          this.delPin();
+          break;
+        default:
+          e.key.length === 1 &&
+            /^[a-z,A-z,0-9]$/.test(e.key) &&
+            this.setPin(e.key);
+      }
+    },
+    access() {
+      this.$socket.emit("[ACCESS] CODE", this.pin.join(""), op => {
+        op ? this.init.resolve(op) : this.init.reject();
+      });
     }
-}
+  },
+  beforeDestroy() {
+    window.removeEventListener("keydown", this.input, false);
+  }
+};
 </script>
