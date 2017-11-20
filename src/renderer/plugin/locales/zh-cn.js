@@ -636,7 +636,10 @@ export default {
         'count': '订单数',
         'driver': '司机',
         'date': '日期',
-        'cashier':'收银员'
+        'cashier': '收银员',
+        'handleInvoice': '经手订单',
+        'expectTotal': '应收金额',
+        'actualTotal': '实收金额'
     },
     thead: {
         'orderType': '订单类别',

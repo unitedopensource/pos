@@ -701,7 +701,10 @@ export default {
         'count': 'Invoice Count',
         'driver': 'Driver',
         'date': 'Date',
-        'cashier': 'Cashier'
+        'cashier': 'Cashier',
+        'handleInvoice': 'Handle Invoice',
+        'expectTotal': 'Expect Total',
+        'actualTotal': 'Actual Total'
     },
     text: {
         'starter': 'Starter',

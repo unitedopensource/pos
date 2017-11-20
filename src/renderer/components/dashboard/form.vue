@@ -205,6 +205,7 @@ export default {
       let url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${origin}&destinations=${destination},${data.city
         .split(" ")
         .join("+")}+${this.store.state}&key=${api}&language=en&units=imperial`;
+
       this.$socket.emit("[GOOGLE] ADDRESS", url, raw => {
         let result = JSON.parse(raw);
 
@@ -222,18 +223,25 @@ export default {
             });
             this.predict.address = predict;
           } else if (addresses.length === 1) {
-            let address = addresses[0].split(",")[0];
-            address && (address = address.trim().toUpperCase());
-            let city = addresses[0]
-              .split(",")[1]
-              .trim()
-              .toUpperCase();
+            let address, city, note;
+            let addressArray = addresses[0].split(",");
+
+            if (addressArray.length === 5) {
+              address = addressArray[1].trim().toUpperCase();
+              city = addressArray[2].trim().toUpperCase();
+              note = addressArray[0].trim();
+            } else {
+              address = addressArray[0].trim().toUpperCase();
+              city = addressArray[1].trim().toUpperCase();
+            }
 
             let matrix = result.rows[0].elements[0];
             let distance = matrix.distance.text;
             let duration = matrix.duration.text;
-            if (address.indexOf(this.customer.address) !== -1) {
+
+            if (address.indexOf(this.customer.address.trim()) !== -1) {
               this.setCustomer({ address, city, distance, duration });
+              note && this.setCustomer({ note });
             } else {
               this.$dialog({
                 title: "dialog.addressMismatch",
@@ -241,6 +249,7 @@ export default {
               })
                 .then(() => {
                   this.setCustomer({ address, city, distance, duration });
+                  note && this.setCustomer({ note });
                   this.$q();
                 })
                 .catch(() => {

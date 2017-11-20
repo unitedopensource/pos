@@ -650,14 +650,14 @@ export default {
         });
 
         report.push({
-          text: this.$t("report.handle"),
+          text: this.$t("report.handleInvoice"),
           style: "total",
           value: handledInvoice.length
         });
 
         report.push({
-          text: this.$t("report.total"),
-          style: "",
+          text: this.$t("report.expectTotal"),
+          style: "space",
           value: handledInvoice
             .map(i => i.payment.subtotal + i.payment.tax)
             .reduce((a, b) => a + b, 0)
@@ -667,6 +667,7 @@ export default {
         let handledTrans = transactions.filter(t => t.cashier === cashier);
 
         let types = new Set();
+        let actualAmount = 0;
         handledTrans.filter(t => t !== "CASH").forEach(t => {
           types.add(t.subType || t.type);
         });
@@ -675,14 +676,21 @@ export default {
           let amount = handledTrans
             .filter(t => t.subType === type || t.type === type)
             .map(t => t.actual)
-            .reduce((a, b) => a + b, 0)
-            .toFixed(2);
+            .reduce((a, b) => a + b, 0);
+
+          actualAmount += amount;
 
           report.push({
             text: type,
             style: "indent",
-            value: `( ${amount} )`
+            value: `( ${amount.toFixed(2)} )`
           });
+        });
+
+        report.push({
+          text: this.$t("report.actualTotal"),
+          style: "bold total space",
+          value: "$ " + actualAmount.toFixed(2)
         });
 
         report.push({
