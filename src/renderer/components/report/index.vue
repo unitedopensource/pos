@@ -53,8 +53,8 @@
                                     <checkbox v-model="giftCard" label="report.giftCardSales" :key="3"></checkbox>
                                     <checkbox v-model="hourly" label="report.hourlyReport" :key="4"></checkbox>
                                     <checkbox v-model="houseAccount" label="report.redemptionReport" :key="5"></checkbox>
-                                    <checkbox v-model="itemSales" label="report.itemSales" :key="6" :disabled="true"></checkbox>
-                                    <checkbox v-model="categorySales" label="report.categorySales" :key="7" :disabled="true"></checkbox>
+                                    <checkbox v-model="itemSales" label="report.itemSales" :key="6"></checkbox>
+                                    <checkbox v-model="categorySales" label="report.categorySales" :key="7"></checkbox>
                                 </template>
                             </transition-group>
                         </div>
@@ -86,6 +86,9 @@ import checkbox from "../setting/common/checkbox";
 export default {
   props: ["init"],
   components: { checkbox, radiobox, calendar, processor },
+  computed: {
+    ...mapGetters(["language"])
+  },
   data() {
     return {
       reportDetail: "simple",
@@ -560,39 +563,71 @@ export default {
       return report;
     },
     itemSalesReport(invoices) {
-      let items = invoices
-        .filter(invoice => invoice.status === 1)
-        .map(invoice => invoice.content)
-        .reduce((a, b) => a.push(...b), []);
-
       let records = {};
+      invoices.forEach(ticket => {
+        ticket.content.forEach(item => {
+          if (records.hasOwnProperty(item.usEN)) {
+            records[item.usEN].count += item.qty;
+            records[item.usEN].value += item.single * item.qty;
+          } else {
+            records[item.usEN] = {
+              text: item[this.language],
+              count: item.qty,
+              value: item.single * item.qty
+            };
+          }
+        });
+      });
 
-      items.forEach(item => {
-        if (records.hasOwnProperty(item._id)) {
-          records[item._id].count += item.qty;
-          records[item._id].value += item.single * item.qty;
-        } else {
-          records[item._id] = {
-            text: item[this.language],
-            count: item.qty,
-            value: item.single * item.qty
-          };
-        }
+      let report = [];
+      Object.values(records)
+        .filter(item => item.value > 0)
+        .sort((a, b) => (a.count > b.count ? -1 : 1))
+        .forEach(item => {
+          report.push({
+            text: `( ${item.count} ) ` + item.text,
+            style: "",
+            value: item.value.toFixed(2)
+          });
+        });
+
+      return report;
+    },
+    categorySalesReport(invoices) {
+      let records = {};
+      invoices.forEach(ticket => {
+        ticket.content.forEach(item => {
+          if (!records.hasOwnProperty(item.category)) {
+            records[item.category] = {
+              text:
+                this.language === "zhCN"
+                  ? item.categoryCN || item.category
+                  : item.category,
+              count: 1,
+              value: item.single * item.qty
+            };
+          } else {
+            records[item.category].count += item.qty;
+            records[item.category].value += toFixed(item.single * item.qty, 2);
+          }
+        });
       });
 
       let report = [];
 
-      Object.keys(records).forEach(item => {
-        report.push({
-          text: records[item].text,
-          style: "",
-          value: records[item].value.toFixed(2)
+      Object.values(records)
+        .filter(category => category.value > 0)
+        .sort((a, b) => (a.count > b.count ? -1 : 1))
+        .forEach(category => {
+          report.push({
+            text: `( ${category.count} ) ` + category.text,
+            style: "",
+            value: category.value.toFixed(2)
+          });
         });
-      });
 
       return report;
     },
-    categorySalesReport(data) {},
     cashierReport(transactions) {},
     driverReport(data) {
       let { invoices, transactions } = data;
@@ -689,6 +724,7 @@ export default {
       this.init.resolve();
     },
     reportError(error) {
+      console.log(error);
       this.$socket.emit("[SYS] RECORD", {
         type: "Software",
         event: "reportError",

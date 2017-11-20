@@ -18,7 +18,7 @@
           <div @click="setPin(3)">3</div>
           <div @click="setPin()">X</div>
           <div @click="setPin(0)">0</div>
-          <div @click="access">√</div>
+          <div @click="access" :class="{disable:disableAccess}">√</div>
         </section>
       </div>
       <div class="ctrl">
@@ -147,8 +147,8 @@
   -webkit-app-region: drag;
 }
 
-#drag:hover {
-  background: rgba(0, 0, 0, 0.4);
+.disable{
+  background: #f44336;
 }
 </style>
 
@@ -157,7 +157,6 @@ import { mapActions, mapGetters } from "vuex";
 import dialoger from "./common/dialoger";
 import _debounce from "lodash.debounce";
 import Electron from "electron";
-import versionCtrl from "semver";
 export default {
   components: { dialoger },
   data() {
@@ -187,17 +186,13 @@ export default {
       return new Promise((resolve, reject) => {
         this.$socket.emit("[SYS] GET_VERSION", requireVersion => {
           let appVersion = Electron.remote.app.getVersion();
-          let fulfilled = versionCtrl.satisfies(appVersion, requireVersion);
+          let fulfilled = appVersion >= requireVersion;
           let error = {
             reason: "outDatedVersion",
             data: {
               type: "warning",
               title: "dialog.updateNeeded",
-              msg: [
-                "dialog.versionRequirement",
-                versionCtrl.clean(requireVersion, true),
-                appVersion
-              ],
+              msg: ["dialog.versionRequirement", requireVersion, appVersion],
               buttons: [{ text: "button.confirm", fn: "resolve" }]
             }
           };
