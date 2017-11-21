@@ -141,20 +141,18 @@ export default {
                 if (driver.hasOwnProperty(invoice.driver)) {
                   let name = invoice.driver;
                   driver[name].count++;
-                  driver[name].total += amount;
+                  driver[name].total += amount + delivery;
                   driver[name].discount += parseFloat(discount);
                   driver[name].tip += parseFloat(tip);
-                  driver[name].gratuity += parseFloat(gratuity);
                   driver[name].charge += invoice.deliveryFree
                     ? 0
                     : parseFloat(delivery);
                 } else {
                   driver[invoice.driver] = {
                     count: 1,
-                    total: amount,
+                    total: amount + delivery,
                     discount: parseFloat(discount),
                     tip: parseFloat(tip),
-                    gratuity: parseFloat(gratuity),
                     charge: invoice.deliveryFree ? 0 : parseFloat(delivery)
                   };
                 }
