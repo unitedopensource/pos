@@ -833,19 +833,12 @@ export default {
 
       drivers.forEach(driver => {
         let order = deliveries.filter(invoice => invoice.driver === driver);
-        let count = order.length;
-        // let value = order
-        //   .map(
-        //     invoice =>
-        //       invoice.payment.subtotal +
-        //       invoice.payment.tax -
-        //       invoice.payment.discount
-        //   )
-        //   .reduce((a, b) => a + b, 0);
         let tips = order.map(i => i.payment.tip).reduce((a, b) => a + b, 0);
+        let count = order.length;
         let fees = order
           .map(i => i.payment.delivery)
           .reduce((a, b) => a + b, 0);
+
         let settledInvoice = order.filter(i => i.settled);
 
         let settled = settledInvoice
@@ -893,11 +886,7 @@ export default {
           value: unsettled.toFixed(2)
         });
 
-        let deliveryFeePayable = order
-          .map(i => i.payment.delivery)
-          .reduce((a, b) => a + b, 0);
-
-        let accountsPayable = deliveryFeePayable + tips;
+        let accountsPayable = fees + tips;
 
         report.push({
           text: this.$t("report.accountsPayable"),
