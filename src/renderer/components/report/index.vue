@@ -834,39 +834,27 @@ export default {
       drivers.forEach(driver => {
         let order = deliveries.filter(invoice => invoice.driver === driver);
         let count = order.length;
-        let value = order
-          .map(
-            invoice =>
-              invoice.payment.subtotal +
-              invoice.payment.tax -
-              invoice.payment.discount
-          )
-          .reduce((a, b) => a + b, 0);
-        let tips = order
-          .map(invoice => invoice.payment.tip)
-          .reduce((a, b) => a + b, 0);
+        // let value = order
+        //   .map(
+        //     invoice =>
+        //       invoice.payment.subtotal +
+        //       invoice.payment.tax -
+        //       invoice.payment.discount
+        //   )
+        //   .reduce((a, b) => a + b, 0);
+        let tips = order.map(i => i.payment.tip).reduce((a, b) => a + b, 0);
         let fees = order
-          .map(invoice => invoice.payment.delivery)
+          .map(i => i.payment.delivery)
           .reduce((a, b) => a + b, 0);
-        let settledInvoice = order.filter(invoice => invoice.settled);
+        let settledInvoice = order.filter(i => i.settled);
 
         let settled = settledInvoice
-          .map(
-            invoice =>
-              invoice.payment.subtotal +
-              invoice.payment.tax -
-              invoice.payment.discount
-          )
+          .map(i => i.payment.due)
           .reduce((a, b) => a + b, 0);
 
-        let unsettledInvoice = order.filter(invoice => !invoice.settled);
+        let unsettledInvoice = order.filter(i => !i.settled);
         let unsettled = unsettledInvoice
-          .map(
-            invoice =>
-              invoice.payment.subtotal +
-              invoice.payment.tax -
-              invoice.payment.discount
-          )
+          .map(i => i.payment.due)
           .reduce((a, b) => a + b, 0);
 
         report.push({
@@ -905,7 +893,7 @@ export default {
           value: unsettled.toFixed(2)
         });
 
-        let deliveryFeePayable = settledInvoice
+        let deliveryFeePayable = order
           .map(i => i.payment.delivery)
           .reduce((a, b) => a + b, 0);
 
@@ -918,10 +906,10 @@ export default {
         });
 
         report.push({
-          text:this.$t("report.expectTotal"),
-          style:"total bold",
+          text: this.$t("report.expectTotal"),
+          style: "total bold",
           value: "$ " + (unsettled - accountsPayable).toFixed(2)
-        })
+        });
       });
 
       return report;
