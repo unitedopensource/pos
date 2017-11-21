@@ -222,6 +222,9 @@ export default {
           this.report["Category Sales"] = this.categorySalesReport(invoices);
         if (this.cashier)
           this.report["Cashier Report"] = this.cashierReport(data);
+        if (this.waitStaff)
+          this.report["Waitstaff Report"] = this.waitStaffReport(transactions);
+
         if (this.driver) this.report["Driver Report"] = this.driverReport(data);
         next();
       });
@@ -705,6 +708,116 @@ export default {
 
       return report;
     },
+    waitStaffReport(transactions) {
+      let waitStaffs = new Set();
+      let report = [];
+      transactions.map(t => t.server).forEach(name => waitStaffs.add(name));
+
+      Array.from(waitStaffs).forEach(name => {
+        let invoices = transactions.filter(t => t.server === name);
+
+        report.push({
+          text: this.$t("report.waitStaff"),
+          style: "bold",
+          value: name
+        });
+
+        report.push({
+          text: this.$t("report.settled"),
+          style: "space",
+          value: invoices
+            .map(t => t.actual)
+            .reduce((a, b) => a + b, 0)
+            .toFixed(2)
+        });
+
+        report.push({
+          text: this.$t("report.cashTotal"),
+          style: "bold",
+          value:
+            "$ " +
+            invoices
+              .filter(t => t.type === "CASH")
+              .map(t => t.actual)
+              .reduce((a, b) => a + b, 0)
+              .toFixed(2)
+        });
+
+        report.push({
+          text: this.$t("report.creditTotal"),
+          style: "",
+          value: invoices
+            .filter(t => t.type === "CREDIT")
+            .map(t => t.actual)
+            .reduce((a, b) => a + b, 0)
+            .toFixed(2)
+        });
+
+        let creditType = new Set();
+
+        invoices
+          .filter(t => t.type === "CREDIT")
+          .map(t => t.subType)
+          .forEach(type => creditType.add(type));
+
+        Array.from(creditType).forEach(type => {
+          let tmp = invoices.filter(t => t.subType === type);
+          let amount = tmp.map(t => t.actual).reduce((a, b) => a + b, 0);
+
+          report.push({
+            text: type,
+            style: "indent",
+            value: `( ${amount.toFixed(2)} )`
+          });
+        });
+
+        report.push({
+          text: this.$t("report.thirdPartyTotal"),
+          style: "",
+          value: invoices
+            .filter(t => t.type === "THIRD")
+            .map(t => t.actual)
+            .reduce((a, b) => a + b, 0)
+            .toFixed(2)
+        });
+
+        let thirdType = new Set();
+
+        invoices
+          .filter(t => t.type === "THIRD")
+          .map(t => t.subType)
+          .forEach(type => thirdType.add(type));
+
+        Array.from(thirdType).forEach(type => {
+          let tmp = invoices.filter(t => t.subType === type);
+          let amount = tmp.map(t => t.actual).reduce((a, b) => a + b, 0);
+
+          report.push({
+            text: type,
+            style: "indent",
+            value: `( ${amount.toFixed(2)} )`
+          });
+        });
+
+        report.push({
+          text: this.$t("report.tips"),
+          style: "bold",
+          value:
+            "$ " +
+            invoices
+              .map(t => t.tip)
+              .reduce((a, b) => a + b, 0)
+              .toFixed(2)
+        });
+
+        report.push({
+          text: "",
+          style: "space",
+          value: ""
+        });
+      });
+      return report;
+    },
     driverReport(data) {
       let { invoices, transactions } = data;
       let drivers = new Set();
@@ -789,8 +902,26 @@ export default {
         report.push({
           text: this.$t("report.unsettled") + ` ( ${unsettledInvoice.length} )`,
           style: "bold space",
-          value: "$ " + unsettled.toFixed(2)
+          value: unsettled.toFixed(2)
         });
+
+        let deliveryFeePayable = settledInvoice
+          .map(i => i.payment.delivery)
+          .reduce((a, b) => a + b, 0);
+
+        let accountsPayable = deliveryFeePayable + tips;
+
+        report.push({
+          text: this.$t("report.accountsPayable"),
+          style: "space",
+          value: "- " + accountsPayable.toFixed(2)
+        });
+
+        report.push({
+          text:this.$t("report.expectTotal"),
+          style:"total bold",
+          value: "$ " + (unsettled - accountsPayable).toFixed(2)
+        })
       });
 
       return report;

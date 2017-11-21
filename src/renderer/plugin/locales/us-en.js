@@ -704,7 +704,9 @@ export default {
         'cashier': 'Cashier',
         'handleInvoice': 'Handle Invoice',
         'expectTotal': 'Expect Total',
-        'actualTotal': 'Actual Total'
+        'actualTotal': 'Actual Total',
+        'waitStaff':'Wait Staff',
+        'accountsPayable':'Accounts Payable'
     },
     text: {
         'starter': 'Starter',

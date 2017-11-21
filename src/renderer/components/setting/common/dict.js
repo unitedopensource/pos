@@ -76,7 +76,7 @@ var Dictionary = function (key) {
         PFR: [{ zhCN: "叉烧饭", usEN: "Pork Fried Rice" }, { zhCN: "净炒饭", usEN: "Plain Fried Roll" }],
         SFR: [{ zhCN: "虾炒饭", usEN: "Shrimp Fried Rice" }, { zhCN: "海鲜炒饭", usEN: "Seafood Fried Rice" }],
         LFR: [{ zhCN: "龙虾炒饭", usEN: "Lobster Fried Rice" }],
-        LFR: [{ zhCN: "牛炒饭", usEN: "Beef Fried Rice" }],
+        BFR: [{ zhCN: "牛炒饭", usEN: "Beef Fried Rice" }],
         HSFR: [{ zhCN: "本楼炒饭", usEN: "House Special Fried Rice" }],
         CMFR: [{ zhCN: "蟹肉炒饭", usEN: "Crab Meat Fried Rice" }],
         HFM: [{ zhCN: "火腿炒饭", usEN: "Ham Fried Rice" }],

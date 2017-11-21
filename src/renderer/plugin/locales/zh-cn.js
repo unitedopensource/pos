@@ -598,9 +598,9 @@ export default {
         'giftCardSummary': '礼物卡',
         'countItem': '物品销售',
         'performance': '业绩',
-        'staffLiability': '企台责任报告',
-        'cashierLiability': '收银员责任报告',
-        'driverLiability': '司机责任报告',
+        'staffLiability': '企台报告',
+        'cashierLiability': '收银员报告',
+        'driverLiability': '司机报告',
         'thirdPartySummary': '第三方概要',
         'viaEmail': '发送报表至邮箱',
         'discount': '折扣',
@@ -639,7 +639,9 @@ export default {
         'cashier': '收银员',
         'handleInvoice': '经手订单',
         'expectTotal': '应收金额',
-        'actualTotal': '实收金额'
+        'actualTotal': '实收金额',
+        'waitStaff':'企台',
+        'accountsPayable':'应付账款'
     },
     thead: {
         'orderType': '订单类别',
