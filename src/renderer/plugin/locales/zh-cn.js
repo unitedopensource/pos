@@ -640,8 +640,8 @@ export default {
         'handleInvoice': '经手订单',
         'expectTotal': '应收金额',
         'actualTotal': '实收金额',
-        'waitStaff':'企台',
-        'accountsPayable':'应付账款'
+        'waitStaff': '企台',
+        'accountsPayable': '应付账款'
     },
     thead: {
         'orderType': '订单类别',
@@ -691,7 +691,13 @@ export default {
         'records': '记录(笔)',
         'detail': '详细',
         'edit': '修改',
-        'amount': '数额'
+        'amount': '数额',
+        'station': '工作站',
+        'credit': '信用卡',
+        'creditCount': '信用卡交易次数',
+        'debit': '借记卡',
+        'debitCount': '借记卡交易次数',
+        'print': '打印'
     },
     flow: {
         'START': '初始金额',
@@ -971,7 +977,10 @@ export default {
         'timecard': '打卡',
         'giftCard': '礼物卡',
         'subMenu': '子菜单',
-        'cashFlow': '现金流'
+        'cashFlow': '现金流',
+        'batch': '过账',
+        'events': '事件',
+        'live': '直播'
     },
     setting: {
         'softwareSetting': 'UnitedPOS 后台设置',

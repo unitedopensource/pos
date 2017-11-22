@@ -289,7 +289,13 @@ export default {
         'records': 'Records',
         'detail': 'Detail',
         'edit': 'Edit',
-        'amount': 'Amount'
+        'amount': 'Amount',
+        'station': 'Station',
+        'credit': 'Credit',
+        'creditCount': 'Credit Count',
+        'debit': 'Debit',
+        'debitCount': 'Debit Count',
+        'print': 'Print'
     },
     flow: {
         'START': 'Deposit',
@@ -705,8 +711,8 @@ export default {
         'handleInvoice': 'Handle Invoice',
         'expectTotal': 'Expect Total',
         'actualTotal': 'Actual Total',
-        'waitStaff':'Wait Staff',
-        'accountsPayable':'Accounts Payable'
+        'waitStaff': 'Wait Staff',
+        'accountsPayable': 'Accounts Payable'
     },
     text: {
         'starter': 'Starter',
@@ -980,7 +986,10 @@ export default {
         'timecard': 'TimeCard',
         'giftCard': 'GiftCard',
         'subMenu': 'Sub Menu',
-        'cashFlow': 'Cash Flow'
+        'cashFlow': 'Cash Flow',
+        'batch': 'Batch',
+        'events': 'Events',
+        'live': 'Live'
     },
     setting: {
         'softwareSetting': 'UnitedPOS Setting',
