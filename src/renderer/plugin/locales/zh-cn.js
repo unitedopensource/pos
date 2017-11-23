@@ -695,9 +695,9 @@ export default {
         'amount': '数额',
         'station': '工作站',
         'credit': '信用卡',
-        'creditCount': '信用卡交易次数',
+        'creditCount': '信用卡交易数',
         'debit': '借记卡',
-        'debitCount': '借记卡交易次数',
+        'debitCount': '借记卡交易数',
         'print': '打印'
     },
     flow: {
