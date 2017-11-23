@@ -64,7 +64,8 @@ export default {
         'cashier': '按收银员',
         'server': '按服务员',
         'order': '按订单类别',
-        'payment': '按付款方式'
+        'payment': '按付款方式',
+        'station':'按工作站'
     },
     tag: {
         'goodCustomer': '好客人',
@@ -268,7 +269,8 @@ export default {
         'giftCardReload': '礼物卡充值',
         'setTips': '调整小费',
         'report': '报表',
-        'paymentHistory': '付款交易记录'
+        'paymentHistory': '付款交易记录',
+        'terminalTransactions':'信用卡交易记录'
     },
     menu: {
         'course': '定时',
@@ -369,7 +371,8 @@ export default {
         'tableClearFailed': '无法清除座位',
         'tableClearFailedTip': '您目前还不能清除 {i} 座位的信息',
         'voidCreditSale': '取消信用卡订单',
-        'voidCreditSaleTip': '同时也会移除 #{i}号 {i}订单的付款记录',
+        'voidCreditInvoice': '同时也会移除 #{i}号 {i}订单的付款记录',
+        'voidCreditReload': '同时也会移除这次礼物卡充值数额',
         'tipAdjustment': '修改小费',
         'tipAdjustmentTip': '小费将修改成 ${i}, 总数: ${i}',
         'batchClose': '过账确认',

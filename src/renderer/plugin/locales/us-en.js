@@ -71,7 +71,8 @@ export default {
         'cashier': 'By Cashier',
         'server': 'By Server',
         'order': 'By Order Type',
-        'payment': 'By Payment Type'
+        'payment': 'By Payment Type',
+        'station': 'By Station'
     },
     tag: {
         'goodCustomer': 'Good',
@@ -338,7 +339,8 @@ export default {
         'giftCardReload': 'Gift Card Reload',
         'setTips': 'Set Tips',
         'report': 'Report',
-        'paymentHistory': 'Payment History'
+        'paymentHistory': 'Payment History',
+        'terminalTransactions': 'Terminal Transaction Records'
     },
     menu: {
         'course': 'Course',
@@ -439,7 +441,8 @@ export default {
         'tableClearFailed': 'Cannot Clear',
         'tableClearFailedTip': 'You can not clear Table: {i} yet.',
         'voidCreditSale': 'Void Credit Sales',
-        'voidCreditSaleTip': "Also will remove ticket #{i} 's {i} payment record",
+        'voidCreditInvoice': "Also will remove ticket #{i} 's {i} payment record",
+        'voidCreditReload':"Also will remove this gift card reload amount.",
         'tipAdjustment': 'Tip Adjustment',
         'tipAdjustmentTip': 'Tip adjusted to ${i}, Total: ${i}',
         'batchClose': 'Batch Close',
@@ -698,7 +701,7 @@ export default {
         'thirdPartyTotal': 'Third Party Total',
         'tips': 'Tips',
         'tipsTotal': 'Tips Total',
-        'tipsDetail':'Tips Detail',
+        'tipsDetail': 'Tips Detail',
         'payout': 'Payout',
         'others': 'Others',
         'overallTotal': 'Overall Total',
