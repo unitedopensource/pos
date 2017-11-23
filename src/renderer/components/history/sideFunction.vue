@@ -303,7 +303,7 @@ export default {
           this.$p("paymentMark");
         })
         .catch(() => {
-          this.$p("Payment");
+          this.$p("Payment", { regular: true });
         });
     },
     print() {
@@ -394,7 +394,7 @@ export default {
           });
     },
     report() {
-      this.reportable ? this.$p("Report") : this.$denyAccess()
+      this.reportable ? this.$p("Report") : this.$denyAccess();
     },
     search() {},
     updateInvoice(ticket) {

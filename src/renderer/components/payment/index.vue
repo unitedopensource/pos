@@ -606,7 +606,9 @@ export default {
   mounted() {
     this.order.source === "POS"
       ? this.setPaymentType("CASH")
-      : this.setPaymentType("THIRD");
+      : this.init.hasOwnProperty("regular")
+        ? this.setPaymentType("CASH")
+        : this.setPaymentType("THIRD");
   },
   beforeDestroy() {
     this.releaseComponentLock &&
@@ -623,8 +625,10 @@ export default {
           : JSON.parse(JSON.stringify(this.$store.getters.order));
 
         this.payment = this.order.payment;
-        this.isThirdPartyPayment =
-          !this.station.terminal.enable || this.order.source !== "POS";
+
+        this.isThirdPartyPayment = this.init.hasOwnProperty("regular")
+          ? false
+          : !this.station.terminal.enable || this.order.source !== "POS";
 
         this.$socket.emit("[PAYMENT] CHECK_PAY", this.order._id, paid => {
           let remain = toFixed(this.payment.balance - paid, 2);

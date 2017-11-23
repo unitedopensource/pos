@@ -3,7 +3,9 @@ import Electron from 'vue-electron'
 import Router from 'vue-router'
 import VueSocketio from 'vue-socket.io'
 import VueTouch from 'vue-touch'
-import { VueMaskDirective } from 'v-mask'
+import {
+  VueMaskDirective
+} from 'v-mask'
 import moment from 'moment'
 import Net from 'net'
 import Ip from 'ip'
@@ -15,12 +17,27 @@ import VueBus from './plugin/bus'
 
 Vue.use(Electron)
 Vue.use(VueBus)
-Vue.use(VueTouch, { name: 'v-touch' })
+Vue.use(VueTouch, {
+  name: 'v-touch'
+})
 Vue.use(Router)
 Vue.use(dialog)
 Vue.use(i18n)
 
 Vue.directive('mask', VueMaskDirective);
+Vue.directive('outer-click', {
+  bind: function (el, binding, vnode) {
+    this.event = function (event) {
+      if (!(el == event.target || el.contains(event.target))) {
+        vnode.context[binding.expression](event);
+      }
+    };
+    document.body.addEventListener('click', this.event)
+  },
+  unbind: function (el) {
+    document.body.removeEventListener('click', this.event)
+  },
+});
 
 Vue.config.debug = true
 window.moment = moment
@@ -45,16 +62,24 @@ let findHost = new Promise((resolve, reject) => {
     resolve(args[++host]);
     return;
   }
-  let start = 0, end = 255;
+  let start = 0,
+    end = 255;
   while (start <= end) {
     let target = ip + start;
     (function (target) {
-      let scanner = Net.connect({ host: target, port: 8888 }, () => {
+      let scanner = Net.connect({
+        host: target,
+        port: 8888
+      }, () => {
         scanner.destroy();
         resolve(target)
       });
-      setTimeout(() => { scanner.destroy() }, 2000);
-      scanner.on("error", () => { scanner.destroy() });
+      setTimeout(() => {
+        scanner.destroy()
+      }, 2000);
+      scanner.on("error", () => {
+        scanner.destroy()
+      });
     })(target);
     start++;
   }
@@ -138,7 +163,9 @@ String.prototype.toFixed = function (places) {
   return isNumber(this) ? parseFloat(this).toFixed(places) : "0.00";
 }
 String.prototype.toCapitalCase = function () {
-  return this.replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); });
+  return this.replace(/\w\S*/g, function (txt) {
+    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+  });
 };
 window.toFixed = function (number, fractionSize) {
   return +(Math.round(+(number.toString() + 'e' + fractionSize)).toString() + 'e' + -fractionSize);
