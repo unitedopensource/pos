@@ -54,6 +54,9 @@ export default {
   mounted() {
     window.addEventListener("keydown", this.input, false);
   },
+  beforeDestroy() {
+    window.removeEventListener("keydown", this.input, false);
+  },
   methods: {
     setCategory(index) {
       this.pointIndex = null;
@@ -263,9 +266,6 @@ export default {
       }
     },
     ...mapActions(["replaceMenuItem"])
-  },
-  beforeDestroy() {
-    window.removeEventListener("keydown", this.input, false);
   },
   sockets: {
     ITEM_UPDATED() {

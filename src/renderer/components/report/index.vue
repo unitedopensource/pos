@@ -291,7 +291,7 @@ export default {
       report.push({
         text: this.$t("report.salesTotal"),
         style: "space bold total",
-        value: "$ " + salesTotal.toFixed(2)
+        value: salesTotal.toFixed(2)
       });
 
       if (this.reportDetail === "simple") return report;
