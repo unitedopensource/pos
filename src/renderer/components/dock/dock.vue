@@ -53,10 +53,10 @@ export default {
   },
   computed: {
     type() {
-      let type =
-        this.app.mode === "create"
-          ? "type." + this.ticket.type
-          : "type." + this.order.type;
+      let type = this.order.type
+        ? "type." + this.order.type
+        : "type." + this.ticket.type;
+
       return this.ticket.type === "DINE_IN"
         ? this.$t(type, this.app.language) +
             (this.order.table

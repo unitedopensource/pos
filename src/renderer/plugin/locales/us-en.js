@@ -367,7 +367,7 @@ export default {
         'exitConfirmTip': 'Unsaved order will be removed.',
         'systemProcessing': 'System Processing...',
         'orderTypeSwitchConfirm': 'Change Order Type',
-        'orderTypeSwitchTip': 'Order Type ({i}) will change to {i}',
+        'orderTypeSwitchTip': 'Order Type {i} will change to {i}',
         'autoLock': 'Auto Lock',
         'autoLockTip': 'POS will lock the screen due to no operation in {i} seconds',
         'printConfirm': 'Print Confirm',
