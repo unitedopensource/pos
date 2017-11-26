@@ -404,7 +404,7 @@ export default {
       let date = document.querySelector("#calendar .text").innerText;
 
       this.$socket.emit("[PAYMENT] VIEW_TRANSACTIONS", date, data => {
-        this.$p("history", { data });
+        this.$p("history", { data:data.reverse() });
       });
     },
     ...mapActions([

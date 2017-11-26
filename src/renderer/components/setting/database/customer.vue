@@ -57,7 +57,7 @@
                 </button>
             </div>
         </footer>
-        <div :is="component" :init="componentData"></div>
+        <div :is="component" :init="componentData" @remove="remove" @update="update"></div>
     </div>
 </template>
 
@@ -99,7 +99,17 @@ export default {
       });
     },
     edit(customer) {
+      this.$p("editor", { customer });
+    },
+    remove(customer) {
+      this.$socket.emit("[CMS] DELETE_CUSTOMER", customer, callback => {
+        this.fetchData();
+      });
+      this.$q();
+    },
+    update(customer) {
       console.log(customer);
+      this.$q();
     }
   },
   watch: {

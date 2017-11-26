@@ -59,7 +59,7 @@
                             <i class="fa fa-print" @click="printReport(log)"></i>
                         </td>
                         <td class="fn">
-                            <i class="fa fa-eye"></i>
+                            <i class="fa fa-external-link"></i>
                         </td>
                     </tr>
                 </tbody>

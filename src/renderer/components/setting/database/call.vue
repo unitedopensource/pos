@@ -2,7 +2,7 @@
     <div class="customer">
         <header>
             <nav>
-                <h3><i class="fa fa-users"></i><span>{{$t('title.callHistory')}}</span></h3>
+                <h3><i class="fa fa-phone-square"></i><span>{{$t('title.callList')}}</span></h3>
             </nav>
             <section class="filter">
 

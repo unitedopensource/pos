@@ -675,7 +675,7 @@ export default {
         title: "dialog.splitPayment",
         msg: "dialog.splitPaymentTip",
         buttons: [
-          // { text: "button.payBalanceDue", fn: "reject" },
+          { text: "button.payBalanceDue", fn: "reject" },
           { text: "button.splitPay", fn: "resolve" }
         ]
       };
