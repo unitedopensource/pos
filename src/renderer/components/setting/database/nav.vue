@@ -10,7 +10,7 @@
                     <i class="fa fa-location-arrow"></i>
                     <span class="text">{{$t('nav.address')}}</span>
                 </router-link>
-                <router-link tag="li" :to="{name:'Setting.database.client'}">
+                <router-link tag="li" :to="{name:'Setting.database.customer'}">
                     <i class="fa fa-users"></i>
                     <span class="text">{{$t('nav.customer')}}</span>
                 </router-link>

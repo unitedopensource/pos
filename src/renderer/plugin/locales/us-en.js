@@ -311,7 +311,7 @@ export default {
         'stats': 'Stats',
         'terminalRecord': 'Terminal Records',
         'voidNote': 'Void Note',
-        'databaseHealth': '{i} Database Health Report',
+        'databaseHealth': 'Database Health Report',
         'softwareOperator': 'Software Users Management',
         'setDriver': 'Set Driver',
         'timecard': 'Timecard Records',
@@ -340,7 +340,8 @@ export default {
         'setTips': 'Set Tips',
         'report': 'Report',
         'paymentHistory': 'Payment History',
-        'terminalTransactions': 'Terminal Transaction Records'
+        'terminalTransactions': 'Terminal Transaction Records',
+        'customerList': 'Customer List'
     },
     menu: {
         'course': 'Course',
@@ -442,7 +443,7 @@ export default {
         'tableClearFailedTip': 'You can not clear Table: {i} yet.',
         'voidCreditSale': 'Void Credit Sales',
         'voidCreditInvoice': "Also will remove ticket #{i} 's {i} payment record",
-        'voidCreditReload':"Also will remove this gift card reload amount.",
+        'voidCreditReload': "Also will remove this gift card reload amount.",
         'tipAdjustment': 'Tip Adjustment',
         'tipAdjustmentTip': 'Tip adjusted to ${i}, Total: ${i}',
         'batchClose': 'Batch Close',
@@ -958,7 +959,8 @@ export default {
         'lock': 'Lock',
         'tenderDetail': 'Paid: $ {i}\nTendered: ${i}',
         'readyBatch': 'Ready For Batch',
-        'commission': 'Commission'
+        'commission': 'Commission',
+        'totalCustomers': 'Total Customers: '
     },
     nav: {
         'store': 'Store',

@@ -14,9 +14,11 @@ import routes from './routes'
 import i18n from './plugin/dict'
 import dialog from './plugin/dialog'
 import VueBus from './plugin/bus'
+import Trend from "vuetrend"
 
 Vue.use(Electron)
 Vue.use(VueBus)
+Vue.use(Trend)
 Vue.use(VueTouch, {
   name: 'v-touch'
 })

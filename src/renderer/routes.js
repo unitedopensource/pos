@@ -222,9 +222,9 @@ export default [{
         component: require('./components/setting/database/address')
       },
       {
-        path: 'Client',
-        name: 'Setting.database.client',
-        component: require('./components/setting/database/client')
+        path: 'Customer',
+        name: 'Setting.database.customer',
+        component: require('./components/setting/database/customer')
       }, {
         path: 'Call',
         name: 'Setting.database.call',

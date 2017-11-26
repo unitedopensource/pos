@@ -65,7 +65,7 @@ export default {
         'server': '按服务员',
         'order': '按订单类别',
         'payment': '按付款方式',
-        'station':'按工作站'
+        'station': '按工作站'
     },
     tag: {
         'goodCustomer': '好客人',
@@ -241,7 +241,7 @@ export default {
         'stats': '数据',
         'voidNote': '作废原因',
         'search': '搜索',
-        'databaseHealth': '关于 {i} 数据库健康报告',
+        'databaseHealth': '数据库健康报告',
         'softwareOperator': '软件用户管理',
         'setDriver': '设定司机',
         'timecard': '打卡记录',
@@ -270,7 +270,8 @@ export default {
         'setTips': '调整小费',
         'report': '报表',
         'paymentHistory': '付款交易记录',
-        'terminalTransactions':'信用卡交易记录'
+        'terminalTransactions': '信用卡交易记录',
+        'customerList': '客户列表'
     },
     menu: {
         'course': '定时',
@@ -630,7 +631,7 @@ export default {
         'thirdPartyTotal': '第三方',
         'tipTotal': '总小费',
         'tips': '小费',
-        'tipsDetail':'小费明细',
+        'tipsDetail': '小费明细',
         'payout': '支付',
         'others': '其它',
         'overallTotal': '总数',
@@ -949,7 +950,8 @@ export default {
         'lock': '锁定',
         'tenderDetail': '支付: $ {i}\n找零: ${i}',
         'readyBatch': '准备过账',
-        'commission': '佣金'
+        'commission': '佣金',
+        'totalCustomers': '所有用户数: '
     },
     nav: {
         'store': '店面',

@@ -1,8 +1,8 @@
 <template>
     <div>
         <header>
-            <p class="tip">Health Report</p>
-            <h1>{{$t('title.databaseHealth',status.db)}}</h1>
+            <p class="tip">{{status.db}}</p>
+            <h1>{{$t('title.databaseHealth')}}</h1>
             <div class="summary">
                 <div>
                     <span class="text">{{$t('database.dataSize')}}</span>
@@ -27,51 +27,54 @@
 
 <script>
 export default {
-    data() {
-        return {
-            status: {}
-        }
+  data() {
+    return {
+      status: {}
+    };
+  },
+  created() {
+    this.$socket.emit("[DB] STATUS", data => {
+      this.status = data;
+    });
+  },
+  filters: {
+    mb(value) {
+      return value ? (value / 1024 / 1024).toPrecision(4) + " MB" : value;
     },
-    created() {
-        this.$socket.emit('[DB] STATUS', data => { this.status = data })
-    },
-    filters: {
-        mb(value) {
-            return value ? (value / 1024 / 1024).toPrecision(4) + " MB" : value
-        },
-        kb(value) {
-            return value ? (value / 1024).toPrecision(4) + " KB" : value
-        }
+    kb(value) {
+      return value ? (value / 1024).toPrecision(4) + " KB" : value;
     }
-}
+  }
+};
 </script>
 
 <style scoped>
 header {
-    padding: 25px 45px 0;
-    background: #eee;
+  padding: 25px 45px 0;
+  background: #eee;
 }
 
 .tip {
-    font: 18px/1 "Microsoft Yahei";
-    color: #404040;
+  font: 18px/1 "Microsoft Yahei";
+  color: #404040;
+  height: 18px;
 }
 
 h1 {
-    color: #37474F;
-    font: bold 36px/50px "Microsoft Yahei";
+  color: #37474f;
+  font: bold 36px/50px "Microsoft Yahei";
 }
 
 .summary {
-    color: #666;
-    padding: 15px;
+  color: #666;
+  padding: 15px;
 }
 
 .summary div {
-    display: flex;
+  display: flex;
 }
 
 .text {
-    min-width: 100px;
+  min-width: 100px;
 }
 </style>
