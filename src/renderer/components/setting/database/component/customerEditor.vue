@@ -1,6 +1,6 @@
 <template>
-  <div class="popupMask dark center">
-      <div class="info">
+  <div class="popupMask dark center" @click.self="init.resolve">
+      <div class="customer">
         <header>
             <h3>{{$t(title)}}</h3>
             <h5></h5>
@@ -18,6 +18,27 @@
                 <div class="input">
                     <i class="fa fa-fax"></i>
                     <input type="text" v-model="customer.extension">
+                </div>
+            </div>
+            <div class="field single">
+                <label>{{$t("text.address")}}</label>
+                <div class="input">
+                    <i class="fa fa-map-marker"></i>
+                    <input type="text" v-model="customer.address">
+                </div>
+            </div>
+            <div class="field double">
+                <label>{{$t("text.dob")}}</label>
+                <div class="input">
+                    <i class="fa fa-calendar"></i>
+                    <input type="text" v-model="customer.extra.dob">
+                </div>
+            </div>
+            <div class="field double">
+                <label>{{$t("text.email")}}</label>
+                <div class="input">
+                    <i class="fa fa-envelope"></i>
+                    <input type="text" v-model="customer.extra.email">
                 </div>
             </div>
         </section>
@@ -76,10 +97,18 @@ export default {
 </script>
 
 <style scoped>
-.info {
+.customer {
   background: #fff;
+  width: 650px;
+  height: 500px;
 }
+
+.info {
+  height: 400px;
+}
+
 footer {
   display: flex;
+  align-items: center;
 }
 </style>

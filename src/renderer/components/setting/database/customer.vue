@@ -81,7 +81,7 @@ export default {
   created() {
     this.$socket.emit("[CUSTOMER] COUNT", count => {
       this.totalCustomers = count;
-      this.totalPage = Math.floor(count / 20);
+      this.totalPage = Math.ceil(count / 20);
     });
     this.$socket.emit("[CUSTOMER] TREND_WEEKLY", data => {
       console.log(data);
@@ -102,7 +102,7 @@ export default {
       this.$p("editor", { customer });
     },
     remove(customer) {
-      this.$socket.emit("[CMS] DELETE_CUSTOMER", customer, callback => {
+      this.$socket.emit("[CUSTOMER] DELETE", customer, callback => {
         this.fetchData();
       });
       this.$q();
