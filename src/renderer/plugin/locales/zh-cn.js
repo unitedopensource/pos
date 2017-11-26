@@ -271,7 +271,8 @@ export default {
         'report': '报表',
         'paymentHistory': '付款交易记录',
         'terminalTransactions': '信用卡交易记录',
-        'customerList': '客户列表'
+        'customerList': '客户列表',
+        'callList':'来电记录'
     },
     menu: {
         'course': '定时',
@@ -702,7 +703,12 @@ export default {
         'creditCount': '信用卡交易数',
         'debit': '借记卡',
         'debitCount': '借记卡交易数',
-        'print': '打印'
+        'print': '打印',
+        'phone': '电话号码',
+        'address': '地址',
+        'name': '名字',
+        'count': '次数',
+        'lastUpdate': '最后一次'
     },
     flow: {
         'START': '初始金额',

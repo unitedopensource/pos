@@ -296,7 +296,12 @@ export default {
         'creditCount': 'Credit Count',
         'debit': 'Debit',
         'debitCount': 'Debit Count',
-        'print': 'Print'
+        'print': 'Print',
+        'phone': 'Phone',
+        'address': 'Address',
+        'name': 'Name',
+        'count': 'Count',
+        'lastUpdate': 'Last Update'
     },
     flow: {
         'START': 'Deposit',
@@ -341,7 +346,8 @@ export default {
         'report': 'Report',
         'paymentHistory': 'Payment History',
         'terminalTransactions': 'Terminal Transaction Records',
-        'customerList': 'Customer List'
+        'customerList': 'Customer List',
+        'callList': 'Call History'
     },
     menu: {
         'course': 'Course',

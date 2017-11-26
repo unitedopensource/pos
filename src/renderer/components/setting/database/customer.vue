@@ -4,9 +4,14 @@
             <nav>
                 <h3><i class="fa fa-users"></i><span>{{$t('title.customerList')}}</span></h3>
             </nav>
-            <div class="filter">
-
-            </div>
+            <section class="filter">
+                <div class="search">
+                    <i class="fa fa-search"></i>
+                    <input type="text" v-model="phone" @keypress.enter="search">
+                </div>
+                <div></div>
+                <div></div>
+            </section>
         </header>
         <table>
             <thead>
@@ -69,6 +74,7 @@ export default {
       customerTrend: [],
       customers: [],
       totalPage: 1,
+      phone: "",
       page: 0
     };
   },
@@ -86,6 +92,11 @@ export default {
   methods: {
     fetchData() {
       this.$socket.emit("[CUSTOMER] FETCH_LIST", this.page);
+    },
+    search() {
+      this.$socket.emit("[CUSTOMER] SEARCH", this.phone, customer => {
+        this.edit(customer);
+      });
     },
     edit(customer) {
       console.log(customer);
@@ -112,9 +123,39 @@ export default {
 header {
   display: flex;
 }
+
 .filter {
   flex: 1;
+  display: flex;
+  padding: 0 15px;
+  align-items: center;
+  justify-content: flex-end;
 }
+
+.search {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  display: flex;
+  padding: 6px;
+  border-radius: 4px;
+}
+
+input {
+  border: none;
+  outline: none;
+  width: 120px;
+  font-family: "Yuanti-SC";
+  background: transparent;
+  font-weight: bold;
+  color: #3c3c3c;
+  font-size: 18px;
+}
+
+.search i {
+  margin: 0 7px 0 4px;
+  color: #555;
+}
+
 table {
   table-layout: auto;
   border-spacing: 0;
@@ -170,7 +211,7 @@ footer {
   height: 51px;
   overflow: hidden;
   padding: 0 15px;
-  border-top: 1px solid #ddd;
+  border-top: 1px solid #eee;
 }
 
 .svg {
