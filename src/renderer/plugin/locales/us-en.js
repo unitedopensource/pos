@@ -347,7 +347,9 @@ export default {
         'paymentHistory': 'Payment History',
         'terminalTransactions': 'Terminal Transaction Records',
         'customerList': 'Customer List',
-        'callList': 'Call History'
+        'callList': 'Call History',
+        'editCustomer': 'Edit Customer Info',
+        'newCustomer': 'Create Customer Info'
     },
     menu: {
         'course': 'Course',

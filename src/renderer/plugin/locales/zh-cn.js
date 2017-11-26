@@ -272,7 +272,9 @@ export default {
         'paymentHistory': '付款交易记录',
         'terminalTransactions': '信用卡交易记录',
         'customerList': '客户列表',
-        'callList':'来电记录'
+        'callList':'来电记录',
+        'editCustomer':'编辑用户资料',
+        'newCustomer':'新建用户资料'
     },
     menu: {
         'course': '定时',
