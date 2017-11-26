@@ -100,13 +100,57 @@ export default {
 .customer {
   background: #fff;
   width: 650px;
-  height: 500px;
+}
+
+header {
+  display: flex;
+  border-bottom: 1px solid #eee;
+}
+
+h3 {
+  padding: 15px 0 15px 15px;
+  width: 100%;
 }
 
 .info {
   height: 400px;
+  display: flex;
+  flex-wrap: wrap;
+  background: #fafafa;
 }
 
+.double {
+  width: 50%;
+  height: 60px;
+  display: inline-flex;
+  flex-direction: column;
+}
+
+.single {
+  width: 100%;
+}
+input {
+  border: none;
+  outline: none;
+  background: transparent;
+  width: 90%;
+  font-size: 20px;
+}
+
+.input {
+  border: 1px solid #eee;
+  width: 90%;
+  padding: 8px;
+  font-size: 20px;
+  color: #3c3c3c;
+  background: #fff;
+}
+
+.field {
+  height: 60px;
+  display: inline-flex;
+  flex-direction: column;
+}
 footer {
   display: flex;
   align-items: center;

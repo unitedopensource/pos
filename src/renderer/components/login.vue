@@ -28,7 +28,7 @@
         </label>
         <transition name="menu">
           <ul v-show="toggleMenu">
-            <li @click="massiveShutdown" v-if="isHost">
+            <li @click="shutdownStations" v-if="isHost">
               <i class="fa fa-plug"></i>
               <span>{{$t('login.massiveShutdown')}}</span>
             </li>
@@ -147,7 +147,7 @@
   -webkit-app-region: drag;
 }
 
-.disable{
+.disable {
   background: #f44336;
 }
 </style>
