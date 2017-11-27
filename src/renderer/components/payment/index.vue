@@ -1153,8 +1153,6 @@ export default {
               _id: ObjectId()
             });
 
-            Printer.printCreditCard(data);
-
             transaction = {
               _id,
               date: today(),
@@ -1179,7 +1177,9 @@ export default {
               lfd: data.account.number
             };
 
-            this.$socket.emit("[TERM] TRANSACTION", data);
+            this.$socket.emit("[TERM] TRANSACTION", data, content => {
+              Printer.printCreditCard(content);
+            });
             break;
           case "THIRD":
             transaction = {

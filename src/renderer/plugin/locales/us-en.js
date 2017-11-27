@@ -65,7 +65,9 @@ export default {
         'Purchase': 'Purchase',
         'Reload': 'Reload',
         'Activation': 'Activation',
-        'Deactivation': 'Deactivation'
+        'Deactivation': 'Deactivation',
+        'Order': 'Ticket',
+        'Reload': 'Reload'
     },
     filter: {
         'cashier': 'By Cashier',
@@ -300,7 +302,12 @@ export default {
         'address': 'Address',
         'name': 'Name',
         'count': 'Count',
-        'lastUpdate': 'Last Update'
+        'lastUpdate': 'Last Update',
+        'type': 'Type',
+        'station': 'Station',
+        'for': 'For',
+        'card': 'Card',
+        'auth': 'Auth'
     },
     flow: {
         'START': 'Deposit',
@@ -349,7 +356,7 @@ export default {
         'callList': 'Call History',
         'editCustomer': 'Edit Customer Info',
         'newCustomer': 'Create Customer Info',
-        'incomingCall':'Incoming Call'
+        'incomingCall': 'Incoming Call'
     },
     menu: {
         'course': 'Course',

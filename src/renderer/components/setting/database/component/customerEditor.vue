@@ -159,6 +159,7 @@ input {
   background: transparent;
   width: calc(90% - 30px);
   font-size: 20px;
+  color: #656565;
 }
 
 .input {

@@ -257,7 +257,7 @@ var Printer = function (plugin, config) {
         } = this.config;
         let device = this.station.printer || 'cashier';
 
-        if (!printer[device]['print']['CREDITCARD']) return;
+        //if (!printer[device]['print']['CREDITCARD']) return;
 
         let timestamp = moment(Number(trans.trace.time), 'YYYYMMDDHHmmss');
         let date = timestamp.format("MM / DD / YYYY");
@@ -306,6 +306,7 @@ var Printer = function (plugin, config) {
                     <p><span class="text">From Station</span><span class="value">${trans.station}</span></p>
                   </article>
                   <footer>
+                    <div class="index">${trans.index}</div>
                     <div class="agreement">
                       <p>I AGREE TO PAY ABOVE TOTAL AMOUNT</p>
                       <p>ACCORDING TO CARD ISSUER AGREEMENT</p>
@@ -337,6 +338,8 @@ var Printer = function (plugin, config) {
                   .agreement{text-align:center;margin:15px 0;}
                   p.sign{border-bottom:1px solid #000;margin-top:20px;}
                   p.center{text-align:center;}
+                  footer{position:relative;}
+                  .index{font-size:30px;font-weight:bold;position:absolute;bottom:5px;left:10px;}
                 </style>`;
         }
     }
@@ -1329,7 +1332,7 @@ function createFooter(table, ctrl, device, ticket) {
                                 </section>`)
         }
     })
-    if (!payment.settled) {
+    if (!payment.settled && payment.paid !== 0) {
         settle.push(`<section class="details">
                         <h3>Balance Due: $ ${payment.remain.toFixed(2)}</h3>
                     </section>`)

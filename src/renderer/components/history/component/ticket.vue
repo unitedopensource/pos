@@ -56,9 +56,9 @@ export default {
   left: -6px;
   content: attr(data-number);
   min-width: 37px;
-  height: 30px;
+  height: 32px;
   text-align: center;
-  line-height: 30px;
+  line-height: 32px;
   background: #03a9f4;
   color: #fff;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
@@ -158,7 +158,7 @@ export default {
 }
 
 .settled:before {
-  background: #4caf50;
+  background: #009688;
 }
 
 .bold {

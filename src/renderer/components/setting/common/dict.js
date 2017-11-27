@@ -71,7 +71,7 @@ var Dictionary = function (key) {
             zhCN: "排骨",
             usEN: "B.B.Q. Spare Ribs"
         }, {
-            zhCN: "无排骨",
+            zhCN: "无骨排",
             usEN: "Boneless Spare Ribs"
         }],
         CYGM: [{

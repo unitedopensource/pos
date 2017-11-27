@@ -58,7 +58,9 @@ export default {
         'Purchase': '交易',
         'Reload': '冲值',
         'Activation': '激活',
-        'Deactivation': '注销'
+        'Deactivation': '注销',
+        'Order':'订单',
+        'Reload':'充值'
     },
     filter: {
         'cashier': '按收银员',
@@ -710,7 +712,12 @@ export default {
         'address': '地址',
         'name': '名字',
         'count': '次数',
-        'lastUpdate': '最后一次'
+        'lastUpdate': '最后一次',
+        'type':'类别',
+        'station':'工作站',
+        'for':'用于',
+        'card':'卡号',
+        'auth':'认证码'
     },
     flow: {
         'START': '初始金额',

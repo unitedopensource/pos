@@ -7,23 +7,23 @@
                 <h5>{{$t('tip.foundPaymentRecords',transactions.length)}}</h5>
             </div>
             <nav class="filter">
-              <dropdown label="filter.station" :options="machines" filter="machine"></dropdown>
+              <dropdown label="filter.station" :options="stations" filter="station"></dropdown>
             </nav>
         </header>
         <table>
             <thead>
                 <tr>
                    <th class="index">ID</th>
-                   <th>Type</th>
-                   <th>Time</th>
-                   <th>station</th>
-                   <th>for</th>
-                   <th>Order</th>
-                   <th>card</th>
-                   <th>Auth</th>
-                   <th>Amount</th>
-                   <th>Tip</th>
-                   <th class="action">Action</th>
+                   <th>{{$t('thead.type')}}</th>
+                   <th>{{$t('thead.time')}}</th>
+                   <th>{{$t('thead.station')}}</th>
+                   <th>{{$t('thead.for')}}</th>
+                   <th>{{$t('thead.ticket')}}</th>
+                   <th>{{$t('thead.card')}}</th>
+                   <th>{{$t('thead.auth')}}</th>
+                   <th>{{$t('thead.amount')}}</th>
+                   <th>{{$t('thead.tip')}}</th>
+                   <th class="action">{{$t('thead.action')}}</th>
                 </tr>
             </thead>
             <tbody>
@@ -32,7 +32,7 @@
                     <td>{{record.transType}}</td>
                     <td>{{record.time | moment("HH:mm:ss")}}</td>
                     <td>{{record.station}}</td>
-                    <td>{{record.for}}</td>
+                    <td>{{$t('type.'+record.for)}}</td>
                     <td v-if="record.for === 'Order'" class="ticket">
                         <span class="type">{{$t('type.'+record.order.type)}}</span>
                         <span class="number">#{{record.order.number}}</span>
@@ -48,31 +48,33 @@
                     <td class="amount">$ {{record.amount.approve}}</td>
                     <td class="amount">$ {{record.amount.tip}}</td>
                     <td v-if="!record.close" class="action">
-                        <span class="print">Print</span>
-                        <span class="void" @click="voidSale(record)">Void</span>
+                        <span class="print" @click="print(record)">{{$t('button.print')}}</span>
+                        <span class="void" @click="voidSale(record)">{{$t('button.void')}}</span>
                     </td>
                     <td v-else class="action">
-                        <span class="refund">Refund</span>
+                        <span class="refund">{{$t('button.refund')}}</span>
                     </td>
                 </tr>
             </tbody>
             <tfoot>
                 <tr>
-                    <td class="num"></td>
-                    <td class="type"></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td class="settlement"></td>
-                    <td class="amount">$</td>
-                    <td class="amount">$</td>
+                    <td colspan="7">
+                      <div class="value">
+                        <span class="text">{{$t('text.tip')}}</span>
+                        <span class="amount">$ {{totalTip}}</span>
+                      </div>
+                      <div class="value">
+                        <span class="text">{{$t('text.total')}}</span>
+                        <span class="amount">$ {{totalAmount}}</span>
+                      </div>
+                    </td>
                 </tr>
             </tfoot>
         </table>
         <footer>
             <div class="btn" @click="adjustAllTips" :disabled="!deviceReady">{{$t('button.adjustTips')}}</div>
             <div class="f1">
-                <!-- <pagination :of="filteredTransactions" :max="12" :contain="13" @page="setPage"></pagination> -->
+                <pagination :of="records" :max="12" :contain="13" @page="setPage"></pagination>
             </div>
             <div class="btn" @click="init.resolve">{{$t('button.exit')}}</div>
         </footer>
@@ -99,8 +101,8 @@ export default {
       componentData: null,
       component: null,
       adjustable: false,
-      machines: [],
-      machine: null,
+      stations: [],
+      station: null,
       page: 0,
       device: null,
       terminal: null,
@@ -113,6 +115,11 @@ export default {
       .then(this.initialDevice)
       .then(this.initialData)
       .catch(this.initialFailed);
+
+    this.$bus.on("filter", this.applyFilter);
+  },
+  beforeDestroy() {
+    this.$bus.off("filter", this.applyFilter);
   },
   methods: {
     checkPermission() {
@@ -144,19 +151,17 @@ export default {
           msg: "dialog.stationNoTerminal",
           buttons: [{ text: "button.confirm", fn: "resolve" }]
         };
-        if (!this.station.terminal.enable) throw error;
 
-        let terminal = this.station.terminal;
-        let machine = this.station.alies;
+        let station = this.$store.getters.station;
+
+        if (!station.terminal.enable) throw error;
+
+        let terminal = station.terminal;
+        let machine = station.alies;
 
         this.terminal = this.getFile(terminal.model);
         this.terminal
-          .initial(
-            terminal.address,
-            terminal.port,
-            terminal.sn,
-            this.station.alies
-          )
+          .initial(terminal.address, terminal.port, terminal.sn, station.alies)
           .then(r => r.text())
           .then(device => {
             this.device = this.terminal.check(device);
@@ -170,9 +175,9 @@ export default {
     initialData() {
       return new Promise((resolve, reject) => {
         this.$socket.emit("[TERM] INITIAL", data => {
-          let machines = new Set();
-          data.map(t => t.station).forEach(name => machines.add(name));
-          this.machines = Array.from(machines).map(station => {
+          let stations = new Set();
+          data.map(t => t.station).forEach(name => stations.add(name));
+          this.stations = Array.from(stations).map(station => {
             return {
               text: station,
               value: station
@@ -191,6 +196,16 @@ export default {
     },
     setPage(number) {
       this.page = number;
+    },
+    applyFilter(data) {
+      let { value, type } = data;
+      console.log(value, type);
+      this[type] = value;
+      this.page = 0;
+
+      this.$nextTick(() => {
+        this.$bus.emit("applied");
+      });
     },
     getFile(device) {
       switch (device) {
@@ -217,6 +232,9 @@ export default {
         default:
           return "fa fa-credit-card-alt";
       }
+    },
+    print(record) {
+      Printer.printCreditCard(record, true);
     },
     voidSale(record) {
       let data =
@@ -295,9 +313,25 @@ export default {
   },
   computed: {
     records() {
-      return this.transactions;
+      let records = this.transactions;
+
+      if (this.machine) records = records.filter();
+
+      return records;
     },
-    ...mapGetters(["op", "station"])
+    totalAmount() {
+      return this.records
+        .map(i => i.amount.approve)
+        .reduce((a, b) => a + b, 0)
+        .toFixed(2);
+    },
+    totalTip() {
+      return this.records
+        .map(i => i.amount.tip)
+        .reduce((a, b) => a + b, 0)
+        .toFixed(2);
+    },
+    ...mapGetters(["op"])
   }
 };
 </script>
@@ -432,7 +466,7 @@ tfoot td {
 }
 
 .action span {
-  padding: 4px;
+  padding: 4px 6px;
   margin: 0 2px;
   color: #fff;
   cursor: pointer;
@@ -450,6 +484,15 @@ span.void {
 
 span.refund {
   background: #ff9800;
+}
+
+.value {
+  display: inline-flex;
+  margin: 0 10px;
+}
+
+.value .text {
+  margin-right: 10px;
 }
 </style>
 
