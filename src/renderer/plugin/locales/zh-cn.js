@@ -272,9 +272,9 @@ export default {
         'paymentHistory': '付款交易记录',
         'terminalTransactions': '信用卡交易记录',
         'customerList': '客户列表',
-        'callList':'来电记录',
-        'editCustomer':'编辑用户资料',
-        'newCustomer':'新建用户资料'
+        'callList': '来电记录',
+        'editCustomer': '编辑用户资料',
+        'newCustomer': '新建用户资料'
     },
     menu: {
         'course': '定时',
@@ -959,7 +959,9 @@ export default {
         'tenderDetail': '支付: $ {i}\n找零: ${i}',
         'readyBatch': '准备过账',
         'commission': '佣金',
-        'totalCustomers': '所有用户数: '
+        'totalCustomers': '所有用户数: ',
+        'dob': '生日',
+        'extension': '分机'
     },
     nav: {
         'store': '店面',

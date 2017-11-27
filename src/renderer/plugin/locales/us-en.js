@@ -968,7 +968,9 @@ export default {
         'tenderDetail': 'Paid: $ {i}\nTendered: ${i}',
         'readyBatch': 'Ready For Batch',
         'commission': 'Commission',
-        'totalCustomers': 'Total Customers: '
+        'totalCustomers': 'Total Customers: ',
+        'dob': 'Date of Birth',
+        'extension': 'Extension'
     },
     nav: {
         'store': 'Store',

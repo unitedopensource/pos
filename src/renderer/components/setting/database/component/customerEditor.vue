@@ -6,32 +6,46 @@
             <h5></h5>
         </header>
         <section class="info">
-            <div class="field double">
+            <div class="field triple">
                 <label>{{$t("text.phone")}}</label>
                 <div class="input">
                     <i class="fa fa-phone"></i>
                     <input type="text" v-model="customer.phone">
                 </div>
             </div>
-            <div class="field double">
+            <div class="field triple">
                 <label>{{$t("text.extension")}}</label>
                 <div class="input">
                     <i class="fa fa-fax"></i>
                     <input type="text" v-model="customer.extension">
                 </div>
             </div>
-            <div class="field single">
+            <div class="field triple">
+                <label>{{$t("text.name")}}</label>
+                <div class="input">
+                    <i class="fa fa-user"></i>
+                    <input type="text" v-model="customer.name">
+                </div>
+            </div>
+            <div class="field double">
                 <label>{{$t("text.address")}}</label>
                 <div class="input">
                     <i class="fa fa-map-marker"></i>
                     <input type="text" v-model="customer.address">
                 </div>
             </div>
+              <div class="field double">
+                <label>{{$t("text.city")}}</label>
+                <div class="input">
+                    <i class="fa fa-map-marker"></i>
+                    <input type="text" v-model="customer.city">
+                </div>
+            </div>
             <div class="field double">
                 <label>{{$t("text.dob")}}</label>
                 <div class="input">
                     <i class="fa fa-calendar"></i>
-                    <input type="text" v-model="customer.extra.dob">
+                    <input type="text" v-model="customer.extra.dob" v-mask="'##-##'" placeholder="MM-DD">
                 </div>
             </div>
             <div class="field double">
@@ -39,6 +53,13 @@
                 <div class="input">
                     <i class="fa fa-envelope"></i>
                     <input type="text" v-model="customer.extra.email">
+                </div>
+            </div>
+            <div class="field single">
+                <label>{{$t("text.note")}}</label>
+                <div class="input">
+                    <i class="fa fa-note"></i>
+                    <input type="text" v-model="customer.note">
                 </div>
             </div>
         </section>
@@ -100,6 +121,7 @@ export default {
 .customer {
   background: #fff;
   width: 650px;
+  box-shadow: var(--shadow);
 }
 
 header {
@@ -113,46 +135,67 @@ h3 {
 }
 
 .info {
-  height: 400px;
+  padding-bottom: 15px;
   display: flex;
   flex-wrap: wrap;
   background: #fafafa;
 }
 
+.triple {
+  width: calc(33% - 30px);
+}
+
 .double {
-  width: 50%;
-  height: 60px;
-  display: inline-flex;
-  flex-direction: column;
+  width: calc(50% - 30px);
 }
 
 .single {
   width: 100%;
 }
+
 input {
   border: none;
   outline: none;
   background: transparent;
-  width: 90%;
+  width: calc(90% - 30px);
   font-size: 20px;
 }
 
 .input {
   border: 1px solid #eee;
-  width: 90%;
-  padding: 8px;
+  border-radius: 4px;
+  padding: 8px 0;
   font-size: 20px;
   color: #3c3c3c;
   background: #fff;
 }
 
 .field {
-  height: 60px;
-  display: inline-flex;
-  flex-direction: column;
+  padding: 0 15px 0;
+  font-weight: bold;
+  color: #3c3c3c;
 }
+
+.field label {
+  padding: 7px 0px;
+  font-weight: bold;
+  color: #3c3c3c;
+  display: block;
+}
+
+.field i {
+  padding: 0 5px 0 10px;
+}
+.del {
+  padding: 0 15px;
+  color: #f44336;
+  cursor: pointer;
+}
+
 footer {
   display: flex;
   align-items: center;
+  border-top: 1px solid #eee;
+  background: #f5f5f5;
 }
 </style>

@@ -197,6 +197,7 @@ export default {
         .catch(this.reportError);
     },
     fetchData() {
+      this.$p("processor", { timeout: 60000 });
       return new Promise(next => {
         this.$socket.emit("[REPORT] INITIAL_DATA", this.reportRange, data => {
           next(data);
@@ -294,9 +295,44 @@ export default {
         value: salesTotal.toFixed(2)
       });
 
+      let deliveryFee = validInvoices
+        .map(t => t.payment.delivery)
+        .reduce(sum, 0);
+
+      let gratuity = validInvoices.map(t => t.payment.gratuity).reduce(sum, 0);
+
       if (this.reportDetail === "simple") return report;
 
       let orderPayment = transactions.filter(t => (t.for = "Order"));
+
+      report.push({
+        text: this.$t("report.deliveryFee"),
+        style: "",
+        value: `${deliveryFee.toFixed(2)}`
+      });
+
+      report.push({
+        text: this.$t("report.gratuity"),
+        style: "space",
+        value: `${gratuity.toFixed(2)}`
+      });
+
+      let payout = orderPayment
+        .filter(t => t.for === "Payout")
+        .map(t => t.actual)
+        .reduce(sum, 0);
+
+      report.push({
+        text: this.$t("report.payout"),
+        style: "space",
+        value: "- " + payout.toFixed(2)
+      });
+
+      report.push({
+        text: this.$t("report.overallTotal"),
+        style: "space bold breakline",
+        value: `$ ${(salesTotal + deliveryFee + gratuity - payout).toFixed(2)}`
+      });
 
       let cashTotal = orderPayment
         .filter(t => t.type === "CASH")
@@ -410,9 +446,9 @@ export default {
 
       report.push({
         text: this.$t("report.unsettled") + ` ( ${unsettled.length} )`,
-        style: "space",
+        style: "space breakline",
         value: unsettled
-          .map(invoice => invoice.payment.subtotal + invoice.payment.tax)
+          .map(i => i.payment.due)
           .reduce(sum, 0)
           .toFixed(2)
       });
@@ -463,41 +499,6 @@ export default {
           value: tipTotal.toFixed(2)
         });
       }
-
-      let deliveryFee = validInvoices
-        .map(t => t.payment.delivery)
-        .reduce(sum, 0);
-
-      let gratuity = validInvoices.map(t => t.payment.gratuity).reduce(sum, 0);
-
-      report.push({
-        text: this.$t("report.others"),
-        style: "bold",
-        value: "$ " + (deliveryFee + gratuity).toFixed(2)
-      });
-
-      report.push({
-        text: this.$t("report.deliveryFee"),
-        style: "indent",
-        value: `( ${deliveryFee.toFixed(2)} )`
-      });
-
-      report.push({
-        text: this.$t("report.gratuity"),
-        style: "indent space",
-        value: `( ${gratuity.toFixed(2)} )`
-      });
-
-      let payout = orderPayment
-        .filter(t => t.for === "Payout")
-        .map(t => t.actual)
-        .reduce(sum, 0);
-
-      report.push({
-        text: this.$t("report.payout"),
-        style: "space",
-        value: "- " + payout.toFixed(2)
-      });
 
       return report;
     },
@@ -845,7 +846,7 @@ export default {
           .map(i => i.payment.due)
           .reduce((a, b) => a + b, 0);
 
-        let unsettledInvoice = order.filter(i => !i.settled);
+        let unsettledInvoice = order.filter(i => !i.settled && i.status === 1);
         let unsettled = unsettledInvoice
           .map(i => i.payment.due)
           .reduce((a, b) => a + b, 0);
@@ -908,7 +909,7 @@ export default {
       this.init.resolve();
     },
     reportError(error) {
-      console.log(error);
+      this.$q();
       this.$socket.emit("[SYS] RECORD", {
         type: "Software",
         event: "reportError",

@@ -60,26 +60,26 @@
                     <span class="text">{{$t("text.tax")}}:</span>
                     <span class="value">{{payment.tax | decimal}}</span>
                 </div>
-                <div v-if="order.type === 'DELIVERY' && payment.delivery === 0 && payment.tip > 0">
+                <template v-if="order.type === 'DELIVERY'">
+                  <div :class="{hidden:parseFloat(payment.tip) === 0}">
                     <span class="text">{{$t("text.tip")}}:</span>
                     <span class="value">{{payment.tip | decimal}}</span>
-                </div>
-                <div v-else-if="order.type === 'DELIVERY'">
-                  <span class="text">{{$t("text.deliveryFee")}}:</span>
-                    <span class="value">{{payment.delivery | decimal}}</span>
-                </div>
-                <div v-else-if="order.type === 'DINE_IN'" :class="{hidden:payment.tip === 0}">
-                    <span class="text">{{$t("text.tip")}}:</span>
-                    <span class="value">{{payment.tip | decimal}}</span>
-                </div>
-                <div v-else :class="{hidden:parseFloat(payment.delivery) === 0}">
+                  </div>
+                  <div>
                     <span class="text">{{$t("text.deliveryFee")}}:</span>
                     <span class="value">{{payment.delivery | decimal}}</span>
-                </div>
-                <div :class="{hidden:parseFloat(payment.discount) === 0}">
+                  </div>
+                </template>
+                <template v-else>
+                  <div :class="{hidden:parseFloat(payment.tip) === 0}">
+                    <span class="text">{{$t("text.tip")}}:</span>
+                    <span class="value">{{payment.tip | decimal}}</span>
+                  </div>
+                  <div :class="{hidden:parseFloat(payment.discount) === 0}">
                     <span class="text">{{$t("text.discount")}}:</span>
                     <span class="value">- {{payment.discount | decimal}}</span>
-                </div>
+                  </div>
+                </template>
                 <div>
                     <span class="text">{{$t("text.total")}}:</span>
                     <span class="value">{{payment.due | decimal}}</span>
@@ -463,7 +463,7 @@ header.info {
   text-align: center;
   font-weight: bold;
   font-size: 22px;
-  margin:0 5px;
+  margin: 0 5px;
 }
 
 header i {

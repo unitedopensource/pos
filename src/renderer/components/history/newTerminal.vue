@@ -111,8 +111,8 @@ export default {
   created() {
     this.checkPermission()
       .then(this.initialDevice)
-      .then(this.initialData);
-    //.catch(this.initialFailed);
+      .then(this.initialData)
+      .catch(this.initialFailed);
   },
   methods: {
     checkPermission() {

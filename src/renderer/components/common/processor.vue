@@ -29,15 +29,19 @@ export default {
     };
   },
   created() {
+    let data = {
+      title: "dialog.timeout",
+      msg: "dialog.timeoutTip",
+      buttons: [{ text: "button.confirm", fn: "resolve" }]
+    };
+
+    let duration = this.init.timeout || 300000;
+
     this.timeout = setTimeout(() => {
-      this.$dialog({
-        title: "dialog.timeout",
-        msg: "dialog.timeoutTip",
-        buttons: [{ text: "button.confirm", fn: "resolve" }]
-      }).then(() => {
+      this.$dialog(data).then(() => {
         this.init.reject();
       });
-    }, 60000);
+    }, duration);
   },
   beforeDestroy() {
     clearTimeout(this.timeout);

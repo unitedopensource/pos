@@ -173,6 +173,20 @@ table {
   height: 630px;
 }
 
+tbody {
+  display: block;
+  height: 507px;
+  text-align: center;
+}
+
+thead,
+tbody tr,
+tfoot tr {
+  display: table;
+  table-layout: fixed;
+  width: 100%;
+}
+
 h3 {
   padding: 20px 0 15px 25px;
   color: #37474f;

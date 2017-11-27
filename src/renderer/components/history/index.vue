@@ -107,6 +107,9 @@ export default {
       this.resetViewOrder();
     },
     resetViewOrder() {
+      let dom = document.querySelector(".ticket.active");
+      dom && dom.classList.remove("active");
+      
       this.$nextTick(() => {
         this.orders.length && this.getInvoice(this.invoices[0]);
         let dom = document.querySelector(".ticket");

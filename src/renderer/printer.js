@@ -483,8 +483,9 @@ var Printer = function (plugin, config) {
                     p .text{flex:1;}
                     .indent .text{text-indent:1.5em;font-style:italic;}
                     .bold .value{font-weight:bold;}
-                    .space{margin-bottom:10px;}
-                    .total .value{font-weight:bold;border-top:1px dashed #000;}
+                    .space {margin-bottom:10px;}
+                    .total .value{border-top:1px dashed #000;}
+                    .breakline {border-bottom:1px dashed #000;}
                     .value{min-width:90px;text-align:right;}
                     footer p{text-align:center;border-top:1px solid #000;margin-top:15px;display:block;}
                 </style>`;
