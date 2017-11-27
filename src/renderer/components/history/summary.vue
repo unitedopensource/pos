@@ -1,34 +1,34 @@
 <template>
   <div class="summary" :class="{hide:!viewable}">
     <div class="filter active" @click="setFilter('',$event)">
-      <div class="text">{{$t('type.allInvoice')}}<span class="count">{{summary.total}}</span></div>
+      <div class="text">{{$t('type.allInvoice')}}<span class="count">{{summary.totalCount}}</span></div>
       <div class="value">$ {{summary.totalAmount | decimal}}</div>
     </div>
-    <div class="filter" @click="setFilter('WALK_IN',$event)" v-show="summary.walkIn">
-      <div class="text">{{$t('type.walkInInvoice')}}<span class="count">{{summary.walkIn}}</span></div>
+    <div class="filter" @click="setFilter('WALK_IN',$event)" v-show="summary.walkInCount">
+      <div class="text">{{$t('type.walkInInvoice')}}<span class="count">{{summary.walkInCount}}</span></div>
       <div class="value">$ {{summary.walkInAmount | decimal}}</div>
     </div>
-    <div class="filter" @click="setFilter('PICK_UP',$event)" v-show="summary.pickUp">
-      <div class="text">{{$t('type.pickUpInvoice')}}<span class="count">{{summary.pickUp}}</span></div>
+    <div class="filter" @click="setFilter('PICK_UP',$event)" v-show="summary.pickUpCount">
+      <div class="text">{{$t('type.pickUpInvoice')}}<span class="count">{{summary.pickUpCount}}</span></div>
       <div class="value">$ {{summary.pickUpAmount | decimal}}</div>
     </div>
-    <div class="filter dropDown" @click="setFilter('DELIVERY',$event)" v-show="summary.deliveries">
-      <div class="text">{{$t('type.deliveryInvoice')}}<span class="count">{{summary.deliveries}}</span></div>
+    <div class="filter dropDown" @click="setFilter('DELIVERY',$event)" v-show="summary.deliveryCount">
+      <div class="text">{{$t('type.deliveryInvoice')}}<span class="count">{{summary.deliveryCount}}</span></div>
       <div class="value">$ {{summary.deliveryAmount | decimal}}</div>
       <div class="drivers" v-show="!driver">
         <div class="driver" v-for="(value,key,index) in summary.driver" :key="index" @click.stop="setDriver(key)">
           <span>{{key}}{{$t('text.driver')}} ({{value.count}})</span>
-          <span class="price">$ {{value.total.toFixed(2)}}</span>
+          <span class="price">$ {{value.total | decimal}}</span>
         </div>
       </div>
     </div>
-    <div class="filter" @click="setFilter('DINE_IN',$event)" v-show="summary.dineIn">
-      <div class="text">{{$t('type.dineInInvoice')}}<span class="count">{{summary.dineIn}}</span></div>
+    <div class="filter" @click="setFilter('DINE_IN',$event)" v-show="summary.dineInCount">
+      <div class="text">{{$t('type.dineInInvoice')}}<span class="count">{{summary.dineInCount}}</span></div>
       <div class="value">$ {{summary.dineInAmount | decimal}}</div>
     </div>
-    <div class="filter" @click="setFilter('UNSETTLE',$event)" v-show="summary.unsettle">
-      <div class="text">{{$t('type.unpaidInvoice')}}<span class="count">{{summary.unsettle}}</span></div>
-      <div class="value">$ {{summary.unsettleAmount |decimal}}</div>
+    <div class="filter" @click="setFilter('UNSETTLE',$event)" v-show="summary.unsettledCount">
+      <div class="text">{{$t('type.unpaidInvoice')}}<span class="count">{{summary.unsettledCount}}</span></div>
+      <div class="value">$ {{summary.unsettledAmount |decimal}}</div>
     </div>
     <transition name="fadeDown" appear>
       <div class="date" id="calendar">
@@ -87,131 +87,94 @@ export default {
   computed: {
     summary() {
       let sum = (a, b) => a + b;
+      let driver = {};
+      let totalCount = 0,
+        walkInCount = 0,
+        pickUpCount = 0,
+        deliveryCount = 0,
+        dineInCount = 0,
+        buffetCount = 0,
+        unsettledCount = 0;
 
       let totalAmount = 0,
-        walkIn = 0,
         walkInAmount = 0,
-        pickUp = 0,
         pickUpAmount = 0,
-        deliveries = 0,
         deliveryAmount = 0,
-        dineIn = 0,
         dineInAmount = 0,
-        buffet = 0,
         buffetAmount = 0,
-        hibachi = 0,
-        hibachiAmount = 0,
-        bar = 0,
-        barAmount = 0,
-        unsettle = 0,
-        unsettleAmount = 0,
-        voided = 0,
-        voidedAmount = 0,
-        driver = {};
+        unsettledAmount = 0;
 
-      let invoices = this.approval(this.op.view, "invoices")
+      let invoices = this.allInvoices
         ? this.data
-        : this.data.filter(ticket => ticket.server === this.op.name);
-      let total = invoices.length;
+        : this.data.filter(t => t.server === this.op.name);
 
       invoices.forEach(invoice => {
-        let {
-          subtotal,
-          tax,
-          tip,
-          gratuity,
-          delivery,
-          discount,
-          total
-        } = invoice.payment;
-        let amount =
-          parseFloat(subtotal) + parseFloat(tax) - parseFloat(discount);
+        let { tip, delivery, discount, due } = invoice.payment;
 
         if (invoice.status === 1) {
-          totalAmount += amount;
+          totalCount++;
+          totalAmount += due;
 
           switch (invoice.type) {
             case "WALK_IN":
-              walkIn++;
-              walkInAmount += amount;
+              walkInCount++;
+              walkInAmount += due;
               break;
             case "PICK_UP":
-              pickUp++;
-              pickUpAmount += amount;
+              pickUpCount++;
+              pickUpAmount += due;
               break;
             case "DELIVERY":
-              deliveries++;
-              deliveryAmount += amount + parseFloat(delivery);
+              deliveryCount++;
+              deliveryAmount += due;
 
               if (invoice.driver) {
                 if (driver.hasOwnProperty(invoice.driver)) {
                   let name = invoice.driver;
                   driver[name].count++;
-                  driver[name].total += amount + delivery;
-                  driver[name].discount += parseFloat(discount);
-                  driver[name].tip += parseFloat(tip);
-                  driver[name].charge += invoice.deliveryFree
-                    ? 0
-                    : parseFloat(delivery);
+                  driver[name].total += due;
+                  driver[name].tip += tip;
                 } else {
                   driver[invoice.driver] = {
                     count: 1,
-                    total: amount + delivery,
-                    discount: parseFloat(discount),
-                    tip: parseFloat(tip),
-                    charge: invoice.deliveryFree ? 0 : parseFloat(delivery)
+                    total: due,
+                    tip
                   };
                 }
               }
               break;
             case "DINE_IN":
-              dineIn++;
-              dineInAmount += amount;
+              dineInCount++;
+              dineInAmount += due;
               break;
             case "BUFFET":
-              buffet++;
-              buffetAmount += amount;
-              break;
-            case "HIBACHI":
-              hibachi++;
-              hibachiAmount += amount;
-              break;
-            case "BAR":
-              bar++;
-              barAmount += amount;
+              buffetCount++;
+              buffetAmount += due;
               break;
           }
 
-          //unsettled
           if (!invoice.settled) {
-            unsettle++;
-            unsettleAmount += amount + parseFloat(delivery);
+            unsettledCount++;
+            unsettledAmount += due;
           }
-        } else {
-          voided++;
-          voidedAmount += amount;
         }
       });
 
       return {
-        total,
+        totalCount,
         totalAmount,
-        pickUp,
+        pickUpCount,
         pickUpAmount,
-        walkIn,
+        walkInCount,
         walkInAmount,
-        deliveries,
+        deliveryCount,
         deliveryAmount,
-        dineIn,
+        dineInCount,
         dineInAmount,
-        buffet,
+        buffetCount,
         buffetAmount,
-        hibachi,
-        hibachiAmount,
-        bar,
-        barAmount,
-        unsettle,
-        unsettleAmount,
+        unsettledCount,
+        unsettledAmount,
         driver
       };
     },

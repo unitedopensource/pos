@@ -404,7 +404,11 @@ export default {
       let date = document.querySelector("#calendar .text").innerText;
 
       this.$socket.emit("[PAYMENT] VIEW_TRANSACTIONS", date, data => {
-        this.$p("history", { data:data.reverse() });
+        this.$p("history", {
+          data: data
+            .filter(t => t.for === "Order")
+            .sort((a, b) => (a.ticket.number > b.ticket.number ? -1 : 1))
+        });
       });
     },
     ...mapActions([

@@ -178,9 +178,10 @@ export default {
     },
     checkAwake(stations) {
       ipcRenderer.send("Loading", this.$t("initial.awakeClients"));
-      Object.keys(stations).forEach(name => {
-        stations[name].wol && wol.wake(stations[name].mac);
-      });
+      stations &&
+        Object.keys(stations).forEach(name => {
+          stations[name].wol && wol.wake(stations[name].mac);
+        });
     },
     ...mapActions([
       "setApp",

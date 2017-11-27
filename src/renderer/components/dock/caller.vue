@@ -2,8 +2,8 @@
     <transition name="pop">
         <div class="caller" v-show="this.$route.name === 'Dashboard'" @click="go">
             <header>
-                <span class="f1">{{$t('dock.incomingCall')}}</span>
-                <span class="time">{{customer.extra.lastDate | fromNow}}</span>
+                <span class="f1">{{$t('title.incomingCall')}}</span>
+                <span class="lastUpdate">{{customer.extra.lastDate | fromNow}}</span>
             </header>
             <div class="wrap">
                 <i class="fa fa-3x fa-phone icon"></i>
@@ -11,151 +11,100 @@
                     <div class="phone">{{customer.phone | tel}}</div>
                     <div class="address">
                         <span>{{customer.address}}</span>
-                        <span>{{customer.city}}</span>
+                        <span class="city">{{customer.city}}</span>
                     </div>
                 </div>
             </div>
             <div class="tags">
-                <span class="tag" v-for="(tag,index) in customer.extra.tag" :key="index">{{$t('tag.'+tag)}}</span>
+                <span class="tag" v-for="(tag,index) in customer.extra.tags" :key="index">{{$t('tag.'+tag)}}</span>
             </div>
         </div>
     </transition>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions } from "vuex";
 export default {
-    props: ['init'],
-    data() {
-        return {
-            customer: {}
-        }
+  props: ["init"],
+  data() {
+    return {
+      customer: {}
+    };
+  },
+  created() {
+    this.customer = this.init.customer;
+  },
+  methods: {
+    go() {
+      this.setCustomer(this.customer);
+      this.setTicket({ type: "DELIVERY" });
+      this.$router.push({ name: "Information" });
+      this.init.resolve();
     },
-    created() {
-        this.customer = this.init.customer;
-    },
-    methods: {
-        go() {
-            this.setCustomer(this.customer);
-            this.setTicket({ type: 'DELIVERY' });
-            this.$router.push({ name: 'Information' });
-            this.init.resolve()
-        },
-        ...mapActions(['setCustomer', 'setTicket'])
-    }
-}
+    ...mapActions(["setCustomer", "setTicket"])
+  }
+};
 </script>
 
 <style scoped>
 .caller {
-    width: 290px;
-    position: fixed;
-    top: 65px;
-    left: 100px;
-    background: #fff;
-    color: #555;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  min-width: 290px;
+  max-width: 330px;
+  position: fixed;
+  top: 65px;
+  left: 100px;
+  background: #fff;
+  color: #555;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 header {
-    background: #29B6F6;
-    color: aliceblue;
-    font-size: 18px;
-    padding: 2px 10px;
-    display: flex;
-    text-shadow: 0 1px 1px #555;
+  padding: 5px 10px;
+  border-bottom: 1px solid #eeeeee;
+  background: #03a9f4;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  text-shadow: 0 1px 1px #333;
 }
 
 .wrap {
-    position: relative;
-    padding: 5px 10px;
-    display: flex;
-}
-
-
-@keyframes pop {
-    0% {
-        transform: scale(0);
-        opacity: 0
-    }
-    70% {
-        transform: scale(1.1);
-        opacity: 1
-    }
-    100% {
-        transform: scale(1);
-        opacity: 1
-    }
-}
-
-.pop-enter-active {
-    animation: pop .3s ease;
-}
-
-.pop-leave-active {
-    animation: pop .3s ease reverse;
-}
-
-.time {
-    font-weight: lighter;
-    font-size: 14px;
-}
-
-.phone {
-    font-family: "Agency FB";
-    font-weight: bold;
-    font-size: 22px;
-    line-height: 22px;
-    color: #616161;
-    margin: 2px 0;
+  display: flex;
+  padding: 5px;
 }
 
 .address {
-    font-size: 16px;
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  padding: 2px 0px;
 }
 
-.address span {
-    height: 16px;
-    line-height: 16px;
-    color: #b9b9b9;
-    font-size: 18px;
-    text-align: left;
+.city {
+  margin-left: 5px;
+  color: #9e9e9e;
 }
 
-.info {
-    flex: 1;
-    display: flex;
-    margin-left: 10px;
-    flex-direction: column;
-    align-items: flex-start;
+i {
+  padding: 0 10px 0 5px;
+  color: #009688;
+  text-shadow: 0 1px 1px #607d8b;
 }
 
 .tags {
-    background: #f1f1f1;
-    padding: 0 5px;
-    font-size: 16px;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    line-height: initial;
+  display: flex;
+  background: #eceff1;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .tag {
-    font-size: 14px;
-    background: #FF9800;
-    color: #fff;
-    text-shadow: 0 1px 1px #333;
-    padding: 5px;
-    margin: 2px;
-    border-radius: 4px;
-}
-
-.icon {
-    color: #009688;
-    text-shadow: 0 1px 1px #333;
-    width: 60px;
-    text-align: center;
+  font-size: 14px;
+  margin: 4px 0px 4px 4px;
+  background: #ff9800;
+  color: #fff;
+  text-shadow: 0 1px 1px #333;
+  padding: 3px 4px;
+  border-radius: 2px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.6);
 }
 </style>

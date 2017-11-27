@@ -116,7 +116,6 @@ export default {
     },
     dock: {
         'missInfo': '缺少资料',
-        'incomingCall': '来电',
         'clockIn': '打卡上班',
         'clockOut': '打卡下班',
         'giftCard': '礼物卡',
@@ -274,7 +273,8 @@ export default {
         'customerList': '客户列表',
         'callList': '来电记录',
         'editCustomer': '编辑用户资料',
-        'newCustomer': '新建用户资料'
+        'newCustomer': '新建用户资料',
+        'incomingCall':'来电'
     },
     menu: {
         'course': '定时',

@@ -123,7 +123,6 @@ export default {
     },
     dock: {
         'missInfo': 'Miss Info',
-        'incomingCall': 'Incoming Call',
         'clockIn': 'Clock In',
         'clockOut': 'Clock Out',
         'giftCard': 'Gift Card',
@@ -349,7 +348,8 @@ export default {
         'customerList': 'Customer List',
         'callList': 'Call History',
         'editCustomer': 'Edit Customer Info',
-        'newCustomer': 'Create Customer Info'
+        'newCustomer': 'Create Customer Info',
+        'incomingCall':'Incoming Call'
     },
     menu: {
         'course': 'Course',

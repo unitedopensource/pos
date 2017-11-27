@@ -1377,3 +1377,26 @@ footer.update span {
 .switch-leave-active {
   opacity: 0
 }
+
+@keyframes pop {
+  0% {
+    transform: scale(0);
+    opacity: 0
+  }
+  70% {
+    transform: scale(1.1);
+    opacity: 1
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1
+  }
+}
+
+.pop-enter-active {
+  animation: pop .3s ease;
+}
+
+.pop-leave-active {
+  animation: pop .3s ease reverse;
+}

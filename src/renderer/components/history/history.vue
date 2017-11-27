@@ -143,7 +143,7 @@ export default {
       });
     },
     initialData() {
-      this.transactions = this.init.data.filter(t => t.for === "Order");
+      this.transactions = this.init.data;
 
       let cashiers = new Set();
       let servers = new Set();
