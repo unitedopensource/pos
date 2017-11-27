@@ -49,12 +49,11 @@
                             <transition-group name="fadeDown" tag="div" class="options">
                                 <template v-if="reportDetail === 'customize'">
                                     <checkbox v-model="detailPayment" label="report.detailPayment" :key="1"></checkbox>
-                                    <checkbox v-model="tipsSource" label="report.tipsSource" :key="2"></checkbox>
-                                    <checkbox v-model="giftCard" label="report.giftCardSales" :key="3"></checkbox>
-                                    <checkbox v-model="hourly" label="report.hourlyReport" :key="4"></checkbox>
-                                    <checkbox v-model="houseAccount" label="report.redemptionReport" :key="5"></checkbox>
-                                    <checkbox v-model="itemSales" label="report.itemSales" :key="6"></checkbox>
-                                    <checkbox v-model="categorySales" label="report.categorySales" :key="7"></checkbox>
+                                    <checkbox v-model="giftCard" label="report.giftCardSales" :key="2"></checkbox>
+                                    <checkbox v-model="houseAccount" label="report.redemptionReport" :key="3"></checkbox>
+                                    <checkbox v-model="itemSales" label="report.itemSales" :key="4"></checkbox>
+                                    <checkbox v-model="categorySales" label="report.categorySales" :key="5"></checkbox>
+                                    <checkbox v-model="hourly" label="report.hourlyReport" :key="6"></checkbox>
                                 </template>
                             </transition-group>
                         </div>
@@ -95,7 +94,6 @@ export default {
       componentData: null,
       component: null,
       detailPayment: false,
-      tipsSource: false,
       cashier: false,
       waitStaff: false,
       driver: false,
@@ -296,7 +294,7 @@ export default {
       });
 
       let deliveryFee = validInvoices
-        .map(t => t.payment.delivery)
+        .map(i => i.payment.delivery)
         .reduce(sum, 0);
 
       let gratuity = validInvoices.map(t => t.payment.gratuity).reduce(sum, 0);
@@ -455,7 +453,7 @@ export default {
 
       let tipTotal = orderPayment.map(t => t.tip).reduce(sum, 0);
 
-      if (this.tipsSource) {
+      if (this.detailPayment) {
         let tipFrom = new Set();
         let tipTrans = orderPayment.filter(t => t.tip > 0);
         tipTrans.forEach(t => tipFrom.add(t.subType || t.type));

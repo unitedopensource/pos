@@ -47,15 +47,15 @@ export default {
   data() {
     return {
       viewable: false,
+      allInvoices: false,
       shortCut: false,
       driver: null,
       type: null
     };
   },
   created() {
-    this.viewable =
-      (this.op.view && this.op.view.includes("summary")) ||
-      this.op.role === "Admin";
+    this.viewable = this.approval(this.op.view, "summary");
+    this.allInvoices = this.approval(this.op.view, "invoices");
   },
   methods: {
     setFilter(type, e) {
@@ -72,16 +72,22 @@ export default {
       this.$emit("filter", "DRIVER", id);
     },
     prev() {
-      let date = moment(this.date, "YYYY-MM-DD").subtract(1, "d").format("YYYY-MM-DD");
+      let date = moment(this.date, "YYYY-MM-DD")
+        .subtract(1, "d")
+        .format("YYYY-MM-DD");
       this.$bus.emit("CALENDAR", date);
     },
     next() {
-      let date = moment(this.date, "YYYY-MM-DD").add(1, "d").format("YYYY-MM-DD");
+      let date = moment(this.date, "YYYY-MM-DD")
+        .add(1, "d")
+        .format("YYYY-MM-DD");
       this.$bus.emit("CALENDAR", date);
     }
   },
   computed: {
     summary() {
+      let sum = (a, b) => a + b;
+
       let totalAmount = 0,
         walkIn = 0,
         walkInAmount = 0,
@@ -179,7 +185,7 @@ export default {
           //unsettled
           if (!invoice.settled) {
             unsettle++;
-            unsettleAmount += amount;
+            unsettleAmount += amount + parseFloat(delivery);
           }
         } else {
           voided++;
