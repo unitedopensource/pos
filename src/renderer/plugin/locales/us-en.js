@@ -1014,7 +1014,8 @@ export default {
         'cashFlow': 'Cash Flow',
         'batch': 'Batch',
         'events': 'Events',
-        'live': 'Live'
+        'live': 'Live',
+        'department': 'Dept.'
     },
     setting: {
         'softwareSetting': 'UnitedPOS Setting',
@@ -1195,7 +1196,7 @@ export default {
         'paidRecords': '#{i} ticket has {i} payment records',
         'foundPaymentRecords': 'Found {i} payment records',
         'forGiftCard': 'Gift Card ( {i} )',
-        'payout':'Detail note on purchasing',
+        'payout': 'Detail note on purchasing',
         'table': {
             'actionsOnDone': 'Actions after tapping Done',
             'passwordRequire': 'Password input required before create a new table.',

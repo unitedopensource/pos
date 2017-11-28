@@ -43,6 +43,7 @@
                         <th>{{$t('thead.start')}}</th>
                         <th>{{$t('thead.end')}}</th>
                         <th class="hours">{{$t('thead.workHour')}}</th>
+                        <th>{{$t('thead.breakTime')}}</th>
                         <th>{{$t('thead.wage')}}</th>
                         <th>{{$t('thead.salary')}}</th>
                         <th class="padding">{{$t('thead.edit')}}</th>
@@ -56,6 +57,7 @@
                         <td>{{log.clockIn | moment('HH:mm:ss')}}</td>
                         <td>{{log.clockOut | moment('HH:mm:ss')}}</td>
                         <td class="hours">{{calculate(log.clockIn,log.clockOut)}}</td>
+                        <td></td>
                         <td v-if="log.valid" :title="log.note" class="wage">$ {{log.wage | decimal}}<i class="fa fa-exclamation-circle" v-if="log.note"></i></td>
                         <td v-else class="invalid">${{(profile.wage || 0) | decimal}}</td>
                         <td>$ {{salary(log) | decimal}}</td>
@@ -72,7 +74,7 @@
                         <td>
                           <span>{{dateRange}}</span>
                         </td>
-                        <td colspan="3" class="hours">{{totalHours}}</td>
+                        <td colspan="4" class="hours">{{totalHours}}</td>
                         <td class="salary"><span class="text">Total Salary:</span>$ {{totalSalary | decimal}}</td>
                     </tr>
                     <tr v-else>
@@ -443,7 +445,7 @@ tfoot tr {
 }
 
 .icon {
-  width: 65px;
+  width: 50px;
   text-align: center;
 }
 

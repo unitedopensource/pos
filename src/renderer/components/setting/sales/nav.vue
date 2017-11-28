@@ -18,6 +18,10 @@
                     <i class="fa fa-credit-card-alt"></i>
                     <span class="text">{{$t('nav.batch')}}</span>
                 </router-link>
+                <router-link tag="li" :to="{name:'Setting.department'}">
+                    <i class="fa fa-object-group"></i>
+                    <span class="text">{{$t('nav.department')}}</span>
+                </router-link>
             </div>
             <router-link tag="li" :to="{name:'Setting.index'}">
                 <i class="fa fa-arrow-circle-left"></i>

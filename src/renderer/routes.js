@@ -204,6 +204,10 @@ export default [{
             path: 'batch',
             name: 'Setting.batch',
             component: require('./components/setting/sales/batch')
+          }, {
+            path: 'department',
+            name: 'Setting.department',
+            component: require('./components/setting/sales/department')
           }]
         }, {
           path: 'develop',

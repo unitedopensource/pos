@@ -7,8 +7,8 @@
         </header>
         <div class="wrap">
           <div class="textWrap">
-            <textarea v-model="comment"></textarea>
-            <span class="placeholder" v-show="!comment">{{$t('tip.payout')}}</span>
+            <textarea v-model="note"></textarea>
+            <span class="placeholder" v-show="!note">{{$t('tip.payout')}}</span>
           </div>
           <div class="detail">
             <div></div>
@@ -41,11 +41,53 @@ export default {
     return {
       receiver: "",
       amount: "0.00",
-      comment: ""
+      note: ""
     };
   },
   methods: {
-    confirm() {}
+    confirm() {
+      let cashDrawer = this.station.cashDrawer.name;
+      let transaction = {
+        _id: ObjectId(),
+        date: today(),
+        time: +new Date(),
+        order: null,
+        ticket: {
+          number: null,
+          type: null
+        },
+        paid: parseFloat(this.amount),
+        change: 0,
+        actual: parseFloat(this.amount),
+        tip: 0,
+        cashier: this.op.name,
+        server: null,
+        cashDrawer,
+        station: this.station.alies,
+        receiver: this.receiver,
+        type: "CASH",
+        for: "Payout",
+        subType: null,
+        credential: null,
+        lfd: null,
+        note: this.note
+      };
+
+      let activity = {
+        type: "CASHFLOW",
+        inflow: 0,
+        outflow: parseFloat(this.amount),
+        time: +new Date(),
+        ticket: {
+          number: null,
+          type: null
+        },
+        operator: this.op.name
+      };
+
+      this.$socket.emit("[SAVE] TRANSACTION", transaction);
+      this.$socket.emit("[CASHFLOW] ACTIVITY", { cashDrawer, activity });
+    }
   },
   computed: {
     ...mapGetters(["op", "station"])

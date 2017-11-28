@@ -1005,7 +1005,8 @@ export default {
         'cashFlow': '现金流',
         'batch': '过账',
         'events': '事件',
-        'live': '直播'
+        'live': '监控',
+        'department': '部门'
     },
     setting: {
         'softwareSetting': 'UnitedPOS 后台设置',
