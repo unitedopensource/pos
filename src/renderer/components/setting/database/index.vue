@@ -50,13 +50,14 @@ export default {
 
 <style scoped>
 header {
-  padding: 25px 45px 0;
+  padding: 20px 40px 0;
   background: #eee;
+  border-bottom: 1px solid #eee;
 }
 
 .tip {
   font: 18px/1 "Microsoft Yahei";
-  color: #404040;
+  color: #37474f;
   height: 18px;
 }
 
@@ -67,7 +68,7 @@ h1 {
 
 .summary {
   color: #666;
-  padding: 15px;
+  padding: 10px 30px;
 }
 
 .summary div {

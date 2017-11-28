@@ -315,21 +315,22 @@ export default {
         value: `${gratuity.toFixed(2)}`
       });
 
-      let payout = orderPayment
-        .filter(t => t.for === "Payout")
-        .map(t => t.actual)
-        .reduce(sum, 0);
-
       report.push({
-        text: this.$t("report.payout"),
-        style: "space",
-        value: "- " + payout.toFixed(2)
+        text: this.$t("report.overallTotal"),
+        style: "space bold",
+        value: `$ ${(salesTotal + deliveryFee + gratuity).toFixed(2)}`
       });
 
       report.push({
-        text: this.$t("report.overallTotal"),
-        style: "space bold breakline",
-        value: `$ ${(salesTotal + deliveryFee + gratuity - payout).toFixed(2)}`
+        text: this.$t("report.payout"),
+        style: "space breakline",
+        value:
+          "- " +
+          orderPayment
+            .filter(t => t.for === "Payout")
+            .map(t => t.actual)
+            .reduce(sum, 0)
+            .toFixed(2)
       });
 
       let cashTotal = orderPayment

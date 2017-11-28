@@ -37,11 +37,11 @@
                         <h5>{{$t('dock.giftCardTip')}}</h5>
                     </div>
                 </li>
-                <li @click="payOut" v-show="op.role === 'Admin' || op.role === 'Manager'">
+                <li @click="openPayout" v-if="station.cashDrawer.enable" v-show="op.role === 'Admin' || op.role === 'Manager'">
                     <i class="fa fa-2x fa-money"></i>
                     <div>
-                        <h3>{{$t('dock.payOut')}}</h3>
-                        <h5>{{$t('dock.payOutTip')}}</h5>
+                        <h3>{{$t('dock.payout')}}</h3>
+                        <h5>{{$t('dock.payoutTip')}}</h5>
                     </div>
                 </li>
                 <li @click="setting" v-show="op.role === 'Admin' || op.role === 'Manager'">
@@ -76,10 +76,10 @@ import { mapGetters, mapActions } from "vuex";
 import terminal from "../history/terminal";
 import giftCard from "../giftCard/task";
 import dialoger from "../common/dialoger";
-import payOut from "./payOut";
+import payout from "./payout";
 export default {
   props: ["init"],
-  components: { dialoger, terminal, giftCard, payOut },
+  components: { dialoger, terminal, giftCard, payout },
   data() {
     return {
       componentData: null,
@@ -242,8 +242,8 @@ export default {
     giftCardPanel() {
       this.$p("giftCard");
     },
-    payOut() {
-      this.$p("payOut");
+    openPayout() {
+      this.$p("payout");
     },
     changeLanguage() {
       let language = this.app.language === "usEN" ? "zhCN" : "usEN";

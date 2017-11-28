@@ -1,29 +1,35 @@
 <template>
     <div class="popupMask center dark" @click.self="init.reject">
-        <div class="window">
-            <header class="title">
-                <span>{{$t('title.payOut')}}</span>
-            </header>
-            <div class="inner">
-                <section class="item">
-                    <div>
-                        <label for="receiver">{{$t('text.receiver')}}:</label>
-                        <input type="type" v-model="receiver" id="receiver" :placeholder="$t('text.name')" ref="receiver">
-                    </div>
-                    <div>
-                        <label for="price">{{$t('text.price')}}:</label>
-                        <input type="type" v-model="amount" id="Price" placeholder="0.00" @keydown.enter="confirm">
-                    </div>
-                </section>
-                  <textarea v-model="comment" :placeholder="$t('text.comment')"></textarea>
-            </div>
-            <footer>
-                <div class="btn" @click="init.reject(false)">{{$t('button.cancel')}}</div>
-                <button class="btn" @click="confirm" :disabled="isNaN(amount) || true">{{$t('button.confirm')}}</button>
-            </footer>
+      <div class="payout">
+        <header>
+          <h5>{{$t('title.payout')}}</h5>
+          <h2>{{$t('title.payoutRecord')}}</h2>
+        </header>
+        <div class="wrap">
+          <div class="textWrap">
+            <textarea v-model="comment"></textarea>
+            <span class="placeholder" v-show="!comment">{{$t('tip.payout')}}</span>
+          </div>
+          <div class="detail">
+            <div></div>
+          </div>
         </div>
+        <footer>
+          <div class="f1">
+            <p>
+              <span class="text">{{$t('text.cashier')}}:</span>
+              <span class="value">{{op.name}}</span>
+            </p>
+            <p>
+              <span class="text">{{$t('text.cashdrawer')}}:</span>
+              <span class="value">{{station.cashDrawer.name}}</span>
+            </p>
+          </div>
+          <button class="btn" @click="confirm" :disabled="amount === '0.00'">{{$t('button.confirm')}}</button>
+        </footer>
+      </div>
     </div>
-</template>
+</template> 
 
 <script>
 import { mapGetters } from "vuex";
@@ -42,53 +48,68 @@ export default {
     confirm() {}
   },
   computed: {
-    ...mapGetters(["op"])
+    ...mapGetters(["op", "station"])
   }
 };
 </script>
 
 <style scoped>
-section.item {
-  display: flex;
-  padding: 0 0 10px;
+.payout {
+  width: 650px;
+  background: #fafafa;
 }
 
-section.item div {
-  flex: 1;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+header {
+  background: #fff;
+  padding: 10px 25px;
+  border-bottom: 1px solid #eee;
+}
+
+header h5 {
+  margin: 3px;
+  font-weight: normal;
+}
+
+.textWrap {
+  width: 100%;
+  position: relative;
 }
 
 textarea {
-  height: 150px;
-  display: block;
   border: none;
-  box-sizing: border-box;
-  box-shadow: none;
-  color: rgb(33, 33, 33);
-  flex-grow: 1;
-  font-style: normal;
-  font-variant: normal;
-  font-weight: 400;
-  font-stretch: normal;
-  font-size: 18px;
-  line-height: normal;
-  max-width: 100%;
-  outline: none;
-  padding: 18px 16px 0px;
   resize: none;
-  width: 100%;
-  font-family: Yuanti-SC;
+  outline: none;
+  width: calc(100% - 50px);
+  height: 45px;
+  padding: 25px;
+  font-family: "Yuanti-SC";
+  font-size: 18px;
+  border-bottom: 1px dashed #ddd;
 }
 
-input {
-  font-size: 24px;
-  width: 180px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  text-indent: 5px;
-  text-transform: capitalize;
+.placeholder {
+  position: absolute;
+  top: 25px;
+  left: 25px;
+  font-style: italic;
+  color: lightgray;
+}
+
+footer {
+  display: flex;
+  padding: 0 0 0 25px;
+  align-items: center;
+}
+
+.f1 {
+  display: flex;
+}
+
+p {
+  margin-right: 25px;
+}
+
+p .text {
+  font-weight: bold;
 }
 </style>

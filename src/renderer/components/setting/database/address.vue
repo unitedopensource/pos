@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import editor from './addressEditor'
+import editor from './component/addressEditor'
 export default {
     components: { editor },
     data() {

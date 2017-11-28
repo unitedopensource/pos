@@ -14,6 +14,10 @@
                     <i class="fa fa-tags"></i>
                     <span class="text">{{$t('nav.coupon')}}</span>
                 </router-link>
+                <router-link tag="li" :to="{name:'Setting.batch'}">
+                    <i class="fa fa-credit-card-alt"></i>
+                    <span class="text">{{$t('nav.batch')}}</span>
+                </router-link>
             </div>
             <router-link tag="li" :to="{name:'Setting.index'}">
                 <i class="fa fa-arrow-circle-left"></i>
@@ -29,7 +33,5 @@
 </template>
 
 <script>
-export default {
-
-}
+export default {};
 </script>

@@ -342,7 +342,8 @@ export default {
         'salary': 'Salary',
         'doneAction': 'Done Action',
         'setDate': 'Set Date',
-        'payOut': 'Pay Out Record',
+        'payout': 'Payout Record',
+        'payoutRecord': 'Empoyee Payout Form',
         'deliveryRelated': 'Delivery Related',
         'optionList': 'Options',
         'thirdPartyOrder': 'Third Party Order',
@@ -1194,6 +1195,7 @@ export default {
         'paidRecords': '#{i} ticket has {i} payment records',
         'foundPaymentRecords': 'Found {i} payment records',
         'forGiftCard': 'Gift Card ( {i} )',
+        'payout':'Detail note on purchasing',
         'table': {
             'actionsOnDone': 'Actions after tapping Done',
             'passwordRequire': 'Password input required before create a new table.',
