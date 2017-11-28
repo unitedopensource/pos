@@ -1072,9 +1072,9 @@ section.cart {
   flex-wrap: wrap;
 }
 
-.keyboard .alphabetic span,
+.keyboard .alphabetic div,
 .keyboard .alphabetic i,
-.keyboard .numeric span,
+.keyboard .numeric div,
 .keyboard .numeric i {
   margin: 3px 4px;
   width: 70.7px;
@@ -1090,8 +1090,8 @@ section.cart {
   border-radius: 4px;
 }
 
-.keyboard .alphabetic span:active,
-.keyboard .numeric span:active {
+.keyboard .alphabetic div:active,
+.keyboard .numeric div:active {
   background: linear-gradient(#E2E3E4, #AAADB4);
 }
 

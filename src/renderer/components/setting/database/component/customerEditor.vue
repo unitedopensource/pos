@@ -142,15 +142,15 @@ h3 {
 }
 
 .triple {
-  width: calc(33% - 30px);
+  width: calc(33% - 18px);
 }
 
 .double {
-  width: calc(50% - 30px);
+  width: calc(50% - 22px);
 }
 
 .single {
-  width: 100%;
+  width: calc(100% - 29px);
 }
 
 input {
@@ -172,7 +172,7 @@ input {
 }
 
 .field {
-  padding: 0 15px 0;
+  padding: 0 0 0 15px;
   font-weight: bold;
   color: #3c3c3c;
 }

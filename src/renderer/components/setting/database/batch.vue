@@ -210,7 +210,7 @@ export default {
         [
           "Index",
           "Date",
-          "Time",
+          "Batch Time",
           "Station",
           "Credit",
           "Credit Count",
@@ -221,25 +221,22 @@ export default {
       ];
       let csvRows = [];
 
-      this.logs
-        .slice(0)
-        .reverse()
-        .forEach((log, index) => {
-          let { date, time, station, count, amount, status } = log;
-          time = moment(time, "YYYYMMDDHHmmss").format("YYYY-MM-DD HH:mm:ss");
+      this.logs.slice(0).forEach((log, index) => {
+        let { date, time, station, count, amount, status } = log;
+        time = moment(time, "YYYYMMDDHHmmss").format("YYYY-MM-DD HH:mm:ss");
 
-          excel.push([
-            index + 1,
-            date,
-            time,
-            station,
-            amount.credit,
-            count.credit,
-            amount.debit,
-            count.debit,
-            status
-          ]);
-        });
+        excel.push([
+          index + 1,
+          date,
+          time,
+          station,
+          amount.credit,
+          count.credit,
+          amount.debit,
+          count.debit,
+          status
+        ]);
+      });
 
       for (let i = 0; i < excel.length; i++) {
         csvRows.push(excel[i].join(","));
@@ -248,10 +245,7 @@ export default {
       let to = this.logs[this.logs.length - 1].date;
       let csvFile = csvRows.join("\n");
       let blob = new Blob([csvFile], { type: "text/plain;charset=utf-8" });
-      fileSaver.saveAs(
-        blob,
-        `Batch Report Summary (${from} - ${to}).csv`
-      );
+      fileSaver.saveAs(blob, `Batch Report Summary (${from} - ${to}).csv`);
     }
   }
 };

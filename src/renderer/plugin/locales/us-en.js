@@ -241,7 +241,8 @@ export default {
         'close': 'Close',
         'removeAll': 'Remove All',
         'payBalanceDue': 'Pay Balance Due',
-        'adjustTips': 'Adj. Tips'
+        'adjustTips': 'Adj. Tips',
+        'update': 'Update'
     },
     thead: {
         'orderType': 'Order Type',

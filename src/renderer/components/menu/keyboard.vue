@@ -1,54 +1,54 @@
 <template>
     <div class="keyboard">
         <section class="alphabetic">
-            <span id="Q" @click="input('Q',$event)">Q</span>
-            <span id="W" @click="input('W')">W</span>
-            <span id="E" @click="input('E')">E</span>
-            <span id="R" @click="input('R')">R</span>
-            <span id="T" @click="input('T')">T</span>
-            <span id="Y" @click="input('Y')">Y</span>
-            <span id="U" @click="input('U')">U</span>
-            <span id="I" @click="input('I')">I</span>
-            <span id="O" @click="input('O')">O</span>
+            <div id="Q" @click="input('Q',$event)">Q</div>
+            <div id="W" @click="input('W')">W</div>
+            <div id="E" @click="input('E')">E</div>
+            <div id="R" @click="input('R')">R</div>
+            <div id="T" @click="input('T')">T</div>
+            <div id="Y" @click="input('Y')">Y</div>
+            <div id="U" @click="input('U')">U</div>
+            <div id="I" @click="input('I')">I</div>
+            <div id="O" @click="input('O')">O</div>
             <i class="fa fa-terminal" @click="clear"></i>
-            <span id="A" @click="input('A')">A</span>
-            <span id="S" @click="input('S')">S</span>
-            <span id="D" @click="input('D')">D</span>
-            <span id="F" @click="input('F')">F</span>
-            <span id="G" @click="input('G')">G</span>
-            <span id="H" @click="input('H')">H</span>
-            <span id="J" @click="input('J')">J</span>
-            <span id="K" @click="input('K')">K</span>
-            <span id="L" @click="input('L')">L</span>
+            <div id="A" @click="input('A')">A</div>
+            <div id="S" @click="input('S')">S</div>
+            <div id="D" @click="input('D')">D</div>
+            <div id="F" @click="input('F')">F</div>
+            <div id="G" @click="input('G')">G</div>
+            <div id="H" @click="input('H')">H</div>
+            <div id="J" @click="input('J')">J</div>
+            <div id="K" @click="input('K')">K</div>
+            <div id="L" @click="input('L')">L</div>
             <i class="fa fa-long-arrow-left" @click="backspace"></i>
-            <span id="Z" @click="input('Z')">Z</span>
-            <span id="X" @click="input('X')">X</span>
-            <span id="C" @click="input('C')">C</span>
-            <span id="V" @click="input('V')">V</span>
-            <span id="B" @click="input('B')">B</span>
-            <span id="N" @click="input('N')">N</span>
-            <span id="M" @click="input('M')">M</span>
-            <span id="P" @click="input('P')">P</span>
-            <span @click="input('/')">/</span>
-            <span @click="input('#')">#</span>
+            <div id="Z" @click="input('Z')">Z</div>
+            <div id="X" @click="input('X')">X</div>
+            <div id="C" @click="input('C')">C</div>
+            <div id="V" @click="input('V')">V</div>
+            <div id="B" @click="input('B')">B</div>
+            <div id="N" @click="input('N')">N</div>
+            <div id="M" @click="input('M')">M</div>
+            <div id="P" @click="input('P')">P</div>
+            <div @click="input('/')">/</div>
+            <div @click="input('#')">#</div>
             <i class="fa fa-search" @click="search"></i>
-            <span @click="input('|')">|</span>
-            <span class="space" @click="input(' ')"></span>
+            <div @click="input('|')">|</div>
+            <div class="space" @click="input(' ')"></div>
             <i class="fa fa-keyboard-o double"></i>
-            <span class="double created">{{$t('button.done')}}</span>
+            <div class="double created">{{$t('button.done')}}</div>
         </section>
         <section class="numeric">
-            <span @click="input('7')">7</span>
-            <span @click="input('8')">8</span>
-            <span @click="input('9')">9</span>
-            <span @click="input('4')">4</span>
-            <span @click="input('5')">5</span>
-            <span @click="input('6')">6</span>
-            <span @click="input('1')">1</span>
-            <span @click="input('2')">2</span>
-            <span @click="input('3')">3</span>
-            <span class="double" @click="input('0')">0</span>
-            <span @click="input('-')">-</span>
+            <div @click="input('7')">7</div>
+            <div @click="input('8')">8</div>
+            <div @click="input('9')">9</div>
+            <div @click="input('4')">4</div>
+            <div @click="input('5')">5</div>
+            <div @click="input('6')">6</div>
+            <div @click="input('1')">1</div>
+            <div @click="input('2')">2</div>
+            <div @click="input('3')">3</div>
+            <div class="double" @click="input('0')">0</div>
+            <div @click="input('-')">-</div>
         </section>
     </div>
 </template>

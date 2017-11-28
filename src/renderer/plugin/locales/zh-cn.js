@@ -59,8 +59,8 @@ export default {
         'Reload': '冲值',
         'Activation': '激活',
         'Deactivation': '注销',
-        'Order':'订单',
-        'Reload':'充值'
+        'Order': '订单',
+        'Reload': '充值'
     },
     filter: {
         'cashier': '按收银员',
@@ -234,7 +234,8 @@ export default {
         'close': '关闭',
         'removeAll': '全部移除',
         'payBalanceDue': '支付余额',
-        'adjustTips': '调整小费'
+        'adjustTips': '调整小费',
+        'update': '更新'
     },
     title: {
         'markPaymentType': '标记付款方式',
@@ -276,7 +277,7 @@ export default {
         'callList': '来电记录',
         'editCustomer': '编辑用户资料',
         'newCustomer': '新建用户资料',
-        'incomingCall':'来电'
+        'incomingCall': '来电'
     },
     menu: {
         'course': '定时',
@@ -713,11 +714,11 @@ export default {
         'name': '名字',
         'count': '次数',
         'lastUpdate': '最后一次',
-        'type':'类别',
-        'station':'工作站',
-        'for':'用于',
-        'card':'卡号',
-        'auth':'认证码'
+        'type': '类别',
+        'station': '工作站',
+        'for': '用于',
+        'card': '卡号',
+        'auth': '认证码'
     },
     flow: {
         'START': '初始金额',
