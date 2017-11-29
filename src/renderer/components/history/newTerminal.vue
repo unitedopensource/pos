@@ -28,7 +28,7 @@
             </thead>
             <tbody>
                 <tr v-for="(record,index) in records" :key="index" :class="{void:record.status === 0}">
-                    <td class="index">{{index + 1}}</td>
+                    <td class="index">{{record.index}}</td>
                     <td>{{record.transType}}</td>
                     <td>{{record.time | moment("HH:mm:ss")}}</td>
                     <td>{{record.station}}</td>
@@ -74,7 +74,7 @@
         <footer>
             <div class="btn" @click="adjustAllTips" :disabled="!deviceReady">{{$t('button.adjustTips')}}</div>
             <div class="f1">
-                <pagination :of="records" :max="12" :contain="13" @page="setPage"></pagination>
+                <pagination :of="filteredTransactions" :max="12" :contain="13" @page="setPage"></pagination>
             </div>
             <div class="btn" @click="init.resolve">{{$t('button.exit')}}</div>
         </footer>
@@ -312,21 +312,28 @@ export default {
     }
   },
   computed: {
-    records() {
+    filteredTransactions() {
       let records = this.transactions;
 
-      if (this.machine) records = records.filter();
+      if (this.station)
+        records = records.filter(t => t.station === this.station);
 
       return records;
     },
+    records() {
+      let min = this.page * 13;
+      let max = min + 13;
+
+      return this.filteredTransactions.slice(min, max);
+    },
     totalAmount() {
-      return this.records
+      return this.filteredTransactions
         .map(i => i.amount.approve)
         .reduce((a, b) => a + b, 0)
         .toFixed(2);
     },
     totalTip() {
-      return this.records
+      return this.filteredTransactions
         .map(i => i.amount.tip)
         .reduce((a, b) => a + b, 0)
         .toFixed(2);

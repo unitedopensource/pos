@@ -220,7 +220,7 @@ export default {
 .wrap {
   box-shadow: var(--shadow);
   background: #fff;
-  width: 905px;
+  width: 920px;
   border-radius: 4px 4px 0 0;
 }
 

@@ -146,7 +146,7 @@ export default {
                       if (voidSale.code === "000000") {
                         Printer.printCreditCard(voidSale);
                         Object.assign(record, voidSale, { status: 0 });
-                        this.$socket.emit("[TERM] UPDATE_TRANSACTION", record);
+                        this.$socket.emit("[TERM] VOID_TRANSACTION", record);
                         this.remove(payment, index);
                       } else {
                         this.$dialog({
