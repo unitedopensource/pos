@@ -235,7 +235,8 @@ export default {
         'removeAll': '全部移除',
         'payBalanceDue': '支付余额',
         'adjustTips': '调整小费',
-        'update': '更新'
+        'update': '更新',
+        'refund': '退款'
     },
     title: {
         'markPaymentType': '标记付款方式',

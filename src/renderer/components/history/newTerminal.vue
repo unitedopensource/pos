@@ -4,7 +4,7 @@
         <header>
             <div>
                 <h3>{{$t('title.terminalTransactions')}}</h3>
-                <h5>{{$t('tip.foundPaymentRecords',transactions.length)}}</h5>
+                <h5>{{$t('tip.foundPaymentRecords',filteredTransactions.length)}}</h5>
             </div>
             <nav class="filter">
               <dropdown label="filter.station" :options="stations" filter="station"></dropdown>
@@ -157,7 +157,7 @@ export default {
         if (!station.terminal.enable) throw error;
 
         let terminal = station.terminal;
-        let machine = station.alies;
+        //this.station = station.alies;
 
         this.terminal = this.getFile(terminal.model);
         this.terminal
@@ -199,7 +199,6 @@ export default {
     },
     applyFilter(data) {
       let { value, type } = data;
-      console.log(value, type);
       this[type] = value;
       this.page = 0;
 
@@ -298,7 +297,7 @@ export default {
         this.componentData = {
           resolve,
           reject,
-          transactions: this.transactions,
+          transactions: this.filteredTransactions,
           terminal: this.terminal
         };
         this.component = "looper";
@@ -500,6 +499,30 @@ span.refund {
 
 .value .text {
   margin-right: 10px;
+}
+
+.fa-cc-visa {
+  color: #5050e2;
+}
+
+.fa-cc-mastercard {
+  color: #ff2b1c;
+}
+
+.fa-cc-amex {
+  color: var(--deepBlue);
+}
+
+td.card {
+  display: flex;
+}
+
+.card .number {
+  text-align: right;
+}
+
+.card i {
+  padding: 0 5px;
 }
 </style>
 

@@ -242,7 +242,8 @@ export default {
         'removeAll': 'Remove All',
         'payBalanceDue': 'Pay Balance Due',
         'adjustTips': 'Adj. Tips',
-        'update': 'Update'
+        'update': 'Update',
+        'refund': 'Refund'
     },
     thead: {
         'orderType': 'Order Type',
