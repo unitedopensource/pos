@@ -380,13 +380,13 @@ export default {
     },
     totalAmount() {
       return this.filteredTransactions
-        .map(i => i.amount.approve)
+        .map(i => parseFloat(i.amount.approve))
         .reduce((a, b) => a + b, 0)
         .toFixed(2);
     },
     totalTip() {
       return this.filteredTransactions
-        .map(i => i.amount.tip)
+        .map(i => parseFloat(i.amount.tip))
         .reduce((a, b) => a + b, 0)
         .toFixed(2);
     },

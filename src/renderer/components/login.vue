@@ -256,7 +256,7 @@ export default {
     shutdownStations() {
       let data = {
         type: "question",
-        title: "dialog.shutdownStations",
+        title: "dialog.shutdownStations", 
         msg: "dialog.shutdownStationsConfirm",
         buttons: [
           { text: "button.cancel", fn: "reject" },
