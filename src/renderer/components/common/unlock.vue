@@ -34,6 +34,9 @@ export default {
   mounted() {
     window.addEventListener("keydown", this.entry, false);
   },
+  beforeDestroy() {
+    window.removeEventListener("keydown", this.entry, false);
+  },
   methods: {
     setPin(num) {
       this.pin.push(num);
@@ -64,9 +67,6 @@ export default {
         op ? this.init.resolve(op) : this.init.reject();
       });
     }
-  },
-  beforeDestroy() {
-    window.removeEventListener("keydown", this.input, false);
   }
 };
 </script>

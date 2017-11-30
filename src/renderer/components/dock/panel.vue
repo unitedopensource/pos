@@ -7,8 +7,8 @@
                         <i class="fa fa-2x fa-clock-o"></i>
                         <div>
                             <h3>{{$t('dock.clockOut')}}</h3>
-                            <h5>
-                                <span class="pass">{{time | moment('HH:mm:ss')}}</span>
+                            <h5 class="clock">
+                                <span class="time">{{time | moment('HH:mm:ss')}}</span>
                                 <span class="pass">{{op.clockIn | fromNow(true)}}</span>
                             </h5>
                         </div>
@@ -25,8 +25,8 @@
                         <i class="fa fa-2x fa-clock-o"></i>
                         <div>
                             <h3>{{$t('dock.clockIn')}}</h3>
-                            <h5>
-                                <span class="pass">{{time | moment('HH:mm:ss')}}</span>
+                            <h5 class="clock">
+                                <span class="time">{{time | moment('HH:mm:ss')}}</span>
                             </h5>
                         </div>
                     </li>
@@ -296,7 +296,7 @@ export default {
     openPayout() {
       this.$p("payout");
     },
-    askCashOut(){},
+    askCashOut() {},
     changeLanguage() {
       let language = this.app.language === "usEN" ? "zhCN" : "usEN";
       this.$setLanguage(language);
@@ -378,11 +378,17 @@ h5 {
   height: 14px;
 }
 
-.pass {
+.clock {
   color: #009688;
-  font-size: 14px;
-  padding-right: 5px;
-  min-width: 60px;
+  display: flex;
+  padding: 0;
+  width: 128px;
+  justify-content: flex-start;
+}
+
+.pass {
+  flex: 1;
+  text-align: right;
 }
 
 .extra {

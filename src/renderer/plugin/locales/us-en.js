@@ -245,10 +245,7 @@ export default {
         'update': 'Update',
         'refund': 'Refund',
         'break': 'Break',
-        'startBreakTime': 'Start Break Time',
-        'startBreakTimeTip': 'Are you wish to take a break?',
-        'endBreakTime': 'End Break Time',
-        'endBreakTimeTip': 'Are you sure to go back to work? (Break Time: {i})'
+        'work': 'Work'
     },
     thead: {
         'orderType': 'Order Type',
@@ -594,7 +591,11 @@ export default {
         'somethingWrong': 'Error Occurred',
         'somethingWrongTip': 'An unknown error occurred while saving this order.',
         'updateNeeded': 'Software Update Needed',
-        'versionRequirement': 'Server requires minimum version is {i}, but your current version is {i}.'
+        'versionRequirement': 'Server requires minimum version is {i}, but your current version is {i}.',
+        'startBreakTime': 'Start Break Time',
+        'startBreakTimeTip': 'Are you wish to take a break?',
+        'endBreakTime': 'End Break Time',
+        'endBreakTimeTip': 'Are you sure to go back to work? (Break Time: {i})'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',
@@ -1224,9 +1225,9 @@ export default {
         },
         'printMode': {
             'normal': 'Prints all items on the ticket',
-            'difference': 'Only prints out new,deleted,edited item on the ticket',
+            'difference': 'Only prints out new, deleted, edited item on the ticket',
             'new': 'Only prints new items',
-            'todo': 'Mark and print printed,new item'
+            'todo': 'Mark and print printed, new item'
         }
     }
 }

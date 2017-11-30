@@ -191,7 +191,7 @@ export default {
       if (!isNumber(this.tip)) return;
       if (!this.transaction) return;
 
-      if (parseFloat(this.tip) > 0) {
+      if (this.tip !== this.transaction.amount.tip) {
         let record = this.transaction;
         this.$p("processor", { timeout: 30000 });
         let amount = Math.round(this.tip * 100);
@@ -253,6 +253,7 @@ export default {
       if (next) {
         this.index++;
         this.transaction = next;
+        this.tip = this.transaction.amount.tip;
 
         this.$nextTick(() => {
           let dom = document.querySelector("ul.orders .active");

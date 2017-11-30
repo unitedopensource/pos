@@ -237,7 +237,8 @@ export default {
         'adjustTips': '调整小费',
         'update': '更新',
         'refund': '退款',
-        'break': '休息'
+        'break': '休息',
+        'work': '工作'
     },
     title: {
         'markPaymentType': '标记付款方式',

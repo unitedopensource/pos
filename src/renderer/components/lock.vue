@@ -33,10 +33,13 @@ export default {
     };
   },
   mounted() {
-    window.addEventListener("keydown", this.input, false);
+    window.addEventListener("keydown", this.entry, false);
+  },
+  beforeDestroy() {
+    window.removeEventListener("keydown", this.entry, false);
   },
   methods: {
-    input(e) {
+    entry(e) {
       e.preventDefault();
       switch (e.key) {
         case "Enter":
@@ -62,9 +65,6 @@ export default {
       }
     }, 300),
     ...mapActions(["setPin", "delPin", "setOp", "setApp"])
-  },
-  beforeDestroy() {
-    window.removeEventListener("keydown", this.input, false);
   },
   sockets: {
     AUTHORIZATION(data) {

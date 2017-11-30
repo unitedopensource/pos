@@ -12,9 +12,12 @@
             <div class="date">{{time | moment('dddd MMM D')}}</div>
         </div>
         <toast></toast>
-        <div class="popupMask center dark" v-if="component">
-          <div :is="component" :init="componentData"></div>
-        </div>  
+        <transition name="payment">
+          <div class="popupMask center dark" v-if="component">
+            <div :is="component" :init="componentData"></div>
+          </div>  
+        </transition>
+        
     </div>
 </template>
 
