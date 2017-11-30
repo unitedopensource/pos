@@ -223,6 +223,8 @@ export default {
           this.report["Cashier Report"] = this.cashierReport(data);
         if (this.waitStaff)
           this.report["Waitstaff Report"] = this.waitStaffReport(transactions);
+        if (this.thirdParty)
+          this.report["Third Party Report"] = this.thirdPartyReport(invoices);
 
         if (this.driver) this.report["Driver Report"] = this.driverReport(data);
         next();
@@ -902,6 +904,77 @@ export default {
         });
       });
 
+      return report;
+    },
+    thirdPartyReport(invoices) {
+      let validInvoices = invoices.filter(
+        i => i.source !== "POS" && i.status === 1
+      );
+      let providers = {};
+      validInvoices.forEach(invoice => {
+        let provider = invoice.source;
+        let { subtotal, tax, tip, delivery, discount, due } = invoice.payment;
+
+        if (providers.hasOwnProperty(provider)) {
+          providers[provider].count++;
+          providers[provider].subtotal += subtotal;
+          providers[provider].tax += tax;
+          providers[provider].tip += tip;
+          providers[provider].delivery += delivery;
+          providers[provider].discount += discount;
+          providers[provider].total += due;
+        } else {
+          providers[provider] = {
+            count: 1,
+            subtotal,
+            tax,
+            tip,
+            delivery,
+            discount,
+            total: due
+          };
+        }
+      });
+
+      let report = [];
+      Object.keys(providers).forEach(provider => {
+        let data = providers[provider];
+        report.push({
+          text: this.$t("report.provider") + ` ( ${data.count} )`,
+          style: "bold",
+          value: provider
+        });
+
+        report.push({
+          text: this.$t("report.subtotal"),
+          style: "",
+          value: data.subtotal.toFixed(2)
+        });
+
+        report.push({
+          text: this.$t("report.deliveryFee"),
+          style: "",
+          value: data.delivery.toFixed(2)
+        });
+
+        report.push({
+          text: this.$t("report.tax"),
+          style: "",
+          value: data.tax.toFixed(2)
+        });
+
+        report.push({
+          text: this.$t("report.tips"),
+          style: "",
+          value: data.tip.toFixed(2)
+        });
+
+        report.push({
+          text: this.$t("report.total"),
+          style: "total bold space",
+          value: "$" + (data.total + data.tip).toFixed(2)
+        });
+      });
       return report;
     },
     printReport() {

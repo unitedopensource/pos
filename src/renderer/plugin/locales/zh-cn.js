@@ -659,7 +659,10 @@ export default {
         'expectTotal': '应收金额',
         'actualTotal': '实收金额',
         'waitStaff': '企台',
-        'accountsPayable': '应付账款'
+        'accountsPayable': '应付账款',
+        'provider': '提供商',
+        'subtotal': '小计',
+        'total': '合计'
     },
     thead: {
         'orderType': '订单类别',
@@ -726,7 +729,8 @@ export default {
         'for': '用于',
         'card': '卡号',
         'auth': '认证码',
-        'breakTime':'休息次数'
+        'breakTime': '休息次数',
+        'paid': '支付'
     },
     flow: {
         'START': '初始金额',

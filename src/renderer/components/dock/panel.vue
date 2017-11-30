@@ -12,11 +12,11 @@
                                 <span class="pass">{{op.clockIn | fromNow(true)}}</span>
                             </h5>
                         </div>
-                        <div class="break" @click.stop="startBreakTime" v-if="!op.break">
+                        <div class="extra" @click.stop="startBreakTime" v-if="!op.break">
                           <i class="fa fa-coffee"></i>
                           <span>{{$t('button.break')}}</span>
                         </div>
-                        <div class="break" @click.stop="endBreakTime" v-else>
+                        <div class="extra" @click.stop="endBreakTime" v-else>
                           <i class="fa fa-briefcase"></i>
                           <span>{{$t('button.work')}}</span>
                         </div>
@@ -71,6 +71,10 @@
                     <div>
                         <h3>{{$t('dock.logout')}}</h3>
                         <h5>{{$t('dock.logoutTip')}}</h5>
+                    </div>
+                    <div class="extra" @click.stop="askCashOut" v-if="false">
+                      <i class="fa fa-usd"></i>
+                      <span>{{$t('button.cashOut')}}</span>
                     </div>
                 </li>
                 <div :is="component" :init="componentData"></div>
@@ -292,6 +296,7 @@ export default {
     openPayout() {
       this.$p("payout");
     },
+    askCashOut(){},
     changeLanguage() {
       let language = this.app.language === "usEN" ? "zhCN" : "usEN";
       this.$setLanguage(language);
@@ -323,7 +328,7 @@ export default {
 <style scoped>
 ul.panel {
   font-size: initial;
-  width: 250px;
+  width: 260px;
   position: absolute;
   top: 10px;
   right: 90px;
@@ -380,7 +385,7 @@ h5 {
   min-width: 60px;
 }
 
-.break {
+.extra {
   position: absolute;
   right: 0px;
   display: flex;

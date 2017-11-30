@@ -315,7 +315,8 @@ export default {
         'for': 'For',
         'card': 'Card',
         'auth': 'Auth',
-        'breakTime':'Break Time'
+        'breakTime': 'Break Time',
+        'paid': 'Paid'
     },
     flow: {
         'START': 'Deposit',
@@ -741,7 +742,10 @@ export default {
         'expectTotal': 'Expect Total',
         'actualTotal': 'Actual Total',
         'waitStaff': 'Wait Staff',
-        'accountsPayable': 'Accounts Payable'
+        'accountsPayable': 'Accounts Payable',
+        'provider': 'Provider',
+        'subtotal': 'Subtotal',
+        'total': 'Total'
     },
     text: {
         'starter': 'Starter',

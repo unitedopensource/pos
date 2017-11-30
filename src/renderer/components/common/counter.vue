@@ -74,121 +74,137 @@
 </template>
 
 <script>
-import checkbox from '../setting/common/checkbox'
+import checkbox from "../setting/common/checkbox";
 export default {
-    props: ['init'],
-    components:{ checkbox },
-    data() {
-        return {
-            hundred: 0,
-            fifty: 0,
-            twenty: 0,
-            ten: 0,
-            five: 0,
-            one: 0,
-            quarter: 0,
-            dime: 0,
-            nickel: 0,
-            penny: 0,
-            anchor: '',
-            reset: true,
-            detail:false
-        }
+  props: ["init"],
+  components: { checkbox },
+  data() {
+    return {
+      hundred: 0,
+      fifty: 0,
+      twenty: 0,
+      ten: 0,
+      five: 0,
+      one: 0,
+      quarter: 0,
+      dime: 0,
+      nickel: 0,
+      penny: 0,
+      anchor: "",
+      reset: true,
+      detail: false
+    };
+  },
+  mounted() {
+    this.anchor = "hundred";
+  },
+  methods: {
+    input(num) {
+      if (parseInt(this[this.anchor]) === 0 || this.reset === true) {
+        this[this.anchor] = num;
+        this.reset = false;
+      } else if (parseInt(this[this.anchor] + num) < 1000) {
+        this[this.anchor] += num;
+      }
     },
-    mounted() {
-        this.anchor = 'hundred'
+    change(anchor) {
+      this.anchor = anchor;
+      this.reset = true;
     },
-    methods: {
-        input(num) {
-            if (parseInt(this[this.anchor]) === 0 || this.reset === true) {
-                this[this.anchor] = num;
-                this.reset = false;
-            } else if (parseInt(this[this.anchor] + num) < 1000) {
-                this[this.anchor] += num;
-            }
-        },
-        change(anchor) {
-            this.anchor = anchor;
-            this.reset = true;
-        },
-        del() {
-            this[this.anchor] = Number(this[this.anchor]) < 10 ? 0 : this[this.anchor].slice(0, -1);
-        },
-        confirm() {
-            this.init.resolve(this.amount);
-        }
+    del() {
+      this[this.anchor] =
+        Number(this[this.anchor]) < 10 ? 0 : this[this.anchor].slice(0, -1);
     },
-    watch: {
-        anchor(n) {
-            let dom = document.querySelector(".active");
-            dom && dom.classList.remove("active");
-            dom = document.querySelector(`.${n}`);
-            dom && dom.classList.add("active");
-        }
-    },
-    computed: {
-        amount() {
-            return this.hundred * 100 + this.fifty * 50 + this.twenty * 20 + this.ten * 10 + this.five * 5 + this.one * 1 + this.quarter * 0.25 + this.dime * 0.1 + this.nickel * 0.05 + this.penny * 0.01;
-        }
-
+    confirm() {
+      this.init.resolve(this.amount);
     }
-}
+  },
+  watch: {
+    anchor(n) {
+      let dom = document.querySelector(".active");
+      dom && dom.classList.remove("active");
+      dom = document.querySelector(`.${n}`);
+      dom && dom.classList.add("active");
+    }
+  },
+  computed: {
+    amount() {
+      return (
+        this.hundred * 100 +
+        this.fifty * 50 +
+        this.twenty * 20 +
+        this.ten * 10 +
+        this.five * 5 +
+        this.one * 1 +
+        this.quarter * 0.25 +
+        this.dime * 0.1 +
+        this.nickel * 0.05 +
+        this.penny * 0.01
+      );
+    }
+  }
+};
 </script>
 
 <style scoped>
 .inner {
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
 }
 
-aside>div {
-    display: flex;
-    margin: 5px;
-    font-size: 22px;
-    color: #333;
+aside > div {
+  display: flex;
+  margin: 6px 5px;
+  font-size: 22px;
+  color: #9e9e9e;
 }
 
 aside {
-    border-right: 1px solid #ddd;
-    width: 130px;
-    padding: 5px 10px;
+  border-right: 1px solid #ddd;
+  width: 130px;
+  padding: 5px 10px;
 }
 
 aside input {
-    width: 50px;
-    border: 1px solid #ddd;
-    text-indent: 7px;
-    font-size: 22px;
-    color: #9E9E9E;
-    outline: none;
+  width: 50px;
+  border: 1px solid #ddd;
+  text-indent: 7px;
+  font-size: 22px;
+  color: #9e9e9e;
+  outline: none;
+  border-radius: 2px;
 }
 
 aside span {
-    flex: 1;
-}
-
-aside .active {
-    border-right: 2px solid #2196F3;
+  flex: 1;
+  font-family: "Agency FB";
+  font-weight: bold;
 }
 
 .active input {
-    color: #333;
+  color: #fff;
+  background: #55caff;
+  border: 1px solid #50b6e6;
+}
+
+.active span.text {
+  color: #3c3c3c;
 }
 
 section.numpad {
-    display: flex;
-    flex-wrap: wrap;
-    max-width: 342px;
-    padding: 5px 0 0px 5px;
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 315px;
+  padding: 5px 0 0px 5px;
 }
 
 .del {
-    width: 222px;
-    background: #78909C;
+  width: 205px;
+  background: #78909c;
 }
 
-.f1{
-    display: flex;
-    align-items: center;
+.f1 {
+  display: flex;
+  align-items: center;
 }
 </style>

@@ -145,18 +145,22 @@ export default {
     };
   },
   created() {
-    this.$socket.emit("[INQUIRY] TICKET_NUMBER", number => {
-      this.setTicket({ number });
-    });
-  },
-  mounted() {
-    this.checkStation()
+    this.getTicketNumber()
+      .then(this.checkStation)
       .then(this.checkTimecard)
       .then(this.checkCashCtrl)
       .then(this.initialized)
       .catch(this.initialFailed);
   },
   methods: {
+    getTicketNumber() {
+      return new Promise(next => {
+        this.$socket.emit("[INQUIRY] TICKET_NUMBER", number => {
+          this.setTicket({ number });
+          next();
+        });
+      });
+    },
     checkStation() {
       return new Promise((resolve, reject) => {
         if (this.station) {
@@ -193,7 +197,6 @@ export default {
                 this.setStations(stations);
                 Printer.initial(CLODOP, this.config);
                 resolve();
-                this.$q();
               }
             });
           });
@@ -224,12 +227,10 @@ export default {
                 ],
                 buttons: [{ text: "button.confirm", fn: "resolve" }]
               }).then(() => {
-                this.$q();
                 next();
               });
             })
             .catch(() => {
-              this.$q();
               next();
             });
         } else if (this.op.break) {
@@ -245,11 +246,9 @@ export default {
             .then(() => {
               this.$socket.emit("[TIMECARD] BREAK_END", this.op);
               this.setOp({ break: null });
-              this.$q();
               next();
             })
             .catch(() => {
-              this.$q();
               next();
             });
         } else {
@@ -261,12 +260,24 @@ export default {
       return new Promise(next => {
         let { enable, cashFlowCtrl } = this.station.cashDrawer;
 
-        if (enable && cashFlowCtrl) {
-          this.askCashIn();
-          next();
-        } else {
-          next();
-        }
+        this.$socket.emit(
+          "[CASHFLOW] CHECK",
+          {
+            date: today(),
+            cashDrawer: this.station.cashDrawer.name,
+            close: false
+          },
+          data => {
+            let { name, initial } = data;
+            if (initial && enable && cashFlowCtrl) {
+              this.askCashIn();
+              next();
+            } else {
+              next();
+              this.$q();
+            }
+          }
+        );
       });
     },
     askCashIn() {
@@ -298,7 +309,7 @@ export default {
           this.component = "counter";
         })
           .then(amount => {
-            this.countDrawerCash(amount);
+            this.countInitialCash(amount);
           })
           .catch(() => {
             this.$q();
@@ -311,7 +322,9 @@ export default {
         ? this.setApp({ autoLock: true, lastActivity: +new Date() })
         : this.setApp({ autoLock: false });
     },
-    initialFailed(error) {},
+    initialFailed(error) {
+      console.log(error);
+    },
     welcomeScreen() {
       let { top, btm } = this.station.pole;
       poleDisplay.write("\f");
@@ -466,7 +479,7 @@ export default {
           this.$q();
         });
     },
-    countSelfCash() {
+    countSelfCash(amount) {
       if (isNumber(amount)) {
         this.$dialog({
           title: "dialog.selfCashInConfirm",

@@ -23,7 +23,8 @@
                     <th>{{$t('thead.server')}}</th>
                     <th class="settlement">{{$t('thead.paymentType')}}</th>
                     <th>{{$t('thead.tip')}}</th>
-                    <th>{{$t('thead.amount')}}</th>
+                    <th @click="togglePaid" v-if="!showPaid">{{$t('thead.amount')}}</th>
+                    <th @click="togglePaid" v-else>{{$t('thead.paid')}}</th>
                     <th class="split"></th>
                 </tr>
             </thead>
@@ -39,7 +40,8 @@
                     </td>
                     <td class="amount adjustable" :class="{zero:record.tip === 0}" v-if="record.type ==='THIRD' && editable" @click="setTip(record)">$ {{record.tip | decimal}}</td>
                     <td class="amount" :class="{zero:record.tip === 0}" v-else>$ {{record.tip | decimal}}</td>
-                    <td class="amount">$ {{record.actual | decimal}}</td>
+                    <td class="amount" v-if="!showPaid">$ {{record.actual | decimal}}</td>
+                    <td class="amount" v-else>$ {{record.paid | decimal}}</td>
                     <td class="split" v-if="!isNaN(record.splitPayment)">#{{record.splitPayment + 1}}</td>
                     <td class="split" v-else></td>
                 </tr>
@@ -118,6 +120,7 @@ export default {
       servers: [],
       payments: [],
       types: [],
+      showPaid: false,
       cashier: null,
       server: null,
       payment: null,
@@ -211,6 +214,9 @@ export default {
     },
     setPage(number) {
       this.page = number;
+    },
+    togglePaid() {
+      this.showPaid = !this.showPaid;
     }
   }
 };

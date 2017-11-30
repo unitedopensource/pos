@@ -303,11 +303,64 @@ export default {
         this.component = "looper";
       })
         .then(() => {
-          this.batch();
+          this.prebatch();
         })
         .catch(() => {
           this.$q();
         });
+    },
+    batch() {
+      let data = {
+        title: "dialog.batchClose",
+        msg: "dialog.batchCloseTip",
+        buttons: [
+          { text: "button.cancel", fn: "reject" },
+          { text: "button.batch", fn: "resolve" }
+        ]
+      };
+
+      this.prebatch() &&
+        this.$dialog(data)
+          .then(() => {
+            this.processBatch();
+          })
+          .catch(() => {
+            this.$q();
+          });
+    },
+    processBatch() {
+      this.$p("processor", { timeout: 300000 });
+      this.terminal
+        .batch()
+        .then(r => r.text())
+        .then(response => {
+          this.$q();
+          let result = this.terminal.explainBatch(response);
+          if (result.code === "000000") {
+            let { sn } = this.device;
+            let updated = this.transactions.filter(t => !t.close).map(trans => {
+              trans.hasOwnProperty("device") &&
+                trans.device.sn === sn &&
+                (trans.close = true);
+              return trans;
+            });
+            this.$socket.emit("[TERM] BATCH_TRANS_CLOSE", updated);
+            Printer.printBatchReport(result);
+            this.$socket.emit("[TERM] SAVE_BATCH_RESULT", result);
+          } else {
+            this.$dialog({
+              type: "warning",
+              title: result.msg,
+              msg: ["terminal.error", result.code],
+              buttons: [{ text: "button.confirm", fn: "resolve" }]
+            }).then(() => {
+              this.$q();
+            });
+          }
+        });
+    },
+    prebatch() {
+      return true;
     }
   },
   computed: {
