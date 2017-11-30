@@ -18,101 +18,6 @@
     </div>
 </template>
 
-<style scoped>
-.cardWrap {
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  margin: 50px;
-  width: 704px;
-  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
-}
-
-.card {
-  width: 135px;
-  height: 115px;
-  padding: 20px;
-  margin: 0px;
-  cursor: pointer;
-  background: #fff;
-  border-right: 1px solid #eee;
-  border-bottom: 1px solid #eee;
-  transition: background, box-shadow 0.22s ease;
-  position: relative;
-}
-
-.card.disable {
-  pointer-events: none;
-}
-
-.card.disable::after {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  background: rgba(255, 255, 255, 0.9);
-  z-index: 1;
-  content: " ";
-}
-
-.card:active {
-  background: #f6f6f6;
-  color: #666;
-  box-shadow: inset 0 1px 6px rgba(0, 0, 0, 0.55);
-}
-
-.card:nth-child(n + 5) {
-  border-bottom: none;
-}
-
-.card:nth-child(4),
-.card:nth-child(8) {
-  border-right: none;
-}
-
-.card i {
-  position: absolute;
-  right: 20px;
-  font-size: 2em;
-  color: #039be5;
-  text-shadow: 0 -1px 0px rgba(0, 0, 0, 0.5);
-}
-
-h4 {
-  font-weight: normal;
-  color: #757575;
-}
-
-h1 {
-  font-weight: normal;
-  margin-top: 50px;
-}
-
-.enlarge h1 {
-  font-size: 46px;
-}
-
-.dashboard .clock {
-  position: absolute;
-  bottom: 50px;
-  left: 50px;
-  color: #f1f1f1;
-  text-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);
-}
-
-.dashboard .time {
-  font-size: 6em;
-}
-
-.dashboard .date {
-  font-size: 2em;
-  margin-top: -10px;
-}
-</style>
-
 <script>
 import { mapActions, mapGetters } from "vuex";
 import dialoger from "./common/dialoger";
@@ -121,23 +26,10 @@ import counter from "./common/counter";
 import toast from "./dashboard/toast";
 import unlock from "./common/unlock";
 import Preset from "../preset";
-import Mac from "getmac";
+import MAC from "getmac";
 
 export default {
   components: { dialoger, counter, toast, unlock, thirdParty },
-  computed: {
-    ...mapGetters([
-      "op",
-      "time",
-      "ring",
-      "callLog",
-      "device",
-      "config",
-      "store",
-      "station",
-      "history"
-    ])
-  },
   data() {
     return {
       componentData: null,
@@ -145,177 +37,65 @@ export default {
     };
   },
   created() {
+    // this.getTicketNumber()
+    //   .then(this.checkActivation)
+    //   .then(this.checkTimeCard)
+    //   .then(this.checkCashInOut)
+    //   .then(this.initialized)
+    //   .catch(this.checkFailed)
+
     this.$socket.emit("[INQUIRY] TICKET_NUMBER", number => {
       this.setTicket({ number });
     });
   },
   mounted() {
-    this.checkStation()
-      .then(this.checkTimecard)
-      .then(this.checkCashCtrl)
-      .then(this.initialized)
-      .catch(this.initialFailed);
+    this.station ? this.initial() : this.activation();
   },
   methods: {
-    checkStation() {
-      return new Promise((resolve, reject) => {
-        if (this.station) {
-          resolve();
-        } else {
-          let data = {
-            type: "warning",
-            title: "dialog.stationUnregistered",
-            msg: "dialog.stationUnregisteredTip",
-            buttons: [{ text: "button.activation", fn: "resolve" }]
-          };
+    initial() {
+      this.device.poleDisplay && this.welcomeScreen();
+      this.store.timeCard && this.checkClockInStatus();
 
-          this.$dialog(data).then(() => {
-            Mac.getMac((err, mac) => {
-              if (err) {
-                this.$dialog({
-                  type: "error",
-                  title: "dialog.stationRegisterFailed",
-                  msg: ["dialog.stationRegisterFailedTip", err],
-                  buttons: [{ text: "button.confirm", fn: "resolve" }]
-                }).then(() => {
-                  this.$q();
-                  this.$router.push({ name: "Login" });
-                });
-              } else {
-                let stations = Object.assign({}, this.store.station);
-                let length = Object.keys(stations).length + 1;
-                let alias = "pc" + length;
-                let station = Preset.station(alias, mac);
-                stations[alias] = station;
-
-                this.$socket.emit("[CONFIG] UPDATE_STATION", stations);
-                this.setStation(station);
-                this.setStations(stations);
-                Printer.initial(CLODOP, this.config);
-                resolve();
-                this.$q();
-              }
-            });
-          });
-        }
-      });
+      ~~this.station.timeout !== 0
+        ? this.setApp({ autoLock: true, lastActivity: +new Date() })
+        : this.setApp({ autoLock: false });
     },
-    checkTimecard() {
-      return new Promise(next => {
-        if (this.op.timecard && !this.op.clockIn) {
-          this.$dialog({
-            title: "dialog.clockInRequire",
-            msg: "dialog.clockInRequireTip",
-            buttons: [
-              { text: "button.later", fn: "reject" },
-              { text: "button.clockIn", fn: "resolve" }
-            ]
-          })
-            .then(() => {
-              this.setOp({ clockIn: this.time, session: ObjectId() });
-              this.$socket.emit("[TIMECARD] CLOCK_IN", this.op);
-
-              this.$dialog({
-                type: "question",
-                title: "dialog.clockInConfirm",
-                msg: [
-                  "dialog.clockInTip",
-                  moment(this.time).format("hh:mm:ss a")
-                ],
-                buttons: [{ text: "button.confirm", fn: "resolve" }]
-              }).then(() => {
-                this.$q();
-                next();
-              });
-            })
-            .catch(() => {
-              this.$q();
-              next();
-            });
-        } else if (this.op.break) {
-          let duration = moment
-            .duration(+new Date() - this.op.break, "milliseconds")
-            .humanize();
-
-          this.$dialog({
-            type: "question",
-            title: "dialog.endBreakTime",
-            msg: ["dialog.endBreakTimeTip", duration]
-          })
-            .then(() => {
-              this.$socket.emit("[TIMECARD] BREAK_END", this.op);
-              this.setOp({ break: null });
-              this.$q();
-              next();
-            })
-            .catch(() => {
-              this.$q();
-              next();
-            });
-        } else {
-          next();
-        }
-      });
+    welcomeScreen() {
+      let { top, btm } = this.station.pole;
+      poleDisplay.write("\f");
+      poleDisplay.write(line(top, btm));
     },
-    checkCashCtrl() {
-      return new Promise(next => {
-        let { enable, cashFlowCtrl } = this.station.cashDrawer;
-
-        if (enable && cashFlowCtrl) {
-          this.askCashIn();
-          next();
-        } else {
-          next();
-        }
-      });
+    checkClockInStatus() {
+      this.op.timecard && !this.op.clockIn && this.askClockIn();
     },
-    askCashIn() {
-      let amount = this.station.cashDrawer.initialAmount;
-      this.$dialog({ title: "dialog.cashIn", msg: "dialog.cashInTip" })
+    askClockIn() {
+      this.$dialog({
+        title: "dialog.clockInRequire",
+        msg: "dialog.clockInRequireTip",
+        buttons: [
+          { text: "button.later", fn: "reject" },
+          { text: "button.clockIn", fn: "resolve" }
+        ]
+      })
         .then(() => {
-          this.countInitialCash(amount);
+          this.clockIn();
         })
         .catch(() => {
           this.$q();
         });
     },
-    countInitialCash(amount) {
-      if (isNumber(amount)) {
-        Printer.openCashDrawer();
-        this.$dialog({
-          title: "dialog.cashInConfirm",
-          msg: ["dialog.cashInConfirmTip", amount.toFixed(2)]
-        })
-          .then(() => {
-            this.acceptCashIn(amount);
-          })
-          .catch(() => {
-            this.countInitialCash();
-          });
-      } else {
-        new Promise((resolve, reject) => {
-          this.componentData = { resolve, reject };
-          this.component = "counter";
-        })
-          .then(amount => {
-            this.countDrawerCash(amount);
-          })
-          .catch(() => {
-            this.$q();
-          });
-      }
-    },
-    initialized() {
-      this.device.poleDisplay && this.welcomeScreen();
-      ~~this.station.timeout !== 0
-        ? this.setApp({ autoLock: true, lastActivity: +new Date() })
-        : this.setApp({ autoLock: false });
-    },
-    initialFailed(error) {},
-    welcomeScreen() {
-      let { top, btm } = this.station.pole;
-      poleDisplay.write("\f");
-      poleDisplay.write(line(top, btm));
+    clockIn() {
+      this.setOp({ clockIn: this.time, session: ObjectId() });
+      this.$socket.emit("[TIMECARD] CLOCK_IN", this.op);
+
+      this.$dialog({
+        type: "question",
+        title: "dialog.clockInConfirm",
+        msg: ["dialog.clockInTip", moment(this.time).format("hh:mm:ss a")],
+        buttons: [{ text: "button.confirm", fn: "resolve" }]
+      }).then(() => {
+        this.$q();
+      });
     },
     go(grid) {
       if (!grid) return;
@@ -457,6 +237,18 @@ export default {
         this.$q();
       });
     },
+    initialCashFlow(name) {
+      this.op.cashCtrl === "enable" ? this.askCashIn() : this.askSelfCashIn();
+    },
+    askCashIn() {
+      this.$dialog({ title: "dialog.cashIn", msg: "dialog.cashInTip" })
+        .then(() => {
+          this.countDrawerCash(this.station.cashDrawer.initialAmount);
+        })
+        .catch(() => {
+          this.$q();
+        });
+    },
     askSelfCashIn() {
       this.$dialog({ title: "dialog.selfCashIn", msg: "dialog.selfCashInTip" })
         .then(() => {
@@ -466,7 +258,33 @@ export default {
           this.$q();
         });
     },
-    countSelfCash() {
+    countDrawerCash(amount) {
+      if (isNumber(amount) && amount > 0) {
+        Printer.openCashDrawer();
+        this.$dialog({
+          title: "dialog.cashInConfirm",
+          msg: ["dialog.cashInConfirmTip", amount.toFixed(2)]
+        })
+          .then(() => {
+            this.acceptCashIn(amount);
+          })
+          .catch(() => {
+            this.countDrawerCash();
+          });
+      } else {
+        new Promise((resolve, reject) => {
+          this.componentData = { resolve, reject };
+          this.component = "counter";
+        })
+          .then(amount => {
+            this.countDrawerCash(amount);
+          })
+          .catch(() => {
+            this.$q();
+          });
+      }
+    },
+    countSelfCash(amount) {
       if (isNumber(amount)) {
         this.$dialog({
           title: "dialog.selfCashInConfirm",
@@ -524,8 +342,38 @@ export default {
         });
       }
     },
-    initialCashFlow(name) {
-      this.op.cashCtrl === "enable" ? this.askCashIn() : this.askSelfCashIn();
+    activation() {
+      this.$dialog({
+        type: "warning",
+        title: "dialog.stationUnregistered",
+        msg: "dialog.stationUnregisteredTip",
+        buttons: [{ text: "button.activation", fn: "resolve" }]
+      }).then(() => {
+        MAC.getMac((err, mac) => {
+          if (err) {
+            this.$dialog({
+              type: "error",
+              title: "dialog.stationRegisterFailed",
+              msg: ["dialog.stationRegisterFailedTip", err],
+              buttons: [{ text: "button.confirm", fn: "resolve" }]
+            }).then(() => {
+              this.$q();
+            });
+          } else {
+            let stations = Object.assign({}, this.store.station);
+            let length = Object.keys(stations).length + 1;
+            let alies = "pc" + length;
+            let station = Preset.station(alies, mac);
+            stations[alies] = station;
+
+            this.$socket.emit("[CONFIG] UPDATE_STATION", stations);
+            this.setStation(station);
+            this.setStations(stations);
+            Printer.initial(CLODOP, this.config);
+            this.$q();
+          }
+        });
+      });
     },
     ...mapActions([
       "setOp",
@@ -537,6 +385,114 @@ export default {
       "setStations",
       "resetDashboard"
     ])
+  },
+  computed: {
+    ...mapGetters([
+      "op",
+      "time",
+      "ring",
+      "callLog",
+      "device",
+      "config",
+      "store",
+      "station",
+      "history"
+    ])
   }
 };
 </script>
+
+<style scoped>
+.cardWrap {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin: 50px;
+  width: 704px;
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
+}
+
+.card {
+  width: 135px;
+  height: 115px;
+  padding: 20px;
+  margin: 0px;
+  cursor: pointer;
+  background: #fff;
+  border-right: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  transition: background, box-shadow 0.22s ease;
+  position: relative;
+}
+
+.card.disable {
+  pointer-events: none;
+}
+
+.card.disable::after {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: rgba(255, 255, 255, 0.9);
+  z-index: 1;
+  content: " ";
+}
+
+.card:active {
+  background: #f6f6f6;
+  color: #666;
+  box-shadow: inset 0 1px 6px rgba(0, 0, 0, 0.55);
+}
+
+.card:nth-child(n + 5) {
+  border-bottom: none;
+}
+
+.card:nth-child(4),
+.card:nth-child(8) {
+  border-right: none;
+}
+
+.card i {
+  position: absolute;
+  right: 20px;
+  font-size: 2em;
+  color: #039be5;
+  text-shadow: 0 -1px 0px rgba(0, 0, 0, 0.5);
+}
+
+h4 {
+  font-weight: normal;
+  color: #757575;
+}
+
+h1 {
+  font-weight: normal;
+  margin-top: 50px;
+}
+
+.enlarge h1 {
+  font-size: 46px;
+}
+
+.dashboard .clock {
+  position: absolute;
+  bottom: 50px;
+  left: 50px;
+  color: #f1f1f1;
+  text-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);
+}
+
+.dashboard .time {
+  font-size: 6em;
+}
+
+.dashboard .date {
+  font-size: 2em;
+  margin-top: -10px;
+}
+</style>

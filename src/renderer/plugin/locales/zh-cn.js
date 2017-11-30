@@ -236,7 +236,8 @@ export default {
         'payBalanceDue': '支付余额',
         'adjustTips': '调整小费',
         'update': '更新',
-        'refund': '退款'
+        'refund': '退款',
+        'break': '休息'
     },
     title: {
         'markPaymentType': '标记付款方式',
@@ -507,7 +508,11 @@ export default {
         'somethingWrong': '发生了一个错误',
         'somethingWrongTip': '此订单在保存的过程中产生了一个错误，保存被取消',
         'updateNeeded': '软件需要升级',
-        'versionRequirement': '伺服器要求最低版本为 {i}, 您当前使用的版本是 {i}'
+        'versionRequirement': '伺服器要求最低版本为 {i}, 您当前使用的版本是 {i}',
+        'startBreakTime': '开始休息',
+        'startBreakTimeTip': '您确定要开始休息时间吗？',
+        'endBreakTime': '结束休息',
+        'endBreakTimeTip': '您确定要结束休息时间吗？ (休息时长: {i})'
     },
     terminal: {
         'initial': '正在初始化 {i}...',
@@ -720,7 +725,8 @@ export default {
         'station': '工作站',
         'for': '用于',
         'card': '卡号',
-        'auth': '认证码'
+        'auth': '认证码',
+        'breakTime':'休息次数'
     },
     flow: {
         'START': '初始金额',

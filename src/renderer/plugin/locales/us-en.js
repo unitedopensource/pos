@@ -133,8 +133,8 @@ export default {
         'terminalTip': 'View All Transaction',
         'station': 'Station',
         'stationTip': 'View Station Setting',
-        'payOut': 'Paid Out',
-        'payOutTip': 'Record for cash pays out',
+        'payout': 'Paid Out',
+        'payoutTip': 'Record for cash pays out',
         'language': 'Language',
         'languageTip': 'Switch UI Language',
         'logout': 'Logout',
@@ -243,7 +243,12 @@ export default {
         'payBalanceDue': 'Pay Balance Due',
         'adjustTips': 'Adj. Tips',
         'update': 'Update',
-        'refund': 'Refund'
+        'refund': 'Refund',
+        'break': 'Break',
+        'startBreakTime': 'Start Break Time',
+        'startBreakTimeTip': 'Are you wish to take a break?',
+        'endBreakTime': 'End Break Time',
+        'endBreakTimeTip': 'Are you sure to go back to work? (Break Time: {i})'
     },
     thead: {
         'orderType': 'Order Type',
@@ -309,7 +314,8 @@ export default {
         'station': 'Station',
         'for': 'For',
         'card': 'Card',
-        'auth': 'Auth'
+        'auth': 'Auth',
+        'breakTime':'Break Time'
     },
     flow: {
         'START': 'Deposit',

@@ -148,7 +148,7 @@
                 </div>
                 <div class="buttons">
                     <div class="btn" @click="exit" id="cancelEdit">{{$t('button.cancel')}}</div>
-                    <div class="btn" @click="confirm" id="confirmEdit">{{$t('button.confirm')}}</div>
+                    <button class="btn" @click="confirm" id="confirmEdit" :disabled="!item.category">{{$t('button.confirm')}}</button>
                 </div>
             </footer>
         </div>

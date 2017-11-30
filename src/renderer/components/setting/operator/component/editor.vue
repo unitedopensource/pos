@@ -144,7 +144,6 @@ export default {
     valid() {
       return (
         isNumber(this.log.wage) &&
-        this.log.wage > 0 &&
         moment(this.log.date, "YYYY-MM-DD", true).isValid() &&
         moment(this.log.clockIn, "YYYY-MM-DD HH:mm:ss", true).isValid() &&
         moment(this.log.clockOut, "YYYY-MM-DD HH:mm:ss", true).isValid() &&

@@ -12,6 +12,14 @@
                                 <span class="pass">{{op.clockIn | fromNow(true)}}</span>
                             </h5>
                         </div>
+                        <div class="break" @click.stop="startBreakTime" v-if="!op.break">
+                          <i class="fa fa-coffee"></i>
+                          <span>{{$t('button.break')}}</span>
+                        </div>
+                        <div class="break" @click.stop="endBreakTime" v-else>
+                          <i class="fa fa-briefcase"></i>
+                          <span>{{$t('button.work')}}</span>
+                        </div>
                     </li>
                     <li v-else @click="askClockIn">
                         <i class="fa fa-2x fa-clock-o"></i>
@@ -242,6 +250,45 @@ export default {
     giftCardPanel() {
       this.$p("giftCard");
     },
+    startBreakTime() {
+      let data = {
+        type: "question",
+        title: "dialog.startBreakTime",
+        msg: "dialog.startBreakTimeTip"
+      };
+
+      this.$dialog(data)
+        .then(() => {
+          this.$socket.emit("[TIMECARD] BREAK_START", this.op);
+          this.setOp({ clockIn: null, session: null });
+          this.$router.push({ path: "/main/lock" });
+          this.init.resolve();
+        })
+        .catch(() => {
+          this.$q();
+        });
+    },
+    endBreakTime() {
+      let duration = moment
+        .duration(+new Date() - this.op.break, "milliseconds")
+        .humanize();
+
+      let data = {
+        type: "question",
+        title: "dialog.endBreakTime",
+        msg: ["dialog.endBreakTimeTip", duration]
+      };
+
+      this.$dialog(data)
+        .then(() => {
+          this.$socket.emit("[TIMECARD] BREAK_END", this.op);
+          this.setOp({ break: null });
+          this.$q();
+        })
+        .catch(() => {
+          this.$q();
+        });
+    },
     openPayout() {
       this.$p("payout");
     },
@@ -281,9 +328,13 @@ ul.panel {
   top: 10px;
   right: 90px;
   padding: 4px 4px 0;
-  background: rgba(255, 255, 255, 0.8);
+  border-radius: 4px;
+  background: linear-gradient(
+    rgba(255, 255, 255, 0.45),
+    rgba(255, 255, 255, 0.85)
+  );
   color: #263238;
-  box-shadow: -2px 4px 12px rgba(0, 0, 0, 0.4);
+  box-shadow: 0px 4px 8px -1px rgba(0, 0, 0, 0.6);
 }
 
 li {
@@ -292,16 +343,18 @@ li {
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
   display: flex;
   padding: 10px;
+  border-radius: 4px;
   align-items: center;
+  position: relative;
 }
 
 li:active {
   background: #eee;
 }
 
-i {
+li > i {
   width: 50px;
-  margin: 0 13px 0 7px;
+  margin: 0 10px 0 0;
   color: #363636;
   text-align: center;
 }
@@ -325,5 +378,15 @@ h5 {
   font-size: 14px;
   padding-right: 5px;
   min-width: 60px;
+}
+
+.break {
+  position: absolute;
+  right: 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-left: 1px solid #eee;
+  padding: 5px 10px;
 }
 </style>

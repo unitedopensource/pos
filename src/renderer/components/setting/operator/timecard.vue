@@ -57,7 +57,7 @@
                         <td>{{log.clockIn | moment('HH:mm:ss')}}</td>
                         <td>{{log.clockOut | moment('HH:mm:ss')}}</td>
                         <td class="hours">{{calculate(log.clockIn,log.clockOut)}}</td>
-                        <td></td>
+                        <td class="break">{{log.break && log.break.length}}</td>
                         <td v-if="log.valid" :title="log.note" class="wage">$ {{log.wage | decimal}}<i class="fa fa-exclamation-circle" v-if="log.note"></i></td>
                         <td v-else class="invalid">${{(profile.wage || 0) | decimal}}</td>
                         <td>$ {{salary(log) | decimal}}</td>
@@ -312,6 +312,28 @@ export default {
             editor,
             editTime
           ]);
+
+          if (log.break) {
+            log.break.forEach(b => {
+              let start = moment(b.start).format("HH:mm:ss");
+              let end = b.end ? moment(b.end).format("HH:mm:ss") : "";
+              let duration = b.end
+                ? moment.duration(b.end - b.start, "milliseconds").humanize()
+                : "";
+              excel.push([
+                "",
+                "=========",
+                start,
+                end,
+                duration,
+                "=========",
+                "",
+                "*Break Time*",
+                "",
+                ""
+              ]);
+            });
+          }
         });
 
       for (let i = 0; i < excel.length; i++) {

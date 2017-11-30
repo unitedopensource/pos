@@ -118,8 +118,8 @@ export default {
 
 .note {
   text-align: center;
-  color: #fb8c00;
-  background: #fff3e0;
+  color: #f44336;
+  background: #ffcdd2;
   position: absolute;
   width: 100%;
   bottom: 25px;
@@ -158,7 +158,7 @@ export default {
 }
 
 .settled:before {
-  background: #009688;
+  background: #ff9800;
 }
 
 .bold {
