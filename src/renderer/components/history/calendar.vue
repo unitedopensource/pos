@@ -9,7 +9,7 @@
         </div>
         <i class="fa fa-chevron-right" @click="next"></i>
       </header>
-      <div class="inner">
+      <div>
         <div class="wk">
           <span>{{$t('calendar.mon')}}</span>
           <span>{{$t('calendar.tue')}}</span>
@@ -35,8 +35,8 @@ export default {
   },
   data() {
     return {
-      calendarDay: +new Date(),
-      today: +new Date(),
+      calendarDay: +moment().subtract(4, "hours"),
+      today: +moment().subtract(4, "hours"),
       loading: false,
       flip: "M",
       days: null
@@ -46,8 +46,8 @@ export default {
     initial() {
       let dom = document.getElementById("calendar");
       let calendar = dom.innerText;
-      
-      this.calendarDay = +moment(calendar,"YYYY-MM-DD")
+
+      this.calendarDay = +moment(calendar, "YYYY-MM-DD");
       this.generateCalendar();
     },
     setTarget(flip, e) {
@@ -75,6 +75,7 @@ export default {
       let isCurrentMonth =
         moment(this.today).format("YYYY-MM-DD") ===
         moment(time).format("YYYY-MM-DD");
+
       let days = moment(time).daysInMonth();
       let start = +moment(time)
         .startOf("month")
@@ -138,7 +139,7 @@ export default {
 
 <style scoped>
 .calendar {
-  width: 685px;
+  width: 650px;
 }
 
 .calendar > header {
@@ -174,7 +175,7 @@ i.fa-chevron-left {
 }
 
 .display span {
-  color: #444;
+  color: #214b6b;
   text-shadow: 0 1px 1px #64b5f6;
   cursor: pointer;
 }
@@ -186,7 +187,7 @@ i.fa-chevron-left {
 
 .day {
   padding: 25px 18px;
-  width: 60px;
+  width: 55px;
   font-size: 1.5em;
   text-align: center;
   background: #f9f9f9;
@@ -194,6 +195,7 @@ i.fa-chevron-left {
   border: 1px solid transparent;
   border-right: 1px solid #fff;
   border-bottom: 1px solid #fff;
+  position: relative;
 }
 
 .day.current {
@@ -202,10 +204,21 @@ i.fa-chevron-left {
   font-weight: bold;
 }
 
-.day.today {
-  background: #4fc3f7 !important;
-  color: #fcfcfc;
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+.today:before {
+  content: attr(data-day);
+  top: 2px;
+  left: 4px;
+  width: 82px;
+  height: 70px;
+  position: absolute;
+  background: linear-gradient(#299efb, #047fe0);
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  box-shadow: 0 2px 3px -1px #607d8b;
 }
 
 .dayWrap .day:nth-child(7n) {
@@ -217,12 +230,12 @@ i.fa-chevron-left {
   padding: 5px 0;
   background: #cfd8dc;
   color: #455a64;
+  border-bottom: 1px solid #c9d5da;
 }
 
 .wk span {
   flex: 1;
   text-align: center;
-  font-family: "Microsoft YaHei";
   font-size: 20px;
 }
 </style>
