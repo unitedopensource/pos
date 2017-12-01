@@ -625,6 +625,7 @@ export default {
           : JSON.parse(JSON.stringify(this.$store.getters.order));
 
         this.payment = this.order.payment;
+        this.tip = this.payment.tip.toFixed(2);
 
         this.isThirdPartyPayment = this.init.hasOwnProperty("regular")
           ? false
@@ -952,6 +953,7 @@ export default {
         let number = this.creditCard.replace(/[^0-9\.]+/g, "");
         let date = this.expiration.replace(/[^0-9\.]+/g, "");
         let today = moment().format("MMYY");
+        let tip = parseFloat(this.tip) || this.payment.tip;
 
         let cardLengthError = {
           type: "error",
@@ -966,14 +968,14 @@ export default {
           buttons: [{ text: "button.confirm", fn: "resolve" }]
         };
 
-        if (number.length > 0 && number.length !== 16) throw lengthError;
+        if (number.length > 0 && number.length < 15) throw cardLengthError;
         if (date.length > 0 && date.length !== 4 && date < today)
           throw expError;
 
         let card = {
           creditCard: { number, date },
-          amount: this.paid - this.tip,
-          tip: this.tip
+          amount: this.paid - tip,
+          tip
         };
 
         resolve(card);
