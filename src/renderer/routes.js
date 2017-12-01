@@ -93,6 +93,10 @@ export default [{
             name: 'Setting.station',
             component: require('./components/setting/store/station')
           }, {
+            path: 'terminal',
+            name: 'Setting.terminal',
+            component: require('./components/setting/store/terminal')
+          }, {
             path: 'dinein',
             name: 'Setting.dinein',
             component: require('./components/setting/store/dinein')

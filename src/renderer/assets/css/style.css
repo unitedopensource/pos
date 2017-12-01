@@ -119,7 +119,7 @@ input[type='radio'] {
 
 .popupMask {
   width: 100%;
-  height: 738px;
+  height: 100%;
   background: transparent;
   position: fixed;
   z-index: 3;
@@ -134,7 +134,7 @@ input[type='radio'] {
 }
 
 .popupMask.dark {
-  background: rgba(0, 0, 0, 0.50);
+  background: rgba(0, 0, 0, 0.7);
 }
 
 .logo {
@@ -400,26 +400,17 @@ header.dock {
   color: #333;
 }
 
-.dock .number,
-.dock .phone,
-.dock .address,
-.dock .name,
-.dock .op,
-.dock .time {
-  font-family: 'Agency FB';
-  font-weight: bold;
-  text-shadow: 0 1px 1px #fff;
-  font-size: 18px;
-  text-align: center;
-}
-
 .dock .number {
   width: 60px;
   letter-spacing: 1px;
+  text-align: center;
   font-size: 22px;
+  font-family: 'Agency FB';
+  font-weight: bold;
+  text-shadow: 0 1px 1px #fff;
 }
 
-.dock .thirdPartyDisplay {
+.dock .provider {
   background: linear-gradient(to bottom, #455A64 20%, #263238 100%);
   color: #fff;
   text-shadow: 0 1px 1px #90A4AE;
@@ -445,15 +436,25 @@ header.dock {
   display: flex;
 }
 
-.dock .info .customer {
+.dock .customer {
   flex: 1;
   display: flex;
   justify-content: center;
 }
 
-.dock .info .customer span {
+.dock .customer span {
   padding: 0 10px;
   margin: 0 5px;
+}
+
+.dock .customer span,
+.dock .op,
+.dock .time {
+  font-family: 'Agency FB';
+  font-weight: bold;
+  text-shadow: 0 1px 1px #fff;
+  font-size: 18px;
+  text-align: center;
 }
 
 .dock .corner {

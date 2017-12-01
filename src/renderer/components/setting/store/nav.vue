@@ -10,6 +10,10 @@
                     <i class="fa fa-desktop"></i>
                     <span class="text">{{$t('nav.station')}}</span>
                 </router-link>
+                <router-link tag="li" :to="{name:'Setting.terminal'}">
+                    <i class="fa fa-credit-card-alt"></i>
+                    <span class="text">{{$t('nav.terminal')}}</span>
+                </router-link>
                 <router-link tag="li" :to="{name:'Setting.calc'}">
                     <i class="fa fa-usd"></i>
                     <span class="text">{{$t('nav.calc')}}</span>
@@ -43,48 +47,50 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions } from "vuex";
 export default {
-    data() {
-        return {
-            change: false,
-            send: false,
-            store: null
-        }
+  data() {
+    return {
+      change: false,
+      send: false,
+      store: null
+    };
+  },
+  methods: {
+    onChange(store) {
+      this.txt = this.$t("text.saveSetting");
+      this.change = true;
+      this.store = store;
+      this.send = false;
     },
-    methods: {
-        onChange(store) {
-            this.txt = this.$t("text.saveSetting");
-            this.change = true;
-            this.store = store;
-            this.send = false;
-        },
-        update() {
-            this.txt = this.$t('text.settingUpdated');
-            this.send = true;
-            this.$socket.emit("[CMS] CONFIG_STORE", this.store);
-            this.setConfig({ store: this.store });
-            this.setApp({ autoLock: false });
-            this.updateStation(this.store);
-            Printer.initial(CLODOP, this.config);
-            setTimeout(() => { this.cancel() }, 1000);
-        },
-        updateStation(store) {
-            let { station } = store;
-            let { mac } = this.station;
-            for (var name in station) {
-                station[name].mac === mac && this.setStation(station[name])
-            }
-        },
-        cancel() {
-            this.store = null;
-            this.change = false;
-            this.send = false;
-        },
-        ...mapActions(['setApp', 'setConfig', 'setStation'])
+    update() {
+      this.txt = this.$t("text.settingUpdated");
+      this.send = true;
+      this.$socket.emit("[CMS] CONFIG_STORE", this.store);
+      this.setConfig({ store: this.store });
+      this.setApp({ autoLock: false });
+      this.updateStation(this.store);
+      Printer.initial(CLODOP, this.config);
+      setTimeout(() => {
+        this.cancel();
+      }, 1000);
     },
-    computed: {
-        ...mapGetters(['config', 'station'])
-    }
-}
+    updateStation(store) {
+      let { station } = store;
+      let { mac } = this.station;
+      for (var name in station) {
+        station[name].mac === mac && this.setStation(station[name]);
+      }
+    },
+    cancel() {
+      this.store = null;
+      this.change = false;
+      this.send = false;
+    },
+    ...mapActions(["setApp", "setConfig", "setStation"])
+  },
+  computed: {
+    ...mapGetters(["config", "station"])
+  }
+};
 </script>

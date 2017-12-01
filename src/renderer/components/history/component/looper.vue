@@ -426,7 +426,7 @@ li i {
 span.amount {
   font-family: "Agency FB";
   font-weight: bold;
-  width: 60px;
+  min-width: 60px;
   font-size: 22px;
   text-align: center;
   color: #009688;

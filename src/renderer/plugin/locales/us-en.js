@@ -1035,7 +1035,8 @@ export default {
         'batch': 'Batch',
         'events': 'Events',
         'live': 'Live',
-        'department': 'Dept.'
+        'department': 'Dept.',
+        'terminal': 'Terminal'
     },
     setting: {
         'softwareSetting': 'UnitedPOS Setting',
