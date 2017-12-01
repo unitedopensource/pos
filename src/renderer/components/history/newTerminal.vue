@@ -130,12 +130,12 @@ export default {
           msg: "dialog.accessDeniedTip",
           timeout: {
             duration: 10000,
-            fn: "confirm"
+            fn: "resolve"
           },
           buttons: [
             {
               text: "button.confirm",
-              fn: "confirm"
+              fn: "resolve"
             }
           ]
         };
