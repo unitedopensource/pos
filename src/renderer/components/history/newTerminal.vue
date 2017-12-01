@@ -329,7 +329,7 @@ export default {
           });
     },
     processBatch() {
-      this.$p("processor", { timeout: 300000 });
+      this.$p("loader", { timeout: 300000 });
       this.terminal
         .batch()
         .then(r => r.text())

@@ -390,7 +390,7 @@ var Dictionary = function (key) {
             zhCN: "四季豆牛",
             usEN: "beef w.String Bean"
         }],
-        MB: [{
+        MBS: [{
             zhCN: "蒙古牛",
             usEN: "Beef w.Mongolian Style"
         }],

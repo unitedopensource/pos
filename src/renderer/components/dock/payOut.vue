@@ -40,6 +40,7 @@
           <button class="btn" @click="confirm">{{$t('button.confirm')}}</button>
         </footer>
       </div>
+      <div :is="component" :init="componentData"></div>
     </div>
 </template> 
 
@@ -52,6 +53,8 @@ export default {
   components: { dialoger },
   data() {
     return {
+      componentData: null,
+      component: null,
       receiver: "",
       amount: "0.00",
       signaturePad: null,
@@ -72,12 +75,19 @@ export default {
     confirm() {
       this.validation()
         .then(this.checkSignature)
-        .then(this.record)
+        .then(this.confirmPayout)
+        .then(this.saveToDatabase)
         .catch(this.payoutFailed);
     },
     validation() {
       return new Promise((resolve, reject) => {
-        isNumber(this.amount) ? resolve() : reject("amount");
+        if (isNumber(this.amount) && this.receiver) {
+          resolve();
+        } else if (!isNumber(this.amount)) {
+          reject("amount");
+        } else {
+          reject("receiver");
+        }
       });
     },
     checkSignature() {
@@ -89,36 +99,56 @@ export default {
       this.signaturePad.clear();
       this.reset = false;
     },
+    confirmPayout() {
+      return new Promise((resolve, reject) => {
+        this.$dialog({
+          type: "question",
+          title: "dialog.payoutConfirm",
+          msg: [
+            "dialog.payoutCashConfirm",
+            this.amount.toFixed(2),
+            this.receiver
+          ]
+        })
+          .then(resolve)
+          .catch(reject);
+      });
+    },
     payoutFailed(error) {
+      let data;
       switch (error) {
-        case "amount":
+        case "receiver":
           this.$dialog({
-            type: "question",
-            title: "dialog.payoutConfirm",
-            msg: ["dialog.payoutCashConfirm", this.amount.toFixed(2)]
-          })
-            .then(() => {
-              this.record();
-              this.$q();
-            })
-            .catch(() => {
-              this.$q();
-            });
-          break;
-        case "signature":
-          this.$dialog({
-            type: "alert",
-            title: "dialog.signatureRequired",
-            msg: "dialog.payoutSignatureRequired",
-            buttons: [{ text: "confirm", fn: "resolve" }]
+            title: "dialog.payoutFailed",
+            msg: "dialog.payoutReceiverRequired",
+            buttons: [{ text: "button.confirm", fn: "resolve" }]
           }).then(() => {
             this.$q();
           });
           break;
+        case "amount":
+          this.$dialog({
+            type: "question",
+            title: "dialog.payoutFailed",
+            msg: "dialog.payoutAmountIncorrect",
+            buttons: [{ text: "button.confirm", fn: "resolve" }]
+          }).then(() => {
+            this.$q();
+          });
+          break;
+        case "signature":
+          this.$dialog({
+            type: "alert",
+            title: "dialog.payoutFailed",
+            msg: "dialog.payoutSignatureRequired",
+            buttons: [{ text: "button.confirm", fn: "resolve" }]
+          }).then(() => {
+            this.$q();
+          });
+          break;
+        default:
+          this.$q();
       }
-    },
-    record() {
-      console.log(this.signaturePad.toDataURL());
     },
     saveToDatabase() {
       let cashDrawer = this.station.cashDrawer.name;
@@ -139,11 +169,11 @@ export default {
         server: null,
         cashDrawer,
         station: this.station.alies,
-        receiver: this.receiver,
+        receiver: this.receiver.toCapitalCase(),
         type: "CASH",
         for: "Payout",
         subType: null,
-        credential: null,
+        credential: this.signaturePad.toDataURL(),
         lfd: null,
         note: this.note
       };
@@ -267,7 +297,7 @@ p .value {
 
 label {
   text-indent: 15px;
-  padding: 5px 0;
+  padding: 5px 0 0;
 }
 
 .signature {

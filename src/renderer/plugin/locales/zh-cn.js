@@ -513,7 +513,13 @@ export default {
         'startBreakTime': '开始休息',
         'startBreakTimeTip': '您确定要开始休息时间吗？',
         'endBreakTime': '结束休息',
-        'endBreakTimeTip': '您确定要结束休息时间吗？ (休息时长: {i})'
+        'endBreakTimeTip': '您确定要结束休息时间吗？ (休息时长: {i})',
+        'payoutFailed':'支付失败',
+        'payoutReceiverRequired':'需要提供一个收款人的名字',
+        'payoutAmountIncorrect':'支付数额格式不正确',
+        'payoutSignatureRequired':'需要经手的收银员签字确认',
+        'payoutConfirm':'支付确认',
+        'payoutCashConfirm':'您确定要支付 $ {i} 给 {i} 吗？'
     },
     terminal: {
         'initial': '正在初始化 {i}...',
