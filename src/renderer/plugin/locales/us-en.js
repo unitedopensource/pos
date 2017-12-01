@@ -596,12 +596,12 @@ export default {
         'startBreakTimeTip': 'Are you wish to take a break?',
         'endBreakTime': 'End Break Time',
         'endBreakTimeTip': 'Are you sure to go back to work? (Break Time: {i})',
-        'payoutFailed':'Payout Failed',
-        'payoutReceiverRequired':'Payout receiver is required',
-        'payoutAmountIncorrect':'Payout amount is incorrect',
-        'payoutSignatureRequired':'Payout process requires cashier signature',
-        'payoutConfirm':'Payout Confirm',
-        'payoutCashConfirm':'Are you sure to pay $ {i} to {i} ?'
+        'payoutFailed': 'Payout Failed',
+        'payoutReceiverRequired': 'Payout receiver is required',
+        'payoutAmountIncorrect': 'Payout amount is incorrect',
+        'payoutSignatureRequired': 'Payout process requires cashier signature',
+        'payoutConfirm': 'Payout Confirm',
+        'payoutCashConfirm': 'Are you sure to pay $ {i} to {i} ?'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',
@@ -981,6 +981,8 @@ export default {
         'noReceipt': 'No Receipt',
         'ignore': 'Ignore',
         'receiver': 'Receiver',
+        'cashier': 'Cashier',
+        'signature': 'Signature',
         'comment': 'comment',
         'server': 'Server',
         'taxOnDelivery': 'Tax On Delivery',

@@ -466,10 +466,8 @@ export default {
             trans: "#" + trans.trace.trans,
             transType: trans.transType,
             card: trans.account.number,
-            total: (parseFloat(trans.amount.approve) +
-              parseFloat(trans.amount.tip)
-            ).toFixed(2),
-            tip: parseFloat(trans.amount.tip),
+            total: trans.amount.approve,
+            tip: trans.amount.tip,
             time: moment(trans.trace.time, "YYYYMMDDHHmmss").format("HH:mm"),
             orderType: trans.order ? this.$t("type." + trans.order.type) : "",
             ticket: trans.order ? "#" + trans.order.number : ""

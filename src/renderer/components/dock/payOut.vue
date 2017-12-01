@@ -21,7 +21,7 @@
             </div>
           </div>
           <div class="signature">
-            <span class="text">Signature</span>
+            <span class="text">{{$t('text.signature')}}</span>
             <i class="fa fa-times" v-show="reset" @click="clearSignature"></i>
             <canvas width="650" height="150" ref="pad"></canvas>
           </div>
@@ -33,7 +33,7 @@
               <span class="value">{{op.name}}</span>
             </p>
             <p>
-              <span class="text">{{$t('text.cashdrawer')}}:</span>
+              <span class="text">{{$t('text.cashDrawer')}}:</span>
               <span class="value">{{station.cashDrawer.name}}</span>
             </p>
           </div>

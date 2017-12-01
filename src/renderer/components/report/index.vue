@@ -303,7 +303,7 @@ export default {
 
       if (this.reportDetail === "simple") return report;
 
-      let orderPayment = transactions.filter(t => (t.for = "Order"));
+      let orderPayment = transactions.filter(t => t.for === "Order");
 
       report.push({
         text: this.$t("report.deliveryFee"),
@@ -328,7 +328,7 @@ export default {
         style: "space breakline",
         value:
           "- " +
-          orderPayment
+          transactions
             .filter(t => t.for === "Payout")
             .map(t => t.actual)
             .reduce(sum, 0)
@@ -433,7 +433,7 @@ export default {
       //release memory
       thirdPartyTransactions = null;
 
-      let settledTotal = transactions
+      let settledTotal = orderPayment
         .map(transaction => transaction.actual)
         .reduce(sum, 0);
 
