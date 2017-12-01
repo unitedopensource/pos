@@ -189,20 +189,50 @@ export default {
         });
     },
     confirm() {
-      this.fetchData()
-        .then(this.dataAnalysis)
-        .then(this.printReport)
-        .catch(this.reportError);
+      this.$p("processor", { timeout: 300000 });
+      this.daily
+        ? this.printDailyReport()
+        : this.fetchData()
+            .then(this.dataAnalysis.bind(null, this.reportRange))
+            .then(this.printReport)
+            .catch(this.reportError);
+    },
+    printDailyReport() {
+      let { from, to } = this.reportRange;
+      let loop = moment(to).diff(moment(from), "days");
+      this.looper(from, loop);
+    },
+    looper(from, loop) {
+      from = moment(from)
+        .subtract(4, "hours")
+        .hours(4)
+        .minutes(0)
+        .milliseconds(0)
+        .subtract(1, "days");
+      for (let i = 0; i < loop; i++) {
+        from = from.clone().add(1, "days");
+        let to = from
+          .clone()
+          .subtract(4, "hours")
+          .hours(3)
+          .minutes(59)
+          .milliseconds(0)
+          .add(1, "days");
+        this.reportRange = { from: +from, to: +to };
+        this.fetchData()
+          .then(this.dataAnalysis.bind(null, this.reportRange))
+          .then(this.printReport)
+          .catch(this.reportError);
+      }
     },
     fetchData() {
-      this.$p("processor", { timeout: 60000 });
       return new Promise(next => {
         this.$socket.emit("[REPORT] INITIAL_DATA", this.reportRange, data => {
           next(data);
         });
       });
     },
-    dataAnalysis(data) {
+    dataAnalysis(range, data) {
       return new Promise(next => {
         let { invoices, transactions } = data;
 
@@ -210,7 +240,7 @@ export default {
           transactions = this.getTransactionsFromInvoices(invoices);
         }
 
-        this.report["General Report"] = this.salesAnalysis(data);
+        this.report["General Report"] = this.salesAnalysis(range, data);
         if (this.hourly)
           this.report["Hourly Report"] = this.hourlySalesReport(invoices);
         if (this.houseAccount)
@@ -230,7 +260,7 @@ export default {
         next();
       });
     },
-    salesAnalysis(data) {
+    salesAnalysis(range, data) {
       let report = [];
       let { invoices, transactions } = data;
       let validInvoices = invoices.filter(invoice => invoice.status === 1);
@@ -246,13 +276,13 @@ export default {
         report.push({
           text: this.$t("report.fromDate"),
           style: "bold",
-          value: moment(this.reportRange.from).format("YYYY-MM-DD HH:mm")
+          value: moment(range.from).format("YYYY-MM-DD HH:mm")
         });
 
         report.push({
           text: this.$t("report.toDate"),
           style: "bold space",
-          value: moment(this.reportRange.to).format("YYYY-MM-DD HH:mm")
+          value: moment(range.to).format("YYYY-MM-DD HH:mm")
         });
       }
 
@@ -509,14 +539,14 @@ export default {
       invoices.forEach(invoice => {
         if (invoice.status === 1) {
           let hour = new Date(invoice.time).getHours();
-          let { total, discount } = invoice.payment;
+          let { due } = invoice.payment;
           if (hours.hasOwnProperty(hour)) {
-            hours[hour].value += total - discount;
+            hours[hour].value += due;
             hours[hour].count++;
           } else {
             hours[hour] = {
               count: 1,
-              value: total - discount
+              value: due
             };
           }
         }
@@ -981,7 +1011,20 @@ export default {
       Printer.printReport(this.report);
       this.init.resolve();
     },
+    executeLoop() {
+      return new Promise((resolve, reject) => {
+        try {
+          Printer.printReport(this.report);
+          resolve();
+        } catch (e) {
+          console.log(e);
+          resolve();
+        }
+      });
+    },
+    getTransactionsFromInvoices() {},
     reportError(error) {
+      console.log(error);
       this.$q();
       this.$socket.emit("[SYS] RECORD", {
         type: "Software",
