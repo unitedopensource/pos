@@ -58,7 +58,7 @@ import payLog from "./component/payLog";
 import Payment from "../payment/index";
 import Report from "../report/index";
 import Calendar from "./calendar";
-import Terminal from "./newTerminal";
+import Terminal from "./terminal";
 import history from "./history";
 import Search from "./search";
 
