@@ -170,7 +170,7 @@ export default {
     };
   },
   created() {
-    this.checkVersion()
+    this.checkVersion() 
       .then(this.checkActivation)
       .then(this.initialized)
       .catch(this.initialFailed);

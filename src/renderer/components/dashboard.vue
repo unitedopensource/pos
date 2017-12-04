@@ -298,7 +298,11 @@ export default {
         Printer.openCashDrawer();
         this.$dialog({
           title: "dialog.cashInConfirm",
-          msg: ["dialog.cashInConfirmTip", amount.toFixed(2)]
+          msg: ["dialog.cashInConfirmTip", amount.toFixed(2)],
+          buttons: [
+            { text: "button.modify", fn: "reject" },
+            { text: "button.confirm", fn: "resolve" }
+          ]
         })
           .then(() => {
             this.acceptCashIn(amount);

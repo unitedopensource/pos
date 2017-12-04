@@ -133,12 +133,13 @@ export default {
 <style scoped>
 ul {
   position: absolute;
-  top: 0;
+  top: 5px;
   left: 40px;
   padding: 5px 5px 0;
   color: #263238;
-  background: rgba(255, 255, 255, 0.8);
-  box-shadow: -2px 4px 12px rgba(0, 0, 0, 0.4);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.6);
   font-weight: initial;
 }
 
@@ -148,9 +149,9 @@ li {
   color: #555;
   width: 170px;
   text-shadow: none;
+  border-radius: 4px;
   margin-bottom: 5px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
-  border-bottom: 1px solid #ddd;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
 }
 
 li i {
@@ -159,6 +160,6 @@ li i {
 }
 
 li.thirdParty {
-  margin-top: 17px;
+  margin-top: 15px;
 }
 </style>

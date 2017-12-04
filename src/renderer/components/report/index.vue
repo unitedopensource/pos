@@ -194,12 +194,13 @@ export default {
         ? this.printDailyReport()
         : this.fetchData()
             .then(this.dataAnalysis.bind(null, this.reportRange))
-            .then(this.printReport)
+            .then(this.printReport.bind(null, true))
             .catch(this.reportError);
     },
     printDailyReport() {
       let { from, to } = this.reportRange;
-      let loop = moment(to).diff(moment(from), "days");
+      let loop = moment(to).diff(moment(from), "days") + 1;
+      console.log(from, to);
       this.looper(from, loop);
     },
     looper(from, loop) {
@@ -224,6 +225,7 @@ export default {
           .then(this.printReport)
           .catch(this.reportError);
       }
+      this.init.resolve();
     },
     fetchData() {
       return new Promise(next => {
@@ -236,9 +238,8 @@ export default {
       return new Promise(next => {
         let { invoices, transactions } = data;
 
-        if (transactions.length === 0) {
+        if (transactions.length === 0)
           transactions = this.getTransactionsFromInvoices(invoices);
-        }
 
         this.report["General Report"] = this.salesAnalysis(range, data);
         if (this.hourly)
@@ -952,7 +953,7 @@ export default {
           providers[provider].tip += tip;
           providers[provider].delivery += delivery;
           providers[provider].discount += discount;
-          providers[provider].total += due;
+          providers[provider].total += due + tip;
         } else {
           providers[provider] = {
             count: 1,
@@ -961,7 +962,7 @@ export default {
             tip,
             delivery,
             discount,
-            total: due
+            total: due + tip
           };
         }
       });
@@ -1007,9 +1008,9 @@ export default {
       });
       return report;
     },
-    printReport() {
+    printReport(close) {
       Printer.printReport(this.report);
-      this.init.resolve();
+      close && this.init.resolve();
     },
     executeLoop() {
       return new Promise((resolve, reject) => {

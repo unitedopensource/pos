@@ -7,6 +7,7 @@ import serialport from "serialport";
 import Print from "../printer";
 import wol from "wake_on_lan";
 import MAC from "getmac";
+import os from "os";
 
 export default {
   data() {
@@ -63,7 +64,8 @@ export default {
         if (err) {
           ipcRenderer.send("Loading", this.$t("initial.hardwareIssue"));
         } else {
-          this.findStation(mac);
+          let salt = os.userInfo().username;
+          this.findStation({ mac, salt });
           this.initDevices();
           this.initPrinter();
 

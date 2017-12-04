@@ -8,7 +8,10 @@ export const startTick = ({
     let a = new Date();
     let d = new Date(a.setHours(a.getHours() - 4));
     let date = d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2);
-    commit(types.START_TICK, { time, date });
+    commit(types.START_TICK, {
+      time,
+      date
+    });
   }, 1000)
 }
 
@@ -35,8 +38,8 @@ export const setStations = ({
 }
 export const findStation = ({
   commit
-}, mac) => {
-  commit(types.FIND_STATION, mac)
+}, data) => {
+  commit(types.FIND_STATION, data)
 }
 export const setCategory = ({
   commit
@@ -51,7 +54,10 @@ export const setTemplates = ({
 export const setReservation = ({
   commit
 }, data) => {
-  let { sync, reservations } = data;
+  let {
+    sync,
+    reservations
+  } = data;
   commit(types.SET_RESERVATION, reservations)
   commit(types.SET_LASTSYNC, sync)
 }
@@ -144,7 +150,9 @@ export const resetDashboard = ({
   commit
 }) => {
   commit(types.RESET_DASHBOARD);
-  commit(types.SET_TICKET, { type: "" });
+  commit(types.SET_TICKET, {
+    type: ""
+  });
 }
 export const resetTable = ({
   commit
@@ -161,9 +169,13 @@ export const resetAll = ({
 }) => {
   commit(types.RESET_MENU);
   commit(types.RESET_DASHBOARD);
-  commit(types.SET_TICKET, { type: "" });
+  commit(types.SET_TICKET, {
+    type: ""
+  });
   commit(types.RESET_TABLE);
-  commit(types.SET_APP, { mode: 'create' });
+  commit(types.SET_APP, {
+    mode: 'create'
+  });
 }
 export const updateMenuItem = ({
   commit
@@ -286,23 +298,38 @@ export const setPriceForChoiceSet = ({
 export const updateTable = ({
   commit
 }, data) => {
-  let { table, sync } = data;
+  let {
+    table,
+    sync
+  } = data;
   commit(types.SET_LASTSYNC, sync);
   commit(types.UPDATE_TABLE_STATUS, table)
 }
 export const insertOrder = ({
-  commit, rootState
+  commit,
+  rootState
 }, data) => {
-  let { number, sync, order, refresh } = data;
-  commit(types.SET_TICKET, { number });
+  let {
+    number,
+    sync,
+    order,
+    refresh
+  } = data;
+  commit(types.SET_TICKET, {
+    number
+  });
   commit(types.SET_LASTSYNC, sync);
   commit(types.UPSERT_INVOICE, order);
   refresh && commit(types.REFRESH_CURRENT_ORDER, rootState.initial.orders);
 }
 export const updateOrder = ({
-  commit, rootState
+  commit,
+  rootState
 }, data) => {
-  let { sync, order } = data;
+  let {
+    sync,
+    order
+  } = data;
   commit(types.SET_LASTSYNC, sync);
   commit(types.UPSERT_INVOICE, order);
   commit(types.REFRESH_CURRENT_ORDER, rootState.initial.orders);
@@ -315,14 +342,20 @@ export const updateMenuCategory = ({
 export const setTodayOrder = ({
   commit
 }, data) => {
-  let { sync, orders } = data;
+  let {
+    sync,
+    orders
+  } = data;
   commit(types.SET_LASTSYNC, sync);
   commit(types.SET_TODAYORDER, orders)
 }
 export const syncTables = ({
   commit
 }, data) => {
-  let { sync, tables } = data;
+  let {
+    sync,
+    tables
+  } = data;
   commit(types.SET_LASTSYNC, sync);
   commit(types.SET_TABLE, tables)
 }

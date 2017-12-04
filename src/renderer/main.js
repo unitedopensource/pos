@@ -44,6 +44,26 @@ Vue.directive('outer-click', {
 Vue.config.debug = true
 window.moment = moment
 
+//change moment default text
+moment.updateLocale('en', {
+  relativeTime: {
+    future: "in %s",
+    past: "%s ago",
+    s: 'few sec',
+    ss: '%d sec',
+    m: "a min",
+    mm: "%d mins",
+    h: "an hr",
+    hh: "%d hrs",
+    d: "a day",
+    dd: "%d days",
+    M: "a month",
+    MM: "%d months",
+    y: "a year",
+    yy: "%d years"
+  }
+});
+
 var attachFastClick = require('fastclick');
 attachFastClick(document.body);
 
