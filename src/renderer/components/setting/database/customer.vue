@@ -79,9 +79,9 @@ export default {
     };
   },
   created() {
-    this.$socket.emit("[CUSTOMER] COUNT", count => {
-      this.totalCustomers = count;
-      this.totalPage = Math.ceil(count / 20);
+    this.$socket.emit("[CUSTOMER] COUNT", total => {
+      this.totalCustomers = total;
+      this.totalPage = Math.ceil(total / 20);
     });
     this.$socket.emit("[CUSTOMER] TREND_WEEKLY", data => {
       console.log(data);

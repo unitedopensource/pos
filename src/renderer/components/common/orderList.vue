@@ -9,7 +9,7 @@
             <div class="bar">
                 <span class="number">{{order.number}}</span>
                 <span class="type" v-show="order.type">{{$t('type.'+order.type)}}</span>
-                <span class="table">{{order.table}}</span>
+                <span class="provider" v-show="order.source !== 'POS'">{{order.source}}</span>
                 <span class="timePass">
                     <i class="fa fa-clock-o"></i>{{order.time | fromNow}}
                 </span>
@@ -684,5 +684,9 @@ header i {
 
 .hidden span {
   visibility: hidden;
+}
+
+.provider {
+  margin-left: 10px;
 }
 </style>

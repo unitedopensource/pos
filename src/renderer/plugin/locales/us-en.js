@@ -363,7 +363,9 @@ export default {
         'callList': 'Call History',
         'editCustomer': 'Edit Customer Info',
         'newCustomer': 'Create Customer Info',
-        'incomingCall': 'Incoming Call'
+        'incomingCall': 'Incoming Call',
+        'terminalDeviceManagement': 'Terminal Device Management',
+        'addressList': 'Address List'
     },
     menu: {
         'course': 'Course',

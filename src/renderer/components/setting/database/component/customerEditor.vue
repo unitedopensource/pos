@@ -2,8 +2,8 @@
   <div class="popupMask dark center" @click.self="init.resolve">
       <div class="customer">
         <header>
-            <h3>{{$t(title)}}</h3>
-            <h5></h5>
+          <h5></h5>
+          <h3>{{$t(title)}}</h3>
         </header>
         <section class="info">
             <div class="field triple">

@@ -104,137 +104,171 @@
 </template>
 
 <script>
-import smartOption from '../common/smartOption'
-import smartSwitch from '../common/smartSwitch'
-import smartInput from '../common/smartInput'
-import dialoger from '../../common/dialoger'
-import checkbox from '../common/checkbox'
-import radio from '../common/radio'
-import capture from './capture'
+import smartOption from "../common/smartOption";
+import smartSwitch from "../common/smartSwitch";
+import smartInput from "../common/smartInput";
+import dialoger from "../../common/dialoger";
+import checkbox from "../common/checkbox";
+import radio from "../common/radio";
+import capture from "./capture";
 export default {
-    props: ['profile'],
-    components: { smartOption, smartSwitch, smartInput, checkbox, radio, dialoger, capture },
-    data() {
-        return {
-            componentData: null,
-            component: null,
-            languages: [
-                { label: this.$t("text.primary") + ' us-en', value: "usEN" },
-                { label: this.$t("text.secondary") + ' zh-cn', value: "zhCN" }],
-            roles: ['Manager', 'Cashier', 'Waitstaff', 'Bartender', 'ThirdParty'],
-            operator: {},
-        }
+  props: ["profile"],
+  components: {
+    smartOption,
+    smartSwitch,
+    smartInput,
+    checkbox,
+    radio,
+    dialoger,
+    capture
+  },
+  data() {
+    return {
+      componentData: null,
+      component: null,
+      languages: [
+        { label: this.$t("text.primary") + " us-en", value: "usEN" },
+        { label: this.$t("text.secondary") + " zh-cn", value: "zhCN" }
+      ],
+      roles: [
+        "Owner",
+        "Manager",
+        "Cashier",
+        "Waitstaff",
+        "Bartender",
+        "ThirdParty"
+      ],
+      operator: {}
+    };
+  },
+  created() {
+    this.operator = JSON.parse(JSON.stringify(this.profile));
+    //patch
+    !this.operator.hasOwnProperty("permission") &&
+      (this.operator = Object.assign({}, this.operator, { permission: [] }));
+  },
+  methods: {
+    removeUser() {
+      this.$dialog({
+        title: "dialog.deleteOperatorConfirm",
+        msg: ["dialog.deleteOperatorConfirmTip", this.operator.name]
+      })
+        .then(() => {
+          this.$socket.emit("[CMS] REMOVE_USER", this.operator._id);
+          this.$q();
+          this.$nextTick(() => {
+            this.$router.push({ name: "Setting.operator.index" });
+          });
+        })
+        .catch(() => {
+          this.$q();
+        });
     },
-    created() {
-        this.operator = JSON.parse(JSON.stringify(this.profile));
-        //patch 
-        !this.operator.hasOwnProperty('permission') && (this.operator = Object.assign({}, this.operator, { permission: [] }));
+    registerEmployeeCard() {
+      new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject };
+        this.component = "capture";
+      })
+        .then(card => {
+          this.$socket.emit("[CHECK] EMPLOYEE_CARD", card, exist => {
+            exist
+              ? this.$dialog({
+                  title: "dialog.employeeCardRegisterFailed",
+                  msg: "dialog.employeeCardRegistered",
+                  buttons: [{ text: "button.confirm", fn: "resolve" }]
+                }).then(() => {
+                  this.$q();
+                })
+              : (this.operator = Object.assign({}, this.operator, { card }));
+          });
+          this.$q();
+        })
+        .catch(() => {
+          this.$q();
+        });
     },
-    methods: {
-        removeUser() {
-            this.$dialog({
-                title: "dialog.deleteOperatorConfirm", msg: ['dialog.deleteOperatorConfirmTip', this.operator.name]
-            }).then(() => {
-                this.$socket.emit("[CMS] REMOVE_USER", this.operator._id)
-                this.$q()
-                this.$nextTick(() => {
-                    this.$router.push({ name: 'Setting.operator.index' })
-                })
-            }).catch(() => { this.$q() })
-        },
-        registerEmployeeCard() {
-            new Promise((resolve, reject) => {
-                this.componentData = { resolve, reject };
-                this.component = 'capture'
-            }).then((card) => {
-                this.$socket.emit("[CHECK] EMPLOYEE_CARD", card, exist => {
-                    exist ?
-                        this.$dialog({
-                            title: 'dialog.employeeCardRegisterFailed',
-                            msg: 'dialog.employeeCardRegistered',
-                            buttons: [{ text: 'button.confirm', fn: 'resolve' }]
-                        }).then(() => {
-                            this.$q()
-                        }) : this.operator = Object.assign({}, this.operator, { card })
-                })
-                this.$q()
-            }).catch(() => {
-                this.$q()
-            })
-        },
-        removeEmployeeCard() {
-            this.$dialog({
-                title: 'card.removeEmployeeCard',
-                msg: 'card.removeEmployeeCardTip'
-            }).then(() => {
-                this.operator.card = null;
-                this.$q()
-            }).catch(() => { this.$q() })
-        }
-    },
-    watch: {
-        operator: {
-            handler(n) {
-                let keys = Object.keys(n);
-                let isChange = keys.some(key => {
-
-                    switch (typeof n[key]) {
-                        case 'string':
-                        case 'number':
-                            return n[key] !== this.profile[key]
-                        case 'object':
-                            if (Array.isArray(n[key])) {
-                                return n[key].length !== this.profile[key].length && n[key].every((v, i) => v !== this.profile[i])
-                            } else {
-                                return JSON.stringify(n[key]) !== JSON.stringify(this.profile[key])
-                            }
-                            break;
-                        case 'boolean':
-                            return n[key] !== this.profile[key]
-                    }
-                })
-                isChange ? this.$emit("change", n) : this.$emit("unchanged")
-            }, deep: true
-        }
+    removeEmployeeCard() {
+      this.$dialog({
+        title: "card.removeEmployeeCard",
+        msg: "card.removeEmployeeCardTip"
+      })
+        .then(() => {
+          this.operator.card = null;
+          this.$q();
+        })
+        .catch(() => {
+          this.$q();
+        });
     }
-}
+  },
+  watch: {
+    operator: {
+      handler(n) {
+        let keys = Object.keys(n);
+        let isChange = keys.some(key => {
+          switch (typeof n[key]) {
+            case "string":
+            case "number":
+              return n[key] !== this.profile[key];
+            case "object":
+              if (Array.isArray(n[key])) {
+                return (
+                  n[key].length !== this.profile[key].length &&
+                  n[key].every((v, i) => v !== this.profile[i])
+                );
+              } else {
+                return (
+                  JSON.stringify(n[key]) !== JSON.stringify(this.profile[key])
+                );
+              }
+              break;
+            case "boolean":
+              return n[key] !== this.profile[key];
+          }
+        });
+        isChange ? this.$emit("change", n) : this.$emit("unchanged");
+      },
+      deep: true
+    }
+  }
+};
 </script>
 
 <style scoped>
 .f1 {
-    display: flex;
-    flex-wrap: wrap;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .header {
-    padding: 10px 20px;
-    background: #4D6D83;
-    color: #fff;
-    display: flex;
-    border-bottom: 1px solid #455A64;
+  padding: 10px 20px;
+  background: #4d6d83;
+  color: #fff;
+  display: flex;
+  border-bottom: 1px solid #455a64;
 }
 
 .name {
-    width: 150px;
+  width: 150px;
 }
 
 .datalist .name {
-    text-align: center;
+  text-align: center;
 }
 
 .datalist .f1 {
-    margin-left: 2em;
+  margin-left: 2em;
 }
 
 .column {
-    display: flex;
+  display: flex;
 }
 
-.column>div {
-    flex: 1;
+.column > div {
+  flex: 1;
 }
 
 .column .btn {
-    margin-right: 10px;
+  margin-right: 10px;
 }
 </style>

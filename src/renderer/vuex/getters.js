@@ -1,38 +1,34 @@
-export const app = state => state.initial.app
-export const sync = state => state.initial.sync
-export const time = state => state.initial.time
-export const ring = state => state.initial.ring
-export const device = state => state.initial.device
-export const config = state => state.initial.config
-export const ticket = state => state.initial.ticket
-export const history = state => state.initial.orders
-export const callLog = state => state.initial.callLog
-export const spooler = state => state.initial.spooler
-export const store = state => state.initial.config.store
-export const templates = state => state.initial.templates
-export const tax = state => state.initial.config.store.tax
-export const language = state => state.initial.app.language
-export const station = state => state.initial.config.station
-export const reservation = state => state.initial.reservation
-//login
-export const op = state => state.login.op
-export const password = state => state.login.password
-//main
-export const customer = state => state.main.customer
-export const displayKeyboard = state => state.main.keyboard
-//menu layout
-export const item = state => state.menu.item
-export const sides = state => state.menu.sides
-export const order = state => state.menu.order
-export const diffs = state => state.menu.diffs
-export const choiceSet = state => state.menu.choiceSetTarget
-export const menu = state => state.initial.config.layout.menu
-export const archivedOrder = state => state.menu.archivedOrder
-export const submenu = state => state.initial.config.layout.submenu
-export const actions = state => state.initial.config.layout.action
-export const request = state => state.initial.config.layout.request
-export const isEmptyTicket = state => state.menu.order.content.length === 0
-
-//tables
-export const currentTable = state => state.table.currentTable
-export const tables = state => state.initial.config.layout.table
+export const app = s => s.initial.app
+export const sync = s => s.initial.sync
+export const time = s => s.initial.time
+export const ring = s => s.initial.ring
+export const device = s => s.initial.device
+export const config = s => s.initial.config
+export const ticket = s => s.initial.ticket
+export const history = s => s.initial.orders
+export const callLog = s => s.initial.callLog
+export const spooler = s => s.initial.spooler
+export const store = s => s.initial.config.store
+export const templates = s => s.initial.templates
+export const tax = s => s.initial.config.store.tax
+export const language = s => s.initial.app.language
+export const station = s => s.initial.config.station
+export const reservation = s => s.initial.reservation
+export const terminals = s => s.initial.config.terminal
+export const op = s => s.login.op
+export const password = s => s.login.password
+export const customer = s => s.main.customer
+export const displayKeyboard = s => s.main.keyboard
+export const item = s => s.menu.item
+export const sides = s => s.menu.sides
+export const order = s => s.menu.order
+export const diffs = s => s.menu.diffs
+export const choiceSet = s => s.menu.choiceSetTarget
+export const menu = s => s.initial.config.layout.menu
+export const archivedOrder = s => s.menu.archivedOrder
+export const submenu = s => s.initial.config.layout.submenu
+export const actions = s => s.initial.config.layout.action
+export const request = s => s.initial.config.layout.request
+export const isEmptyTicket = s => s.menu.order.content.length === 0
+export const currentTable = s => s.table.currentTable
+export const tables = s => s.initial.config.layout.table

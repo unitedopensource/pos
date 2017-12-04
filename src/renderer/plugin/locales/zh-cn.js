@@ -281,7 +281,9 @@ export default {
         'callList': '来电记录',
         'editCustomer': '编辑用户资料',
         'newCustomer': '新建用户资料',
-        'incomingCall': '来电'
+        'incomingCall': '来电',
+        'terminalDeviceManagement': '刷卡终端管理',
+        'addressList':'地址列表'
     },
     menu: {
         'course': '定时',

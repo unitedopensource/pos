@@ -915,11 +915,11 @@ function createHeader(store, ticket) {
     let date = moment(Number(time)).format("MM-DD-YYYY");
     let placeTime = moment(Number(time)).locale('en').format("hh:mm a");
     let customerInfo = "";
-    customerInfo += phone ? `<p><span class="text">Tel:</span><span class="value tel enlarge">${phone}</span><span class="ext">${customer.extension}</span></p>` : "";
-    customerInfo += customer.address ? `<p><span class="text">Addr:</span><span class="value addr enlarge">${customer.address}</span></p>` : "";
-    customerInfo += customer.city ? `<p><span class="text">City:</span><span class="value">${customer.city}</span><span class="space">${customer.distance}</span><span class="space">${customer.duration}</span></p>` : "";
-    customerInfo += customer.name ? `<p><span class="text">Name:</span><span class="value">${customer.name}</span></p>` : "";
-    customerInfo += customer.note ? `<p><span class="text">Note:</span><span class="value">${customer.note}</span></p>` : "";
+    customerInfo += phone ? `<p><span class="icon">‎📞</span><span class="value tel">${phone}</span><span class="ext">${customer.extension}</span></p>` : "";
+    customerInfo += customer.address ? `<p><span class="value addr">${customer.address}</span></p>` : "";
+    customerInfo += customer.city ? `<p><span class="value">${customer.city}</span><span class="space">${customer.distance}</span><span class="space">${customer.duration}</span></p>` : "";
+    customerInfo += customer.name ? `<p><span class="value">${customer.name}</span></p>` : "";
+    customerInfo += customer.note ? `<p><span class="value">${customer.note}</span></p>` : "";
 
     let ticketInfo = `<p><span class="wrap">
                         <span class="text">Server:</span><span class="value">${server || cashier}</span>
@@ -1194,8 +1194,8 @@ function createStyle(ctrl) {
               .server .wrap{display:flex;padding:0 10px;}
               .server .text{flex:2;}.server .value{flex:3;}
               .customer {${printCustomer ? '' : 'display:none;'}}
-              .customer p{text-align:left;padding-bottom:2px;}
-              .customer p:last-child{border-bottom:1px solid #000;padding-bottom:0px;}
+              .customer p{text-align:left;}
+              .customer p:last-child{border-bottom:1px solid #000;}
               .customer .text{display:inline-block;min-width:32px;margin-left:5px;}
               .customer .tel{letter-spacing:2px;}
               .customer .ext{margin-left:10px;}
