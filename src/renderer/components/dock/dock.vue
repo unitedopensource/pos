@@ -4,6 +4,7 @@
             <span class="number">{{ticket.number}}</span>
             <span class="type" v-show="ticket.type" @click="changeType">{{type}}</span>
             <span class="provider" v-show="$route.name === 'Menu' && order.source !== 'POS'">{{order.source}}</span>
+            <div class="reward" v-if="config.store.reward"></div>
             <div class="info">
                 <div class="customer" v-if="$route.name === 'Menu'" @click="editCustomer">
                     <span v-show="customer.phone">{{customer.phone | phone}}</span>

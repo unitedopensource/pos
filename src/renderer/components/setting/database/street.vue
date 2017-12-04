@@ -2,7 +2,7 @@
     <div>   
         <header>
             <nav>
-                <h3><i class="fa fa-users"></i><span>{{$t('title.addressList')}}</span></h3>
+                <h3><i class="fa fa-location-arrow"></i><span>{{$t('title.addressList')}}</span></h3>
             </nav>
         </header>
         <table>
@@ -20,14 +20,11 @@
                     <td>{{address.zipcode}}</td>
                 </tr>
             </tbody>
-            <tfooter>
+            <tfoot>
                 <tr>
-                    <td colspan="2">total Address: {{totalAddress}}</td>
-                    <td>
-
-                    </td>
+                    <td>total Address: {{totalAddress}}</td>
                 </tr>
-            </tfooter>
+            </tfoot>
         </table>
         <div :is="component" :init="componentData" @update="initialData"></div>
     </div>
@@ -86,3 +83,49 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+header {
+  display: flex;
+}
+
+h3 {
+  padding: 20px 0 15px 25px;
+  color: #37474f;
+  font-weight: normal;
+}
+
+h3 i {
+  margin-right: 5px;
+}
+
+tbody {
+  display: block;
+  height: 622px;
+  text-align: center;
+}
+
+thead,
+tbody tr,
+tfoot tr {
+  display: table;
+  table-layout: fixed;
+  width: 100%;
+}
+
+thead th {
+  background: #4d6d83;
+  padding: 6px 0;
+  color: #fff;
+  font-weight: normal;
+}
+
+td {
+  text-align: center;
+  padding: 6px 0;
+}
+
+tbody tr:nth-child(even) {
+  background: #f5f5f5;
+}
+</style>

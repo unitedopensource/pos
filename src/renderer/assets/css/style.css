@@ -41,6 +41,12 @@ div {
   --shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
 }
 
+table {
+  table-layout: auto;
+  border-spacing: 0;
+  width: 100%;
+}
+
 .f1 {
   flex: 1;
 }
@@ -401,7 +407,7 @@ header.dock {
 }
 
 .dock .number {
-  width: 60px;
+  width: 55px;
   letter-spacing: 1px;
   text-align: center;
   font-size: 22px;
@@ -421,7 +427,7 @@ header.dock {
 }
 
 .dock .type {
-  min-width: 100px;
+  min-width: 94px;
   text-shadow: 0 1px 1px #fff;
   font-weight: bold;
   text-align: center;

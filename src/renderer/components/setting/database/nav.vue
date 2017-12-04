@@ -6,7 +6,7 @@
                     <i class="fa fa-database"></i>
                     <span class="text">{{$t('nav.status')}}</span>
                 </router-link>
-                <router-link tag="li" :to="{name:'Setting.database.address'}">
+                <router-link tag="li" :to="{name:'Setting.database.street'}">
                     <i class="fa fa-location-arrow"></i>
                     <span class="text">{{$t('nav.address')}}</span>
                 </router-link>
@@ -52,33 +52,33 @@
 
 <script>
 export default {
-    data() {
-        return {
-            change: false,
-            send: false
-        }
+  data() {
+    return {
+      change: false,
+      send: false
+    };
+  },
+  methods: {
+    back() {
+      this.$router.push({ name: "Setting.index" });
     },
-    methods: {
-        back() {
-            this.$router.push({ name: 'Setting.index' })
-        },
-        onChange(store) {
-            this.txt = this.$t("text.saveSetting");
-            this.change = true;
-            this.store = store;
-            this.send = false;
-        },
-        update() {
-            this.txt = this.$t('text.settingUpdated');
-            this.send = true;
-        },
-        cancel() {
-            this.store = null;
-            this.change = false;
-            this.send = false;
-        }
+    onChange(store) {
+      this.txt = this.$t("text.saveSetting");
+      this.change = true;
+      this.store = store;
+      this.send = false;
+    },
+    update() {
+      this.txt = this.$t("text.settingUpdated");
+      this.send = true;
+    },
+    cancel() {
+      this.store = null;
+      this.change = false;
+      this.send = false;
     }
-}
+  }
+};
 </script>
 
 <style></style>

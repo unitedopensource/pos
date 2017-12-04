@@ -57,6 +57,12 @@
             </article>
         </section>
         <section class="card">
+            <header>{{$t('setting.reward')}}</header>
+            <article>
+                <smart-switch v-model="store.reward" label="text.enable"></smart-switch>
+            </article>
+        </section>
+        <section class="card">
             <header>{{$t('setting.settledReceipt')}}
                 <span class="tip"></span>
             </header>

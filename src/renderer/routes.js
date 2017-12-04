@@ -229,20 +229,20 @@ export default [{
               name: 'Setting.database.index',
               component: require('./components/setting/database/index')
             }, {
-              path: 'Address',
-              name: 'Setting.database.address',
-              component: require('./components/setting/database/address')
+              path: 'street',
+              name: 'Setting.database.street',
+              component: require('./components/setting/database/street')
             },
             {
-              path: 'Customer',
+              path: 'customer',
               name: 'Setting.database.customer',
               component: require('./components/setting/database/customer')
             }, {
-              path: 'Call',
+              path: 'call',
               name: 'Setting.database.call',
               component: require('./components/setting/database/call')
             }, {
-              path: 'CashFlow',
+              path: 'cashFlow',
               name: 'Setting.database.cashFlow',
               component: require('./components/setting/database/cashFlow')
             }, {

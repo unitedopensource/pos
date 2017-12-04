@@ -84,7 +84,6 @@ export default {
       this.totalPage = Math.ceil(total / 20);
     });
     this.$socket.emit("[CUSTOMER] TREND_WEEKLY", data => {
-      console.log(data);
       this.customerTrend = data;
     });
     this.fetchData();
@@ -167,9 +166,6 @@ input {
 }
 
 table {
-  table-layout: auto;
-  border-spacing: 0;
-  width: 100%;
   height: 630px;
 }
 
