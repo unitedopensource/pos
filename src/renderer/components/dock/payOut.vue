@@ -151,6 +151,7 @@ export default {
       }
     },
     saveToDatabase() {
+      Printer.openCashDrawer();
       let cashDrawer = this.station.cashDrawer.name;
       let transaction = {
         _id: ObjectId(),
