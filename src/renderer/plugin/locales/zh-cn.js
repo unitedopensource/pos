@@ -283,7 +283,7 @@ export default {
         'newCustomer': '新建用户资料',
         'incomingCall': '来电',
         'terminalDeviceManagement': '刷卡终端管理',
-        'addressList':'地址列表'
+        'addressList': '地址列表'
     },
     menu: {
         'course': '定时',
@@ -823,6 +823,7 @@ export default {
         'password': '密码',
         'email': '电子邮箱',
         'area': '地区',
+        'openHour': '营业时间',
         'saveSetting': '设置已经改变，请保存',
         'settingUpdated': '设置已保存',
         'guestCount': '统计客人数量',

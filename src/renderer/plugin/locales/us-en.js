@@ -831,6 +831,7 @@ export default {
         'password': 'Password',
         'email': 'Email',
         'area': 'Area',
+        'openHour': 'Open Hour',
         'saveSetting': 'To apply new setting please save.',
         'settingUpdated': 'Setting is Updated',
         'guestCount': 'Guest Count',

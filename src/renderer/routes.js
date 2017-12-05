@@ -91,6 +91,10 @@ export default [{
                 path: 'security',
                 name: 'Setting.store.security',
                 component: require('./components/setting/store/security')
+              }, {
+                path: 'payment',
+                name: 'Setting.store.payment',
+                component: require('./components/setting/store/payment')
               }]
             }]
           },

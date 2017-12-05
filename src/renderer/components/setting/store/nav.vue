@@ -7,7 +7,7 @@
                     <span class="text">{{$t('nav.store')}}</span>
                 </router-link>
             </div>
-            <router-link tag="li" :to="{name:'Setting.index'}">
+            <router-link tag="li" :to="{name:'Setting.index'}" exact>
                 <i class="fa fa-arrow-circle-left"></i>
                 <span class="text">{{$t('nav.back')}}</span>
             </router-link>
