@@ -82,8 +82,16 @@ export default [{
             component: require('./components/setting/store/nav'),
             children: [{
               path: '/',
-              name: 'Setting.store',
-              component: require('./components/setting/store/index')
+              component: require('./components/setting/store/info'),
+              children: [{
+                path: '/',
+                name: 'Setting.store',
+                component: require('./components/setting/store/store')
+              }, {
+                path: 'security',
+                name: 'Setting.store.security',
+                component: require('./components/setting/store/security')
+              }]
             }]
           },
 

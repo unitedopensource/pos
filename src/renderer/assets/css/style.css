@@ -527,7 +527,7 @@ header.dock {
   flex: 1;
   overflow-y: auto;
 }
-
+/* 
 ul.tabs {
   display: flex;
   background: rgb(33, 150, 243);
@@ -547,6 +547,25 @@ ul.tabs li {
   text-shadow: 0 2px 1px rgba(0, 0, 0, 0.5);
   border-bottom: 2px solid #FFC107;
 }
+ul.tabs {
+  display: flex;
+  background: rgb(33, 150, 243);
+  color: #90CAF9;
+  border-bottom: 1px solid #BDBDBD;
+}
+
+ul.tabs li {
+  margin: 0px 15px 0px 0;
+  padding: 10px 25px;
+}
+
+.tabs li.router-link-exact-active,
+.tabs li.active {
+  color: #FAFAFA;
+  background: rgb(78, 168, 239);
+  text-shadow: 0 2px 1px rgba(0, 0, 0, 0.5);
+  border-bottom: 2px solid #FFC107;
+} */
 
 label.input-toggle {
   line-height: 0;

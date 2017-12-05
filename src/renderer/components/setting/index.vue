@@ -12,6 +12,11 @@
                 <figcaption>{{$t('setting.menu')}}</figcaption>
                 <p>{{$t('setting.menuTip')}}</p>
             </router-link>
+            <router-link tag="figure" :to="{name:'Dashboard'}">
+                <i class="fa fa-2x fa-external-link"></i>
+                <figcaption>{{$t('setting.exit')}}</figcaption>
+                <span class="intro">{{$t('setting.exitTip')}}</span>
+            </router-link>
         </section>
     </div>
 </template>
@@ -64,7 +69,7 @@ h3 {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  margin: 3em 0;
+  margin: 2em 0;
 }
 
 figure {
