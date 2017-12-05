@@ -1066,16 +1066,18 @@ export default {
         'storeInfo': '店面资料',
         'payment': '付款相关',
         'receiptDialog': '打印收据',
+        'deliveryCharge': '送餐费',
+        'deliveryTax': '送餐税',
+        'others': '其它设置',
+        'timezone': '时区',
+        'tax': '税率',
 
-
-        'delivery': '送餐服务',
         'googleMatrix': '谷歌矩阵服务',
         'googleMatrixTip': '矩阵服务用于计算地址距离和驾驶时间',
         'employee': '员工设置',
         'email': '电子邮箱设定',
         'emailTip': '用于短信服务，订单提醒，发送电子收据',
-        'timeZone': '时区设定',
-        'tax': '税率设定',
+
         'dineIn': '座位设定',
         'station': '工作站设定',
         'staffBank': '虚拟钱箱设定',
@@ -1222,6 +1224,10 @@ export default {
         'alwaysAskReceipt': '总是询问是否打印收据',
         'doNotPrintReceipt': '从不打印收据',
         'alwaysPrintReceipt': '总是打印收据',
+        'noDeliveryFee': '不收取送餐费',
+        'deliveryCharge': '设定送餐费用',
+        'deliveryTax': '是否对送餐费进行征税',
+        'tax': '编辑税率',
         'table': {
             'actionsOnDone': '设定完成订单之后的操作',
             'passwordRequire': '创建座位之前需要输入密码',

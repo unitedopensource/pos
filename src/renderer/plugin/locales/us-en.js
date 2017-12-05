@@ -1072,16 +1072,19 @@ export default {
         'storeInfo': 'Store Information',
         'payment': 'Payment',
         'receiptDialog': 'Receipt Dialog',
+        'deliveryCharge': 'Delivery Charge',
+        'deliveryTax': 'Delivery Tax',
+        'others': 'Others',
+        'timezone': 'Time Zone',
+        'tax': 'Tax',
 
 
-        'delivery': 'Delivery',
         'googleMatrix': 'Google Matrix',
         'googleMatrixTip': 'Matrix is used for address distance calculation',
         'employee': 'Employee',
         'email': 'Email',
         'emailTip': 'Used for SMS alert, email receipt',
-        'timeZone': 'Time Zone',
-        'tax': 'Tax Setting',
+
         'dineIn': 'Dine In',
         'station': 'Station Setting',
         'staffBank': 'Staff Bank',
@@ -1229,6 +1232,10 @@ export default {
         'alwaysAskReceipt': 'Always prompt dialog',
         'doNotPrintReceipt': 'Never print receipt',
         'alwaysPrintReceipt': 'Always print receipt',
+        'noDeliveryFee': 'Free Delivery Charge',
+        'deliveryCharge': 'Default fee for delivery',
+        'deliveryTax': 'Tax on delivery charge',
+        'tax': 'Store tax setting',
         'table': {
             'actionsOnDone': 'Actions after tapping Done',
             'passwordRequire': 'Password input required before create a new table.',

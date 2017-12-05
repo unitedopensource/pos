@@ -35,8 +35,7 @@ export default {
 }
 
 .change {
-  margin: 0 10px;
-  border-left: 1px solid #fff;
+  border-left: 1px solid #eee;
 }
 
 .change span {
@@ -44,6 +43,7 @@ export default {
   padding: 10px;
   border-left: 1px solid #fff;
   cursor: pointer;
+  margin: 0 10px;
 }
 
 input {

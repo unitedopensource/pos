@@ -95,6 +95,10 @@ export default [{
                 path: 'security',
                 name: 'Setting.store.security',
                 component: require('./components/setting/store/security')
+              }, {
+                path: 'others',
+                name: 'Setting.store.others',
+                component: require('./components/setting/store/others')
               }]
             }, {
               path: 'station',

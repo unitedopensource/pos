@@ -1,8 +1,8 @@
 <template>
     <div>
         <header>
-            <h4>{{$t(title)}}</h4>
-            <span class="tip">{{$t(tooltip)}}</span>
+            <span class="label">{{$t(title)}}</span>
+            <span class="tooltip">{{$t(tooltip)}}</span>
         </header>
         <div class="wrap">
             <div class="select" v-for="(option,index) in choice" :key="index">
@@ -43,20 +43,28 @@ export default {
 }
 
 header {
-  padding: 5px 15px;
+  display: flex;
+  flex-direction: column;
+  padding: 7px 15px;
+  border-bottom: 1px dashed #ddd;
 }
 
 .wrap {
   display: flex;
   align-items: flex-end;
   flex-direction: column;
+  padding: 5px 0 10px;
+}
+
+.label {
+  color: #3c3c3c;
 }
 
 label {
   border: 2px solid #eee;
   padding: 5px 10px 5px 40px;
   width: 250px;
-  margin: 5px 10px 0 0;
+  margin: 5px 20px 0 0;
   border-radius: 4px;
   display: flex;
   flex-direction: column;
@@ -70,10 +78,6 @@ label:before {
   top: 15px;
   content: "\f05d";
   color: lightgray;
-}
-
-.tooltip {
-  color: rgba(0, 0, 0, 0.5);
 }
 
 input:checked + label {

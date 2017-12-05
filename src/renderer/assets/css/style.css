@@ -527,6 +527,8 @@ header.dock {
   flex: 1;
   overflow-y: auto;
 }
+
+
 /* 
 ul.tabs {
   display: flex;
@@ -570,10 +572,10 @@ ul.tabs li {
 label.input-toggle {
   line-height: 0;
   font-size: 0;
-  display: inline-block;
+  display: flex;
   margin: 0;
-  padding: 11px 24px;
-  flex: 6;
+  justify-content: center;
+  align-items: center;
   text-align: right;
 }
 
