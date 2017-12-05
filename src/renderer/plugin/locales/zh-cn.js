@@ -993,7 +993,10 @@ export default {
         'commission': '佣金',
         'totalCustomers': '所有用户数: ',
         'dob': '生日',
-        'extension': '分机'
+        'extension': '分机',
+        'prompt': '提示',
+        'always': '总是',
+        'never': '从不'
     },
     nav: {
         'store': '店面',
@@ -1061,6 +1064,10 @@ export default {
         'buildTime': '创建日期: ',
         'support': '技术支持',
         'storeInfo': '店面资料',
+        'payment': '付款相关',
+        'receiptDialog': '打印收据',
+
+
         'delivery': '送餐服务',
         'googleMatrix': '谷歌矩阵服务',
         'googleMatrixTip': '矩阵服务用于计算地址距离和驾驶时间',
@@ -1211,6 +1218,10 @@ export default {
         'foundPaymentRecords': '一共找到 {i} 笔付款记录',
         'forGiftCard': '礼物卡 ( {i} )',
         'payout': '现金支出详情',
+        'receiptDefaultAction': '每次付款之后的提示打印收据的默认动作',
+        'alwaysAskReceipt': '总是询问是否打印收据',
+        'doNotPrintReceipt': '从不打印收据',
+        'alwaysPrintReceipt': '总是打印收据',
         'table': {
             'actionsOnDone': '设定完成订单之后的操作',
             'passwordRequire': '创建座位之前需要输入密码',

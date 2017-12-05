@@ -84,18 +84,22 @@ export default [{
               path: '/',
               component: require('./components/setting/store/info'),
               children: [{
-                path: '/',
+                path: 'info',
                 name: 'Setting.store',
                 component: require('./components/setting/store/store')
-              }, {
-                path: 'security',
-                name: 'Setting.store.security',
-                component: require('./components/setting/store/security')
               }, {
                 path: 'payment',
                 name: 'Setting.store.payment',
                 component: require('./components/setting/store/payment')
+              }, {
+                path: 'security',
+                name: 'Setting.store.security',
+                component: require('./components/setting/store/security')
               }]
+            }, {
+              path: 'station',
+              name: 'Setting.station',
+              component: require('./components/setting/store/station')
             }]
           },
 

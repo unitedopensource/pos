@@ -2,9 +2,13 @@
     <section class="route">
         <ul class="nav">
             <div class="wrap">
-                <router-link tag="li" :to="{name:'Setting.store'}">
+                <router-link tag="li" :to="{name:'Setting.store'}" exact>
                     <i class="fa fa-home"></i>
                     <span class="text">{{$t('nav.store')}}</span>
+                </router-link>
+                <router-link tag="li" :to="{name:'Setting.station'}">
+                    <i class="fa fa-desktop"></i>
+                    <span class="text">{{$t('nav.station')}}</span>
                 </router-link>
             </div>
             <router-link tag="li" :to="{name:'Setting.index'}" exact>
@@ -13,7 +17,7 @@
             </router-link>
         </ul>
         <section class="content">
-            <transition name="switch">
+            <transition name="switch" mode="out-in">
                 <router-view class="page"></router-view>
             </transition>
         </section>

@@ -1070,6 +1070,10 @@ export default {
         'buildTime': 'Build Time: ',
         'support': 'Support',
         'storeInfo': 'Store Information',
+        'payment': 'Payment',
+        'receiptDialog': 'Receipt Dialog',
+
+
         'delivery': 'Delivery',
         'googleMatrix': 'Google Matrix',
         'googleMatrixTip': 'Matrix is used for address distance calculation',
@@ -1221,6 +1225,10 @@ export default {
         'foundPaymentRecords': 'Found {i} payment records',
         'forGiftCard': 'Gift Card ( {i} )',
         'payout': 'Detail note on purchasing',
+        'receiptDefaultAction': 'Default action for receipt dialog after each settlement',
+        'alwaysAskReceipt': 'Always prompt dialog',
+        'doNotPrintReceipt': 'Never print receipt',
+        'alwaysPrintReceipt': 'Always print receipt',
         'table': {
             'actionsOnDone': 'Actions after tapping Done',
             'passwordRequire': 'Password input required before create a new table.',

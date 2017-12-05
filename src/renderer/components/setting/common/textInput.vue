@@ -14,7 +14,6 @@ export default {
     label: String,
     title: String,
     value: [String, Number, Array],
-    changeble: Boolean,
     disabled: Boolean
   }
 };
@@ -23,7 +22,7 @@ export default {
 <style scoped>
 .input {
   display: flex;
-  padding: 10px 0;
+  padding: 8px 0;
   align-items: center;
   border-bottom: 1px solid #eee;
 }
@@ -33,7 +32,6 @@ export default {
   flex: 1;
   flex-direction: column;
   padding: 0px 20px;
-  border-right: 1px solid #eee;
 }
 
 .change {
@@ -53,6 +51,7 @@ input {
   font-family: "Yuanti-SC";
   font-size: 18px;
   outline: none;
+  margin-top: 4px;
 }
 
 label {

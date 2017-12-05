@@ -1,6 +1,6 @@
 <template>
     <div>
-        <text-input title="text.storeName" v-model="store.name" :disabled="true" :changeble="true" label="button.register">
+        <text-input title="text.storeName" v-model="store.name" :disabled="true" label="button.register">
             <div class="change" @click="register">
                 <span>{{$t('button.register')}}</span>
             </div>
@@ -11,6 +11,7 @@
         <text-input title="text.zipCode" v-model="store.zipCode"></text-input>
         <text-input title="text.contactInfo" v-model="store.contact"></text-input>
         <text-input title="text.area" v-model="store.timeZone"></text-input>
+        <text-input title="text.storeType" v-model="store.storeType"></text-input>
         <text-input title="text.openHour" v-model="store.openHour"></text-input>
     </div>
 </template>
