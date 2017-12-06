@@ -59,6 +59,8 @@ export default {
       this.setReservation({ reservations, sync });
       this.setTodayOrder({ orders, sync });
       this.setLastSync(sync);
+      
+
       window.server && this.checkAwake(config.store.station);
       MAC.getMac((err, mac) => {
         if (err) {

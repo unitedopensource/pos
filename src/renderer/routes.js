@@ -1,12 +1,18 @@
 export default [{
     path: '/',
     name: 'Initialize',
-    component: require('./components/initialize')
+    component: require('./components/bootstrap')
   },
   {
     path: '/login',
     name: 'Login',
     component: require('./components/login')
+  },
+  {
+    path: '/Station/:registration',
+    name: 'Station',
+    props: true,
+    component: require('./components/station')
   },
   {
     path: '/main',

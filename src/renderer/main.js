@@ -74,12 +74,12 @@ let findHost = new Promise((resolve, reject) => {
     resolve("127.0.0.1");
     return;
   }
-  if (args.includes("-server")) {
-    window.server = true;
+  if (args.includes("server")) {
+    window.isServer = true;
     resolve("127.0.0.1");
     return;
   }
-  let host = args.indexOf("-host");
+  let host = args.indexOf("host");
   if (host !== -1) {
     resolve(args[++host]);
     return;
@@ -116,8 +116,7 @@ findHost.then(ip => {
   head.insertBefore(printScript, head.firstChild);
 
   Vue.filter('moment', (time, regEx) => {
-    if (!time) return;
-    return moment(Number(time)).format(regEx)
+    return time ? moment(Number(time)).format(regEx) : "";
   });
   Vue.filter('decimal', (value) => {
     return parseFloat(value).toFixed(2);
@@ -136,8 +135,7 @@ findHost.then(ip => {
     return (number && number.length === 10) ? number.replace(/^\D?(\d{3})\D?\D?(\d{3})\D?(\d{4})/, "($1) $2-$3") : number;
   });
   Vue.filter('fromNow', (time, pass) => {
-    if (!time) return;
-    return moment(Number(time)).fromNow(pass);
+    return time ? moment(Number(time)).fromNow(pass) : "";
   });
 
   const router = new Router({
@@ -164,14 +162,14 @@ Array.prototype.remove = function (object) {
     }
   }
 };
-Array.prototype.getIndexOf = function (array) {
-  for (var i = 0; i < this.length; i++) {
-    if (this[i] === array) {
-      return i;
-    }
-  }
-  return undefined;
-};
+// Array.prototype.getIndexOf = function (array) {
+//   for (var i = 0; i < this.length; i++) {
+//     if (this[i] === array) {
+//       return i;
+//     }
+//   }
+//   return undefined;
+// };
 Array.prototype.getLastInsertIndex = function (array) {
   var index = 0;
   for (var i = 0; i < this.length; i++) {

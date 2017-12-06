@@ -31,16 +31,16 @@ export const setStation = ({
 }, data) => {
   commit(types.SET_STATION, data)
 }
-export const setStations = ({
-  commit
-}, data) => {
-  commit(types.SET_STATIONS, data)
-}
-export const findStation = ({
-  commit
-}, data) => {
-  commit(types.FIND_STATION, data)
-}
+// export const setStations = ({
+//   commit
+// }, data) => {
+//   commit(types.SET_STATIONS, data)
+// }
+// export const findStation = ({
+//   commit
+// }, data) => {
+//   commit(types.FIND_STATION, data)
+// }
 export const setCategory = ({
   commit
 }, category) => {

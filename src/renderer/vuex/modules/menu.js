@@ -13,12 +13,12 @@ const state = {
       tip: 0,
       discount: 0,
       delivery: 0,
-      surcharge:0,
-      remain:0,
+      surcharge: 0,
+      remain: 0,
       log: []
     },
     content: [],
-    source:"POS"
+    source: "POS"
   },
   diffs: null,
   archivedOrder: null,
@@ -42,18 +42,22 @@ const mutations = {
         tip: 0,
         discount: 0,
         delivery: 0,
-        surcharge:0,
-        remain:0,
+        surcharge: 0,
+        remain: 0,
         log: []
       },
       content: [],
-      source:"POS"
+      source: "POS"
     };
     state.item = null;
     state.choiceSetTarget = null;
     state.diffs = null,
       state.archivedOrder = null;
-    state.sides = Array(11).fill({ zhCN: "", usEN: "", disable: true })
+    state.sides = Array(11).fill({
+      zhCN: "",
+      usEN: "",
+      disable: true
+    })
   },
   [types.SET_VIEW_ORDER](state, order) {
     state.order = order;
@@ -64,13 +68,25 @@ const mutations = {
   [types.SET_POINTER](state, item) {
     state.item = item;
     let sides = item.option.slice();
-    Array(11 - sides.length).fill().forEach(_ => { sides.push({ zhCN: "", usEN: "", disable: true }) });
+    Array(11 - sides.length).fill().forEach(_ => {
+      sides.push({
+        zhCN: "",
+        usEN: "",
+        disable: true
+      })
+    });
     state.sides = sides;
   },
   [types.RESET_POINTER](state) {
     state.item = state.order.content.last();
     let sides = state.item ? state.item.option.slice() : [];
-    Array(11 - sides.length).fill().forEach(_ => { sides.push({ zhCN: "", usEN: "", disable: true }) });
+    Array(11 - sides.length).fill().forEach(_ => {
+      sides.push({
+        zhCN: "",
+        usEN: "",
+        disable: true
+      })
+    });
     state.sides = sides;
     state.choiceSetTarget = null;
   },
@@ -78,16 +94,24 @@ const mutations = {
     delete item.clickable;
     let zhCN = !item.disableAutoOption ? item.option.length ? item.option[0].overWrite ? item.option[0].zhCN : item.zhCN : item.zhCN : item.zhCN;
     let usEN = !item.disableAutoOption ? item.option.length ? item.option[0].overWrite ? item.option[0].usEN : item.usEN : item.usEN : item.usEN;
-    let side = !item.disableAutoOption ? item.option.length ? (item.option[0].overWrite || item.option[0].skip) ? "" : { zhCN: `[${item.option[0].zhCN}]`, usEN: `[${item.option[0].usEN}]` } : "" : "";
+    let side = !item.disableAutoOption ? item.option.length ? (item.option[0].overWrite || item.option[0].skip) ? "" : {
+      zhCN: `[${item.option[0].zhCN}]`,
+      usEN: `[${item.option[0].usEN}]`
+    } : "" : "";
     Object.assign(item, {
       unique: Math.random().toString(36).substr(2, 5),
-      zhCN, usEN, side,
+      zhCN,
+      usEN,
+      side,
       print: false,
       pending: false,
       void: false,
       sort: item.sort || 0,
       qty: 1,
-      mark: [[], []],
+      mark: [
+        [],
+        []
+      ],
       choiceSet: item.choiceSet ? item.choiceSet : [],
       single: parseFloat(item.price[0]),
       total: item.hasOwnProperty('total') ? item.total : item.price[0].toFixed(2)
@@ -116,7 +140,8 @@ const mutations = {
     state.choiceSetTarget = null;
   },
   [types.ALTER_ITEM](state, item) {
-    let index = state.order.content.getIndexOf(state.item);
+    //let index = state.order.content.getIndexOf(state.item);
+    let index = state.order.content.findIndex(item => item === state.item);
     state.order.content.splice(index, 1, item);
     state.item = item;
   },
@@ -130,8 +155,8 @@ const mutations = {
       } else {
         item.single =
           data.side.hasOwnProperty('price') ? parseFloat(data.side.price) :
-            data.side.hasOwnProperty('extra') ? parseFloat(item.price[0]) + parseFloat(data.side.extra) :
-              item.price[data.index] ? parseFloat(item.price[data.index]) : parseFloat(item.price[0]);
+          data.side.hasOwnProperty('extra') ? parseFloat(item.price[0]) + parseFloat(data.side.extra) :
+          item.price[data.index] ? parseFloat(item.price[data.index]) : parseFloat(item.price[0]);
 
         item.total = item.single.toFixed(2);
 
@@ -139,7 +164,10 @@ const mutations = {
           item.zhCN = data.side.zhCN;
           item.usEN = data.side.usEN;
         } else if (!data.side.skip) {
-          item.side = { zhCN: `[${data.side.zhCN}]`, usEN: `[${data.side.usEN}]` }
+          item.side = {
+            zhCN: `[${data.side.zhCN}]`,
+            usEN: `[${data.side.usEN}]`
+          }
         }
       }
     } else {
@@ -150,7 +178,10 @@ const mutations = {
         item = Object.assign({}, item);
         item.unique = Math.random().toString(36).substr(2, 5);
         item.qty = 1;
-        item.side = { zhCN: `[${data.side.zhCN}]`, usEN: `[${data.side.usEN}]` };
+        item.side = {
+          zhCN: `[${data.side.zhCN}]`,
+          usEN: `[${data.side.usEN}]`
+        };
         if (data.side.hasOwnProperty('price')) {
           price = parseFloat(data.side.price)
         } else if (data.side.hasOwnProperty('extra')) {
@@ -202,7 +233,11 @@ const mutations = {
         let dom = document.querySelector('.item.active');
         dom && dom.classList.remove("active");
         let sides = state.order.content.length ? state.order.content.last().option.slice() : [];
-        Array(11 - sides.length).fill().forEach(_ => sides.push({ zhCN: "", usEN: "", disable: true }))
+        Array(11 - sides.length).fill().forEach(_ => sides.push({
+          zhCN: "",
+          usEN: "",
+          disable: true
+        }))
         state.sides = sides;
       }
     }
@@ -233,7 +268,10 @@ const mutations = {
     }
   },
   [types.ALERT_CHOICE_SET](state, set) {
-    let { zhCN, usEN } = set;
+    let {
+      zhCN,
+      usEN
+    } = set;
     state.choiceSetTarget.zhCN = `${state.choiceSetTarget.zhCN} ${zhCN}`;
     state.choiceSetTarget.usEN = `${state.choiceSetTarget.usEN} ${usEN}`;
     state.choiceSetTarget.unique = Math.random().toString(36).substr(2, 5);
@@ -249,7 +287,11 @@ const mutations = {
     let single = data.single || data.total;
     let qty = data.qty || 1;
     let price = toFixed(single * qty, 2).toFixed(2);
-    Object.assign(state.choiceSetTarget, { qty, single, price })
+    Object.assign(state.choiceSetTarget, {
+      qty,
+      single,
+      price
+    })
   },
   [types.SET_CHOICE_SET_TARGET](state, target) {
     state.choiceSetTarget = target;
@@ -265,7 +307,14 @@ const mutations = {
     delete state.order.payment.type;
     delete state.order.settled;
 
-    let { subtotal, tax, discount, delivery, tip, gratuity } = state.order.payment;
+    let {
+      subtotal,
+      tax,
+      discount,
+      delivery,
+      tip,
+      gratuity
+    } = state.order.payment;
 
     if (state.order.splitPayment) {
       delete state.order.splitPayment;
@@ -279,7 +328,22 @@ const mutations = {
     let balance = toFixed(due + surcharge, 2);
     let remain = toFixed(balance, 2);
 
-    state.order.payment = { subtotal, tax, delivery, discount, tip, gratuity, surcharge, total, due, balance, paid: 0, remain, settled: false, log: [] }
+    state.order.payment = {
+      subtotal,
+      tax,
+      delivery,
+      discount,
+      tip,
+      gratuity,
+      surcharge,
+      total,
+      due,
+      balance,
+      paid: 0,
+      remain,
+      settled: false,
+      log: []
+    }
   },
   [types.REFRESH_CURRENT_ORDER](state, orders) {
     if (state.order.hasOwnProperty('status')) {
