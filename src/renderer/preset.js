@@ -1,14 +1,12 @@
 var Preset = function () {
-  this.station = function (alias, mac) {
+  this.station = function (mac, username) {
     return {
-      alies:alias,
+      alias: "",
       mac,
+      username,
       terminal: {
         enable: false,
-        model: "",
-        address: "",
-        port: "",
-        sn: ""
+        target: ""
       },
       pole: {
         enable: false,
@@ -24,14 +22,14 @@ var Preset = function () {
         enable: false,
         port: 'COM3'
       },
-      printer: null,
-      printerGroup:[],
+      receipt: null,
+      printerGroup: [],
       cashDrawer: {
         enable: false,
-        name: alias,
-        bind: '',
+        name: "",
+        bind: "",
         cashFlowCtrl: false,
-        initialAmount: 0
+        initialAmount: ""
       },
       timeout: 0,
       receiveOnlineOrder: false,
@@ -40,48 +38,56 @@ var Preset = function () {
         "head": "外等",
         "subhead": "Walk In",
         "route": "order",
+        "password": false,
         "enable": true
       }, {
         "icon": "fa-phone",
         "head": "来取",
         "subhead": "Pick Up",
         "route": "pickup",
+        "password": false,
         "enable": true
       }, {
         "icon": "fa-car",
         "head": "送餐",
         "subhead": "Delivery",
         "route": "delivery",
+        "password": false,
         "enable": true
       }, {
         "icon": "fa-cutlery",
         "head": "堂吃",
         "subhead": "Dine In",
         "route": "table",
+        "password": false,
         "enable": true
       }, {
         "icon": "fa-list",
         "head": "历史",
         "subhead": "History",
         "route": "history",
+        "password": false,
         "enable": true
       }, {
         "icon": "fa-inbox",
         "head": "钱机",
         "subhead": "Cash Drawer",
         "route": "cashDrawer",
+        "password": false,
         "enable": true
       }, {
         "icon": "fa-cog",
         "head": "设置",
         "subhead": "Setting",
         "route": "setting",
+        "password": false,
         "enable": true
       }, {
         "icon": "fa-lock",
         "head": "锁定",
         "subhead": "Lock",
         "route": "lock",
+        "password": false,
         "enable": true
       }]
     }
@@ -99,9 +105,9 @@ var Preset = function () {
         "PAYMENT": true,
         "REPORT": true,
         'SALES': true
-      }, 
-      "printMode":"normal",
-      "reprint":[],
+      },
+      "printMode": "normal",
+      "reprint": [],
       "control": {
         "printPrimary": true,
         "primaryFont": "QingYuan",
@@ -176,7 +182,7 @@ var Preset = function () {
       review: [],
       modify: [],
       view: [],
-      permission:[]
+      permission: []
     }
   };
   this.giftCard = function (number, seller, amount, bouns) {
@@ -187,17 +193,15 @@ var Preset = function () {
       customer: "",
       balance: amount,
       activation: new Date,
-      activity: [
-        {
-          date: today(),
-          time: +new Date,
-          amount: amount,
-          balance: amount,
-          bouns: bouns || 0,
-          type: 'ACTIVATION',
-          op: seller
-        }
-      ]
+      activity: [{
+        date: today(),
+        time: +new Date,
+        amount: amount,
+        balance: amount,
+        bouns: bouns || 0,
+        type: 'ACTIVATION',
+        op: seller
+      }]
     }
   };
   this.cashIn = function (op, name, amount) {

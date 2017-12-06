@@ -92,7 +92,7 @@ export default {
     },
     registration(data) {
       ipcRenderer.send("Initialized");
-      this.$router.push("Station", data);
+      this.$router.push({ name: "Station", params: { reg: data } });
     },
     awakeStation() {
       if (window.isServer) {

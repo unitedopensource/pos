@@ -170,7 +170,7 @@ export default {
     };
   },
   created() {
-    this.checkVersion() 
+    this.checkVersion()
       .then(this.checkActivation)
       .then(this.initialized)
       .catch(this.initialFailed);
@@ -209,7 +209,7 @@ export default {
       });
     },
     initialized() {
-      this.isHost = window.server === true;
+      this.isHost = window.isServer === true;
     },
     initialFailed(error) {
       let { data, reason } = error;
@@ -256,7 +256,7 @@ export default {
     shutdownStations() {
       let data = {
         type: "question",
-        title: "dialog.shutdownStations", 
+        title: "dialog.shutdownStations",
         msg: "dialog.shutdownStationsConfirm",
         buttons: [
           { text: "button.cancel", fn: "reject" },

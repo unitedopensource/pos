@@ -9,7 +9,7 @@ export default [{
     component: require('./components/login')
   },
   {
-    path: '/Station/:registration',
+    path: '/Station/:reg',
     name: 'Station',
     props: true,
     component: require('./components/station')
@@ -88,7 +88,7 @@ export default [{
             component: require('./components/setting/store/nav'),
             children: [{
               path: '/',
-              component: require('./components/setting/store/info'),
+              component: require('./components/setting/store/storeTab'),
               children: [{
                 path: 'info',
                 name: 'Setting.store',
@@ -112,8 +112,16 @@ export default [{
               }]
             }, {
               path: 'station',
-              name: 'Setting.station',
-              component: require('./components/setting/store/station')
+              component: require('./components/setting/store/stationTab'),
+              children: [{
+                path: '/',
+                name: 'Setting.station',
+                component: require('./components/setting/store/station')
+              }, {
+                path: 'device',
+                name: 'Setting.station.device',
+                component: require('./components/setting/store/device')
+              }]
             }]
           },
 
