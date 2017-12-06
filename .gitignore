@@ -11,3 +11,5 @@ thumbs.db
 .electron-vue/*
 .git/*
 .idea/*
+.electron-vue/*
+.vscode/*
