@@ -58,12 +58,24 @@ ul.tabs li.router-link-exact-active {
 
 .tab-content {
     margin: 10px auto;
-    background: #fff;
     width: 450px;
+    background: #fff;
     box-shadow: var(--shadow);
 }
 
 .tooltip {
     color: rgba(0, 0, 0, 0.5);
     margin-top: 2px;
+}
+
+.external {
+    margin: 0 10px;
+    padding: 10px 25px;
+    color: #555;
+    cursor: pointer;
+}
+
+.external:hover {
+    background: #eee;
+    border-radius: 4px;
 }

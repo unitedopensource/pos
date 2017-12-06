@@ -826,9 +826,7 @@ export default {
         'openHour': '营业时间',
         'saveSetting': '设置已经改变，请保存',
         'settingUpdated': '设置已保存',
-        'guestCount': '统计客人数量',
         'orderBySeat': '按位点餐',
-        'autoClear': '自动清除',
         'initialAmount': '起始金额',
         'autoChargeAbove': '(N)客人以上',
         'mac': '物理地址',
@@ -846,8 +844,6 @@ export default {
         'cashFlowCtrl': '现金流控制',
         'errorsAllow': '误差值',
         'ui': '界面',
-        'taxBeforeDiscount': '折扣前收税',
-        'taxBeforeCredit': '积分前收税',
         'apply': '应用',
         'setDefault': '设为默认',
         'title': '标题',
@@ -946,7 +942,6 @@ export default {
         'managerCount': '经理 {i} 名',
         'staffCount': '职员 {i} 名',
         'thirdPartyCount': '第三方 {i} 名',
-        'passwordRequire': '需要密码',
         'newOperator': '新建用户',
         'enterPin': '输入密码',
         'printReceipt': '打印收据',
@@ -1071,6 +1066,17 @@ export default {
         'others': '其它设置',
         'timezone': '时区',
         'tax': '税率',
+        'taxBeforeDiscount': '折扣前征税',
+        'taxBeforeCredit': '积分前征税',
+        'tipSuggestion': '小费建议',
+        'dinein': '堂吃设定',
+        'table': '座位',
+        'guestCount': '客人数量',
+        'autoClear': '自动清除',
+        'printOnDone': '完成打印',        
+        'passwordRequire': '需要密码',
+        'surcharge': '自动收费',
+
 
         'googleMatrix': '谷歌矩阵服务',
         'googleMatrixTip': '矩阵服务用于计算地址距离和驾驶时间',
@@ -1078,11 +1084,11 @@ export default {
         'email': '电子邮箱设定',
         'emailTip': '用于短信服务，订单提醒，发送电子收据',
 
-        'dineIn': '座位设定',
+
         'station': '工作站设定',
         'staffBank': '虚拟钱箱设定',
-        'autoCharge': '自动收费',
-        'autoChargeTip': '设置自动收取服务费',
+        
+        
         'terminal': '信用卡终端',
         'terminalTip': 'SEMI-Integrated Terminal Configuration',
         'poleDisplay': '客显设定',
@@ -1114,7 +1120,7 @@ export default {
         'printActionTime': '打印时间',
         'enlargeCustomerInfo': '资料放大',
         'printPayment': '打印总额',
-        'printTipSuggestion': '小费建议',
+
         'buzzer': '打印铃声',
         'printMenuID': '菜单ID',
         'menu': '菜单',
@@ -1157,7 +1163,7 @@ export default {
         'userRemoval': '删除用户',
         'userRemovalTip': '永久的删除这个账户',
         'review': '审核',
-        'tipsSuggestion': '小费建议',
+
         'sortPriority': '按优先值',
         'employeeCard': '员工卡',
         'employeeCardRegistration': '注册员工卡',
@@ -1220,7 +1226,7 @@ export default {
         'foundPaymentRecords': '一共找到 {i} 笔付款记录',
         'forGiftCard': '礼物卡 ( {i} )',
         'payout': '现金支出详情',
-        'receiptDefaultAction': '每次付款之后的提示打印收据的默认动作',
+        'receiptDefaultAction': '每次付款之后提示打印收据的默认动作',
         'alwaysAskReceipt': '总是询问是否打印收据',
         'doNotPrintReceipt': '从不打印收据',
         'alwaysPrintReceipt': '总是打印收据',
@@ -1228,19 +1234,17 @@ export default {
         'deliveryCharge': '设定送餐费用',
         'deliveryTax': '是否对送餐费进行征税',
         'tax': '编辑税率',
-        'table': {
-            'actionsOnDone': '设定完成订单之后的操作',
-            'passwordRequire': '创建座位之前需要输入密码',
+        'tipSuggestion': '在预付单收据下面打印小费建议',
+        'dinein': {
+            'useTableLayout': '使用座位下单',
+            'noTableLayout': '跳过座位直接下单',
+            'guestCount': '统计客人数量',
             'autoClearTable': '客人付款之后自动还原座位状态',
-            'printReceiptOnDone': '在完成后打印收据',
-            'lockOnDone': '在完成之后锁定界面'
-        },
-        'suggestion': {
-            'enable': '在预付单收据下面打印小费建议',
-            'percentage': '设置3个小费建议的百分比'
-        },
-        'terminal': {
-            'integration': '刷卡机半集成连接设置'
+            'printReceipt': '在完成后打印收据',
+            'noReceipt': '结账之后打印收据',
+            'lock': '在完成之后锁定界面',
+            'passwordRequire': '创建座位之前需要输入密码',
+            'surcharge': '设置自动收取服务费',
         },
         'printMode': {
             'normal': '打印当前收据上的 所有 物品',

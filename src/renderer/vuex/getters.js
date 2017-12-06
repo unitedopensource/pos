@@ -8,9 +8,10 @@ export const ticket = s => s.initial.ticket
 export const history = s => s.initial.orders
 export const callLog = s => s.initial.callLog
 export const spooler = s => s.initial.spooler
+export const tax = s => s.initial.config.tax
 export const store = s => s.initial.config.store
+export const dinein = s => s.initial.config.dinein
 export const templates = s => s.initial.templates
-export const tax = s => s.initial.config.store.tax
 export const language = s => s.initial.app.language
 export const station = s => s.initial.config.station
 export const reservation = s => s.initial.reservation

@@ -834,9 +834,7 @@ export default {
         'openHour': 'Open Hour',
         'saveSetting': 'To apply new setting please save.',
         'settingUpdated': 'Setting is Updated',
-        'guestCount': 'Guest Count',
         'orderBySeat': 'Order By Seat',
-        'autoClear': 'Auto Clear',
         'initialAmount': 'Initial Amount',
         'autoChargeAbove': '(N)Cust. Above',
         'mac': 'MAC',
@@ -854,8 +852,6 @@ export default {
         'cashFlowCtrl': 'Cash Flow Ctrl',
         'errorsAllow': 'Errors Allow',
         'ui': 'UI',
-        'taxBeforeDiscount': 'Tax Before Disc',
-        'taxBeforeCredit': 'Tax Before Credit',
         'apply': 'Apply',
         'setDefault': 'Set Default',
         'title': 'Title',
@@ -955,7 +951,6 @@ export default {
         'managerCount': 'Manager: {i}',
         'staffCount': 'Staff: {i}',
         'thirdPartyCount': 'Third Party: {i}',
-        'passwordRequire': 'Password Req.',
         'newOperator': 'New User',
         'enterPin': 'Please Enter Your Pin',
         'printReceipt': 'Print Receipt',
@@ -1077,6 +1072,16 @@ export default {
         'others': 'Others',
         'timezone': 'Time Zone',
         'tax': 'Tax',
+        'taxBeforeDiscount': 'Tax Before Disc',
+        'taxBeforeCredit': 'Tax Before Credit',
+        'tipSuggestion': 'Tips Suggestion',
+        'dinein': 'Dine In',
+        'table': 'Table',
+        'guestCount': 'Guest Count',
+        'autoClear': 'Auto Clear',
+        'printOnDone': 'Print On Done',
+        'passwordRequire': 'Require Password',
+        'surcharge': 'Auto Service Fee',
 
 
         'googleMatrix': 'Google Matrix',
@@ -1085,11 +1090,10 @@ export default {
         'email': 'Email',
         'emailTip': 'Used for SMS alert, email receipt',
 
-        'dineIn': 'Dine In',
+
         'station': 'Station Setting',
         'staffBank': 'Staff Bank',
-        'autoCharge': 'Auto Service Fee',
-        'autoChargeTip': 'Setup auto charge service fee condition',
+        
         'terminal': 'Terminal',
         'terminalTip': 'SEMI-Integrated Terminal Configuration',
         'poleDisplay': 'Pole Display Setting',
@@ -1121,7 +1125,7 @@ export default {
         'printActionTime': 'Print Time',
         'enlargeCustomerInfo': 'Enlarge Info.',
         'printPayment': 'Payment',
-        'printTipSuggestion': 'Tip Sugg.',
+
         'buzzer': 'Buzzer',
         'printMenuID': 'Menu ID',
         'menu': 'Menu',
@@ -1164,7 +1168,7 @@ export default {
         'userRemoval': 'User Remove',
         'userRemovalTip': 'Permanent remove user account',
         'review': 'Approval',
-        'tipsSuggestion': 'Tips Suggestion',
+
         'sortPriority': 'Prioritize',
         'employeeCard': 'Employee Card',
         'employeeCardRegistration': 'Register employee card',
@@ -1189,7 +1193,6 @@ export default {
         'inactive': 'Set Inactive',
         'timeline': 'Time Line',
         'list': 'View List',
-        'tipsSuggestion': 'Tip Suggestions'
     },
     database: {
         'dataSize': 'Data Size',
@@ -1236,16 +1239,17 @@ export default {
         'deliveryCharge': 'Default fee for delivery',
         'deliveryTax': 'Tax on delivery charge',
         'tax': 'Store tax setting',
-        'table': {
-            'actionsOnDone': 'Actions after tapping Done',
-            'passwordRequire': 'Password input required before create a new table.',
-            'autoClearTable': 'Auto restore table status after settling ticket.',
-            'printReceiptOnDone': 'Print receipt after Done',
-            'lockOnDone': 'Automatically lock screen'
-        },
-        'suggestion': {
-            'enable': 'Print tip suggestion on pre-payment ticket',
-            'percentage': 'Set 3 tip suggestions percentage'
+        'tipSuggestion': 'Print tip suggestion on pre-payment ticket',
+        'dinein': {
+            'useTableLayout': 'Use table to place order',
+            'noTableLayout': 'Skip table to place order',
+            'guestCount': 'Count guest before place order',
+            'autoClearTable': 'Auto restore table status after settlement',
+            'printReceipt': 'Print receipt after Done',
+            'noReceipt': 'Do not print receipt after Done',
+            'lock': 'Lock screen after Done',
+            'passwordRequire': 'Password required before create a new table.',
+            'surcharge': 'Set up auto surcharge',
         },
         'terminal': {
             'integration': 'Semi-integrated terminal configuration'

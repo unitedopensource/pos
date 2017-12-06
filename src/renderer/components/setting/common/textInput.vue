@@ -22,7 +22,7 @@ export default {
 <style scoped>
 .input {
   display: flex;
-  padding: 8px 0;
+  padding: 5px 0;
   align-items: center;
   border-bottom: 1px solid #eee;
 }
@@ -51,7 +51,7 @@ input {
   font-family: "Yuanti-SC";
   font-size: 18px;
   outline: none;
-  margin-top: 4px;
+  margin-top: 2px;
 }
 
 label {

@@ -21,6 +21,7 @@ export default {
 .external {
   display: flex;
   align-items: center;
+  min-height: 40px;
   padding: 5px 0 5px 15px;
   border-bottom: 1px solid #eee;
 }

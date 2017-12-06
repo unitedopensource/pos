@@ -1,16 +1,29 @@
 <template>
     <div>
         <external title="setting.tax" tooltip="tip.tax">
-            <div class="edit" @click="editTax">
+            <div class="external" @click="editTax">
                 <i class="fa fa-caret-right"></i>
             </div>
         </external>
+        <toggle title="setting.taxBeforeDiscount" v-model="tax.beforeDiscount"></toggle>
+        <toggle title="setting.taxBeforeCredit" v-model="tax.beforeCredit"></toggle>
+        <toggle title="setting.deliveryTax" tooltip="tip.deliveryTax" v-model="tax.deliveryTax"></toggle>
         <toggle title="setting.deliveryCharge" true-tooltip="tip.deliveryCharge" false-tooltip="tip.deliveryFree" v-model="store.delivery" :conditionalTooltip="true">
             <transition name="dropdown">
-                <div v-if="store.delivery">123</div>
+                <div v-if="store.delivery" class="fees">
+                  <label>{{$t('text.amount')}}</label>
+                  <input type="text" v-model.number="store.deliveryCharge" maxlength="4" placeholder="$ 0.00">
+                </div>
             </transition>
         </toggle>
-        <toggle title="setting.deliveryTax" tooltip="tip.deliveryTax" v-model="tax.deliveryTax"></toggle>
+        <toggle title="setting.tipSuggestion" tooltip="tip.tipSuggestion" v-model="store.tipSuggestion">
+          <transition name="dropdown">
+                <div v-if="store.tipSuggestion" class="fees">
+                  <label>{{$t('text.tipPercentage')}}</label>
+                  <input type="text" v-model="store.tipPercentages" maxlength="8" placeholder="15,18,20">
+                </div>
+            </transition>
+        </toggle>
         <options title="setting.receiptDialog" tooltip="tip.receiptDefaultAction" v-model="store.receipt" :choice="receiptOption"></options>
     </div>
 </template>
@@ -34,7 +47,7 @@ export default {
         {
           label: "text.prompt",
           tooltip: "tip.alwaysAskReceipt",
-          value: "dialog"
+          value: "prompt"
         },
         {
           label: "text.never",
@@ -59,15 +72,22 @@ export default {
 </script>
 
 <style scoped>
-.edit {
-  margin: 0 10px;
-  padding: 10px 25px;
-  color: #555;
-  cursor: pointer;
+.fees {
+  display: flex;
+  align-items: center;
+  padding: 5px 0 10px 30px;
 }
 
-.edit:hover {
-  background: #eee;
-  border-radius: 4px;
+.fees input {
+  border: none;
+  outline: none;
+  border-bottom: 1px solid #ddd;
+  margin-left: 15px;
+  font-family: "Agency FB";
+  font-weight: bold;
+  font-size: 18px;
+  width: 100px;
+  text-indent: 10px;
+  color: #3c3c3c;
 }
 </style>

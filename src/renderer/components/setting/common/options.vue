@@ -6,7 +6,7 @@
         </header>
         <div class="wrap">
             <div class="select" v-for="(option,index) in choice" :key="index">
-                <input type="radio" name="id" :id="id+index" :value="option.value">
+                <input type="radio" name="id" :id="id+index" :checked="option.value === value" @change="$emit('input',$event.target.value)">
                 <label :for="id+index">
                     <span class="label">{{$t(option.label)}}</span>
                     <span class="tooltip">{{$t(option.tooltip)}}</span>
@@ -33,6 +33,9 @@ export default {
         .toString(36)
         .substring(3, 6)
     };
+  },
+  created(){
+    console.log(this.value)
   }
 };
 </script>

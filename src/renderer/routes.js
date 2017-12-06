@@ -92,6 +92,10 @@ export default [{
                 name: 'Setting.store.payment',
                 component: require('./components/setting/store/payment')
               }, {
+                path: 'dinein',
+                name: 'Setting.store.dinein',
+                component: require('./components/setting/store/dinein')
+              }, {
                 path: 'security',
                 name: 'Setting.store.security',
                 component: require('./components/setting/store/security')

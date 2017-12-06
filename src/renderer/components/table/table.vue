@@ -147,16 +147,16 @@ export default {
         default:
           this.reserved
             ? this.createTableForReserved()
-            : this.store.table.passwordRequire
+            : this.dinein.passwordRequire
               ? this.unlockTable()
-              : this.store.table.guestCount
+              : this.dinein.guestCount
                 ? this.$p("setup")
                 : this.createTable(1);
       }
     },
     createTableForReserved() {
       Object.assign(this.customer, { name: this.reserved.name });
-      this.store.table.passwordRequire
+      this.dinein.passwordRequire
         ? this.unlockTable(this.reserved.size)
         : this.createTable(this.reserved.size);
 
@@ -168,7 +168,7 @@ export default {
       this.$denyAccess(true)
         .then(op => {
           if (op._id === this.op._id) {
-            this.store.table.guestCount
+            this.dinein.guestCount
               ? this.$p("setup")
               : this.createTable(guest);
           } else {
@@ -345,6 +345,7 @@ export default {
       "op",
       "sync",
       "store",
+      "dinein",
       "tables",
       "language",
       "history",
