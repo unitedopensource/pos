@@ -12,30 +12,34 @@
         <text-input title="text.contactInfo" v-model="store.contact"></text-input>
         <text-input title="text.timezone" v-model="store.timeZone"></text-input>
         <text-input title="text.storeType" v-model="store.storeType"></text-input>
-        <text-input title="text.openHour" v-model="store.openHour"></text-input>
+        <external title="text.openHour">
+          <div class="external" @click="editHour">
+                <i class="fa fa-caret-right"></i>
+            </div>
+        </external>
     </div>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import external from "../common/external";
 import textInput from "../common/textInput";
 export default {
-  components: { textInput },
-  computed: {
-    ...mapGetters(["config"])
-  },
+  components: { external, textInput },
   data() {
     return {
       store: null
     };
   },
   created() {
-    this.store = Object.assign({}, this.config.store);
+    this.store = Object.assign({}, this.$store.getters.config.store);
   },
   methods: {
-      register(){
-          console.log("tatah")
-      }
+    register() {
+      console.log("tatah");
+    },
+    editHour(){
+      
+    }
   }
 };
 </script>

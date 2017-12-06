@@ -851,7 +851,6 @@ export default {
         'binding': 'Binding',
         'cashFlowCtrl': 'Cash Flow Ctrl',
         'errorsAllow': 'Errors Allow',
-        'ui': 'UI',
         'apply': 'Apply',
         'setDefault': 'Set Default',
         'title': 'Title',
@@ -997,7 +996,9 @@ export default {
         'totalCustomers': 'Total Customers: ',
         'dob': 'Date of Birth',
         'extension': 'Extension',
-        'timezone': 'Time Zone'
+        'timezone': 'Time Zone',
+        'alias': 'Alias',
+        'username': 'Username'
     },
     nav: {
         'store': 'Store',
@@ -1082,6 +1083,9 @@ export default {
         'passwordRequire': 'Require Password',
         'surcharge': 'Auto Service Fee',
         'seatOrder': 'Seat Order',
+        'interface': 'Interface',
+        'autoLock': 'Auto Lock',
+        'timeout': 'Timeout',
 
         'googleMatrix': 'Google Matrix',
         'googleMatrixTip': 'Matrix is used for address distance calculation',
@@ -1094,11 +1098,12 @@ export default {
         'staffBank': 'Staff Bank',
 
         'terminal': 'Terminal',
-        'terminalTip': 'SEMI-Integrated Terminal Configuration',
         'poleDisplay': 'Pole Display Setting',
-        'poleDisplayTip': 'Pole display configuration',
         'scale': 'Weight Scale',
         'callerId': 'Caller ID',
+
+
+
         'security': 'Security',
         'printer': 'Printer',
         'cashDrawer': 'Cash drawer Setting',
@@ -1239,6 +1244,10 @@ export default {
         'deliveryTax': 'Tax on delivery charge',
         'tax': 'Store tax setting',
         'tipSuggestion': 'Print tip suggestion on pre-payment ticket',
+        'terminal': 'SEMI-Integrated terminal configuration',
+        'poleDisplay': 'Pole display configuration',
+        'interface': 'Station interface setup',
+        'autoLock': 'Auto lock configuration',
         'dinein': {
             'useTableLayout': 'Use table to place order',
             'noTableLayout': 'Skip table to place order',

@@ -843,7 +843,6 @@ export default {
         'binding': '绑定',
         'cashFlowCtrl': '现金流控制',
         'errorsAllow': '误差值',
-        'ui': '界面',
         'apply': '应用',
         'setDefault': '设为默认',
         'title': '标题',
@@ -991,7 +990,9 @@ export default {
         'prompt': '提示',
         'always': '总是',
         'never': '从不',
-        'timezone': '时区'
+        'timezone': '时区',
+        'alias': '别名',
+        'username': '用户名'
     },
     nav: {
         'store': '店面',
@@ -1072,10 +1073,13 @@ export default {
         'table': '座位',
         'guestCount': '客人数量',
         'autoClear': '自动清除',
-        'printOnDone': '完成打印',        
+        'printOnDone': '完成打印',
         'passwordRequire': '需要密码',
         'surcharge': '自动收费',
-        'seatOrder':'按位下单',
+        'seatOrder': '按位下单',
+        'interface': '界面设置',
+        'autoLock': '自动锁定',
+        'timeout': '超时',
 
         'googleMatrix': '谷歌矩阵服务',
         'googleMatrixTip': '矩阵服务用于计算地址距离和驾驶时间',
@@ -1086,17 +1090,15 @@ export default {
 
         'station': '工作站设定',
         'staffBank': '虚拟钱箱设定',
-        
-        
+
         'terminal': '信用卡终端',
-        'terminalTip': 'SEMI-Integrated Terminal Configuration',
         'poleDisplay': '客显设定',
-        'poleDisplayTip': '配置价格显示器',
-        'scale': '磅秤设定',
+        'weightScale': '磅秤设定',
         'callerId': '来电显示',
         'security': '安全设定',
         'printer': '打印机设定',
         'cashDrawer': '钱箱设定',
+
         'taxCalculation': '税率计算',
         'taxCalculationTip': '税务相关问题请咨询会计师',
         'taxEditor': '税率编辑',
@@ -1234,6 +1236,10 @@ export default {
         'deliveryTax': '是否对送餐费进行征税',
         'tax': '编辑税率',
         'tipSuggestion': '在预付单收据下面打印小费建议',
+        'terminal': '半集成刷卡机设置',
+        'poleDisplay': '配置价格显示器',
+        'interface': '设置本工作站的界面',
+        'autoLock': '自动锁定界面设定',
         'dinein': {
             'useTableLayout': '使用座位下单',
             'noTableLayout': '跳过座位直接下单',

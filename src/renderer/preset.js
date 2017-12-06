@@ -31,7 +31,11 @@ var Preset = function () {
         cashFlowCtrl: false,
         initialAmount: ""
       },
-      timeout: 0,
+      autoLock:{
+        enable:false,
+        timeout:0,
+        done:false
+      },
       receiveOnlineOrder: false,
       interface: [{
         "icon": "fa-user",
