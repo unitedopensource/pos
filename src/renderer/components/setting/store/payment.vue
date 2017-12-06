@@ -5,7 +5,7 @@
                 <i class="fa fa-caret-right"></i>
             </div>
         </external>
-        <toggle title="setting.deliveryCharge" true-tooltip="tip.deliveryCharge" false-tooltip="tip.deliveryTax" v-model="store.delivery" :conditionalTooltip="true">
+        <toggle title="setting.deliveryCharge" true-tooltip="tip.deliveryCharge" false-tooltip="tip.deliveryFree" v-model="store.delivery" :conditionalTooltip="true">
             <transition name="dropdown">
                 <div v-if="store.delivery">123</div>
             </transition>

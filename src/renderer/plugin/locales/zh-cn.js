@@ -1224,7 +1224,7 @@ export default {
         'alwaysAskReceipt': '总是询问是否打印收据',
         'doNotPrintReceipt': '从不打印收据',
         'alwaysPrintReceipt': '总是打印收据',
-        'noDeliveryFee': '不收取送餐费',
+        'deliveryFree': '不收取送餐费',
         'deliveryCharge': '设定送餐费用',
         'deliveryTax': '是否对送餐费进行征税',
         'tax': '编辑税率',

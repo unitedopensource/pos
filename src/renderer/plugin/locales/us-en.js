@@ -1232,7 +1232,7 @@ export default {
         'alwaysAskReceipt': 'Always prompt dialog',
         'doNotPrintReceipt': 'Never print receipt',
         'alwaysPrintReceipt': 'Always print receipt',
-        'noDeliveryFee': 'Free Delivery Charge',
+        'deliveryFree': 'Free Delivery Charge',
         'deliveryCharge': 'Default fee for delivery',
         'deliveryTax': 'Tax on delivery charge',
         'tax': 'Store tax setting',

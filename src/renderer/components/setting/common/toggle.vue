@@ -30,6 +30,10 @@ export default {
       dynamicTooltip: ""
     };
   },
+  created() {
+    if (this.conditionalTooltip)
+      this.dynamicTooltip = this.value ? this.trueTooltip : this.falseTooltip;
+  },
   watch: {
     value(n) {
       if (this.conditionalTooltip)
