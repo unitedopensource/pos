@@ -3,6 +3,7 @@
         <text-input title="text.alias" v-model="station.alias"></text-input>
         <text-input title="text.mac" v-model="station.mac" :disabled="true"></text-input>
         <text-input title="text.username" v-model="station.username" :disabled="true"></text-input>
+        <toggle title="text.autoAwake" v-model="station.wol"></toggle>
         <external title="setting.cashDrawer">
             <div class="external" @click="editCashDrawer">
                 <i class="fa fa-caret-right"></i>

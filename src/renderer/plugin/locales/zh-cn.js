@@ -904,7 +904,7 @@ export default {
         'name': '名称',
         'account': '账号',
         'database': '数据库',
-        'setting': '后台设定',
+        'setting': '设定',
         'cashDrawer': '钱箱',
         'report': '报表',
         'order': '订单',
@@ -1029,7 +1029,8 @@ export default {
         'events': '事件',
         'live': '监控',
         'department': '部门',
-        'terminal': '终端'
+        'terminal': '终端',
+        'promotion': '促销'
     },
     setting: {
         'softwareSetting': 'UnitedPOS 后台设置',

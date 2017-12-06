@@ -22,7 +22,7 @@ export default {
   display: flex;
   align-items: center;
   min-height: 40px;
-  padding: 5px 0 5px 15px;
+  padding: 5px 0 5px 20px;
   border-bottom: 1px solid #eee;
 }
 

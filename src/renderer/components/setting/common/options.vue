@@ -48,7 +48,7 @@ export default {
 header {
   display: flex;
   flex-direction: column;
-  padding: 7px 15px;
+  padding: 7px 20px;
   border-bottom: 1px dashed #ddd;
 }
 

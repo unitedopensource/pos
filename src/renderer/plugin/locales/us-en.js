@@ -1035,7 +1035,8 @@ export default {
         'events': 'Events',
         'live': 'Live',
         'department': 'Dept.',
-        'terminal': 'Terminal'
+        'terminal': 'Terminal',
+        'promotion': 'Promo.'
     },
     setting: {
         'softwareSetting': 'UnitedPOS Setting',

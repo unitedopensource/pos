@@ -4,6 +4,7 @@ var Preset = function () {
       alias: "",
       mac,
       username,
+      wol:false,
       terminal: {
         enable: false,
         target: ""

@@ -53,16 +53,12 @@ export default {
   min-height: 50px;
 }
 
-.title {
-  color: #3c3c3c;
-}
-
 .label {
   display: flex;
   flex-direction: column;
   justify-content: center;
   flex: 1;
-  padding: 5px 15px;
+  padding: 5px 20px;
 }
 
 .input-toggle {

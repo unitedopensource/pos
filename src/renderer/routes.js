@@ -90,7 +90,7 @@ export default [{
               path: '/',
               component: require('./components/setting/store/storeTab'),
               children: [{
-                path: 'info',
+                path: '/',
                 name: 'Setting.store',
                 component: require('./components/setting/store/store')
               }, {
@@ -121,6 +121,18 @@ export default [{
                 path: 'device',
                 name: 'Setting.station.device',
                 component: require('./components/setting/store/device')
+              }]
+            }, {
+              path: 'promotion',
+              component: require('./components/setting/store/promotionTab'),
+              children: [{
+                path: '/',
+                name: 'Setting.promotion',
+                component: require('./components/setting/store/promotion')
+              }, {
+                path: 'coupon',
+                name: 'Setting.promotion.coupon',
+                component: require('./components/setting/store/coupon')
               }]
             }]
           },
