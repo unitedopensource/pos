@@ -972,7 +972,6 @@ export default {
         'issueGiftCard': 'Issue Gift Card',
         'issueCoupon': 'Issue Coupon',
         'preview': 'Preview',
-        'seatOrder': 'Seat Order',
         'wage': 'Wage (${i} / Hour)',
         'calcTips': 'Current Tips: $ {i}',
         'fuelSurcharge': 'Fuel Surcharge',
@@ -997,7 +996,8 @@ export default {
         'commission': 'Commission',
         'totalCustomers': 'Total Customers: ',
         'dob': 'Date of Birth',
-        'extension': 'Extension'
+        'extension': 'Extension',
+        'timezone': 'Time Zone'
     },
     nav: {
         'store': 'Store',
@@ -1070,7 +1070,6 @@ export default {
         'deliveryCharge': 'Delivery Charge',
         'deliveryTax': 'Delivery Tax',
         'others': 'Others',
-        'timezone': 'Time Zone',
         'tax': 'Tax',
         'taxBeforeDiscount': 'Tax Before Disc',
         'taxBeforeCredit': 'Tax Before Credit',
@@ -1082,7 +1081,7 @@ export default {
         'printOnDone': 'Print On Done',
         'passwordRequire': 'Require Password',
         'surcharge': 'Auto Service Fee',
-
+        'seatOrder': 'Seat Order',
 
         'googleMatrix': 'Google Matrix',
         'googleMatrixTip': 'Matrix is used for address distance calculation',
@@ -1093,7 +1092,7 @@ export default {
 
         'station': 'Station Setting',
         'staffBank': 'Staff Bank',
-        
+
         'terminal': 'Terminal',
         'terminalTip': 'SEMI-Integrated Terminal Configuration',
         'poleDisplay': 'Pole Display Setting',
@@ -1249,7 +1248,7 @@ export default {
             'noReceipt': 'Do not print receipt after Done',
             'lock': 'Lock screen after Done',
             'passwordRequire': 'Password required before create a new table.',
-            'surcharge': 'Set up auto surcharge',
+            'surcharge': 'Set up auto surcharge condition',
         },
         'terminal': {
             'integration': 'Semi-integrated terminal configuration'

@@ -1,6 +1,6 @@
 <template>
-    <div class="external">
-        <div class="wrap">
+    <div class="wrap">
+        <div class="inner">
             <label>{{$t(title)}}</label>
             <span class="tooltip">{{$t(tooltip)}}</span>
         </div>
@@ -18,14 +18,15 @@ export default {
 </script>
 
 <style scoped>
-.external {
+.wrap {
   display: flex;
   align-items: center;
   min-height: 40px;
   padding: 5px 0 5px 15px;
   border-bottom: 1px solid #eee;
 }
-.wrap {
+
+.inner {
   flex: 1;
   display: flex;
   flex-direction: column;

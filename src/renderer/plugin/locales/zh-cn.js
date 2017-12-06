@@ -963,7 +963,6 @@ export default {
         'issueGiftCard': '发行礼物卡',
         'issueCoupon': '发行折扣卷',
         'preview': '预览',
-        'seatOrder': '按位点餐',
         'wage': '工资 (${i} / 小时)',
         'calcTips': '小费为: $ {i}',
         'fuelSurcharge': '燃油附加费',
@@ -991,7 +990,8 @@ export default {
         'extension': '分机',
         'prompt': '提示',
         'always': '总是',
-        'never': '从不'
+        'never': '从不',
+        'timezone': '时区'
     },
     nav: {
         'store': '店面',
@@ -1064,7 +1064,6 @@ export default {
         'deliveryCharge': '送餐费',
         'deliveryTax': '送餐税',
         'others': '其它设置',
-        'timezone': '时区',
         'tax': '税率',
         'taxBeforeDiscount': '折扣前征税',
         'taxBeforeCredit': '积分前征税',
@@ -1076,7 +1075,7 @@ export default {
         'printOnDone': '完成打印',        
         'passwordRequire': '需要密码',
         'surcharge': '自动收费',
-
+        'seatOrder':'按位下单',
 
         'googleMatrix': '谷歌矩阵服务',
         'googleMatrixTip': '矩阵服务用于计算地址距离和驾驶时间',
@@ -1244,7 +1243,7 @@ export default {
             'noReceipt': '结账之后打印收据',
             'lock': '在完成之后锁定界面',
             'passwordRequire': '创建座位之前需要输入密码',
-            'surcharge': '设置自动收取服务费',
+            'surcharge': '设置自动收取服务费条件',
         },
         'printMode': {
             'normal': '打印当前收据上的 所有 物品',
