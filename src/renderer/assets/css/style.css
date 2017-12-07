@@ -133,6 +133,14 @@ input[type='radio'] {
   left: 0;
 }
 
+.popupMask.setting {
+  width: 949px;
+  left: 75px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .popupMask.center {
   display: flex;
   justify-content: center;
@@ -761,7 +769,7 @@ label.input-toggle>input {
 
 /*dataList*/
 
-section.dataList {
+/* section.dataList {
   background: #fff;
 }
 
@@ -796,9 +804,9 @@ section.dataList {
 
 .dataList header i {
   float: right;
-}
+} */
 
-.editor {
+/* .editor {
   background: #fafafa;
   box-sizing: border-box;
   overflow: hidden;
@@ -945,7 +953,7 @@ i.tip {
   padding-bottom: 1px;
   cursor: pointer;
   border-bottom: 1px dashed #EF9A9A;
-}
+} */
 
 .menu {
   display: flex;
@@ -1223,24 +1231,9 @@ section.cart {
 
 /* setting style */
 
-section.route {
-  display: flex;
-}
 
-section.content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  height: 738px;
-  width: 949px;
-}
 
-.content .page {
-  flex: 1;
-  overflow-y: auto;
-}
-
-footer.update {
+/* footer.update {
   background: #445359;
   color: #F7F9F8;
   padding: 0 50px;
@@ -1261,4 +1254,4 @@ footer.update .save {
 footer.update span {
   cursor: pointer;
   padding: 20px 15px;
-}
+} */

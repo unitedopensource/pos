@@ -96,7 +96,11 @@ export default [{
               }, {
                 path: 'payment',
                 name: 'Setting.store.payment',
-                component: require('./components/setting/store/payment')
+                component: require('./components/setting/store/payment'),
+              }, {
+                path: 'tax',
+                name: 'Setting.store.tax',
+                component: require('./components/setting/store/sub/tax')
               }, {
                 path: 'dinein',
                 name: 'Setting.store.dinein',
@@ -132,7 +136,7 @@ export default [{
               }, {
                 path: 'coupon',
                 name: 'Setting.promotion.coupon',
-                component: require('./components/setting/store/coupon')
+                component: require('./components/setting/store/sub/coupon')
               }]
             }]
           },

@@ -15,7 +15,7 @@
             <router-link tag="figure" :to="{name:'Dashboard'}">
                 <i class="fa fa-2x fa-external-link"></i>
                 <figcaption>{{$t('setting.exit')}}</figcaption>
-                <span class="intro">{{$t('setting.exitTip')}}</span>
+                <p>{{$t('setting.exitTip')}}</p>
             </router-link>
         </section>
     </div>

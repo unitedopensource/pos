@@ -1,3 +1,20 @@
+section.route {
+    display: flex;
+}
+
+section.content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 738px;
+    width: 949px;
+}
+
+.content .page {
+    flex: 1;
+    overflow-y: auto;
+}
+
 ul.nav {
     width: 75px;
     height: 738px;
@@ -48,6 +65,7 @@ ul.tabs li {
     margin: 0px 15px 0px 0;
     padding: 10px 20px;
     color: #666;
+    border-bottom: 2px solid transparent;
 }
 
 ul.tabs li.router-link-exact-active {
@@ -88,3 +106,28 @@ ul.tabs li.router-link-exact-active {
 .toggle .opt>div:nth-child(odd) {
     border-bottom: 1px dashed #ddd;
 }
+
+
+/* .editor {
+    border-radius: 4px;
+    background: #fff;
+    box-shadow: 0 0 16px rgba(0, 0, 0, 0.12), 0 16px 16px rgba(0, 0, 0, 0.24);
+}
+
+.editor header {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+}
+
+.editor header span {
+    flex: 1;
+}
+
+.editor header i {
+    cursor: pointer;
+}
+
+.editor .body {
+    background: #fff;
+} */
