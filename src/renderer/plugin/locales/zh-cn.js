@@ -1081,17 +1081,15 @@ export default {
         'interface': '界面设置',
         'autoLock': '自动锁定',
         'timeout': '超时',
+        'rewardSystem': '积分系统',
 
         'googleMatrix': '谷歌矩阵服务',
         'googleMatrixTip': '矩阵服务用于计算地址距离和驾驶时间',
         'employee': '员工设置',
         'email': '电子邮箱设定',
         'emailTip': '用于短信服务，订单提醒，发送电子收据',
-
-
         'station': '工作站设定',
         'staffBank': '虚拟钱箱设定',
-
         'terminal': '信用卡终端',
         'poleDisplay': '客显设定',
         'weightScale': '磅秤设定',
@@ -1099,7 +1097,6 @@ export default {
         'security': '安全设定',
         'printer': '打印机设定',
         'cashDrawer': '钱箱设定',
-
         'taxCalculation': '税率计算',
         'taxCalculationTip': '税务相关问题请咨询会计师',
         'taxEditor': '税率编辑',

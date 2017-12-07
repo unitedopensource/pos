@@ -1087,6 +1087,7 @@ export default {
         'interface': 'Interface',
         'autoLock': 'Auto Lock',
         'timeout': 'Timeout',
+        'rewardSystem': 'Reward System',
 
         'googleMatrix': 'Google Matrix',
         'googleMatrixTip': 'Matrix is used for address distance calculation',
@@ -1097,14 +1098,10 @@ export default {
 
         'station': 'Station Setting',
         'staffBank': 'Staff Bank',
-
         'terminal': 'Terminal',
         'poleDisplay': 'Pole Display Setting',
         'scale': 'Weight Scale',
         'callerId': 'Caller ID',
-
-
-
         'security': 'Security',
         'printer': 'Printer',
         'cashDrawer': 'Cash drawer Setting',
