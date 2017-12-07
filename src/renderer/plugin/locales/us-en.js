@@ -1000,7 +1000,12 @@ export default {
         'extension': 'Extension',
         'timezone': 'Time Zone',
         'alias': 'Alias',
-        'username': 'Username'
+        'username': 'Username',
+        'easternTime': 'Eastern Standard Time',
+        'centralTime': 'Central Standard Time',
+        'mountainTime': 'Mountain Standard Time',
+        'pacificTime': 'Pacific Standard Time',
+        'neverExpire': 'Never Expire'
     },
     nav: {
         'store': 'Store',
@@ -1091,13 +1096,10 @@ export default {
         'timeout': 'Timeout',
         'rewardSystem': 'Reward System',
         'coupon': 'Coupon',
-
         'googleMatrix': 'Google Matrix',
-        'googleMatrixTip': 'Matrix is used for address distance calculation',
-        'employee': 'Employee',
-        'email': 'Email',
-        'emailTip': 'Used for SMS alert, email receipt',
+        'email': 'Email Service',
 
+        'employee': 'Employee',
 
         'station': 'Station Setting',
         'staffBank': 'Staff Bank',
@@ -1250,6 +1252,9 @@ export default {
         'interface': 'Station interface setup',
         'autoLock': 'Auto lock configuration',
         'couponList': 'List all available coupon',
+        'disableMatrix': 'Disable Google Matrix service',
+        'matrixService': 'Enable Google Matrix service',
+        'emailService': 'Used for SMS alert, E-receipt, E-coupon',
         'dinein': {
             'useTableLayout': 'Use table to place order',
             'noTableLayout': 'Skip table to place order',

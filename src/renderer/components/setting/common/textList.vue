@@ -4,11 +4,11 @@
             <label>{{$t(title)}}</label>
             <p>{{$t(label)}}</p>
         </div>
-        <transition class="menu">
+        <transition name="menu">
             <ul v-show="isDisplay">
                 <li v-for="(option,index) in opts" :key="index">
                     <input type="radio" :checked="option.value === value" @change="pick(option.value)" :id="id+index">
-                    <label :for="id+index">
+                    <label :for="id+index" @click="pick(option.value)">
                         <span class="label">{{$t(option.label)}}</span>
                         <span class="tooltip">{{$t(option.tooltip)}}</span>
                     </label>
@@ -49,6 +49,8 @@ export default {
       this.$emit("input", value);
       this.getLabel(value);
       this.isDisplay = false;
+
+      this.value !== value && this.$emit("update", value);
     }
   }
 };
@@ -79,6 +81,7 @@ export default {
 
 ul {
   position: absolute;
+  z-index: 2;
   left: 1px;
   background: #fff;
   width: calc(100% - 4px);
@@ -95,8 +98,24 @@ li:nth-child(even) {
 }
 
 li label {
-  padding: 15px 20px;
+  padding: 5px 20px;
   flex: 1;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+  border-left: 4px solid transparent;
+}
+
+li .label {
+  flex: 2;
+}
+
+li .tooltip {
+  flex: 5;
+}
+
+input:checked + label {
+  border-left: 4px solid #009688;
 }
 </style>

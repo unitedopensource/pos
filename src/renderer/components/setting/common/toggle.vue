@@ -7,7 +7,7 @@
             <span class="tooltip" v-else-if="conditionalTooltip">{{$t(dynamicTooltip)}}</span>
         </label>
         <label class="input-toggle">
-            <input type="checkbox" :checked="value" @change="$emit('input',$event.target.checked)">
+            <input type="checkbox" :checked="value" @change="$emit('input',$event.target.checked),$emit('update',$event.target.checked)">
             <span></span>
         </label>
       </div>

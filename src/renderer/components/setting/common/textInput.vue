@@ -2,7 +2,7 @@
     <div class="input">
         <div class="wrap">
             <label>{{$t(title)}}</label>
-            <input type="text" :value="value" :disabled="disabled">
+            <input type="text" :value="value" :disabled="disabled" @blur="update($event)">
         </div>
         <slot></slot>
     </div>
@@ -15,6 +15,11 @@ export default {
     title: String,
     value: [String, Number, Array],
     disabled: Boolean
+  },
+  methods: {
+    update(e) {
+      this.value !== e.target.value && this.$emit("update", e.target.value);
+    }
   }
 };
 </script>

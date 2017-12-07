@@ -107,6 +107,10 @@ ul.tabs li.router-link-exact-active {
     border-bottom: 1px dashed #ddd;
 }
 
+.toggle .opt>div:last-child {
+    border-bottom: none;
+}
+
 
 /* .editor {
     border-radius: 4px;

@@ -1,11 +1,11 @@
 <template>
     <div>
-        <toggle title="setting.table" true-tooltip="tip.dinein.useTableLayout" false-tooltip="tip.dinein.noTableLayout" v-model="dinein.table" :conditionalTooltip="true"></toggle>
-        <toggle title="setting.guestCount" v-model="dinein.guestCount"></toggle>
-        <toggle title="setting.seatOrder" v-model="dinein.seatOrder"></toggle>
-        <toggle title="setting.autoClear" tooltip="tip.dinein.autoClearTable" v-model="dinein.autoClear"></toggle>
-        <toggle title="setting.printOnDone" true-tooltip="tip.dinein.printReceipt" false-tooltip="tip.dinein.noReceipt" v-model="dinein.printOnDone" :conditionalTooltip="true"></toggle>
-        <toggle title="setting.passwordRequire" tooltip="tip.dinein.passwordRequire" v-model="dinein.passwordRequire"></toggle>
+        <toggle title="setting.table" true-tooltip="tip.dinein.useTableLayout" false-tooltip="tip.dinein.noTableLayout" v-model="dinein.table" :conditionalTooltip="true" @update="updateTable"></toggle>
+        <toggle title="setting.guestCount" v-model="dinein.guestCount" @update="updateGuestCount"></toggle>
+        <toggle title="setting.seatOrder" v-model="dinein.seatOrder" @update="updateSeatOrder"></toggle>
+        <toggle title="setting.autoClear" tooltip="tip.dinein.autoClearTable" v-model="dinein.autoClear" @update="updateAutoClear"></toggle>
+        <toggle title="setting.printOnDone" true-tooltip="tip.dinein.printReceipt" false-tooltip="tip.dinein.noReceipt" v-model="dinein.printOnDone" :conditionalTooltip="true" @update="updatePrint"></toggle>
+        <toggle title="setting.passwordRequire" tooltip="tip.dinein.passwordRequire" v-model="dinein.passwordRequire" @update="updatePasswordRequire"></toggle>
         <external title="setting.surcharge" tooltip="tip.dinein.surcharge">
             <div class="external" @click="edit">
                 <i class="fa fa-caret-right"></i>
@@ -28,8 +28,45 @@ export default {
     this.dinein = Object.assign({}, this.$store.getters.dinein);
   },
   methods: {
-    edit() {
-        
+    edit() {},
+    update(data) {
+      this.$socket.emit("[UPDATE] CONFIG", data);
+    },
+    updateTable(value) {
+      this.update({
+        key: "dinein.table",
+        value
+      });
+    },
+    updateGuestCount(value) {
+      this.update({
+        key: "dinein.guestCount",
+        value
+      });
+    },
+    updateSeatOrder(value) {
+      this.update({
+        key: "dinein.seatOrder",
+        value
+      });
+    },
+    updateAutoClear(value) {
+      this.update({
+        key: "dinein.autoClear",
+        value
+      });
+    },
+    updatePrint(value) {
+      this.update({
+        key: "dinein.printOnDone",
+        value
+      });
+    },
+    updatePasswordRequire(value) {
+      this.update({
+        key: "dinein.passwordRequire",
+        value
+      });
     }
   }
 };

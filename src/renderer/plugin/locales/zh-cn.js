@@ -994,7 +994,12 @@ export default {
         'never': '从不',
         'timezone': '时区',
         'alias': '别名',
-        'username': '用户名'
+        'username': '用户名',
+        'easternTime': '东部时区',
+        'centralTime': '中部时区',
+        'mountainTime': '山区时区',
+        'pacificTime': '太平洋时区',
+        'neverExpire': '永不过期'
     },
     nav: {
         'store': '店面',
@@ -1085,12 +1090,10 @@ export default {
         'timeout': '超时',
         'rewardSystem': '积分系统',
         'coupon': '折价卷',
-
         'googleMatrix': '谷歌矩阵服务',
-        'googleMatrixTip': '矩阵服务用于计算地址距离和驾驶时间',
+        'emailService': '电子邮箱',
+
         'employee': '员工设置',
-        'email': '电子邮箱设定',
-        'emailTip': '用于短信服务，订单提醒，发送电子收据',
         'station': '工作站设定',
         'staffBank': '虚拟钱箱设定',
         'terminal': '信用卡终端',
@@ -1242,6 +1245,10 @@ export default {
         'interface': '设置本工作站的界面',
         'autoLock': '自动锁定界面设定',
         'couponList': '显示所有折价卷列表',
+        'disableMatrix': '禁止显示地图和计算地址距离和驾驶时间',
+        'matrixService': '使用谷歌地图计算地址距离和驾驶时间',
+        'emailService': '用于短信服务，订单提醒，发送电子收据',
+
         'dinein': {
             'useTableLayout': '使用座位下单',
             'noTableLayout': '跳过座位直接下单',

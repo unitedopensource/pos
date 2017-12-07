@@ -6,7 +6,7 @@
         </header>
         <div class="wrap">
             <div class="select" v-for="(option,index) in opts" :key="index">
-                <input type="radio" name="id" :id="id+index" :checked="option.value === value" @change="$emit('input',$event.target.value)">
+                <input type="radio" name="id" :id="id+index" :checked="option.value === value" :value="option.value" @change="$emit('input',$event.target.value),$emit('update',$event.target.value)">
                 <label :for="id+index">
                     <span class="label">{{$t(option.label)}}</span>
                     <span class="tooltip">{{$t(option.tooltip)}}</span>
@@ -49,7 +49,6 @@ header {
   display: flex;
   flex-direction: column;
   padding: 7px 20px;
-  border-bottom: 1px dashed #ddd;
 }
 
 .wrap {
@@ -57,6 +56,7 @@ header {
   align-items: flex-end;
   flex-direction: column;
   padding: 5px 0 10px;
+  background: #FAFAFA;
 }
 
 .label {
@@ -72,6 +72,7 @@ label {
   display: flex;
   flex-direction: column;
   position: relative;
+  background: #fff;
 }
 
 label:before {

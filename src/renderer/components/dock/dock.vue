@@ -212,7 +212,7 @@ export default {
 
       this.station &&
         this.$socket.emit("[SYS] CONNECT", {
-          alias: this.station.alies,
+          alias: this.station.alias,
           mac: this.station.mac,
           operator: this.op.name
         });
@@ -226,6 +226,11 @@ export default {
     TICKET_NUMBER(number) {
       this.app.mode !== "edit" && this.setTicket({ number });
     },
+    UPDATE_CONFIG(update) {
+      let { target, data } = update;
+      Object.assign(this.config, { [target]: data });
+    },
+
     UPDATE_TABLE_STATUS(data) {
       this.updateTable(data);
     },
