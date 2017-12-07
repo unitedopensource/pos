@@ -85,11 +85,7 @@
     transition: opacity 0.25s;
 }
 
-/* .switch-enter-active {
-    transition-delay: .25s;
-} */
-
-.switch-enter,
+.switch-enter-active,
 .switch-leave-active {
     opacity: 0
 }

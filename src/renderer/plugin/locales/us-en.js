@@ -57,6 +57,7 @@ export default {
         'vietDineIn': 'Việt Dine-in Restaurant',
         'buffet': 'Buffet Restaurant',
         'retail': 'Retail Store',
+        'fastFood': 'Fast Food Restaurant',
         'CASH': 'Cash',
         'CREDIT': 'Credit Card',
         'DEBIT': 'Debit Card',
@@ -313,7 +314,8 @@ export default {
         'card': 'Card',
         'auth': 'Auth',
         'breakTime': 'Break Time',
-        'paid': 'Paid'
+        'paid': 'Paid',
+        'expire': 'Expire'
     },
     flow: {
         'START': 'Deposit',
@@ -1088,6 +1090,7 @@ export default {
         'autoLock': 'Auto Lock',
         'timeout': 'Timeout',
         'rewardSystem': 'Reward System',
+        'coupon': 'Coupon',
 
         'googleMatrix': 'Google Matrix',
         'googleMatrixTip': 'Matrix is used for address distance calculation',
@@ -1246,6 +1249,7 @@ export default {
         'poleDisplay': 'Pole display configuration',
         'interface': 'Station interface setup',
         'autoLock': 'Auto lock configuration',
+        'couponList': 'List all available coupon',
         'dinein': {
             'useTableLayout': 'Use table to place order',
             'noTableLayout': 'Skip table to place order',

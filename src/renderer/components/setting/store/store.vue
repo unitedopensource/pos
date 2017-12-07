@@ -11,7 +11,8 @@
         <text-input title="text.zipCode" v-model="store.zipCode"></text-input>
         <text-input title="text.contactInfo" v-model="store.contact"></text-input>
         <text-input title="text.timezone" v-model="store.timeZone"></text-input>
-        <text-input title="text.storeType" v-model="store.storeType"></text-input>
+        <!-- <text-input title="text.storeType" v-model="store.storeType"></text-input> -->
+        <text-list title="text.storeType" v-model="store.storeType" :opts="types"></text-list>
         <external title="text.openHour">
           <div class="external" @click="editHour">
                 <i class="fa fa-caret-right"></i>
@@ -22,12 +23,56 @@
 
 <script>
 import external from "../common/external";
+import textList from "../common/textList";
 import textInput from "../common/textInput";
+
 export default {
-  components: { external, textInput },
+  components: { external, textInput, textList },
   data() {
     return {
-      store: null
+      store: null,
+      types: [
+        {
+          label: "type.chineseTakeOut",
+          tooltip: "",
+          value: "chineseTakeOut"
+        },
+        {
+          label: "type.chineseDineIn",
+          tooltip: "",
+          value: "chineseDineIn"
+        },
+        {
+          label: "type.japaneseDineIn",
+          tooltip: "",
+          value: "japaneseDineIn"
+        },
+        {
+          label: "type.thaiDineIn",
+          tooltip: "",
+          value: "thaiDineIn"
+        },
+        {
+          label: "type.vietDineIn",
+          tooltip: "",
+          value: "vietDineIn"
+        },
+        {
+          label: "type.retail",
+          tooltip: "",
+          value: "retail"
+        },
+        {
+          label: "type.buffet",
+          tooltip: "",
+          value: "buffet"
+        },
+        {
+          label: "type.fastFood",
+          tooltip: "",
+          value: "fastFood"
+        }
+      ]
     };
   },
   created() {
@@ -37,9 +82,7 @@ export default {
     register() {
       console.log("tatah");
     },
-    editHour(){
-      
-    }
+    editHour() {}
   }
 };
 </script>

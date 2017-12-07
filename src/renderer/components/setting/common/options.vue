@@ -5,7 +5,7 @@
             <span class="tooltip">{{$t(tooltip)}}</span>
         </header>
         <div class="wrap">
-            <div class="select" v-for="(option,index) in choice" :key="index">
+            <div class="select" v-for="(option,index) in opts" :key="index">
                 <input type="radio" name="id" :id="id+index" :checked="option.value === value" @change="$emit('input',$event.target.value)">
                 <label :for="id+index">
                     <span class="label">{{$t(option.label)}}</span>
@@ -22,7 +22,7 @@ export default {
     value: [String, Number],
     title: String,
     tooltip: String,
-    choice: {
+    opts: {
       type: Array,
       default: () => []
     }

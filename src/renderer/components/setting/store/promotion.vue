@@ -1,7 +1,7 @@
 <template>
     <div>
         <toggle title="setting.rewardSystem" v-model="store.reward"></toggle>
-        <external title="setting.coupon" tooltip="tip.coupon">
+        <external title="setting.coupon" tooltip="tip.couponList">
             <div class="external" @click="getCoupon">
                 <i class="fa fa-caret-right"></i>
             </div>
@@ -22,6 +22,9 @@ export default {
   },
   created() {
     this.store = Object.assign({}, this.$store.getters.store);
+    this.$socket.emit("[COUPON] LIST", coupons => {
+      window.temp = coupons;
+    });
   },
   methods: {
     getCoupon() {

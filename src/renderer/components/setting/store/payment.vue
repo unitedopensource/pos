@@ -24,7 +24,7 @@
             </div>
         </transition>
     </toggle>
-    <options title="setting.receiptDialog" tooltip="tip.receiptDefaultAction" v-model="store.receipt" :choice="receiptOption"></options>
+    <options title="setting.receiptDialog" tooltip="tip.receiptDefaultAction" v-model="store.receipt" :opts="receiptOption"></options>
   </div>
 </template>
 

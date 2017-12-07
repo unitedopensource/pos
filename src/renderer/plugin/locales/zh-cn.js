@@ -49,6 +49,7 @@ export default {
         'thaiDineIn': '泰餐堂吃',
         'vietDineIn': '越餐堂吃',
         'buffet': '自助店',
+        'fastFood': '快餐店',
         'retail': '零售',
         'CASH': '现金',
         'CREDIT': '信用卡',
@@ -739,7 +740,8 @@ export default {
         'card': '卡号',
         'auth': '认证码',
         'breakTime': '休息次数',
-        'paid': '支付'
+        'paid': '支付',
+        'expire': '过期日期'
     },
     flow: {
         'START': '初始金额',
@@ -1082,6 +1084,7 @@ export default {
         'autoLock': '自动锁定',
         'timeout': '超时',
         'rewardSystem': '积分系统',
+        'coupon': '折价卷',
 
         'googleMatrix': '谷歌矩阵服务',
         'googleMatrixTip': '矩阵服务用于计算地址距离和驾驶时间',
@@ -1238,6 +1241,7 @@ export default {
         'poleDisplay': '配置价格显示器',
         'interface': '设置本工作站的界面',
         'autoLock': '自动锁定界面设定',
+        'couponList': '显示所有折价卷列表',
         'dinein': {
             'useTableLayout': '使用座位下单',
             'noTableLayout': '跳过座位直接下单',

@@ -953,7 +953,7 @@ export default {
           providers[provider].tip += tip;
           providers[provider].delivery += delivery;
           providers[provider].discount += discount;
-          providers[provider].total += due + tip;
+          providers[provider].total += due;
         } else {
           providers[provider] = {
             count: 1,
@@ -962,7 +962,7 @@ export default {
             tip,
             delivery,
             discount,
-            total: due + tip
+            total: due
           };
         }
       });
