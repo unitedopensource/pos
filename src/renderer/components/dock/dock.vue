@@ -230,7 +230,11 @@ export default {
       let { target, data } = update;
       Object.assign(this.config, { [target]: data });
     },
+    UPDATE_STATION(station) {
+      Object.assign(this.station, station);
+    },
 
+    
     UPDATE_TABLE_STATUS(data) {
       this.updateTable(data);
     },

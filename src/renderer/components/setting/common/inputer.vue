@@ -1,13 +1,17 @@
 <template>
     <div class="input">
         <label>{{$t(title)}}</label>
-        <input type="text" :value="value" @change="$emit('input',$event.target.value)">
+        <input :type="type" :value="value" @change="$emit('input',$event.target.value)" @blur="$emit('update',$event.target.value)">
     </div>
 </template>
 
 <script>
 export default {
   props: {
+    type: {
+      type: String,
+      default: "text"
+    },
     title: String,
     value: [String, Number]
   }

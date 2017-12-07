@@ -1,6 +1,6 @@
 <template>
     <div>
-        <text-input title="text.alias" v-model="station.alias"></text-input>
+        <text-input title="text.alias" v-model="station.alias" @update="updateAlias"></text-input>
         <text-input title="text.mac" v-model="station.mac" :disabled="true"></text-input>
         <text-input title="text.username" v-model="station.username" :disabled="true"></text-input>
         <toggle title="text.autoAwake" v-model="station.wol"></toggle>
@@ -29,8 +29,8 @@
                 <i class="fa fa-caret-right"></i>
             </div>
         </external>
-        <external title="setting.interface" tooltip="tip.interface">
-            <div class="external" @click="editInterface">
+        <external title="setting.printer">
+            <div class="external">
                 <i class="fa fa-caret-right"></i>
             </div>
         </external>
@@ -62,6 +62,12 @@ export default {
     this.station = Object.assign({}, this.$store.getters.station);
   },
   methods: {
+    update(data) {
+      this.$socket.emit("[UPDATE] STATION", data);
+    },
+    updateAlias(value) {
+      this.update({});
+    },
     editCashDrawer() {},
     editTerminal() {},
     editPole() {},

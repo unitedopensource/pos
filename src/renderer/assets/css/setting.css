@@ -103,11 +103,11 @@ ul.tabs li.router-link-exact-active {
     background: #FAFAFA;
 }
 
-.toggle .opt>div:nth-child(odd) {
+.toggle .opt > div {
     border-bottom: 1px dashed #ddd;
 }
 
-.toggle .opt>div:last-child {
+.toggle .opt > div:last-child {
     border-bottom: none;
 }
 

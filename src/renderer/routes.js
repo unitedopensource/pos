@@ -123,8 +123,8 @@ export default [{
                 component: require('./components/setting/store/station')
               }, {
                 path: 'device',
-                name: 'Setting.station.device',
-                component: require('./components/setting/store/device')
+                name: 'Setting.station.interface',
+                component: require('./components/setting/store/interface')
               }]
             }, {
               path: 'promotion',

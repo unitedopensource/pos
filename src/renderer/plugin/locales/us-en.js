@@ -1005,7 +1005,11 @@ export default {
         'centralTime': 'Central Standard Time',
         'mountainTime': 'Mountain Standard Time',
         'pacificTime': 'Pacific Standard Time',
-        'neverExpire': 'Never Expire'
+        'neverExpire': 'Never Expire',        
+        'autoEmailPromotion': 'Auto Email Promotion',
+        'emailReceipt': 'Email Receipt',
+        'autoEmailConfirmation': 'Auto Email Confirmation',
+        'emailReport': 'Email Report'
     },
     nav: {
         'store': 'Store',

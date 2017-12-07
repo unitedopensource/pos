@@ -999,7 +999,11 @@ export default {
         'centralTime': '中部时区',
         'mountainTime': '山区时区',
         'pacificTime': '太平洋时区',
-        'neverExpire': '永不过期'
+        'neverExpire': '永不过期',
+        'autoEmailPromotion': '自动发送优惠信息',
+        'emailReceipt': '发送电子收据',
+        'autoEmailConfirmation': '自动发送确认信件',
+        'emailReport': '发送报表'
     },
     nav: {
         'store': '店面',
@@ -1092,6 +1096,7 @@ export default {
         'coupon': '折价卷',
         'googleMatrix': '谷歌矩阵服务',
         'emailService': '电子邮箱',
+
 
         'employee': '员工设置',
         'station': '工作站设定',

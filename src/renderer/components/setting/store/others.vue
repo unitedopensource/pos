@@ -10,12 +10,12 @@
     <toggle title="setting.emailService" tooltip="tip.emailService" v-model="store.email.enable" @update="updateEmail">
       <transition name="dropdown">
         <div v-if="store.email.enable" class="opt">
-            <inputer title="text.username" v-model="store.email.username" @blur="updateUser"></inputer>
-            <inputer title="text.password" v-model="store.email.password" @blur="updatePassword"></inputer>
+            <inputer title="text.username" v-model="store.email.username" @update="updateUser"></inputer>
+            <inputer title="text.password" v-model="store.email.password" @update="updatePassword" type="password"></inputer>
             <switches title="text.autoEmailPromotion" v-model="store.email.coupon"></switches>
-            <switches title="text.autoEmailReceipt" v-model="store.email.receipt"></switches>
-            <switches title="text.autoEmailReservationConfirm" v-model="store.email.reservation"></switches>
-            <switches title="text.autoEmailReport" v-model="store.email.report"></switches>
+            <switches title="text.emailReceipt" v-model="store.email.receipt"></switches>
+            <switches title="text.autoEmailConfirmation" v-model="store.email.reservation"></switches>
+            <switches title="text.emailReport" v-model="store.email.report"></switches>
         </div>
       </transition>
     </toggle>
