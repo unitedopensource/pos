@@ -11,7 +11,11 @@
             <ul v-show="isDisplay" v-outer-click="close">
                 <li v-for="(option,index) in opts" :key="index">
                     <input type="radio" :checked="option.value === value" @change="pick(option.value)" :id="id+index">
-                    <label :for="id+index" @click="pick(option.value)">
+                    <label :for="id+index" @click="pick(option.value)" v-if="option.plainText">
+                        <span class="label">{{option.label}}</span>
+                        <span class="tooltip">{{option.tooltip}}</span>
+                    </label>
+                    <label :for="id+index" @click="pick(option.value)" v-else>
                         <span class="label">{{$t(option.label)}}</span>
                         <span class="tooltip">{{$t(option.tooltip)}}</span>
                     </label>

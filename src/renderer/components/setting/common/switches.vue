@@ -26,6 +26,5 @@ export default {
 
 .label {
   flex: 1;
-  color: #666;
 }
 </style>

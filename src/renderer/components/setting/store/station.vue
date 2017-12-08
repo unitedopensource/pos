@@ -5,8 +5,9 @@
         <text-input title="text.username" v-model="station.username" :disabled="true"></text-input>
         <toggle title="text.autoAwake" v-model="station.wol"></toggle>
         <external title="setting.cashDrawer" @open="editCashDrawer"></external>
-        <external title="setting.printer" @open="editPrinter"></external>
-        <text-list title="setting.terminal" v-model="station.terminal" :opts="terminals"></text-list>
+        <text-list title="setting.receipt" v-model="station.receipt" :opts="printers"></text-list>
+        <external title="setting.printers" @open="editPrinters">
+        <text-list title="setting.terminal" v-model="station.terminal" :opts="terminals" @update="updateTerminal"></text-list>
         <external title="setting.callerId" @open="editCallid"></external>
         <external title="setting.poleDisplay" tooltip="tip.poleDisplay" @open="editPoleDisplay"></external>
         <external title="setting.weightScale" @open="editScale"></external>
@@ -34,7 +35,8 @@ export default {
   data() {
     return {
       station: null,
-      terminals: []
+      terminals: [],
+      printers: []
     };
   },
   created() {
@@ -43,19 +45,42 @@ export default {
       this.terminals = data.map(terminal => ({
         label: `${terminal.alias} (${terminal.model})`,
         tooltip: `${terminal.ip} - ${terminal.location}`,
+        plainText: true,
         value: terminal.alias
       }));
+      this.terminals.unshift({
+        label: this.$t("text.disable"),
+        tooltip: "",
+        value: ""
+      });
     });
+    this.printers = Object.keys(
+      this.$store.getters.config.printers
+    ).map(name => ({
+      label: name,
+      tooltip: "",
+      plainText: true,
+      value: name
+    }));
   },
   methods: {
     update(data) {
       this.$socket.emit("[UPDATE] STATION", data);
     },
     updateAlias(value) {
-      this.update({});
+      this.update({
+        key: "station.alias",
+        value
+      });
+    },
+    updateTerminal(value) {
+      this.update({
+        key: "station.terminal",
+        value
+      });
     },
     editCashDrawer() {},
-    editPrinter() {
+    editPrinters() {
       console.log("trigger");
     },
     editCallid() {},

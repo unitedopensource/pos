@@ -24,7 +24,7 @@ var Preset = function () {
         port: 'COM3'
       },
       receipt: null,
-      printerGroup: [],
+      printers: [],
       cashDrawer: {
         enable: false,
         name: "",
