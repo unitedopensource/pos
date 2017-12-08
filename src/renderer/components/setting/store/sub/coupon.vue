@@ -5,7 +5,7 @@
             <i class="fa fa-chevron-left"></i>
           </router-link>
           <nav>
-            <span class="add">{{$t('button.new')}}</span>
+            <span class="add" @click="create">{{$t('button.new')}}</span>
           </nav>
         </header>
           <table class="setting">
@@ -55,9 +55,20 @@ export default {
         ? moment(date).format("YYYY-MM-DD")
         : this.$t("text.neverExpire");
     },
+    create() {
+      let coupon = {
+        for: "",
+        discount: "",
+        expire: "",
+        count: 0,
+        rules: []
+      };
+
+      this.edit(coupon);
+    },
     edit(coupon, index) {
       new Promise((resolve, reject) => {
-        this.componentData = { resolve, reject, coupon, edit: true };
+        this.componentData = { resolve, reject, coupon, edit: !!coupon._id };
         this.component = "editor";
       })
         .then(_coupon => {

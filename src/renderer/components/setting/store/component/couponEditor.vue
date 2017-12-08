@@ -2,8 +2,8 @@
     <div class="popupMask setting dark center" @click.self="init.reject(false)">
         <div class="editor">
             <header>
-                <h5 v-if="init.edit">{{$t('title.create')}}</h5>
-                <h5 v-else>{{$t('title.edit')}}</h5>
+                <h5 v-if="init.edit">{{$t('title.edit')}}</h5>
+                <h5 v-else>{{$t('title.create')}}</h5>
                 <h3>{{$t('title.taxEditor')}}</h3>
             </header>
             <div class="wrap">
@@ -18,7 +18,7 @@
             </div>
             <footer>
                 <div class="opt">
-                    <span class="del" @click="init.reject(true)">{{$t('button.delete')}}</span>
+                    <span class="del" @click="init.reject(true)" v-show="coupon._id">{{$t('button.delete')}}</span>
                 </div>
                 <button class="btn" @click="confirm">{{$t('button.confirm')}}</button>
             </footer>
