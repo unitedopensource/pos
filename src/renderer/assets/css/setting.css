@@ -104,6 +104,7 @@ header.nav {
     align-items: center;
     padding: 6px;
     background: #fcfcfc;
+    border-bottom: 1px solid #eee;
 }
 
 header.nav .back {
