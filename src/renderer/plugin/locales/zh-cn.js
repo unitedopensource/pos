@@ -284,7 +284,10 @@ export default {
         'newCustomer': '新建用户资料',
         'incomingCall': '来电',
         'terminalDeviceManagement': '刷卡终端管理',
-        'addressList': '地址列表'
+        'addressList': '地址列表',
+        'taxEditor': '税率编辑',
+        'create': '新建',
+        'edit': '修改'
     },
     menu: {
         'course': '定时',
@@ -741,7 +744,9 @@ export default {
         'auth': '认证码',
         'breakTime': '休息次数',
         'paid': '支付',
-        'expire': '过期日期'
+        'expire': '过期日期',
+        'taxRate': '税率',
+        'default': '默认'
     },
     flow: {
         'START': '初始金额',
@@ -843,7 +848,6 @@ export default {
         'doneLock': '完成锁屏',
         'inactiveLock': '自动锁屏',
         'binding': '绑定',
-        'cashFlowCtrl': '现金流控制',
         'errorsAllow': '误差值',
         'apply': '应用',
         'setDefault': '设为默认',
@@ -1098,7 +1102,7 @@ export default {
         'emailService': '电子邮箱',
         'receiptPrinter': '收据打印机',
         'printerGroup': '打印机组',
-
+        'cashFlowRecord': '记录现金流',
 
         'employee': '员工设置',
         'station': '工作站设定',
@@ -1255,7 +1259,8 @@ export default {
         'disableMatrix': '禁止显示地图和计算地址距离和驾驶时间',
         'matrixService': '使用谷歌地图计算地址距离和驾驶时间',
         'emailService': '用于短信服务，订单提醒，发送电子收据',
-
+        'enableCashdrawer': '启用钱箱',
+        'disableCashdrawer': '禁止在此工作站使用钱箱',
         'dinein': {
             'useTableLayout': '使用座位下单',
             'noTableLayout': '跳过座位直接下单',

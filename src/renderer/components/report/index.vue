@@ -50,7 +50,7 @@
                                 <template v-if="reportDetail === 'customize'">
                                     <checkbox v-model="detailPayment" label="report.detailPayment" :key="1"></checkbox>
                                     <checkbox v-model="giftCard" label="report.giftCardSales" :key="2"></checkbox>
-                                    <checkbox v-model="houseAccount" label="report.redemptionReport" :key="3"></checkbox>
+                                    <checkbox v-model="managerWaive" label="report.redemptionReport" :key="3"></checkbox>
                                     <checkbox v-model="itemSales" label="report.itemSales" :key="4"></checkbox>
                                     <checkbox v-model="categorySales" label="report.categorySales" :key="5"></checkbox>
                                     <checkbox v-model="hourly" label="report.hourlyReport" :key="6"></checkbox>
@@ -105,7 +105,7 @@ export default {
       giftCard: false,
       itemSales: false,
       categorySales: false,
-      houseAccount: false
+      managerWaive: false
     };
   },
   created() {
@@ -244,8 +244,8 @@ export default {
         this.report["General Report"] = this.salesAnalysis(range, data);
         if (this.hourly)
           this.report["Hourly Report"] = this.hourlySalesReport(invoices);
-        if (this.houseAccount)
-          this.report["House Account"] = this.houseAccountReport(invoices);
+        if (this.managerWaive)
+          this.report["Manager Waived Report"] = this.managerWaiveReport(invoices);
         if (this.itemSales)
           this.report["Item Sales"] = this.itemSalesReport(invoices);
         if (this.categorySales)
@@ -565,7 +565,7 @@ export default {
 
       return report;
     },
-    houseAccountReport(invoices) {
+    managerWaiveReport(invoices) {
       let records = {};
 
       invoices.forEach(invoice => {

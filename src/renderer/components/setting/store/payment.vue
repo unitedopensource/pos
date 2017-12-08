@@ -1,19 +1,14 @@
 <template>
   <div>
-    <external title="setting.tax" tooltip="tip.tax">
-        <router-link tag="div" class="external" :to="{name:'Setting.store.tax'}">
-            <i class="fa fa-caret-right"></i>
-        </router-link>
-    </external>
+    <external title="setting.tax" tooltip="tip.tax" @open="editTax"></external>
     <toggle title="setting.taxBeforeDiscount" v-model="tax.beforeDiscount" @update="updateTaxDiscount"></toggle>
     <toggle title="setting.taxBeforeCredit" v-model="tax.beforeCredit" @update="updateTaxCredit"></toggle>
     <toggle title="setting.deliveryTax" tooltip="tip.deliveryTax" v-model="tax.deliveryTax" @update="updateDeliveryTax"></toggle>
     <toggle title="setting.deliveryCharge" true-tooltip="tip.deliveryCharge" false-tooltip="tip.deliveryFree" v-model="store.delivery" :conditionalTooltip="true" @update="updateDelivery">
         <transition name="dropdown">
-            <div v-if="store.delivery" class="fees">
-              <label>{{$t('text.amount')}}</label>
-              <input type="text" v-model="store.deliveryCharge" v-mask="'$ ##.##'" maxlength="7" placeholder="$ 0.00" @blur="updateDeliveryCharge">
-            </div>
+          <div class="opt" v-if="store.delivery">
+            <inputer title="text.amount" v-model="store.deliveryCharge" @update="updateDeliveryCharge"></inputer>
+          </div>
         </transition>
     </toggle>
     <toggle title="setting.tipSuggestion" tooltip="tip.tipSuggestion" v-model="store.tipSuggestion" @update="updateTipSuggestion">
@@ -31,12 +26,13 @@
 <script>
 import { mapGetters } from "vuex";
 import toggle from "../common/toggle";
+import inputer from "../common/inputer";
 import options from "../common/options";
 import external from "../common/external";
 import textInput from "../common/textInput";
 
 export default {
-  components: { options, toggle, textInput, external },
+  components: { options, toggle, inputer, textInput, external },
   computed: {
     ...mapGetters(["config", "tax"])
   },
@@ -120,28 +116,10 @@ export default {
         key: "store.receipt",
         value
       });
+    },
+    editTax() {
+      this.$router.push({ name: "Setting.store.tax" });
     }
   }
 };
 </script>
-
-<style scoped>
-.fees {
-  display: flex;
-  align-items: center;
-  padding: 5px 0 10px 30px;
-}
-
-.fees input {
-  border: none;
-  outline: none;
-  border-bottom: 1px solid #ddd;
-  margin-left: 15px;
-  font-family: "Agency FB";
-  font-weight: bold;
-  font-size: 18px;
-  width: 100px;
-  text-indent: 10px;
-  color: #3c3c3c;
-}
-</style>

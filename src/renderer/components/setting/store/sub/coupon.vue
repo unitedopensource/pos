@@ -8,7 +8,7 @@
             <span class="add">{{$t('button.new')}}</span>
           </nav>
         </header>
-          <table>
+          <table class="setting">
             <thead>
               <tr>
                 <th>{{$t('thead.name')}}</th>
@@ -55,39 +55,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-thead th {
-  background: #009688;
-  color: #fff;
-  font-weight: normal;
-  padding: 2px 0;
-}
-
-tbody td {
-  padding: 7px 0;
-  text-align: center;
-}
-
-tbody tr:nth-child(even) {
-  background: #f5f5f5;
-}
-
-.opt i {
-  width: 25px;
-  cursor: pointer;
-  color: #3c3c3c;
-  padding: 5px 0;
-}
-
-.opt i:active {
-  background: #eee;
-  border-radius: 4px;
-}
-
-.amount {
-  font-family: "Agency FB";
-  font-weight: bold;
-  color: #3c3c3c;
-}
-</style>

@@ -3,9 +3,9 @@
         <text-input title="text.alias" v-model="station.alias" @update="updateAlias"></text-input>
         <text-input title="text.mac" v-model="station.mac" :disabled="true"></text-input>
         <text-input title="text.username" v-model="station.username" :disabled="true"></text-input>
-        <toggle title="text.autoAwake" v-model="station.wol"></toggle>
+        <toggle title="text.autoAwake" v-model="station.wol" @update="updateAwake"></toggle>
         <external title="setting.cashDrawer" @open="editCashDrawer"></external>
-        <text-list title="setting.receiptPrinter" v-model="station.receipt" :opts="printers"></text-list>
+        <text-list title="setting.receiptPrinter" v-model="station.receipt" :opts="printers" @update="updateReceipt"></text-list>
         <external title="setting.printerGroup" @open="editPrinters"></external>
         <text-list title="setting.terminal" v-model="station.terminal" :opts="terminals" @update="updateTerminal"></text-list>
         <external title="setting.callerId" @open="editCallid"></external>
@@ -51,6 +51,7 @@ export default {
       this.terminals.unshift({
         label: this.$t("text.disable"),
         tooltip: "",
+        plainText: true,
         value: ""
       });
     });
@@ -65,21 +66,36 @@ export default {
   },
   methods: {
     update(data) {
+      Object.assign(data, { _id: this.station._id });
       this.$socket.emit("[UPDATE] STATION", data);
     },
     updateAlias(value) {
       this.update({
-        key: "station.alias",
+        key: "alias",
+        value
+      });
+    },
+    updateAwake(value) {
+      this.update({
+        key: "wol",
+        value
+      });
+    },
+    updateReceipt(value) {
+      this.update({
+        key: "receipt",
         value
       });
     },
     updateTerminal(value) {
       this.update({
-        key: "station.terminal",
+        key: "terminal",
         value
       });
     },
-    editCashDrawer() {},
+    editCashDrawer() {
+      this.$router.push({ name: "Setting.station.cashdrawer" });
+    },
     editPrinters() {
       console.log("trigger");
     },

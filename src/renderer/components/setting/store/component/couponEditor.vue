@@ -6,14 +6,16 @@
                 
             </div>
             <footer>
-                <button class="btn">{{$t('button.confirm')}}</button>
+                <button class="btn" @click="init.confirm">{{$t('button.confirm')}}</button>
             </footer>
         </div>
     </div>
 </template>
 
 <script>
-export default {};
+export default {
+    props:["init"]
+};
 </script>
 
 <style scoped>

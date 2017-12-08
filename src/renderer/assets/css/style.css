@@ -59,7 +59,7 @@ i {
   --gray: #607D8B;
   --deepBlue: #1f7dc7;
   --yellow: #FF9800;
-  --green: #4CAF50;
+  --green: #009688;
   --red: #f44336;
   --orange: #FF5722;
 }
@@ -385,11 +385,24 @@ input[type="text"]:disabled {
   padding: 16px 20px;
 }
 
-.window footer {
+.window footer,
+.editor footer {
   background: #EEEEEE;
   border-top: 1px solid #e6e6e6;
   display: flex;
   justify-content: flex-end;
+}
+
+footer .opt {
+  display: flex;
+  flex: 1;
+  padding: 0 25px;
+  align-items: center;
+}
+
+footer .opt .del{
+  color:rgb(236, 48, 15);
+  cursor: pointer;
 }
 
 .receipt footer {
@@ -769,6 +782,7 @@ label.input-toggle>input {
 
 /*dataList*/
 
+
 /* section.dataList {
   background: #fff;
 }
@@ -805,6 +819,7 @@ label.input-toggle>input {
 .dataList header i {
   float: right;
 } */
+
 
 /* .editor {
   background: #fafafa;
@@ -1230,7 +1245,6 @@ section.cart {
 
 
 /* setting style */
-
 
 
 /* footer.update {

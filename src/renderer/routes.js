@@ -125,6 +125,10 @@ export default [{
                 path: 'device',
                 name: 'Setting.station.interface',
                 component: require('./components/setting/store/interface')
+              }, {
+                path: 'cashdrawer',
+                name: 'Setting.station.cashdrawer',
+                component: require('./components/setting/store/sub/cashdrawer')
               }]
             }, {
               path: 'promotion',

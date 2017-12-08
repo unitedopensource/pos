@@ -53,7 +53,7 @@ export default {
     },
     getLabel(value = this.value) {
       let label = this.opts.find(opt => opt.value === value);
-      this.label = label ? label.label : "";
+      this.label = label ? label.label : value;
     },
     pick(value) {
       this.$emit("input", value);

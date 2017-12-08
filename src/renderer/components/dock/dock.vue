@@ -179,14 +179,12 @@ export default {
       "setApp",
       "resetAll",
       "setTicket",
-      "setCustomer",
-      "updateTable",
       "syncTables",
-      "newPhoneCall",
-      "removeSpooler",
-      "updateOrders",
+      "updateTable",
       "insertOrder",
       "updateOrder",
+      "newPhoneCall",
+      "removeSpooler",
       "setTodayOrder",
       "updateRequestCategory",
       "updateRequestAction",
@@ -230,11 +228,10 @@ export default {
       let { target, data } = update;
       Object.assign(this.config, { [target]: data });
     },
-    UPDATE_STATION(station) {
-      Object.assign(this.station, station);
+    UPDATE_STATION(data) {
+      Object.assign(this.station, data);
     },
 
-    
     UPDATE_TABLE_STATUS(data) {
       this.updateTable(data);
     },

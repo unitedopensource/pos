@@ -12,10 +12,10 @@
         <div v-if="store.email.enable" class="opt">
             <inputer title="text.username" v-model="store.email.username" @update="updateUser"></inputer>
             <inputer title="text.password" v-model="store.email.password" @update="updatePassword" type="password"></inputer>
-            <switches title="text.autoEmailPromotion" v-model="store.email.coupon"></switches>
-            <switches title="text.emailReceipt" v-model="store.email.receipt"></switches>
-            <switches title="text.autoEmailConfirmation" v-model="store.email.reservation"></switches>
-            <switches title="text.emailReport" v-model="store.email.report"></switches>
+            <switches title="text.autoEmailPromotion" v-model="store.email.coupon" :disabled="true"></switches>
+            <switches title="text.emailReceipt" v-model="store.email.receipt" :disabled="true"></switches>
+            <switches title="text.autoEmailConfirmation" v-model="store.email.reservation" :disabled="true"></switches>
+            <switches title="text.emailReport" v-model="store.email.report" :disabled="true"></switches>
         </div>
       </transition>
     </toggle>

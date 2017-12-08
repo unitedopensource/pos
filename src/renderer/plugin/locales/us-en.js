@@ -315,7 +315,9 @@ export default {
         'auth': 'Auth',
         'breakTime': 'Break Time',
         'paid': 'Paid',
-        'expire': 'Expire'
+        'expire': 'Expire',
+        'taxRate': 'Tax Rate',
+        'default': 'Default'
     },
     flow: {
         'START': 'Deposit',
@@ -350,7 +352,7 @@ export default {
         'doneAction': 'Done Action',
         'setDate': 'Set Date',
         'payout': 'Payout Record',
-        'payoutRecord': 'Empoyee Payout Form',
+        'payoutRecord': 'Employee Payout Form',
         'deliveryRelated': 'Delivery Related',
         'optionList': 'Options',
         'thirdPartyOrder': 'Third Party Order',
@@ -367,7 +369,10 @@ export default {
         'newCustomer': 'Create Customer Info',
         'incomingCall': 'Incoming Call',
         'terminalDeviceManagement': 'Terminal Device Management',
-        'addressList': 'Address List'
+        'addressList': 'Address List',
+        'taxEditor': 'Tax Editor',
+        'create': 'Create',
+        'edit': 'Edit'
     },
     menu: {
         'course': 'Course',
@@ -851,7 +856,6 @@ export default {
         'doneLock': 'Auto Lock',
         'inactiveLock': 'Inactive Lock',
         'binding': 'Binding',
-        'cashFlowCtrl': 'Cash Flow Ctrl',
         'errorsAllow': 'Errors Allow',
         'apply': 'Apply',
         'setDefault': 'Set Default',
@@ -1005,7 +1009,7 @@ export default {
         'centralTime': 'Central Standard Time',
         'mountainTime': 'Mountain Standard Time',
         'pacificTime': 'Pacific Standard Time',
-        'neverExpire': 'Never Expire',        
+        'neverExpire': 'Never Expire',
         'autoEmailPromotion': 'Auto Email Promotion',
         'emailReceipt': 'Email Receipt',
         'autoEmailConfirmation': 'Auto Email Confirmation',
@@ -1104,9 +1108,10 @@ export default {
         'email': 'Email Service',
         'receiptPrinter': 'Receipt Printer',
         'printerGroup': 'Printer Group',
+        'cashFlowRecord': 'Record Cash Flow',
+
 
         'employee': 'Employee',
-
         'station': 'Station Setting',
         'staffBank': 'Staff Bank',
         'terminal': 'Terminal',
@@ -1261,6 +1266,8 @@ export default {
         'disableMatrix': 'Disable Google Matrix service',
         'matrixService': 'Enable Google Matrix service',
         'emailService': 'Used for SMS alert, E-receipt, E-coupon',
+        'enableCashdrawer': 'Enable cash drawer',
+        'disableCashdrawer': 'Disable cash drawer in this station',
         'dinein': {
             'useTableLayout': 'Use table to place order',
             'noTableLayout': 'Skip table to place order',
