@@ -70,9 +70,9 @@ export default {
 .list {
   position: relative;
   display: flex;
-  padding: 5px 0;
+  padding: 3px 0;
   align-items: center;
-  min-height: 40px;
+  min-height: 41px;
   border-bottom: 1px solid #eee;
   cursor: pointer;
 }
@@ -86,11 +86,15 @@ export default {
 
 .wrap label {
   cursor: pointer;
-  color: #656565;
 }
 
 .inner {
   flex: 1;
+}
+
+p {
+  margin-top: 3px;
+  color: #2196f3;
 }
 
 i {

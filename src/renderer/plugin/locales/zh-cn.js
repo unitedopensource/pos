@@ -1096,6 +1096,8 @@ export default {
         'coupon': '折价卷',
         'googleMatrix': '谷歌矩阵服务',
         'emailService': '电子邮箱',
+        'receiptPrinter': '收据打印机',
+        'printerGroup': '打印机组',
 
 
         'employee': '员工设置',
@@ -1258,6 +1260,7 @@ export default {
             'useTableLayout': '使用座位下单',
             'noTableLayout': '跳过座位直接下单',
             'guestCount': '统计客人数量',
+            'manuallyClearTable': '手动还原座位状态',
             'autoClearTable': '客人付款之后自动还原座位状态',
             'printReceipt': '在完成后打印收据',
             'noReceipt': '结账之后打印收据',

@@ -138,6 +138,10 @@ export default [{
                 name: 'Setting.promotion.coupon',
                 component: require('./components/setting/store/sub/coupon')
               }]
+            }, {
+              path: 'terminal',
+              name: 'Setting.terminal',
+              component: require('./components/setting/store/terminal')
             }]
           },
 

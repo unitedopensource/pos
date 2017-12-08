@@ -37,14 +37,14 @@ export default {
 }
 
 .external {
-    margin: 0 10px;
-    padding: 10px 25px;
-    color: #555;
-    cursor: pointer;
+  margin: 0 10px;
+  padding: 10px 25px;
+  color: #555;
+  cursor: pointer;
 }
 
 .external:hover {
-    background: #eee;
-    border-radius: 4px;
+  background: #eee;
+  border-radius: 4px;
 }
 </style>

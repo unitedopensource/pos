@@ -1102,6 +1102,8 @@ export default {
         'coupon': 'Coupon',
         'googleMatrix': 'Google Matrix',
         'email': 'Email Service',
+        'receiptPrinter': 'Receipt Printer',
+        'printerGroup': 'Printer Group',
 
         'employee': 'Employee',
 
@@ -1263,6 +1265,7 @@ export default {
             'useTableLayout': 'Use table to place order',
             'noTableLayout': 'Skip table to place order',
             'guestCount': 'Count guest before place order',
+            'manuallyClearTable': 'Manually clear table status',
             'autoClearTable': 'Auto restore table status after settlement',
             'printReceipt': 'Print receipt after Done',
             'noReceipt': 'Do not print receipt after Done',

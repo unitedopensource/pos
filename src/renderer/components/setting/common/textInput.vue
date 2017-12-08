@@ -27,7 +27,7 @@ export default {
 <style scoped>
 .input {
   display: flex;
-  padding: 5px 0;
+  padding: 5px 0 2px;
   align-items: center;
   border-bottom: 1px solid #eee;
 }

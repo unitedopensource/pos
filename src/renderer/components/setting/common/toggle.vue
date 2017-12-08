@@ -50,7 +50,7 @@ export default {
 .wrap {
   display: flex;
   justify-content: center;
-  min-height: 50px;
+  min-height: 48px;
 }
 
 .label {

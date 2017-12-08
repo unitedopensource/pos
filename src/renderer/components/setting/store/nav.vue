@@ -10,6 +10,10 @@
                     <i class="fa fa-desktop"></i>
                     <span class="text">{{$t('nav.station')}}</span>
                 </router-link>
+                <router-link tag="li" :to="{name:'Setting.terminal'}">
+                    <i class="fa fa-tablet"></i>
+                    <span class="text">{{$t('nav.terminal')}}</span>
+                </router-link>
                 <router-link tag="li" :to="{name:'Setting.promotion'}">
                     <i class="fa fa-tags"></i>
                     <span class="text">{{$t('nav.promotion')}}</span>
