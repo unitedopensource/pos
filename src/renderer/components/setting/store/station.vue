@@ -4,36 +4,12 @@
         <text-input title="text.mac" v-model="station.mac" :disabled="true"></text-input>
         <text-input title="text.username" v-model="station.username" :disabled="true"></text-input>
         <toggle title="text.autoAwake" v-model="station.wol"></toggle>
-        <external title="setting.cashDrawer">
-            <div class="external" @click="editCashDrawer">
-                <i class="fa fa-caret-right"></i>
-            </div>
-        </external>
-        <external title="setting.terminal" tooltip="tip.terminal">
-            <div class="external" @click="editTerminal">
-                <i class="fa fa-caret-right"></i>
-            </div>
-        </external>
-        <external title="setting.callerId">
-            <div class="external" @click="editPole">
-                <i class="fa fa-caret-right"></i>
-            </div>
-        </external>
-        <external title="setting.poleDisplay" tooltip="tip.poleDisplay">
-            <div class="external" @click="editPole">
-                <i class="fa fa-caret-right"></i>
-            </div>
-        </external>
-        <external title="setting.weightScale">
-            <div class="external" @click="editScale">
-                <i class="fa fa-caret-right"></i>
-            </div>
-        </external>
-        <external title="setting.printer">
-            <div class="external">
-                <i class="fa fa-caret-right"></i>
-            </div>
-        </external>
+        <external title="setting.cashDrawer" @open="editCashDrawer"></external>
+        <external title="setting.printer" @open="editPrinter"></external>
+        <text-list title="setting.terminal" v-model="station.terminal" :opts="terminals"></text-list>
+        <external title="setting.callerId" @open="editCallid"></external>
+        <external title="setting.poleDisplay" tooltip="tip.poleDisplay" @open="editPoleDisplay"></external>
+        <external title="setting.weightScale" @open="editScale"></external>
         <toggle title="setting.autoLock" tooltip="tip.autoLock" v-model="station.autoLock.enable">
           <transition name="dropdown">
                 <div v-if="station.autoLock.enable" class="opt">
@@ -50,16 +26,26 @@ import range from "../common/range";
 import toggle from "../common/toggle";
 import external from "../common/external";
 import switches from "../common/switches";
+import textList from "../common/textList";
 import textInput from "../common/textInput";
+
 export default {
-  components: { range, toggle, textInput, external, switches },
+  components: { range, toggle, textInput, textList, external, switches },
   data() {
     return {
-      station: null
+      station: null,
+      terminals: []
     };
   },
   created() {
     this.station = Object.assign({}, this.$store.getters.station);
+    this.$socket.emit("[TERMINAL] DEVICE", data => {
+      this.terminals = data.map(terminal => ({
+        label: `${terminal.alias} (${terminal.model})`,
+        tooltip: `${terminal.ip} - ${terminal.location}`,
+        value: terminal.alias
+      }));
+    });
   },
   methods: {
     update(data) {
@@ -69,8 +55,11 @@ export default {
       this.update({});
     },
     editCashDrawer() {},
-    editTerminal() {},
-    editPole() {},
+    editPrinter() {
+      console.log("trigger");
+    },
+    editCallid() {},
+    editPoleDisplay() {},
     editScale() {},
     editInterface() {}
   }

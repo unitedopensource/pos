@@ -1,11 +1,14 @@
 <template>
     <div class="list">
-        <div class="wrap" @click="isDisplay = !isDisplay">
+        <div class="wrap" @click.stop="isDisplay = !isDisplay">
+          <div class="inner">
             <label>{{$t(title)}}</label>
             <p>{{$t(label)}}</p>
+          </div>
+          <i class="fa fa-sort"></i>
         </div>
         <transition name="menu">
-            <ul v-show="isDisplay">
+            <ul v-show="isDisplay" v-outer-click="close">
                 <li v-for="(option,index) in opts" :key="index">
                     <input type="radio" :checked="option.value === value" @change="pick(option.value)" :id="id+index">
                     <label :for="id+index" @click="pick(option.value)">
@@ -41,6 +44,9 @@ export default {
     this.getLabel();
   },
   methods: {
+    close() {
+      this.isDisplay = false;
+    },
     getLabel(value = this.value) {
       let label = this.opts.find(opt => opt.value === value);
       this.label = label ? label.label : "";
@@ -70,13 +76,24 @@ export default {
 .list .wrap {
   display: flex;
   flex: 1;
-  flex-direction: column;
-  padding: 0px 20px;
+  align-items: center;
+  padding: 0px 0 0 20px;
 }
 
 .wrap label {
   cursor: pointer;
   color: #656565;
+}
+
+.inner {
+  flex: 1;
+}
+
+i {
+  margin: 0 10px;
+  padding: 10px 25px;
+  color: #555;
+  cursor: pointer;
 }
 
 ul {

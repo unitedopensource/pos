@@ -33,9 +33,6 @@ export default {
         .toString(36)
         .substring(3, 6)
     };
-  },
-  created(){
-    console.log(this.value)
   }
 };
 </script>

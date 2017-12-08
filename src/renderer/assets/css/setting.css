@@ -86,29 +86,50 @@ ul.tabs li.router-link-exact-active {
     margin-top: 2px;
 }
 
-.external {
-    margin: 0 10px;
-    padding: 10px 25px;
-    color: #555;
-    cursor: pointer;
-}
-
-.external:hover {
-    background: #eee;
-    border-radius: 4px;
-}
-
 .toggle .opt {
     padding: 0 25px;
     background: #FAFAFA;
 }
 
-.toggle .opt > div {
+.toggle .opt>div {
     border-bottom: 1px dashed #ddd;
 }
 
-.toggle .opt > div:last-child {
+.toggle .opt>div:last-child {
     border-bottom: none;
+}
+
+header.nav {
+    display: flex;
+    align-items: center;
+    padding: 6px;
+    background: #fcfcfc;
+    border-bottom: 1px solid #eee;
+}
+
+header.nav .back {
+    padding: 10px 25px;
+    color: #555;
+    cursor: pointer;
+}
+
+header.nav .back:hover {
+    background: #eee;
+    border-radius: 4px;
+}
+
+header.nav nav {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+}
+
+header.nav .add {
+    padding: 10px 20px;
+    background: #eee;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
 }
 
 

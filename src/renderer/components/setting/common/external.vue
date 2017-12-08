@@ -4,7 +4,11 @@
             <label>{{$t(title)}}</label>
             <span class="tooltip">{{$t(tooltip)}}</span>
         </div>
-        <slot></slot>
+        <slot>
+            <div class="external" @click="$emit('open')">
+                <i class="fa fa-caret-right"></i>
+            </div>
+        </slot>
     </div>
 </template>
 
@@ -30,5 +34,17 @@ export default {
   flex: 1;
   display: flex;
   flex-direction: column;
+}
+
+.external {
+    margin: 0 10px;
+    padding: 10px 25px;
+    color: #555;
+    cursor: pointer;
+}
+
+.external:hover {
+    background: #eee;
+    border-radius: 4px;
 }
 </style>

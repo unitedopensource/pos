@@ -12,11 +12,7 @@
         <text-input title="text.contactInfo" v-model="store.contact" @update="updateContact"></text-input>
         <text-list title="text.timezone" v-model="store.timeZone" :opts="timeZones" @update="updateTimeZone"></text-list>
         <text-list title="text.storeType" v-model="store.type" :opts="types" @update="updateStoreType"></text-list>
-        <external title="text.openHour">
-          <div class="external" @click="editHour">
-                <i class="fa fa-caret-right"></i>
-            </div>
-        </external>
+        <external title="text.openHour" @open="editHour"></external>
     </div>
 </template>
 

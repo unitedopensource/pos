@@ -1,7 +1,7 @@
 <template>
     <div>
-        <header>
-          <router-link :to="{name:'Setting.promotion'}" class="external">
+        <header class="nav">
+          <router-link tag="div" :to="{name:'Setting.promotion'}" class="back">
             <i class="fa fa-chevron-left"></i>
           </router-link>
           <nav>
@@ -20,7 +20,7 @@
             <tbody>
               <tr v-for="(coupon,index) in coupons" :key="index">
                 <td>{{coupon.for}}</td>
-                <td>{{coupon.discount}}</td>
+                <td class="amount">{{coupon.discount}}</td>
                 <td>{{coupon.expire | moment('YYYY-MM-DD')}}</td>
                 <td class="opt" @click="edit(coupon)">
                   <i class="fa fa-ellipsis-v"></i>
@@ -33,8 +33,10 @@
 </template>
 
 <script>
+import editor from "../component/couponEditor";
 export default {
   props: ["init"],
+  components: { editor },
   data() {
     return {
       componentData: null,
@@ -55,14 +57,6 @@ export default {
 </script>
 
 <style scoped>
-header {
-  display: flex;
-  align-items: center;
-  padding: 6px;
-  background: #fcfcfc;
-  border-bottom: 1px solid #eee;
-}
-
 thead th {
   background: #009688;
   color: #fff;
@@ -79,20 +73,6 @@ tbody tr:nth-child(even) {
   background: #f5f5f5;
 }
 
-nav {
-  flex: 1;
-  display: flex;
-  justify-content: flex-end;
-}
-
-nav .add {
-  padding: 10px 20px;
-  background: #eee;
-  border-radius: 4px;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
-  cursor: pointer;
-}
-
 .opt i {
   width: 25px;
   cursor: pointer;
@@ -103,5 +83,11 @@ nav .add {
 .opt i:active {
   background: #eee;
   border-radius: 4px;
+}
+
+.amount {
+  font-family: "Agency FB";
+  font-weight: bold;
+  color: #3c3c3c;
 }
 </style>

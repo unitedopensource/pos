@@ -27,19 +27,34 @@ Vue.use(dialog)
 Vue.use(i18n)
 
 Vue.directive('mask', VueMaskDirective);
+
 Vue.directive('outer-click', {
-  bind: function (el, binding, vnode) {
-    this.event = function (event) {
-      if (!(el == event.target || el.contains(event.target))) {
-        vnode.context[binding.expression](event);
+  bind: function (el, binding, vNode) {
+
+    if (typeof binding.value !== 'function') {
+      const component = vNode.context.name
+      let warn = `[Vue-outer-click:] provided expression '${binding.expression}' is not a function.`
+      if (component) {
+        warn += `Found in component '${component}'`
       }
-    };
-    document.body.addEventListener('click', this.event)
+      console.warn(warn)
+    }
+    const bubble = binding.modifiers.bubble
+    const handler = (e) => {
+      if (bubble || (!el.contains(e.target) && el !== e.target)) {
+        binding.value(e)
+      }
+    }
+    el.__vueOuterClick__ = handler
+    document.addEventListener('click', handler)
   },
-  unbind: function (el) {
-    document.body.removeEventListener('click', this.event)
-  },
+
+  unbind: function (el, binding) {
+    document.removeEventListener('click', el.__vueOuterClick__)
+    el.__vueOuterClick__ = null
+  }
 });
+
 
 Vue.config.debug = true
 window.moment = moment
