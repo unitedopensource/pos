@@ -21,8 +21,8 @@
               <tr v-for="(coupon,index) in coupons" :key="index">
                 <td>{{coupon.for}}</td>
                 <td class="amount">{{coupon.discount}}</td>
-                <td>{{coupon.expire | moment('YYYY-MM-DD')}}</td>
-                <td class="opt" @click="edit(coupon)">
+                <td :class="{expired: (coupon.expire && today > coupon.expire)}">{{format(coupon.expire)}}</td>
+                <td class="opt" @click="edit(coupon,index)">
                   <i class="fa fa-ellipsis-v"></i>
                 </td>
               </tr>
@@ -41,7 +41,8 @@ export default {
     return {
       componentData: null,
       component: null,
-      coupons: []
+      coupons: [],
+      today: +new Date()
     };
   },
   created() {
@@ -49,8 +50,23 @@ export default {
     delete window.temp;
   },
   methods: {
-    edit(coupon) {
-      this.$p("editor", { coupon });
+    format(date) {
+      return date
+        ? moment(date).format("YYYY-MM-DD")
+        : this.$t("text.neverExpire");
+    },
+    edit(coupon, index) {
+      new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject, coupon, edit: true };
+        this.component = "editor";
+      })
+        .then(_coupon => {
+          this.$q();
+        })
+        .catch(del => {
+          del && this.coupons.splice(index, 1);
+          this.$q();
+        });
     }
   }
 };

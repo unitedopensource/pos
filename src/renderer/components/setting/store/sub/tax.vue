@@ -69,7 +69,13 @@ export default {
         }
       };
 
-      this.$p("editor", { tax, edit: false });
+      let name =
+        "tax" +
+        Math.random()
+          .toString(36)
+          .substring(4, 6);
+
+      this.edit(tax, name);
     },
     edit(tax, name) {
       new Promise((resolve, reject) => {

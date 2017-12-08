@@ -27,7 +27,7 @@
           <i class="fa fa-bars"></i>
         </label>
         <transition name="menu">
-          <ul v-show="toggleMenu">
+          <ul v-if="toggleMenu">
             <li @click="shutdownStations" v-if="isHost">
               <i class="fa fa-plug"></i>
               <span>{{$t('login.massiveShutdown')}}</span>
@@ -66,10 +66,10 @@
   background: #fff;
   color: #274a5a;
   padding: 10px 15px;
-  border-radius: 6px;
+  border-radius: 4px;
   cursor: pointer;
   transition: background 0.1s ease;
-  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.75);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.55);
 }
 
 .ctrl label:active {
@@ -114,6 +114,10 @@
 
 .ctrl li:last-child {
   border: none;
+}
+
+.ctrl li:last-child:after {
+  background: none;
 }
 
 .ctrl li:after {

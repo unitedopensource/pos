@@ -372,7 +372,8 @@ export default {
         'addressList': 'Address List',
         'taxEditor': 'Tax Editor',
         'create': 'Create',
-        'edit': 'Edit'
+        'edit': 'Edit',
+        'registration': 'Registration'
     },
     menu: {
         'course': 'Course',
@@ -821,6 +822,7 @@ export default {
         'receiptPrinter': 'Receipt Printer',
         'stationPrinters': 'Station Printers',
         'redirect': 'Redirect',
+        'licenseKey': 'License Key',
         'storeName': 'Store Name',
         'address': 'Address',
         'city': 'City',

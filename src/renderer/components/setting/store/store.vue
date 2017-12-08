@@ -13,6 +13,7 @@
         <text-list title="text.timezone" v-model="store.timeZone" :opts="timeZones" @update="updateTimeZone"></text-list>
         <text-list title="text.storeType" v-model="store.type" :opts="types" @update="updateStoreType"></text-list>
         <external title="text.openHour" @open="editHour"></external>
+        <div :is="component" :init="componentData"></div>
     </div>
 </template>
 
@@ -20,11 +21,13 @@
 import external from "../common/external";
 import textList from "../common/textList";
 import textInput from "../common/textInput";
-
+import register from "./component/register";
 export default {
-  components: { external, textInput, textList },
+  components: { external, textInput, textList, register },
   data() {
     return {
+      componentData: null,
+      component: null,
       store: null,
       types: [
         {
@@ -97,7 +100,7 @@ export default {
   },
   methods: {
     register() {
-      console.log("tatah");
+      this.$p("register");
     },
     editHour() {},
     update(data) {

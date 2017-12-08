@@ -287,7 +287,8 @@ export default {
         'addressList': '地址列表',
         'taxEditor': '税率编辑',
         'create': '新建',
-        'edit': '修改'
+        'edit': '修改',
+        'registration': '注册'
     },
     menu: {
         'course': '定时',
@@ -813,6 +814,7 @@ export default {
         'receiptPrinter': '收据打印机',
         'stationPrinters': '工作站打印机',
         'redirect': '打印重定向',
+        'licenseKey': '注册码',
         'storeName': '店名',
         'address': '地址',
         'city': '城市',

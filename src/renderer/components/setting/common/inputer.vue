@@ -1,7 +1,7 @@
 <template>
     <div class="input">
         <label>{{$t(title)}}</label>
-        <input :type="type" :value="value" @change="$emit('input',$event.target.value)" @blur="$emit('update',$event.target.value)">
+        <input :type="type" :value="value" @change="$emit('input',$event.target.value)" @blur="$emit('update',$event.target.value)" :placeholder="placeholder">
     </div>
 </template>
 
@@ -13,7 +13,8 @@ export default {
       default: "text"
     },
     title: String,
-    value: [String, Number]
+    value: [String, Number],
+    placeholder: String
   }
 };
 </script>
