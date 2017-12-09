@@ -8,8 +8,8 @@
         <text-list title="setting.receiptPrinter" v-model="station.receipt" :opts="printers" @update="updateReceipt"></text-list>
         <external title="setting.printerGroup" @open="$router.push({name:'Setting.station.printers'})"></external>
         <text-list title="setting.terminal" v-model="station.terminal" :opts="terminals" @update="updateTerminal"></text-list>
-        <external title="setting.callerId" @open="editCallid"></external>
-        <external title="setting.poleDisplay" tooltip="tip.poleDisplay" @open="editPoleDisplay"></external>
+        <external title="setting.callerId" @open="$router.push({name:'Setting.station.callid'})"></external>
+        <external title="setting.poleDisplay" tooltip="tip.poleDisplay" @open="$router.push({name:'Setting.station.poleDisplay'})"></external>
         <external title="setting.weightScale" @open="editScale"></external>
         <toggle title="setting.autoLock" tooltip="tip.autoLock" v-model="station.autoLock.enable">
           <transition name="dropdown">
@@ -93,8 +93,6 @@ export default {
         value
       });
     },
-    editCallid() {},
-    editPoleDisplay() {},
     editScale() {},
     editInterface() {}
   }

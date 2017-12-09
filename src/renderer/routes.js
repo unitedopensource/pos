@@ -133,6 +133,14 @@ export default [{
                 path: 'printers',
                 name: 'Setting.station.printers',
                 component: require('./components/setting/store/sub/printers')
+              }, {
+                path: 'callid',
+                name: 'Setting.station.callid',
+                component: require('./components/setting/store/sub/callid')
+              }, {
+                path: 'poleDisplay',
+                name: 'Setting.station.poleDisplay',
+                component: require('./components/setting/store/sub/poleDisplay')
               }]
             }, {
               path: 'promotion',
@@ -161,22 +169,18 @@ export default [{
               path: '/',
               name: 'Setting.menu',
               component: require('./components/setting/menu/menu')
-            },{
-              path:'request',
-              name:'Setting.request',
-              component:require('./components/setting/menu/request')
-            },{
-              path:'submenu',
-              name:'Setting.submenu',
-              component:require('./components/setting/menu/submenu')
-            },{
-              path:'template',
-              name:'Setting.template',
-              component:require('./components/setting/menu/template')
-            },{
-              path:'submenu',
-              name:'Setting.submenu',
-              component:require('./components/setting/menu/submenu')
+            }, {
+              path: 'request',
+              name: 'Setting.request',
+              component: require('./components/setting/menu/request')
+            }, {
+              path: 'submenu',
+              name: 'Setting.submenu',
+              component: require('./components/setting/menu/submenu')
+            }, {
+              path: 'template',
+              name: 'Setting.template',
+              component: require('./components/setting/menu/template')
             }]
           }
         ]

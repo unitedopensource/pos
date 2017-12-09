@@ -30,24 +30,17 @@ import inputer from "../../common/inputer";
 import textList from "../../common/textList";
 
 export default {
-  props: ["init"],
   components: { toggle, inputer, textList },
   data() {
     return {
-      cashDrawer: null,
-      printers: []
+      cashDrawer: Object.assign({}, this.$store.getters.station.cashDrawer),
+      printers: Object.keys(this.$store.getters.config.printers).map(name => ({
+        label: name,
+        tooltip: "",
+        plainText: true,
+        value: name
+      }))
     };
-  },
-  created() {
-    this.cashDrawer = Object.assign({}, this.$store.getters.station.cashDrawer);
-    this.printers = Object.keys(
-      this.$store.getters.config.printers
-    ).map(name => ({
-      label: name,
-      tooltip: "",
-      plainText: true,
-      value: name
-    }));
   },
   methods: {
     save() {

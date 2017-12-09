@@ -8,7 +8,7 @@
           <i class="fa fa-sort"></i>
         </div>
         <transition name="menu">
-            <ul v-show="isDisplay" v-outer-click="close">
+            <ul v-show="isDisplay" v-outer-click="close" :style="edge" ref="list">
                 <li v-for="(option,index) in opts" :key="index">
                     <input type="radio" :checked="option.value === value" @change="pick(option.value)" :id="id+index">
                     <label :for="id+index" @click="pick(option.value)" v-if="option.plainText">
@@ -41,7 +41,8 @@ export default {
         .toString(36)
         .substring(3, 6),
       isDisplay: false,
-      label: null
+      label: null,
+      edge: {}
     };
   },
   created() {
@@ -61,6 +62,20 @@ export default {
       this.isDisplay = false;
 
       this.value !== value && this.$emit("update", value);
+    }
+  },
+  watch: {
+    isDisplay(boolean) {
+      if (boolean) {
+        this.$nextTick(() => {
+          let { top, bottom } = this.$refs.list.getBoundingClientRect();
+          if (top < 0) {
+            this.edge = {
+              transform: `translateY(${Math.abs(top - 74)}px)`
+            };
+          }
+        });
+      }
     }
   }
 };

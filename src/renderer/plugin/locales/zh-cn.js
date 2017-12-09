@@ -1263,6 +1263,7 @@ export default {
         'emailService': '用于短信服务，订单提醒，发送电子收据',
         'enableCashdrawer': '启用钱箱',
         'disableCashdrawer': '禁止在此工作站使用钱箱',
+        'poleDisplayAnimation': '在空闲时候开启跑马灯动画效果',
         'dinein': {
             'useTableLayout': '使用座位下单',
             'noTableLayout': '跳过座位直接下单',
