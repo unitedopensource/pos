@@ -317,7 +317,8 @@ export default {
         'paid': 'Paid',
         'expire': 'Expire',
         'taxRate': 'Tax Rate',
-        'default': 'Default'
+        'default': 'Default',
+        'location': 'Location'
     },
     flow: {
         'START': 'Deposit',
@@ -373,7 +374,10 @@ export default {
         'taxEditor': 'Tax Editor',
         'create': 'Create',
         'edit': 'Edit',
-        'registration': 'Registration'
+        'registration': 'Registration',
+        'deviceEditor': 'Device Editor',
+        'device': 'Device',
+        'terminalDevice': 'Terminal Device(s)'
     },
     menu: {
         'course': 'Course',
@@ -1015,7 +1019,9 @@ export default {
         'autoEmailPromotion': 'Auto Email Promotion',
         'emailReceipt': 'Email Receipt',
         'autoEmailConfirmation': 'Auto Email Confirmation',
-        'emailReport': 'Email Report'
+        'emailReport': 'Email Report',
+        'ip': 'IP Address',
+        'location': 'Location'
     },
     nav: {
         'store': 'Store',

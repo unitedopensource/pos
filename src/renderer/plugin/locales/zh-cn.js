@@ -288,7 +288,10 @@ export default {
         'taxEditor': '税率编辑',
         'create': '新建',
         'edit': '修改',
-        'registration': '注册'
+        'registration': '软件注册',
+        'deviceEditor': '设备编辑',
+        'device': '设备',
+        'terminalDevice': '刷卡设备'
     },
     menu: {
         'course': '定时',
@@ -747,7 +750,8 @@ export default {
         'paid': '支付',
         'expire': '过期日期',
         'taxRate': '税率',
-        'default': '默认'
+        'default': '默认',
+        'location': '位置'
     },
     flow: {
         'START': '初始金额',
@@ -1009,7 +1013,9 @@ export default {
         'autoEmailPromotion': '自动发送优惠信息',
         'emailReceipt': '发送电子收据',
         'autoEmailConfirmation': '自动发送确认信件',
-        'emailReport': '发送报表'
+        'emailReport': '发送报表',
+        'ip': 'IP 地址',
+        'location': '位置'
     },
     nav: {
         'store': '店面',

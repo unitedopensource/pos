@@ -47,9 +47,12 @@ export default {
       today: +new Date()
     };
   },
-  created() {
-    this.coupons = window.temp;
-    delete window.temp;
+  beforeRouteEnter: (to, from, next) => {
+    appSocket.emit("[COUPON] LIST", data => {
+      next(vm => {
+        vm.coupons = data;
+      });
+    });
   },
   methods: {
     format(date) {

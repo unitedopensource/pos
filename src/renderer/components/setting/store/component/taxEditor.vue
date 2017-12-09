@@ -2,8 +2,8 @@
     <div class="popupMask setting center dark" @click.self="init.reject(false)">
         <div class="editor">
             <header>
-                <h5 v-if="init.edit">{{$t('title.create')}}</h5>
-                <h5 v-else>{{$t('title.edit')}}</h5>
+                <h5 v-if="init.edit">{{$t('title.edit')}}</h5>
+                <h5 v-else>{{$t('title.create')}}</h5>
                 <h3>{{$t('title.taxEditor')}}</h3>
             </header>
             <div class="wrap">

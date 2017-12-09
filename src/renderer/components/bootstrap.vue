@@ -30,6 +30,7 @@ export default {
         printer: true,
         database: true
       });
+      window.appSocket = this.$socket;
       this.setDevice({ online: navigator.onLine });
       ipcRenderer.send("Loading", this.$t("initial.findHost"));
     },
@@ -63,7 +64,7 @@ export default {
     setStationEnvironment() {
       return new Promise((use, register) => {
         Mac.getMac((err, mac) => {
-          if (err) {
+          if (err || !mac) {
             ipcRenderer.send("Loading", this.$t("initial.hardwareIssue"));
           } else {
             let { username } = os.userInfo();
@@ -158,7 +159,7 @@ export default {
         }
       });
     },
-    initPoleDisplay() {
+    initPoleDisplay(port) {
       let poleDisplay = new serialport(port, { autoOpen: false });
       poleDisplay.open(err => {
         if (err) {

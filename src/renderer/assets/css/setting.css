@@ -81,6 +81,10 @@ ul.tabs li.router-link-exact-active {
     box-shadow: var(--shadow);
 }
 
+.tab-content header .title {
+    padding: 0 15px
+}
+
 .tooltip {
     color: rgba(0, 0, 0, 0.5);
     margin-top: 2px;

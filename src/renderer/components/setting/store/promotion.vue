@@ -2,7 +2,7 @@
     <div>
         <toggle title="setting.rewardSystem" v-model="store.reward"></toggle>
         <external title="setting.coupon" tooltip="tip.couponList">
-            <div class="external" @click="getCoupon">
+            <div class="external" @click="$router.push({name:'Setting.promotion.coupon'})">
                 <i class="fa fa-caret-right"></i>
             </div>
         </external>
@@ -17,21 +17,8 @@ export default {
   components: { toggle, options, external },
   data() {
     return {
-      store: null
+      store: Object.assign({}, this.$store.getters.store)
     };
-  },
-  created() {
-    this.store = Object.assign({}, this.$store.getters.store);
-    this.$socket.emit("[COUPON] LIST", coupons => {
-      window.temp = coupons;
-    });
-  },
-  methods: {
-    getCoupon() {
-      this.$router.push({
-        name: "Setting.promotion.coupon"
-      });
-    }
   }
 };
 </script>

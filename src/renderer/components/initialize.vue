@@ -33,6 +33,7 @@ export default {
   sockets: {
     CONNECTED(text) {
       ipcRenderer.send("Loading", this.$t("initial.hostConnected"));
+      window.socket = this.$socket;
       this.$socket.emit("[INITIAL] POS");
       ipcRenderer.send("Loading", this.$t("initial.initialApplication"));
     },
@@ -59,7 +60,6 @@ export default {
       this.setReservation({ reservations, sync });
       this.setTodayOrder({ orders, sync });
       this.setLastSync(sync);
-      
 
       window.server && this.checkAwake(config.store.station);
       MAC.getMac((err, mac) => {
