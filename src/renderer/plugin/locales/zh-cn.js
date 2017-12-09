@@ -1105,6 +1105,8 @@ export default {
         'receiptPrinter': '收据打印机',
         'printerGroup': '打印机组',
         'cashFlowRecord': '记录现金流',
+        'animation': '动画效果',
+        'saveLog': '保存记录',
 
         'employee': '员工设置',
         'station': '工作站设定',
@@ -1264,6 +1266,7 @@ export default {
         'enableCashdrawer': '启用钱箱',
         'disableCashdrawer': '禁止在此工作站使用钱箱',
         'poleDisplayAnimation': '在空闲时候开启跑马灯动画效果',
+        'saveCallLog': '保存来电显示记录',
         'dinein': {
             'useTableLayout': '使用座位下单',
             'noTableLayout': '跳过座位直接下单',

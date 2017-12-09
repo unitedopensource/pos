@@ -333,9 +333,9 @@ export default {
       console.log(error);
     },
     welcomeScreen() {
-      let { top, btm } = this.station.pole;
+      let { top, bot } = this.station.pole;
       poleDisplay.write("\f");
-      poleDisplay.write(line(top, btm));
+      poleDisplay.write(line(top, bot));
     },
     go(grid) {
       if (!grid) return;

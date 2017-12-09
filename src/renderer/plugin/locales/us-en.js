@@ -1111,7 +1111,8 @@ export default {
         'receiptPrinter': 'Receipt Printer',
         'printerGroup': 'Printer Group',
         'cashFlowRecord': 'Record Cash Flow',
-
+        'animation': 'Animation Effect',
+        'saveLog': 'Save Log',
 
         'employee': 'Employee',
         'station': 'Station Setting',
@@ -1271,6 +1272,7 @@ export default {
         'enableCashdrawer': 'Enable cash drawer',
         'disableCashdrawer': 'Disable cash drawer in this station',
         'poleDisplayAnimation': 'Display animation when POS idle',
+        'saveCallLog': 'Save call log',
         'dinein': {
             'useTableLayout': 'Use table to place order',
             'noTableLayout': 'Skip table to place order',

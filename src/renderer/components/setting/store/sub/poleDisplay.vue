@@ -6,21 +6,27 @@
           </div>
           <nav></nav>
         </header>
-        <toggle title="setting.poleDisplay" v-model="poleDisplay.enable"></toggle>
+        <toggle title="setting.poleDisplay" v-model="poleDisplay.enable">
+          <transition name="dropdown">
+            <div class="opt" v-if="poleDisplay.enable">
+              <inputer title="text.firstLine" v-model="poleDisplay.top"></inputer>
+              <inputer title="text.secondLine" v-model="poleDisplay.bot"></inputer>
+            </div>
+          </transition>
+        </toggle>
         <text-list title="text.port" v-model="poleDisplay.port" :opts="ports"></text-list>
-        <text-input title="text.firstLine" v-model="poleDisplay.top"></text-input>
-        <text-input title="text.secondLine" v-model="poleDisplay.bot"></text-input>
-        <toggle title="setting.animation" tooltip="tip.poleDisplayAnimation" v-model="poleDisplay.animation"></toggle>
+        <toggle title="setting.animation" tooltip="tip.poleDisplayAnimation" v-model="poleDisplay.animation" :disabled="true"></toggle>
       </div>
 </template>
 
 <script>
 import toggle from "../../common/toggle";
+import inputer from "../../common/inputer";
 import textList from "../../common/textList";
 import textInput from "../../common/textInput";
 
 export default {
-  components: { toggle, textList, textInput },
+  components: { toggle, inputer, textList, textInput },
   data() {
     return {
       poleDisplay: Object.assign({}, this.$store.getters.station.pole),
@@ -28,10 +34,10 @@ export default {
         .fill("COM")
         .map((p, i) => p + (i + 1))
         .map(port => ({
-          label: command,
+          label: port,
           tooltip: "",
           plainText: true,
-          value: command
+          value: port
         }))
     };
   },
