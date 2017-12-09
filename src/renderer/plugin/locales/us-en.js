@@ -1046,7 +1046,7 @@ export default {
         'event': 'Event',
         'timecard': 'TimeCard',
         'giftCard': 'GiftCard',
-        'subMenu': 'Sub Menu',
+        'submenu': 'Sub Menu',
         'cashFlow': 'Cash Flow',
         'batch': 'Batch',
         'events': 'Events',

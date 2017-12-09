@@ -1040,7 +1040,7 @@ export default {
         'event': '事件',
         'timecard': '打卡',
         'giftCard': '礼物卡',
-        'subMenu': '子菜单',
+        'submenu': '子菜单',
         'cashFlow': '现金流',
         'batch': '过账',
         'events': '事件',
