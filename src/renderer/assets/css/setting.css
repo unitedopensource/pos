@@ -201,7 +201,7 @@ td.amount {
 
 .editor header {
     border-bottom: 1px solid #eee;
-    padding: 5px 20px;
+    padding: 5px 25px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -221,6 +221,16 @@ td.amount {
 
 .clickable {
     cursor: pointer;
+}
+
+.multiple .checkbox {
+    flex: 1;
+    margin: 2px 30px!important;
+}
+
+.multiple .text {
+    flex: 1;
+    padding: 10px 5px;
 }
 
 

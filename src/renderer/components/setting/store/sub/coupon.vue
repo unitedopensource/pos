@@ -14,6 +14,7 @@
                 <th>{{$t('thead.name')}}</th>
                 <th>{{$t('thead.discount')}}</th>
                 <th>{{$t('thead.expire')}}</th>
+                <th>{{$t('thead.count')}}</th>
                 <th></th>
               </tr>
             </thead>
@@ -22,6 +23,7 @@
                 <td>{{coupon.for}}</td>
                 <td class="amount">{{coupon.discount}}</td>
                 <td :class="{expired: (coupon.expire && today > coupon.expire)}">{{format(coupon.expire)}}</td>
+                <td>{{coupon.count}}</td>
                 <td class="opt" @click="edit(coupon,index)">
                   <i class="fa fa-ellipsis-v"></i>
                 </td>

@@ -1,7 +1,7 @@
 <template>
     <div class="input">
         <label>{{$t(title)}}</label>
-        <input :type="type" :value="value" @change="$emit('input',$event.target.value)" @blur="$emit('update',$event.target.value)" :placeholder="placeholder">
+        <input :type="type" :value="value" @input="$emit('input',$event.target.value)" @blur="$emit('update',$event.target.value)" :placeholder="placeholder">
     </div>
 </template>
 

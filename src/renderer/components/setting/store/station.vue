@@ -4,9 +4,9 @@
         <text-input title="text.mac" v-model="station.mac" :disabled="true"></text-input>
         <text-input title="text.username" v-model="station.username" :disabled="true"></text-input>
         <toggle title="text.autoAwake" v-model="station.wol" @update="updateAwake"></toggle>
-        <external title="setting.cashDrawer" @open="editCashDrawer"></external>
+        <external title="setting.cashDrawer" @open="$router.push({ name: 'Setting.station.cashdrawer'})"></external>
         <text-list title="setting.receiptPrinter" v-model="station.receipt" :opts="printers" @update="updateReceipt"></text-list>
-        <external title="setting.printerGroup" @open="editPrinters"></external>
+        <external title="setting.printerGroup" @open="$router.push({name:'Setting.station.printers'})"></external>
         <text-list title="setting.terminal" v-model="station.terminal" :opts="terminals" @update="updateTerminal"></text-list>
         <external title="setting.callerId" @open="editCallid"></external>
         <external title="setting.poleDisplay" tooltip="tip.poleDisplay" @open="editPoleDisplay"></external>
@@ -92,12 +92,6 @@ export default {
         key: "terminal",
         value
       });
-    },
-    editCashDrawer() {
-      this.$router.push({ name: "Setting.station.cashdrawer" });
-    },
-    editPrinters() {
-      console.log("trigger");
     },
     editCallid() {},
     editPoleDisplay() {},

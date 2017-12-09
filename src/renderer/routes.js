@@ -129,6 +129,10 @@ export default [{
                 path: 'cashdrawer',
                 name: 'Setting.station.cashdrawer',
                 component: require('./components/setting/store/sub/cashdrawer')
+              }, {
+                path: 'printers',
+                name: 'Setting.station.printers',
+                component: require('./components/setting/store/sub/printers')
               }]
             }, {
               path: 'promotion',
@@ -156,7 +160,23 @@ export default [{
             children: [{
               path: '/',
               name: 'Setting.menu',
-              component: require('./components/setting/menu/index')
+              component: require('./components/setting/menu/menu')
+            },{
+              path:'request',
+              name:'Setting.request',
+              component:require('./components/setting/menu/request')
+            },{
+              path:'submenu',
+              name:'Setting.submenu',
+              component:require('./components/setting/menu/submenu')
+            },{
+              path:'template',
+              name:'Setting.template',
+              component:require('./components/setting/menu/template')
+            },{
+              path:'submenu',
+              name:'Setting.submenu',
+              component:require('./components/setting/menu/submenu')
             }]
           }
         ]

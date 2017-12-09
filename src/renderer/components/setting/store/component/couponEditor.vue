@@ -20,7 +20,7 @@
                 <div class="opt">
                     <span class="del" @click="init.reject(true)" v-show="coupon._id">{{$t('button.delete')}}</span>
                 </div>
-                <button class="btn" @click="confirm">{{$t('button.confirm')}}</button>
+                <button class="btn" @click="confirm" :disabled="invalid">{{$t('button.confirm')}}</button>
             </footer>
         </div>
     </div>
@@ -40,6 +40,11 @@ export default {
     if (this.coupon.expire) {
       this.coupon.expire = moment(this.coupon.expire).format("YYYY-MM-DD");
     }
+  },
+  computed:{
+      invalid(){
+          return !this.coupon.for || !this.coupon.discount
+      }
   },
   methods: {
     confirm() {}
