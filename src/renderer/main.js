@@ -15,10 +15,12 @@ import i18n from './plugin/dict'
 import dialog from './plugin/dialog'
 import VueBus from './plugin/bus'
 import Trend from "vuetrend"
+import Bars from 'vuebars'
 
 Vue.use(Electron)
 Vue.use(VueBus)
 Vue.use(Trend)
+Vue.use(Bars)
 Vue.use(VueTouch, {
   name: 'v-touch'
 })

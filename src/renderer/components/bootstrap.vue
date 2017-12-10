@@ -172,7 +172,13 @@ export default {
         }
       });
     },
-    initScale(port) {},
+    initScale(port) {
+      // const SerialPort = require('serialport');
+      // const Delimiter = SerialPort.parsers.Delimiter;
+      // const port = new SerialPort('/dev/tty-usbserial1');
+      // const parser = port.pipe(new Delimiter({ delimiter: Buffer.from('EOL') }));
+      // parser.on('data', console.log);
+    },
     initialPrinter() {
       let config = this.config;
       CLODOP

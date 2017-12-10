@@ -529,7 +529,9 @@ export default {
         'payoutAmountIncorrect': '支付数额格式不正确',
         'payoutSignatureRequired': '需要经手的收银员签字确认',
         'payoutConfirm': '支付确认',
-        'payoutCashConfirm': '您确定要支付 $ {i} 给 {i} 吗？'
+        'payoutCashConfirm': '您确定要支付 $ {i} 给 {i} 吗？',
+        'itemSorted': '物品排序',
+        'updateSortedItem': '您要更新本次物品排序吗?'
     },
     terminal: {
         'initial': '正在初始化 {i}...',

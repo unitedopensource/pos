@@ -615,7 +615,9 @@ export default {
         'payoutAmountIncorrect': 'Payout amount is incorrect',
         'payoutSignatureRequired': 'Payout process requires cashier signature',
         'payoutConfirm': 'Payout Confirm',
-        'payoutCashConfirm': 'Are you sure to pay $ {i} to {i} ?'
+        'payoutCashConfirm': 'Are you sure to pay $ {i} to {i} ?',
+        'itemSorted':'Item Sorted',
+        'updateSortedItem': 'Are you wish to save sorted order?'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',
