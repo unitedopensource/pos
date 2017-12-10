@@ -19,6 +19,7 @@
             </div>
         </transition>
     </toggle>
+    <!-- <toggle title="setting.rounding" v-model="store.rounding.enable"></toggle> -->
     <options title="setting.receiptDialog" tooltip="tip.receiptDefaultAction" v-model="store.receipt" :opts="receiptOption" @update="updateReceipt"></options>
   </div>
 </template>

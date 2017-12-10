@@ -13,7 +13,7 @@ export default {
       default: "text"
     },
     title: String,
-    value: [String, Number],
+    value: [String, Number, Array, Object],
     placeholder: String
   }
 };
@@ -24,6 +24,7 @@ export default {
   display: flex;
   padding: 5px 0;
   align-items: center;
+  position: relative;
 }
 
 input {

@@ -208,7 +208,7 @@ export default {
     },
     checkTimecard() {
       return new Promise(next => {
-        if (this.op.timecard && !this.op.clockIn) {
+        if ((this.store.timecard || this.op.timecard) && !this.op.clockIn) {
           this.$dialog({
             title: "dialog.clockInRequire",
             msg: "dialog.clockInRequireTip",

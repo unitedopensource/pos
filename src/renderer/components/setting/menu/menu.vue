@@ -72,8 +72,22 @@ export default {
     },
     editCategory(category, index) {},
     editItem(item, group, index) {
+      let categories = this.categories[
+        this.categoryIndex
+      ].contain.map(category => ({
+        label: category,
+        tooltip: "",
+        plainText: true,
+        value: category
+      }));
       new Promise((resolve, reject) => {
-        this.componentData = { resolve, reject, item, edit: !!item._id };
+        this.componentData = {
+          resolve,
+          reject,
+          categories,
+          item,
+          edit: !!item._id
+        };
         this.component = "itemEditor";
       })
         .then(_item => {

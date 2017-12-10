@@ -18,22 +18,44 @@
             </div>
           </nav>
         </header>
-        <div class="wrap">
-          
-        </div>
+        <template v-if="mode === 'basic'">
+          <div class="wrap">
+            <div class="item">
+              <inputer title="text.menuID" v-model="item.menuID"></inputer>
+              <selector title="text.category" v-model="item.category" :opts="init.categories" :ediable="false"></selector>
+              <inputer title="text.primary" v-model="item.usEN"></inputer>
+              <inputer title="text.secondary" v-model="item.zhCN"></inputer>
+              <inputer title="text.basePrice" v-model.number="item.price" @keydown.native="save"></inputer>
+              <selector title="text.taxClass" v-model="item.taxClass" :opts="taxes" :ediable="false"></selector>
+            </div>
+            <div class="side">
+
+            </div>
+          </div>
+        </template>
+        <template v-else>
+          <div class="wrap">
+
+          </div>
+        </template>
         <footer>
           <div class="opt">
-            <span class="del" v-show="init.edit">{{$t('button.delete')}}</span>
+            <span class="del" v-show="init.edit" @click="init.reject(true)">{{$t('button.delete')}}</span>
+            <p v-if="deprecated"><i class="fa fa-warning"></i>{{$t('tip.deprecated.priceArray')}}</p>
           </div>
-          <button class="btn" @click="confirm" :disabled="invalid">{{$t('button.done')}}</button>
+          <button class="btn" @click="init.reject(false)">{{$t('button.back')}}</button>
+          <button class="btn" @click="save" :disabled="invalid">{{$t('button.save')}}</button>
         </footer>
       </div>
     </div>
 </template>
 
 <script>
+import inputer from "../../common/inputer";
+import selector from "../../common/selector";
 export default {
   props: ["init"],
+  components: { inputer, selector },
   computed: {
     invalid() {
       return true;
@@ -42,22 +64,33 @@ export default {
   data() {
     return {
       mode: "basic",
+      deprecated: false,
       language: this.$store.getters.language,
-      item: JSON.parse(JSON.stringify(this.init.item))
+      item: JSON.parse(JSON.stringify(this.init.item)),
+      taxes: Object.keys(this.$store.getters.tax.class).map(name => ({
+        label: this.$store.getters.tax.class[name].alies,
+        tooltip: this.$store.getters.tax.class[name].rate + " %",
+        plainText: true,
+        value: name
+      }))
     };
   },
   created() {
-    console.log(this.init.item);
+    Array.isArray(this.init.item.price) && (this.deprecated = true);
+    this.initialData();
   },
   methods: {
-    confirm() {}
+    initialData() {},
+    save() {
+      console.log("trigger")
+    }
   }
 };
 </script>
 
 <style scoped>
 .editor {
-  width: 800px;
+  width: 700px;
 }
 
 header {
@@ -85,8 +118,21 @@ nav label {
 }
 
 input:checked + label {
-  border-bottom: 3px solid #03a9f4;
+  border-bottom: 3px solid #ff9800;
   font-weight: bold;
   color: #0f1e29;
+}
+
+.wrap {
+  display: flex;
+}
+
+p {
+  margin-left: 2em;
+}
+
+p i {
+  color: #ff9800;
+  margin-right: 5px;
 }
 </style>

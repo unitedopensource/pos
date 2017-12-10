@@ -788,6 +788,7 @@ export default {
         'qty': 'Qty',
         'item': 'Item',
         'price': 'Price',
+        'basePrice': 'Base Price',
         'discount': 'Discount',
         'weight': 'Weight',
         'perUnit': 'Per Unit',
@@ -1298,6 +1299,9 @@ export default {
             'difference': 'Only prints out new, deleted, edited item on the ticket',
             'new': 'Only prints new items',
             'todo': 'Mark and print printed, new item'
+        },
+        'deprecated': {
+            'priceArray': 'Price array is deprecated. Please edit price ASAP.'
         }
     }
 }

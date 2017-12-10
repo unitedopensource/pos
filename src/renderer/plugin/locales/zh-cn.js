@@ -780,6 +780,7 @@ export default {
         'qty': '数量',
         'item': '物品',
         'price': '价格',
+        'basePrice': '基础价格',
         'discount': '折扣',
         'weight': '重量',
         'perUnit': '每单位',
@@ -1289,6 +1290,9 @@ export default {
             'difference': '只打印 新增, 更改, 删除 的物品',
             'new': '只打印新增的物品',
             'todo': '标识出 已有, 新增 的物品'
+        },
+        'deprecated': {
+            'priceArray': '数组价格已经被遗弃,请将价格修改成单一数值'
         }
     }
 }
