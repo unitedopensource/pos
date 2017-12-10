@@ -37,9 +37,10 @@ export default {
 
 <style scoped>
 .checkbox {
-  margin: 2px 10px;
+  margin: 2px 5px;
   display: flex;
   align-items: center;
+  min-width: 90px;
 }
 
 input {

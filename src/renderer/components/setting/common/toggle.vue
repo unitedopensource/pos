@@ -1,6 +1,6 @@
 <template>
     <div class="toggle">
-      <div class="wrap">
+      <div class="inner">
         <label class="label">
             <span class="title">{{$t(title)}}</span>
             <span class="tooltip" v-if="tooltip">{{$t(tooltip)}}</span>
@@ -51,7 +51,7 @@ export default {
 .toggle {
   border-bottom: 1px solid #eee;
 }
-.wrap {
+.inner {
   display: flex;
   justify-content: center;
   min-height: 48px;

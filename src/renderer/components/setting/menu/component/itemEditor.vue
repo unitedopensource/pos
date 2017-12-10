@@ -13,29 +13,71 @@
               <label for="basic">{{$t('text.itemInfo')}}</label>
             </div>
             <div>
+              <input type="radio" v-model="mode" value="print" name="tab" id="print">
+              <label for="print">{{$t('setting.print')}}</label>
+            </div>
+            <div>
               <input type="radio" v-model="mode" value="advance" name="tab" id="advance">
               <label for="advance">{{$t('text.advance')}}</label>
             </div>
           </nav>
         </header>
         <template v-if="mode === 'basic'">
-          <div class="wrap">
+          <div class="wrap info">
             <div class="item">
               <inputer title="text.menuID" v-model="item.menuID"></inputer>
-              <selector title="text.category" v-model="item.category" :opts="init.categories" :ediable="false"></selector>
+              <selector title="text.category" v-model="item.category" :opts="init.categories" :editable="false"></selector>
               <inputer title="text.primary" v-model="item.usEN"></inputer>
               <inputer title="text.secondary" v-model="item.zhCN"></inputer>
               <inputer title="text.basePrice" v-model.number="item.price" @keydown.native="save"></inputer>
-              <selector title="text.taxClass" v-model="item.taxClass" :opts="taxes" :ediable="false"></selector>
+              <selector title="text.taxClass" v-model="item.taxClass" :opts="taxes" :editable="false"></selector>
+              <div class="options">
+                <label class="title">{{$t('setting.print')}}</label>
+                <div class="inner">
+                    <checkbox v-for="(name,index) in printers" :key="index" v-model="printer" :label="name" :val="name" :multiple="true" @input="updatePrint"></checkbox>
+                </div>
+              </div>
             </div>
-            <div class="side">
-
-            </div>
+            <draggable class="side" tag="div" :options="{animation: 300,ghostClass: 'ghost' ,handle:'.drag'}" v-model="item.option">
+              <transition-group tag="ul" class="options" name="dropdown">
+                <li v-for="(option,index) in item.option" :key="index">
+                  <div class="inner">
+                    <span class="index">{{index + 1}}</span>
+                    <input type="text" v-model="option.usEN" :placeholder="$t('text.primary')">
+                    <input type="text" v-model="option.zhCN" :placeholder="$t('text.secondary')">
+                    <input type="number" v-model.number="option.price" :placeholder="$t('text.price')">
+                    <i class="fa fa-bars drag"></i>
+                    <i class="fa fa-ellipsis-v"></i>
+                  </div>
+                </li>
+                <li @click="addOption" :key="-1" v-if="item.option.length < 11" class="add">
+                  <i class="fa fa-plus"></i>
+                  <span>{{$t('button.new')}}</span>
+                </li>
+              </transition-group>
+            </draggable>
           </div>
         </template>
-        <template v-else>
-          <div class="wrap">
-
+        <template v-else-if="mode=== 'print'">
+          <div class="wrap column">
+            <toggle :title="name" :tooltip="tip.replace" v-for="(printer,name,index) in item.printer" :key="index" v-model="printer.replace" @update="$forceUpdate">
+              <transition name="dropdown">
+                <div class="opt" v-if="printer.replace">
+                  <inputer title="text.primary" v-model="printer.usEN"></inputer>
+                  <inputer title="text.secondary" v-model="printer.zhCN"></inputer>
+                </div>
+              </transition>
+            </toggle>
+          </div>
+        </template>
+        <template v-else-if="mode ==='advance'">
+          <div class="wrap column">
+            <inputer title="text.priority" v-model.number="item.priority"></inputer>
+            <inputer title="text.inventory" v-model.number="item.inventory"></inputer>
+            <inputer title="text.rewardPoint" v-model.number="item.rewardPoint"></inputer>
+            <inputer title="text.commission" v-model.number="item.commission"></inputer>
+            <switches title="text.openFood" v-model="item.temporary"></switches>
+            <switches title="text.disable" v-model="item.disable"></switches>
           </div>
         </template>
         <footer>
@@ -47,15 +89,21 @@
           <button class="btn" @click="save" :disabled="invalid">{{$t('button.save')}}</button>
         </footer>
       </div>
+      <div :is="component" :init="componentData"></div>
     </div>
 </template>
 
 <script>
+import draggable from "vuedraggable";
+import toggle from "../../common/toggle";
 import inputer from "../../common/inputer";
 import selector from "../../common/selector";
+import checkbox from "../../common/checkbox";
+import switches from "../../common/switches";
+
 export default {
   props: ["init"],
-  components: { inputer, selector },
+  components: { toggle, switches, inputer, selector, checkbox, draggable },
   computed: {
     invalid() {
       return true;
@@ -63,12 +111,16 @@ export default {
   },
   data() {
     return {
+      componentData: null,
+      component: null,
       mode: "basic",
       deprecated: false,
       language: this.$store.getters.language,
+      printers: Object.keys(this.$store.getters.config.printers),
+      printer: [],
       item: JSON.parse(JSON.stringify(this.init.item)),
       taxes: Object.keys(this.$store.getters.tax.class).map(name => ({
-        label: this.$store.getters.tax.class[name].alies,
+        label: this.$store.getters.tax.class[name].alias,
         tooltip: this.$store.getters.tax.class[name].rate + " %",
         plainText: true,
         value: name
@@ -80,19 +132,42 @@ export default {
     this.initialData();
   },
   methods: {
-    initialData() {},
+    initialData() {
+      this.printer = Object.keys(this.item.printer);
+    },
+    updatePrint(devices) {
+      let { printer } = this.item;
+      this.item.printer = {};
+      devices.forEach(name => {
+        if (printer.hasOwnProperty(name)) {
+          Object.assign(this.item.printer, { [name]: printer[name] });
+        } else {
+          Object.assign(this.item.printer, {
+            [name]: {
+              replace: false,
+              usEN: "",
+              zhCN: "",
+              note: ""
+            }
+          });
+        }
+      });
+    },
+    addOption() {
+      this.item.option.push({
+        usEN: "",
+        zhCN: "",
+        replace: false
+      });
+    },
     save() {
-      console.log("trigger")
+      console.log("trigger");
     }
   }
 };
 </script>
 
 <style scoped>
-.editor {
-  width: 700px;
-}
-
 header {
   flex-direction: row;
   justify-content: flex-start;
@@ -125,6 +200,99 @@ input:checked + label {
 
 .wrap {
   display: flex;
+}
+
+.wrap.info {
+  min-height: 460px;
+}
+
+.wrap.column {
+  flex-direction: column;
+}
+
+.item {
+  border-right: 1px solid #ddd;
+  padding-right: 25px;
+}
+
+.side {
+  flex: 1;
+  border-left: 1px solid #fff;
+}
+
+div.options {
+  display: flex;
+  align-items: center;
+}
+
+label.title {
+  width: 80px;
+}
+
+div.options .inner {
+  display: flex;
+  flex-wrap: wrap;
+  width: 189px;
+  border: 1px solid #eee;
+  background: #fff;
+  border-radius: 2px;
+  padding: 5px 0px;
+}
+
+ul.options li {
+  border: 1px solid #eee;
+  padding: 5px;
+  margin-bottom: 5px;
+  border-radius: 4px;
+  background: #eeeeee;
+}
+
+ul.options input {
+  border: none;
+  padding: 5px;
+  margin: 0 5px 0 0;
+  width: 120px;
+  border-radius: 4px;
+}
+
+ul.options input[type="number"] {
+  width: 55px;
+}
+
+ul.options {
+  margin-left: 20px;
+}
+
+ul.options .inner {
+  display: flex;
+  align-items: center;
+}
+
+ul.options .inner i {
+  padding: 3px 10px;
+  margin: 0 2px;
+  cursor: pointer;
+}
+
+ul.options .inner i:hover {
+  background: #ddd;
+  border-radius: 2px;
+}
+
+.index {
+  font-weight: bold;
+  font-family: "Agency FB";
+  width: 17px;
+  text-align: center;
+}
+
+legend {
+  text-indent: 10px;
+}
+
+li.add {
+  text-align: center;
+  cursor: pointer;
 }
 
 p {

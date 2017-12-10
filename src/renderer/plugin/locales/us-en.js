@@ -1279,6 +1279,7 @@ export default {
         'poleDisplayAnimation': 'Display animation when POS idle',
         'saveCallLog': 'Save call log',
         'timecard': 'Record employee clock in/out',
+        'replaceItemName':'Replace item name in this printer',
         'dinein': {
             'useTableLayout': 'Use table to place order',
             'noTableLayout': 'Skip table to place order',

@@ -7,7 +7,7 @@
     <toggle title="setting.deliveryCharge" true-tooltip="tip.deliveryCharge" false-tooltip="tip.deliveryFree" v-model="store.delivery" :conditionalTooltip="true" @update="updateDelivery">
         <transition name="dropdown">
           <div class="opt" v-if="store.delivery">
-            <inputer title="text.amount" v-model="store.deliveryCharge" @update="updateDeliveryCharge"></inputer>
+            <inputer title="text.amount" v-model.number="store.deliveryCharge" @update="updateDeliveryCharge"></inputer>
           </div>
         </transition>
     </toggle>
@@ -90,8 +90,7 @@ export default {
         value
       });
     },
-    updateDeliveryCharge() {
-      let value = parseFloat(this.store.deliveryCharge.replace(/^\D+/g, ""));
+    updateDeliveryCharge(value) {
       this.update({
         key: "store.deliveryCharge",
         value
