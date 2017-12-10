@@ -10,6 +10,7 @@
         <text-input title="text.state" v-model="store.state" @update="updateState"></text-input>
         <text-input title="text.zipCode" v-model="store.zipCode" @update="updateZipCode"></text-input>
         <text-input title="text.contactInfo" v-model="store.contact" @update="updateContact"></text-input>
+        <toggle title="text.timecard" tooltip="tip.timecard" v-model="store.timecard" @update="updateTimecard"></toggle>
         <text-list title="text.timezone" v-model="store.timeZone" :opts="timeZones" @update="updateTimeZone"></text-list>
         <text-list title="text.storeType" v-model="store.type" :opts="types" @update="updateStoreType"></text-list>
         <external title="text.openHour" @open="editHour"></external>
@@ -18,12 +19,13 @@
 </template>
 
 <script>
+import toggle from "../common/toggle";
 import external from "../common/external";
 import textList from "../common/textList";
 import textInput from "../common/textInput";
 import register from "./component/register";
 export default {
-  components: { external, textInput, textList, register },
+  components: { toggle, external, textInput, textList, register },
   data() {
     return {
       componentData: null,
@@ -145,6 +147,12 @@ export default {
     updateStoreType(value) {
       this.update({
         key: "store.type",
+        value
+      });
+    },
+    updateTimecard(value) {
+      this.update({
+        key: "store.timecard",
         value
       });
     }

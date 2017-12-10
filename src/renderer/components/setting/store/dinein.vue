@@ -6,7 +6,7 @@
         <toggle title="setting.autoClear" true-tooltip="tip.dinein.autoClearTable" false-tooltip="tip.dinein.manuallyClearTable" v-model="dinein.autoClear" :conditionalTooltip="true" @update="updateAutoClear"></toggle>
         <toggle title="setting.printOnDone" true-tooltip="tip.dinein.printReceipt" false-tooltip="tip.dinein.noReceipt" v-model="dinein.printOnDone" :conditionalTooltip="true" @update="updatePrint"></toggle>
         <toggle title="setting.passwordRequire" tooltip="tip.dinein.passwordRequire" v-model="dinein.passwordRequire" @update="updatePasswordRequire"></toggle>
-        <external title="setting.surcharge" tooltip="tip.dinein.surcharge" @open="edit"></external>
+        <external title="setting.surcharge" tooltip="tip.dinein.surcharge" @open="$router.push({name:'Setting.store.surcharge'})"></external>
     </div>
 </template>
 
@@ -24,7 +24,6 @@ export default {
     this.dinein = Object.assign({}, this.$store.getters.dinein);
   },
   methods: {
-    edit() {},
     update(data) {
       this.$socket.emit("[UPDATE] CONFIG", data);
     },

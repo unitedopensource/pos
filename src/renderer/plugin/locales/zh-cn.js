@@ -753,7 +753,8 @@ export default {
         'expire': '过期日期',
         'taxRate': '税率',
         'default': '默认',
-        'location': '位置'
+        'location': '位置',
+        'condition': '条件'
     },
     flow: {
         'START': '初始金额',
@@ -817,9 +818,6 @@ export default {
         'separate': '人均',
         'autoComplete': '自动完成',
         'printer': '打印机',
-        'receiptPrinter': '收据打印机',
-        'stationPrinters': '工作站打印机',
-        'redirect': '打印重定向',
         'licenseKey': '注册码',
         'storeName': '店名',
         'address': '地址',
@@ -833,8 +831,7 @@ export default {
         'staffBank': '个人钱箱',
         'disallow': '禁止',
         'api': '授权码',
-        'timeCard': '打卡',
-        'timeCardReport': '自动打印报告',
+        'timecard': '打卡',
         'password': '密码',
         'email': '电子邮箱',
         'area': '地区',
@@ -843,7 +840,7 @@ export default {
         'settingUpdated': '设置已保存',
         'orderBySeat': '按位点餐',
         'initialAmount': '起始金额',
-        'autoChargeAbove': '(N)客人以上',
+        'chargeAbove': '{i} 个客人以上',
         'mac': '物理地址',
         'receiveOnlineOrder': '网络订餐',
         'model': '型号',
@@ -962,7 +959,6 @@ export default {
         'lastDate': '最后日期',
         'content': '内容',
         'coupon': '优惠',
-        'timecard': '打卡时段',
         'tipPercentage': '小费百分比',
         'autoTemplate': '自动开启模板',
         'openFood': '临时物品',
@@ -1017,7 +1013,8 @@ export default {
         'autoEmailConfirmation': '自动发送确认信件',
         'emailReport': '发送报表',
         'ip': 'IP 地址',
-        'location': '位置'
+        'location': '位置',
+        'percentage': '百分比'
     },
     nav: {
         'store': '店面',
@@ -1115,6 +1112,7 @@ export default {
         'cashFlowRecord': '记录现金流',
         'animation': '动画效果',
         'saveLog': '保存记录',
+        'timecard': '打卡',
 
         'employee': '员工设置',
         'station': '工作站设定',
@@ -1178,8 +1176,6 @@ export default {
         'access': '开启',
         'modify': '修改',
         'view': '查看',
-        'timeCardActivity': '打卡记录',
-        'timeCardActivityTip': '员工打卡记录列表',
         'display': '显示设置',
         'newItem': '新建物品',
         'editItem': '编辑物品',
@@ -1275,6 +1271,7 @@ export default {
         'disableCashdrawer': '禁止在此工作站使用钱箱',
         'poleDisplayAnimation': '在空闲时候开启跑马灯动画效果',
         'saveCallLog': '保存来电显示记录',
+        'timecard': '记录员工上下班时间',
         'dinein': {
             'useTableLayout': '使用座位下单',
             'noTableLayout': '跳过座位直接下单',

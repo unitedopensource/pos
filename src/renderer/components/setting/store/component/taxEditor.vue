@@ -48,7 +48,7 @@ export default {
   },
   computed: {
     invalid() {
-      return !this.tax.alias || isNaN(this.tax.rate);
+      return  isNaN(this.tax.rate);
     }
   },
   methods: {

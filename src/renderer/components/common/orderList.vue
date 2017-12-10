@@ -147,7 +147,7 @@ export default {
       let taxFree = this.order.taxFree || false;
       let deliveryFree = this.order.deliveryFree || false;
       let menuID = this.config.display.menuID;
-      let seatOrder = this.store.table.seatOrder;
+      let { seatOrder } = this.dinein.seatOrder;
       this.$p("config", { taxFree, deliveryFree, menuID, seatOrder });
     },
     openMarker() {
@@ -262,6 +262,7 @@ export default {
           !this.order.deliveryFree
             ? parseFloat(this.store.deliveryCharge)
             : 0;
+
         this.payment = Object.assign(this.order.payment, {
           subtotal: 0,
           tax: 0,
@@ -281,10 +282,9 @@ export default {
         return;
       }
 
+      let { type, guest, coupon } = this.order;
       let { tip, gratuity, discount, paid } = this.order.payment;
-      let type =
-        this.app.mode === "create" ? this.ticket.type : this.order.type;
-      let { coupon } = this.order;
+      let { enable, rules } = this.dinein.surcharge;
 
       let subtotal = 0,
         tax = 0;
@@ -310,17 +310,12 @@ export default {
         }
       });
 
-      let { enable, penalty, when } = this.store.table.surcharge;
+      if (type === "DINE_IN" && enable) {
+        //find rule
+        let rule = rules.find(condition => guest >= condition.guest);
+        let { fee, percentage } = rule;
 
-      if (this.order.type === "DINE_IN" && enable && this.order.guest > when) {
-        let value = parseFloat(penalty.replace(/[^0-9.]/g, ""));
-
-        if (penalty.includes("%")) {
-          value = toFixed(value / 100, 2);
-          gratuity = toFixed(subtotal * value, 2);
-        } else {
-          gratuity = value;
-        }
+        gratuity = percentage ? toFixed(subtotal * fee / 100, 2) : fee;
       }
 
       if (coupon) {

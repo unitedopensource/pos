@@ -1,11 +1,88 @@
 <template>
     <div>
-        
+        <header class="nav">
+            <div class="back" @click="save">
+            <i class="fa fa-chevron-left"></i>
+            </div>
+            <nav>
+                <span class="add" @click="create">{{$t('button.new')}}</span>
+            </nav>
+        </header>
+            <toggle title="setting.surcharge" v-model="surcharge.enable">
+                <transition name="dropdown">
+                    <div v-if="surcharge.enable">
+                        <table class="setting">
+                            <thead>
+                            <tr>
+                                <th></th>
+                                <th>{{$t('thead.condition')}}</th>
+                                <th>{{$t('thead.amount')}}</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-for="(rule,index) in surcharge.rules" :key="index">
+                                <td class="icon"><i class="fa fa-user-circle"></i></td>
+                                <td class="guest">{{$t('text.chargeAbove',rule.guest)}}</td>
+                                <td class="amount" v-if="rule.percentage">{{rule.fee}} %</td>
+                                <td class="amount" v-else>$ {{rule.fee}}</td>
+                                <td @click="edit(rule,index)" class="opt">
+                                    <i class="fa fa-ellipsis-v"></i>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </transition>
+            </toggle>
+        <div :is="component" :init="componentData"></div>
     </div>
 </template>
 
 <script>
-export default{
-    
-}
+import toggle from "../../common/toggle";
+import editor from "../component/ruleEditor";
+export default {
+  components: { toggle, editor },
+  data() {
+    return {
+      componentData: null,
+      component: null,
+      surcharge: Object.assign({}, this.$store.getters.dinein.surcharge)
+    };
+  },
+  methods: {
+    create() {
+      let rule = {
+        guest: null,
+        fee: null,
+        percentage: false,
+        template: ""
+      };
+
+      this.edit(rule);
+    },
+    edit(rule, index) {
+      new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject, rule, edit: !isNaN(index) };
+        this.component = "editor";
+      })
+        .then(_rule => {
+          this.surcharge.rules.splice(index, 1, _rule);
+          this.$q();
+        })
+        .catch(del => {
+          del && this.surcharge.rules.splice(index, 1);
+          this.$q();
+        });
+    },
+    save() {
+      this.$socket.emit("[UPDATE] CONFIG", {
+        key: "dinein.surcharge",
+        value: this.surcharge
+      });
+      this.$router.push({ name: "Setting.store.dinein" });
+    }
+  }
+};
 </script>

@@ -106,6 +106,10 @@ export default [{
                 name: 'Setting.store.dinein',
                 component: require('./components/setting/store/dinein')
               }, {
+                path: 'surcharge',
+                name: 'Setting.store.surcharge',
+                component: require('./components/setting/store/sub/surcharge')
+              }, {
                 path: 'security',
                 name: 'Setting.store.security',
                 component: require('./components/setting/store/security')

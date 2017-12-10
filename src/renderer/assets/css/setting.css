@@ -90,7 +90,7 @@ ul.tabs li.router-link-exact-active {
     margin-top: 2px;
 }
 
-.toggle .opt {
+.toggle div.opt {
     padding: 0 25px;
     background: #F5F5F5;
 }

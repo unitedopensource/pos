@@ -318,7 +318,8 @@ export default {
         'expire': 'Expire',
         'taxRate': 'Tax Rate',
         'default': 'Default',
-        'location': 'Location'
+        'location': 'Location',
+        'condition': 'Condition'
     },
     flow: {
         'START': 'Deposit',
@@ -616,7 +617,7 @@ export default {
         'payoutSignatureRequired': 'Payout process requires cashier signature',
         'payoutConfirm': 'Payout Confirm',
         'payoutCashConfirm': 'Are you sure to pay $ {i} to {i} ?',
-        'itemSorted':'Item Sorted',
+        'itemSorted': 'Item Sorted',
         'updateSortedItem': 'Are you wish to save sorted order?'
     },
     terminal: {
@@ -825,9 +826,6 @@ export default {
         'separate': 'Separate',
         'autoComplete': 'Auto Complete',
         'printer': 'Printer',
-        'receiptPrinter': 'Receipt Printer',
-        'stationPrinters': 'Station Printers',
-        'redirect': 'Redirect',
         'licenseKey': 'License Key',
         'storeName': 'Store Name',
         'address': 'Address',
@@ -841,8 +839,7 @@ export default {
         'staffBank': 'Staff Bank',
         'disallow': 'Disallow',
         'api': 'API',
-        'timeCard': 'TimeCard',
-        'timeCardReport': 'Auto Report',
+        'timecard': 'Timecard',
         'password': 'Password',
         'email': 'Email',
         'area': 'Area',
@@ -851,7 +848,7 @@ export default {
         'settingUpdated': 'Setting is Updated',
         'orderBySeat': 'Order By Seat',
         'initialAmount': 'Initial Amount',
-        'autoChargeAbove': '(N)Cust. Above',
+        'chargeAbove': '{i} Customers or above',
         'mac': 'MAC',
         'receiveOnlineOrder': 'Online Order',
         'model': 'Model',
@@ -971,7 +968,6 @@ export default {
         'lastDate': 'Last Date',
         'content': 'Content',
         'coupon': 'Coupon',
-        'timecard': 'timecard session',
         'tipPercentage': 'Tip Percentage',
         'autoTemplate': 'Auto Template',
         'openFood': 'Open Food',
@@ -1023,7 +1019,8 @@ export default {
         'autoEmailConfirmation': 'Auto Email Confirmation',
         'emailReport': 'Email Report',
         'ip': 'IP Address',
-        'location': 'Location'
+        'location': 'Location',
+        'percentage': 'Percentage'
     },
     nav: {
         'store': 'Store',
@@ -1052,7 +1049,7 @@ export default {
         'index': 'Index',
         'user': 'User',
         'event': 'Event',
-        'timecard': 'TimeCard',
+        'timecard': 'Timecard',
         'giftCard': 'GiftCard',
         'submenu': 'Sub Menu',
         'cashFlow': 'Cash Flow',
@@ -1121,6 +1118,7 @@ export default {
         'cashFlowRecord': 'Record Cash Flow',
         'animation': 'Animation Effect',
         'saveLog': 'Save Log',
+        'timecard': 'Timecard',
 
         'employee': 'Employee',
         'station': 'Station Setting',
@@ -1184,8 +1182,6 @@ export default {
         'access': 'Access',
         'modify': 'Modify',
         'view': 'View',
-        'timeCardActivity': 'Time Card Activity',
-        'timeCardActivityTip': 'Employee time card activity record',
         'display': 'Display',
         'newItem': 'New Item',
         'editItem': 'Edit Item',
@@ -1281,6 +1277,7 @@ export default {
         'disableCashdrawer': 'Disable cash drawer in this station',
         'poleDisplayAnimation': 'Display animation when POS idle',
         'saveCallLog': 'Save call log',
+        'timecard': 'Record employee clock in/out',
         'dinein': {
             'useTableLayout': 'Use table to place order',
             'noTableLayout': 'Skip table to place order',

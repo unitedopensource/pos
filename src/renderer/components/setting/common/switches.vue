@@ -1,5 +1,5 @@
 <template>
-    <div class="wrap">
+    <div class="switches">
         <label class="label">{{$t(title)}}</label>
         <label class="input-toggle">
             <input type="checkbox" :checked="value" @change="$emit('input',$event.target.checked)" :disabled="disabled">
@@ -22,7 +22,7 @@ export default {
 </script>
 
 <style scoped>
-.wrap {
+.switches {
   display: flex;
   align-items: center;
   height: 40px;
