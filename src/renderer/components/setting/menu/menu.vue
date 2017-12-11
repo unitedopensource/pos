@@ -1,6 +1,6 @@
 <template>
     <div class="layout">
-        <draggable v-model="categories" @sort="sortCategory" :options="categoryOption">
+        <draggable v-model="categories" @sort="sortCategory" :options="{animation: 300,group: 'category',ghostClass: 'categoryGhost'}">
             <transition-group tag="section" class="category">
                 <div v-for="(category,index) in categories" @click="setCategory(index)" @contextmenu="editCategory(category,index)" :key="index">{{category[language]}}</div>
             </transition-group>
@@ -39,11 +39,6 @@ export default {
       language: this.$store.getters.language,
       categories: JSON.parse(JSON.stringify(this.$store.getters.menu)),
       items: [],
-      categoryOption: {
-        animation: 300,
-        group: "category",
-        ghostClass: "cateGhost"
-      },
       isItemSorted: false,
       isCategorySorted: false,
       categoryIndex: 0
@@ -72,8 +67,10 @@ export default {
     },
     editCategory(category, index) {
       new Promise((resolve, reject) => {
-        this.componentData = { resolve, reject, category };
-        this.component = "categoryEditor";
+        this.$socket.emit("[CATEGORY] LIST", categories => {
+          this.componentData = { resolve, reject, categories, category };
+          this.component = "categoryEditor";
+        });
       })
         .then(_category => {
           this.$q();
@@ -173,7 +170,7 @@ export default {
   flex: none;
 }
 
-.cateGhost {
+.categoryGhost {
   background: rgba(33, 150, 243, 0.5);
   border: 1px dashed #607d8b;
 }

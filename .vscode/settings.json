@@ -17,6 +17,7 @@
         "keydown",
         "keypress",
         "maxlength",
+        "nowrap",
         "params",
         "submenu",
         "subnav",
