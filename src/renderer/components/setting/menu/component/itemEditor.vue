@@ -38,9 +38,9 @@
                 </div>
               </div>
             </div>
-            <draggable class="side" tag="div" :options="{animation: 300,ghostClass: 'ghost' ,handle:'.drag'}" v-model="item.option">
+            <draggable class="side" tag="div" :options="{animation: 300,ghostClass: 'ghost' ,handle:'.drag',draggable:'.draggable'}" v-model="item.option">
               <transition-group tag="ul" class="options" name="dropdown">
-                <li v-for="(option,index) in item.option" :key="index">
+                <li v-for="(option,index) in item.option" :key="index" class="draggable">
                   <div class="inner">
                     <span class="index">{{index + 1}}</span>
                     <input type="text" v-model="option.usEN" :placeholder="$t('text.primary')">
@@ -227,6 +227,7 @@ input:checked + label {
 div.options {
   display: flex;
   align-items: center;
+  margin: 5px 0;
 }
 
 label.title {
@@ -257,6 +258,7 @@ ul.options input {
   margin: 0 5px 0 0;
   width: 120px;
   border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 ul.options input[type="number"] {

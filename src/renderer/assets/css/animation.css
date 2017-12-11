@@ -85,9 +85,24 @@
     transition: opacity 0.25s;
 }
 
+/* .switch-enter-active {
+    transition-delay: .25s;
+} */
+
 .switch-enter-active,
 .switch-leave-active {
     opacity: 0
+}
+
+.slide-enter,
+.slide-leave-to{
+    opacity: 0;
+    transform: translateX(10px);
+}
+
+.slide-enter-active,
+.slide-leave-active {
+    transition: all 0.22s ease;
 }
 
 @keyframes pop {

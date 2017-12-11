@@ -378,7 +378,9 @@ export default {
         'registration': 'Registration',
         'deviceEditor': 'Device Editor',
         'device': 'Device',
-        'terminalDevice': 'Terminal Device(s)'
+        'terminalDevice': 'Terminal Device(s)',
+        'categoryEditor': 'Category Editor',
+        'itemEditor': 'Item Editor',
     },
     menu: {
         'course': 'Course',
@@ -1161,8 +1163,6 @@ export default {
         'template': 'Template',
         'templateTip': '',
         'display': 'Display',
-        'categoryEditor': 'Category Editor',
-        'itemEditor': 'Item Editor',
         'print': 'Print',
         'codeEditor': 'Code Editor',
         'request': 'Request Editor',

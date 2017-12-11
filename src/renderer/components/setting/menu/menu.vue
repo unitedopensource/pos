@@ -70,7 +70,18 @@ export default {
       this.categoryIndex = index;
       this.items = this.categories[index].item.slice();
     },
-    editCategory(category, index) {},
+    editCategory(category, index) {
+      new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject, category };
+        this.component = "categoryEditor";
+      })
+        .then(_category => {
+          this.$q();
+        })
+        .catch(() => {
+          this.$q();
+        });
+    },
     editItem(item, group, index) {
       let categories = this.categories[
         this.categoryIndex
@@ -153,7 +164,7 @@ export default {
 }
 
 .category {
-  width: 285px;
+  width: 284px;
   flex: none;
 }
 

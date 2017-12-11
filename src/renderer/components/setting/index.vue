@@ -15,7 +15,7 @@
             <router-link tag="figure" :to="{name:'Setting.table'}">
                 <i class="fa fa-2x fa-cutlery"></i>
                 <figcaption>{{$t('setting.seat')}}</figcaption>
-                <span class="intro">{{$t('setting.seatTip')}}</span>
+                <p>{{$t('setting.seatTip')}}</p>
             </router-link>
             <router-link tag="figure" :to="{name:'Dashboard'}">
                 <i class="fa fa-2x fa-external-link"></i>

@@ -291,7 +291,9 @@ export default {
         'registration': '软件注册',
         'deviceEditor': '设备编辑',
         'device': '设备',
-        'terminalDevice': '刷卡设备'
+        'terminalDevice': '刷卡设备',
+        'categoryEditor': '类别编辑',
+        'itemEditor': '物品编辑'
     },
     menu: {
         'course': '定时',
@@ -1155,8 +1157,6 @@ export default {
         'template': '模板',
         'templateTip': '便捷的添加预先设置的物品',
         'display': '显示',
-        'categoryEditor': '类别编辑',
-        'itemEditor': '物品编辑',
         'print': '打印设定',
         'codeEditor': '代码编辑',
         'request': '要求类别',
