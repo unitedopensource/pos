@@ -1019,7 +1019,9 @@ export default {
         'ip': 'IP 地址',
         'location': '位置',
         'percentage': '百分比',
-        'weightScale': '磅秤'
+        'weightScale': '磅秤',
+        'multiplier': '乘数',
+        'value': '数值'
     },
     nav: {
         'store': '店面',

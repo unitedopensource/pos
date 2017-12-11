@@ -1,5 +1,5 @@
 <template>
-    <div class="toggle">
+    <div :class="{toggle:defaultStyle}">
       <div class="inner">
         <label class="label">
             <span class="title">{{$t(title)}}</span>
@@ -20,6 +20,10 @@ export default {
   props: {
     value: Boolean,
     title: String,
+    defaultStyle: {
+      type: Boolean,
+      default: true
+    },
     tooltip: String,
     trueTooltip: String,
     falseTooltip: String,
@@ -51,10 +55,23 @@ export default {
 .toggle {
   border-bottom: 1px solid #eee;
 }
+
+.toggle .inner {
+  min-height: 48px;
+}
+
+.toggle .label {
+  padding: 5px 20px;
+}
+
+.toggle .input-toggle {
+  width: 80px;
+}
+
 .inner {
   display: flex;
   justify-content: center;
-  min-height: 48px;
+  min-height: 40px;
 }
 
 .label {
@@ -62,10 +79,5 @@ export default {
   flex-direction: column;
   justify-content: center;
   flex: 1;
-  padding: 5px 20px;
-}
-
-.input-toggle {
-  width: 80px;
 }
 </style>

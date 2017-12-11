@@ -70,25 +70,24 @@ export default {
           this.component = "categoryEditor";
         });
       })
-        .then(() => {
-          this.refreshData();
-          this.$q();
-        })
-        .catch(del => {
-          this.$q();
-        });
+        .then(this.refreshData)
+        .catch(() => this.$q());
     },
-    editAction(action) {
+    editAction(action, index) {
+      //patch
+      if (!action.multiplier) {
+        Object.assign(action, {
+          multiplier: false,
+          multiply: 0
+        });
+      }
+
       new Promise((resolve, reject) => {
-        this.componentData = { resolve, reject, actions, action };
+        this.componentData = { resolve, reject, action, index };
         this.component = "actionEditor";
       })
-        .then(_action => {
-          this.$q();
-        })
-        .catch(del => {
-          this.$q();
-        });
+        .then(this.refreshData)
+        .catch(() => this.$q());
     },
     editItem() {
       new Promise((resolve, reject) => {
@@ -104,7 +103,9 @@ export default {
     },
     refreshData() {
       this.request = JSON.parse(JSON.stringify(this.$store.getters.request));
+      this.actions = JSON.parse(JSON.stringify(this.$store.getters.actions));
       this.getItems();
+      this.$q();
     }
   }
 };

@@ -81,7 +81,7 @@
               <switches title="text.disable" v-model="item.disable"></switches>
             </div>  
             <div class="side">
-              <toggle title="text.weightScale" v-model="item.weightItem.enable">
+              <toggle title="text.weightScale" v-model="item.weightItem.enable" :defaultStyle="false">
               <transition name="dropdown">
                 <div class="opt" v-if="item.weightItem.enable">
                   <inputer title="text.amount" v-model="item.weightItem.value"></inputer>
@@ -89,7 +89,7 @@
                 </div>
               </transition>
             </toggle>
-            <toggle title="text.commission" v-model="item.commission.enable">
+            <toggle title="text.commission" v-model="item.commission.enable" :defaultStyle="false">
               <transition name="dropdown">
                 <div class="opt" v-if="item.commission.enable">
                   <inputer title="text.amount" v-model="item.commission.value"></inputer>

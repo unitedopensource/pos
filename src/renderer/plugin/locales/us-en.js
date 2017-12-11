@@ -1025,7 +1025,9 @@ export default {
         'ip': 'IP Address',
         'location': 'Location',
         'percentage': 'Percentage',
-        'weightScale': 'Weight Scale'
+        'weightScale': 'Weight Scale',
+        'multiplier': 'Multiplier',
+        'value': 'Value'
     },
     nav: {
         'store': 'Store',
