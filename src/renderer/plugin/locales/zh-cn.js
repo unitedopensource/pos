@@ -1273,7 +1273,8 @@ export default {
         'poleDisplayAnimation': '在空闲时候开启跑马灯动画效果',
         'saveCallLog': '保存来电显示记录',
         'timecard': '记录员工上下班时间',
-        'replaceItemName':'在此打印的时候替换物品名字',
+        'replaceItemName': '替换物品名字',
+        'noReplaceItemName': '正常打印',
         'dinein': {
             'useTableLayout': '使用座位下单',
             'noTableLayout': '跳过座位直接下单',

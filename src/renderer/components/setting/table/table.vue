@@ -1,0 +1,82 @@
+<template>
+    <div class="layout">
+        <draggable v-model="sections" @sort="sortSection" :options="{animation: 300,group: 'section',ghostClass: 'sectionGhost',draggable:'.draggable'}">
+            <transition-group tag="section" class="section">
+                <div class="btn draggable" v-for="(section,index) in sections" @click="viewSection(section,index)" @contextmenu="editSection(section,index)" :key="index">{{section[language]}}</div>
+                <div class="btn add" @click="addSection" :key="-1">
+                    <i class="fa fa-plus"></i>
+                </div>
+                <div class="apply" :key="-2">
+                    <div class="btn" @click="applySectionSort" v-show="isSectionSort">{{$t('button.apply')}}</div>
+                    <div class="btn" @click="applyTableSort" v-show="isTableSort">{{$t('button.apply')}}</div>
+                </div>
+            </transition-group>
+        </draggable>
+        <draggable v-model="tabs" @sort="sortTable" :options="{animation: 300,group: 'table',ghostClass: 'tableGhost'}" class="f1">
+            <transition-group tag="section" class="tables">
+                <div class="table" v-for="(table,index) in tabs" @contextmenu="editTable(table,index)" :key="index">
+                    <span :class="[table.shape]" class="icon"></span>
+                    <span class="name">{{table.name}}</span>
+                </div>
+            </transition-group>
+        </draggable>
+        <div :is="component" :init="componentData"></div>
+    </div>
+</template>
+
+<script>
+export default{
+    
+}
+</script>
+
+<style scoped>
+.layout {
+  display: flex;
+}
+
+section.section {
+  margin: 5px;
+  display: flex;
+  flex-direction: column;
+  height: 726px;
+  text-align: center;
+}
+
+.tables {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 2px 2px 2px 0;
+}
+
+.table {
+  display: inline-flex;
+  flex-direction: column;
+  width: 101.5px;
+  height: 83px;
+  background: linear-gradient(
+    135deg,
+    rgb(245, 247, 250) 0%,
+    rgb(195, 207, 226) 110%
+  );
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  margin: 4px;
+  justify-content: center;
+  align-items: center;
+}
+
+.icon {
+  font-size: 4em;
+}
+
+.tableGhost {
+  opacity: 0.5;
+}
+
+.apply {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+</style>

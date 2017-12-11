@@ -1,9 +1,186 @@
 <template>
-    <div></div>
+    <div class="layout">
+        <draggable v-model="request" @sort="isCategorySorted = true" :options="{animation:300,group:'category',ghostClass:'categoryGhost'}">
+            <transition-group tag="div" class="category">
+                <div v-for="(category,index) in request" @click="setCategory(index)" @contextmenu="editCategory(category,index)" :key="index">{{category[language]}}</div>
+            </transition-group>
+        </draggable>
+        <draggable v-model="actions" @sort="isActionSorted = true" :options="{animation:300,group:'action',ghostClass:'actionGhost'}">
+            <transition-group tag="div" class="prefix">
+                <div v-for="(action,index) in actions" @contextmenu="editAction(action,index)" :key="index">{{action[language]}}</div>
+            </transition-group>
+        </draggable>
+        <div class="itemWrap">
+            <div v-for="(group,gIndex) in items" :key="gIndex" class="item">
+                <draggable :list="group" @sort="isItemSorted = true" :options="{animation:300,group:group.category,ghostClass:'itemGhost',draggable:'.draggable'}">
+                    <transition-group tag="section">
+                        <div v-for="(item,index) in group" @contextmenu="editItem(item,gIndex,index)" :class="{draggable:item.clickable,disable:!item.clickable}" :key="index">{{item[language]}}</div>
+                    </transition-group>
+                </draggable>
+            </div>
+        </div>
+        <aside>
+            <div>
+                <div class="btn" @click="updateItemSort" v-if="isItemSorted">{{text('APPLY')}}</div>
+                <div class="btn" @click="updateActionSort" v-if="isActionSorted">{{text('APPLY')}}</div>
+                <div class="btn" @click="updateCategorySort" v-if="isCategorySorted">{{text('APPLY')}}</div>
+            </div>
+        </aside>
+        <div :is="component" :init="componentData"></div>
+    </div>
 </template>
 
 <script>
-export default{
-    
-}
+import draggable from "vuedraggable";
+import dialoger from "../../common/dialoger";
+import categoryEditor from "./component/requestCategoryEditor";
+import actionEditor from "./component/requestActionEditor";
+import itemEditor from "./component/requestItemEditor";
+export default {
+  components: { dialoger, draggable, categoryEditor, actionEditor, itemEditor },
+  data() {
+    return {
+      componentData: null,
+      component: null,
+      language: this.$store.getters.language,
+      items: [],
+      request: JSON.parse(JSON.stringify(this.$store.getters.request)),
+      actions: JSON.parse(JSON.stringify(this.$store.getters.actions)),
+      categoryIndex: 0,
+      isCategorySorted: false,
+      isActionSorted: false,
+      isItemSorted: false
+    };
+  },
+  created() {
+    this.getItems();
+  },
+  methods: {
+    setCategory(index) {
+      this.getItems(index);
+    },
+    getItems(index = this.categoryIndex) {
+      this.categoryIndex = index;
+      this.items = this.request[index].item.slice();
+    },
+    editCategory(category, index) {
+      new Promise((resolve, reject) => {
+        (this.componentData = { resolve, reject, category }),
+          (this.component = "categoryEditor");
+      })
+        .then(_category => {
+          this.$q();
+        })
+        .catch(del => {
+          this.$q();
+        });
+    },
+    editAction() {
+      new Promise((resolve, reject) => {
+        (this.componentData = { resolve, reject, category }),
+          (this.component = "actionEditor");
+      })
+        .then(_action => {
+          this.$q();
+        })
+        .catch(del => {
+          this.$q();
+        });
+    },
+    editItem() {
+      new Promise((resolve, reject) => {
+        (this.componentData = { resolve, reject, category }),
+          (this.component = "itemEditor");
+      })
+        .then(_item => {
+          this.$q();
+        })
+        .catch(del => {
+          this.$q();
+        });
+    }
+  }
+};
 </script>
+
+<style scoped>
+.layout {
+  display: flex;
+  flex-direction: row;
+}
+
+.category,
+.prefix {
+  width: 142px;
+}
+
+.prefix div {
+  height: 62.5px;
+  width: 137.92px;
+  justify-content: center;
+  align-items: center;
+  display: inline-flex;
+  border: 1px solid #607d8b;
+  background: #b0bec5;
+  margin: 1px;
+  vertical-align: top;
+  font-size: 1.15em;
+  text-align: center;
+}
+
+.itemWrap {
+  width: 410px;
+  display: flex;
+  flex-direction: column;
+}
+
+.item > div {
+  width: 410px;
+}
+
+.item section > div {
+  display: inline-flex;
+  text-align: center;
+  flex-wrap: wrap;
+  width: calc(33% - 3px);
+  justify-content: center;
+  align-items: center;
+  height: 62.5px;
+  border: 1px solid #78909c;
+  margin: 1px;
+  background: #92aaaf;
+  vertical-align: top;
+  font-size: 1.05em;
+}
+
+.item div.disable {
+  background: rgba(207, 216, 220, 0.58);
+}
+
+.categoryGhost {
+  background: rgba(33, 150, 243, 0.5);
+  border: 1px dashed #607d8b;
+}
+
+.prefix .actionGhost {
+  background: rgba(176, 190, 197, 0.5);
+  border: 1px dashed #607d8b;
+}
+
+.item .itemGhost {
+  background: rgba(146, 170, 175, 0.51);
+  border: 1px dashed #607d8b;
+}
+
+aside {
+  width: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+aside .btn {
+  width: 168px;
+  margin: 5px;
+}
+</style>

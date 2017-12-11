@@ -60,7 +60,7 @@
         </template>
         <template v-else-if="mode=== 'print'">
           <div class="wrap column">
-            <toggle :title="name" :tooltip="tip.replace" v-for="(printer,name,index) in item.printer" :key="index" v-model="printer.replace" @update="$forceUpdate">
+            <toggle :title="name" true-tooltip="tip.replaceItemName" false-tooltip="tip.noReplaceItemName" :conditionalTooltip="true" v-for="(printer,name,index) in item.printer" :key="index" v-model="printer.replace" @update="render">
               <transition name="dropdown">
                 <div class="opt" v-if="printer.replace">
                   <inputer title="text.primary" v-model="printer.usEN"></inputer>
@@ -160,6 +160,9 @@ export default {
         replace: false
       });
     },
+    render() {
+      this.$forceUpdate();
+    },
     save() {
       console.log("trigger");
     }
@@ -204,6 +207,7 @@ input:checked + label {
 
 .wrap.info {
   min-height: 460px;
+  min-width: 550px;
 }
 
 .wrap.column {

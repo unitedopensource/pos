@@ -164,8 +164,6 @@ export default [{
               component: require('./components/setting/store/terminal')
             }]
           },
-
-
           {
             path: 'menu',
             component: require('./components/setting/menu/nav'),
@@ -186,6 +184,15 @@ export default [{
               name: 'Setting.template',
               component: require('./components/setting/menu/template')
             }]
+          }, {
+            path: 'table',
+            component: require('./components/setting/table/nav'),
+            children: [{
+              path: '/',
+              name: 'Setting.table',
+              component: require('./components/setting/table/table')
+            }]
+
           }
         ]
       }
