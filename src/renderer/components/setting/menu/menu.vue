@@ -68,7 +68,7 @@ export default {
     editCategory(category, index) {
       new Promise((resolve, reject) => {
         this.$socket.emit("[CATEGORY] LIST", categories => {
-          this.componentData = { resolve, reject, categories, category };
+          this.componentData = { resolve, reject, categories, category, index };
           this.component = "categoryEditor";
         });
       })
@@ -147,6 +147,12 @@ export default {
       dom && dom.classList.remove("active");
 
       document.querySelectorAll(".category div")[n].classList.add("active");
+    }
+  },
+  sockets: {
+    MENU_CATEGORY_UPDATE() {
+      this.categories = JSON.parse(JSON.stringify(this.$store.getters.menu));
+      this.getItems(this.categoryIndex);
     }
   }
 };

@@ -38,7 +38,22 @@ export default {
     };
   },
   methods: {
-    confirm() {}
+    confirm() {
+      !Array.isArray(this.category.contain) &&
+        (this.category.contain = this.category.contain.split(","));
+        
+      this.category.item = [];
+      this.$socket.emit(
+        "[CATEGORY] UPDATE",
+        {
+          category: this.category,
+          index: this.init.index
+        },
+        () => {
+          this.init.resolve();
+        }
+      );
+    }
   }
 };
 </script>

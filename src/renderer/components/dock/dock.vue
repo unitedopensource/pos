@@ -209,7 +209,7 @@ export default {
       this.setApp({ database: true });
 
       this.station &&
-        this.$socket.emit("[SYS] CONNECT", {
+        this.$socket.emit("[STATION] CONNECTED", {
           alias: this.station.alias,
           mac: this.station.mac,
           operator: this.op.name
@@ -248,6 +248,13 @@ export default {
     SYNC_TABLES(data) {
       this.syncTables(data);
     },
+    MENU_CATEGORY_UPDATE(data) {
+      this.updateMenuCategory(data);
+    },
+
+
+
+
     REQUEST_CATEGORY_UPDATE(data) {
       this.updateRequestCategory(data);
     },
@@ -259,9 +266,6 @@ export default {
     },
     REQUEST_ITEM_REMOVE(data) {
       this.removeRequestItem(data);
-    },
-    MENU_CATEGORY_UPDATE(data) {
-      this.updateMenuCategory(data);
     },
     MENU_CATEGORY_RESORT(data) {
       this.resortMenuCategory(data);
