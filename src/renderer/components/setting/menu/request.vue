@@ -11,19 +11,19 @@
             </transition-group>
         </draggable>
         <div class="itemWrap">
-            <div v-for="(group,gIndex) in items" :key="gIndex" class="item">
+            <div v-for="(group,groupIndex) in items" :key="groupIndex" class="item">
                 <draggable :list="group" @sort="isItemSorted = true" :options="{animation:300,group:group.category,ghostClass:'itemGhost',draggable:'.draggable'}">
                     <transition-group tag="section">
-                        <div v-for="(item,index) in group" @contextmenu="editItem(item,gIndex,index)" :class="{draggable:item.clickable,disable:!item.clickable}" :key="index">{{item[language]}}</div>
+                        <div v-for="(item,index) in group" @contextmenu="editItem(item,groupIndex,index)" :class="{draggable:item.clickable,disable:!item.clickable}" :key="index">{{item[language]}}</div>
                     </transition-group>
                 </draggable>
             </div>
         </div>
         <aside>
             <div>
-                <div class="btn" @click="updateItemSort" v-if="isItemSorted">{{text('APPLY')}}</div>
-                <div class="btn" @click="updateActionSort" v-if="isActionSorted">{{text('APPLY')}}</div>
-                <div class="btn" @click="updateCategorySort" v-if="isCategorySorted">{{text('APPLY')}}</div>
+                <div class="btn" @click="updateItemSort" v-if="isItemSorted">{{$t('button.update')}}</div>
+                <div class="btn" @click="updateActionSort" v-if="isActionSorted">{{$t('button.update')}}</div>
+                <div class="btn" @click="updateCategorySort" v-if="isCategorySorted">{{$t('button.update')}}</div>
             </div>
         </aside>
         <div :is="component" :init="componentData"></div>
@@ -89,14 +89,36 @@ export default {
         .then(this.refreshData)
         .catch(() => this.$q());
     },
-    editItem() {
+    editItem(item, groupIndex, index) {
+      let categories = this.request[
+        this.categoryIndex
+      ].contain.map(category => ({
+        label: category,
+        tooltip: "",
+        plainText: true,
+        value: category
+      }));
+
+      if (!item.clickable) {
+        Object.assign(item, {
+          category: this.request[this.categoryIndex].contain[groupIndex],
+          price: 0,
+          affix: false
+        });
+      }
+
       new Promise((resolve, reject) => {
-        this.componentData = { resolve, reject, category };
+        this.componentData = {
+          resolve,
+          reject,
+          categories,
+          item,
+          groupIndex,
+          index
+        };
         this.component = "itemEditor";
       })
-        .then(_item => {
-          this.$q();
-        })
+        .then(this.refreshData)
         .catch(del => {
           this.$q();
         });

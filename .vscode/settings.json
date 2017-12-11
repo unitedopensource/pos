@@ -25,6 +25,7 @@
         "tfoot",
         "thead",
         "unprinted",
+        "unshift",
         "vuex"
     ]
 }

@@ -17,8 +17,8 @@
         </div>
         <aside>
             <div>
-                <div class="btn" @click="updateItemSort" v-if="isItemSorted">{{$t('button.apply')}}</div>
-                <div class="btn" @click="updateCategorySort" v-if="isCategorySorted">{{$t('button.apply')}}</div>
+                <div class="btn" @click="updateItemSort" v-if="isItemSorted">{{$t('button.update')}}</div>
+                <div class="btn" @click="updateCategorySort" v-if="isCategorySorted">{{$t('button.update')}}</div>
             </div>
         </aside>
         <div :is="component" :init="componentData"></div>

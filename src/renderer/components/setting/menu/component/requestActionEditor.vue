@@ -18,8 +18,10 @@
                 </toggle>
             </div>
             <footer>
-                <button class="btn" @click="clear">{{$t('button.clear')}}</button>
-                <button class="btn" @click="confirm">{{$t('button.done')}}</button>
+              <div class="opt">
+                <span class="del" @click="clear">{{$t('button.clear')}}</span>
+              </div>
+              <button class="btn" @click="confirm">{{$t('button.done')}}</button>
             </footer>
         </div>
     </div>
@@ -45,7 +47,7 @@ export default {
         zhCN: "",
         prefix: true,
         multiplier: false,
-        multiply: 0
+        multiply: 1
       });
     },
     confirm() {

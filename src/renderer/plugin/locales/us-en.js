@@ -1027,7 +1027,8 @@ export default {
         'percentage': 'Percentage',
         'weightScale': 'Weight Scale',
         'multiplier': 'Multiplier',
-        'value': 'Value'
+        'value': 'Value',
+        'affix': 'Affix'
     },
     nav: {
         'store': 'Store',

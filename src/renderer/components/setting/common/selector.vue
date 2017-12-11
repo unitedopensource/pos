@@ -84,6 +84,7 @@ export default {
 
 .inner {
   position: relative;
+  flex:1;
 }
 
 i {
@@ -104,7 +105,6 @@ input {
 
 .input {
   border: 1px solid #eee;
-  width: 179px;
   display: flex;
   align-items: center;
   height: 15px;

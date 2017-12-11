@@ -1021,7 +1021,8 @@ export default {
         'percentage': '百分比',
         'weightScale': '磅秤',
         'multiplier': '乘数',
-        'value': '数值'
+        'value': '数值',
+        'affix': '词缀'
     },
     nav: {
         'store': '店面',
