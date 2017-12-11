@@ -65,20 +65,23 @@ export default {
     },
     editCategory(category, index) {
       new Promise((resolve, reject) => {
-        (this.componentData = { resolve, reject, category }),
-          (this.component = "categoryEditor");
+        this.$socket.emit("[REQUEST] CATEGORY", categories => {
+          this.componentData = { resolve, reject, categories, category, index };
+          this.component = "categoryEditor";
+        });
       })
-        .then(_category => {
+        .then(() => {
+          this.refreshData();
           this.$q();
         })
         .catch(del => {
           this.$q();
         });
     },
-    editAction() {
+    editAction(action) {
       new Promise((resolve, reject) => {
-        (this.componentData = { resolve, reject, category }),
-          (this.component = "actionEditor");
+        this.componentData = { resolve, reject, actions, action };
+        this.component = "actionEditor";
       })
         .then(_action => {
           this.$q();
@@ -89,8 +92,8 @@ export default {
     },
     editItem() {
       new Promise((resolve, reject) => {
-        (this.componentData = { resolve, reject, category }),
-          (this.component = "itemEditor");
+        this.componentData = { resolve, reject, category };
+        this.component = "itemEditor";
       })
         .then(_item => {
           this.$q();
@@ -98,6 +101,10 @@ export default {
         .catch(del => {
           this.$q();
         });
+    },
+    refreshData() {
+      this.request = JSON.parse(JSON.stringify(this.$store.getters.request));
+      this.getItems();
     }
   }
 };

@@ -295,21 +295,21 @@ export default {
         'categoryEditor': '类别编辑',
         'itemEditor': '物品编辑'
     },
-    menu: {
-        'course': '定时',
-        'timer': '定时',
-        'hour': '小时',
-        'minute': '分钟',
-        'search': '搜索',
-        'builder': '物品编辑',
-        'seatList': '座位表',
-        'marker': '物品标记',
-        'modify': '修改物品',
-        'scale': '物品磅秤',
-        'split': '分单',
-        'temporary': '临时物品',
-        'payment': '付款'
-    },
+    // menu: {
+    //     'course': '定时',
+    //     'timer': '定时',
+    //     'hour': '小时',
+    //     'minute': '分钟',
+    //     'search': '搜索',
+    //     'builder': '物品编辑',
+    //     'seatList': '座位表',
+    //     'marker': '物品标记',
+    //     'modify': '修改物品',
+    //     'scale': '物品磅秤',
+    //     'split': '分单',
+    //     'temporary': '临时物品',
+    //     'payment': '付款'
+    // },
     dialog: {
         'maintenance': '维护',
         'maintenanceTip': '系统正在维护中...',
@@ -1018,7 +1018,8 @@ export default {
         'emailReport': '发送报表',
         'ip': 'IP 地址',
         'location': '位置',
-        'percentage': '百分比'
+        'percentage': '百分比',
+        'weightScale': '磅秤'
     },
     nav: {
         'store': '店面',

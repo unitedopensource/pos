@@ -49,9 +49,7 @@ export default {
           category: this.category,
           index: this.init.index
         },
-        () => {
-          this.init.resolve();
-        }
+        () => this.init.resolve()
       );
     }
   }
@@ -59,17 +57,6 @@ export default {
 </script>
 
 <style scoped>
-.options {
-  margin-top: 5px;
-  border: 1px solid #eee;
-  background: #fff;
-  border-radius: 2px;
-  width: 540px;
-  display: flex;
-  flex-wrap: wrap;
-  padding: 5px;
-}
-
 .options .checkbox {
   width: 170px;
 }

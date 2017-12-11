@@ -224,6 +224,17 @@ td.amount {
     min-width: 350px;
 }
 
+.editor .wrap > .options {
+    margin-top: 5px;
+    border: 1px solid #eee;
+    background: #fff;
+    border-radius: 2px;
+    width: 540px;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 5px;
+}
+
 .clickable {
     cursor: pointer;
 }

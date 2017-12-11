@@ -251,13 +251,13 @@ export default {
     MENU_CATEGORY_UPDATE(data) {
       this.updateMenuCategory(data);
     },
-
-
-
-
     REQUEST_CATEGORY_UPDATE(data) {
       this.updateRequestCategory(data);
     },
+
+
+
+    
     REQUEST_ACTION_UPDATE(data) {
       this.updateRequestAction(data);
     },

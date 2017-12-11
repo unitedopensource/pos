@@ -382,21 +382,21 @@ export default {
         'categoryEditor': 'Category Editor',
         'itemEditor': 'Item Editor',
     },
-    menu: {
-        'course': 'Course',
-        'timer': 'Timer',
-        'hour': 'Hour',
-        'minute': 'Minute',
-        'search': 'Search',
-        'builder': 'Builder',
-        'seatList': 'Seat List',
-        'marker': 'Marker',
-        'modify': 'Modifier',
-        'scale': 'Weight Scale',
-        'split': 'Order Split',
-        'temporary': 'Temporary Item',
-        'payment': 'Payment'
-    },
+    // menu: {
+    //     'course': 'Course',
+    //     'timer': 'Timer',
+    //     'hour': 'Hour',
+    //     'minute': 'Minute',
+    //     'search': 'Search',
+    //     'builder': 'Builder',
+    //     'seatList': 'Seat List',
+    //     'marker': 'Marker',
+    //     'modify': 'Modifier',
+    //     'scale': 'Weight Scale',
+    //     'split': 'Order Split',
+    //     'temporary': 'Temporary Item',
+    //     'payment': 'Payment'
+    // },
     dialog: {
         'maintenance': 'Maintenance',
         'maintenanceTip': 'POS is under maintenance...',
@@ -1024,7 +1024,8 @@ export default {
         'emailReport': 'Email Report',
         'ip': 'IP Address',
         'location': 'Location',
-        'percentage': 'Percentage'
+        'percentage': 'Percentage',
+        'weightScale': 'Weight Scale'
     },
     nav: {
         'store': 'Store',

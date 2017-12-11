@@ -81,7 +81,7 @@
               <switches title="text.disable" v-model="item.disable"></switches>
             </div>  
             <div class="side">
-              <toggle title="text.weightItem" v-model="item.weightItem.enable">
+              <toggle title="text.weightScale" v-model="item.weightItem.enable">
               <transition name="dropdown">
                 <div class="opt" v-if="item.weightItem.enable">
                   <inputer title="text.amount" v-model="item.weightItem.value"></inputer>
@@ -106,7 +106,7 @@
             <p v-if="deprecated"><i class="fa fa-warning"></i>{{$t('tip.deprecated.priceArray')}}</p>
           </div>
           <button class="btn" @click="init.reject(false)">{{$t('button.back')}}</button>
-          <button class="btn" @click="save" :disabled="invalid">{{$t('button.save')}}</button>
+          <button class="btn" @click="save">{{$t('button.save')}}</button>
         </footer>
       </div>
       <div :is="component" :init="componentData"></div>
@@ -124,11 +124,6 @@ import switches from "../../common/switches";
 export default {
   props: ["init"],
   components: { toggle, switches, inputer, selector, checkbox, draggable },
-  computed: {
-    invalid() {
-      return true;
-    }
-  },
   data() {
     return {
       componentData: null,
