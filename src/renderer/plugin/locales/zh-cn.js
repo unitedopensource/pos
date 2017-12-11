@@ -784,6 +784,7 @@ export default {
         'price': '价格',
         'basePrice': '基础价格',
         'discount': '折扣',
+        'marketPrice': '市场价格',
         'weight': '重量',
         'perUnit': '每单位',
         'tax': '税',

@@ -25,7 +25,9 @@
             </router-link>
         </ul>
         <section class="content">
-            <router-view class="page"></router-view>
+            <transition name="switch" mode="out-in">
+                <router-view class="page"></router-view>
+            </transition>
         </section>
     </section>
 </template>

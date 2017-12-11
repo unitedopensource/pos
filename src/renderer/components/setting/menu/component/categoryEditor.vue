@@ -41,7 +41,7 @@ export default {
     confirm() {
       !Array.isArray(this.category.contain) &&
         (this.category.contain = this.category.contain.split(","));
-        
+
       this.category.item = [];
       this.$socket.emit(
         "[CATEGORY] UPDATE",

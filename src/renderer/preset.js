@@ -4,7 +4,7 @@ var Preset = function () {
       alias: "",
       mac,
       username,
-      wol:false,
+      wol: false,
       terminal: {
         enable: false,
         target: ""
@@ -32,10 +32,10 @@ var Preset = function () {
         cashFlowCtrl: false,
         initialAmount: ""
       },
-      autoLock:{
-        enable:false,
-        timeout:0,
-        done:false
+      autoLock: {
+        enable: false,
+        timeout: 0,
+        done: false
       },
       receiveOnlineOrder: false,
       interface: [{
@@ -138,27 +138,34 @@ var Preset = function () {
       }
     }
   };
-  this.item = function (tax) {
+  this.item = function () {
     return {
       _id: undefined,
       zhCN: "",
       usEN: "",
       menuID: "",
-      price: [],
-      prices: {
-        DEFAULT: [],
-        PICK_UP: [],
-        DELIVERY: [],
-        DINE_IN: [],
-        BAR: []
-      },
+      price: 0,
+      prices: {},
       option: [],
       category: "",
       spicy: false,
       num: 0,
       priority: 0,
-      taxClass: tax,
-      categoryCN: "",
+      stock: 0,
+      commission: {
+        enable: false,
+        percentage: false,
+        value: 0
+      },
+      taxClass: null,
+      disable: false,
+      openFood: false,
+      marketPrice: false,
+      weightItem: {
+        enable: false,
+        unit: "lbs",
+        value: 0
+      },
       printer: {}
     }
   };

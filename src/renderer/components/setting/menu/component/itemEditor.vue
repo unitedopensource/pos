@@ -71,13 +71,33 @@
           </div>
         </template>
         <template v-else-if="mode ==='advance'">
-          <div class="wrap column">
-            <inputer title="text.priority" v-model.number="item.priority"></inputer>
-            <inputer title="text.inventory" v-model.number="item.inventory"></inputer>
-            <inputer title="text.rewardPoint" v-model.number="item.rewardPoint"></inputer>
-            <inputer title="text.commission" v-model.number="item.commission"></inputer>
-            <switches title="text.openFood" v-model="item.temporary"></switches>
-            <switches title="text.disable" v-model="item.disable"></switches>
+          <div class="wrap info">
+            <div class="item">
+              <inputer title="text.priority" v-model.number="item.priority"></inputer>
+              <inputer title="text.inventory" v-model.number="item.inventory"></inputer>
+              <inputer title="text.rewardPoint" v-model.number="item.rewardPoint"></inputer>
+              <switches title="text.marketPrice" v-model="item.marketPrice"></switches>
+              <switches title="text.openFood" v-model="item.temporary"></switches>
+              <switches title="text.disable" v-model="item.disable"></switches>
+            </div>  
+            <div class="side">
+              <toggle title="text.weightItem" v-model="item.weightItem.enable">
+              <transition name="dropdown">
+                <div class="opt" v-if="item.weightItem.enable">
+                  <inputer title="text.amount" v-model="item.weightItem.value"></inputer>
+                  <inputer title="text.unit" v-model="item.weightItem.unit"></inputer>
+                </div>
+              </transition>
+            </toggle>
+            <toggle title="text.commission" v-model="item.commission.enable">
+              <transition name="dropdown">
+                <div class="opt" v-if="item.commission.enable">
+                  <inputer title="text.amount" v-model="item.commission.value"></inputer>
+                  <switches title="text.percentage" v-model="item.commission.percentage"></switches>
+                </div>
+              </transition>
+            </toggle>
+          </div>
           </div>
         </template>
         <footer>
@@ -128,7 +148,7 @@ export default {
     };
   },
   created() {
-    Array.isArray(this.init.item.price) && (this.deprecated = true);
+    this.patchItem();
     this.initialData();
   },
   methods: {
@@ -165,6 +185,31 @@ export default {
     },
     save() {
       console.log("trigger");
+    },
+    patchItem() {
+      Array.isArray(this.init.item.price) && (this.deprecated = true);
+
+      //update commission
+      if (!this.item.commission) {
+        Object.assign(this.item, {
+          commission: {
+            enable: false,
+            percentage: false,
+            value: 0
+          }
+        });
+      }
+
+      //update weight
+      if (!this.item.weightItem) {
+        Object.assign(this.item, {
+          weightItem: {
+            enable: false,
+            unit: "lbs",
+            value: 0
+          }
+        });
+      }
     }
   }
 };
@@ -222,6 +267,7 @@ input:checked + label {
 .side {
   flex: 1;
   border-left: 1px solid #fff;
+  padding-left: 25px;
 }
 
 div.options {
@@ -263,10 +309,6 @@ ul.options input {
 
 ul.options input[type="number"] {
   width: 55px;
-}
-
-ul.options {
-  margin-left: 20px;
 }
 
 ul.options .inner {

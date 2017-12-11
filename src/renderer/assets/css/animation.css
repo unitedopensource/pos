@@ -80,18 +80,14 @@
     transform: translateY(10px);
 }
 
-.switch-enter-active,
-.switch-leave-active {
-    transition: opacity 0.25s;
-}
-
 /* .switch-enter-active {
     transition-delay: .25s;
 } */
 
 .switch-enter-active,
-.switch-leave-active {
-    opacity: 0
+.switch-leave-active{
+    opacity: 0;
+    transition: opacity 0.22s ease-in-out;
 }
 
 .slide-enter,

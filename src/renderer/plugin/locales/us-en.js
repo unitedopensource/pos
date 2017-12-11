@@ -792,6 +792,7 @@ export default {
         'price': 'Price',
         'basePrice': 'Base Price',
         'discount': 'Discount',
+        'marketPrice': 'Market Price',
         'weight': 'Weight',
         'perUnit': 'Per Unit',
         'tax': 'Tax',

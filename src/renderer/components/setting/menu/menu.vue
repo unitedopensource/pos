@@ -26,6 +26,7 @@
 </template>
 
 <script>
+import Preset from "../../../preset";
 import draggable from "vuedraggable";
 import dialoger from "../../common/dialoger";
 import itemEditor from "./component/itemEditor";
@@ -88,6 +89,9 @@ export default {
         plainText: true,
         value: category
       }));
+
+      if (!item.clickable) item = this.copyLastItem(group, index);
+
       new Promise((resolve, reject) => {
         this.componentData = {
           resolve,
@@ -106,6 +110,37 @@ export default {
           }
           this.$q();
         });
+    },
+    copyLastItem(group, index) {
+      let item;
+      let lastItem = this.items[group][index - 1];
+      if (lastItem && lastItem.clickable) {
+        item = JSON.parse(JSON.stringify(lastItem));
+        Object.assign(item, {
+          _id: undefined,
+          menuID: "",
+          usEN: "",
+          zhCN: "",
+          spicy: "",
+          num: this.items[group].filter(i => i.clickable).length,
+          prices: {}
+        });
+      } else {
+        let taxClass = Object.keys(this.$store.getters.tax.class);
+        let defaultTax = "";
+        taxClass.forEach(name => {
+          this.$store.getters.tax.class[name].default === true &&
+            (defaultTax = name);
+        });
+
+        item = Preset.item();
+        let category = this.categories[this.categoryIndex].contain[group];
+        Object.assign(item, {
+          taxClass: defaultTax,
+          category
+        });
+      }
+      return item;
     },
     sortCategory() {},
     sortItem() {
