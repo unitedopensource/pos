@@ -1,7 +1,9 @@
+import axios from "axios";
+
 const Pax = function () {
-  let url = null;
-  let station = '';
-  let device = {};
+  let device = null;
+  let station = null;
+  let instance = null;
   let cardType = ['',
     'Visa',
     'MasterCard',
@@ -21,11 +23,17 @@ const Pax = function () {
     'WrightExpress'
   ];
 
-  this.initial = function (ip, port, sn, alies) {
-    url = `http://${ip}:${port}?`;
-    station = alies || '';
-    let command = this.parser("A00_1.38");
-    return fetch(command);
+
+  this.initial = function (ip, port, sn, alias) {
+    if (!ip || !port) throw new Error("CONFIG_FILE_ERROR");
+
+    station = alias || '';
+    instance = axios.create({
+      baseURL: `http://${ip}:${port}?`
+    });
+
+    let command = Encode("A00_1.38");
+    return axios.get(command);
   };
 
   this.check = function (d) {
@@ -303,10 +311,7 @@ const Pax = function () {
   this.drawSignature = function (data) {
     Draw(data);
   }
-  this.parser = function (command) {
-    if (!url) throw Error("Terminal Not initialized");
-    return url + Encode(command)
-  }
+
   this.adjust = function (invoice, trans, value) {
     let command = this.parser(`T00_1.38_06_${value}__${invoice}|||${trans}______`);
     return fetch(command);
@@ -330,6 +335,7 @@ const Encode = function (d) {
   let l = lrc(d + String.fromCharCode(0x03));
   return new Buffer(String.fromCharCode(0x02) + d + String.fromCharCode(0x03) + l).toString('base64');
 };
+
 const Decode = function (d) {
   d = new Buffer(d, 'base64').toString();
   let e, i = 0;
@@ -341,6 +347,7 @@ const Decode = function (d) {
   }
   return d.slice(1, e).split(String.fromCharCode(28));
 };
+
 const lrc = function (s) {
   let l = s.charCodeAt(0);
   for (let i = 1; i < s.length; i++) {
@@ -363,4 +370,4 @@ const Draw = function (path) {
   }
 };
 
-module.exports = new Pax();
+export default new Pax();

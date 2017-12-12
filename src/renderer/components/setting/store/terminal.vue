@@ -60,27 +60,39 @@ export default {
   methods: {
     create() {
       let device = {
-        alias:"",
-        model:"",
-        ip:"",
-        port:"",
-        sn:"",
-        location:""
-      }
+        alias: "",
+        model: "",
+        ip: "",
+        port: "",
+        sn: "",
+        location: ""
+      };
 
       this.edit(device);
     },
-    edit(device,index){
-      new Promise((resolve,reject)=>{
-        this.componentData = {resolve,reject,device,edit:!!device._id};
-        this.component = "editor"
-      }).then(_device=>{
-
-        this.$q();
-      }).catch(del=>{
-        del && this.devices.splice(index,1);
-        this.$q()
+    edit(device, index) {
+      new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject, device, edit: !!device._id };
+        this.component = "editor";
       })
+        .then(_device =>
+          this.$socket.emit("[TERMINAL] UPDATE", _device, () =>
+            this.refreshData()
+          )
+        )
+        .catch(del => {
+          if (del) {
+            this.$socket.emit("[TERMINAL] REMOVE", device._id);
+            this.devices.splice(index, 1);
+          }
+          this.$q();
+        });
+    },
+    refreshData() {
+      this.$socket.emit("[TERMINAL] DEVICE", data => {
+        this.devices = data;
+        this.$q();
+      });
     }
   }
 };

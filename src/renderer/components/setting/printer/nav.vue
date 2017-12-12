@@ -2,7 +2,7 @@
     <section class="route">
         <ul class="nav">
             <div class="wrap">
-                <router-link tag="li" :to="{name:'Setting.print'}" exact>
+                <router-link tag="li" :to="{name:'Setting.printer'}" exact>
                     <i class="fa fa-print"></i>
                     <span class="text">{{$t('nav.overview')}}</span>
                 </router-link>

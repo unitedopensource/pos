@@ -629,7 +629,7 @@ export default {
 
         this.isThirdPartyPayment = this.init.hasOwnProperty("regular")
           ? false
-          : !this.station.terminal.enable || this.order.source !== "POS";
+          : !this.station.terminal || this.order.source !== "POS";
 
         this.$socket.emit("[PAYMENT] CHECK_PAY", this.order._id, paid => {
           let remain = toFixed(this.payment.balance - paid, 2);
@@ -989,7 +989,7 @@ export default {
     },
     chargeCreditCard(card) {
       return new Promise((resolve, reject) => {
-        this.componentData = { card, resolve, reject };
+        this.componentData = { resolve, reject, card };
         this.component = "creditCard";
       });
     },
@@ -1119,7 +1119,7 @@ export default {
               cashier: this.op.name,
               server: this.order.server || this.op.name,
               cashDrawer,
-              station: this.station.alies,
+              station: this.station.alias,
               type: "CASH",
               for: "Order",
               subType: null,
@@ -1171,7 +1171,7 @@ export default {
               cashier: this.op.name,
               server: this.order.server || this.op.name,
               cashDrawer,
-              station: this.station.alies,
+              station: this.station.alias,
               type: "CREDIT",
               for: "Order",
               subType: data.account.type,
@@ -1200,7 +1200,7 @@ export default {
               cashier: this.op.name,
               server: this.order.server || this.op.name,
               cashDrawer,
-              station: this.station.alies,
+              station: this.station.alias,
               type: "THIRD",
               for: "Order",
               subType: this.thirdPartyType || data,
@@ -1225,7 +1225,7 @@ export default {
               cashier: this.op.name,
               server: this.order.server || this.op.name,
               cashDrawer,
-              station: this.station.alies,
+              station: this.station.alias,
               type: "GIFT",
               for: "Order",
               subType: null,
@@ -1262,7 +1262,7 @@ export default {
             payment: this.payInFull ? this.payment : this.combineSplitPayment(),
             customer,
             type: this.ticket.type,
-            station: this.station.alies,
+            station: this.station.alias,
             cashier: this.op.name,
             modify: 0,
             status: 1,

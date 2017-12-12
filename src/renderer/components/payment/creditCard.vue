@@ -5,124 +5,71 @@
         <h3>{{msg}}</h3>
         <h5>{{tip}}</h5>
         <footer>
-            <button class="btn" @click="exit" :disabled="!cancelable">{{$t('button.cancelAction')}}</button>
+            <button class="btn" @click="abort" :disabled="!cancelable">{{$t('button.cancelAction')}}</button>
         </footer>
     </div>
   </div>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
 export default {
   props: ["init"],
   data() {
     return {
-      msg: "",
-      tip: "",
+      station: this.$store.getters.station.alias,
+      attached: this.$store.getters.station.terminal,
+      transacting: false,
+      cancelable: false,
+      terminal: null,
+      timeout: null,
+      device: null,
       config: null,
       icon: "info",
-      timeout: null,
-      transacting: null,
-      terminal: null,
-      device: null,
-      url: null,
-      cancelable: false
+      msg: "",
+      tip: ""
     };
   },
-  created() {
-    this.station.terminal.enable
-      ? this.initTerminal()
-      : this.init.reject({
-          type: "info",
-          title: "terminal.paymentFailed",
-          msg: "terminal.paymentFailedTip",
-          buttons: [
-            { text: "button.cancel", fn: "reject" },
-            { text: "button.markAsPaid", fn: "resolve" }
-          ]
-        });
-    setTimeout(() => {
-      this.cancelable = true;
-    }, 30000);
+  mounted() {
+    this.initialData()
+      .then(this.initTerminal)
+      .then(this.initTransaction)
+      .then(this.parseData)
+      .catch(this.transactionFailed);
   },
   methods: {
-    initTerminal() {
-      let terminal = this.station.terminal;
-      this.msg = this.$t("terminal.initial", terminal.model);
-      this.terminal = this.getFile(terminal.model);
-      this.terminal
-        .initial(
-          terminal.address,
-          terminal.port,
-          terminal.sn,
-          this.station.alies
-        )
-        .then(r => r.text())
-        .then(device => {
-          this.device = this.terminal.check(device);
-          if (this.device.code !== "000000") {
-            this.terminalError(
-              this.$t(
-                "terminal.initialFailed",
-                this.device.model || terminal.model,
-                this.device.code
-              ),
-              this.device.msg
-            );
-            return;
+    initialData() {
+      return new Promise(next => {
+        this.timeout = setTimeout(() => {
+          this.cancelable = true;
+        }, 30000);
+
+        this.$socket.emit("[TERMINAL] CONFIG", this.attached, config => {
+          if (!config) {
+            throw new Error("CONFIG_FILE_NO_FOUND");
+          } else {
+            this.config = config;
+            this.terminal = this.getParser(config.model).default();
+            next();
           }
-          clearTimeout(this.timeout);
-          setTimeout(() => {
-            let { creditCard } = this.init.card;
-            this.msg =
-              creditCard.number && creditCard.date
-                ? this.$t(
-                    "terminal.transacting",
-                    this.device.model || terminal.model
-                  )
-                : this.$t(
-                    "terminal.ready",
-                    this.device.model || terminal.model
-                  );
-          }, 2000);
-
-          let url = this.terminal.charge(this.init.card);
-
-          this.transacting = new XMLHttpRequest();
-          this.transacting.open("GET", url, true);
-          this.transacting.send(null);
-          this.transacting.onload = () => {
-            if (this.transacting.readyState === this.transacting.DONE) {
-              if (this.transacting.status === 200) {
-                let result = this.terminal.explainTransaction(
-                  this.transacting.responseText
-                );
-                result.code === "000000"
-                  ? this.init.resolve(result)
-                  : this.terminalError(result.msg, result.error);
-              }
-            }
-          };
         });
-      this.timeout = setTimeout(() => {
-        this.init.reject({
-          type: "warning",
-          title: "terminal.timeout",
-          msg: ["terminal.timeoutTip", terminal.address],
-          buttons: [{ text: "button.confirm", fn: "resolve" }]
+      });
+    },
+    initTerminal() {
+      console.log("initial");
+      return new Promise(next => {
+        let { ip, port, sn, model } = this.config;
+
+        this.msg = this.$t("terminal.initial", model);
+
+        console.log(this.terminal);
+
+        this.terminal.initial(ip, port, sn, this.station).then(response => {
+          console.log(response);
         });
-      }, 10000);
+      });
     },
-    terminalError(msg, error) {
-      this.icon = "error";
-      this.msg = this.$t(msg);
-      this.tip = error ? error : "";
-      setTimeout(() => {
-        this.init.reject(false);
-      }, 2500);
-    },
-    getFile(device) {
-      switch (device) {
+    getParser(model) {
+      switch (model) {
         case "SP30":
         case "S80":
         case "S300":
@@ -133,19 +80,9 @@ export default {
           return require("./parser/pax.js");
       }
     },
-    exit() {
-      if (this.transacting) {
-        this.msg = this.$t("terminal.aborting");
-        this.transacting.abort();
-        this.terminal.abort();
-        this.init.reject(false);
-      } else {
-        this.init.reject(false);
-      }
+    abort() {
+      this.init.reject();
     }
-  },
-  computed: {
-    ...mapGetters(["station"])
   }
 };
 </script>

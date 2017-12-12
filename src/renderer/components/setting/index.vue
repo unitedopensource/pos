@@ -17,7 +17,7 @@
                 <figcaption>{{$t('setting.seat')}}</figcaption>
                 <p>{{$t('setting.seatTip')}}</p>
             </router-link>
-            <router-link tag="figure" :to="{name:'Setting.print'}">
+            <router-link tag="figure" :to="{name:'Setting.printer'}">
                 <i class="fa fa-2x fa-print"></i>
                 <figcaption>{{$t('setting.print')}}</figcaption>
                 <p>{{$t('setting.printTip')}}</p>
