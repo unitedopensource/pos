@@ -192,7 +192,10 @@ export default [{
               name: 'Setting.table',
               component: require('./components/setting/table/table')
             }]
-
+          }, {
+            path: 'print',
+            name: 'Setting.print',
+            component: require('./components/setting/print/index')
           }
         ]
       }

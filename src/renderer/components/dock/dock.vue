@@ -254,16 +254,16 @@ export default {
     REQUEST_CATEGORY_UPDATE(data) {
       this.updateRequestCategory(data);
     },
-
-
-
-    
     REQUEST_ACTION_UPDATE(data) {
       this.updateRequestAction(data);
     },
     REQUEST_ITEM_UPDATE(data) {
       this.updateRequestItem(data);
     },
+    
+
+
+
     REQUEST_ITEM_REMOVE(data) {
       this.removeRequestItem(data);
     },

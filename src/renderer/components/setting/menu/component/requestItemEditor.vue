@@ -47,16 +47,24 @@ export default {
       value: action
     }));
     this.actions.unshift({
-      label: this.$t('text.disable'),
+      label: this.$t("text.disable"),
       tooltip: "",
       plainText: true,
       value: false
     });
-
-    console.log(this.item)
   },
   methods: {
-    confirm() {}
+    confirm() {
+      this.$socket.emit(
+        "[REQUEST] UPDATE_ITEM",
+        {
+          item: this.item,
+          groupIndex: this.init.groupIndex,
+          index: this.init.index
+        },
+        () => this.init.resolve()
+      );
+    }
   }
 };
 </script>
