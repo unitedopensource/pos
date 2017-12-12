@@ -1,18 +1,18 @@
 <template>
     <div class="layout">
-        <draggable v-model="sections" @sort="sortSection" :options="{animation: 300,group: 'section',ghostClass: 'sectionGhost',draggable:'.draggable'}">
+        <draggable v-model="sections" @sort="isSectionSorted = true" :options="{animation: 300,group: 'section',ghostClass: 'sectionGhost',draggable:'.draggable'}">
             <transition-group tag="section" class="section">
-                <div class="btn draggable" v-for="(section,index) in sections" @click="viewSection(section,index)" @contextmenu="editSection(section,index)" :key="index">{{section[language]}}</div>
-                <div class="btn add" @click="addSection" :key="-1">
+                <div class="btn draggable" v-for="(section,index) in sections" @click="viewSection(index)" @contextmenu="editSection(section,index)" :key="index">{{section[language]}}</div>
+                <div class="btn add" @click="newSection" :key="-1">
                     <i class="fa fa-plus"></i>
                 </div>
                 <div class="apply" :key="-2">
-                    <div class="btn" @click="applySectionSort" v-show="isSectionSort">{{$t('button.apply')}}</div>
-                    <div class="btn" @click="applyTableSort" v-show="isTableSort">{{$t('button.apply')}}</div>
+                    <div class="btn" @click="updateSortedSection" v-show="isSectionSorted">{{$t('button.update')}}</div>
+                    <div class="btn" @click="updateSortedTable" v-show="isTableSorted">{{$t('button.update')}}</div>
                 </div>
             </transition-group>
         </draggable>
-        <draggable v-model="tabs" @sort="sortTable" :options="{animation: 300,group: 'table',ghostClass: 'tableGhost'}" class="f1">
+        <draggable v-model="tabs" @sort="isTableSorted = true" :options="{animation: 300,group: 'table',ghostClass: 'tableGhost'}" class="f1">
             <transition-group tag="section" class="tables">
                 <div class="table" v-for="(table,index) in tabs" @contextmenu="editTable(table,index)" :key="index">
                     <span :class="[table.shape]" class="icon"></span>
@@ -25,9 +25,47 @@
 </template>
 
 <script>
-export default{
-    
-}
+import draggable from "vuedraggable";
+import dialoger from "../../common/dialoger";
+
+export default {
+  components: { draggable, dialoger },
+  data() {
+    return {
+      componentData: null,
+      component: null,
+      tabs: [],
+      language: this.$store.getters.language,
+      sections: JSON.parse(JSON.stringify(this.$store.getters.tables)),
+      sectionIndex: 0,
+      isSectionSorted: false,
+      isTableSorted: false
+    };
+  },
+  created() {
+    this.viewSection(0);
+  },
+  methods: {
+    viewSection(index) {
+      let section = this.sections[index];
+
+      this.sectionIndex = index;
+      this.tabs =
+        section.item.length !== 0
+          ? section.item
+          : Array(56).fill({ name: "", shape: "", zone: section.zone });
+    },
+    newSection() {},
+    editSection() {},
+    editTable() {},
+    updateSortedSection() {},
+    updateSortedTable() {},
+    refreshData() {
+      this.sections = JSON.parse(JSON.stringify(this.$store.getters.tables));
+      this.viewSection(this.sectionIndex);
+    }
+  }
+};
 </script>
 
 <style scoped>

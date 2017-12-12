@@ -43,14 +43,7 @@ export default {
         (this.category.contain = this.category.contain.split(","));
 
       this.category.item = [];
-      this.$socket.emit(
-        "[CATEGORY] UPDATE",
-        {
-          category: this.category,
-          index: this.init.index
-        },
-        () => this.init.resolve()
-      );
+      this.init.resolve(this.category);
     }
   }
 };

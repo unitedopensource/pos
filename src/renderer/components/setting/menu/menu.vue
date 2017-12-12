@@ -69,16 +69,18 @@ export default {
     editCategory(category, index) {
       new Promise((resolve, reject) => {
         this.$socket.emit("[CATEGORY] LIST", categories => {
-          this.componentData = { resolve, reject, categories, category, index };
+          this.componentData = { resolve, reject, categories, category };
           this.component = "categoryEditor";
         });
       })
         .then(_category => {
-          this.$q();
+          this.$socket.emit(
+            "[CATEGORY] UPDATE",
+            { category: _category, index },
+            () => this.refreshData
+          );
         })
-        .catch(() => {
-          this.$q();
-        });
+        .catch(() => this.$q());
     },
     editItem(item, group, index) {
       let categories = this.categories[
@@ -103,13 +105,42 @@ export default {
         this.component = "itemEditor";
       })
         .then(_item => {
-          this.$q();
+          let sequence = [this.categoryIndex, group, index];
+          this.$socket.emit(
+            "[MENU] UPDATE",
+            {
+              item: _item,
+              sequence
+            },
+            () => this.refreshData
+          );
         })
         .catch(del => {
-          if (del) {
-          }
-          this.$q();
+          del ? this.deleteItemConfirm(item, group, index) : this.$q();
         });
+    },
+    deleteItemConfirm(item, group, index) {
+      this.$dialog({
+        title: "dialog.deleteItem",
+        msg: ["dialog.deleteItemConfirm", item[language]],
+        buttons: [
+          { text: "button.cancel", fn: "reject" },
+          { text: "button.delete", fn: "resolve" }
+        ]
+      })
+        .then(() => {
+          let sequence = [this.categoryIndex, group, index];
+
+          this.$socket.emit(
+            "[MENU] REMOVE",
+            {
+              _id: item._id,
+              sequence
+            },
+            () => this.refreshData
+          );
+        })
+        .catch(() => this.$q());
     },
     copyLastItem(group, index) {
       let item;
@@ -174,7 +205,14 @@ export default {
         });
     },
     updateCategorySort() {},
-    updateItemSort() {}
+    updateItemSort() {},
+    refreshData() {
+      this.$nextTick(() => {
+        this.categories = JSON.parse(JSON.stringify(this.$store.getters.menu));
+        this.getItems(this.categoryIndex);
+        this.$q();
+      });
+    }
   },
   watch: {
     categoryIndex(n) {
@@ -182,12 +220,6 @@ export default {
       dom && dom.classList.remove("active");
 
       document.querySelectorAll(".category div")[n].classList.add("active");
-    }
-  },
-  sockets: {
-    MENU_CATEGORY_UPDATE() {
-      this.categories = JSON.parse(JSON.stringify(this.$store.getters.menu));
-      this.getItems(this.categoryIndex);
     }
   }
 };

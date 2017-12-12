@@ -92,7 +92,7 @@ ul.tabs li.router-link-exact-active {
 
 .toggle div.opt {
     padding: 0 25px;
-    background: #F5F5F5;
+    background: #eee;
 }
 
 .toggle .opt>div {

@@ -159,20 +159,30 @@ const mutations = {
     [types.UPDATE_MENU_ITEM](state, data) {
         let {
             item,
-            grp,
-            sub,
-            idx
+            sequence
         } = data;
+        let [g, s, i] = sequence;
+
         item.clickable = true;
-        state.config.layout.menu[grp]['item'][sub].splice(idx, 1, item);
+        state.config.layout.menu[g]['item'][s].splice(i, 1, item);
     },
-    [types.REPLACE_MENU_ITEM](state, data) {
-        let {
-            index,
-            items
-        } = data;
-        state.config.layout.menu[index].item = items;
+    [types.REMOVE_MENU_ITEM](state, data) {
+        let [g, s, i] = data;
+        state.config.layout.menu[g]['item'][s].splice(i, 1);
+        state.config.layout.menu[g]['item'][s].push({
+            zhCN: "",
+            usEN: "",
+            clickable: false,
+            category: ""
+        })
     },
+    // [types.REPLACE_MENU_ITEM](state, data) {
+    //     let {
+    //         index,
+    //         items
+    //     } = data;
+    //     state.config.layout.menu[index].item = items;
+    // },
     [types.REPLACE_REQUEST_ITEM](state, data) {
         let {
             index,
@@ -214,20 +224,6 @@ const mutations = {
         } = data;
         state.config.layout.request[grp]['item'][sub].splice(index, 1);
         state.config.layout.request[grp]['item'][sub].push({
-            zhCN: "",
-            usEN: "",
-            clickable: false,
-            category: "NA"
-        })
-    },
-    [types.REMOVE_MENU_ITEM](state, data) {
-        let {
-            grp,
-            sub,
-            idx
-        } = data;
-        state.config.layout.menu[grp]['item'][sub].splice(idx, 1);
-        state.config.layout.menu[grp]['item'][sub].push({
             zhCN: "",
             usEN: "",
             clickable: false,

@@ -76,11 +76,10 @@
               <inputer title="text.priority" v-model.number="item.priority"></inputer>
               <inputer title="text.inventory" v-model.number="item.inventory"></inputer>
               <inputer title="text.rewardPoint" v-model.number="item.rewardPoint"></inputer>
-              <switches title="text.marketPrice" v-model="item.marketPrice"></switches>
-              <switches title="text.openFood" v-model="item.temporary"></switches>
-              <switches title="text.disable" v-model="item.disable"></switches>
             </div>  
             <div class="side">
+              <switches title="text.openFood" v-model="item.temporary"></switches>
+              <switches title="text.marketPrice" v-model="item.marketPrice"></switches>
               <toggle title="text.weightScale" v-model="item.weightItem.enable" :defaultStyle="false">
               <transition name="dropdown">
                 <div class="opt" v-if="item.weightItem.enable">
@@ -97,6 +96,8 @@
                 </div>
               </transition>
             </toggle>
+              <switches title="text.spicy" v-model="item.spicy"></switches>
+              <switches title="text.disable" v-model="item.disable"></switches>
           </div>
           </div>
         </template>
@@ -179,7 +180,8 @@ export default {
       this.$forceUpdate();
     },
     save() {
-      console.log("trigger");
+      this.item.price = isNumber(this.item.price) ? this.item.price : 0;
+      this.init.resolve(this.item);
     },
     patchItem() {
       Array.isArray(this.init.item.price) && (this.deprecated = true);

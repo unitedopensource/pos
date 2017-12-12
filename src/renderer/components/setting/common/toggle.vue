@@ -1,5 +1,5 @@
 <template>
-    <div :class="{toggle:defaultStyle}">
+    <div class="toggle" :class="{style:defaultStyle}">
       <div class="inner">
         <label class="label">
             <span class="title">{{$t(title)}}</span>
@@ -52,19 +52,19 @@ export default {
 </script>
 
 <style scoped>
-.toggle {
+.toggle.style {
   border-bottom: 1px solid #eee;
 }
 
-.toggle .inner {
+.toggle.style .inner {
   min-height: 48px;
 }
 
-.toggle .label {
+.toggle.style .label {
   padding: 5px 20px;
 }
 
-.toggle .input-toggle {
+.toggle.style .input-toggle {
   width: 80px;
 }
 

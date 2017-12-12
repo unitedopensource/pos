@@ -260,21 +260,23 @@ export default {
     REQUEST_ITEM_UPDATE(data) {
       this.updateRequestItem(data);
     },
-    
-
-
+    MENU_ITEM_UPDATE(data) {
+      let { action, item, sequence } = data;
+      switch (action) {
+        case "update":
+          this.updateMenuItem({ item, sequence });
+          break;
+        case "remove":
+          this.removeMenuItem(sequence);
+          break;
+      }
+    },
 
     REQUEST_ITEM_REMOVE(data) {
       this.removeRequestItem(data);
     },
     MENU_CATEGORY_RESORT(data) {
       this.resortMenuCategory(data);
-    },
-    MENU_ITEM_UPDATE(data) {
-      this.updateMenuItem(data);
-    },
-    MENU_ITEM_REMOVE(data) {
-      this.removeMenuItem(data);
     },
     UPDATE_TABLE_SECTION(data) {
       this.updateTableSection(data);
