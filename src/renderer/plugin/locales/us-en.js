@@ -382,21 +382,6 @@ export default {
         'categoryEditor': 'Category Editor',
         'itemEditor': 'Item Editor',
     },
-    // menu: {
-    //     'course': 'Course',
-    //     'timer': 'Timer',
-    //     'hour': 'Hour',
-    //     'minute': 'Minute',
-    //     'search': 'Search',
-    //     'builder': 'Builder',
-    //     'seatList': 'Seat List',
-    //     'marker': 'Marker',
-    //     'modify': 'Modifier',
-    //     'scale': 'Weight Scale',
-    //     'split': 'Order Split',
-    //     'temporary': 'Temporary Item',
-    //     'payment': 'Payment'
-    // },
     dialog: {
         'maintenance': 'Maintenance',
         'maintenanceTip': 'POS is under maintenance...',

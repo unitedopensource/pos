@@ -295,21 +295,6 @@ export default {
         'categoryEditor': '类别编辑',
         'itemEditor': '物品编辑'
     },
-    // menu: {
-    //     'course': '定时',
-    //     'timer': '定时',
-    //     'hour': '小时',
-    //     'minute': '分钟',
-    //     'search': '搜索',
-    //     'builder': '物品编辑',
-    //     'seatList': '座位表',
-    //     'marker': '物品标记',
-    //     'modify': '修改物品',
-    //     'scale': '物品磅秤',
-    //     'split': '分单',
-    //     'temporary': '临时物品',
-    //     'payment': '付款'
-    // },
     dialog: {
         'maintenance': '维护',
         'maintenanceTip': '系统正在维护中...',
@@ -1241,7 +1226,7 @@ export default {
     },
     tip: {
         'autoTemplate': '自动弹出模板选择页面',
-        'alphabetical': '菜单将按字母序列排序 (中文字符将会按照拼音排序)',
+        'alphabetical': '按字母排序菜单 (中文则按拼音排序)',
         'createSubMenuGroup': '创建一个子菜单组',
         'reportBeforeBatch': '过账前是否详细的打印每笔交易信息',
         'tipFor': '小费基于',

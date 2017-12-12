@@ -49,6 +49,7 @@
                     <i class="fa fa-bars drag"></i>
                     <i class="fa fa-ellipsis-v"></i>
                   </div>
+                  <i class="fa fa-trash remove"></i>
                 </li>
                 <li @click="addOption" :key="-1" v-if="item.option.length < 11" class="add">
                   <i class="fa fa-plus"></i>
@@ -293,6 +294,21 @@ ul.options li {
   margin-bottom: 5px;
   border-radius: 4px;
   background: #eeeeee;
+  position: relative;
+}
+
+li i.remove {
+  display: none;
+  position: absolute;
+  right: -25px;
+  top: 0;
+  color: #ff5722;
+  cursor: pointer;
+  padding: 10px 5px;
+}
+
+li:hover i.remove{
+  display: initial;
 }
 
 ul.options input {

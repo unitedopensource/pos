@@ -1,9 +1,12 @@
 {
     "cSpell.words": [
+        "antialiased",
+        "bounding",
         "breakline",
         "callid",
         "cashdrawer",
         "cashflow",
+        "client",
         "clockout",
         "contextmenu",
         "creditflow",
@@ -12,6 +15,7 @@
         "dropdown",
         "fieldset",
         "figcaption",
+        "get",
         "giftflow",
         "inputer",
         "keydown",
@@ -19,6 +23,7 @@
         "maxlength",
         "nowrap",
         "params",
+        "rect",
         "submenu",
         "subnav",
         "tbody",

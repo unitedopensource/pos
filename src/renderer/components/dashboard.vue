@@ -124,7 +124,6 @@ import counter from "./common/counter";
 import toast from "./dashboard/toast";
 import unlock from "./common/unlock";
 import Preset from "../preset";
-import Mac from "getmac";
 
 export default {
   components: { dialoger, counter, toast, unlock, thirdParty },
@@ -137,6 +136,7 @@ export default {
       "device",
       "config",
       "store",
+      "dinein",
       "station",
       "history"
     ])
@@ -149,7 +149,6 @@ export default {
   },
   created() {
     this.getTicketNumber()
-      .then(this.checkStation)
       .then(this.checkTimecard)
       .then(this.checkCashCtrl)
       .then(this.initialized)
@@ -164,48 +163,48 @@ export default {
         });
       });
     },
-    checkStation() {
-      return new Promise((resolve, reject) => {
-        if (this.station) {
-          resolve();
-        } else {
-          let data = {
-            type: "warning",
-            title: "dialog.stationUnregistered",
-            msg: "dialog.stationUnregisteredTip",
-            buttons: [{ text: "button.activation", fn: "resolve" }]
-          };
+    // checkStation() {
+    //   return new Promise((resolve, reject) => {
+    //     if (this.station) {
+    //       resolve();
+    //     } else {
+    //       let data = {
+    //         type: "warning",
+    //         title: "dialog.stationUnregistered",
+    //         msg: "dialog.stationUnregisteredTip",
+    //         buttons: [{ text: "button.activation", fn: "resolve" }]
+    //       };
 
-          this.$dialog(data).then(() => {
-            Mac.getMac((err, mac) => {
-              if (err) {
-                this.$dialog({
-                  type: "error",
-                  title: "dialog.stationRegisterFailed",
-                  msg: ["dialog.stationRegisterFailedTip", err],
-                  buttons: [{ text: "button.confirm", fn: "resolve" }]
-                }).then(() => {
-                  this.$q();
-                  this.$router.push({ name: "Login" });
-                });
-              } else {
-                let stations = Object.assign({}, this.store.station);
-                let length = Object.keys(stations).length + 1;
-                let alias = "pc" + length;
-                let station = Preset.station(alias, mac);
-                stations[alias] = station;
+    //       this.$dialog(data).then(() => {
+    //         Mac.getMac((err, mac) => {
+    //           if (err) {
+    //             this.$dialog({
+    //               type: "error",
+    //               title: "dialog.stationRegisterFailed",
+    //               msg: ["dialog.stationRegisterFailedTip", err],
+    //               buttons: [{ text: "button.confirm", fn: "resolve" }]
+    //             }).then(() => {
+    //               this.$q();
+    //               this.$router.push({ name: "Login" });
+    //             });
+    //           } else {
+    //             let stations = Object.assign({}, this.store.station);
+    //             let length = Object.keys(stations).length + 1;
+    //             let alias = "pc" + length;
+    //             let station = Preset.station(alias, mac);
+    //             stations[alias] = station;
 
-                this.$socket.emit("[CONFIG] UPDATE_STATION", stations);
-                this.setStation(station);
-                this.setStations(stations);
-                Printer.initial(CLODOP, this.config);
-                resolve();
-              }
-            });
-          });
-        }
-      });
-    },
+    //             this.$socket.emit("[CONFIG] UPDATE_STATION", stations);
+    //             this.setStation(station);
+    //             this.setStations(stations);
+    //             Printer.initial(CLODOP, this.config);
+    //             resolve();
+    //           }
+    //         });
+    //       });
+    //     }
+    //   });
+    // },
     checkTimecard() {
       return new Promise(next => {
         if ((this.store.timecard || this.op.timecard) && !this.op.clockIn) {
@@ -229,13 +228,9 @@ export default {
                   moment(this.time).format("hh:mm:ss a")
                 ],
                 buttons: [{ text: "button.confirm", fn: "resolve" }]
-              }).then(() => {
-                next();
-              });
+              }).then(() => next());
             })
-            .catch(() => {
-              next();
-            });
+            .catch(() => next());
         } else if (this.op.break) {
           let duration = moment
             .duration(+new Date() - this.op.break, "milliseconds")
@@ -251,9 +246,7 @@ export default {
               this.setOp({ break: null });
               next();
             })
-            .catch(() => {
-              next();
-            });
+            .catch(() => next());
         } else {
           next();
         }
@@ -286,12 +279,8 @@ export default {
     askCashIn() {
       let amount = this.station.cashDrawer.initialAmount;
       this.$dialog({ title: "dialog.cashIn", msg: "dialog.cashInTip" })
-        .then(() => {
-          this.countInitialCash(amount);
-        })
-        .catch(() => {
-          this.$q();
-        });
+        .then(() => this.countInitialCash(amount))
+        .catch(() => this.$q());
     },
     countInitialCash(amount) {
       if (isNumber(amount)) {
@@ -304,23 +293,15 @@ export default {
             { text: "button.confirm", fn: "resolve" }
           ]
         })
-          .then(() => {
-            this.acceptCashIn(amount);
-          })
-          .catch(() => {
-            this.countInitialCash();
-          });
+          .then(() => this.acceptCashIn(amount))
+          .catch(() => this.countInitialCash());
       } else {
         new Promise((resolve, reject) => {
           this.componentData = { resolve, reject };
           this.component = "counter";
         })
-          .then(amount => {
-            this.countInitialCash(amount);
-          })
-          .catch(() => {
-            this.$q();
-          });
+          .then(this.countInitialCash)
+          .catch(() => this.$q());
       }
     },
     initialized() {
@@ -380,15 +361,13 @@ export default {
             });
           break;
         case "table":
-          this.store.table.layout
+          this.dinein.table
             ? this.$router.push({ path: "/main/table" })
             : this.$dialog({
                 title: "dialog.dineInDisabled",
                 msg: "dialog.dineInEnableTip",
                 buttons: [{ text: "button.confirm", fn: "resolve" }]
-              }).then(() => {
-                this.$q();
-              });
+              }).then(() => this.$q());
           break;
         case "pickupList":
           this.$router.push({ path: "/main/list" });
@@ -404,9 +383,7 @@ export default {
                     this.$denyAccess();
                   }
                 })
-                .catch(() => {
-                  this.$denyAccess();
-                });
+                .catch(() => this.$denyAccess());
           break;
         case "setting":
           this.approval(this.op.access, route)
@@ -473,18 +450,12 @@ export default {
         title: "dialog.cashDrawerUnavailable",
         msg: "dialog.cashDrawerUnavailableTip",
         buttons: [{ text: "button.confirm", fn: "resolve" }]
-      }).then(() => {
-        this.$q();
-      });
+      }).then(() => this.$q());
     },
     askSelfCashIn() {
       this.$dialog({ title: "dialog.selfCashIn", msg: "dialog.selfCashInTip" })
-        .then(() => {
-          this.countSelfCash();
-        })
-        .catch(() => {
-          this.$q();
-        });
+        .then(() => this.countSelfCash())
+        .catch(() => this.$q());
     },
     countSelfCash(amount) {
       if (isNumber(amount)) {
@@ -492,23 +463,15 @@ export default {
           title: "dialog.selfCashInConfirm",
           msg: ["dialog.selfCashInConfirmTip", amount.toFixed(2)]
         })
-          .then(() => {
-            this.acceptCashIn(amount);
-          })
-          .catch(() => {
-            this.countSelfCash();
-          });
+          .then(() => this.acceptCashIn(amount))
+          .catch(() => this.countSelfCash());
       } else {
         new Promise((resolve, reject) => {
           this.componentData = { resolve, reject };
           this.component = "counter";
         })
-          .then(amount => {
-            this.countSelfCash(amount);
-          })
-          .catch(() => {
-            this.$q();
-          });
+          .then(this.countSelfCash)
+          .catch(() => this.$q());
       }
     },
     acceptCashIn(amount) {
@@ -539,9 +502,7 @@ export default {
           title: "dialog.staffBankMode",
           msg: "dialog.staffBankModeTip",
           buttons: [{ text: "button.confirm", fn: "resolve" }]
-        }).then(() => {
-          this.$q();
-        });
+        }).then(() => this.$q());
       }
     },
     initialCashFlow(name) {

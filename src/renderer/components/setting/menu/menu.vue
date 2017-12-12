@@ -77,7 +77,7 @@ export default {
           this.$socket.emit(
             "[CATEGORY] UPDATE",
             { category: _category, index },
-            () => this.refreshData
+            () => this.refreshData()
           );
         })
         .catch(() => this.$q());
@@ -112,7 +112,7 @@ export default {
               item: _item,
               sequence
             },
-            () => this.refreshData
+            () => this.refreshData()
           );
         })
         .catch(del => {
@@ -122,7 +122,7 @@ export default {
     deleteItemConfirm(item, group, index) {
       this.$dialog({
         title: "dialog.deleteItem",
-        msg: ["dialog.deleteItemConfirm", item[language]],
+        msg: ["dialog.deleteItemConfirm", item[this.language]],
         buttons: [
           { text: "button.cancel", fn: "reject" },
           { text: "button.delete", fn: "resolve" }
@@ -137,7 +137,7 @@ export default {
               _id: item._id,
               sequence
             },
-            () => this.refreshData
+            () => this.refreshData()
           );
         })
         .catch(() => this.$q());
@@ -153,6 +153,7 @@ export default {
           usEN: "",
           zhCN: "",
           spicy: "",
+          price: 0,
           num: this.items[group].filter(i => i.clickable).length,
           prices: {}
         });

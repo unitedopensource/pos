@@ -397,11 +397,12 @@ export default {
     },
     ...mapGetters([
       "app",
-      "config",
-      "store",
       "tax",
-      "order",
+      "store",
+      "config",
+      "dinein",
       "item",
+      "order",
       "ticket",
       "language",
       "isEmptyTicket"

@@ -19,6 +19,10 @@
         </div>
       </transition>
     </toggle>
+    <toggle title="text.menuID" v-model="display.menuID" @update="updateMenuID"></toggle>
+    <toggle title="text.favoriteItem" v-model="display.favorite" @update="updateFavorite"></toggle>
+    <toggle title="text.autoTemplate" tooltip="tip.autoTemplate" v-model="display.autoTemplate" @update="updateTemplate"></toggle>
+    <toggle title="text.alphabetical" tooltip="tip.alphabetical" v-model="display.alphabetical" @update="updateAlphabetical"></toggle>
     </div>
 </template>
 
@@ -30,11 +34,9 @@ export default {
   components: { toggle, switches, inputer },
   data() {
     return {
-      store: null
+      store: JSON.parse(JSON.stringify(this.$store.getters.store)),
+      display: JSON.parse(JSON.stringify(this.$store.getters.config.display))
     };
-  },
-  created() {
-    this.store = Object.assign({}, this.$store.getters.store);
   },
   methods: {
     update(data) {
@@ -70,6 +72,30 @@ export default {
       let value = this.store.email.password;
       this.update({
         key: "store.email.password",
+        value
+      });
+    },
+    updateMenuID(value) {
+      this.update({
+        key: "display.menuID",
+        value
+      });
+    },
+    updateFavorite(value) {
+      this.update({
+        key: "display.favorite",
+        value
+      });
+    },
+    updateTemplate(value) {
+      this.update({
+        key: "display.autoTemplate",
+        value
+      });
+    },
+    updateAlphabetical(value) {
+      this.update({
+        key: "display.alphabetical",
         value
       });
     }
