@@ -194,8 +194,12 @@ export default [{
             }]
           }, {
             path: 'print',
-            name: 'Setting.print',
-            component: require('./components/setting/print/index')
+            component: require('./components/setting/print/nav'),
+            children: [{
+              path: '/',
+              name: 'Setting.print',
+              component: require('./components/setting/print/index')
+            }]
           }
         ]
       }

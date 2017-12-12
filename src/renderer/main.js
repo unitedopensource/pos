@@ -12,6 +12,7 @@ import Ip from 'ip'
 import App from './App'
 import routes from './routes'
 import i18n from './plugin/dict'
+import encryptor from "./plugin/encryptor"
 import dialog from './plugin/dialog'
 import VueBus from './plugin/bus'
 import Trend from "vuetrend"
@@ -27,6 +28,7 @@ Vue.use(VueTouch, {
 Vue.use(Router)
 Vue.use(dialog)
 Vue.use(i18n)
+Vue.use(encryptor)
 
 Vue.directive('mask', VueMaskDirective);
 

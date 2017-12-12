@@ -4,7 +4,7 @@
 import { mapActions, mapGetters } from "vuex";
 import { ipcRenderer } from "electron";
 import serialport from "serialport";
-import Print from "../printer";
+import Print from "../plugin/printer";
 import Magic from "wake_on_lan";
 import Mac from "getmac";
 import os from "os";
@@ -18,6 +18,10 @@ export default {
   created() {
     this.startTick();
     this.initialEnvironment();
+
+    //testing
+    let encryptor = require("../plugin/encryptor");
+    window.encryptor = encryptor;
   },
   methods: {
     initialEnvironment() {
