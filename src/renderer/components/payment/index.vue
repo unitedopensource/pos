@@ -1011,9 +1011,7 @@ export default {
     queryGiftCard() {
       this.swipeGiftCard(this.giftCard)
         .then(this.checkGiftCard)
-        .catch(() => {
-          this.$q();
-        });
+        .catch(() => this.$q());
     },
     checkGiftCard(card) {
       this.$q();
@@ -1031,7 +1029,7 @@ export default {
             title: "dialog.giftCardActivation",
             msg: ["dialog.giftCardNotActivated", number],
             buttons: [{ text: "button.confirm", fn: "resolve" }]
-          }).then(reject);
+          }).then(() => reject());
         }
       });
     },
@@ -1069,9 +1067,7 @@ export default {
             this.componentData = { resolve, reject, callback: true };
             this.component = "thirdParty";
           })
-            .then(type => {
-              charge(type);
-            })
+            .then(type => charge(type))
             .catch(() => {
               this.component = null;
               this.componentData = null;

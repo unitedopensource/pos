@@ -45,7 +45,8 @@ export default {
   },
   computed: {
     invalid() {
-      return !this.device.alias;
+      let names = this.init.devices.filter(d=>d._id !== this.device._id).map(d=>d.alias);
+      return !this.device.alias || names.includes(this.device.alias);
     }
   },
   methods: {

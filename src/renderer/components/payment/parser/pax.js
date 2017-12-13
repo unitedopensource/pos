@@ -1,9 +1,10 @@
-import axios from "axios";
+const axios = require("axios");
 
 const Pax = function () {
   let device = null;
   let station = null;
-  let instance = null;
+  let request = null;
+  let terminal = null;
   let cardType = ['',
     'Visa',
     'MasterCard',
@@ -24,29 +25,38 @@ const Pax = function () {
   ];
 
 
-  this.initial = function (ip, port, sn, alias) {
+  this.initial = function (ip, port, sn, stationAlias, terminalAlias) {
     if (!ip || !port) throw new Error("CONFIG_FILE_ERROR");
 
-    station = alias || '';
-    instance = axios.create({
-      baseURL: `http://${ip}:${port}?`
+    station = stationAlias || '';
+    terminal = terminalAlias || '';
+    request = axios.create({
+      baseURL: `http://${ip}:${port}`
     });
 
     let command = Encode("A00_1.38");
-    return axios.get(command);
+    return request.get(command);
   };
 
   this.check = function (d) {
-    let data = d.split(String.fromCharCode(28));
-    let sn = data[5] ? data[5].replace(/[^a-z0-9]/gi, '') : "";
-    let msg = data[4].indexOf(String.fromCharCode(3) !== -1) ? data[4].split(String.fromCharCode(3))[0] : data[4];
-    device = {
-      msg,
-      sn,
-      code: data[3],
-      model: data[6],
-      mac: data[8]
-    };
+    try {
+      let data = d.split(String.fromCharCode(28));
+      let sn = data[5] ? data[5].replace(/[^a-z0-9]/gi, '') : "";
+      let msg = data[4].indexOf(String.fromCharCode(3) !== -1) ? data[4].split(String.fromCharCode(3))[0] : data[4];
+      device = {
+        msg,
+        sn,
+        code: data[3],
+        model: data[6],
+        mac: data[8]
+      };
+    } catch (e) {
+      device = {
+        code: "999999",
+        msg: "parseError"
+      }
+    }
+
     return device;
   };
   this.charge = function (data, ticket) {
@@ -56,14 +66,16 @@ const Pax = function () {
     } = data.creditCard;
     let amount = toFixed(data.amount * 100, 0);
     let tip = toFixed(data.tip * 100, 0);
-    if (!number && !date) {
-      let command = this.parser(`T00_1.38_01_${amount}|${tip}|__1_____`);
-      return command
-    } else {
+    let command;
+
+    if (number && date) {
       let info = `${number}|${date}|`;
-      let command = this.parser(`T00_1.38_01_${amount}_${info}_1_____`);
-      return command
+      command = Encode(`T00_1.38_01_${amount}_${info}_1_____`)
+    } else {
+      command = Encode(`T00_1.38_01_${amount}|${tip}|__1_____`)
     }
+
+    return request.get(command)
   };
   this.explainTransaction = function (raw) {
     let data = raw.split(String.fromCharCode(28));
@@ -121,6 +133,7 @@ const Pax = function () {
           },
           device,
           station,
+          terminal,
           addition,
           order: {},
           time: +new Date,
@@ -181,8 +194,8 @@ const Pax = function () {
     }
   }
   this.getLocalReport = function () {
-    let command = this.parser(`R00_1.26_01_`);
-    return fetch(command)
+    let command = Encode(`R00_1.26_01_`);
+    return request.get(command)
   }
 
   this.explainBatch = function (raw) {
@@ -308,24 +321,25 @@ const Pax = function () {
     xhr.send(null);
     xhr.abort();
   }
+
   this.drawSignature = function (data) {
     Draw(data);
   }
 
   this.adjust = function (invoice, trans, value) {
-    let command = this.parser(`T00_1.38_06_${value}__${invoice}|||${trans}______`);
-    return fetch(command);
+    let command = Encode(`T00_1.38_06_${value}__${invoice}|||${trans}______`);
+    return request.get(command)
   }
   this.voidSale = function (invoice, trans) {
-    let command = this.parser(`T00_1.38_16___${invoice}|||${trans}______`);
-    return fetch(command);
+    let command = Encode(`T00_1.38_16___${invoice}|||${trans}______`);
+    return request.get(command)
   }
   this.report = function () {
-    let command = this.parser('R00_1.38_00_')
+    let command = Encode('R00_1.38_00_')
   }
   this.batch = function () {
-    let command = this.parser('B00_1.38_');
-    return fetch(command);
+    let command = Encode('B00_1.38_');
+    return request.get(command)
   }
 };
 
@@ -333,7 +347,7 @@ const Encode = function (d) {
   d = d.replace(/[_]/g, String.fromCharCode(0x1c));
   d = d.replace(/[|]/g, String.fromCharCode(0x1f));
   let l = lrc(d + String.fromCharCode(0x03));
-  return new Buffer(String.fromCharCode(0x02) + d + String.fromCharCode(0x03) + l).toString('base64');
+  return String.fromCharCode(0x3F) + new Buffer(String.fromCharCode(0x02) + d + String.fromCharCode(0x03) + l).toString('base64');
 };
 
 const Decode = function (d) {
@@ -370,4 +384,4 @@ const Draw = function (path) {
   }
 };
 
-export default new Pax();
+module.exports = new Pax();

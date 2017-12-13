@@ -38,34 +38,60 @@ export default {
   },
   methods: {
     initialData() {
-      return new Promise(next => {
+      return new Promise((next, reject) => {
         this.timeout = setTimeout(() => {
           this.cancelable = true;
         }, 30000);
 
         this.$socket.emit("[TERMINAL] CONFIG", this.attached, config => {
           if (!config) {
-            throw new Error("CONFIG_FILE_NO_FOUND");
+            reject({ error: "CONFIG_FILE_NO_FOUND" });
           } else {
             this.config = config;
-            this.terminal = this.getParser(config.model).default();
+            this.terminal = this.getParser(config.model);
             next();
           }
         });
       });
     },
     initTerminal() {
-      console.log("initial");
       return new Promise(next => {
         let { ip, port, sn, model } = this.config;
 
         this.msg = this.$t("terminal.initial", model);
 
-        console.log(this.terminal);
+        this.terminal
+          .initial(ip, port, sn, this.station, this.attached)
+          .then(response => {
+            next(response.data);
+          })
+          .catch(e => {
+            throw new Error({ error: "TERMINAL_RETURN_ERROR" });
+          });
+      });
+    },
+    initTransaction(initial) {
+      return new Promise((next, reject) => {
+        this.device = this.terminal.check(initial);
 
-        this.terminal.initial(ip, port, sn, this.station).then(response => {
-          console.log(response);
-        });
+        if (this.device.code !== "000000") {
+          reject({ error: "DEVICE_RETURN_ERROR" });
+        } else {
+          this.terminal.charge(this.init.card).then(response => {
+            next(response.data);
+          });
+        }
+      });
+    },
+    parseData(data) {
+      return new Promise((next, reject) => {
+        const result = this.terminal.explainTransaction(data);
+
+        if (result.code !== "000000") {
+          reject({ error: "TRANSACTION_FAILED", data: result });
+        } else {
+          this.init.resolve(result);
+        }
       });
     },
     getParser(model) {
@@ -78,6 +104,27 @@ export default {
           return require("./parser/exadigm.js");
         default:
           return require("./parser/pax.js");
+      }
+    },
+    transactionFailed(exception) {
+      let { error, data } = exception;
+      console.log(exception);
+      switch (error) {
+        case "CONFIG_FILE_NO_FOUND":
+          break;
+        case "TERMINAL_RETURN_ERROR":
+          break;
+        case "DEVICE_RETURN_ERROR":
+          break;
+        case "TRANSACTION_FAILED":
+          this.icon = "error";
+          this.msg = this.$t(data.msg);
+          this.tip = data.error ? data.error : "";
+          this.cancelable = true;
+          setTimeout(() => {
+            this.init.reject();
+          }, 2500);
+          break;
       }
     },
     abort() {

@@ -72,7 +72,13 @@ export default {
     },
     edit(device, index) {
       new Promise((resolve, reject) => {
-        this.componentData = { resolve, reject, device, edit: !!device._id };
+        this.componentData = {
+          resolve,
+          reject,
+          devices: this.devices,
+          device,
+          edit: !!device._id
+        };
         this.component = "editor";
       })
         .then(_device =>
