@@ -472,6 +472,7 @@ header.dock {
 .dock .customer span {
   padding: 0 10px;
   margin: 0 5px;
+  text-transform: uppercase;
 }
 
 .dock .customer span,

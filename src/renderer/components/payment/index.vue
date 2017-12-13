@@ -598,6 +598,7 @@ export default {
   created() {
     this.initialData()
       .then(this.checkComponentOccupy)
+      .then(this.checkTicket)
       .then(this.checkDate)
       .then(this.checkPermission)
       .then(this.checkSplit)
@@ -653,6 +654,12 @@ export default {
           lock ? reject({ error: "paymentPending", data }) : resolve();
         });
       });
+    },
+    checkTicket(){
+      return new Promise((resolve,reject)=>{
+        console.log(this.order);
+        resolve()
+      })
     },
     checkDate() {
       return new Promise((resolve, reject) => {

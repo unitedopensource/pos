@@ -1,11 +1,11 @@
 <template>
     <main class="window">
         <div class="switch">
-            <figure :class="{active:ticket.type === 'PICK_UP'}" @click="setTicket({type:'PICK_UP'});setOrder({type:'PICK_UP'})">
+            <figure :class="{active:type === 'PICK_UP'}" @click="setTicket({type:'PICK_UP'});setOrder({type:'PICK_UP'})">
                 <i class="fa fa-user"></i>
                 <span class="text">{{$t('type.PICK_UP')}}</span>
             </figure>
-            <figure :class="{active:ticket.type === 'DELIVERY'}" @click="setTicket({type:'DELIVERY'});setOrder({type:'DELIVERY'})">
+            <figure :class="{active:type === 'DELIVERY'}" @click="setTicket({type:'DELIVERY'});setOrder({type:'DELIVERY'})">
                 <i class="fa fa-car"></i>
                 <span class="text">{{$t('type.DELIVERY')}}</span>
             </figure>
@@ -31,6 +31,14 @@
 <script>
 import { mapGetters, mapActions } from "vuex";
 export default {
+  data() {
+    return {
+      type: null
+    };
+  },
+  created() {
+    this.type = this.order.type || this.ticket.type;
+  },
   methods: {
     tap(tab, e) {
       e && document.querySelector(".tab.active").classList.remove("active");
@@ -68,7 +76,7 @@ export default {
     ...mapActions(["resetMenu", "setTicket", "setOrder", "resetDashboard"])
   },
   computed: {
-    ...mapGetters(["customer", "ticket"])
+    ...mapGetters(["customer", "order", "ticket"])
   }
 };
 </script>

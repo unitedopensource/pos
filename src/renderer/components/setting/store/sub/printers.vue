@@ -29,6 +29,7 @@ export default {
   methods: {
     save() {
       this.$socket.emit("[UPDATE] STATION", {
+        _id: this.$store.getters.station._id,
         key: "printers",
         value: this.devices
       });

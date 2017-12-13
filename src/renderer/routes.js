@@ -24,7 +24,7 @@ export default [{
       },
       {
         path: 'info',
-        component: require('./components/info'),
+        component: require('./components/dashboard/info'),
         children: [{
           path: '/',
           name: 'Information',

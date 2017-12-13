@@ -45,7 +45,7 @@ export default {
     };
   },
   created() {
-    this.type = this.app.mode === "create" ? this.ticket.type : this.order.type;
+    this.type = this.ticket.type = this.order.type;
   },
   computed: {
     ...mapGetters(["app", "store", "ticket", "order", "currentTable"])

@@ -84,13 +84,13 @@ section.section {
 .tables {
   display: flex;
   flex-wrap: wrap;
-  padding: 2px 2px 2px 0;
+  padding: 5px 106px;
 }
 
 .table {
   display: inline-flex;
   flex-direction: column;
-  width: 101.5px;
+  width: 83px;
   height: 83px;
   background: linear-gradient(
     135deg,

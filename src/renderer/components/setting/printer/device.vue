@@ -1,8 +1,9 @@
 <template>
     <div>        
         <header class="nav">
-            <div>
-
+            <div class="title">
+                <h5></h5>
+                <h3>{{$t("title.printer")}}</h3>
             </div>
             <nav>
                 <span class="add" @click="create">{{$t('button.new')}}</span>
@@ -22,6 +23,9 @@ export default {
     };
   },
   methods:{
+      create(){
+
+      },
       config(printer){
 
       }

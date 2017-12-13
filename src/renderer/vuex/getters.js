@@ -1,3 +1,4 @@
+export const op = s => s.login.op
 export const app = s => s.initial.app
 export const sync = s => s.initial.sync
 export const time = s => s.initial.time
@@ -16,7 +17,6 @@ export const language = s => s.initial.app.language
 export const station = s => s.initial.config.station
 export const reservation = s => s.initial.reservation
 export const terminals = s => s.initial.config.terminal
-export const op = s => s.login.op
 export const password = s => s.login.password
 export const customer = s => s.main.customer
 export const displayKeyboard = s => s.main.keyboard
