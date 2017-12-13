@@ -63,10 +63,10 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
 import dialoger from "../../common/dialoger";
 import checkbox from "../../setting/common/checkbox";
 import processor from "../../common/processor";
+
 export default {
   props: ["init"],
   components: { checkbox, dialoger, processor },

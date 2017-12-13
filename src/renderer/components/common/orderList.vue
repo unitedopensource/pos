@@ -114,7 +114,7 @@ export default {
         tip: 0,
         gratuity: 0,
         delivery: 0,
-        surcharge: 0, // tip + gratuity + delivery
+        surcharge: 0, // tip + gratuity
         log: []
       },
       lastDelta: 0,

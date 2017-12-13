@@ -153,28 +153,26 @@ export default {
         };
 
         let station = this.$store.getters.station;
+        let attached = station.terminal;
 
-        if (!station.terminal.enable) throw error;
-
-        let terminal = station.terminal;
-        //this.station = station.alies;
-
-        this.terminal = this.getFile(terminal.model);
-        this.terminal
-          .initial(terminal.address, terminal.port, terminal.sn, station.alies)
-          .then(r => r.text())
-          .then(device => {
-            this.device = this.terminal.check(device);
-            if (this.device.code === "000000") {
-              this.deviceReady = true;
-            }
-          });
+        if (!attached) throw error;
+        
+        this.$socket.emit("[TERMINAL] CONFIG", attached, config => {
+          let { ip, port, sn, model } = config;
+          this.terminal = this.getFile(model);
+          this.terminal
+            .initial(ip, port, sn, station.alias, attached)
+            .then(response => {
+              this.device = this.terminal.check(response.data);
+              this.device.code === "000000" && (this.deviceReady = true);
+            });
+        });
         resolve();
       });
     },
     initialData() {
       return new Promise((resolve, reject) => {
-        this.$socket.emit("[TERM] INITIAL", data => {
+        this.$socket.emit("[TERMINAL] TODAY", data => {
           let stations = new Set();
           data.map(t => t.station).forEach(name => stations.add(name));
           this.stations = Array.from(stations).map(station => {
@@ -190,9 +188,7 @@ export default {
       });
     },
     initialFailed(error) {
-      this.$dialog(error).then(() => {
-        this.init.resolve();
-      });
+      this.$dialog(error).then(() => this.init.resolve());
     },
     setPage(number) {
       this.page = number;
@@ -202,9 +198,7 @@ export default {
       this[type] = value;
       this.page = 0;
 
-      this.$nextTick(() => {
-        this.$bus.emit("applied");
-      });
+      this.$nextTick(() => this.$bus.emit("applied"));
     },
     getFile(device) {
       switch (device) {
@@ -236,61 +230,48 @@ export default {
       Printer.printCreditCard(record, true);
     },
     voidSale(record) {
-      let data =
+      let msg =
         record.for === "Order"
-          ? {
-              title: "dialog.voidCreditSale",
-              msg: [
-                "dialog.voidCreditInvoice",
-                record.order.number,
-                this.$t("type." + record.order.type)
-              ],
-              buttons: [
-                { text: "button.cancel", fn: "reject" },
-                { text: "button.confirmPrint", fn: "resolve" }
-              ]
-            }
-          : {
-              title: "dialog.voidCreditSale",
-              msg: ["dialog.voidCreditReload"],
-              buttons: [
-                { text: "button.cancel", fn: "reject" },
-                { text: "button.confirmPrint", fn: "resolve" }
-              ]
-            };
+          ? [
+              "dialog.voidCreditInvoice",
+              record.order.number,
+              this.$t("type." + record.order.type)
+            ]
+          : "dialog.voidCreditReload";
+
+      let data = {
+        title: "dialog.voidCreditSale",
+        msg,
+        buttons: [
+          { text: "button.cancel", fn: "reject" },
+          { text: "button.confirmPrint", fn: "resolve" }
+        ]
+      };
 
       this.$dialog(data)
         .then(() => {
           let invoice = record.order.number;
           let transaction = record.trace.trans;
 
-          this.terminal
-            .voidSale(invoice, transaction)
-            .then(r => r.text())
-            .then(data => {
-              let voidSale = this.terminal.explainTransaction(data);
-              delete voidSale.order;
+          this.terminal.voidSale(invoice, transaction).then(response => {
+            let voidSale = this.terminal.explainTransaction(response.data);
+            delete voidSale.order;
 
-              if (voidSale.code === "000000") {
-                Printer.printCreditCard(voidSale);
-                Object.assign(record, voidSale, { status: 0 });
-                this.$socket.emit("[TERM] VOID_TRANSACTION", record);
-              } else {
-                this.$dialog({
-                  type: "error",
-                  title: voidSale.msg,
-                  msg: ["terminal.error", voidSale.code],
-                  buttons: [{ text: "button.confirm", fn: "resolve" }]
-                }).then(() => {
-                  this.$q();
-                });
-              }
-            });
+            if (voidSale.code === "000000") {
+              Printer.printCreditCard(voidSale);
+              Object.assign(record, voidSale, { status: 0 });
+              this.socket.emit("[TERMINAL] VOID", record);
+            } else {
+              this.$dialog({
+                type: "error",
+                title: voidSale.msg,
+                buttons: [{ text: "button.confirm", fn: "resolve" }]
+              }).then(() => this.$q());
+            }
+          });
           this.$q();
         })
-        .catch(() => {
-          this.$q();
-        });
+        .catch(() => this.$q());
     },
     adjustAllTips() {
       new Promise((resolve, reject) => {

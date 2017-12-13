@@ -3,7 +3,7 @@ var Printer = function (plugin, config) {
     this.config = config;
     this.station = config.station;
     this.setting = config.printer;
-    this.devices = config.station ? config.station.printers || Object.keys(config.printer) : Object.keys(config.printer);
+    this.devices = config.station ? config.station.printers || Object.keys(config.printers) : Object.keys(config.printers);
     this.targetDevices = [];
     this.template = null;
     this.target = 'Receipt';
@@ -253,9 +253,9 @@ var Printer = function (plugin, config) {
     this.printCreditCard = function (trans, reprint) {
         let {
             store,
-            printer
+            printers
         } = this.config;
-        let device = this.station.printer || 'cashier';
+        let device = this.station.receipt || 'cashier';
 
         //if (!printer[device]['print']['CREDITCARD']) return;
 
@@ -306,7 +306,7 @@ var Printer = function (plugin, config) {
                     <p><span class="text">From Station</span><span class="value">${trans.station}</span></p>
                   </article>
                   <footer>
-                    <div class="index">${trans.index}</div>
+                    <div class="index">${trans.index || ""}</div>
                     <div class="agreement">
                       <p>I AGREE TO PAY ABOVE TOTAL AMOUNT</p>
                       <p>ACCORDING TO CARD ISSUER AGREEMENT</p>

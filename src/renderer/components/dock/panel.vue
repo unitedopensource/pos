@@ -89,6 +89,7 @@ import terminal from "../history/terminal";
 import giftCard from "../giftCard/task";
 import dialoger from "../common/dialoger";
 import payout from "./payout";
+
 export default {
   props: ["init"],
   components: { dialoger, terminal, giftCard, payout },

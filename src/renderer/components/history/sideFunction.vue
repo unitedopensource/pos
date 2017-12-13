@@ -383,7 +383,7 @@ export default {
       }
     },
     terminal() {
-      this.station.terminal.enable
+      this.station.terminal
         ? this.$p("Terminal")
         : this.$dialog({
             title: "dialog.noTerminal",

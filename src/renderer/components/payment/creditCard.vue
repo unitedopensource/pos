@@ -77,6 +77,13 @@ export default {
         if (this.device.code !== "000000") {
           reject({ error: "DEVICE_RETURN_ERROR" });
         } else {
+          const { creditCard } = this.init.card;
+
+          this.msg =
+            creditCard.number && creditCard.date
+              ? this.$t("terminal.transacting", this.device.model)
+              : this.$t("terminal.ready", this.device.model);
+
           this.terminal.charge(this.init.card).then(response => {
             next(response.data);
           });

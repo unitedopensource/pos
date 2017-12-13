@@ -181,6 +181,11 @@ const Pax = function () {
           code,
           msg: 'terminal.creditCard.badTrack'
         }
+      case "100021":
+        return {
+          code,
+          msg: 'terminal.creditCard.void'
+        }
       case "100023":
         return {
           code,
@@ -332,6 +337,7 @@ const Pax = function () {
   }
   this.voidSale = function (invoice, trans) {
     let command = Encode(`T00_1.38_16___${invoice}|||${trans}______`);
+    console.log(command)
     return request.get(command)
   }
   this.report = function () {

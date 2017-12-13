@@ -1,63 +1,82 @@
 <template>
     <div class="popupMask center dark">
-        <div class="window" v-show="!component">
-            <header class="title">
-                <div class="wrap">
-                    <span>{{$t('title.terminalRecord')}}</span>
-                    <div class="dateWrap">
-                        <i class="fa fa-chevron-left" @click="prevDate"></i>
-                        <span class="date">{{date | moment('YYYY-MM-DD')}}</span>
-                        <i class="fa fa-chevron-right" @click="nextDate"></i>
-                    </div>
+        <div class="terminal" v-show="!component">
+            <header>
+                <div class="title">
+                    <h3>{{$t('title.terminalRecords')}}</h3>
+                    <h5>{{$t('tip.foundRecords',filteredTransactions.length)}}</h5>
                 </div>
-                <i class="fa fa-times" @click="init.resolve"></i>
+                <nav class="filter">
+                    <dropdown label="filter.station" :options="stations" filter="filterStation"></dropdown>
+                </nav>
             </header>
-            <div class="inner">
-                <section class="trans">
-                    <header>
-                        <span>&nbsp;</span>
-                        <span class="trans">{{$t('text.transaction')}}</span>
-                        <span class="record">{{$t('text.cardInfo')}}</span>
-                        <span class="amount">{{$t('text.amount')}}</span>
-                        <span class="action">{{$t("text.action")}}</span>
-                    </header>
-                    <ul class="content">
-                        <li v-for="(trans,index) in transaction" :key="index" :class="{void:trans.status === 0,settled:trans.close}">
-                            <i class="fa fa-exclamation-triangle risk" v-if="isRisk(trans)" :title="$t('text.chargeBackRisk')"></i>
-                            <i :class="getIcon(trans.status)" class="status"></i>
-                            <div class="info">
-                                <span class="num">#{{trans.trace.trans}}</span>
-                                <span class="type">{{trans.transType}}</span>
-                                <span class="order" v-if="trans.order">{{$t('type.'+trans.order.type)}}
-                                    <span class="ticket">(#{{trans.order.number}})</span>
-                                </span>
+            <table>
+                <thead>
+                     <tr>
+                        <th class="index">ID</th>
+                        <th>{{$t('thead.type')}}</th>
+                        <th>{{$t('thead.time')}}</th>
+                        <th>{{$t('thead.station')}}</th>
+                        <th>{{$t('thead.for')}}</th>
+                        <th>{{$t('thead.ticket')}}</th>
+                        <th>{{$t('thead.card')}}</th>
+                        <th>{{$t('thead.auth')}}</th>
+                        <th>{{$t('thead.amount')}}</th>
+                        <th>{{$t('thead.tip')}}</th>
+                        <th class="action">{{$t('thead.action')}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(record,index) in records" :key="index" :class="{voided:record.status === 0}">
+                        <td class="index">{{record.index}}</td>
+                        <td>{{record.transType}}</td>
+                        <td>{{record.time | moment("HH:mm:ss")}}</td>
+                        <td>{{record.station}}</td>
+                        <td>{{$t('type.'+record.for)}}</td>
+                        <td v-if="record.for === 'Order'" class="ticket">
+                            <span class="type">{{$t('type.'+record.order.type)}}</span>
+                            <span class="number">#{{record.order.number}}</span>
+                        </td>
+                        <td v-else></td>
+                        <td class="card">
+                            <i :class="ccType(record.account.type)"></i>
+                            <span class="number" :title="record.addition.CARDBIN">...{{record.account.number}}</span>
+                        </td>
+                        <td class="auth">
+                            <span>{{record.host.auth}}</span>
+                        </td>
+                        <td class="amount">$ {{record.amount.approve}}</td>
+                        <td class="amount">$ {{record.amount.tip}}</td>
+                        <td v-if="!record.close" class="action">
+                            <span class="print" @click="print(record)">{{$t('button.print')}}</span>
+                            <span class="void" @click="voidSale(record)">{{$t('button.void')}}</span>
+                        </td>
+                        <td v-else class="action">
+                            <span class="refund">{{$t('button.refund')}}</span>
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td>
+                            <div class="value">
+                                <span class="text">{{$t('text.tip')}}</span>
+                                <span class="amount">$ {{totalTip}}</span>
                             </div>
-                            <div class="card">
-                                <i :class="cardType(trans.account.type)"></i>
-                                <span :title="trans.addition.CARDBIN">...{{trans.account.number}}</span>
-                                <span class="auth">{{trans.host.auth}}</span>
+                            <div class="value">
+                                <span class="text">{{$t('text.total')}}</span>
+                                <span class="amount">$ {{totalAmount}}</span>
                             </div>
-                            <div class="amount">
-                                <span>$ {{trans.amount.approve}}</span>
-                                <span v-show="parseFloat(trans.amount.tip) > 0" class="tip">(Tip: $ {{trans.amount.tip}})</span>
-                            </div>
-                            <div class="action">
-                                <span @click="adjustTip(trans)" class="adjust">{{$t('button.adjust')}}</span>
-                                <span @click="print(trans)" class="reprint">{{$t('button.print')}}</span>
-                                <span @click="voidSale(trans)" class="void">{{$t('button.void')}}</span>
-                            </div>
-                        </li>
-                    </ul>
-                </section>
-            </div>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
             <footer>
-                <button class="btn" @click="adjustAllTips" :disabled="!ready">{{$t('button.adjustTips')}}</button>
+                <button class="btn" @click="openAdjuster">{{$t('button.adjustTips')}}</button>
                 <div class="f1">
-                  <pagination :of="transactions" @page="setPage" :contain="12" :max="12"></pagination>
+                    <pagination :of="filteredTransactions" :max="12" :contain="13" @page="setPage"></pagination>
                 </div>
-                <div>
-                    <div class="btn" @click="init.resolve">{{$t('button.exit')}}</div>
-                </div>
+                <button class="btn" @click="exit">{{$t('button.exit')}}</button>
             </footer>
         </div>
         <div :is="component" :init="componentData"></div>
@@ -66,76 +85,123 @@
 
 <script>
 import { mapGetters } from "vuex";
-import tipper from "./component/tipper";
-import looper from "./component/looper";
 import dialoger from "../common/dialoger";
-import processor from "../common/processor";
+import dropdown from "./component/dropdown";
 import pagination from "../common/pagination";
+import processor from "../common/processor";
+import adjuster from "../component/adjuster";
+
 export default {
   props: ["init"],
-  components: { dialoger, tipper, processor, pagination, looper },
+  components: { dialoger, dropdown, pagination, processor, adjuster },
+  computed: {
+    filteredTransactions() {
+      let records = this.transactions;
+
+      if (this.filterStation)
+        records = records.filter(t => (t.station = this.station.alias));
+
+      return records;
+    },
+    records() {
+      let min = this.page * 13;
+      let max = min + 13;
+
+      return this.filteredTransactions.slice(min, max);
+    },
+    totalAmount() {
+      return this.filteredTransactions
+        .map(i => parseFloat(i.amount.approve))
+        .reduce((a, b) => a + b, 0)
+        .toFixed(2);
+    },
+    totalTip() {
+      return this.filteredTransactions
+        .map(i => parseFloat(i.amount.tip))
+        .reduce((a, b) => a + b, 0)
+        .toFixed(2);
+    },
+    ...mapGetters(["op", "station"])
+  },
   data() {
     return {
+      releaseComponentLock: false,
       transactions: [],
       componentData: null,
       component: null,
       adjustable: false,
-      filter: "all",
-      device: null,
-      date: moment().subtract(4, "hours"),
-      page: 0,
-      ready: false
+      filterStation: null,
+      stations: [],
+      devices: [],
+      terminal: null,
+      date: today(),
+      page: 0
     };
   },
   created() {
-    this.station.terminal.enable ? this.initialTerminal() : this.missTerminal();
-    this.adjustable = this.approval(this.op.modify, "transaction");
+    this.checkPermission()
+      .then(this.checkOccupy)
+      .then(this.initialConfig)
+      .then(this.initialData)
+      .catch(this.initialFailed);
+    this.$bus.on("filter", this.applyFilter);
+  },
+  beforeDestroy() {
+    this.$bus.off("filter", this.applyFilter);
   },
   methods: {
-    initialTerminal() {
-      let terminal = this.station.terminal;
-      this.msg = this.$t("terminal.initial", terminal.model);
-      this.terminal = this.getFile(terminal.model);
-      this.terminal
-        .initial(
-          terminal.address,
-          terminal.port,
-          terminal.sn,
-          this.station.alies
-        )
-        .then(r => r.text())
-        .then(device => {
-          this.device = this.terminal.check(device);
-          this.device.code === "000000"
-            ? (this.ready = true)
-            : this.disableBatchFn();
-        });
-      this.$socket.emit("[TERM] INITIAL", data => {
-        let sn = this.device ? this.device.sn : this.station.terminal.sn;
-        this.transactions = data.filter(trans => trans.device.sn === sn);
+    checkPermission() {
+      return new Promise((next, reject) => {
+        let data = {
+          title: "dialog.accessDenied",
+          msg: "dialog.accessDeniedTip",
+          timeout: { duration: 1000, fn: "resolve" },
+          buttons: [{ text: "button.confirm", fn: "resolve" }]
+        };
+
+        this.adjustable = this.approval(this.op.modify, "tip");
+        this.approval(this.op.access, "terminal") ? next() : reject(data);
       });
     },
-    prevDate() {
-      this.date = this.date.clone().subtract(1, "days");
-      this.page = 0;
-      this.$socket.emit(
-        "[TERM] TRANSACTION_BY_DATE",
-        this.date.format("YYYY-MM-DD")
-      );
+    checkOccupy() {
+      return new Promise((next, reject) => {
+        let data = {
+          title: "dialog.accessDenied",
+          msg: "dialog.terminalBatching",
+          timeout: { duration: 1000, fn: "resolve" },
+          buttons: [{ text: "button.confirm", fn: "resolve" }]
+        };
+        next();
+      });
     },
-    nextDate() {
-      this.date = this.date.clone().add(1, "days");
-      this.page = 0;
-      this.$socket.emit(
-        "[TERM] TRANSACTION_BY_DATE",
-        this.date.format("YYYY-MM-DD")
-      );
+    initialConfig() {
+      return new Promise((next, reject) => {
+        this.$socket.emit("[TERMINAL] DEVICE", devices => {
+          let data = {
+            type: "warning",
+            title: "dialog.noTerminal",
+            msg: "dialog.missTerminalConfig",
+            timeout: { duration: 1000, fn: "resolve" },
+            buttons: [{ text: "button.confirm", fn: "resolve" }]
+          };
+          this.devices = devices;
+          devices.length === 0 ? reject(data) : next();
+        });
+      });
     },
-    setPage(number) {
-      this.page = number;
+    initialData() {
+      this.$socket.emit("[TERMINAL] TODAY", data => {
+        let stations = new Set();
+        data.map(t => t.station).forEach(name => stations.add(name));
+        this.stations = Array.from(stations).map(n => ({ text: n, value: n }));
+        this.transactions = data;
+      });
     },
-    getFile(device) {
-      switch (device) {
+    initialFailed(content) {
+      this.$dialog(content).then(() => this.init.resolve());
+    },
+    getParser(model) {
+      switch (model) {
         case "SP30":
         case "S80":
         case "S300":
@@ -146,13 +212,7 @@ export default {
           return require("../payment/parser/pax.js");
       }
     },
-    isRisk(trans) {
-      return (
-        (trans.status === 1 || trans.status === 2) &&
-        trans.account.entry !== "Chip"
-      );
-    },
-    cardType(card) {
+    ccType(card) {
       switch (card) {
         case "Visa":
           return "fa fa-cc-visa";
@@ -166,38 +226,32 @@ export default {
           return "fa fa-credit-card-alt";
       }
     },
-    getIcon(status) {
-      switch (status) {
-        case 1:
-          return "fa fa-circle-o";
-        case 2:
-          //tiped
-          return "fa fa-circle";
-        case 3:
-          //settled
-          return "fa fa-check-circle";
-        case 4:
-          //insufficient
-          return "fa fa-info-circle";
-        case 0:
-          //void
-          return "fa fa-times-circle";
-        default:
-          //other
-          return "fa fa-question-circle";
-      }
+    setPage(num) {
+      this.page = num;
     },
-    print(receipt) {
-      Printer.printCreditCard(receipt, true);
+    applyFilter(data) {
+      const { value, type } = data;
+      this[type] = value;
+      this.page = 0;
+
+      this.$nextTick(() => this.$bus.emit("applied"));
+    },
+    print(record) {
+      Printer.printCreditCard(record, true);
     },
     voidSale(record) {
+      let msg =
+        record.for === "Order"
+          ? [
+              "dialog.voidCreditInvoice",
+              record.order.number,
+              this.$t("type." + record.order.type)
+            ]
+          : "dialog.voidCreditReload";
+
       let data = {
         title: "dialog.voidCreditSale",
-        msg: [
-          "dialog.voidCreditSaleTip",
-          record.order.number,
-          this.$t("type." + record.order.type)
-        ],
+        msg,
         buttons: [
           { text: "button.cancel", fn: "reject" },
           { text: "button.confirmPrint", fn: "resolve" }
@@ -206,566 +260,242 @@ export default {
 
       this.$dialog(data)
         .then(() => {
-          let invoice = record.order.number;
-          let transaction = record.trace.trans;
-          let _id = record.order._id;
-
-          this.terminal
-            .voidSale(invoice, transaction)
-            .then(r => r.text())
-            .then(data => {
-              let voidSale = this.terminal.explainTransaction(data);
-              delete voidSale.order;
-              if (voidSale.code === "000000") {
-                Printer.printCreditCard(voidSale);
-                Object.assign(record, voidSale, { status: 0 });
-                this.$socket.emit("[TERM] VOID_TRANSACTION", record);
-              } else {
-                this.$dialog({
-                  type: "error",
-                  title: voidSale.msg,
-                  msg: ["terminal.error", voidSale.code],
-                  buttons: [{ text: "button.confirm", fn: "resolve" }]
-                }).then(() => {
-                  this.$q();
-                });
-              }
-            });
-          this.$q();
+          this.$p("processor", { timeout: 30000 });
+          this.initialParser(record.terminal)
+            .then(this.executeVoidSale.bind(null, record))
+            .catch(this.executeFailed);
         })
-        .catch(() => {
-          this.$q();
-        });
+        .catch(() => this.$q());
     },
-    adjustTip(record) {
-      let { tip, approve } = record.amount;
+    initialParser(terminal) {
+      return new Promise((resolve, reject) => {
+        const config = this.devices.find(d => d.alias === terminal);
+        const { ip, port, sn, model } = config;
+        this.terminal = this.getParser(model);
+        this.terminal
+          .initial(ip, port, sn, this.station.alias, terminal)
+          .then(response => {
+            this.device = this.terminal.check(response.data);
+            this.device.code === "000000" ? resolve() : reject();
+          });
+      });
+    },
+    executeVoidSale(record) {
+      const invoice = record.order.number;
+      const transaction = record.trace.trans;
 
-      !this.adjustable
-        ? this.$denyAccess()
-        : new Promise((resolve, reject) => {
-            this.componentData = { tip, approve, resolve, reject };
-            this.component = "tipper";
-          })
-            .then(result => {
-              let adjustedTip = result.tip;
-              let adjustedTotal = parseFloat(approve) + adjustedTip;
-              let data = {
-                title: "dialog.tipAdjustment",
-                msg: [
-                  "dialog.tipAdjustmentTip",
-                  adjustedTip.toFixed(2),
-                  adjustedTotal.toFixed(2)
-                ]
-              };
+      this.terminal.voidSale(invoice, transaction).then(response => {
+        let voidSale = this.terminal.explainTransaction(response.data);
+        delete voidSale.order;
 
-              this.$dialog(data)
-                .then(() => {
-                  this.executeTipAdjustment({ record, tip: adjustedTip });
-                })
-                .catch(() => {
-                  this.$q();
-                });
-            })
-            .catch(() => {
-              this.$q();
-            });
-    },
-    executeTipAdjustment(data) {
-      let { record, tip } = data;
-      this.$p("processor", { timeout: 30000 });
-      let amount = Math.round(tip * 100);
-      let invoice = record.order.number;
-      let trans = record.trace.trans;
-      this.terminal
-        .adjust(invoice, trans, amount)
-        .then(r => r.text())
-        .then(response => {
+        if (voidSale.code === "000000") {
+          Printer.printCreditCard(voidSale);
+          Object.assign(record, voidSale, { status: 0 });
+          this.$socket.emit("[TERMINAL] VOID", record);
           this.$q();
-          let result = this.terminal.explainTransaction(response);
-          result.code === "000000"
-            ? this.applyAdjustTip(record, result)
-            : this.adjustTipFailed(result.code);
-        });
+        } else {
+          this.$dialog({
+            type: "error",
+            title: voidSale.msg,
+            msg: ["terminal.error", voidSale.code],
+            buttons: [{ text: "button.confirm", fn: "resolve" }]
+          }).then(() => this.$q());
+        }
+      });
     },
-    adjustAllTips() {
+    executeFailed(error) {
+      console.log(error);
+    },
+    openAdjuster() {
       new Promise((resolve, reject) => {
         this.componentData = {
           resolve,
           reject,
-          transactions: this.transactions,
-          terminal: this.terminal
-        };
-        this.component = "looper";
-      })
-        .then(() => {
-          this.batch();
-        })
-        .catch(() => {
-          this.$q();
-        });
-    },
-    applyAdjustTip(record, result) {
-      this.$dialog({
-        title: "dialog.tipAdjusted",
-        msg: [
-          "dialog.tipAdjustedTip",
-          result.amount.tip,
-          result.amount.approve
-        ],
-        buttons: [{ text: "button.confirm", fn: "resolve" }]
-      }).then(() => {
-        this.$q();
-        Object.assign(record, {
-          amount: result.amount,
-          status: 2
-        });
-        this.$socket.emit("[TERM] ADJUST_TRANSACTION", record);
-      });
-    },
-    adjustTipFailed(code) {
-      this.$dialog({
-        type: "error",
-        title: "dialog.tipAdjustDenied",
-        msg: ["dialog.tipAdjustDeniedTip", code],
-        buttons: [{ text: "button.confirm", fn: "resolve" }]
-      }).then(() => {
-        this.$q();
-      });
-    },
-    batch() {
-      this.preBatch() &&
-        this.$dialog({
-          title: "dialog.batchClose",
-          msg: "dialog.batchCloseTip",
-          buttons: [
-            { text: "button.cancel", fn: "reject" },
-            { text: "button.batch", fn: "resolve" }
-          ]
-        })
-          .then(() => {
-            this.processBatch();
-          })
-          .catch(() => {
-            this.$q();
-          });
-    },
-    verify() {
-      this.terminal
-        .getLocalReport()
-        .then(r => r.text())
-        .then(data => {
-          console.log(data);
-        });
-    },
-    processBatch() {
-      this.$p("processor", { timeout: 300000 });
-      this.terminal
-        .batch()
-        .then(r => r.text())
-        .then(response => {
-          this.$q();
-          let result = this.terminal.explainBatch(response);
-          if (result.code === "000000") {
-            let { sn } = this.device;
-            let updated = this.transactions
-              .filter(trans => !trans.close)
-              .map(trans => {
-                trans.hasOwnProperty("device") &&
-                  trans.device.sn === sn &&
-                  (trans.close = true);
-                return trans;
-              });
-            this.$socket.emit("[TERM] BATCH_TRANS_CLOSE", updated);
-            Printer.printBatchReport(result);
-            this.$socket.emit("[TERM] SAVE_BATCH_RESULT", result);
-          } else {
-            this.$dialog({
-              type: "warning",
-              title: result.msg,
-              msg: ["terminal.error", result.code],
-              buttons: [{ text: "button.confirm", fn: "resolve" }]
-            }).then(() => {
-              this.$q();
-            });
-          }
-        });
-    },
-    preBatch() {
-      let summary = {
-        visa: 0,
-        visaAmount: 0,
-        master: 0,
-        masterAmount: 0,
-        discover: 0,
-        discoverAmount: 0,
-        amex: 0,
-        amexAmount: 0,
-        other: 0,
-        otherAmount: 0,
-        sales: 0,
-        salesAmount: 0,
-        tip: 0,
-        tipAmount: 0,
-        voidSale: 0,
-        voidSaleAmount: 0
-      };
-
-      let content = this.transactions
-        .filter(trans => {
-          if (trans.close) return false;
-          let approve = parseFloat(trans.amount.approve);
-          let tip = parseFloat(trans.amount.tip);
-          if (trans.status === 0) {
-            summary.voidSale++;
-            summary.voidSaleAmount += approve;
-          } else {
-            summary.sales++;
-            summary.salesAmount += approve;
-
-            if (tip > 0) {
-              summary.tip++;
-              summary.tipAmount += tip;
-            }
-          }
-
-          switch (trans.account.type) {
-            case "Visa":
-              if (trans.status === 1 || trans.status === 2) {
-                summary.visa++;
-                summary.visaAmount += approve;
-              }
-              break;
-            case "MasterCard":
-              if (trans.status === 1 || trans.status === 2) {
-                summary.master++;
-                summary.masterAmount += approve;
-              }
-              break;
-            case "Discover":
-              if (trans.status === 1 || trans.status === 2) {
-                summary.discover++;
-                summary.discoverAmount += approve;
-              }
-              break;
-            case "American Express":
-              if (trans.status === 1 || trans.status === 2) {
-                summary.amex++;
-                summary.amexAmount += approve;
-              }
-              break;
-            default:
-              if (trans.status === 1 || trans.status === 2) {
-                summary.other++;
-                summary.otherAmount += approve;
-              }
-          }
-          return trans.status !== 0;
-        })
-        .map(trans => {
-          return {
-            trans: "#" + trans.trace.trans,
-            transType: trans.transType,
-            card: trans.account.number,
-            total: trans.amount.approve,
-            tip: trans.amount.tip,
-            time: moment(trans.trace.time, "YYYYMMDDHHmmss").format("HH:mm"),
-            orderType: trans.order ? this.$t("type." + trans.order.type) : "",
-            ticket: trans.order ? "#" + trans.order.number : ""
-          };
-        });
-      if (content.length === 0) {
-        this.checkBatchRecord();
-        return false;
-      }
-      this.station.terminal.report
-        ? Printer.printPreBatchReport({ content, summary })
-        : Printer.printPreBatchReport({ content: [], summary });
-      return true;
-    },
-    checkBatchRecord() {
-      new Promise((resolve, reject) => {
-        this.$socket.emit(
-          "[TERM] BATCH_RECORD_BY_DATE",
-          this.date.format("YYYY-MM-DD")
-        );
-        this.$options.sockets["BATCH_RECORDS"] = results => {
-          results.length > 0 ? resolve(results) : reject();
+          transactions: this.filteredTransactions,
+          devices: this.devices
         };
       })
-        .then(results => {
-          this.$dialog({
-            type: "question",
-            title: "dialog.reprintBatchReport",
-            msg: "dialog.reprintBatchReportTip"
-          })
-            .then(() => {
-              this.$q();
-              results.forEach(batch => {
-                Printer.printBatchReport(batch);
-              });
-            })
-            .catch(() => {
-              this.$q();
-            });
-        })
-        .catch(() => {
-          this.$dialog({
-            title: "dialog.batchFailed",
-            msg: this.$t("terminal.error", 100023),
-            buttons: [{ text: "button.confirm", fn: "resolve" }]
-          }).then(() => {
-            this.$q();
-          });
-        });
+        .then(() => this.preBatch)
+        .catch(() => this.$q());
     },
-    disableBatchFn() {
-      this.$dialog({
-        type: "warning",
-        title: "terminal.connectError",
-        msg: "terminal.disableBatch",
-        buttons: [{ text: "button.confirm", fn: "resolve" }]
-      }).then(() => {
-        this.device = null;
-        this.$q();
-      });
-    },
-    missTerminal() {
-      this.$dialog({
-        type: "warning",
-        title: "dialog.noTerminal",
-        msg: "dialog.stationNoTerminal",
-        buttons: [{ text: "button.confirm", fn: "resolve" }]
-      }).then(() => {
-        this.$q();
-        this.init.resolve();
-      });
-    }
-  },
-  computed: {
-    transaction() {
-      let min = this.page * 12;
-      let max = min + 12;
-      return this.transactions.slice(min, max);
-    },
-    ...mapGetters(["op", "config", "language", "history", "station"])
-  },
-  sockets: {
-    TERM_TRANSACTION(data) {
-      let sn = this.device ? this.device.sn : this.station.terminal.sn;
-      this.transactions =
-        this.op.role === "Admin"
-          ? data
-          : data.filter(trans => trans.device.sn === sn);
+    preBatch() {},
+    batch() {},
+    exit() {
+      this.init.resolve();
     }
   }
 };
 </script>
 
 <style scoped>
-.inner {
-  height: 550px;
-}
-
-section.trans {
-  width: 850px;
-}
-
-ul.content {
-  height: 515px;
-}
-
-.content li {
-  display: flex;
-  padding: 10px 0 10px 5px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
-  margin: 5px;
+.terminal {
   background: #fff;
+  width: 950px;
+  border-radius: 4px 4px 0 0;
+  box-shadow: var(--shadow);
+}
+
+header {
+  display: flex;
+  padding: 10px 20px;
+}
+
+h5 {
+  color: #666;
+  font-weight: normal;
+  margin-top: 2px;
+}
+
+nav.filter {
+  flex: 1;
   position: relative;
-}
-
-.risk {
-  position: absolute;
-  color: var(--yellow);
-  left: 20px;
-  bottom: 5px;
-}
-
-.status {
-  width: 25px;
-  text-align: center;
-  color: var(--green);
-  text-shadow: 0 0px 1px #009688;
-}
-
-.info {
-  flex: 1;
+  align-items: center;
+  margin-left: 35px;
   display: flex;
+  justify-content: flex-end;
 }
 
-.card {
-  width: 180px;
-  display: flex;
+thead tr {
+  background: #009688;
+  color: #fff;
+  text-shadow: 0 1px 1px #333;
 }
 
-.num {
-  width: 30px;
-  text-align: left;
-  padding-left: 10px;
-  font-weight: bold;
-  color: #333;
+thead th {
+  font-weight: normal;
+  padding: 3px 0;
+  border-bottom: 1px solid #eeeeee;
 }
 
-.type {
-  width: 90px;
+tbody {
+  display: block;
+  height: 507px;
   text-align: center;
 }
 
-.order {
-  padding-left: 10px;
-  flex: 1;
+thead,
+tbody tr,
+tfoot tr {
+  display: table;
+  table-layout: fixed;
+  width: 100%;
 }
 
-.ticket {
-  margin: 0 5px;
-  color: #607d8b;
+tbody td {
+  padding: 10px 0;
+}
+
+tbody tr {
+  background: #fafafa;
+}
+
+tbody tr:nth-child(even) {
+  background: #eeeeee;
+}
+
+tfoot tr {
+  border-top: 1px solid #e0e0e0;
+  text-align: center;
+}
+
+tfoot td {
+  padding: 5px 0;
+  background: #eeeeee;
+}
+
+footer {
+  display: flex;
+  align-items: center;
+  background: #f5f5f5;
+  border-top: 1px solid #e0e0e0;
+}
+
+.print {
+  background: #607d8b;
+}
+
+.void {
+  background: #f44336;
+}
+
+.refund {
+  background: #ff9800;
 }
 
 .fa-cc-visa {
-  color: var(--deepBlue);
+  color: #5050e2;
 }
 
 .fa-cc-mastercard {
-  color: var(--orange);
+  color: #ff2b1c;
 }
 
 .fa-cc-discover {
-  color: var(--yellow);
+  color: #ff9800;
 }
 
-.auth {
-  margin: 0 20px;
-  padding: 0 5px;
-  background: #4caf50;
+.fa-cc-amex {
+  color: var(--deepBlue);
+}
+
+.ticket .number {
+  color: gray;
+}
+
+.amount {
+  font-weight: bold;
+  font-family: "Agency FB";
+  color: #3c3c3c;
+}
+
+.action {
+  width: 150px;
+}
+
+.auth span {
+  background: #ff5722;
   color: #fff;
+  padding: 2px 4px;
   border-radius: 4px;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
-}
-
-li .amount {
-  flex: 1;
-  max-width: 145px;
-}
-
-span.tip {
-  font-size: 0.8em;
-  color: #37474f;
-}
-
-.trans header {
-  padding: 5px 15px;
-  display: flex;
-  color: #797575;
-  text-shadow: 0 0px 1px #fff;
-  font-family: "Microsoft YaHei";
-}
-
-header .record {
-  width: 180px;
-}
-
-header .amount {
-  flex: 1;
-}
-
-header .action {
-  width: 195px;
-}
-
-li .action {
-  width: 205px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 18px;
+  text-shadow: 0 1px 1px #631b05;
+  box-shadow: 0 1px 1px #b5afaf;
 }
 
 .action span {
-  padding: 5px 10px;
-  margin-right: 5px;
-  border-radius: 4px;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
-  text-shadow: 0 1px 1px #441800;
-}
-
-span.adjust {
-  background: #ff9800;
+  padding: 4px 6px;
+  margin: 0 2px;
   color: #fff;
-}
-
-span.void {
-  background: red;
-  color: #ffcdd2;
-}
-
-span.reprint {
-  background: #9e9e9e;
-  color: #fff;
-}
-
-li.void,
-.void .num {
-  color: #f44336;
-}
-
-.void .action {
-  visibility: hidden;
-}
-
-.void .status {
-  color: red;
-  text-shadow: 0 0 1px #e91e63;
-}
-
-.settled {
-  filter: opacity(0.7) grayscale(1);
-  cursor: not-allowed;
-  pointer-events: none;
-}
-
-.title .wrap {
-  display: flex;
-}
-
-.date {
-  font-family: "Agency FB";
-  color: #b3e5fc;
-  text-shadow: 0 0 1px #0d47a1;
-  font-weight: bold;
-  width: 90px;
-  text-align: center;
-}
-
-.dateWrap {
-  flex: 1;
-  align-items: center;
-  padding: 0 10px;
-  display: flex;
-}
-
-.dateWrap i {
-  padding: 0 10px;
   cursor: pointer;
+  border-radius: 2px;
+  box-shadow: 0 1px 1px #b5afaf;
 }
 
-.pagination {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  padding: 0 10px;
-  justify-content: center;
+.adjustable {
+  cursor: pointer;
+  color: #ff9800;
 }
 
-.f1 {
-  display: flex;
+.sub {
+  margin-left: 5px;
+  color: gray;
+}
+
+.index {
+  width: 40px;
+}
+
+.value {
+  display: inline-flex;
+  margin: 0 10px;
+}
+
+.value .text {
+  margin-right: 10px;
+}
+
+tr.voided {
+  background: #ffab91;
+  filter: grayscale(0.75) opacity(0.5);
+  pointer-events: none;
 }
 </style>
