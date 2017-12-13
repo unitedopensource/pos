@@ -53,7 +53,7 @@ header {
   align-items: flex-end;
   flex-direction: column;
   padding: 5px 0 10px;
-  background: #FAFAFA;
+  background: #eee;
 }
 
 .label {

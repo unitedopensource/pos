@@ -7,7 +7,7 @@
             <header class="nav">
                 <div class="title">
                     <h5></h5>
-                    <h3>{{$t("title.terminalDevice")}}</h3>
+                    <h3>{{$t("title.template")}}</h3>
                 </div>
                 <nav>
                     <span class="add" @click="create">{{$t('button.new')}}</span>

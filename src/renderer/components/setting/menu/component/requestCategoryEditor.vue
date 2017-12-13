@@ -67,6 +67,14 @@ export default {
 </script>
 
 <style scoped>
+.options {
+  margin-top: 5px;
+  border: 1px solid #eee;
+  background: #fff;
+  border-radius: 2px;
+  width: 540px;
+  padding: 5px;
+}
 .options .checkbox {
   width: 120px;
 }
