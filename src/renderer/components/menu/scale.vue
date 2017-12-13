@@ -2,7 +2,7 @@
     <div class="popupMask center dark" @click.self="init.reject(false)">
         <div class="window">
             <header class="title">
-                <span>{{$t('menu.scale')}}</span>
+                <span>{{$t('title.weightScale')}}</span>
                 <span>{{item[language]}}</span>
             </header>
             <section class="inner">

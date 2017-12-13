@@ -2,7 +2,7 @@
   <div class="popupMask center dark">
     <div class="course window">
       <header class="title">
-        <span>{{$t('menu.course')}}</span>
+        <span>{{$t('title.course')}}</span>
         <i class="fa fa-times" @click="init.reject"></i>
       </header>
       <div class="inner">

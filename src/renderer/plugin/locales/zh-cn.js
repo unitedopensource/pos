@@ -285,15 +285,15 @@ export default {
         'incomingCall': '来电',
         'terminalDeviceManagement': '刷卡终端管理',
         'addressList': '地址列表',
-        'taxEditor': '税率编辑',
+        'tax': '税率',
         'create': '新建',
         'edit': '修改',
         'registration': '软件注册',
-        'deviceEditor': '设备编辑',
         'device': '设备',
         'terminalDevice': '刷卡设备',
-        'categoryEditor': '类别编辑',
-        'itemEditor': '物品编辑'
+        'category': '菜单类别',
+        'item': '菜单物品',
+        'coupon': '折价卷'
     },
     dialog: {
         'maintenance': '维护',
@@ -1007,7 +1007,8 @@ export default {
         'weightScale': '磅秤',
         'multiplier': '乘数',
         'value': '数值',
-        'affix': '词缀'
+        'affix': '词缀',
+        'setCondition': '设置条件'
     },
     nav: {
         'store': '店面',

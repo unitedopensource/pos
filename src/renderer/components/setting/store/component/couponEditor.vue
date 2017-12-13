@@ -4,16 +4,15 @@
             <header>
                 <h5 v-if="init.edit">{{$t('title.edit')}}</h5>
                 <h5 v-else>{{$t('title.create')}}</h5>
-                <h3>{{$t('title.taxEditor')}}</h3>
+                <h3>{{$t('title.coupon')}}</h3>
             </header>
             <div class="wrap">
                 <div class="input">
                     <inputer title="text.alias" v-model="coupon.for"></inputer>
-                    <inputer title="text.discount" v-model="coupon.discount"></inputer>
                     <inputer title="thead.expire" v-model="coupon.expire" placeholder="YYYY-MM-DD"></inputer>
-                </div>
-                <div class="options">
-                    
+                    <inputer title="text.discount" v-model.number="coupon.discount"></inputer>
+                    <switches title="text.percentage" v-model="coupon.percentage"></switches>
+                    <external title="text.setCondition" :defaultStyle="false"></external>
                 </div>
             </div>
             <footer>
@@ -23,16 +22,21 @@
                 <button class="btn" @click="confirm" :disabled="invalid">{{$t('button.confirm')}}</button>
             </footer>
         </div>
+        <div :is="component" :init="component"></div>
     </div>
 </template>
 
 <script>
 import inputer from "../../common/inputer";
+import external from "../../common/external";
+import switches from "../../common/switches";
+
 export default {
   props: ["init"],
-  components: { inputer },
+  components: { external, inputer, switches },
   data() {
     return {
+      condition: false,
       coupon: JSON.parse(JSON.stringify(this.init.coupon))
     };
   },
@@ -41,13 +45,15 @@ export default {
       this.coupon.expire = moment(this.coupon.expire).format("YYYY-MM-DD");
     }
   },
-  computed:{
-      invalid(){
-          return !this.coupon.for || !this.coupon.discount
-      }
+  computed: {
+    invalid() {
+      return !this.coupon.for || isNaN(this.coupon.discount);
+    }
   },
   methods: {
-    confirm() {}
+    confirm() {
+      this.init.resolve(this.coupon);
+    }
   }
 };
 </script>

@@ -21,7 +21,8 @@
             <tbody>
               <tr v-for="(coupon,index) in coupons" :key="index">
                 <td>{{coupon.for}}</td>
-                <td class="amount">{{coupon.discount}}</td>
+                <td class="amount" v-if="coupon.percentage">{{coupon.discount}} %</td>
+                <td class="amount" v-else>$ {{coupon.discount | decimal}}</td>
                 <td :class="{expired: (coupon.expire && today > coupon.expire)}">{{format(coupon.expire)}}</td>
                 <td>{{coupon.count}}</td>
                 <td class="opt" @click="edit(coupon,index)">
@@ -63,7 +64,8 @@ export default {
     create() {
       let coupon = {
         for: "",
-        discount: "",
+        discount: 0,
+        percentage: false,
         expire: "",
         count: 0,
         rules: []
@@ -77,10 +79,17 @@ export default {
         this.component = "editor";
       })
         .then(_coupon => {
-          this.$q();
+          this.$socket.emit("[COUPON] UPDATE", _coupon, data => {
+            this.coupons.splice(index, 1, data);
+            this.$q();
+          });
         })
         .catch(del => {
-          del && this.coupons.splice(index, 1);
+          if (del) {
+            this.$socket.emit("[COUPON] REMOVE", coupon._id, () => {
+              this.coupons.splice(index, 1);
+            });
+          }
           this.$q();
         });
     }

@@ -2,7 +2,7 @@
     <div class="popupMask center dark">
         <div class="window" v-show="!component">
             <header class="title">
-                <span>{{$t('menu.split')}}</span>
+                <span>{{$t('title.split')}}</span>
                 <i class="fa fa-times" @click="cancel"></i>
             </header>
             <section>

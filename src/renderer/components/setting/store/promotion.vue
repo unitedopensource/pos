@@ -1,11 +1,7 @@
 <template>
     <div>
-        <toggle title="setting.rewardSystem" v-model="store.reward"></toggle>
-        <external title="setting.coupon" tooltip="tip.couponList">
-            <div class="external" @click="$router.push({name:'Setting.promotion.coupon'})">
-                <i class="fa fa-caret-right"></i>
-            </div>
-        </external>
+        <toggle title="setting.rewardSystem" v-model="store.reward" @update="updateReward"></toggle>
+        <external title="setting.coupon" tooltip="tip.couponList" @open="$router.push({name:'Setting.promotion.coupon'})"></external>
     </div>
 </template>
 
@@ -19,6 +15,14 @@ export default {
     return {
       store: Object.assign({}, this.$store.getters.store)
     };
+  },
+  methods: {
+    updateReward(value) {
+      this.$socket.emit("[UPDATE] CONFIG", {
+        key: "store.reward",
+        value
+      });
+    }
   }
 };
 </script>

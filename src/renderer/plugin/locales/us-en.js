@@ -372,15 +372,15 @@ export default {
         'incomingCall': 'Incoming Call',
         'terminalDeviceManagement': 'Terminal Device Management',
         'addressList': 'Address List',
-        'taxEditor': 'Tax Editor',
+        'tax': 'Tax Detail',
         'create': 'Create',
         'edit': 'Edit',
         'registration': 'Registration',
-        'deviceEditor': 'Device Editor',
-        'device': 'Device',
+        'device': 'Device Detail',
         'terminalDevice': 'Terminal Device(s)',
-        'categoryEditor': 'Category Editor',
-        'itemEditor': 'Item Editor',
+        'category': 'Menu Category',
+        'item': 'Menu Item',
+        'coupon': 'Coupon Detail'
     },
     dialog: {
         'maintenance': 'Maintenance',
@@ -1013,7 +1013,8 @@ export default {
         'weightScale': 'Weight Scale',
         'multiplier': 'Multiplier',
         'value': 'Value',
-        'affix': 'Affix'
+        'affix': 'Affix',
+        'setCondition': 'Set Condition'
     },
     nav: {
         'store': 'Store',

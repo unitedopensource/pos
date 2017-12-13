@@ -84,7 +84,7 @@ export default {
     initial() {
       this.item = JSON.parse(JSON.stringify(this.init.item));
       if (this.init.openFood) {
-        this.item = Object.assign({}, this.item, { 
+        this.item = Object.assign({}, this.item, {
           single: 0,
           qty: 1,
           price: [0],

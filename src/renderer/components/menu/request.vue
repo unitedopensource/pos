@@ -11,16 +11,16 @@
         <div v-for="(item,index) in items" @click="setChoice(item)" :class="{disable:!item.clickable}" :key="index">{{item[language]}}</div>
       </div>
       <div class="shortCut">
-        <div @click="setPrice(0.50)">$0.50</div>
-        <div @click="setPrice(0.75)">$0.75</div>
-        <div @click="setPrice(1.00)">$1.00</div>
-        <div @click="setPrice(1.25)">$1.25</div>
-        <div @click="setPrice(1.50)">$1.50</div>
-        <div @click="setPrice(1.75)">$1.75</div>
-        <div @click="setPrice(2.00)">$2.00</div>
-        <div @click="setPrice(2.50)">$2.50</div>
-        <div @click="setPrice(3.00)">$3.00</div>
-        <div @click="setPrice(4.00)">$4.00</div>
+        <div @click="setPrice(0.50)">$ 0.50</div>
+        <div @click="setPrice(0.75)">$ 0.75</div>
+        <div @click="setPrice(1.00)">$ 1.00</div>
+        <div @click="setPrice(1.25)">$ 1.25</div>
+        <div @click="setPrice(1.50)">$ 1.50</div>
+        <div @click="setPrice(1.75)">$ 1.75</div>
+        <div @click="setPrice(2.00)">$ 2.00</div>
+        <div @click="setPrice(2.50)">$ 2.50</div>
+        <div @click="setPrice(3.00)">$ 3.00</div>
+        <div @click="setPrice(4.00)">$ 4.00</div>
         <div @click="setPrice()">{{$t('button.inputPrice')}}</div>
       </div>
     </section>
@@ -66,9 +66,10 @@ export default {
           usEN = usEN + " " + this.action.usEN;
         }
       }
-      price = (this.action && this.action.ignoreDefaultPrice)
-        ? 0
-        : isNumber(price) ? parseFloat(price) : 0;
+      price =
+        this.action && this.action.ignoreDefaultPrice
+          ? 0
+          : isNumber(price) ? parseFloat(price) : 0;
       let content = {
         qty: 1,
         zhCN,

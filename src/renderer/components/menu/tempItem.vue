@@ -2,7 +2,7 @@
     <div class="popupMask center dark" @click.self="init.reject">
         <div class="window">
             <header class="title">
-                <span>{{$t('menu.temporary')}}</span>
+                <span>{{$t('title.temporary')}}</span>
             </header>
             <div class="inner">
                 <section class="item">

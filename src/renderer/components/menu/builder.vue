@@ -2,7 +2,7 @@
   <div class="popupMask center dark" @click.self="setOption">
     <div class="window">
       <header class="title">
-        <span>{{$t('menu.builder')}}</span>
+        <span>{{$t('title.builder')}}</span>
         <i class="fa fa-times" @click="init.reject"></i>
       </header>
       <div class="inner">
