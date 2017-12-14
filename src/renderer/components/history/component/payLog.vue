@@ -3,12 +3,7 @@
     <div class="record">
       <header>
         <h3>{{$t('title.payLog')}}</h3>
-        <h5>{{$t('tip.paidRecords',init.number,init.logs.length)}}
-          <span class="warning" v-show="!terminalAvailable">
-            <i class="fa fa-exclamation-circle"></i>
-            {{$t(msg)}}
-            </span>
-          </h5>
+        <h5>{{$t('tip.paidRecords',init.number,init.logs.length)}}</h5>
       </header>
       <table>
         <thead>
@@ -36,14 +31,13 @@
             </td>
             <td class="amount" :title="tenderDetail(log)">$ {{log.actual | decimal}}</td>
             <td>
-              <button @click="removeConfirm(log,index)" :disabled="log.type === 'CREDIT' && !terminalAvailable">{{$t("button.remove")}}</button>
+              <button @click="removeConfirm(log,index)">{{$t("button.remove")}}</button>
               <span v-if="log.hasOwnProperty('splitPayment')" class="split">#{{log.splitPayment + 1}}</span>
             </td>
           </tr>
         </tbody>
       </table>
       <footer>
-        <button class="btn" @click="removeAllConfirm" :disabled="true">{{$t("button.removeAll")}}</button>
         <div class="f1">
           <pagination :of="init.logs" @page="setPage" :contain="10" :max="6"></pagination>
         </div>
@@ -72,39 +66,13 @@ export default {
   },
   data() {
     return {
-      terminalAvailable: false,
       componentData: null,
       component: null,
       terminal: null,
-      msg: "terminal.connecting",
       page: 0
     };
   },
-  created() {
-    this.station.terminal.enable
-      ? this.initialTerminal()
-      : (this.msg = "terminal.paymentFailedTip");
-  },
   methods: {
-    initialTerminal() {
-      let terminal = this.station.terminal;
-
-      this.terminal = this.getFile(terminal.model);
-      this.terminal
-        .initial(
-          terminal.address,
-          terminal.port,
-          terminal.sn,
-          this.station.alies
-        )
-        .then(r => r.text())
-        .then(device => {
-          this.device = this.terminal.check(device);
-          this.device.code === "000000"
-            ? (this.terminalAvailable = true)
-            : (this.msg = "terminal.connectError");
-        });
-    },
     setPage(number) {
       this.page = number;
     },
@@ -125,84 +93,107 @@ export default {
           { text: "button.remove", fn: "resolve", load: true }
         ]
       };
+
       this.$dialog(data)
         .then(() => {
           switch (payment.type) {
             case "CREDIT":
-              this.$socket.emit(
-                "[TERM] GET_TRANSACTION_DETAIL",
-                payment.credential,
-                record => {
-                  let invoice = record.order.number;
-                  let transaction = record.trace.trans;
-
-                  this.terminal
-                    .voidSale(invoice, transaction)
-                    .then(r => r.text())
-                    .then(data => {
-                      this.$q();
-                      let voidSale = this.terminal.explainTransaction(data);
-                      delete voidSale.order;
-                      if (voidSale.code === "000000") {
-                        Printer.printCreditCard(voidSale);
-                        Object.assign(record, voidSale, { status: 0 });
-                        this.$socket.emit("[TERM] VOID_TRANSACTION", record);
-                        this.remove(payment, index);
-                      } else {
-                        this.$dialog({
-                          type: "error",
-                          title: voidSale.msg,
-                          msg: ["terminal.error", voidSale.code],
-                          buttons: [{ text: "button.confirm", fn: "resolve" }]
-                        }).then(() => {
-                          this.$q();
-                        });
-                      }
-                    });
-                }
-              );
+              this.getDetail(payment.credential)
+                .then(this.initialParser)
+                .then(this.voidTransaction)
+                .then(this.remove.bind(null, payment, index))
+                .catch(this.voidFailed);
               break;
             case "GIFT":
               this.$socket.emit(
                 "[GIFTCARD] REFUND",
                 payment.credential,
-                callback => {
-                  this.$q();
-                  this.remove(payment, index);
-                }
+                callback => this.remove(payment, index)
               );
               break;
             default:
               this.remove(payment, index);
           }
         })
-        .catch(() => {
-          this.$q();
-        });
+        .catch(() => this.$q());
     },
-    removeAllConfirm() {
-      let data = {
-        type: "warning",
-        title: "dialog.removeAllPaymentConfirm",
-        msg: "dialog.removeAllPaymentConfirmTip"
-      };
-      this.$dialog(data)
-        .then(() => {
-          this.$q();
-        })
-        .catch(() => {
-          this.$q();
+    getDetail(_id) {
+      return new Promise((resolve, reject) => {
+        this.$socket.emit("[TERMINAL] TRANSACTION", _id, transaction => {
+          transaction
+            ? resolve(transaction)
+            : reject({
+                type: "warning",
+                title: "dialog.somethingWrong",
+                msg: "terminal.notFound",
+                buttons: [{ text: "button.confirm", fn: "resolve" }]
+              });
         });
+      });
+    },
+    initialParser(record) {
+      return new Promise((resolve, reject) => {
+        const { alias } = this.station;
+
+        this.$socket.emit("[TERMINAL] CONFIG", record.terminal, config => {
+          const { ip, port, sn, model } = config;
+
+          this.terminal = this.getParser(model);
+
+          this.terminal
+            .initial(ip, port, sn, alias, record.terminal)
+            .then(response => {
+              const device = this.terminal.check(response.data);
+
+              device.code === "000000"
+                ? resolve(record)
+                : reject({
+                    type: "error",
+                    title: "terminal.connectError",
+                    msg: ["terminal.initialFailed", device.code],
+                    buttons: [{ text: "button.confirm", fn: "resolve" }]
+                  });
+            });
+        });
+      });
+    },
+    voidTransaction(record) {
+      return new Promise((resolve, reject) => {
+        const invoice = record.order.number;
+        const transaction = record.trace.trans;
+
+        this.terminal.voidSale(invoice, transaction).then(response => {
+          let voidSale = this.terminal.explainTransaction(response.data);
+          delete voidSale.order;
+
+          if (voidSale.code === "000000") {
+            Printer.printCreditCard(voidSale);
+            Object.assign(record, voidSale, { status: 0 });
+            this.$socket.emit("[TERMINAL] VOID", record);
+            resolve();
+          } else {
+            reject({
+              type: "error",
+              title: voidSale.msg,
+              msg: ["terminal.error", voidSale.code],
+              buttons: [{ text: "button.confirm", fn: "resolve" }]
+            });
+          }
+        });
+      });
     },
     remove(payment, index) {
-      this.$q();
       this.$socket.emit("[PAYMENT] REMOVE", payment);
       this.init.logs.splice(index, 1);
+      this.$q();
+    },
+    voidFailed(error) {
+      this.$dialog(error).then(() => this.$q());
     },
     close() {
       this.init.resolve();
     },
-    getFile(device) {
+    getParser(device) {
       switch (device) {
         case "SP30":
         case "S80":
@@ -239,12 +230,6 @@ h5 {
   font-weight: normal;
   color: #757575;
   margin-top: 3px;
-}
-
-table {
-  table-layout: auto;
-  border-spacing: 0;
-  width: 100%;
 }
 
 thead th {
@@ -287,11 +272,13 @@ td button {
 tbody tr:nth-child(odd) {
   background: #eeeeee;
 }
+
 .amount {
   font-weight: bold;
   font-family: "Agency FB";
   color: #3c3c3c;
 }
+
 footer {
   display: flex;
   border-top: 1px solid #eee;

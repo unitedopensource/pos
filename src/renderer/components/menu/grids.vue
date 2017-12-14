@@ -432,7 +432,7 @@ export default {
     },
     exit(quit) {
       let { doneLock } = this.station;
-      let { lockOnDone } = this.store.table;
+      let { lockOnDone } = this.dinein;
 
       this.resetAll();
       if (this.order.type === "DINE_IN") {
@@ -625,6 +625,7 @@ export default {
       "diffs",
       "order",
       "store",
+      "dinein",
       "ticket",
       "station",
       "customer",

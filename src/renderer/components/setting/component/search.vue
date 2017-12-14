@@ -46,18 +46,16 @@ export default {
       });
     },
     confirm() {
-      Pax.initial(this.target, this.port)
-        .then(r => r.text())
-        .then(device => {
-          let terminal = Pax.check(device);
-          terminal.code === "000000" &&
-            this.init.resolve({
-              ip: this.target,
-              port: this.port,
-              model: terminal.model,
-              sn: terminal.sn
-            });
-        });
+      Pax.initial(this.target, this.port).then(response => {
+        let terminal = Pax.check(response.data);
+        terminal.code === "000000" &&
+          this.init.resolve({
+            ip: this.target,
+            port: this.port,
+            model: terminal.model,
+            sn: terminal.sn
+          });
+      });
     },
     reset() {
       this.port = 10009;

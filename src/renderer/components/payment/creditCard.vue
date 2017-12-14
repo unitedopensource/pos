@@ -122,6 +122,9 @@ export default {
         case "TERMINAL_RETURN_ERROR":
           break;
         case "DEVICE_RETURN_ERROR":
+          this.icon = "error";
+          this.msg = this.$t("terminal.removeTryAgain");
+          this.cancelable = true;
           break;
         case "TRANSACTION_FAILED":
           this.icon = "error";
