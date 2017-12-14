@@ -52,7 +52,7 @@
                             <span class="void" @click="voidSale(record)">{{$t('button.void')}}</span>
                         </td>
                         <td v-else class="action">
-                            <span class="refund">{{$t('button.refund')}}</span>
+                            <span class="refund" @click="askRefund(record)">{{$t('button.refund')}}</span>
                         </td>
                     </tr>
                 </tbody>
@@ -267,6 +267,73 @@ export default {
             .catch(this.executeFailed);
         })
         .catch(() => this.$q());
+    },
+    askRefund(record) {
+      const amount = record.amount.approve;
+      let data = {
+        title: "dialog.refund",
+        msg: ["dialog.refundAmount", amount],
+        buttons: [
+          { text: "button.cancel", fn: "reject" },
+          { text: "button.refund", fn: "resolve" }
+        ]
+      };
+
+      this.$dialog(data)
+        .then(() => this.refund(record))
+        .catch(() => this.$q());
+    },
+    refund(record) {
+      const amount = record.amount.approve;
+      const order = record.order || {};
+      const number = order.number || "";
+
+      this.$p("processor", { timeout: 60000 });
+      this.initialParser(this.station.terminal).then(() => {
+        this.terminal.refund(amount, number).then(response => {
+          let result = this.terminal.explainTransaction(response.data);
+          result._id = ObjectId();
+
+          if (result.code === "000000") {
+            const transaction = {
+              _id: ObjectId(),
+              date: today(),
+              time: +new Date(),
+              order: order._id || "",
+              ticket: {
+                number: order.number || "",
+                type: order.type || ""
+              },
+              paid: 0,
+              change: 0,
+              actual: -result.amount.approve,
+              tip: 0,
+              cashier: this.op.name,
+              server: null,
+              cashDrawer: null,
+              station: this.station.alias,
+              terminal: this.station.terminal,
+              type: "CREDIT",
+              for: "Refund",
+              subType: result.account.type,
+              credential: result._id,
+              lfd: result.account.number
+            };
+
+            this.$socket.emit("[TERMINAL] SAVE", result);
+            this.$socket.emit("[TRANSACTION] SAVE", transaction);
+            this.$q();
+          } else {
+            let data = {
+              title: ["terminal.error", result.code],
+              msg: result.msg,
+              buttons: [{ text: "button.confirm", fn: "resolve" }]
+            };
+
+            this.$dialog(data).then(() => this.$q());
+          }
+        });
+      });
     },
     initialParser(terminal) {
       return new Promise((resolve, reject) => {

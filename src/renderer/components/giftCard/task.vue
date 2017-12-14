@@ -94,7 +94,7 @@ export default {
           })
             .then(data => {
               this.$q();
-              let { number, result } = data;
+              const { number, result } = data;
               this.card = result;
               this.doTask(result, number);
             })
@@ -197,9 +197,7 @@ export default {
         title: "dialog.cashDrawerUnavailable",
         msg: "dialog.cashDrawerUnavailableTip",
         buttons: [{ text: "button.confirm", fn: "resolve" }]
-      }).then(() => {
-        this.$q();
-      });
+      }).then(() => this.$q());
     },
     deactivation() {
       this.task = null;
@@ -211,21 +209,15 @@ export default {
           this.$socket.emit("[GIFTCARD] DEACTIVATION", this.card.number);
           this.$q();
         })
-        .catch(() => {
-          this.$q();
-        });
+        .catch(() => this.$q());
     },
     withdrawn() {
       this.$dialog({
         title: "dialog.cashingOutConfirm",
         msg: ["dialog.cashingOutConfirmTip", this.card.balance.toFixed(2)]
       })
-        .then(() => {
-          this.$q();
-        })
-        .catch(() => {
-          this.$q();
-        });
+        .then(() => this.$q())
+        .catch(() => this.$q());
     },
     reloaded(card) {
       this.$q();

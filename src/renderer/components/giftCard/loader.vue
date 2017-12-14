@@ -184,7 +184,7 @@ export default {
 
       this.op.cashCtrl === "enable" && Printer.openCashDrawer();
 
-      this.$socket.emit("[SAVE] TRANSACTION", transaction);
+      this.$socket.emit("[TRANSACTION] SAVE", transaction);
       this.$socket.emit("[CASHFLOW] ACTIVITY", { cashDrawer, activity });
 
       this.init.activation ? this.activation() : this.reloadBalance();
@@ -201,9 +201,9 @@ export default {
         this.component = "creditCard";
       })
         .then(data => {
-          let date = today();
-          let time = +new Date();
-          let cashDrawer =
+          const date = today();
+          const time = +new Date();
+          const cashDrawer =
             this.op.cashCtrl === "staffBank"
               ? this.op.name
               : this.station.cashDrawer.name;
@@ -217,18 +217,19 @@ export default {
 
           Printer.printCreditCard(data);
 
-          let transaction = {
+          const transaction = {
             _id: ObjectId(),
             date,
             time,
             order: null,
-            paid: parseFloat(this.reload),
+            paid: parseFloat(data.amount.approve),
             change: 0,
             actual: parseFloat(data.amount.approve),
             tip: 0,
             cashier: this.op.name,
             cashDrawer,
-            station: this.station.alies,
+            station: this.station.alias,
+            terminal: this.station.terminal,
             type: "CREDIT",
             for: "Reload",
             subType: data.account.type,
@@ -236,8 +237,8 @@ export default {
             lfd: data.account.number
           };
 
-          this.$socket.emit("[TERM] TRANSACTION", data);
-          this.$socket.emit("[SAVE] TRANSACTION", transaction);
+          this.$socket.emit("[TERMINAL] SAVE", data);
+          this.$socket.emit("[TRANSACTION] SAVE", transaction);
 
           this.init.activation ? this.activation() : this.reloadBalance();
         })

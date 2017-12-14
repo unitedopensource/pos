@@ -32,7 +32,7 @@
             </table>
             <footer>
                 <div class="opt">
-
+                    
                 </div>
                 <button class="btn" @click="init.resolve">{{$t('button.done')}}</button>
             </footer>

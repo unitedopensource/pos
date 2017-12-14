@@ -5,7 +5,6 @@ const Pax = function () {
   let station = null;
   let request = null;
   let terminal = null;
-  let baseURL = null;
   let cardType = ['',
     'Visa',
     'MasterCard',
@@ -31,7 +30,6 @@ const Pax = function () {
 
     station = stationAlias || '';
     terminal = terminalAlias || '';
-    baseURL = `http://${ip}:${port}`;
     request = axios.create({
       baseURL: `http://${ip}:${port}`
     });
@@ -323,31 +321,29 @@ const Pax = function () {
     }
   }
   this.abort = function () {
-    var xhr = new XMLHttpRequest(),
-      url = this.parser(`A14_1.38`);
-    xhr.open('GET', url, true);
-    xhr.send(null);
-    xhr.abort();
-  }
+    //Encode(`A14_1.38`);
 
+  }
   this.drawSignature = function (data) {
     Draw(data);
   }
-
   this.adjust = function (invoice, trans, value) {
     let command = Encode(`T00_1.38_06_${value}__${invoice}|||${trans}______`);
     return request.get(command)
   }
   this.voidSale = function (invoice, trans) {
     let command = Encode(`T00_1.38_16___${invoice}|||${trans}______`);
-    console.log(command)
+    return request.get(command)
+  }
+  this.refund = function (amount,ticket) {
+    amount = amount * 100
+    let command = Encode(`T00_1.38_02_${amount}__${ticket}______`);
     return request.get(command)
   }
   this.report = function () {
     let command = Encode('R00_1.38_00_')
   }
   this.batch = function () {
-    console.log(baseURL)
     let command = Encode('B00_1.38_');
     return request.get(command)
   }

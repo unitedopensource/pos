@@ -1179,7 +1179,7 @@ export default {
               lfd: data.account.number
             };
 
-            this.$socket.emit("[TERM] TRANSACTION", data, content =>
+            this.$socket.emit("[TERMINAL] SAVE", data, content =>
               this.$socket.emit(
                 "[TERMINAL] CONFIG",
                 this.station.terminal,
@@ -1248,7 +1248,7 @@ export default {
           });
 
         this.payment.log.push(transaction);
-        this.$socket.emit("[SAVE] TRANSACTION", transaction);
+        this.$socket.emit("[TRANSACTION] SAVE", transaction);
 
         this.payment.paid += parseFloat(actual);
         this.recalculatePayment();
