@@ -342,17 +342,17 @@ export default {
         terminal
           .initial(ip, port, sn, this.station.alias, alias)
           .then(response => {
-            const check = terminal.check(response.data);
-            check.code === "000000" && this.batch(terminal);
+            const device = terminal.check(response.data);
+            check.code === "000000" && this.batch(device, terminal);
           });
       });
     },
-    batch(terminal) {
+    batch(device, terminal) {
       terminal.batch().then(response => {
         const result = terminal.explainBatch(response.data);
 
         if (result.code === "000000") {
-          const { sn } = this.device;
+          const { sn } = device;
           let updated = this.transactions.filter(t => !t.close).map(t => {
             t.hasOwnProperty("device") &&
               t.device.sn === sn &&

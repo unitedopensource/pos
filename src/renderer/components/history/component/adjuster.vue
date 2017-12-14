@@ -38,8 +38,7 @@
                         </p>
                     </div>
                     <div class="inner">
-                        <span class="tipped" v-if="transaction && transaction.amount.tip > 0">{{transaction.amount.tip}}</span>
-                        <input type="text" v-model="tip" :placeholder="transaction ? transaction.amount.tip : '0.00'">
+                        <input type="text" v-model="tip" :placeholder="placeholder">
                     </div>
                     <div class="pad">
                         <section class="numpad">
@@ -71,16 +70,18 @@
                 <button class="btn" v-else @click="init.reject(false)">{{$t('button.done')}}</button>
             </footer>
         </div>
+        <div :is="component" :init="componentData"></div>
     </div>
 </template>
 
 <script>
 import dialoger from "../../common/dialoger";
+import processor from "../../common/processor";
 import checkbox from "../../setting/common/checkbox";
 
 export default {
   props: ["init"],
-  components: { dialoger, checkbox },
+  components: { dialoger, checkbox, processor },
   computed: {
     scroll() {
       return { transform: `translate3d(0,${this.offset}px,0)` };
@@ -92,6 +93,7 @@ export default {
       component: null,
       transactions: [],
       transaction: null,
+      placeholder: "0.00",
       lastDelta: 0,
       batch: false,
       terminal: null,
@@ -110,9 +112,9 @@ export default {
   beforeDestroy() {},
   methods: {
     setTarget(record, index) {
-      this.transaction = JSON.parse(JSON.stringify(record));
-      this.tip =
-        this.transaction.amount.tip > 0 ? this.transaction.amount.tip : "";
+      this.transaction = record;
+      this.tip = "";
+      this.placeholder = this.transaction.amount.tip;
       this.reset = true;
     },
     move(e) {
@@ -149,7 +151,7 @@ export default {
     enter() {
       if (!this.transaction || isNaN(this.tip)) return;
 
-      if (this.transaction.amount.tip === tip) {
+      if (this.transaction.amount.tip === this.tip || !this.tip) {
         this.next();
       } else {
         let record = this.transaction;
@@ -181,8 +183,7 @@ export default {
       let record = this.transaction;
       const amount = Math.round(this.tip * 100);
       const invoice = record.order.number;
-      const transaction = record.order.trans;
-
+      const transaction = record.trace.trans;
       this.terminal.adjust(invoice, transaction, amount).then(response => {
         this.$q();
         const result = this.terminal.explainTransaction(response.data);
@@ -205,6 +206,10 @@ export default {
         }
       });
     },
+    executeFailed(e) {
+      console.log(e);
+    },
+    next() {},
     getParser(model) {
       switch (model) {
         case "SP30":
