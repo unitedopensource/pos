@@ -343,7 +343,7 @@ export default {
           .initial(ip, port, sn, this.station.alias, alias)
           .then(response => {
             const device = terminal.check(response.data);
-            check.code === "000000" && this.batch(device, terminal);
+            device.code === "000000" && this.batch(device, terminal);
           });
       });
     },
