@@ -19,6 +19,7 @@
         </div>
       </transition>
     </toggle>
+    <toggle title="setting.unifiedBatch" tooltip="tip.unifiedBatch" v-model="store.unifiedBatch" @update="updateBatch"></toggle>
     <toggle title="text.menuID" v-model="display.menuID" @update="updateMenuID"></toggle>
     <toggle title="text.favoriteItem" v-model="display.favorite" @update="updateFavorite"></toggle>
     <toggle title="text.autoTemplate" tooltip="tip.autoTemplate" v-model="display.autoTemplate" @update="updateTemplate"></toggle>
@@ -96,6 +97,12 @@ export default {
     updateAlphabetical(value) {
       this.update({
         key: "display.alphabetical",
+        value
+      });
+    },
+    updateBatch(value) {
+      this.update({
+        key: "store.unifiedBatch",
         value
       });
     }

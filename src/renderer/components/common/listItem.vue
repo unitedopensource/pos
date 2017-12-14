@@ -1,5 +1,5 @@
 <template>
-    <li class="item" @click="select(item,$event)" v-if="!checkbox">
+    <li class="item" @click.prevent.stop="select(item,$event)" v-if="!checkbox">
         <div class="main">
             <span class="qty">{{item.qty}}</span>
             <div class="wrap">

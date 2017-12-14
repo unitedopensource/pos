@@ -89,7 +89,7 @@ import dialoger from "../common/dialoger";
 import dropdown from "./component/dropdown";
 import pagination from "../common/pagination";
 import processor from "../common/processor";
-import adjuster from "../component/adjuster";
+import adjuster from "./component/adjuster";
 
 export default {
   props: ["init"],
@@ -314,6 +314,7 @@ export default {
           transactions: this.filteredTransactions,
           devices: this.devices
         };
+        this.component = "adjuster";
       })
         .then(() => this.preBatch)
         .catch(() => this.$q());

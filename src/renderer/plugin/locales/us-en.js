@@ -1113,6 +1113,7 @@ export default {
         'animation': 'Animation Effect',
         'saveLog': 'Save Log',
         'timecard': 'Timecard',
+        'unifiedBatch': 'Unified Batch',
 
         'employee': 'Employee',
         'station': 'Station Setting',
@@ -1272,6 +1273,7 @@ export default {
         'timecard': 'Record employee clock in/out',
         'replaceItemName': 'Will replace item name',
         'noReplaceItemName': 'Print item name',
+        'unifiedBatch': 'Batch all terminal at once',
         'dinein': {
             'useTableLayout': 'Use table to place order',
             'noTableLayout': 'Skip table to place order',

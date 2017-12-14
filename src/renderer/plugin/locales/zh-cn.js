@@ -1107,6 +1107,7 @@ export default {
         'animation': '动画效果',
         'saveLog': '保存记录',
         'timecard': '打卡',
+        'unifiedBatch': '统一过账',
 
         'employee': '员工设置',
         'station': '工作站设定',
@@ -1239,7 +1240,7 @@ export default {
         'taxOnDeliveryCharge': '送餐费用加税',
         'thirdPartyProvider': '请选择一个第三方提供商',
         'paidRecords': '#{i} 号订单一共有 {i} 个付款记录',
-        'foundRecords': '一共找到 {i} 笔记录',
+        'foundRecords': '共有 {i} 笔记录',
         'forGiftCard': '礼物卡 ( {i} )',
         'payout': '现金支出详情',
         'receiptDefaultAction': '每次付款之后提示打印收据的默认动作',
@@ -1266,6 +1267,7 @@ export default {
         'timecard': '记录员工上下班时间',
         'replaceItemName': '替换物品名字',
         'noReplaceItemName': '正常打印',
+        'unifiedBatch': '一次性处理所有刷卡机过账信息',
         'dinein': {
             'useTableLayout': '使用座位下单',
             'noTableLayout': '跳过座位直接下单',
