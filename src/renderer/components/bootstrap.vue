@@ -184,16 +184,18 @@ export default {
       // parser.on('data', console.log);
     },
     initialPrinter() {
-      let config = this.config;
+      const config = this.config;
+      const station = this.station;
       CLODOP
-        ? (window.Printer = new Print(CLODOP, config))
+        ? (window.Printer = new Print(CLODOP, config, station))
         : setTimeout(
             function() {
-              window.Printer = new Print(CLODOP, config);
+              window.Printer = new Print(CLODOP, config, station);
             },
             20000,
             CLODOP,
-            config
+            config,
+            station
           );
     },
     ...mapActions([

@@ -316,11 +316,62 @@ export default {
         };
         this.component = "adjuster";
       })
-        .then(() => this.preBatch)
+        .then(this.preBatch)
         .catch(() => this.$q());
     },
-    preBatch() {},
-    batch() {},
+    preBatch() {
+      const data = {
+        title: "dialog.batchClose",
+        msg: "dialog.batchCloseTip",
+        buttons: [
+          { text: "button.cancel", fn: "reject" },
+          { text: "button.batch", fn: "resolve" }
+        ]
+      };
+
+      this.$dialog(data)
+        .then(() => this.processBatch())
+        .catch(() => this.$q());
+    },
+    processBatch() {
+      this.$p("processor", { timeout: 300000 });
+      this.devices.forEach(config => {
+        const { ip, port, sn, model, alias } = config;
+        const terminal = this.getParser(model);
+
+        terminal
+          .initial(ip, port, sn, this.station.alias, alias)
+          .then(response => {
+            const check = terminal.check(response.data);
+            check.code === "000000" && this.batch(terminal);
+          });
+      });
+    },
+    batch(terminal) {
+      terminal.batch().then(response => {
+        const result = terminal.explainBatch(response.data);
+
+        if (result.code === "000000") {
+          const { sn } = this.device;
+          let updated = this.transactions.filter(t => !t.close).map(t => {
+            t.hasOwnProperty("device") &&
+              t.device.sn === sn &&
+              (t.close = true);
+            return t;
+          });
+          this.$socket.emit("[TERM] BATCH_TRANS_CLOSE", updated);
+          Printer.printBatchReport(result);
+          this.$socket.emit("[TERM] SAVE_BATCH_RESULT", result);
+        } else {
+          this.$dialog({
+            type: "warning",
+            title: result.msg,
+            msg: ["terminal.error", result.code],
+            buttons: [{ text: "button.confirm", fn: "resolve" }]
+          }).then(() => this.$q());
+        }
+      });
+    },
     exit() {
       this.init.resolve();
     }

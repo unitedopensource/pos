@@ -11,11 +11,11 @@
           </div>
         </transition>
     </toggle>
-    <toggle title="setting.tipSuggestion" tooltip="tip.tipSuggestion" v-model="store.tipSuggestion" @update="updateTipSuggestion">
+    <toggle title="setting.tipSuggestion" tooltip="tip.tipSuggestion" v-model="store.tipSuggestion.enable" @update="updateTipSuggestion">
       <transition name="dropdown">
-            <div v-if="store.tipSuggestion" class="fees">
+            <div v-if="store.tipSuggestion.enable" class="fees">
               <label>{{$t('text.tipPercentage')}}</label>
-              <input type="text" v-model="store.tipPercentages" v-mask="'##,##,##'" maxlength="10" placeholder="15,18,20" @blur="updateTipPercentages">
+              <input type="text" v-model="store.tipSuggestion.percentages" v-mask="'##,##,##'" maxlength="10" placeholder="15,18,20" @blur="updateTipPercentages">
             </div>
         </transition>
     </toggle>
@@ -98,7 +98,7 @@ export default {
     },
     updateTipSuggestion(value) {
       this.update({
-        key: "store.tipSuggestion",
+        key: "store.tipSuggestion.enable",
         value
       });
     },
@@ -106,7 +106,7 @@ export default {
       let value = this.store.tipPercentages || "15,18,20";
       if (value.split(",").length === 3) {
         this.update({
-          key: "store.tipPercentages",
+          key: "store.tipSuggestion.percentages",
           value
         });
       }

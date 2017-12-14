@@ -655,11 +655,11 @@ export default {
         });
       });
     },
-    checkTicket(){
-      return new Promise((resolve,reject)=>{
+    checkTicket() {
+      return new Promise((resolve, reject) => {
         console.log(this.order);
-        resolve()
-      })
+        resolve();
+      });
     },
     checkDate() {
       return new Promise((resolve, reject) => {
@@ -861,10 +861,8 @@ export default {
       }
     },
     payFailed(error) {
-      typeof error === "object"
-        ? this.$dialog(error).then(() => {
-            this.$q();
-          })
+      error === Object(error)
+        ? this.$dialog(error).then(() => this.$q())
         : this.$q();
     },
     setPaymentType(type) {
@@ -884,9 +882,7 @@ export default {
 
           this.swipeGiftCard()
             .then(this.checkGiftCard)
-            .catch(() => {
-              this.$q();
-            });
+            .catch(() => this.$q());
           break;
       }
 
@@ -1182,9 +1178,9 @@ export default {
               lfd: data.account.number
             };
 
-            this.$socket.emit("[TERM] TRANSACTION", data, content => {
-              Printer.printCreditCard(content);
-            });
+            this.$socket.emit("[TERM] TRANSACTION", data, content =>
+              Printer.printCreditCard(content)
+            );
             break;
           case "THIRD":
             transaction = {
@@ -1359,46 +1355,35 @@ export default {
         };
 
         if (this.currentTender > 0) {
-          !this.store.noReceipt
-            ? this.$dialog(tenderWithDialog)
+          switch (this.store.receipt) {
+            case "always":
+              this.printCurrentReceipt();
+              resolve();
+              break;
+            case "never":
+              this.$dialog(tenderWithoutDialog).then(() => {
+                this.$q();
+                resolve();
+              });
+              break;
+            default:
+              this.$dialog(tenderWithDialog)
                 .then(() => {
-                  if (this.payInFull) {
-                    Printer.setTarget("Receipt").print(this.order, true);
-                  } else {
-                    let index = this.current + 1;
-                    let order = JSON.parse(JSON.stringify(this.order));
-                    order.payment = this.payment;
-                    order.number = order.number + "-" + index;
-                    order.content = this.order.content.filter(
-                      item =>
-                        Array.isArray(item.sort)
-                          ? item.sort.includes(index)
-                          : item.sort === index
-                    );
-                    Printer.setTarget("Receipt").print(order, true);
-                  }
-                  this.$q();
+                  this.printCurrentReceipt();
                   resolve();
                 })
                 .catch(() => {
                   this.$q();
                   resolve();
-                })
-            : this.$dialog(tenderWithoutDialog).then(() => {
-                this.$q();
-                resolve();
-              });
+                });
+          }
         } else {
-          !this.store.noReceipt
-            ? this.askReceipt().then(() => {
-                resolve();
-              })
-            : resolve();
+          this.askReceipt().then(() => resolve());
         }
       });
     },
     askReceipt() {
-      return new Promise(resolve => {
+      return new Promise(next => {
         let data = {
           type: "question",
           title: "dialog.printReceiptConfirm",
@@ -1409,35 +1394,42 @@ export default {
           ]
         };
 
-        this.store.noReceipt
-          ? resolve()
-          : this.$dialog(data)
+        switch (this.store.receipt) {
+          case "never":
+            next();
+            break;
+          case "always":
+            this.printCurrentReceipt();
+            next();
+            break;
+          default:
+            this.$dialog(data)
               .then(() => {
-                if (this.payInFull) {
-                  Printer.setTarget("Receipt").print(this.order, true);
-                } else {
-                  let index = this.current + 1;
-                  let order = JSON.parse(JSON.stringify(this.order));
-                  order.payment = this.payment;
-                  order.number = order.number + "-" + index;
-                  order.content = this.order.content.filter(item => {
-                    if (Array.isArray(item.sort)) {
-                      return item.sort.includes(index);
-                    } else {
-                      return item.sort === index;
-                    }
-                  });
-                  Printer.setTarget("Receipt").print(order, true);
-                }
-
-                this.$q();
-                resolve();
+                this.printCurrentReceipt();
+                next();
               })
-              .catch(() => {
-                this.$q();
-                resolve();
-              });
+              .catch(() => next());
+        }
       });
+    },
+    printCurrentReceipt() {
+      if (this.payInFull) {
+        Printer.setTarget("Receipt").print(this.order, true);
+      } else {
+        let index = this.current + 1;
+        let order = JSON.parse(JSON.stringify(this.order));
+        order.payment = this.payment;
+        order.number = order.number + "-" + index;
+        order.content = this.order.content.filter(item => {
+          if (Array.isArray(item.sort)) {
+            return item.sort.includes(index);
+          } else {
+            return item.sort === index;
+          }
+        });
+        Printer.setTarget("Receipt").print(order, true);
+      }
+      this.$q();
     },
     checkBalance() {
       if (this.payInFull) {

@@ -287,6 +287,8 @@ section.list {
   flex: 1;
   border-right: 1px solid #ddd;
   padding-right: 15px;
+  height: 476px;
+  overflow: hidden;
 }
 
 .entryWrap .header {

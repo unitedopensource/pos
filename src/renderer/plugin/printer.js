@@ -1,9 +1,9 @@
-var Printer = function (plugin, config) {
+var Printer = function (plugin, config, station) {
     this.plugin = plugin;
-    this.config = config;
-    this.station = config.station;
-    this.setting = config.printer;
-    this.devices = config.station ? config.station.printers || Object.keys(config.printers) : Object.keys(config.printers);
+    this.config = config.store;
+    this.station = station;
+    this.setting = config.printers;
+    this.devices = station ? station.printers || Object.keys(config.printers) : Object.keys(config.printers);
     this.targetDevices = [];
     this.template = null;
     this.target = 'Receipt';
@@ -18,12 +18,12 @@ var Printer = function (plugin, config) {
      *         
      * @return 
      */
-    this.initial = function (plugin, config) {
+    this.initial = function (plugin, config, station) {
         this.plugin = plugin;
-        this.config = config;
-        this.station = config.station;
-        this.setting = config.printer;
-        this.devices = config.station.printerGroup || Object.keys(config.printer);
+        this.config = config.store;
+        this.station = station;
+        this.setting = config.printers;
+        this.devices = station.printers || Object.keys(config.printers);
     }
 
     this.setTarget = function (name) {
@@ -45,7 +45,7 @@ var Printer = function (plugin, config) {
     this.openCashDrawer = function () {
         if (this.station.cashDrawer.enable) {
             this.plugin.PRINT_INIT('Open');
-            this.plugin.SET_PRINTER_INDEX(this.station.cashDrawer.bind || this.station.printer);
+            this.plugin.SET_PRINTER_INDEX(this.station.cashDrawer.bind || this.station.receipt);
             this.plugin.SEND_PRINT_RAWDATA(String.fromCharCode(27) + String.fromCharCode(112) + String.fromCharCode(48) + String.fromCharCode(55) + String.fromCharCode(221));
         }
     }
@@ -58,14 +58,14 @@ var Printer = function (plugin, config) {
     }
 
     this.testPage = function (device) {
-        let {
+        const {
             name,
             address,
             city,
             state,
             zipCode,
             contact
-        } = this.config.store;
+        } = this.config;
 
         this.plugin.PRINT_INIT('Test Page');
         this.plugin.PRINT_INITA(0, 0, 270, 2000, "");
@@ -109,10 +109,10 @@ var Printer = function (plugin, config) {
         switch (this.target) {
             case 'All':
                 printer = this.devices.filter(device => !(/cashier/i).test(device));
-                printer.splice(0, 0, this.station.printer || 'cashier');
+                printer.splice(0, 0, this.station.receipt || 'cashier');
                 break;
             case 'Receipt':
-                printer = [this.station.printer || 'cashier'];
+                printer = [this.station.receipt || 'cashier'];
                 break;
             case 'Order':
                 printer = this.devices.filter(device => !(/cashier/i).test(device));
@@ -126,13 +126,20 @@ var Printer = function (plugin, config) {
         printers.forEach(printer => {
             let setting = this.setting[printer];
             let ticket = raw.type,
-                skip;
+                skip = false;
 
-            if (!receipt) {
-                skip = setting.print.hasOwnProperty(raw.type) ? !setting.print[ticket] : true
-            } else {
-                skip = !setting.print[ticket] && setting.print[receipt]
+            try {
+                if (!receipt) {
+                    skip = setting.print.hasOwnProperty(raw.type) ? !setting.print[ticket] : true
+                }
+
+            } catch (e) {
+                skip = true
             }
+
+            //  else {
+            //     skip = !setting.print[ticket] && setting.print[receipt]
+            // }
 
             if (skip) {
                 this.skip();
@@ -151,12 +158,12 @@ var Printer = function (plugin, config) {
                 printCustomer,
                 enlargeDetail
             } = setting.control;
-            let header = createHeader(this.config.store, raw);
+            let header = createHeader(this.config, raw);
             let list = createList(printer, setting.control, raw);
             if (!list) return;
 
             let style = createStyle(setting.control);
-            let footer = createFooter(this.config.store.table, setting.control, printer, raw);
+            let footer = createFooter(this.config, setting.control, printer, raw);
 
             let html = header + list + footer + style;
 
@@ -194,34 +201,33 @@ var Printer = function (plugin, config) {
     }
 
     this.preview = function (raw) {
-        let printer = 'cashier';
-        let setting = this.setting.cashier;
+        const printer = 'cashier';
+        const setting = this.setting.cashier;
 
-        let {
+        const {
             printStore,
             printType,
-            printCustomer,
-            enlargeDetail
+            printCustomer
         } = setting.control;
-        let header = createHeader(this.config.store, raw);
-        let list = createList(printer, setting.control, raw);
-        let style = createStyle(setting.control);
-        let footer = createFooter(this.config.store.table, setting.control, 'cashier', raw);
+        const header = createHeader(this.config, raw);
+        const list = createList(printer, setting.control, raw);
+        const style = createStyle(setting.control);
+        const footer = createFooter(this.config, setting.control, 'cashier', raw);
 
-        let html = header + list + footer + style;
+        const html = header + list + footer + style;
 
         return html;
     }
 
     this.printLabel = function (name, order) {
-        let {
+        const {
             printPrimary,
             printSecondary,
             primaryFont,
             secondaryFont,
             primaryFontSize,
             secondaryFontSize
-        } = this.config.printer[name]['control'];
+        } = this.config.printers[name]['control'];
         let style = `<style>
                     .item{text-align:center;display:inline-block;}
                     .number{float:right;}
@@ -251,17 +257,15 @@ var Printer = function (plugin, config) {
     }
 
     this.printCreditCard = function (trans, reprint) {
-        let {
-            store,
-            printers
-        } = this.config;
-        let device = this.station.receipt || 'cashier';
+        const store = this.config;
+        const device = this.station.receipt || 'cashier';
 
         //if (!printer[device]['print']['CREDITCARD']) return;
 
-        let timestamp = moment(Number(trans.trace.time), 'YYYYMMDDHHmmss');
-        let date = timestamp.format("MM / DD / YYYY");
-        let time = timestamp.format("HH:mm:ss");
+        const timestamp = moment(Number(trans.trace.time), 'YYYYMMDDHHmmss');
+        const date = timestamp.format("MM / DD / YYYY");
+        const time = timestamp.format("HH:mm:ss");
+
         let html = createHtml();
         let style = createStyle();
 
@@ -352,7 +356,7 @@ var Printer = function (plugin, config) {
             state,
             zipCode,
             contact
-        } = this.config.store;
+        } = this.config;
 
         CLODOP.PRINT_INIT('Gift Card');
         CLODOP.PRINT_INITA(0, 0, 260, 2000, "");
@@ -416,21 +420,18 @@ var Printer = function (plugin, config) {
         CLODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
         CLODOP.SET_PRINT_STYLEA(0, "LetterSpacing", 1);
         CLODOP.ADD_PRINT_BARCODE(250, 30, 266, 70, "Code39", card.number);
-        CLODOP.SET_PRINTER_INDEX(this.station.printer || 'cashier');
+        CLODOP.SET_PRINTER_INDEX(this.station.receipt || 'cashier');
         CLODOP.PRINT();
     }
 
     this.printReport = function (report) {
-        let {
-            store
-        } = this.config;
-
-        let html = createReport();
-        let style = createStyle();
+        const store = this.config;
+        const html = createReport();
+        const style = createStyle();
 
         this.plugin.PRINT_INIT("Report");
         this.plugin.ADD_PRINT_HTM(0, 0, "100%", "100%", html + style);
-        this.plugin.SET_PRINTER_INDEX(this.station.printer || 'cashier');
+        this.plugin.SET_PRINTER_INDEX(this.station.receipt || 'cashier');
         this.plugin.PRINT();
 
         function createReport() {
@@ -496,9 +497,9 @@ var Printer = function (plugin, config) {
     }
 
     this.printPreBatchReport = function (data) {
-        let store = this.config.store;
-        let date = moment().format("MM/DD/YYYY");
-        let time = moment().format("hh:mm:ss");
+        const store = this.config;
+        const date = moment().format("MM/DD/YYYY");
+        const time = moment().format("hh:mm:ss");
         let content = data.content.map(list => {
             return `<li class="first">
                     <span class="f1 center bold">${list.trans}</span>
@@ -577,23 +578,23 @@ var Printer = function (plugin, config) {
                     </style>`;
         this.plugin.PRINT_INIT('Prebatch report');
         this.plugin.ADD_PRINT_HTM(0, 0, "100%", "100%", html + style);
-        this.plugin.SET_PRINTER_INDEX(this.station.printer || 'cashier');
+        this.plugin.SET_PRINTER_INDEX(this.station.receipt || 'cashier');
         this.plugin.PRINT();
     }
 
     this.printBatchReport = function (data) {
-        let store = this.config.store;
-        let batchTime = moment(Number(data.time), 'YYYYMMDDHHmmss')
-        let date = batchTime.format("MM/DD/YYYY");
-        let time = batchTime.format("hh:mm:ss");
-        let {
+        const store = this.config;
+        const batchTime = moment(Number(data.time), 'YYYYMMDDHHmmss')
+        const date = batchTime.format("MM/DD/YYYY");
+        const time = batchTime.format("hh:mm:ss");
+        const {
             credit,
             debit,
             ebt
         } = data.amount;
-        let total = (parseFloat(credit) + parseFloat(debit) + parseFloat(ebt)).toFixed(2);
+        const total = (parseFloat(credit) + parseFloat(debit) + parseFloat(ebt)).toFixed(2);
 
-        let html = `<article>
+        const html = `<article>
                     <section class="data">
                     <h3>Batch Report</h3>
                       <p class="time"><span class="text">${date}</span><span class="value">${time}</span></p>
@@ -614,7 +615,7 @@ var Printer = function (plugin, config) {
                     <p>END OF BATCH REPORT</p>
                     <p>Powered By United POS&reg;</p>
                   </footer>`;
-        let style = `<style>
+        const style = `<style>
                   *{margin:0;padding:0;font-family:'Agency FB';}
                   article p{display:flex;}
                   article .text{flex:2;}
@@ -625,14 +626,14 @@ var Printer = function (plugin, config) {
 
         this.plugin.PRINT_INIT('Batch Report');
         this.plugin.ADD_PRINT_HTM(0, 0, "100%", "100%", html + style);
-        this.plugin.SET_PRINTER_INDEX(this.station.printer || 'cashier');
+        this.plugin.SET_PRINTER_INDEX(this.station.receipt || 'cashier');
         this.plugin.PRINT();
     }
 
     this.printTimeCardReport = function (data) {
-        let store = this.config.store;
-        let date = moment().format("MM/DD/YYYY");
-        let time = moment().format("hh:mm:ss");
+        const store = this.config;
+        const date = moment().format("MM/DD/YYYY");
+        const time = moment().format("hh:mm:ss");
         let total = 0;
         let activity = data.activity.map((session, index) => {
             let clockIn = moment(session.clockIn).locale('en').format("hh:mm:ss a");
@@ -693,16 +694,16 @@ var Printer = function (plugin, config) {
                       footer{border-top:1px solid #000;text-align:center;}</style>`;
         this.plugin.PRINT_INIT('Time card report');
         this.plugin.ADD_PRINT_HTM(0, 0, "100%", "100%", html + style);
-        this.plugin.SET_PRINTER_INDEX(this.station.printer || 'cashier');
+        this.plugin.SET_PRINTER_INDEX(this.station.receipt || 'cashier');
         this.plugin.PRINT();
     }
 
     this.printCashInReport = function (data) {
-        let store = this.config.store;
-        let date = moment().format("MM/DD/YYYY");
-        let time = moment().format("hh:mm:ss");
+        const store = this.config;
+        const date = moment().format("MM/DD/YYYY");
+        const time = moment().format("hh:mm:ss");
 
-        let html = `<section class="header">
+        const html = `<section class="header">
                       <div class="store">
                         <h3>${store.name}</h3>
                         <h5>${store.address}</h5>
@@ -732,7 +733,7 @@ var Printer = function (plugin, config) {
                   <footer>
                     <p>Powered by United POS&reg;</p>
                   </footer>`;
-        let style = `<style>*{margin:0;padding:0;font-family:'Agency FB';}
+        const style = `<style>*{margin:0;padding:0;font-family:'Agency FB';}
                       section.header{text-align:center;}
                       .header h3{font-size:1.25em;}
                       .header h5{font-size:16px;font-weight:lighter}
@@ -750,14 +751,14 @@ var Printer = function (plugin, config) {
                       footer{border-top:1px solid #000;text-align:center;}</style>`;
         this.plugin.PRINT_INIT('Cash in report');
         this.plugin.ADD_PRINT_HTM(0, 0, "100%", "100%", html + style);
-        this.plugin.SET_PRINTER_INDEX(this.station.printer || 'cashier');
+        this.plugin.SET_PRINTER_INDEX(this.station.receipt || 'cashier');
         this.plugin.PRINT();
     }
 
     this.printCashOutReport = function (data, detail) {
-        let store = this.config.store;
-        let date = moment().format("MM/DD/YYYY");
-        let time = moment().format("hh:mm:ss");
+        const store = this.config;
+        const date = moment().format("MM/DD/YYYY");
+        const time = moment().format("hh:mm:ss");
         let amount = 0;
         let list = detail ? data.activity.map(log => `            
                     <div class="log">
@@ -773,7 +774,7 @@ var Printer = function (plugin, config) {
                       <span class="diff">$${(amount += (log.inflow - log.outflow)).toFixed(2)}</span>
                   </div>`).join("").toString() : "";
 
-        let html = `<section class="header">
+        const html = `<section class="header">
                       <div class="store">
                         <h3>${store.name}</h3>
                         <h5>${store.address}</h5>
@@ -814,7 +815,7 @@ var Printer = function (plugin, config) {
                   <footer>
                     <p>Powered by United POS&reg;</p>
                   </footer>`;
-        let style = `<style>*{margin:0;padding:0;font-family:'Agency FB';}
+        const style = `<style>*{margin:0;padding:0;font-family:'Agency FB';}
                       section.header{text-align:center;}
                       .header h3{font-size:1.25em;}
                       .header h5{font-size:16px;font-weight:lighter}
@@ -833,18 +834,18 @@ var Printer = function (plugin, config) {
                       footer{border-top:1px solid #000;text-align:center;}</style>`;
         this.plugin.PRINT_INIT('Cash out report');
         this.plugin.ADD_PRINT_HTM(0, 0, "100%", "100%", html + style);
-        this.plugin.SET_PRINTER_INDEX(this.station.printer || 'cashier');
+        this.plugin.SET_PRINTER_INDEX(this.station.receipt || 'cashier');
         this.plugin.PRINT();
     }
 
     this.printReservationTicket = function (data) {
-        let store = this.config.store;
-        let {
+        const store = this.config;
+        const {
             queue,
             name
         } = data;
-        let date = moment().format("MM/DD/YYYY");
-        let time = moment().format("hh:mm:ss");
+        const date = moment().format("MM/DD/YYYY");
+        const time = moment().format("hh:mm:ss");
         let html = `<section class="header">
                       <div class="store">
                         <h3>${store.name}</h3>
@@ -873,7 +874,7 @@ var Printer = function (plugin, config) {
         footer{border-top:1px solid #000;text-align:center;}.time{margin-left:10px;}</style>`;
         this.plugin.PRINT_INIT('Reservation Ticket');
         this.plugin.ADD_PRINT_HTM(0, 0, "100%", "100%", html + style);
-        this.plugin.SET_PRINTER_INDEX(this.station.printer || 'cashier');
+        this.plugin.SET_PRINTER_INDEX(this.station.receipt || 'cashier');
         this.plugin.PRINT();
     }
 
@@ -915,7 +916,7 @@ function createHeader(store, ticket) {
     let date = moment(Number(time)).format("MM-DD-YYYY");
     let placeTime = moment(Number(time)).locale('en').format("hh:mm a");
     let customerInfo = "";
-    customerInfo += phone ? `<p><span class="icon">‎📞</span><span class="value tel">${phone}</span><span class="ext">${customer.extension}</span></p>` : "";
+    customerInfo += phone ? `<p><span class="value tel">${phone}</span><span class="ext">${customer.extension}</span></p>` : "";
     customerInfo += customer.address ? `<p><span class="value addr">${customer.address}</span></p>` : "";
     customerInfo += customer.city ? `<p><span class="value">${customer.city}</span><span class="space">${customer.distance}</span><span class="space">${customer.duration}</span></p>` : "";
     customerInfo += customer.name ? `<p><span class="value">${customer.name}</span></p>` : "";
@@ -1243,31 +1244,37 @@ function createStyle(ctrl) {
           </style>`
 }
 
-function createFooter(table, ctrl, device, ticket) {
+function createFooter(config, ctrl, device, ticket) {
     if (!ticket.hasOwnProperty('payment')) return "";
 
-    let {
+    const {
+        enable,
+        percentages
+    } = config.tipSuggestion;
+    const {
         footer
     } = ctrl;
-    let {
+    const {
         payment
     } = ticket;
+
     let suggestion = '';
 
-    if (table.tipSuggestion && ticket.type === 'PRE_PAYMENT') {
-        let percentage = table.tipPercentages ? table.tipPercentages.split(",") : [15, 18, 20];
+    if (enable && ticket.type === 'PRE_PAYMENT') {
+        const p = percentages.split(",");
+
         let data = [{
-            percentage: percentage[0],
-            value: toFixed(payment.balance * percentage[0] / 100, 2).toFixed(2),
-            total: toFixed(payment.balance * (1 + percentage[0] / 100), 2).toFixed(2)
+            percentage: p[0],
+            value: toFixed(payment.balance * p[0] / 100, 2).toFixed(2),
+            total: toFixed(payment.balance * (1 + p[0] / 100), 2).toFixed(2)
         }, {
-            percentage: percentage[1],
-            value: toFixed(payment.balance * percentage[1] / 100, 2).toFixed(2),
-            total: toFixed(payment.balance * (1 + percentage[1] / 100), 2).toFixed(2)
+            percentage: p[1],
+            value: toFixed(payment.balance * p[1] / 100, 2).toFixed(2),
+            total: toFixed(payment.balance * (1 + p[1] / 100), 2).toFixed(2)
         }, {
-            percentage: percentage[2],
-            value: toFixed(payment.balance * percentage[2] / 100, 2).toFixed(2),
-            total: toFixed(payment.balance * (1 + percentage[2] / 100), 2).toFixed(2)
+            percentage: p[2],
+            value: toFixed(payment.balance * p[2] / 100, 2).toFixed(2),
+            total: toFixed(payment.balance * (1 + p[2] / 100), 2).toFixed(2)
         }].map(kindness =>
             `<div class="outer">
                 <span>${kindness.percentage}%<span class="dash">-</span>$ ${kindness.value}</span>
