@@ -246,7 +246,8 @@ export default {
         'update': 'Update',
         'refund': 'Refund',
         'break': 'Break',
-        'work': 'Work'
+        'work': 'Work',
+        'coupon': 'Coupon'
     },
     thead: {
         'orderType': 'Order Type',
@@ -319,7 +320,8 @@ export default {
         'taxRate': 'Tax Rate',
         'default': 'Default',
         'location': 'Location',
-        'condition': 'Condition'
+        'condition': 'Condition',
+        'terminal': 'Terminal'
     },
     flow: {
         'START': 'Deposit',
@@ -379,7 +381,8 @@ export default {
         'terminalDevice': 'Terminal Device(s)',
         'category': 'Menu Category',
         'item': 'Menu Item',
-        'coupon': 'Coupon Detail'
+        'coupon': 'Coupon Detail',
+        'batch' :'Batch'
     },
     dialog: {
         'maintenance': 'Maintenance',
@@ -647,7 +650,12 @@ export default {
             'duplicated': 'Batch Duplicated',
             'noFound': 'No Transaction Was Found',
             'error': 'An Error Occurred During Batch',
-            'unknown': 'An Unknown Error Occurred During Batch'
+            'unknown': 'An Unknown Error Occurred During Batch',
+            'inuse': 'Terminal is in use',
+            'ready': 'Ready',
+            'waiting': 'Waiting...',
+            'processing': 'Processing...',
+            'closed': 'Transaction Finalized'
         }
     },
     card: {

@@ -48,7 +48,7 @@ export default {
             reject({ error: "CONFIG_FILE_NO_FOUND" });
           } else {
             this.config = config;
-            this.terminal = this.getParser(config.model);
+            this.terminal = this.getParser(config.model)();
             next();
           }
         });
@@ -62,9 +62,7 @@ export default {
 
         this.terminal
           .initial(ip, port, sn, this.station, this.attached)
-          .then(response => {
-            next(response.data);
-          })
+          .then(response => next(response.data))
           .catch(e => {
             throw new Error({ error: "TERMINAL_RETURN_ERROR" });
           });
@@ -73,6 +71,7 @@ export default {
     initTransaction(initial) {
       return new Promise((next, reject) => {
         this.device = this.terminal.check(initial);
+        console.log(this.device);
 
         if (this.device.code !== "000000") {
           reject({ error: "DEVICE_RETURN_ERROR" });
@@ -81,8 +80,14 @@ export default {
 
           this.msg =
             creditCard.number && creditCard.date
-              ? this.$t("terminal.transacting", this.device.model)
-              : this.$t("terminal.ready", this.device.model);
+              ? this.$t(
+                  "terminal.transacting",
+                  this.device.model || this.config.model
+                )
+              : this.$t(
+                  "terminal.ready",
+                  this.device.model || this.config.model
+                );
 
           this.terminal.charge(this.init.card).then(response => {
             next(response.data);

@@ -4,6 +4,7 @@
         <input :type="type" 
                :value="value"
                :maxlength="length"
+               :disabled="disabled"
                :placeholder="placeholder" 
                @input="$emit('input',$event.target.value)" 
                @blur="$emit('update',$event.target.value)">
@@ -20,6 +21,10 @@ export default {
     title: String,
     value: [String, Number, Array, Object],
     length: [String, Number],
+    disabled: {
+      type: Boolean,
+      default: false
+    },
     placeholder: String
   }
 };

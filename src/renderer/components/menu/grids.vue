@@ -28,8 +28,8 @@
         <span class="text">{{$t('button.timer')}}</span>
       </div>
       <div class="btn" @click="search">
-        <i class="fa fa-search"></i>
-        <span class="text">{{$t('button.search')}}</span>
+        <i class="fa fa-tags"></i>
+        <span class="text">{{$t('button.coupon')}}</span>
       </div>
       <div class="btn" @click="done(false)">
         <i class="fa fa-save"></i>
@@ -117,8 +117,8 @@
       <span class="text">{{$t('button.print')}}</span>
     </button>
     <div class="btn" @click="search">
-      <i class="fa fa-search"></i>
-      <span class="text">{{$t("button.search")}}</span>
+      <i class="fa fa-tags"></i>
+      <span class="text">{{$t("button.coupon")}}</span>
     </div>
     <div class="btn" @click="split">
       <i class="fa fa-columns"></i>

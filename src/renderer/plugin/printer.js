@@ -190,7 +190,7 @@ var Printer = function (plugin, config, station) {
                 this.plugin.PRINT()
             }
             if (Array.isArray(setting.reprint) && setting.reprint.includes(ticket)) {
-                this.plugin.PRINT_INIT('Reprint ticket')
+                this.plugin.PRINT_INIT(`Reprint ticket ${raw.number}`)
                 this.plugin.ADD_PRINT_HTM(0, 0, "100%", "100%", html)
                 this.plugin.SET_PRINTER_INDEX(printer)
                 this.plugin.PRINT()
@@ -259,9 +259,6 @@ var Printer = function (plugin, config, station) {
     this.printCreditCard = function (trans, reprint) {
         const store = this.config;
         const device = this.station.receipt || 'cashier';
-
-        //if (!printer[device]['print']['CREDITCARD']) return;
-
         const timestamp = moment(Number(trans.trace.time), 'YYYYMMDDHHmmss');
         const date = timestamp.format("MM / DD / YYYY");
         const time = timestamp.format("HH:mm:ss");

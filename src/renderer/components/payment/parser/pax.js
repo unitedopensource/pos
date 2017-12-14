@@ -5,6 +5,7 @@ const Pax = function () {
   let station = null;
   let request = null;
   let terminal = null;
+  let baseURL = null;
   let cardType = ['',
     'Visa',
     'MasterCard',
@@ -30,6 +31,7 @@ const Pax = function () {
 
     station = stationAlias || '';
     terminal = terminalAlias || '';
+    baseURL = `http://${ip}:${port}`;
     request = axios.create({
       baseURL: `http://${ip}:${port}`
     });
@@ -227,6 +229,7 @@ const Pax = function () {
           mid,
           device,
           station,
+          terminal,
           count: {
             credit: count[0],
             debit: count[1],
@@ -237,8 +240,8 @@ const Pax = function () {
             debit: (amount[1] / 100).toFixed(2),
             ebt: (amount[2] / 100).toFixed(2)
           },
-          batchResult: host[0],
-          batchNumber: host[5],
+          result: host[0],
+          number: host[5],
           status: hostRes[0],
           settled: hostRes[7]
         }
@@ -344,6 +347,7 @@ const Pax = function () {
     let command = Encode('R00_1.38_00_')
   }
   this.batch = function () {
+    console.log(baseURL)
     let command = Encode('B00_1.38_');
     return request.get(command)
   }
@@ -390,4 +394,6 @@ const Draw = function (path) {
   }
 };
 
-module.exports = new Pax();
+module.exports = function () {
+  return new Pax()
+};

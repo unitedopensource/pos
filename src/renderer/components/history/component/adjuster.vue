@@ -167,7 +167,7 @@ export default {
         let config = this.init.devices.find(d => d.alias === terminal);
         if (config) {
           const { ip, port, sn, model } = config;
-          this.terminal = this.getParser(model);
+          this.terminal = this.getParser(model)();
           this.terminal
             .initial(ip, port, sn, alias, terminal)
             .then(response => {

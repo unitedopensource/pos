@@ -119,7 +119,7 @@ export default {
     },
     getDetail(_id) {
       return new Promise((resolve, reject) => {
-        this.$socket.emit("[TERMINAL] TRANSACTION", _id, transaction => {
+        this.$socket.emit("[TERMINAL] GET_TRANSACTION", _id, transaction => {
           transaction
             ? resolve(transaction)
             : reject({

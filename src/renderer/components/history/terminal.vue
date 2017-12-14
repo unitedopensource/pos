@@ -61,7 +61,7 @@
                         <td>
                             <div class="value">
                                 <span class="text">{{$t('text.tip')}}</span>
-                                <span class="amount">$ {{totalTip}}</span>
+                                <span class="amount">($ {{totalTip}})</span>
                             </div>
                             <div class="value">
                                 <span class="text">{{$t('text.total')}}</span>
@@ -85,6 +85,7 @@
 
 <script>
 import { mapGetters } from "vuex";
+import batch from "./component/batch";
 import dialoger from "../common/dialoger";
 import dropdown from "./component/dropdown";
 import pagination from "../common/pagination";
@@ -93,7 +94,7 @@ import adjuster from "./component/adjuster";
 
 export default {
   props: ["init"],
-  components: { dialoger, dropdown, pagination, processor, adjuster },
+  components: { dialoger, dropdown, pagination, processor, adjuster, batch },
   computed: {
     filteredTransactions() {
       let records = this.transactions;
@@ -271,7 +272,7 @@ export default {
       return new Promise((resolve, reject) => {
         const config = this.devices.find(d => d.alias === terminal);
         const { ip, port, sn, model } = config;
-        this.terminal = this.getParser(model);
+        this.terminal = this.getParser(model)();
         this.terminal
           .initial(ip, port, sn, this.station.alias, terminal)
           .then(response => {
@@ -330,48 +331,61 @@ export default {
       };
 
       this.$dialog(data)
-        .then(() => this.processBatch())
+        .then(this.processBatch)
         .catch(() => this.$q());
     },
     processBatch() {
-      this.$p("processor", { timeout: 300000 });
-      this.devices.forEach(config => {
-        const { ip, port, sn, model, alias } = config;
-        const terminal = this.getParser(model);
-
-        terminal
-          .initial(ip, port, sn, this.station.alias, alias)
-          .then(response => {
-            const device = terminal.check(response.data);
-            device.code === "000000" && this.batch(device, terminal);
-          });
-      });
+      const { unifiedBatch } = this.$store.getters.store;
+      unifiedBatch
+        ? this.$p("batch", {
+            devices: this.devices,
+            transactions: this.transactions
+          })
+        : this.batch();
     },
-    batch(device, terminal) {
-      terminal.batch().then(response => {
-        const result = terminal.explainBatch(response.data);
+    batch() {},
+    // processBatch() {
+    //   this.$p("processor", { timeout: 300000 });
+    //   this.devices.forEach(config => {
+    //     const { ip, port, sn, model, alias } = config;
+    //     const terminal = this.getParser(model);
 
-        if (result.code === "000000") {
-          const { sn } = device;
-          let updated = this.transactions.filter(t => !t.close).map(t => {
-            t.hasOwnProperty("device") &&
-              t.device.sn === sn &&
-              (t.close = true);
-            return t;
-          });
-          this.$socket.emit("[TERM] BATCH_TRANS_CLOSE", updated);
-          Printer.printBatchReport(result);
-          this.$socket.emit("[TERM] SAVE_BATCH_RESULT", result);
-        } else {
-          this.$dialog({
-            type: "warning",
-            title: result.msg,
-            msg: ["terminal.error", result.code],
-            buttons: [{ text: "button.confirm", fn: "resolve" }]
-          }).then(() => this.$q());
-        }
-      });
-    },
+    //     terminal
+    //       .initial(ip, port, sn, this.station.alias, alias)
+    //       .then(response => {
+    //         const device = terminal.check(response.data);
+    //         device.code === "000000" && this.batch(device, terminal);
+    //       }).catch(e=>{
+    //         console.log(e);
+    //         this.$q();
+    //       });
+    //   });
+    // },
+    // batch(device, terminal) {
+    //   terminal.batch().then(response => {
+    //     const result = terminal.explainBatch(response.data);
+
+    //     if (result.code === "000000") {
+    //       const { sn } = device;
+    //       let updated = this.transactions.filter(t => !t.close).map(t => {
+    //         t.hasOwnProperty("device") &&
+    //           t.device.sn === sn &&
+    //           (t.close = true);
+    //         return t;
+    //       });
+    //       this.$socket.emit("[TERM] BATCH_TRANS_CLOSE", updated);
+    //       Printer.printBatchReport(result);
+    //       this.$socket.emit("[TERM] SAVE_BATCH_RESULT", result);
+    //     } else {
+    //       this.$dialog({
+    //         type: "warning",
+    //         title: result.msg,
+    //         msg: ["terminal.error", result.code],
+    //         buttons: [{ text: "button.confirm", fn: "resolve" }]
+    //       }).then(() => this.$q());
+    //     }
+    //   });
+    // },
     exit() {
       this.init.resolve();
     }

@@ -239,7 +239,8 @@ export default {
         'update': '更新',
         'refund': '退款',
         'break': '休息',
-        'work': '工作'
+        'work': '工作',
+        'coupon': '促销'
     },
     title: {
         'markPaymentType': '标记付款方式',
@@ -292,7 +293,8 @@ export default {
         'terminalDevice': '刷卡设备',
         'category': '菜单类别',
         'item': '菜单物品',
-        'coupon': '折价卷'
+        'coupon': '折价卷',
+        'batch': '过账'
     },
     dialog: {
         'maintenance': '维护',
@@ -560,7 +562,12 @@ export default {
             'duplicated': '重复的过账信息',
             'noFound': '没有需要过账的交易',
             'error': '过账的过程中发生一个错误',
-            'unknown': '过账的过程中发生一个未知的错误'
+            'unknown': '过账的过程中发生一个未知的错误',
+            'inuse': '刷卡机被占用中',
+            'ready': '准备就绪',
+            'waiting': '等待中...',
+            'processing': '处理中...',
+            'closed': '过账完毕'
         }
     },
     card: {
@@ -741,7 +748,8 @@ export default {
         'taxRate': '税率',
         'default': '默认',
         'location': '位置',
-        'condition': '条件'
+        'condition': '条件',
+        'terminal': '终端'
     },
     flow: {
         'START': '初始金额',

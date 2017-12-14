@@ -1171,6 +1171,7 @@ export default {
               server: this.order.server || this.op.name,
               cashDrawer,
               station: this.station.alias,
+              terminal: this.station.terminal,
               type: "CREDIT",
               for: "Order",
               subType: data.account.type,
@@ -1179,7 +1180,13 @@ export default {
             };
 
             this.$socket.emit("[TERM] TRANSACTION", data, content =>
-              Printer.printCreditCard(content)
+              this.$socket.emit(
+                "[TERMINAL] CONFIG",
+                this.station.terminal,
+                config => {
+                  config.print && Printer.printCreditCard(content);
+                }
+              )
             );
             break;
           case "THIRD":

@@ -8,12 +8,13 @@
             </header>
             <div class="wrap">
                 <div class="input">
-                    <inputer title="text.alias" v-model="device.alias"></inputer>
+                    <inputer title="text.alias" v-model="device.alias" :disabled="init.edit"></inputer>
                     <inputer title="text.location" v-model="device.location"></inputer>
                     <inputer title="text.ip" v-model="device.ip"></inputer>
                     <inputer title="text.port" v-model="device.port"></inputer>
                     <inputer title="text.model" v-model="device.model"></inputer>
                     <inputer title="text.S/N" v-model="device.sn"></inputer>
+                    <switches title="text.printReceipt" v-model="device.print"></switches>
                 </div>
             </div>
             <footer>
@@ -32,10 +33,11 @@
 import inputer from "../../common/inputer";
 import search from "../../component/search";
 import checkbox from "../../common/checkbox";
+import switches from "../../common/switches";
 
 export default {
   props: ["init"],
-  components: { search, inputer, checkbox },
+  components: { search, inputer, checkbox, switches },
   data() {
     return {
       componentData: null,
@@ -45,7 +47,9 @@ export default {
   },
   computed: {
     invalid() {
-      let names = this.init.devices.filter(d=>d._id !== this.device._id).map(d=>d.alias);
+      let names = this.init.devices
+        .filter(d => d._id !== this.device._id)
+        .map(d => d.alias);
       return !this.device.alias || names.includes(this.device.alias);
     }
   },
@@ -62,9 +66,7 @@ export default {
           Object.assign(this.device, result);
           this.$q();
         })
-        .catch(() => {
-          this.$q();
-        });
+        .catch(() => this.$q());
     }
   }
 };
