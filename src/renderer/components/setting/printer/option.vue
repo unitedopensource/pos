@@ -1,12 +1,12 @@
 <template>
-    <div>
-        <header class="nav">
-            <router-link tag="div" :to="{name:'Setting.printer.config',params:{printer}}" class="back">
-                <i class="fa fa-chevron-left"></i>
-            </router-link>
-        </header>
-        <checkbox v-for="(opt,index) in opts" :key="opt" v-model="print" :val="opt.value" :label="opt.label" :multiple="true" class="list"></checkbox>
-    </div>
+  <div>
+    <header class="nav">
+      <router-link tag="div" :to="{name:'Setting.printer.config',params:{printer}}" class="back">
+        <i class="fa fa-chevron-left"></i>
+      </router-link>
+    </header>
+    <checkbox v-for="(opt,index) in opts" :key="opt" v-model="print" :val="opt.value" :label="opt.label" :multiple="true" class="list"></checkbox>
+  </div>
 </template>
 
 <script>
@@ -55,14 +55,13 @@ export default {
     };
   },
   created() {
-    console.log(this.printer, this.obj);
     this.print = this.$store.getters.config.printers[this.printer][this.obj];
   },
   beforeDestroy() {
     Object.assign(this.$store.getters.config.printers[this.printer], {
       [this.obj]: this.print
     });
-    
+
     this.$socket.emit("[CONFIG] UPDATE", {
       key: `printers.${this.printer}.${this.obj}`,
       value: this.print

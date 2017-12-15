@@ -4,14 +4,15 @@
       <div class="title">
         <h5></h5>
         <h3>
-          <i class="fa fa-print"></i> {{printer}}</h3>
+          <i class="fa fa-cogs"></i> {{printer}}</h3>
       </div>
     </header>
-    <external title="setting.printTicket" @open="$router.push({name:'Setting.printer.option',params:{printer,obj:'print'}})"></external>
-    <external title="setting.printDouble" @open="$router.push({name:'Setting.printer.option',params:{printer,obj:'double'}})"></external>
-    <toggle title="setting.printerBuzzer" v-model="config.control.buzzer"></toggle>
-    <toggle title="setting.byPriority" v-model="config.control.prioritize"></toggle>
-    <options title="setting.printMode" tooltip="tip.printMode" v-model="config.control.mode" :opts="modeOpts" @update="updateMode"></options>
+    <external title="print.printTicket" @open="$router.push({name:'Setting.printer.option',params:{printer,obj:'print'}})"></external>
+    <external title="print.printDouble" @open="$router.push({name:'Setting.printer.option',params:{printer,obj:'double'}})"></external>
+    <toggle title="print.buzzer" v-model="config.control.buzzer" @update="updateBuzzer"></toggle>
+    <toggle title="print.byCategory" v-model="config.control.categorize" @update="updateCategorize"></toggle>
+    <toggle title="print.byPriority" v-model="config.control.prioritize" @update="updatePrioritize"></toggle>
+    <options title="print.mode" tooltip="tip.printMode" v-model="config.control.mode" :opts="modeOpts" @update="updateMode"></options>
   </div>
 </template>
 
@@ -67,6 +68,24 @@ export default {
     updateMode(value) {
       this.update({
         key: `printers.${this.printer}.control.mode`,
+        value
+      });
+    },
+    updateBuzzer(value) {
+      this.update({
+        key: `printers.${this.printer}.control.buzzer`,
+        value
+      });
+    },
+    updateCategorize(value) {
+      this.update({
+        key: `printers.${this.printer}.control.categorize`,
+        value
+      });
+    },
+    updatePrioritize(value) {
+      this.update({
+        key: `printers.${this.printer}.control.prioritize`,
         value
       });
     }

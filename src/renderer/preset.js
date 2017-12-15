@@ -99,42 +99,17 @@ var Preset = function () {
   };
   this.printer = function () {
     return {
-      "print": {
-        "WALK_IN": true,
-        "PICK_UP": true,
-        "DELIVERY": true,
-        "DINE_IN": true,
-        "BAR": true,
-        "PRE_PAYMENT": true,
-        "RECEIPT": true,
-        "PAYMENT": true,
-        "REPORT": true,
-        'SALES': true
-      },
-      "printMode": "normal",
-      "reprint": [],
+      "print": [],
+      "double": [],
       "control": {
-        "printPrimary": true,
-        "primaryFont": "QingYuan",
-        "primaryFontSize": "19",
-        "printPrimaryPrice": false,
-        "printSecondary": true,
-        "printSecondaryPrice": true,
-        "secondaryFont": "Roboto Condensed",
-        "secondaryFontSize": "16",
-        "sortItem": true,
-        "printStore": true,
-        "printType": true,
-        "printCustomer": true,
-        "printPrice": true,
-        "printPayment": true,
-        "printSuggestion": false,
-        "printCoupon": false,
-        "printActionTime": false,
         "buzzer": false,
+        "prioritize": false,
         "footer": [
           "Thank You Very Much"
         ]
+      },
+      style: {
+        
       }
     }
   };

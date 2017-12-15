@@ -1,5 +1,5 @@
 <template>
-    <div>        
+    <div>
         <header class="nav">
             <div class="title">
                 <h5></h5>
@@ -15,6 +15,8 @@
 
 <script>
 import external from "../common/external";
+import Preset from "../../../preset";
+
 export default {
   components: { external },
   data() {
@@ -22,13 +24,13 @@ export default {
       printers: Object.keys(this.$store.getters.config.printers)
     };
   },
-  methods:{
-      create(){
-
-      },
-      config(printer){
-          this.$emit("click",printer)
-      }
+  methods: {
+    create() {
+        
+    },
+    config(printer) {
+      this.$emit("click", printer);
+    }
   }
 };
 </script>
