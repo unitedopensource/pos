@@ -113,12 +113,12 @@ export default {
         boolean
           ? resolve()
           : reject({
-              type: "warning",
-              title: "dialog.accessDenied",
-              msg: "dialog.accessDeniedTip",
-              timeout: { duration: 5000, fn: "reject" },
-              buttons: [{ text: "button.confirm", fn: "reject" }]
-            });
+            type: "warning",
+            title: "dialog.accessDenied",
+            msg: "dialog.accessDeniedTip",
+            timeout: { duration: 5000, fn: "reject" },
+            buttons: [{ text: "button.confirm", fn: "reject" }]
+          });
       });
     },
     checkDate() {
@@ -126,10 +126,10 @@ export default {
         this.date === this.today
           ? resolve()
           : reject({
-              title: "dialog.unableEdit",
-              msg: "dialog.editPrevOrderTip",
-              buttons: [{ text: "button.confirm", fn: "reject" }]
-            });
+            title: "dialog.unableEdit",
+            msg: "dialog.editPrevOrderTip",
+            buttons: [{ text: "button.confirm", fn: "reject" }]
+          });
       });
     },
     checkStatus() {
@@ -137,15 +137,15 @@ export default {
         this.order.status === 1
           ? resolve()
           : reject({
-              title: "dialog.unableEdit",
-              msg: ["dialog.editVoidOrderTip", this.order.void.by],
-              buttons: [{ text: "button.confirm", fn: "reject" }]
-            });
+            title: "dialog.unableEdit",
+            msg: ["dialog.editVoidOrderTip", this.order.void.by],
+            buttons: [{ text: "button.confirm", fn: "reject" }]
+          });
       });
     },
     checkSettlement() {
       return new Promise((resolve, reject) => {
-        let ticketSettledError = {
+        const ticketSettledError = {
           type: "question",
           title: "dialog.ticketClosed",
           msg: "dialog.removePaymentRecordFirst",
@@ -154,7 +154,7 @@ export default {
             { text: "button.cancel", fn: "reject" }
           ]
         };
-        let paymentFoundError = {
+        const paymentFoundError = {
           type: "question",
           title: "dialog.paymentFound",
           msg: "dialog.removePaymentRecordFirst",
@@ -180,9 +180,7 @@ export default {
     editFailed(reason) {
       this.$dialog(reason)
         .then(this.removeRecordFromList)
-        .catch(() => {
-          this.$q();
-        });
+        .catch(() => this.$q());
     },
     voidTicket() {
       this.$dialog({
@@ -193,24 +191,15 @@ export default {
           this.$t("type." + this.order.type)
         ],
         msg: "dialog.voidOrderConfirmTip",
-        buttons: [
-          { text: "button.cancel", fn: "reject" },
-          { text: "button.void", fn: "resolve" }
-        ]
+        buttons: [{ text: "button.cancel", fn: "reject" }, { text: "button.void", fn: "resolve" }]
       })
-        .then(confirm => {
-          this.$p("Reason");
-        })
-        .catch(() => {
-          this.$q();
-        });
+        .then(confirm => this.$p("Reason"))
+        .catch(() => this.$q());
     },
     voidFailed(reason) {
       this.$dialog(reason)
         .then(this.removeRecordFromList)
-        .catch(() => {
-          this.$q();
-        });
+        .catch(() => this.$q());
     },
     removeRecordFromList() {
       new Promise((resolve, reject) => {
@@ -223,9 +212,7 @@ export default {
           };
           this.component = "payLog";
         });
-      }).then(() => {
-        this.$q();
-      });
+      }).then(() => this.$q());
     },
     reOpenOrder() {
       if (this.isEmptyTicket) return;
@@ -245,9 +232,7 @@ export default {
           this.updateInvoice(order);
           this.$q();
         })
-        .catch(() => {
-          this.$q();
-        });
+        .catch(() => this.$q());
     },
     calendar() {
       new Promise((resolve, reject) => {
@@ -258,9 +243,7 @@ export default {
           this.$emit("change", date);
           this.$q();
         })
-        .catch(() => {
-          this.$q();
-        });
+        .catch(() => this.$q());
     },
     isSettled() {
       if (this.isEmptyTicket) return;
@@ -269,9 +252,7 @@ export default {
           title: "dialog.orderVoided",
           msg: "dialog.settleVoidedOrder",
           buttons: [{ text: "button.confirm", fn: "resolve" }]
-        }).then(() => {
-          this.$q();
-        });
+        }).then(() => this.$q());
         return;
       }
       this.order.settled
@@ -285,9 +266,7 @@ export default {
         title: "dialog.orderSettled",
         msg: "dialog.orderSettledTip",
         buttons: [{ text: "button.confirm", fn: "resolve" }]
-      }).then(() => {
-        this.$q();
-      });
+      }).then(() => this.$q());
     },
     askSettleType() {
       this.$dialog({
@@ -299,12 +278,8 @@ export default {
           { text: "button.markAsPaid", fn: "resolve" }
         ]
       })
-        .then(() => {
-          this.$p("paymentMark");
-        })
-        .catch(() => {
-          this.$p("Payment", { regular: true });
-        });
+        .then(() => this.$p("paymentMark"))
+        .catch(() => this.$p("Payment", { regular: true }));
     },
     print() {
       if (this.isEmptyTicket) return;
@@ -386,17 +361,15 @@ export default {
       this.station.terminal
         ? this.$p("Terminal")
         : this.$dialog({
-            title: "dialog.noTerminal",
-            msg: "dialog.stationNoTerminal",
-            buttons: [{ text: "button.confirm", fn: "resolve" }]
-          }).then(() => {
-            this.$q();
-          });
+          title: "dialog.noTerminal",
+          msg: "dialog.stationNoTerminal",
+          buttons: [{ text: "button.confirm", fn: "resolve" }]
+        }).then(() => this.$q());
     },
     report() {
       this.reportable ? this.$p("Report") : this.$denyAccess();
     },
-    search() {},
+    search() { },
     updateInvoice(ticket) {
       this.$socket.emit("[UPDATE] INVOICE", ticket, true);
     },
