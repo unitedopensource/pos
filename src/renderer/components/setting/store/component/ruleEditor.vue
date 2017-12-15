@@ -13,7 +13,7 @@
             </div>
             <footer>
               <div class="opt">
-                <span class="del" @click="init.reject(true)">{{$t('button.delete')}}</span>
+                <span class="del" @click="init.reject(true)" v-show="init.edit">{{$t('button.delete')}}</span>
               </div>
                 <button class="btn" @click="confirm" :disabled="invalid">{{$t('button.done')}}</button>
             </footer>
@@ -39,7 +39,7 @@ export default {
   },
   methods: {
     confirm() {
-      this.init.resolve();
+      this.init.resolve(this.rule);
     }
   }
 };

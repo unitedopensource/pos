@@ -62,6 +62,9 @@ export default {
         template: ""
       };
 
+      !this.surcharge.hasOwnProperty("rules") &&
+        Object.assign(this.surcharge, { rules: [] });
+
       this.edit(rule);
     },
     edit(rule, index) {
@@ -70,7 +73,10 @@ export default {
         this.component = "editor";
       })
         .then(_rule => {
-          this.surcharge.rules.splice(index, 1, _rule);
+            console.log(_rule)
+          isNaN(index)
+            ? this.surcharge.rules.push(_rule)
+            : this.surcharge.rules.splice(index, 1, _rule);
           this.$q();
         })
         .catch(del => {
