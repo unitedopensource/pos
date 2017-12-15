@@ -382,7 +382,7 @@ export default {
         'category': 'Menu Category',
         'item': 'Menu Item',
         'coupon': 'Coupon Detail',
-        'batch' :'Batch'
+        'batch': 'Batch'
     },
     dialog: {
         'maintenance': 'Maintenance',
@@ -623,6 +623,8 @@ export default {
         'connecting': 'Connecting to terminal',
         'connectError': 'Unable Connect to Terminal',
         'disableBatch': 'Temporary Disable Batch Function',
+        'refundConfirm': 'Refund Confirm',
+        'refundAmount': 'Are you wish to refund $ {i} to the customer?',
         'creditCard': {
             'timeout': 'Transaction Timeout',
             'aborted': 'Transaction Aborted',
@@ -764,7 +766,8 @@ export default {
         'accountsPayable': 'Accounts Payable',
         'provider': 'Provider',
         'subtotal': 'Subtotal',
-        'total': 'Total'
+        'total': 'Total',
+        'refund': 'Refund'
     },
     text: {
         'starter': 'Starter',

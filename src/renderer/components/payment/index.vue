@@ -657,7 +657,6 @@ export default {
     },
     checkTicket() {
       return new Promise((resolve, reject) => {
-        console.log(this.order);
         resolve();
       });
     },
@@ -1056,9 +1055,7 @@ export default {
           }
         };
 
-        this.$socket.emit("[GIFTCARD] ACTIVITY", log, _id => {
-          resolve(_id);
-        });
+        this.$socket.emit("[GIFTCARD] ACTIVITY", log, _id => resolve(_id));
       });
     },
     chargeThirdParty() {
@@ -1071,10 +1068,7 @@ export default {
             this.component = "thirdParty";
           })
             .then(type => charge(type))
-            .catch(() => {
-              this.component = null;
-              this.componentData = null;
-            });
+            .catch(() => this.$q());
         }
       });
     },
@@ -1537,9 +1531,7 @@ export default {
           this.paid = "0.00";
           this.$q();
         })
-        .catch(() => {
-          this.$q();
-        });
+        .catch(() => this.$q());
     },
     setDiscount() {
       this.$socket.emit("[COUPON] LIST", coupons => {
@@ -1574,9 +1566,7 @@ export default {
 
             this.$q();
           })
-          .catch(() => {
-            this.$q();
-          });
+          .catch(() => this.$q());
       });
     },
     preview(index) {
@@ -1783,9 +1773,7 @@ export default {
           this.$socket.emit("[UPDATE] INVOICE", this.order, false);
           this.exit();
         })
-        .catch(() => {
-          this.exit();
-        });
+        .catch(() => this.exit());
     },
     ...mapActions(["setOp", "setOrder", "resetAll", "resetMenu"])
   },
