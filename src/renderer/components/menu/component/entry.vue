@@ -29,8 +29,8 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import checkbox from "../setting/common/checkbox";
-import keyboard from "./component/keyboard";
+import checkbox from "../../setting/common/checkbox";
+import keyboard from "./keyboard";
 export default {
   props: ["init"],
   components: { keyboard, checkbox },

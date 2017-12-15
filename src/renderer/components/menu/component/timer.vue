@@ -43,8 +43,8 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import checkbox from "../setting/common/checkbox";
-import dialoger from "../common/dialoger";
+import checkbox from "../../setting/common/checkbox";
+import dialoger from "../../common/dialoger";
 
 export default {
   props: ["init"],

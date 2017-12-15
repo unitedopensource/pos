@@ -147,10 +147,9 @@
     dom && dom.classList.add("show");
     document.getElementById("load").innerHTML = "Application load failed, please try again.";
   }, 30000);
-  const exit = function () {
+  const exit = function() {
     Electron.ipcRenderer.send("Exit");
   }
-
 </script>
 
 </html>

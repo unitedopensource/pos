@@ -51,7 +51,7 @@
 
 <script>
 import { mapGetters } from "vuex";
-import checkbox from "../setting/common/checkbox";
+import checkbox from "../../setting/common/checkbox";
 export default {
   components: { checkbox },
   props: ["invoice", "split", "settle", "hide"],
@@ -151,7 +151,7 @@ export default {
 
         subtotal += amount;
       });
-      
+
       delivery =
         type === "DELIVERY" &&
         this.isChargeDelivery &&
@@ -382,7 +382,7 @@ header {
   right: 0;
   width: 100px;
   height: 100px;
-  background: url(../../assets/image/paid.png) no-repeat;
+  background: url(../../../assets/image/paid.png) no-repeat;
   background-size: cover;
 }
 

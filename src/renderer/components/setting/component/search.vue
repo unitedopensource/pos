@@ -1,35 +1,34 @@
 <template>
-    <div class="popupMask center dark" @click.self="init.reject">
-        <div class="editor">
-            <header>
-                <h3>{{$t('title.scanner')}}</h3>
-            </header>
-            <div class="wrap">
-                <div class="search">
-                    <i class="fa fa-search"></i>
-                    <input type="text" v-model.number="port" @keydown.enter="scan">
-                    <i class="fa fa-times" @click="reset" v-show="port"></i>
-                </div>
+  <div class="popupMask center dark" @click.self="init.reject">
+    <div class="editor">
+        <header>
+            <h3>{{$t('title.scanner')}}</h3>
+        </header>
+        <div class="wrap">
+            <div class="search">
+                <i class="fa fa-search"></i>
+                <input type="text" v-model.number="port" @keydown.enter="scan">
+                <i class="fa fa-times" @click="reset" v-show="port"></i>
             </div>
-            <ul class="results">
-                <li v-for="(ip,index) in results" :key="index">
-                    <input type="radio" name="ip" v-model="target" :id="'ip'+index" :value="ip">
-                    <label :for="'ip'+index">
-                        <i class="fa fa-tablet"></i>
-                        <span>{{ip}}</span>
-                    </label>
-                </li>
-            </ul>
-            <footer>
-                <div class="btn" @click="scan" v-if="results.length === 0">{{$t('button.scan')}}</div>
-                <div class="btn" @click="confirm" v-else>{{$t('button.confirm')}}</div>
-            </footer>
         </div>
+        <ul class="results">
+            <li v-for="(ip,index) in results" :key="index">
+                <input type="radio" name="ip" v-model="target" :id="'ip'+index" :value="ip">
+                <label :for="'ip'+index">
+                    <i class="fa fa-tablet"></i>
+                    <span>{{ip}}</span>
+                </label>
+            </li>
+        </ul>
+        <footer>
+            <div class="btn" @click="scan" v-if="results.length === 0">{{$t('button.scan')}}</div>
+            <div class="btn" @click="confirm" v-else>{{$t('button.confirm')}}</div>
+        </footer>
     </div>
+  </div>
 </template>
 
 <script>
-import Pax from "../../payment/parser/pax";
 export default {
   props: ["init"],
   data() {
@@ -46,14 +45,16 @@ export default {
       });
     },
     confirm() {
-      Pax.initial(this.target, this.port).then(response => {
-        let terminal = Pax.check(response.data);
-        terminal.code === "000000" &&
+      const terminal = this.getParser()();
+
+      terminal.initial(this.target, this.port).then(response => {
+        const device = terminal.check(response.data);
+        device.code === "000000" &&
           this.init.resolve({
             ip: this.target,
             port: this.port,
-            model: terminal.model,
-            sn: terminal.sn
+            model: device.model,
+            sn: device.sn
           });
       });
     },
@@ -61,6 +62,18 @@ export default {
       this.port = 10009;
       this.results = [];
       this.target = null;
+    },
+    getParser(model) {
+      switch (model) {
+        case "SP30":
+        case "S80":
+        case "S300":
+          return require("../../payment/parser/pax.js");
+        case "NX2200":
+          return require("../../payment/parser/exadigm.js");
+        default:
+          return require("../../payment/parser/pax.js");
+      }
     }
   }
 };

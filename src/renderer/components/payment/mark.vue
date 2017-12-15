@@ -1,23 +1,23 @@
 <template>
-    <div class="popupMask center dark">
-        <div class="window" v-show="!component">
-            <header class="title">
-                <span>{{$t('title.markPaymentType')}}</span>
-                <i class="fa fa-times" @click="init.reject(false)"></i>
-            </header>
-            <div class="inner">
-                <div v-for="(option,index) in options" :key="index">
-                    <input type="radio" name="type" v-model="type" :value="option" :id="'type'+index">
-                    <label class="type" :for="'type'+index">{{option}}</label>
-                </div>
-            </div>
-            <footer>
-                <div class="btn" @click="init.reject(false)">{{$t('button.cancel')}}</div>
-                <div class="btn" @click="confirm">{{$t('button.confirm')}}</div>
-            </footer>
+  <div class="popupMask center dark">
+    <div class="window" v-show="!component">
+      <header class="title">
+        <span>{{$t('title.markPaymentType')}}</span>
+        <i class="fa fa-times" @click="init.reject(false)"></i>
+      </header>
+      <div class="inner">
+        <div v-for="(option,index) in options" :key="index">
+          <input type="radio" name="type" v-model="type" :value="option" :id="'type'+index">
+          <label class="type" :for="'type'+index">{{option}}</label>
         </div>
-        <div :is="component" :init="componentData"></div>
+      </div>
+      <footer>
+        <div class="btn" @click="init.reject(false)">{{$t('button.cancel')}}</div>
+        <div class="btn" @click="confirm">{{$t('button.confirm')}}</div>
+      </footer>
     </div>
+    <div :is="component" :init="componentData" />
+  </div>
 </template>
 
 <script>
@@ -56,12 +56,12 @@ export default {
   created() {
     this.order.split
       ? this.checkComponentUsage()
-          .then(this.checkPermission)
-          .then(this.createSplitOrder)
-          .catch(this.initialFailed)
+        .then(this.checkPermission)
+        .then(this.createSplitOrder)
+        .catch(this.initialFailed)
       : this.checkComponentUsage()
-          .then(this.checkPermission)
-          .catch(this.initialFailed);
+        .then(this.checkPermission)
+        .catch(this.initialFailed);
   },
   beforeDestroy() {
     this.releaseComponentLock &&
@@ -168,9 +168,9 @@ export default {
         cashier: this.op.name,
         server: this.order.server || this.op.name,
         cashDrawer:
-          this.op.cashCtrl === "staffBank"
-            ? this.op.name
-            : this.station.cashDrawer.name,
+        this.op.cashCtrl === "staffBank"
+          ? this.op.name
+          : this.station.cashDrawer.name,
         station: this.station.alies,
         type: "THIRD",
         for: "Order",

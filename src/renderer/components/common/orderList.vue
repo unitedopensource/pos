@@ -92,12 +92,11 @@
 <script>
 import { mapGetters, mapActions } from "vuex";
 import dialoger from "../common/dialoger";
-import itemMarker from "../menu/marker";
-import entry from "../menu/entry";
+import entry from "../menu/component/entry";
 import listItem from "./listItem";
 import config from "./config";
 export default {
-  components: { config, itemMarker, dialoger, listItem, entry },
+  components: { config, dialoger, listItem, entry },
   props: ["layout", "group", "display", "sort"],
   data() {
     return {
@@ -152,7 +151,6 @@ export default {
     },
     openMarker() {
       if (this.isEmptyTicket) return;
-      this.$p("itemMarker");
     },
     addToSpooler(item) {
       if (item.print) return;
@@ -321,9 +319,9 @@ export default {
       if (coupon) {
         /**
          * Tax apply Before Discount (For Example: 10% Tax Rate, 20% Discount)
-         * 
+         *
          * Subtotal: 10.00
-         * Tax:       1.00  
+         * Tax:       1.00
          * Discount:  2.00
          * Total:     9.00
          * ------------------------------------------------------------------

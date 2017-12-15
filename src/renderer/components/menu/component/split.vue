@@ -34,7 +34,7 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import dialoger from "../common/dialoger";
+import dialoger from "../../common/dialoger";
 import splitList from "./splitList";
 export default {
   props: ["init"],
@@ -430,7 +430,7 @@ export default {
 <style scoped>
 .window {
   width: 1000px;
-  background: url(../../assets/image/grid.png) #fcfcfc;
+  background: url(../../../assets/image/grid.png) #fcfcfc;
 }
 
 .title {

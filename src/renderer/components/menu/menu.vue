@@ -1,54 +1,57 @@
 <template>
-    <div class="menu">
-        <section class="category">
-            <div v-for="(category,index) in menu" @click="setCategory(index,$event)" :key="index">{{category[language]}}</div>
-        </section>
-        <section class="items sub" v-if="saveItems">
-            <div v-for="(item,index) in page" @click="pick(item)" :class="{disable:!item.clickable,like:item.like}" :key="index" :data-menuID="item.menuID">{{item[language]}}</div>
-            <div @click="itemPage = 0" v-if="items.length >= 34" class="pageButton">{{$t("button.firstPage")}}</div>
-            <div @click="itemPage = 1" v-if="items.length >= 34" class="pageButton">{{$t("button.secondPage")}}</div>
-            <div @click="itemPage = 2" v-if="items.length >= 34" class="pageButton">{{$t("button.thirdPage")}}</div>
-        </section>
-        <section class="items" v-else-if="config.display.menuID">
-            <div v-for="(item,index) in page" @click="pick(item)" :class="{disable:!item.clickable,like:item.like}" :key="index" :data-menuID="item.menuID">{{item[language]}}</div>
-            <div @click="itemPage = 0" v-if="items.length >= 34" class="pageButton">{{$t("button.firstPage")}}</div>
-            <div @click="itemPage = 1" v-if="items.length >= 34" class="pageButton">{{$t("button.secondPage")}}</div>
-            <div @click="itemPage = 2" v-if="items.length >= 34" class="pageButton">{{$t("button.thirdPage")}}</div>
-        </section>
-        <section class="items" v-else>
-            <div v-for="(item,index) in page" @click="pick(item)" :class="{disable:!item.clickable,like:item.like}" :key="index">{{item[language]}}</div>
-            <div @click="itemPage = 0" v-if="items.length >= 34" class="pageButton">{{$t("button.firstPage")}}</div>
-            <div @click="itemPage = 1" v-if="items.length >= 34" class="pageButton">{{$t("button.secondPage")}}</div>
-            <div @click="itemPage = 2" v-if="items.length >= 34" class="pageButton">{{$t("button.thirdPage")}}</div>
-        </section>
-        <section class="sides">
-            <div v-for="(side,index) in sides" @click="setOption(side,index)" :key="index">{{side[language]}}</div>
-        </section>
-        <section class="cart">
-            <order-list layout="order" :sort="sort"></order-list>
-            <query-bar :query="queryItem" :items="queryItemResult"></query-bar>
-            <grids :layout="ticket.type" @open="openComponent"></grids>
-        </section>
-        <div :is="component" :init="componentData" @execute="fn"></div>
-    </div>
-</template> 
+<div class="menu">
+  <section class="category">
+    <div v-for="(category,index) in menu" @click="setCategory(index,$event)" :key="index">{{category[language]}}</div>
+  </section>
+  <section class="items sub" v-if="saveItems">
+    <div v-for="(item,index) in page" @click="pick(item)" :class="{disable:!item.clickable,like:item.like}" :key="index" :data-menuID="item.menuID">{{item[language]}}</div>
+    <div @click="itemPage = 0" v-if="items.length >= 34" class="pageButton">{{$t("button.firstPage")}}</div>
+    <div @click="itemPage = 1" v-if="items.length >= 34" class="pageButton">{{$t("button.secondPage")}}</div>
+    <div @click="itemPage = 2" v-if="items.length >= 34" class="pageButton">{{$t("button.thirdPage")}}</div>
+  </section>
+  <section class="items" v-else-if="config.display.menuID">
+    <div v-for="(item,index) in page" @click="pick(item)" :class="{disable:!item.clickable,like:item.like}" :key="index" :data-menuID="item.menuID">{{item[language]}}</div>
+    <div @click="itemPage = 0" v-if="items.length >= 34" class="pageButton">{{$t("button.firstPage")}}</div>
+    <div @click="itemPage = 1" v-if="items.length >= 34" class="pageButton">{{$t("button.secondPage")}}</div>
+    <div @click="itemPage = 2" v-if="items.length >= 34" class="pageButton">{{$t("button.thirdPage")}}</div>
+  </section>
+  <section class="items" v-else>
+    <div v-for="(item,index) in page" @click="pick(item)" :class="{disable:!item.clickable,like:item.like}" :key="index">{{item[language]}}</div>
+    <div @click="itemPage = 0" v-if="items.length >= 34" class="pageButton">{{$t("button.firstPage")}}</div>
+    <div @click="itemPage = 1" v-if="items.length >= 34" class="pageButton">{{$t("button.secondPage")}}</div>
+    <div @click="itemPage = 2" v-if="items.length >= 34" class="pageButton">{{$t("button.thirdPage")}}</div>
+  </section>
+  <section class="sides">
+    <div v-for="(side,index) in sides" @click="setOption(side,index)" :key="index">{{side[language]}}</div>
+  </section>
+  <section class="cart">
+    <order-list layout="order" :sort="sort"></order-list>
+    <query-bar :query="queryItem" :items="queryItemResult"></query-bar>
+    <buttons :layout="ticket.type" @open="openComponent"></buttons>
+  </section>
+  <div :is="component" :init="componentData" @execute="fn"></div>
+</div>
+</template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
+import {
+  mapGetters,
+  mapActions
+} from "vuex";
+import payment from "../payment/index";
+import request from "./component/request";
+import dialoger from "../common/dialoger";
 import queryBar from "./component/queryBar";
 import orderList from "../common/orderList";
-import dialoger from "../common/dialoger";
-import payment from "../payment/index";
-import tempItem from "./tempItem";
-import request from "./request";
-import scaleItem from "./scale";
-import builder from "./builder";
-import guests from "./guests";
-import modify from "./modify";
-import course from "./course";
-import timer from "./timer";
-import grids from "./grids";
-import split from "./split";
+import scaleItem from "./component/weightScale";
+import builder from "./component/templateItem";
+import tempItem from "./component/temporaryItem";
+import guests from "./component/guests";
+import modify from "./component/modify";
+import course from "./component/course";
+import timer from "./component/timer";
+import split from "./component/split";
+import buttons from "./buttons";
 export default {
   components: {
     queryBar,
@@ -57,7 +60,7 @@ export default {
     request,
     orderList,
     dialoger,
-    grids,
+    buttons,
     payment,
     scaleItem,
     split,
@@ -96,14 +99,18 @@ export default {
       this.flatten(this.menuInstance[0].item);
       this.setSides(this.fillOption([]));
       this.$socket.emit("[INQUIRY] TICKET_NUMBER", number => {
-        this.app.mode === "create" && this.setTicket({ number });
+        this.app.mode === "create" && this.setTicket({
+          number
+        });
       });
 
       if (this.app.mode === "create") {
         this.ticket.type === "DINE_IN" && this.configDineIn();
 
         !this.order.hasOwnProperty("source") &&
-          Object.assign(this.order, { source: "POS" });
+          Object.assign(this.order, {
+            source: "POS"
+          });
 
         this.setOrder({
           _id: ObjectId(),
@@ -193,7 +200,11 @@ export default {
       let length = side.length;
       let array = side.slice();
       for (let i = length; i < 11; i++) {
-        array.push({ zhCN: "", usEN: "", disable: true });
+        array.push({
+          zhCN: "",
+          usEN: "",
+          disable: true
+        });
       }
       return array;
     },
@@ -237,7 +248,9 @@ export default {
       if (this.isOpenFood(item)) return;
 
       item = JSON.parse(JSON.stringify(item));
-      this.app.mode === "edit" && Object.assign(item, { new: true });
+      this.app.mode === "edit" && Object.assign(item, {
+        new: true
+      });
       //this.store.table.seatOrder && (item.sort = this.sort);
       item.hasOwnProperty("prices") &&
         item.prices[this.ticket.type] &&
@@ -258,7 +271,12 @@ export default {
       if (!item.subItem && !this.saveItems) return false;
       if (this.isEmptyTicket) return true;
 
-      let { zhCN, usEN, print, price } = item;
+      let {
+        zhCN,
+        usEN,
+        print,
+        price
+      } = item;
       let content = {
         qty: 1,
         zhCN,
@@ -276,12 +294,12 @@ export default {
       });
       Object.assign(this.item.printer, printer);
 
-      let subItemCount = Array.isArray(this.item.choiceSet)
-        ? this.item.choiceSet
-            .filter(item => item.subItem)
-            .map(item => item.qty)
-            .reduce((a, b) => a + b, 0)
-        : 0;
+      let subItemCount = Array.isArray(this.item.choiceSet) ?
+        this.item.choiceSet
+        .filter(item => item.subItem)
+        .map(item => item.qty)
+        .reduce((a, b) => a + b, 0) :
+        0;
 
       if (item.subItem && this.item.hasOwnProperty("rules")) {
         let max = this.item.rules.maxSubItem * this.item.qty || Infinity;
@@ -296,7 +314,10 @@ export default {
                 duration: 5000,
                 fn: "resolve"
               },
-              buttons: [{ text: "button.confirm", fn: "resolve" }]
+              buttons: [{
+                text: "button.confirm",
+                fn: "resolve"
+              }]
             }).then(() => {
               this.$q();
             });
@@ -314,20 +335,33 @@ export default {
     },
     isTemporary(item) {
       if (!item.temporary) return false;
-      this.app.mode === "edit" && Object.assign(item, { new: true });
-      this.$p("tempItem", { item });
+      this.app.mode === "edit" && Object.assign(item, {
+        new: true
+      });
+      this.$p("tempItem", {
+        item
+      });
       return true;
     },
     isScalable(item) {
       if (!item.hasOwnProperty("unitPrice")) return false;
-      this.app.mode === "edit" && Object.assign(item, { new: true });
-      this.$p("scaleItem", { item });
+      this.app.mode === "edit" && Object.assign(item, {
+        new: true
+      });
+      this.$p("scaleItem", {
+        item
+      });
       return true;
     },
     isOpenFood(item) {
       if (isNumber(item.price[0])) return false;
-      this.app.mode === "edit" && Object.assign(item, { new: true });
-      this.$p("modify", { item, openFood: true });
+      this.app.mode === "edit" && Object.assign(item, {
+        new: true
+      });
+      this.$p("modify", {
+        item,
+        openFood: true
+      });
       return true;
     },
     setOption(side, index) {
@@ -335,9 +369,12 @@ export default {
         side.subMenu && this.getSubMenuItem(side);
         side.template && this.callTemplate(side, index);
       } else {
-        side.template
-          ? this.callTemplate(side, index)
-          : this.alterItemOption({ side, index });
+        side.template ?
+          this.callTemplate(side, index) :
+          this.alterItemOption({
+            side,
+            index
+          });
         side.subMenu && this.getSubMenuItem(side);
       }
     },
@@ -369,29 +406,29 @@ export default {
         align === 6 && (align = 3);
         index !== lastIndex &&
           Array(align)
-            .fill()
-            .forEach(_ => {
-              subItem.push({
-                zhCN: "",
-                usEN: "",
-                clickable: false,
-                group: null
-              });
-            });
-        this.items.push(...subItem);
-      });
-      let length = this.items.length;
-      length < 33 &&
-        Array(33 - length)
           .fill()
           .forEach(_ => {
-            this.items.push({
+            subItem.push({
               zhCN: "",
               usEN: "",
               clickable: false,
               group: null
             });
           });
+        this.items.push(...subItem);
+      });
+      let length = this.items.length;
+      length < 33 &&
+        Array(33 - length)
+        .fill()
+        .forEach(_ => {
+          this.items.push({
+            zhCN: "",
+            usEN: "",
+            clickable: false,
+            group: null
+          });
+        });
       console.timeEnd("sub menu");
     },
     resetItems() {
@@ -399,31 +436,42 @@ export default {
       this.saveItems = null;
     },
     callTemplate(side, index) {
-      this.$p("builder", { side, index });
+      this.$p("builder", {
+        side,
+        index
+      });
     },
     openComponent(name, args) {
       switch (name) {
         case "modify":
-          this.$p("modify", { item: this.item });
+          this.$p("modify", {
+            item: this.item
+          });
           break;
         case "course":
-          this.$p("course", { order: this.order });
+          this.$p("course", {
+            order: this.order
+          });
           break;
         case "timer":
-          this.$p("timer", { order: this.order });
+          this.$p("timer", {
+            order: this.order
+          });
           break;
         case "search":
           break;
         case "request":
-          this.component === "request"
-            ? this.$q()
-            : (this.component = "request");
+          this.component === "request" ?
+            this.$q() :
+            (this.component = "request");
           break;
         case "settle":
           this.$p("payment");
           break;
         case "split":
-          this.$p("split", { order: this.order });
+          this.$p("split", {
+            order: this.order
+          });
           break;
         case "guest":
           this.switchGuest();
@@ -443,9 +491,13 @@ export default {
     switchGuest() {
       let guest = this.order.guest || 1;
       new Promise((resolve, reject) => {
-        this.componentData = { resolve, reject, guest };
-        this.component = "guests";
-      })
+          this.componentData = {
+            resolve,
+            reject,
+            guest
+          };
+          this.component = "guests";
+        })
         .then(callback => {
           this.$q();
         })

@@ -15,7 +15,7 @@
       </div>
     </div>
     <div class="bottomLeft">
-      <div class="btn" @click="switchGuest" v-if="store.table.seatOrder">
+      <div class="btn" @click="switchGuest" v-if="dinein.seatOrder">
         <i class="fa fa-users"></i>
         <span class="text">{{$t('button.switch')}}</span>
       </div>
@@ -27,7 +27,7 @@
         <i class="fa fa-clock-o"></i>
         <span class="text">{{$t('button.timer')}}</span>
       </div>
-      <div class="btn" @click="search">
+      <div class="btn" @click="promotion">
         <i class="fa fa-tags"></i>
         <span class="text">{{$t('button.coupon')}}</span>
       </div>
@@ -116,7 +116,7 @@
       <i class="fa fa-print"></i>
       <span class="text">{{$t('button.print')}}</span>
     </button>
-    <div class="btn" @click="search">
+    <div class="btn" @click="promotion">
       <i class="fa fa-tags"></i>
       <span class="text">{{$t("button.coupon")}}</span>
     </div>
@@ -149,10 +149,11 @@ import { mapGetters, mapActions } from "vuex";
 import dialoger from "../common/dialoger";
 import payment from "../payment/index";
 import unlock from "../common/unlock";
-import modify from "./modify";
+import modify from "./component/modify";
+import coupon from "./component/coupon";
 export default {
   props: ["layout"],
-  components: { dialoger, unlock, modify, payment },
+  components: { dialoger, unlock, modify, payment, coupon },
   data() {
     return {
       isDisplayGuests: false,
@@ -183,26 +184,26 @@ export default {
         this.approval(this.op.modify, "item")
           ? this.lessQty(boolean)
           : this.requestAccess()
-              .then(op => {
-                if (this.approval(op.modify, "item")) {
-                  this.$q();
-                  this.lessQty(boolean);
-                } else {
-                  this.accessDenied();
-                }
-              })
-              .catch(() => {
+            .then(op => {
+              if (this.approval(op.modify, "item")) {
+                this.$q();
+                this.lessQty(boolean);
+              } else {
                 this.accessDenied();
-              });
+              }
+            })
+            .catch(() => {
+              this.accessDenied();
+            });
       }
     },
     more() {
       let focus = document.querySelector(".item.active");
       let subItemCount = Array.isArray(this.item.choiceSet)
         ? this.item.choiceSet
-            .filter(item => item.subItem)
-            .map(item => item.qty)
-            .reduce((a, b) => a + b, 0)
+          .filter(item => item.subItem)
+          .map(item => item.qty)
+          .reduce((a, b) => a + b, 0)
         : 0;
 
       if (!focus && this.item.hasOwnProperty("rules")) {
@@ -242,13 +243,13 @@ export default {
       let target = !!document.querySelector(".sub.target");
       target
         ? this.$p("modify", {
-            item: {
-              qty: this.choiceSet ? this.choiceSet.qty : 1,
-              single: this.choiceSet ? this.choiceSet.single : 0,
-              discount: 0
-            },
-            type: "choiceSet"
-          })
+          item: {
+            qty: this.choiceSet ? this.choiceSet.qty : 1,
+            single: this.choiceSet ? this.choiceSet.single : 0,
+            discount: 0
+          },
+          type: "choiceSet"
+        })
         : this.$p("modify", { item: this.item });
     },
     course() {
@@ -263,7 +264,9 @@ export default {
     request() {
       this.callComponent("request");
     },
-    search() {},
+    promotion() {
+      this.callComponent("promotion");
+    },
     timer() {
       if (this.isEmptyTicket) return;
       this.callComponent("timer");
@@ -366,17 +369,17 @@ export default {
                   if (print) {
                     printOnDone
                       ? Printer.setTarget("All").print(
-                          Object.assign(order, {
-                            delay: +new Date(),
-                            content: items
-                          })
-                        )
+                        Object.assign(order, {
+                          delay: +new Date(),
+                          content: items
+                        })
+                      )
                       : Printer.setTarget("Order").print(
-                          Object.assign(order, {
-                            delay: +new Date(),
-                            content: items
-                          })
-                        );
+                        Object.assign(order, {
+                          delay: +new Date(),
+                          content: items
+                        })
+                      );
                   }
                 });
               }
@@ -456,15 +459,15 @@ export default {
       this.isEmptyTicket
         ? this.exitOut()
         : this.$dialog({
-            title: "dialog.exitConfirm",
-            msg: "dialog.exitConfirmTip"
+          title: "dialog.exitConfirm",
+          msg: "dialog.exitConfirmTip"
+        })
+          .then(() => {
+            this.exitOut();
           })
-            .then(() => {
-              this.exitOut();
-            })
-            .catch(() => {
-              this.$q();
-            });
+          .catch(() => {
+            this.$q();
+          });
     },
     combineOrderInfo(extra) {
       let customer = Object.assign({}, this.customer);
@@ -584,15 +587,15 @@ export default {
       this.isEmptyTicket
         ? this.resetTableExit()
         : this.$dialog({
-            title: "dialog.exitConfirm",
-            msg: "dialog.exitConfirmTip"
+          title: "dialog.exitConfirm",
+          msg: "dialog.exitConfirmTip"
+        })
+          .then(() => {
+            this.resetTableExit();
           })
-            .then(() => {
-              this.resetTableExit();
-            })
-            .catch(() => {
-              this.$q();
-            });
+          .catch(() => {
+            this.$q();
+          });
     },
     resetTableExit() {
       this.app.mode === "create" &&

@@ -35,7 +35,7 @@ import discount from "../payment/discount";
 import dialoger from "../common/dialoger";
 import payment from "../payment/index";
 import driver from "./component/driver";
-import split from "../menu/split";
+import split from "../menu/component/split";
 export default {
   props: ["date"],
   components: { driver, dialoger, payment, paymentMark, split, discount },
@@ -105,7 +105,7 @@ export default {
         paid: toFixed(paid, 2),
         remain: toFixed(remain, 2)
       });
-      
+
       this.$socket.emit("[UPDATE] INVOICE", this.order);
       this.$q();
     },

@@ -118,7 +118,7 @@ export default {
 }
 
 .request .content {
-  background: url(../../assets/image/grid.png) #fcfcfc;
+  background: url(../../../assets/image/grid.png) #fcfcfc;
   display: flex;
   flex-direction: row;
   width: 739px;
