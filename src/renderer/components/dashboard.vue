@@ -1,24 +1,24 @@
 <template>
-    <div class="dashboard">
-        <div class="cardWrap" v-if="station" :class="{enlarge:station.enlargeTitle}">
-            <div class="card" v-for="(grid,index) in station.interface" @click="go(grid)" :class="{disable:!grid.enable}" :key="index">
-                <i class="fa" :class="[grid.icon]"></i>
-                <h1>{{grid.head}}</h1>
-                <h4>{{grid.subhead}}</h4>
-            </div>
-        </div>
-        <div class="clock">
-            <div class="time">{{time | moment('hh:mm')}}</div>
-            <div class="date">{{time | moment('dddd MMM D')}}</div>
-        </div>
-        <toast></toast>
-        <transition name="payment">
-          <div class="popupMask center dark" v-if="component">
-            <div :is="component" :init="componentData"></div>
-          </div>  
-        </transition>
-        
+  <div class="dashboard">
+    <div class="cardWrap" v-if="station" :class="{enlarge:station.enlargeTitle}">
+      <div class="card" v-for="(grid,index) in station.interface" @click="go(grid)" :class="{disable:!grid.enable}" :key="index">
+        <i class="fa" :class="[grid.icon]"></i>
+        <h1>{{grid.head}}</h1>
+        <h4>{{grid.subhead}}</h4>
+      </div>
     </div>
+    <div class="clock">
+      <div class="time">{{time | moment('hh:mm')}}</div>
+      <div class="date">{{time | moment('dddd MMM D')}}</div>
+    </div>
+    <toast></toast>
+    <transition name="payment">
+      <div class="popupMask center dark" v-if="component">
+        <div :is="component" :init="componentData"></div>
+      </div>
+    </transition>
+
+  </div>
 </template>
 
 <style scoped>
@@ -169,17 +169,23 @@ export default {
           const prompt = {
             title: "dialog.clockInRequire",
             msg: "dialog.clockInRequireTip",
-            buttons: [{ text: "button.later", fn: "reject" }, { text: "button.clockIn", fn: "resolve" }]
-          }
+            buttons: [
+              { text: "button.later", fn: "reject" },
+              { text: "button.clockIn", fn: "resolve" }
+            ]
+          };
 
           this.$dialog(prompt)
             .then(() => {
               const confirm = {
                 type: "question",
                 title: "dialog.clockInConfirm",
-                msg: ["dialog.clockInTip", moment(this.time).format("hh:mm:ss a")],
+                msg: [
+                  "dialog.clockInTip",
+                  moment(this.time).format("hh:mm:ss a")
+                ],
                 buttons: [{ text: "button.confirm", fn: "resolve" }]
-              }
+              };
 
               this.setOp({ clockIn: this.time, session: ObjectId() });
               this.$socket.emit("[TIMECARD] CLOCK_IN", this.op);
@@ -243,7 +249,10 @@ export default {
         this.$dialog({
           title: "dialog.cashInConfirm",
           msg: ["dialog.cashInConfirmTip", amount.toFixed(2)],
-          buttons: [{ text: "button.modify", fn: "reject" }, { text: "button.confirm", fn: "resolve" }]
+          buttons: [
+            { text: "button.modify", fn: "reject" },
+            { text: "button.confirm", fn: "resolve" }
+          ]
         })
           .then(() => this.acceptCashIn(amount))
           .catch(() => this.countInitialCash());
@@ -258,7 +267,9 @@ export default {
     },
     initialized() {
       this.device.poleDisplay && this.welcomeScreen();
-      ~~this.station.timeout !== 0
+      const { enable, timeout } = this.station.autoLock;
+
+      enable && timeout > 0
         ? this.setApp({ autoLock: true, lastActivity: +new Date() })
         : this.setApp({ autoLock: false });
     },
@@ -316,10 +327,10 @@ export default {
           this.dinein.table
             ? this.$router.push({ path: "/main/table" })
             : this.$dialog({
-              title: "dialog.dineInDisabled",
-              msg: "dialog.dineInEnableTip",
-              buttons: [{ text: "button.confirm", fn: "resolve" }]
-            }).then(() => this.$q());
+                title: "dialog.dineInDisabled",
+                msg: "dialog.dineInEnableTip",
+                buttons: [{ text: "button.confirm", fn: "resolve" }]
+              }).then(() => this.$q());
           break;
         case "pickupList":
           this.$router.push({ path: "/main/list" });
@@ -328,14 +339,14 @@ export default {
           this.approval(this.op.access, route)
             ? this.$router.push({ path: "/main/history" })
             : this.$denyAccess(true)
-              .then(op => {
-                if (this.approval(op.access, route)) {
-                  this.$router.push({ path: "/main/history" });
-                } else {
-                  this.$denyAccess();
-                }
-              })
-              .catch(() => this.$denyAccess());
+                .then(op => {
+                  if (this.approval(op.access, route)) {
+                    this.$router.push({ path: "/main/history" });
+                  } else {
+                    this.$denyAccess();
+                  }
+                })
+                .catch(() => this.$denyAccess());
           break;
         case "setting":
           this.approval(this.op.access, route)
@@ -365,19 +376,19 @@ export default {
         case "enable":
           this.station.cashDrawer.cashFlowCtrl
             ? this.$socket.emit(
-              "[CASHFLOW] CHECK",
-              {
-                date: today(),
-                cashDrawer: this.station.cashDrawer.name,
-                close: false
-              },
-              data => {
-                let { name, initial } = data;
-                initial
-                  ? this.initialCashFlow(name)
-                  : this.recordCashFlow(name);
-              }
-            )
+                "[CASHFLOW] CHECK",
+                {
+                  date: today(),
+                  cashDrawer: this.station.cashDrawer.name,
+                  close: false
+                },
+                data => {
+                  let { name, initial } = data;
+                  initial
+                    ? this.initialCashFlow(name)
+                    : this.recordCashFlow(name);
+                }
+              )
             : Printer.openCashDrawer();
           break;
         case "staffBank":

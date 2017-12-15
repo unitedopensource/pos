@@ -1,38 +1,38 @@
 <template>
-    <transition name="slideDown" appear>
-        <header class="dock">
-            <span class="number">{{ticket.number}}</span>
-            <span class="type" v-show="ticket.type" @click="changeType">{{type}}</span>
-            <span class="provider" v-show="$route.name === 'Menu' && order.source !== 'POS'">{{order.source}}</span>
-            <div class="reward" v-if="config.store.reward"></div>
-            <div class="info">
-                <div class="customer" v-if="$route.name === 'Menu'" @click="editCustomer">
-                    <span v-show="customer.phone">{{customer.phone | phone}}</span>
-                    <span v-show="customer.address">{{customer.address}}</span>
-                    <span v-show="customer.name">{{customer.name}}</span>
-                </div>
-            </div>
-            <div class="op" @click="openPanel" v-show="op._id">
-                <i class="fa fa-user-circle"></i>
-                <span>{{op.name}}</span>
-            </div>
-            <div class="misc">
-                <div class="clock" v-show="$route.name !== 'Dashboard'">
-                    <span class="time">{{time | moment('hh:mm')}}</span>
-                    <span class="shift">{{time | moment('a')}}</span>
-                </div>
-                <div class="status" v-show="$route.name === 'Dashboard'">
-                    <i class="fa fa-phone-square" :class="{na:!device.callid}"></i>
-                    <i class="fa fa-credit-card" :class="{na:!device.terminal}"></i>
-                    <i class="fa fa-desktop" :class="{na:!device.poleDisplay}"></i>
-                    <i class="fa fa-print spooler" v-show="spooler.length > 0" @click="messageCenter(true)"></i>
-                    <i class="fa fa-globe" :class="{na:!device.online}"></i>
-                    <i class="fa fa-sitemap" :class="{na:!app.database}"></i>
-                </div>
-            </div>
-            <div :is="component" :init="componentData"></div>
-        </header>
-    </transition>
+  <transition name="slideDown" appear>
+    <header class="dock">
+      <span class="number">{{ticket.number}}</span>
+      <span class="type" v-show="ticket.type" @click="changeType">{{type}}</span>
+      <span class="provider" v-show="$route.name === 'Menu' && order.source !== 'POS'">{{order.source}}</span>
+      <div class="reward" v-if="config.store.reward"></div>
+      <div class="info">
+        <div class="customer" v-if="$route.name === 'Menu'" @click="editCustomer">
+          <span v-show="customer.phone">{{customer.phone | phone}}</span>
+          <span v-show="customer.address">{{customer.address}}</span>
+          <span v-show="customer.name">{{customer.name}}</span>
+        </div>
+      </div>
+      <div class="op" @click="openPanel" v-show="op._id">
+        <i class="fa fa-user-circle"></i>
+        <span>{{op.name}}</span>
+      </div>
+      <div class="misc">
+        <div class="clock" v-show="$route.name !== 'Dashboard'">
+          <span class="time">{{time | moment('hh:mm')}}</span>
+          <span class="shift">{{time | moment('a')}}</span>
+        </div>
+        <div class="status" v-show="$route.name === 'Dashboard'">
+          <i class="fa fa-phone-square" :class="{na:!device.callid}"></i>
+          <i class="fa fa-credit-card" :class="{na:!device.terminal}"></i>
+          <i class="fa fa-desktop" :class="{na:!device.poleDisplay}"></i>
+          <i class="fa fa-print spooler" v-show="spooler.length > 0" @click="messageCenter(true)"></i>
+          <i class="fa fa-globe" :class="{na:!device.online}"></i>
+          <i class="fa fa-sitemap" :class="{na:!app.database}"></i>
+        </div>
+      </div>
+      <div :is="component" :init="componentData"></div>
+    </header>
+  </transition>
 </template>
 
 <script>
@@ -110,15 +110,22 @@ export default {
       this.$route.name === "Menu" && this.$p("switcher");
     },
     sessionTimeout(current) {
-      let lapse = Math.round((current - this.app.lastActivity) / 1000);
-      if (lapse >= this.station.timeout) {
-        this.setApp({ autoLock: false });
-        this.$dialog({
+      const { enable, timeout } = this.station.autoLock;
+
+      if (!enable) return;
+
+      const lapse = Math.round((current - this.app.lastActivity) / 1000);
+
+      if (lapse >= timeout) {
+        const prompt = {
           title: "dialog.autoLock",
-          msg: ["dialog.autoLockTip", this.station.timeout],
+          msg: ["dialog.autoLockTip", timeout],
           timeout: { fn: "resolve", duration: 10000 },
           buttons: [{ text: "button.extend", fn: "reject" }]
-        })
+        };
+
+        this.setApp({ autoLock: false });
+        this.$dialog(prompt)
           .then(() => {
             this.$q();
             this.doubleCheck();
@@ -135,7 +142,7 @@ export default {
       if (
         this.$route.name === "Menu" &&
         this.app.mode === "create" &&
-        this.ticket.type === "DINE_IN"
+        this.order.type === "DINE_IN"
       ) {
         this.resetCurrentTable();
         this.$socket.emit("TABLE_MODIFIED", this.currentTable);

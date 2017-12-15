@@ -1,77 +1,79 @@
 <template>
-    <div class="popupMask dark center">
-        <div class="editor">
-            <header>
-                <div class="title">
-                    <h3>{{$t('title.setTips')}}</h3>
-                    <h5>{{$t('tip.foundRecords',transactions.length)}}</h5>
-                </div>
-                <nav>
-                    
-                </nav>
-            </header>
-            <div class="wrap">
-                <section class="list">
-                    <v-touch tag="ul" :style="scroll" @panup="move" @pandown="move" @panstart="panStart" @panend="panEnd" class="records">
-                        <li v-for="(record,idx) in transactions" :key="idx" @click.prevent.stop="index = record.index" :data-index="record.index">
-                            <div class="inner">
-                                <i class="fa fa-check-circle-o gray" v-if="record.status === 1"></i>
-                                <i class="fa fa-check-circle green" v-else></i>
-                                <div class="index"><span class="sharp">#</span>{{record.index}}</div>
-                                <span class="account">...{{record.account.number}}</span>
-                                <span class="amount">$ {{record.amount.approve}}</span>
-                                <span class="card">{{record.account.type}}</span>
-                            </div>
-                        </li>
-                    </v-touch>
-                </section>
-                <section class="entryWrap">
-                    <div class="header">
-                        <h3 v-if="transaction && transaction.order">
-                            <span class="index"><span class="sharp">#</span>{{transaction.order.number}}</span>
-                            <span>{{$t('type.'+ transaction.order.type)}}</span>
-                        </h3>
-                        <h3 v-else></h3>
-                        <p>
-                            <span>{{$t('text.authCode')}}</span>
-                            <span class="auth" v-if="transaction">{{transaction.host.auth}}</span>
-                        </p>
-                    </div>
-                    <div class="inner">
-                        <input type="text" v-model="tip" :placeholder="placeholder">
-                    </div>
-                    <div class="pad">
-                        <section class="numpad">
-                            <div @click="input('7')">7</div>
-                            <div @click="input('8')">8</div>
-                            <div @click="input('9')">9</div>
-                            <div @click="input('4')">4</div>
-                            <div @click="input('5')">5</div>
-                            <div @click="input('6')">6</div>
-                            <div @click="input('1')">1</div>
-                            <div @click="input('2')">2</div>
-                            <div @click="input('3')">3</div>
-                            <div @click="input('0')">0</div>
-                            <div @click="input('00')" class="double">00</div>
-                        </section>
-                        <aside class="numpad">
-                            <div @click="del">&#8592;</div>
-                            <div @click="clear">C</div>
-                            <div @click="enter">&#8626;</div>
-                        </aside>
-                    </div>
-                </section>
-            </div>
-            <footer>
-                <div class="opt">
-                    <checkbox v-model="batch" label="text.readyBatch"></checkbox>
-                </div>
-                <button class="btn" v-if="batch" @click="init.resolve">{{$t('button.batch')}}</button>
-                <button class="btn" v-else @click="init.reject(false)">{{$t('button.done')}}</button>
-            </footer>
+  <div class="popupMask dark center">
+    <div class="editor">
+      <header>
+        <div class="title">
+          <h3>{{$t('title.setTips')}}</h3>
+          <h5>{{$t('tip.foundRecords',transactions.length)}}</h5>
         </div>
-        <div :is="component" :init="componentData"></div>
+        <nav>
+
+        </nav>
+      </header>
+      <div class="wrap">
+        <section class="list">
+          <v-touch tag="ul" :style="scroll" @panup="move" @pandown="move" @panstart="panStart" @panend="panEnd" class="records">
+            <li v-for="(record,idx) in transactions" :key="idx" @click.prevent.stop="index = record.index" :data-index="record.index">
+              <div class="inner">
+                <i class="fa fa-check-circle-o gray" v-if="record.status === 1"></i>
+                <i class="fa fa-check-circle green" v-else></i>
+                <div class="index">
+                  <span class="sharp">#</span>{{record.index}}</div>
+                <span class="account">...{{record.account.number}}</span>
+                <span class="amount">$ {{record.amount.approve}}</span>
+                <span class="card">{{record.account.type}}</span>
+              </div>
+            </li>
+          </v-touch>
+        </section>
+        <section class="entryWrap">
+          <div class="header">
+            <h3 v-if="transaction && transaction.order">
+              <span class="index">
+                <span class="sharp">#</span>{{transaction.order.number}}</span>
+              <span>{{$t('type.'+ transaction.order.type)}}</span>
+            </h3>
+            <h3 v-else></h3>
+            <p>
+              <span>{{$t('text.authCode')}}</span>
+              <span class="auth" v-if="transaction">{{transaction.host.auth}}</span>
+            </p>
+          </div>
+          <div class="inner">
+            <input type="text" v-model="tip" :placeholder="placeholder">
+          </div>
+          <div class="pad">
+            <section class="numpad">
+              <div @click="input('7')">7</div>
+              <div @click="input('8')">8</div>
+              <div @click="input('9')">9</div>
+              <div @click="input('4')">4</div>
+              <div @click="input('5')">5</div>
+              <div @click="input('6')">6</div>
+              <div @click="input('1')">1</div>
+              <div @click="input('2')">2</div>
+              <div @click="input('3')">3</div>
+              <div @click="input('0')">0</div>
+              <div @click="input('00')" class="double">00</div>
+            </section>
+            <aside class="numpad">
+              <div @click="del">&#8592;</div>
+              <div @click="clear">C</div>
+              <div @click="enter">&#8626;</div>
+            </aside>
+          </div>
+        </section>
+      </div>
+      <footer>
+        <div class="opt">
+          <checkbox v-model="batch" label="text.readyBatch"></checkbox>
+        </div>
+        <button class="btn" v-if="batch" @click="init.resolve">{{$t('button.batch')}}</button>
+        <button class="btn" v-else @click="init.reject(false)">{{$t('button.done')}}</button>
+      </footer>
     </div>
+    <div :is="component" :init="componentData"></div>
+  </div>
 </template>
 
 <script>

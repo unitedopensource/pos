@@ -1,15 +1,15 @@
 <template>
-    <div class="range">
-        <label :for="id">{{$t(title)}}</label>
-        <input :id="id" :value="value" type="range" @input="$emit('input',$event.target.value)" :min="min" :max="max" :step="step">
-        <span>{{value}}</span>
-    </div>
+  <div class="range">
+    <label :for="id">{{$t(title)}}</label>
+    <input type="range" @input="$emit('input',$event.target.value)" @change="$emit('update',$event.target.value)" :id="id" :value="value" :min="min" :max="max" :step="step">
+    <span>{{value}}</span>
+  </div>
 </template>
 
 <script>
 export default {
   props: {
-    value: Number,
+    value: [Number,String],
     title: String,
     tooltip: String,
     min: Number,

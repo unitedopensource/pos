@@ -1,86 +1,86 @@
 <template>
-    <div class="popupMask center dark">
-        <div class="terminal" v-show="!component">
-            <header>
-                <div class="title">
-                    <h3>{{$t('title.terminalRecords')}}</h3>
-                    <h5>{{$t('tip.foundRecords',filteredTransactions.length)}}</h5>
-                </div>
-                <nav class="filter">
-                    <dropdown label="filter.station" :options="stations" filter="filterStation"></dropdown>
-                </nav>
-            </header>
-            <table>
-                <thead>
-                     <tr>
-                        <th class="index">ID</th>
-                        <th>{{$t('thead.type')}}</th>
-                        <th>{{$t('thead.time')}}</th>
-                        <th>{{$t('thead.station')}}</th>
-                        <th>{{$t('thead.for')}}</th>
-                        <th>{{$t('thead.ticket')}}</th>
-                        <th>{{$t('thead.card')}}</th>
-                        <th>{{$t('thead.auth')}}</th>
-                        <th>{{$t('thead.amount')}}</th>
-                        <th>{{$t('thead.tip')}}</th>
-                        <th class="action">{{$t('thead.action')}}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="(record,index) in records" :key="index" :class="{voided:record.status === 0}">
-                        <td class="index">{{record.index}}</td>
-                        <td>{{record.transType}}</td>
-                        <td>{{record.time | moment("HH:mm:ss")}}</td>
-                        <td>{{record.station}}</td>
-                        <td>{{$t('type.'+record.for)}}</td>
-                        <td v-if="record.for === 'Order'" class="ticket">
-                            <span class="type">{{$t('type.'+record.order.type)}}</span>
-                            <span class="number">#{{record.order.number}}</span>
-                        </td>
-                        <td v-else></td>
-                        <td class="card">
-                            <i :class="ccType(record.account.type)"></i>
-                            <span class="number" :title="record.addition.CARDBIN">...{{record.account.number}}</span>
-                        </td>
-                        <td class="auth">
-                            <span>{{record.host.auth}}</span>
-                        </td>
-                        <td class="amount">$ {{record.amount.approve}}</td>
-                        <td class="amount" :class="{zero:record.amount.tip === '0.00'}">$ {{record.amount.tip}}</td>
-                        <td v-if="!record.close" class="action">
-                            <span class="print" @click="print(record)">{{$t('button.print')}}</span>
-                            <span class="void" @click="voidSale(record)">{{$t('button.void')}}</span>
-                        </td>
-                        <td v-else class="action">
-                            <span class="refund" @click="askRefund(record)">{{$t('button.refund')}}</span>
-                        </td>
-                    </tr>
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td>
-                            <div class="value">
-                                <span class="text">{{$t('text.tip')}}</span>
-                                <span class="amount">($ {{totalTip}})</span>
-                            </div>
-                            <div class="value">
-                                <span class="text">{{$t('text.total')}}</span>
-                                <span class="amount">$ {{totalAmount}}</span>
-                            </div>
-                        </td>
-                    </tr>
-                </tfoot>
-            </table>
-            <footer>
-                <button class="btn" @click="openAdjuster">{{$t('button.adjustTips')}}</button>
-                <div class="f1">
-                    <pagination :of="filteredTransactions" :max="12" :contain="13" @page="setPage"></pagination>
-                </div>
-                <button class="btn" @click="exit">{{$t('button.exit')}}</button>
-            </footer>
+  <div class="popupMask center dark">
+    <div class="terminal" v-show="!component">
+      <header>
+        <div class="title">
+          <h3>{{$t('title.terminalRecords')}}</h3>
+          <h5>{{$t('tip.foundRecords',filteredTransactions.length)}}</h5>
         </div>
-        <div :is="component" :init="componentData"></div>
+        <nav class="filter">
+          <dropdown label="filter.station" :options="stations" filter="filterStation"></dropdown>
+        </nav>
+      </header>
+      <table>
+        <thead>
+          <tr>
+            <th class="index">ID</th>
+            <th>{{$t('thead.type')}}</th>
+            <th>{{$t('thead.time')}}</th>
+            <th>{{$t('thead.station')}}</th>
+            <th>{{$t('thead.for')}}</th>
+            <th>{{$t('thead.ticket')}}</th>
+            <th>{{$t('thead.card')}}</th>
+            <th>{{$t('thead.auth')}}</th>
+            <th>{{$t('thead.amount')}}</th>
+            <th>{{$t('thead.tip')}}</th>
+            <th class="action">{{$t('thead.action')}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(record,index) in records" :key="index" :class="{voided:record.status === 0}">
+            <td class="index">{{record.index}}</td>
+            <td>{{record.transType}}</td>
+            <td>{{record.time | moment("HH:mm:ss")}}</td>
+            <td>{{record.station}}</td>
+            <td>{{$t('type.'+record.for)}}</td>
+            <td v-if="record.for === 'Order'" class="ticket">
+              <span class="type">{{$t('type.'+record.order.type)}}</span>
+              <span class="number">#{{record.order.number}}</span>
+            </td>
+            <td v-else></td>
+            <td class="card">
+              <i :class="ccType(record.account.type)"></i>
+              <span class="number" :title="record.addition.CARDBIN">...{{record.account.number}}</span>
+            </td>
+            <td class="auth">
+              <span>{{record.host.auth}}</span>
+            </td>
+            <td class="amount">$ {{record.amount.approve}}</td>
+            <td class="amount" :class="{zero:record.amount.tip === '0.00'}">$ {{record.amount.tip}}</td>
+            <td v-if="!record.close" class="action">
+              <span class="print" @click="print(record)">{{$t('button.print')}}</span>
+              <span class="void" @click="voidSale(record)">{{$t('button.void')}}</span>
+            </td>
+            <td v-else class="action">
+              <span class="refund" @click="askRefund(record)">{{$t('button.refund')}}</span>
+            </td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td>
+              <div class="value">
+                <span class="text">{{$t('text.tip')}}</span>
+                <span class="amount">($ {{totalTip}})</span>
+              </div>
+              <div class="value">
+                <span class="text">{{$t('text.total')}}</span>
+                <span class="amount">$ {{totalAmount}}</span>
+              </div>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+      <footer>
+        <button class="btn" @click="openAdjuster">{{$t('button.adjustTips')}}</button>
+        <div class="f1">
+          <pagination :of="filteredTransactions" :max="12" :contain="13" @page="setPage"></pagination>
+        </div>
+        <button class="btn" @click="exit">{{$t('button.exit')}}</button>
+      </footer>
     </div>
+    <div :is="component" :init="componentData"></div>
+  </div>
 </template>
 
 <script>
@@ -198,7 +198,7 @@ export default {
         data.map(t => t.station).forEach(name => stations.add(name));
         this.stations = Array.from(stations).map(n => ({ text: n, value: n }));
         let status = new Set();
-        
+
         this.transactions = data;
       });
     },

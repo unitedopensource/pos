@@ -1,44 +1,46 @@
 <template>
-    <div class="popupMask dark center">
-        <div class="editor">
-            <header>
-                <h5></h5>
-                <h3>{{$t('title.batch')}}</h3>
-            </header>
-            <table class="setting">
-                <thead>
-                    <tr>
-                        <th>{{$t('thead.terminal')}}</th>
-                        <th>{{$t('thead.count')}}</th>
-                        <th>{{$t('thead.total')}}</th>
-                        <th>{{$t('thead.status')}}</th>
-                        <th>{{$t('thead.action')}}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="(task,index) in tasks" :key="index">
-                        <td>{{task.alias}}<span class="location">({{task.location}})</span></td>
-                        <td>{{task.count}}</td>
-                        <td>{{task.total | decimal}}</td>
-                        <td class="status">{{status(task.status)}}</td>
-                        <td v-if="task.status === 5" class="action">
-                            <span class="print">{{$t('button.print')}}</span>
-                        </td>
-                        <td v-else class="action">
-                            <span class="batch" @click="batchAlone(task)">{{$t('button.batch')}}</span>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <footer>
-                <div class="opt">
-                    <checkbox label="text.print" v-model="print"></checkbox>
-                </div>
-                <button class="btn" @click="init.resolve">{{$t('button.done')}}</button>
-            </footer>
+  <div class="popupMask dark center">
+    <div class="editor">
+      <header>
+        <h5></h5>
+        <h3>{{$t('title.batch')}}</h3>
+      </header>
+      <table class="setting">
+        <thead>
+          <tr>
+            <th>{{$t('thead.terminal')}}</th>
+            <th>{{$t('thead.count')}}</th>
+            <th>{{$t('thead.total')}}</th>
+            <th>{{$t('thead.status')}}</th>
+            <th>{{$t('thead.action')}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(task,index) in tasks" :key="index">
+            <td>{{task.alias}}
+              <span class="location">({{task.location}})</span>
+            </td>
+            <td>{{task.count}}</td>
+            <td>{{task.total | decimal}}</td>
+            <td class="status">{{status(task.status)}}</td>
+            <td v-if="task.status === 5" class="action">
+              <span class="print">{{$t('button.print')}}</span>
+            </td>
+            <td v-else class="action">
+              <span class="batch" @click="batchAlone(task)">{{$t('button.batch')}}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <footer>
+        <div class="opt">
+          <checkbox label="text.print" v-model="print"></checkbox>
         </div>
-        <div :is="component" :init="componentData"></div>
+        <button class="btn" @click="init.resolve">{{$t('button.done')}}</button>
+      </footer>
     </div>
+    <div :is="component" :init="componentData"></div>
+  </div>
 </template>
 
 <script>

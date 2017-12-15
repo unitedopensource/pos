@@ -1,87 +1,87 @@
 <template>
-    <div class="popupMask setting dark center">
-      <div class="editor">
-        <header>
+  <div class="popupMask setting dark center">
+    <div class="editor">
+      <header>
+        <div>
+          <h5 v-if="init.edit">{{$t('title.edit')}}</h5>
+          <h5 v-else>{{$t('title.create')}}</h5>
+          <h3>{{item[language]}}</h3>
+        </div>
+        <nav>
           <div>
-            <h5 v-if="init.edit">{{$t('title.edit')}}</h5>
-            <h5 v-else>{{$t('title.create')}}</h5>
-            <h3>{{item[language]}}</h3>
+            <input type="radio" v-model="mode" value="basic" name="tab" id="basic">
+            <label for="basic">{{$t('text.itemInfo')}}</label>
           </div>
-          <nav>
-            <div>
-              <input type="radio" v-model="mode" value="basic" name="tab" id="basic">
-              <label for="basic">{{$t('text.itemInfo')}}</label>
-            </div>
-            <div>
-              <input type="radio" v-model="mode" value="print" name="tab" id="print">
-              <label for="print">{{$t('setting.print')}}</label>
-            </div>
-            <div>
-              <input type="radio" v-model="mode" value="advance" name="tab" id="advance">
-              <label for="advance">{{$t('text.advance')}}</label>
-            </div>
-          </nav>
-        </header>
-        <template v-if="mode === 'basic'">
-          <div class="wrap info">
-            <div class="item">
-              <inputer title="text.menuID" v-model="item.menuID"></inputer>
-              <selector title="text.category" v-model="item.category" :opts="init.categories" :editable="false"></selector>
-              <inputer title="text.primary" v-model="item.usEN"></inputer>
-              <inputer title="text.secondary" v-model="item.zhCN"></inputer>
-              <inputer title="text.basePrice" v-model.number="item.price" @keydown.native="save"></inputer>
-              <selector title="text.taxClass" v-model="item.taxClass" :opts="taxes" :editable="false"></selector>
-              <div class="options">
-                <label class="title">{{$t('setting.print')}}</label>
-                <div class="inner">
-                    <checkbox v-for="(name,index) in printers" :key="index" v-model="printer" :label="name" :val="name" :multiple="true" @input="updatePrint"></checkbox>
-                </div>
+          <div>
+            <input type="radio" v-model="mode" value="print" name="tab" id="print">
+            <label for="print">{{$t('setting.print')}}</label>
+          </div>
+          <div>
+            <input type="radio" v-model="mode" value="advance" name="tab" id="advance">
+            <label for="advance">{{$t('text.advance')}}</label>
+          </div>
+        </nav>
+      </header>
+      <template v-if="mode === 'basic'">
+        <div class="wrap info">
+          <div class="item">
+            <inputer title="text.menuID" v-model="item.menuID"></inputer>
+            <selector title="text.category" v-model="item.category" :opts="init.categories" :editable="false"></selector>
+            <inputer title="text.primary" v-model="item.usEN"></inputer>
+            <inputer title="text.secondary" v-model="item.zhCN"></inputer>
+            <inputer title="text.basePrice" v-model.number="item.price" @keydown.native="save"></inputer>
+            <selector title="text.taxClass" v-model="item.taxClass" :opts="taxes" :editable="false"></selector>
+            <div class="options">
+              <label class="title">{{$t('setting.print')}}</label>
+              <div class="inner">
+                <checkbox v-for="(name,index) in printers" :key="index" v-model="printer" :label="name" :val="name" :multiple="true" @input="updatePrint"></checkbox>
               </div>
             </div>
-            <draggable class="side" tag="div" :options="{animation: 300,ghostClass: 'ghost' ,handle:'.drag',draggable:'.draggable'}" v-model="item.option">
-              <transition-group tag="ul" class="options" name="dropdown">
-                <li v-for="(option,index) in item.option" :key="index" class="draggable">
-                  <div class="inner">
-                    <span class="index">{{index + 1}}</span>
-                    <input type="text" v-model="option.usEN" :placeholder="$t('text.primary')">
-                    <input type="text" v-model="option.zhCN" :placeholder="$t('text.secondary')">
-                    <input type="number" v-model.number="option.price" :placeholder="$t('text.price')">
-                    <i class="fa fa-bars drag"></i>
-                    <i class="fa fa-ellipsis-v"></i>
-                  </div>
-                  <i class="fa fa-trash remove"></i>
-                </li>
-                <li @click="addOption" :key="-1" v-if="item.option.length < 11" class="add">
-                  <i class="fa fa-plus"></i>
-                  <span>{{$t('button.new')}}</span>
-                </li>
-              </transition-group>
-            </draggable>
           </div>
-        </template>
-        <template v-else-if="mode=== 'print'">
-          <div class="wrap column">
-            <toggle :title="name" true-tooltip="tip.replaceItemName" false-tooltip="tip.noReplaceItemName" :conditionalTooltip="true" v-for="(printer,name,index) in item.printer" :key="index" v-model="printer.replace" @update="render">
-              <transition name="dropdown">
-                <div class="opt" v-if="printer.replace">
-                  <inputer title="text.primary" v-model="printer.usEN"></inputer>
-                  <inputer title="text.secondary" v-model="printer.zhCN"></inputer>
+          <draggable class="side" tag="div" :options="{animation: 300,ghostClass: 'ghost' ,handle:'.drag',draggable:'.draggable'}" v-model="item.option">
+            <transition-group tag="ul" class="options" name="dropdown">
+              <li v-for="(option,index) in item.option" :key="index" class="draggable">
+                <div class="inner">
+                  <span class="index">{{index + 1}}</span>
+                  <input type="text" v-model="option.usEN" :placeholder="$t('text.primary')">
+                  <input type="text" v-model="option.zhCN" :placeholder="$t('text.secondary')">
+                  <input type="number" v-model.number="option.price" :placeholder="$t('text.price')">
+                  <i class="fa fa-bars drag"></i>
+                  <i class="fa fa-ellipsis-v"></i>
                 </div>
-              </transition>
-            </toggle>
+                <i class="fa fa-trash remove"></i>
+              </li>
+              <li @click="addOption" :key="-1" v-if="item.option.length < 11" class="add">
+                <i class="fa fa-plus"></i>
+                <span>{{$t('button.new')}}</span>
+              </li>
+            </transition-group>
+          </draggable>
+        </div>
+      </template>
+      <template v-else-if="mode=== 'print'">
+        <div class="wrap column">
+          <toggle :title="name" true-tooltip="tip.replaceItemName" false-tooltip="tip.noReplaceItemName" :conditionalTooltip="true" v-for="(printer,name,index) in item.printer" :key="index" v-model="printer.replace" v-show="isShowPrinter(name)" @update="render">
+            <transition name="dropdown">
+              <div class="opt" v-if="printer.replace">
+                <inputer title="text.primary" v-model="printer.usEN"></inputer>
+                <inputer title="text.secondary" v-model="printer.zhCN"></inputer>
+              </div>
+            </transition>
+          </toggle>
+        </div>
+      </template>
+      <template v-else-if="mode ==='advance'">
+        <div class="wrap info">
+          <div class="item">
+            <inputer title="text.priority" v-model.number="item.priority"></inputer>
+            <inputer title="text.inventory" v-model.number="item.inventory"></inputer>
+            <inputer title="text.rewardPoint" v-model.number="item.rewardPoint"></inputer>
           </div>
-        </template>
-        <template v-else-if="mode ==='advance'">
-          <div class="wrap info">
-            <div class="item">
-              <inputer title="text.priority" v-model.number="item.priority"></inputer>
-              <inputer title="text.inventory" v-model.number="item.inventory"></inputer>
-              <inputer title="text.rewardPoint" v-model.number="item.rewardPoint"></inputer>
-            </div>  
-            <div class="side">
-              <switches title="text.openFood" v-model="item.temporary"></switches>
-              <switches title="text.marketPrice" v-model="item.marketPrice"></switches>
-              <toggle title="text.weightScale" v-model="item.weightItem.enable" :defaultStyle="false">
+          <div class="side">
+            <switches title="text.openFood" v-model="item.temporary"></switches>
+            <switches title="text.marketPrice" v-model="item.marketPrice"></switches>
+            <toggle title="text.weightScale" v-model="item.weightItem.enable" :defaultStyle="false">
               <transition name="dropdown">
                 <div class="opt" v-if="item.weightItem.enable">
                   <inputer title="text.amount" v-model="item.weightItem.value"></inputer>
@@ -97,22 +97,23 @@
                 </div>
               </transition>
             </toggle>
-              <switches title="text.spicy" v-model="item.spicy"></switches>
-              <switches title="text.disable" v-model="item.disable"></switches>
+            <switches title="text.spicy" v-model="item.spicy"></switches>
+            <switches title="text.disable" v-model="item.disable"></switches>
           </div>
-          </div>
-        </template>
-        <footer>
-          <div class="opt">
-            <span class="del" v-show="init.edit" @click="init.reject(true)">{{$t('button.delete')}}</span>
-            <p v-if="deprecated"><i class="fa fa-warning"></i>{{$t('tip.deprecated.priceArray')}}</p>
-          </div>
-          <button class="btn" @click="init.reject(false)">{{$t('button.back')}}</button>
-          <button class="btn" @click="save">{{$t('button.save')}}</button>
-        </footer>
-      </div>
-      <div :is="component" :init="componentData"></div>
+        </div>
+      </template>
+      <footer>
+        <div class="opt">
+          <span class="del" v-show="init.edit" @click="init.reject(true)">{{$t('button.delete')}}</span>
+          <p v-if="deprecated">
+            <i class="fa fa-warning"></i>{{$t('tip.deprecated.priceArray')}}</p>
+        </div>
+        <button class="btn" @click="init.reject(false)">{{$t('button.back')}}</button>
+        <button class="btn" @click="save">{{$t('button.save')}}</button>
+      </footer>
     </div>
+    <div :is="component" :init="componentData"></div>
+  </div>
 </template>
 
 <script>
@@ -183,6 +184,9 @@ export default {
     save() {
       this.item.price = isNumber(this.item.price) ? this.item.price : 0;
       this.init.resolve(this.item);
+    },
+    isShowPrinter(device) {
+      return !/cashier/i.test(device);
     },
     patchItem() {
       Array.isArray(this.init.item.price) && (this.deprecated = true);
