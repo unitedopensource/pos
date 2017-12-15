@@ -17,17 +17,17 @@
         <span>{{op.name}}</span>
       </div>
       <div class="misc">
-        <div class="clock" v-show="$route.name !== 'Dashboard'">
-          <span class="time">{{time | moment('hh:mm')}}</span>
-          <span class="shift">{{time | moment('a')}}</span>
-        </div>
-        <div class="status" v-show="$route.name === 'Dashboard'">
+        <div class="status" v-if="$route.name === 'Dashboard'">
           <i class="fa fa-phone-square" :class="{na:!device.callid}"></i>
           <i class="fa fa-credit-card" :class="{na:!device.terminal}"></i>
           <i class="fa fa-desktop" :class="{na:!device.poleDisplay}"></i>
           <i class="fa fa-print spooler" v-show="spooler.length > 0" @click="messageCenter(true)"></i>
           <i class="fa fa-globe" :class="{na:!device.online}"></i>
           <i class="fa fa-sitemap" :class="{na:!app.database}"></i>
+        </div>
+        <div class="clock" v-else>
+          <span class="time">{{time | moment('hh:mm')}}</span>
+          <span class="shift">{{time | moment('a')}}</span>
         </div>
       </div>
       <div :is="component" :init="componentData"></div>

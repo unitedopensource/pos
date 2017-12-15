@@ -4,6 +4,9 @@
       <router-link tag="div" :to="{name:'Setting.printer.config',params:{printer}}" class="back">
         <i class="fa fa-chevron-left"></i>
       </router-link>
+      <nav>
+        <span class="add" @click="setAll">{{$t('button.setAll')}}</span>
+      </nav>
     </header>
     <checkbox v-for="(opt,index) in opts" :key="opt" v-model="print" :val="opt.value" :label="opt.label" :multiple="true" class="list"></checkbox>
   </div>
@@ -35,20 +38,20 @@ export default {
           value: "DINE_IN"
         },
         {
-          label: "type.BAR",
-          value: "BAR"
-        },
-        {
           label: "type.BUFFET",
           value: "BUFFET"
         },
         {
-          label: "type.SALES",
-          value: "SALES"
-        },
-        {
           label: "type.TO_GO",
           value: "TO_GO"
+        },
+        {
+          label: "type.BAR",
+          value: "BAR"
+        },
+        {
+          label: "type.SALES",
+          value: "SALES"
         }
       ],
       print: []
@@ -67,6 +70,24 @@ export default {
       key: `printers.${this.printer}.${this.obj}`,
       value: this.print
     });
+  },
+  methods: {
+    setAll() {
+      this.print = [
+        "WALK_IN",
+        "PICK_UP",
+        "DELIVERY",
+        "DINE_IN",
+        "BAR",
+        "BUFFET",
+        "SALES",
+        "TO_GO"
+      ];
+      this.$router.push({
+        name: "Setting.printer.config",
+        params: { printer: this.printer }
+      });
+    }
   }
 };
 </script>

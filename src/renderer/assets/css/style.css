@@ -400,8 +400,8 @@ footer .opt {
   align-items: center;
 }
 
-footer .opt .del{
-  color:rgb(236, 48, 15);
+footer .opt .del {
+  color: rgb(236, 48, 15);
   cursor: pointer;
 }
 
@@ -455,7 +455,7 @@ header.dock {
 }
 
 .dock .op {
-  min-width: 150px;
+  min-width: 120px;
 }
 
 .dock>.info {

@@ -45,7 +45,7 @@
         </div>
         <div class="middle">
             <div class="fnWrap">
-                <button class="fn fa fa-shopping-basket" @click="openMarker" :disabled="$route.name !== 'Menu'"></button>
+                <button class="fn fa fa-credit-card-alt" @click="openCreditCard" :disabled="$route.name !== 'Menu'"></button>
                 <button class="fn" @click="separator" :disabled="$route.name !== 'Menu'">-----</button>
                 <button class="fn fa fa-print" @click="directPrint" v-if="$route.name !=='Menu'"></button>
                 <button class="fn fa fa-check-square-o" v-else @click="toggleTodoList" :disabled="app.mode ==='edit'"></button>
@@ -244,6 +244,9 @@ export default {
     update(config) {
       this.setOrder(config);
       this.calculator(this.order.content);
+    },
+    openCreditCard(){
+      
     },
     toggleTodoList() {
       this.todo = !this.todo;

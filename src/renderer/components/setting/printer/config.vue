@@ -1,11 +1,10 @@
 <template>
   <div>
     <header class="nav">
-      <div class="title">
-        <h5></h5>
-        <h3>
-          <i class="fa fa-cogs"></i> {{printer}}</h3>
-      </div>
+      <router-link tag="div" :to="{name:'Setting.printer'}" class="back">
+        <i class="fa fa-chevron-left"></i>
+      </router-link>
+      <h3>{{printer}}</h3>
     </header>
     <external title="print.printTicket" @open="$router.push({name:'Setting.printer.option',params:{printer,obj:'print'}})"></external>
     <external title="print.printDouble" @open="$router.push({name:'Setting.printer.option',params:{printer,obj:'double'}})"></external>
