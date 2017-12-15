@@ -105,8 +105,9 @@ ul.tabs li.router-link-exact-active {
 
 header.nav {
     display: flex;
-    align-items: center;
     padding: 6px;
+    height: 38px;
+    align-items: center;
     background: #fcfcfc;
     border-bottom: 1px solid #eee;
 }
@@ -224,7 +225,7 @@ td.amount {
     min-width: 350px;
 }
 
-.editor .wrap > .options {
+.editor .wrap>.options {
     display: flex;
     flex-wrap: wrap;
 }

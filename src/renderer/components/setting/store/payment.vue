@@ -64,7 +64,7 @@ export default {
   },
   methods: {
     update(data) {
-      this.$socket.emit("[UPDATE] CONFIG", data);
+      this.$socket.emit("[CONFIG] UPDATE", data);
     },
     updateTaxDiscount(value) {
       this.update({

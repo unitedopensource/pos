@@ -1,23 +1,75 @@
 <template>
-    <div>
-
-    </div>
+  <div>
+    <header class="nav">
+      <div class="title">
+        <h5></h5>
+        <h3>
+          <i class="fa fa-print"></i> {{printer}}</h3>
+      </div>
+    </header>
+    <external title="setting.printTicket" @open="$router.push({name:'Setting.printer.option',params:{printer,obj:'print'}})"></external>
+    <external title="setting.printDouble" @open="$router.push({name:'Setting.printer.option',params:{printer,obj:'double'}})"></external>
+    <toggle title="setting.printerBuzzer" v-model="config.control.buzzer"></toggle>
+    <toggle title="setting.byPriority" v-model="config.control.prioritize"></toggle>
+    <options title="setting.printMode" tooltip="tip.printMode" v-model="config.control.mode" :opts="modeOpts" @update="updateMode"></options>
+  </div>
 </template>
 
 <script>
+import toggle from "../common/toggle";
+import options from "../common/options";
+import external from "../common/external";
+
 export default {
-    props: ["printer"],
-    data() {
-        return {
-            config: null
+  props: ["printer"],
+  components: { toggle, options, external },
+  data() {
+    return {
+      config: null,
+      modeOpts: [
+        {
+          label: "print.normal",
+          tooltip: "tip.mode.normal",
+          value: "normal"
+        },
+        {
+          label: "print.difference",
+          tooltip: "tip.mode.difference",
+          value: "difference"
+        },
+        {
+          label: "print.new",
+          tooltip: "tip.mode.new",
+          value: "new"
+        },
+        {
+          label: "print.todo",
+          tooltip: "tip.mode.todo",
+          value: "todo"
         }
+      ]
+    };
+  },
+  created() {
+    const config = this.$store.getters.config.printers[this.printer];
+    this.config = JSON.parse(JSON.stringify(config));
+  },
+  beforeDestroy() {
+    Object.assign(
+      this.$store.getters.config.printers[this.printer],
+      this.config
+    );
+  },
+  methods: {
+    update(data) {
+      this.$socket.emit("[UPDATE] CONFIG", data);
     },
-    created() {
-        console.log(this.printer)
-    },
-    methods: {
-
+    updateMode(value) {
+      this.update({
+        key: `printers.${this.printer}.control.mode`,
+        value
+      });
     }
-
-}
+  }
+};
 </script>

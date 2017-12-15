@@ -41,7 +41,7 @@ export default {
   },
   methods: {
     update(data) {
-      this.$socket.emit("[UPDATE] CONFIG", data);
+      this.$socket.emit("[CONFIG] UPDATE", data);
     },
     updateMatrix(value) {
       this.update({

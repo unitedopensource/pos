@@ -1119,6 +1119,9 @@ export default {
         'saveLog': '保存记录',
         'timecard': '打卡',
         'unifiedBatch': '统一过账',
+        'basic': '基本设置',
+        'style': '样式设置',
+        'other': '其它设置',
 
         'employee': '员工设置',
         'station': '工作站设定',
@@ -1135,8 +1138,8 @@ export default {
         'taxEditor': '税率编辑',
         'taxApplyTip': '按照订单类别应用此税率',
         'uiEditor': '界面编辑',
-        'printReceipt': '收据打印',
-        'doubleReceipt': '双份收据',
+        'printTicket': '订单打印',
+        'printDouble': '双份订单',
         'printStyle': '打印样式',
         'printPrimary': '第一语言',
         'printPrice': '价格',
@@ -1150,10 +1153,9 @@ export default {
         'printOrderType': '订单类别',
         'printCustomerInfo': '客人资料',
         'printActionTime': '打印时间',
-        'enlargeCustomerInfo': '资料放大',
         'printPayment': '打印总额',
 
-        'buzzer': '打印铃声',
+        'printerBuzzer': '提示音',
         'printMenuID': '菜单ID',
         'menu': '菜单',
         'request': '要求',
@@ -1192,7 +1194,7 @@ export default {
         'userRemovalTip': '永久的删除这个账户',
         'review': '审核',
 
-        'sortPriority': '按优先值',
+        'byPriority': '按优先值',
         'employeeCard': '员工卡',
         'employeeCardRegistration': '注册员工卡',
         'settledReceipt': '结账收据',
@@ -1291,8 +1293,9 @@ export default {
             'passwordRequire': '创建座位之前需要输入密码',
             'surcharge': '设置自动收取服务费条件',
         },
-        'printMode': {
-            'normal': '打印当前收据上的 所有 物品',
+        'printMode': '设定物品打印模式',
+        'mode': {
+            'normal': '打印收据上所有的物品',
             'difference': '只打印 新增, 更改, 删除 的物品',
             'new': '只打印新增的物品',
             'todo': '标识出 已有, 新增 的物品'

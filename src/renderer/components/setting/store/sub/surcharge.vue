@@ -2,27 +2,29 @@
     <div>
         <header class="nav">
             <div class="back" @click="save">
-            <i class="fa fa-chevron-left"></i>
+                <i class="fa fa-chevron-left"></i>
             </div>
             <nav>
                 <span class="add" @click="create">{{$t('button.new')}}</span>
             </nav>
         </header>
-            <toggle title="setting.surcharge" v-model="surcharge.enable">
-                <transition name="dropdown">
-                    <div v-if="surcharge.enable">
-                        <table class="setting">
-                            <thead>
+        <toggle title="setting.surcharge" v-model="surcharge.enable">
+            <transition name="dropdown">
+                <div v-if="surcharge.enable">
+                    <table class="setting">
+                        <thead>
                             <tr>
                                 <th></th>
                                 <th>{{$t('thead.condition')}}</th>
                                 <th>{{$t('thead.amount')}}</th>
                                 <th></th>
                             </tr>
-                            </thead>
-                            <tbody>
+                        </thead>
+                        <tbody>
                             <tr v-for="(rule,index) in surcharge.rules" :key="index">
-                                <td class="icon"><i class="fa fa-user-circle"></i></td>
+                                <td class="icon">
+                                    <i class="fa fa-user-circle"></i>
+                                </td>
                                 <td class="guest">{{$t('text.chargeAbove',rule.guest)}}</td>
                                 <td class="amount" v-if="rule.percentage">{{rule.fee}} %</td>
                                 <td class="amount" v-else>$ {{rule.fee}}</td>
@@ -30,11 +32,11 @@
                                     <i class="fa fa-ellipsis-v"></i>
                                 </td>
                             </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </transition>
-            </toggle>
+                        </tbody>
+                    </table>
+                </div>
+            </transition>
+        </toggle>
         <div :is="component" :init="componentData"></div>
     </div>
 </template>
@@ -77,7 +79,7 @@ export default {
         });
     },
     save() {
-      this.$socket.emit("[UPDATE] CONFIG", {
+      this.$socket.emit("[CONFIG] UPDATE", {
         key: "dinein.surcharge",
         value: this.surcharge
       });

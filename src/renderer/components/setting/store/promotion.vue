@@ -18,7 +18,7 @@ export default {
   },
   methods: {
     updateReward(value) {
-      this.$socket.emit("[UPDATE] CONFIG", {
+      this.$socket.emit("[CONFIG] UPDATE", {
         key: "store.reward",
         value
       });

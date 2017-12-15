@@ -54,7 +54,7 @@ export default {
               .substring(4, 6);
       }
 
-      this.$socket.emit("[UPDATE] STATION", {
+      this.$socket.emit("[STATION] UPDATE", {
         _id: this.$store.getters.station._id,
         key: "cashDrawer",
         value

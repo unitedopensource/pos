@@ -68,7 +68,7 @@ export default {
   methods: {
     update(data) {
       Object.assign(data, { _id: this.station._id });
-      this.$socket.emit("[UPDATE] STATION", data);
+      this.$socket.emit("[STATION] UPDATE", data);
     },
     updateAlias(value) {
       this.update({

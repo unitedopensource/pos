@@ -100,6 +100,7 @@ input:checked + label:after {
 .text {
   vertical-align: top;
   margin-left: 5px;
+  flex: 1;
 }
 
 input:disabled ~ label {

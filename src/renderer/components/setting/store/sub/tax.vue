@@ -98,7 +98,7 @@ export default {
       tax.default = true;
     },
     save() {
-      this.$socket.emit("[UPDATE] CONFIG", {
+      this.$socket.emit("[CONFIG] UPDATE", {
         key: "tax.class",
         value: this.taxes
       });

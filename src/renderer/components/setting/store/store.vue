@@ -106,7 +106,7 @@ export default {
     },
     editHour() {},
     update(data) {
-      this.$socket.emit("[UPDATE] CONFIG", data);
+      this.$socket.emit("[CONFIG] UPDATE", data);
     },
     updateAddress(value) {
       this.update({

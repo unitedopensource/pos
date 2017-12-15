@@ -1125,6 +1125,9 @@ export default {
         'saveLog': 'Save Log',
         'timecard': 'Timecard',
         'unifiedBatch': 'Unified Batch',
+        'basic': 'Basic',
+        'style': 'Style',
+        'other': 'Other',
 
         'employee': 'Employee',
         'station': 'Station Setting',
@@ -1141,9 +1144,9 @@ export default {
         'taxEditor': 'Tax Editor',
         'taxApplyTip': 'Apply tax by order type',
         'uiEditor': 'UI Editor',
-        'printReceipt': 'Print Receipt',
-        'doubleReceipt': 'Double Receipt',
-        'printStyle': 'Receipt Style',
+        'printTicket': 'Print Ticket',
+        'printDouble': 'Print Double',
+        'printStyle': 'Print Style',
         'printPrimary': 'Primary',
         'printPrice': 'Price',
         'font': 'Font',
@@ -1154,12 +1157,11 @@ export default {
         'printDifference': 'Difference',
         'printStoreInfo': 'Store Info',
         'printOrderType': 'Order Type',
-        'printCustomerInfo': 'Cust. Info',
+        'printCustomerInfo': 'Customer Info',
         'printActionTime': 'Print Time',
-        'enlargeCustomerInfo': 'Enlarge Info.',
         'printPayment': 'Payment',
 
-        'buzzer': 'Buzzer',
+        'printerBuzzer': 'Buzzer',
         'printMenuID': 'Menu ID',
         'menu': 'Menu',
         'request': 'Request',
@@ -1198,7 +1200,7 @@ export default {
         'userRemovalTip': 'Permanent remove user account',
         'review': 'Approval',
 
-        'sortPriority': 'Prioritize',
+        'byPriority': 'Prioritize',
         'employeeCard': 'Employee Card',
         'employeeCardRegistration': 'Register employee card',
         'settledReceipt': 'Settle Payment Receipt',
@@ -1300,10 +1302,11 @@ export default {
         'terminal': {
             'integration': 'Semi-integrated terminal configuration'
         },
-        'printMode': {
-            'normal': 'Prints all items on the ticket',
-            'difference': 'Only prints out new, deleted, edited item on the ticket',
-            'new': 'Only prints new items',
+        'printMode': 'Set print mode',
+        'mode': {
+            'normal': 'Always print all items',
+            'difference': 'Only print new, deleted, edited item',
+            'new': 'Only print new items',
             'todo': 'Mark and print printed, new item'
         },
         'deprecated': {
