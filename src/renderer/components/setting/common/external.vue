@@ -33,7 +33,7 @@ export default {
 
 .external.style {
   min-height: 40px;
-  padding: 5px 0 5px 20px;
+  padding: 4px 0 4px 20px;
   border-bottom: 1px solid #eee;
 }
 

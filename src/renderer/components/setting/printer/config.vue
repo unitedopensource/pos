@@ -9,10 +9,13 @@
     </header>
     <external title="print.printTicket" @open="$router.push({name:'Setting.printer.option',params:{printer,obj:'print'}})"></external>
     <external title="print.printDouble" @open="$router.push({name:'Setting.printer.option',params:{printer,obj:'double'}})"></external>
+    <external title="print.title" @open="$router.push({name:'Setting.printer.title',params:{printer}})"></external>
+    <external title="print.footer" @open="openFooterEditor"></external>
     <toggle title="print.buzzer" v-model="config.control.buzzer" @update="updateBuzzer"></toggle>
-    <toggle title="print.byCategory" v-model="config.control.categorize" @update="updateCategorize"></toggle>
-    <toggle title="print.byPriority" v-model="config.control.prioritize" @update="updatePrioritize"></toggle>
+    <toggle title="print.category" v-model="config.control.categorize" @update="updateCategorize"></toggle>
+    <toggle title="print.priority" v-model="config.control.prioritize" @update="updatePrioritize"></toggle>
     <options title="print.mode" tooltip="tip.printMode" v-model="config.control.mode" :opts="modeOpts" @update="updateMode"></options>
+    <div :is="component" :init="componentData"></div>
   </div>
 </template>
 
@@ -20,13 +23,16 @@
 import toggle from "../common/toggle";
 import options from "../common/options";
 import external from "../common/external";
+import editor from "./component/footerEditor";
 
 export default {
   props: ["printer"],
-  components: { toggle, options, external },
+  components: { editor, toggle, options, external },
   data() {
     return {
       config: null,
+      componentData: null,
+      component: null,
       modeOpts: [
         {
           label: "print.normal",
@@ -88,7 +94,8 @@ export default {
         key: `printers.${this.printer}.control.prioritize`,
         value
       });
-    }
+    },
+    openFooterEditor() {}
   }
 };
 </script>

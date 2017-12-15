@@ -45,14 +45,14 @@ export default {
 header {
   display: flex;
   flex-direction: column;
-  padding: 7px 20px;
+  padding: 5px 20px;
 }
 
 .wrap {
   display: flex;
   align-items: flex-end;
   flex-direction: column;
-  padding: 5px 0 10px;
+  padding: 0 0 5px;
   background: #eee;
 }
 

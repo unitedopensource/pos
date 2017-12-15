@@ -217,6 +217,11 @@ export default [{
                 props: true,
                 name: 'Setting.printer.option',
                 component: require('./components/setting/printer/option')
+              }, {
+                path: 'title/:printer',
+                props: true,
+                name: 'Setting.printer.title',
+                component: require('./components/setting/printer/title')
               }]
             }]
           }

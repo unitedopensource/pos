@@ -1,11 +1,11 @@
 <template>
-    <div class="input">
-        <div class="wrap">
-            <label>{{$t(title)}}</label>
-            <input type="text" :value="value" :disabled="disabled" @blur="update($event)">
-        </div>
-        <slot></slot>
+  <div class="input">
+    <div class="wrap">
+      <label>{{$t(title)}}</label>
+      <input type="text" :value="value" :disabled="disabled" @input="$emit('input',$event.target.value)" @blur="$emit('update',$event.target.value)">
     </div>
+    <slot></slot>
+  </div>
 </template>
 
 <script>
@@ -15,11 +15,6 @@ export default {
     title: String,
     value: [String, Number, Array],
     disabled: Boolean
-  },
-  methods: {
-    update(e) {
-      this.value !== e.target.value && this.$emit("update", e.target.value);
-    }
   }
 };
 </script>

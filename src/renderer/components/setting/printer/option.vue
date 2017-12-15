@@ -55,7 +55,8 @@ export default {
     };
   },
   created() {
-    this.print = this.$store.getters.config.printers[this.printer][this.obj];
+    const print = this.$store.getters.config.printers[this.printer][this.obj];
+    this.print = Array.isArray(print) ? print : [];
   },
   beforeDestroy() {
     Object.assign(this.$store.getters.config.printers[this.printer], {

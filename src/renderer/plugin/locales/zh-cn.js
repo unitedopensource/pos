@@ -1224,9 +1224,15 @@ export default {
         'payment': '打印总额',
         'buzzer': '提示音',
         'menuID': '菜单ID',
+        'title': '收据抬头',
+        'footer': '收据页尾',
         'priority': '按优先值打印',
-        'category': '物品分类打印',
-        'mode': '打印模式'
+        'category': '按物品类别打印',
+        'mode': '打印模式',
+        'normal': '正常模式',
+        'difference': '差异模式',
+        'new': '新增模式',
+        'todo': '列表模式'
     },
     context: {
         'sync': '同步',

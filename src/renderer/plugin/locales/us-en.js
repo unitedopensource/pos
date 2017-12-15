@@ -1229,9 +1229,15 @@ export default {
         'payment': 'Payment Detail',
         'buzzer': 'Buzzer',
         'menuID': 'Menu ID',
+        'title': 'Ticket Title',
+        'footer': 'Ticket Footer',
         'priority': 'By Priority',
         'category': 'By Category',
-        'mode': 'Printer Mode'
+        'mode': 'Printer Mode',
+        'normal': 'Normal',
+        'difference': 'Difference',
+        'new': 'New',
+        'todo': 'Todo'
     },
     context: {
         'sync': 'Sync',
