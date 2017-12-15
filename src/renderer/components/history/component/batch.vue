@@ -32,7 +32,7 @@
             </table>
             <footer>
                 <div class="opt">
-                    
+                    <checkbox label="text.print" v-model="print"></checkbox>
                 </div>
                 <button class="btn" @click="init.resolve">{{$t('button.done')}}</button>
             </footer>
@@ -43,16 +43,18 @@
 
 <script>
 import dialoger from "../../common/dialoger";
+import checkbox from "../../setting/common/checkbox";
 export default {
   props: ["init"],
-  components: { dialoger },
+  components: { dialoger, checkbox },
   data() {
     return {
       unifiedBatch: this.$store.getters.store.unifiedBatch,
       stationAlias: this.$store.getters.station.alias,
       componentData: null,
       component: null,
-      tasks: []
+      tasks: [],
+      print: true
     };
   },
   created() {
@@ -116,10 +118,7 @@ export default {
           const config = this.init.devices.find(c => c.alias === alias);
           config && Object.assign(tasks[alias], config);
         });
-
         Object.keys(tasks).forEach(alias => this.tasks.push(tasks[alias]));
-
-        console.log(this.tasks);
         resolve();
       });
     },
@@ -142,14 +141,12 @@ export default {
 
     next() {},
     batchAlone(device) {
-        console.log(device.terminal)
       this.batch(device).then(response => {
         const result = device.terminal.explainBatch(response.data);
         if (result.code === "000000") {
-          console.log(result);
           device.status = 5;
           Printer.printBatchReport(result);
-          this.$socket.emit("[TERMINAL] CLOSED_BATCH", result);
+          this.$socket.emit("[TERMINAL] CLOSED", result);
         } else {
           device.status = -1;
         }

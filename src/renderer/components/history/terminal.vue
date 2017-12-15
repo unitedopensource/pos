@@ -46,7 +46,7 @@
                             <span>{{record.host.auth}}</span>
                         </td>
                         <td class="amount">$ {{record.amount.approve}}</td>
-                        <td class="amount">$ {{record.amount.tip}}</td>
+                        <td class="amount" :class="{zero:record.amount.tip === '0.00'}">$ {{record.amount.tip}}</td>
                         <td v-if="!record.close" class="action">
                             <span class="print" @click="print(record)">{{$t('button.print')}}</span>
                             <span class="void" @click="voidSale(record)">{{$t('button.void')}}</span>
@@ -112,12 +112,14 @@ export default {
     },
     totalAmount() {
       return this.filteredTransactions
+        .filter(i => i.transType === "SALE" && !i.close)
         .map(i => parseFloat(i.amount.approve))
         .reduce((a, b) => a + b, 0)
         .toFixed(2);
     },
     totalTip() {
       return this.filteredTransactions
+        .filter(i => i.transType === "SALE" && !i.close)
         .map(i => parseFloat(i.amount.tip))
         .reduce((a, b) => a + b, 0)
         .toFixed(2);
@@ -195,6 +197,8 @@ export default {
         let stations = new Set();
         data.map(t => t.station).forEach(name => stations.add(name));
         this.stations = Array.from(stations).map(n => ({ text: n, value: n }));
+        let status = new Set();
+        
         this.transactions = data;
       });
     },
@@ -271,8 +275,8 @@ export default {
     askRefund(record) {
       const amount = record.amount.approve;
       let data = {
-        title: "dialog.refund",
-        msg: ["dialog.refundAmount", amount],
+        title: "terminal.refundConfirm",
+        msg: ["terminal.refundAmount", amount],
         buttons: [
           { text: "button.cancel", fn: "reject" },
           { text: "button.refund", fn: "resolve" }
@@ -398,61 +402,15 @@ export default {
       };
 
       this.$dialog(data)
-        .then(this.processBatch)
+        .then(this.batch)
         .catch(() => this.$q());
     },
-    processBatch() {
-      const { unifiedBatch } = this.$store.getters.store;
-      unifiedBatch
-        ? this.$p("batch", {
-            devices: this.devices,
-            transactions: this.transactions
-          })
-        : this.batch();
+    batch() {
+      this.$p("batch", {
+        devices: this.devices,
+        transactions: this.transactions
+      });
     },
-    batch() {},
-    // processBatch() {
-    //   this.$p("processor", { timeout: 300000 });
-    //   this.devices.forEach(config => {
-    //     const { ip, port, sn, model, alias } = config;
-    //     const terminal = this.getParser(model);
-
-    //     terminal
-    //       .initial(ip, port, sn, this.station.alias, alias)
-    //       .then(response => {
-    //         const device = terminal.check(response.data);
-    //         device.code === "000000" && this.batch(device, terminal);
-    //       }).catch(e=>{
-    //         console.log(e);
-    //         this.$q();
-    //       });
-    //   });
-    // },
-    // batch(device, terminal) {
-    //   terminal.batch().then(response => {
-    //     const result = terminal.explainBatch(response.data);
-
-    //     if (result.code === "000000") {
-    //       const { sn } = device;
-    //       let updated = this.transactions.filter(t => !t.close).map(t => {
-    //         t.hasOwnProperty("device") &&
-    //           t.device.sn === sn &&
-    //           (t.close = true);
-    //         return t;
-    //       });
-    //       this.$socket.emit("[TERM] BATCH_TRANS_CLOSE", updated);
-    //       Printer.printBatchReport(result);
-    //       this.$socket.emit("[TERM] SAVE_BATCH_RESULT", result);
-    //     } else {
-    //       this.$dialog({
-    //         type: "warning",
-    //         title: result.msg,
-    //         msg: ["terminal.error", result.code],
-    //         buttons: [{ text: "button.confirm", fn: "resolve" }]
-    //       }).then(() => this.$q());
-    //     }
-    //   });
-    // },
     exit() {
       this.init.resolve();
     }
@@ -630,5 +588,9 @@ tr.voided {
   background: #ffab91;
   filter: grayscale(0.75) opacity(0.5);
   pointer-events: none;
+}
+
+.zero {
+  color: lightgray;
 }
 </style>

@@ -355,6 +355,17 @@ export default {
       });
 
       report.push({
+        text:this.$t('report.refund'),
+        style:"space",
+        value: "- " +
+          transactions
+            .filter(t => t.for === "Refund")
+            .map(t => Math.abs(t.actual))
+            .reduce(sum, 0)
+            .toFixed(2)
+      })
+
+      report.push({
         text: this.$t("report.payout"),
         style: "space breakline",
         value:

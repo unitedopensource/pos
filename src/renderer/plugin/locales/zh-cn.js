@@ -535,6 +535,8 @@ export default {
         'connecting': '正在连接至终端',
         'connectError': '无法连接至终端',
         'disableBatch': '过账功能被临时停用',
+        'refundConfirm': '退款确认',
+        'refundAmount': '您确定要执行退款操作吗？退款金额 $ {i}',
         'creditCard': {
             'timeout': '交易超时',
             'aborted': '交易被取消',
@@ -675,7 +677,8 @@ export default {
         'accountsPayable': '应付账款',
         'provider': '提供商',
         'subtotal': '小计',
-        'total': '合计'
+        'total': '合计',
+        'refund': '退款'
     },
     thead: {
         'orderType': '订单类别',

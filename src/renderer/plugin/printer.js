@@ -597,15 +597,15 @@ var Printer = function (plugin, config, station) {
                       <p class="time"><span class="text">${date}</span><span class="value">${time}</span></p>
                       <p><span class="text">MID</span><span class="value">${data.mid}</span></p>
                       <p><span class="text">Device</span><span class="value">${data.tid}</span></p>
-                      <p><span class="text">Station</span><span class="value">${data.station}</span></p>
-                      <p><span class="text">Batch #</span><span class="value">${data.batchNumber}</span></p>
+                      <p><span class="text">Terminal</span><span class="value">${data.terminal}</span></p>
+                      <p><span class="text">Batch #</span><span class="value">${data.batch}</span></p>
                       <p><span class="text">Result</span><span class="value">${data.resMsg}</span></p>
                       <p><span class="text">Total</span><span class="value">$ ${total}</span></p>
                     </section>
                     <section class="data">
                       <h3>Overview</h3>
-                      <p><span class="text">Credit (${data.count.credit})</span><span class="value">$ ${data.amount.credit}</span></p>
-                      <p><span class="text">Debit (${data.count.debit})</span><span class="value">$ ${data.amount.debit}</span></p>
+                      <p><span class="text">Credit ( ${data.count.credit} )</span><span class="value">$ ${data.amount.credit}</span></p>
+                      <p><span class="text">Debit ( ${data.count.debit} )</span><span class="value">$ ${data.amount.debit}</span></p>
                     </section>
                   </article>
                   <footer>

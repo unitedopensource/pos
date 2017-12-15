@@ -4,7 +4,7 @@
             <header>
                 <div class="title">
                     <h3>{{$t('title.setTips')}}</h3>
-                    <h5>{{$t('tip.foundRecords',10)}}</h5>
+                    <h5>{{$t('tip.foundRecords',transactions.length)}}</h5>
                 </div>
                 <nav>
                     
@@ -13,7 +13,7 @@
             <div class="wrap">
                 <section class="list">
                     <v-touch tag="ul" :style="scroll" @panup="move" @pandown="move" @panstart="panStart" @panend="panEnd" class="records">
-                        <li v-for="(record,index) in transactions" :key="index" @click.prevent.stop="setTarget(record,index,$event)" :data-trans="record.trace.trans">
+                        <li v-for="(record,idx) in transactions" :key="idx" @click.prevent.stop="index = record.index" :data-index="record.index">
                             <div class="inner">
                                 <i class="fa fa-check-circle-o gray" v-if="record.status === 1"></i>
                                 <i class="fa fa-check-circle green" v-else></i>
@@ -100,22 +100,43 @@ export default {
       device: null,
       tip: "",
       offset: 0,
-      reset: true
+      reset: true,
+      index: 0
     };
   },
   created() {
     this.transactions = this.init.transactions.filter(
       t => t.status !== 0 && !t.close
     );
+    const next = this.transactions.find(t => t.status !== 2);
+    this.index = next ? next.index : 0;
   },
-  mounted() {},
-  beforeDestroy() {},
+  mounted() {
+    window.addEventListener("keydown", this.entry, false);
+  },
+  beforeDestroy() {
+    window.removeEventListener("keydown", this.entry, false);
+  },
   methods: {
-    setTarget(record, index) {
-      this.transaction = record;
-      this.tip = "";
-      this.placeholder = this.transaction.amount.tip;
-      this.reset = true;
+    entry(e) {
+      switch (e.key) {
+        case "Enter":
+          this.enter();
+          break;
+        case "ArrowUp":
+          this.index = this.transactions.some(t => t.index === this.index - 1)
+            ? this.index - 1
+            : this.index;
+          break;
+        case "ArrowDown":
+          this.index = this.transactions.some(t => t.index === this.index + 1)
+            ? this.index + 1
+            : this.index;
+          break;
+      }
+    },
+    setIndex(record, index) {
+      this.index = index;
     },
     move(e) {
       this.offset = this.lastDelta + e.deltaY;
@@ -209,7 +230,11 @@ export default {
     executeFailed(e) {
       console.log(e);
     },
-    next() {},
+    next() {
+      this.index = this.transactions.some(t => t.index === this.index + 1)
+        ? this.index + 1
+        : this.index;
+    },
     getParser(model) {
       switch (model) {
         case "SP30":
@@ -221,6 +246,18 @@ export default {
         default:
           return require("../../payment/parser/pax.js");
       }
+    }
+  },
+  watch: {
+    index(n) {
+      let dom = document.querySelector("ul.records .active");
+      dom && dom.classList.remove("active");
+
+      document.querySelector(`[data-index="${n}"]`).classList.add("active");
+      this.transaction = this.transactions.find(t => t.index === n);
+      this.placeholder = this.transaction.amount.tip;
+      this.reset = true;
+      this.tip = "";
     }
   }
 };
@@ -241,8 +278,16 @@ export default {
 
 li {
   display: flex;
-  padding: 10px 15px;
+  padding: 8px 11px;
   background: #fff;
+  position: relative;
+  color: #3c3c3c;
+  border: 2px solid transparent;
+}
+
+li.active {
+  border: 2px solid #009688;
+  background: #e0f2f1;
 }
 
 li .inner {
@@ -326,7 +371,7 @@ section.list {
 }
 
 .green {
-  color: var(--color);
+  color: var(--green);
 }
 
 .auth {
@@ -341,5 +386,23 @@ section.list {
 
 p {
   margin-top: 5px;
+}
+
+.card {
+  position: absolute;
+  right: 2px;
+  bottom: 0;
+  font-family: fantasy;
+  opacity: 0.75;
+  text-shadow: 0 1px 1px #fff;
+  color: #1b0f31;
+}
+
+.amount {
+  position: absolute;
+  right: 40px;
+  font-family: "Agency FB";
+  font-weight: bold;
+  font-size: 24px;
 }
 </style>

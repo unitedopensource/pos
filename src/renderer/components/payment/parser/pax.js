@@ -5,7 +5,7 @@ const Pax = function () {
   let station = null;
   let request = null;
   let terminal = null;
-  let cardType = ['',
+  const cardType = ['',
     'Visa',
     'MasterCard',
     'American Express',
@@ -34,7 +34,7 @@ const Pax = function () {
       baseURL: `http://${ip}:${port}`
     });
 
-    let command = Encode("A00_1.38");
+    const command = Encode("A00_1.38");
     return request.get(command);
   };
 
@@ -60,16 +60,16 @@ const Pax = function () {
     return device;
   };
   this.charge = function (data, ticket) {
-    let {
+    const {
       number,
       date
     } = data.creditCard;
-    let amount = toFixed(data.amount * 100, 0);
-    let tip = toFixed(data.tip * 100, 0);
+    const amount = toFixed(data.amount * 100, 0);
+    const tip = toFixed(data.tip * 100, 0);
     let command;
 
     if (number && date) {
-      let info = `${number}|${date}|`;
+      const info = `${number}|${date}|`;
       command = Encode(`T00_1.38_01_${amount}_${info}_1_____`)
     } else {
       command = Encode(`T00_1.38_01_${amount}|${tip}|__1_____`)
@@ -78,22 +78,22 @@ const Pax = function () {
     return request.get(command)
   };
   this.explainTransaction = function (raw) {
-    let data = raw.split(String.fromCharCode(28));
-    let code = data[3];
+    const data = raw.split(String.fromCharCode(28));
+    const code = data[3];
     switch (code) {
       case "000000":
-        let host = data[5].split(String.fromCharCode(31));
-        let amount = data[7].split(String.fromCharCode(31));
-        let account = data[8].split(String.fromCharCode(31));
-        let trace = data[9].split(String.fromCharCode(31));
-        let extra = data[13].split(String.fromCharCode(0x03))[0].split(String.fromCharCode(31));
-        let mode = ['Manual', 'Swipe', 'Contactless', 'Scanner', 'Chip', 'Chip Fall Back Swipe'];
-        let transType = ['MENU', 'SALE', 'RETURN', 'AUTH', 'POSTAUTH', 'FORCED', 'ADJUST', 'WITHDRAWAL', 'ACTIVATE', 'ISSUE', 'ADD', 'CASHOUT', 'DEACTIVATE', 'REPLACE', 'MERGE', 'REPORTLOST', 'VOID', 'VOID/SALE', 'VOID/RTRN', 'VOID/AUTH', 'VOID/POST', 'VOID/FORCE', 'VOID/WITHDRAW', 'BALANCE', 'VERIFY', 'REACTIVATE', 'FORCED ISSUE', 'FORCE ADD', 'UNLOAD', 'RENEW', 'GET CONVT DETAIL', 'CONVERT', 'TOKENIZE', 'INCREMENTAL AUTH', 'BALANCE w.LOCK', 'REDEMPTION w.UNLOCK']
+        const host = data[5].split(String.fromCharCode(31));
+        const amount = data[7].split(String.fromCharCode(31));
+        const account = data[8].split(String.fromCharCode(31));
+        const trace = data[9].split(String.fromCharCode(31));
+        const extra = data[13].split(String.fromCharCode(0x03))[0].split(String.fromCharCode(31));
+        const mode = ['Manual', 'Swipe', 'Contactless', 'Scanner', 'Chip', 'Chip Fall Back Swipe'];
+        const transType = ['MENU', 'SALE', 'RETURN', 'AUTH', 'POSTAUTH', 'FORCED', 'ADJUST', 'WITHDRAWAL', 'ACTIVATE', 'ISSUE', 'ADD', 'CASHOUT', 'DEACTIVATE', 'REPLACE', 'MERGE', 'REPORTLOST', 'VOID', 'VOID/SALE', 'VOID/RTRN', 'VOID/AUTH', 'VOID/POST', 'VOID/FORCE', 'VOID/WITHDRAW', 'BALANCE', 'VERIFY', 'REACTIVATE', 'FORCED ISSUE', 'FORCE ADD', 'UNLOAD', 'RENEW', 'GET CONVT DETAIL', 'CONVERT', 'TOKENIZE', 'INCREMENTAL AUTH', 'BALANCE w.LOCK', 'REDEMPTION w.UNLOCK']
         let addition = {};
 
         extra.forEach(data => {
-          let key = data.split("=")[0];
-          let value = data.split("=")[1];
+          const key = data.split("=")[0];
+          const value = data.split("=")[1];
           addition[key] = value;
         });
 
@@ -150,7 +150,7 @@ const Pax = function () {
           msg: 'terminal.creditCard.aborted'
         }
       case "100003":
-        let error = data[4].split(String.fromCharCode(3))[0];
+        const error = data[4].split(String.fromCharCode(3))[0];
         return {
           code,
           msg: 'terminal.creditCard.errorCode',
@@ -199,24 +199,24 @@ const Pax = function () {
     }
   }
   this.getLocalReport = function () {
-    let command = Encode(`R00_1.26_01_`);
+    const command = Encode(`R00_1.26_01_`);
     return request.get(command)
   }
 
   this.explainBatch = function (raw) {
-    let data = raw.split(String.fromCharCode(28));
-    let code = data[3];
-
+    const data = raw.split(String.fromCharCode(28));
+    const code = data[3];
     switch (code) {
       case "000000":
-        let response = data[5];
-        let host = response.split(String.fromCharCode(31));
-        let hostRes = host[1].split(String.fromCharCode(32));
-        let count = data[6].split("=");
-        let amount = data[7].split("=");
-        let time = data[8];
-        let tid = data[9];
-        let mid = data[10].split(String.fromCharCode(0x03))[0];
+        const response = data[5];
+        const host = response.split(String.fromCharCode(31));
+        const hostResponse = host[1];
+        const batch = host[5];
+        const count = data[6].split("=");
+        const amount = data[7].split("=");
+        const time = data[8];
+        const tid = data[9];
+        const mid = data[10].split(String.fromCharCode(0x03))[0];
 
         return {
           code,
@@ -240,8 +240,8 @@ const Pax = function () {
           },
           result: host[0],
           number: host[5],
-          status: hostRes[0],
-          settled: hostRes[7]
+          status: hostResponse,
+          batch
         }
       case "000100":
         return {
@@ -328,23 +328,23 @@ const Pax = function () {
     Draw(data);
   }
   this.adjust = function (invoice, trans, value) {
-    let command = Encode(`T00_1.38_06_${value}__${invoice}|||${trans}______`);
+    const command = Encode(`T00_1.38_06_${value}__${invoice}|||${trans}______`);
     return request.get(command)
   }
   this.voidSale = function (invoice, trans) {
-    let command = Encode(`T00_1.38_16___${invoice}|||${trans}______`);
+    const command = Encode(`T00_1.38_16___${invoice}|||${trans}______`);
     return request.get(command)
   }
-  this.refund = function (amount,ticket) {
+  this.refund = function (amount, ticket) {
     amount = amount * 100
-    let command = Encode(`T00_1.38_02_${amount}__${ticket}______`);
+    const command = Encode(`T00_1.38_02_${amount}__${ticket}______`);
     return request.get(command)
   }
   this.report = function () {
-    let command = Encode('R00_1.38_00_')
+    const command = Encode('R00_1.38_00_')
   }
   this.batch = function () {
-    let command = Encode('B00_1.38_');
+    const command = Encode('B00_1.38_');
     return request.get(command)
   }
 };
@@ -352,7 +352,7 @@ const Pax = function () {
 const Encode = function (d) {
   d = d.replace(/[_]/g, String.fromCharCode(0x1c));
   d = d.replace(/[|]/g, String.fromCharCode(0x1f));
-  let l = lrc(d + String.fromCharCode(0x03));
+  const l = lrc(d + String.fromCharCode(0x03));
   return String.fromCharCode(0x3F) + new Buffer(String.fromCharCode(0x02) + d + String.fromCharCode(0x03) + l).toString('base64');
 };
 
