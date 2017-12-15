@@ -189,14 +189,14 @@ export default {
       CLODOP
         ? (window.Printer = new Print(CLODOP, config, station))
         : setTimeout(
-            function() {
-              window.Printer = new Print(CLODOP, config, station);
-            },
-            20000,
-            CLODOP,
-            config,
-            station
-          );
+          function () {
+            window.Printer = new Print(CLODOP, config, station);
+          },
+          20000,
+          CLODOP,
+          config,
+          station
+        );
     },
     ...mapActions([
       "setApp",

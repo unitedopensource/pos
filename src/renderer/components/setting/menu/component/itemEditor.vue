@@ -246,10 +246,10 @@ input:checked + label {
 
 .wrap {
   display: flex;
+  min-height: 460px;
 }
 
 .wrap.info {
-  min-height: 460px;
   min-width: 550px;
 }
 
@@ -307,7 +307,7 @@ li i.remove {
   padding: 10px 5px;
 }
 
-li:hover i.remove{
+li:hover i.remove {
   display: initial;
 }
 

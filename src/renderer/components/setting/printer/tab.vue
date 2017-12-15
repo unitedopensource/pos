@@ -2,21 +2,33 @@
     <div>
         <ul class="tabs">
             <router-link tag="li" class="tab" :to="{name:'Setting.printer'}">{{$t('text.printer')}}</router-link>
-            <router-link tag="li" class="tab" :to="{name:'Setting.printer.config'}">{{$t('text.config')}}</router-link>
-            <router-link tag="li" class="tab" :to="{name:'Setting.printer.style'}">{{$t('text.style')}}</router-link>
-            <router-link tag="li" class="tab" :to="{name:'Setting.printer.other'}">{{$t('text.other')}}</router-link>
+            <template v-if="printer">
+                <router-link tag="li" class="tab" :to="{name:'Setting.printer.config',params:{printer}}">{{$t('text.config')}}</router-link>
+                <router-link tag="li" class="tab" :to="{name:'Setting.printer.style',params:{printer}}">{{$t('text.style')}}</router-link>
+                <router-link tag="li" class="tab" :to="{name:'Setting.printer.other',params:{printer}}">{{$t('text.other')}}</router-link>
+            </template>
         </ul>
         <transition name="slide" mode="out-in">
-            <router-view class="tab-content"></router-view>
+            <router-view class="tab-content" @click="setPrinter"></router-view>
         </transition>
     </div>
 </template>
 
 <script>
 export default {
-  data() {
-    return {};
-  },
-  created() {}
+    data() {
+        return {
+            printer: ""
+        };
+    },
+    methods: {
+        go(router) {
+
+        },
+        setPrinter(name) {
+            this.printer = name;
+            this.$router.push({ name: "Setting.printer.config", params: { printer: name } })
+        }
+    }
 };
 </script>

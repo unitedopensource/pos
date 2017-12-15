@@ -6,7 +6,10 @@
       <h3>{{$t('title.coupon')}}</h3>
     </header>
     <div class="wrap">
-
+      <div v-for="(coupon,index) in coupons" :key="index">
+        <span>{{coupon.for}}</span>
+        <span>{{coupon.discount}}</span>
+      </div>
     </div>
     <footer>
       <div class="opt">
@@ -25,6 +28,12 @@ export default {
     return {
       coupons: []
     }
+  },
+  created() {
+    this.coupons = this.init.coupons.map(coupon => {
+      Object.assign(coupon, { redeem: false })
+      return coupon
+    })
   },
   methods: {
 

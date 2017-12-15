@@ -265,7 +265,7 @@ export default {
       this.callComponent("request");
     },
     promotion() {
-      this.callComponent("promotion");
+      this.$socket.emit("[COUPON] LIST", coupons => this.$p("coupon", { coupons }))
     },
     timer() {
       if (this.isEmptyTicket) return;

@@ -163,72 +163,27 @@ export default {
         });
       });
     },
-    // checkStation() {
-    //   return new Promise((resolve, reject) => {
-    //     if (this.station) {
-    //       resolve();
-    //     } else {
-    //       let data = {
-    //         type: "warning",
-    //         title: "dialog.stationUnregistered",
-    //         msg: "dialog.stationUnregisteredTip",
-    //         buttons: [{ text: "button.activation", fn: "resolve" }]
-    //       };
-
-    //       this.$dialog(data).then(() => {
-    //         Mac.getMac((err, mac) => {
-    //           if (err) {
-    //             this.$dialog({
-    //               type: "error",
-    //               title: "dialog.stationRegisterFailed",
-    //               msg: ["dialog.stationRegisterFailedTip", err],
-    //               buttons: [{ text: "button.confirm", fn: "resolve" }]
-    //             }).then(() => {
-    //               this.$q();
-    //               this.$router.push({ name: "Login" });
-    //             });
-    //           } else {
-    //             let stations = Object.assign({}, this.store.station);
-    //             let length = Object.keys(stations).length + 1;
-    //             let alias = "pc" + length;
-    //             let station = Preset.station(alias, mac);
-    //             stations[alias] = station;
-
-    //             this.$socket.emit("[CONFIG] UPDATE_STATION", stations);
-    //             this.setStation(station);
-    //             this.setStations(stations);
-    //             Printer.initial(CLODOP, this.config);
-    //             resolve();
-    //           }
-    //         });
-    //       });
-    //     }
-    //   });
-    // },
     checkTimecard() {
       return new Promise(next => {
         if ((this.store.timecard || this.op.timecard) && !this.op.clockIn) {
-          this.$dialog({
+          const prompt = {
             title: "dialog.clockInRequire",
             msg: "dialog.clockInRequireTip",
-            buttons: [
-              { text: "button.later", fn: "reject" },
-              { text: "button.clockIn", fn: "resolve" }
-            ]
-          })
-            .then(() => {
-              this.setOp({ clockIn: this.time, session: ObjectId() });
-              this.$socket.emit("[TIMECARD] CLOCK_IN", this.op);
+            buttons: [{ text: "button.later", fn: "reject" }, { text: "button.clockIn", fn: "resolve" }]
+          }
 
-              this.$dialog({
+          this.$dialog(prompt)
+            .then(() => {
+              const confirm = {
                 type: "question",
                 title: "dialog.clockInConfirm",
-                msg: [
-                  "dialog.clockInTip",
-                  moment(this.time).format("hh:mm:ss a")
-                ],
+                msg: ["dialog.clockInTip", moment(this.time).format("hh:mm:ss a")],
                 buttons: [{ text: "button.confirm", fn: "resolve" }]
-              }).then(() => next());
+              }
+
+              this.setOp({ clockIn: this.time, session: ObjectId() });
+              this.$socket.emit("[TIMECARD] CLOCK_IN", this.op);
+              this.$dialog(confirm).then(() => next());
             })
             .catch(() => next());
         } else if (this.op.break) {
@@ -288,10 +243,7 @@ export default {
         this.$dialog({
           title: "dialog.cashInConfirm",
           msg: ["dialog.cashInConfirmTip", amount.toFixed(2)],
-          buttons: [
-            { text: "button.modify", fn: "reject" },
-            { text: "button.confirm", fn: "resolve" }
-          ]
+          buttons: [{ text: "button.modify", fn: "reject" }, { text: "button.confirm", fn: "resolve" }]
         })
           .then(() => this.acceptCashIn(amount))
           .catch(() => this.countInitialCash());
@@ -364,10 +316,10 @@ export default {
           this.dinein.table
             ? this.$router.push({ path: "/main/table" })
             : this.$dialog({
-                title: "dialog.dineInDisabled",
-                msg: "dialog.dineInEnableTip",
-                buttons: [{ text: "button.confirm", fn: "resolve" }]
-              }).then(() => this.$q());
+              title: "dialog.dineInDisabled",
+              msg: "dialog.dineInEnableTip",
+              buttons: [{ text: "button.confirm", fn: "resolve" }]
+            }).then(() => this.$q());
           break;
         case "pickupList":
           this.$router.push({ path: "/main/list" });
@@ -376,14 +328,14 @@ export default {
           this.approval(this.op.access, route)
             ? this.$router.push({ path: "/main/history" })
             : this.$denyAccess(true)
-                .then(op => {
-                  if (this.approval(op.access, route)) {
-                    this.$router.push({ path: "/main/history" });
-                  } else {
-                    this.$denyAccess();
-                  }
-                })
-                .catch(() => this.$denyAccess());
+              .then(op => {
+                if (this.approval(op.access, route)) {
+                  this.$router.push({ path: "/main/history" });
+                } else {
+                  this.$denyAccess();
+                }
+              })
+              .catch(() => this.$denyAccess());
           break;
         case "setting":
           this.approval(this.op.access, route)
@@ -413,19 +365,19 @@ export default {
         case "enable":
           this.station.cashDrawer.cashFlowCtrl
             ? this.$socket.emit(
-                "[CASHFLOW] CHECK",
-                {
-                  date: today(),
-                  cashDrawer: this.station.cashDrawer.name,
-                  close: false
-                },
-                data => {
-                  let { name, initial } = data;
-                  initial
-                    ? this.initialCashFlow(name)
-                    : this.recordCashFlow(name);
-                }
-              )
+              "[CASHFLOW] CHECK",
+              {
+                date: today(),
+                cashDrawer: this.station.cashDrawer.name,
+                close: false
+              },
+              data => {
+                let { name, initial } = data;
+                initial
+                  ? this.initialCashFlow(name)
+                  : this.recordCashFlow(name);
+              }
+            )
             : Printer.openCashDrawer();
           break;
         case "staffBank":

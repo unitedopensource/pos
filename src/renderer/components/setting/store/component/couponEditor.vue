@@ -22,7 +22,7 @@
                 <button class="btn" @click="confirm" :disabled="invalid">{{$t('button.confirm')}}</button>
             </footer>
         </div>
-        <div :is="component" :init="component"></div>
+        <div :is="component" :init="componentData"></div>
     </div>
 </template>
 
@@ -37,6 +37,8 @@ export default {
   data() {
     return {
       condition: false,
+      component: null,
+      componentData: null,
       coupon: JSON.parse(JSON.stringify(this.init.coupon))
     };
   },

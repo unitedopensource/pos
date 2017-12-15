@@ -1,9 +1,23 @@
 <template>
-    <div></div>
+    <div>
+
+    </div>
 </template>
 
 <script>
-export default{
-    
+export default {
+    props: ["printer"],
+    data() {
+        return {
+            config: null
+        }
+    },
+    created() {
+        console.log(this.printer)
+    },
+    methods: {
+
+    }
+
 }
 </script>

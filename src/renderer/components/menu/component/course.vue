@@ -72,7 +72,7 @@ export default {
     return {
       component: null,
       componentData: null,
-      list: [],
+      list: JSON.parse(JSON.stringify(this.init.order.content)),
       steps: [
         {
           name: "starter",
@@ -101,13 +101,7 @@ export default {
       minute: "00"
     };
   },
-  created() {
-    this.initial();
-  },
   methods: {
-    initial() {
-      this.list = JSON.parse(JSON.stringify(this.init.order.content));
-    },
     jumpStep(index) {
       let current = this.step;
       let hour = this.hour;
@@ -160,7 +154,7 @@ export default {
           Object.assign(order, {
             type: this.app.mode === "create" ? this.ticket.type : order.type,
             number:
-              this.app.mode === "create" ? this.ticket.number : order.number,
+            this.app.mode === "create" ? this.ticket.number : order.number,
             customer: this.customer,
             course: schedule.name,
             delay,
