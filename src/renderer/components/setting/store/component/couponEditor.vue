@@ -21,8 +21,9 @@
             <template v-if="tab === 'basic'">
               <div class="wrap">
                 <div class="input">
-                    <inputer title="text.alias" v-model="coupon.for"></inputer>
-                    <inputer title="text.discount" v-model.number="coupon.discount"></inputer>
+                    <selector title="text.type" v-model="coupon.type" :opts="opts"></selector>
+                    <inputer title="text.alias" v-model="coupon.alias"></inputer>
+                    <inputer title="text.amount" v-model.number="coupon.discount"></inputer>
                     <switches title="text.percentage" v-model="coupon.percentage"></switches>
                     <switches title="text.couponStack" v-model="coupon.stack"></switches>
                     <toggle v-model="coupon.expire.enable" title="text.expiration" :defaultStyle="false">
@@ -38,7 +39,7 @@
             </template>
             <template v-else-if="tab === 'condition'">
               <div class="wrap wide">
-                  123
+                  
               </div>
             </template>
             <footer>
@@ -53,21 +54,43 @@
 </template>
 
 <script>
-import inputer from "../../common/inputer";
 import toggle from "../../common/toggle";
+import inputer from "../../common/inputer";
 import external from "../../common/external";
 import switches from "../../common/switches";
+import selector from "../../common/selector";
 
 export default {
   props: ["init"],
-  components: { external, inputer, switches, toggle },
+  components: { external, inputer, switches, toggle, selector },
   data() {
     return {
       tab: "basic",
       condition: false,
       component: null,
       componentData: null,
-      coupon: JSON.parse(JSON.stringify(this.init.coupon))
+      coupon: JSON.parse(JSON.stringify(this.init.coupon)),
+      opts: [{
+        label: this.$t('type.subtraction'),
+        tooltip: 'tip.coupon.subtraction',
+        value: 'subtraction'
+      }, {
+        label: this.$t('type.giveaway'),
+        tooltip: 'tip.coupon.giveaway',
+        value: 'giveaway'
+      }, {
+        label: this.$t('type.voucher'),
+        tooltip: 'tip.coupon.voucher',
+        value: 'voucher'
+      }, {
+        label: this.$t('type.discount'),
+        tooltip: 'tip.coupon.discount',
+        value: 'discount'
+      }, {
+        label: this.$t('type.complimentary'),
+        tooltip: 'tip.coupon.complimentary',
+        value: 'complimentary'
+      }]
     };
   },
   computed: {

@@ -61,7 +61,12 @@ export default {
         'Activation': '激活',
         'Deactivation': '注销',
         'Order': '订单',
-        'Reload': '充值'
+        'Reload': '充值',
+        'subtraction': '满减券',
+        'giveaway': '礼品券',
+        'voucher': '现金券',
+        'discount': '折扣券',
+        'complimentary': '体验券'
     },
     filter: {
         'cashier': '按收银员',
@@ -1015,7 +1020,7 @@ export default {
         'mountainTime': '山区时区',
         'pacificTime': '太平洋时区',
         'neverExpire': '永不过期',
-        'autoEmailPromotion': '自动发送优惠信息',
+        'autoEmailPromotion': '自动发送优惠券信息',
         'emailReceipt': '发送电子收据',
         'autoEmailConfirmation': '自动发送确认信件',
         'emailReport': '发送报表',
@@ -1027,8 +1032,9 @@ export default {
         'value': '数值',
         'affix': '词缀',
         'setCondition': '设置条件',
-        'couponStack': '优惠叠加',
-        'expiration': '过期'
+        'couponStack': '优惠券叠加',
+        'expiration': '过期',
+        'type': '类型'
     },
     nav: {
         'store': '店面',
@@ -1310,6 +1316,13 @@ export default {
             'difference': '只打印 新增, 更改, 删除 的物品',
             'new': '只打印新增的物品',
             'todo': '标识出 已有, 新增 的物品'
+        },
+        'coupon': {
+            'subtraction': '(满 30 减 5)',
+            'giveaway': '(送左宗鸡)',
+            'voucher': '(5 元现金)',
+            'discount': '(10% 折扣)',
+            'complimentary': '(促销活动)'
         },
         'deprecated': {
             'priceArray': '数组价格已经被遗弃,请将价格修改成单一数值'

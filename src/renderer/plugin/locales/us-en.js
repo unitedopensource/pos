@@ -68,7 +68,12 @@ export default {
         'Activation': 'Activation',
         'Deactivation': 'Deactivation',
         'Order': 'Ticket',
-        'Reload': 'Reload'
+        'Reload': 'Reload',
+        'subtraction': 'Subtraction',
+        'giveaway': 'Giveaway',
+        'voucher': 'Voucher',
+        'discount': 'Discount',
+        'complimentary': 'Complimentary'
     },
     filter: {
         'cashier': 'By Cashier',
@@ -387,7 +392,7 @@ export default {
         'coupon': 'Coupon Detail',
         'batch': 'Batch',
         'printerList': 'Printer List',
-        'couponList' : 'Coupon List',
+        'couponList': 'Coupon List',
         'taxList': 'Tax List',
         'setTitle': 'Set Title'
     },
@@ -1034,7 +1039,8 @@ export default {
         'affix': 'Affix',
         'setCondition': 'Set Condition',
         'couponStack': 'Coupon Stacking',
-        'expiration': 'Expiration'
+        'expiration': 'Expiration',
+        'type': 'Type'
     },
     nav: {
         'store': 'Store',
@@ -1318,6 +1324,13 @@ export default {
             'difference': 'Only print new, deleted, edited item',
             'new': 'Only print new items',
             'todo': 'Mark and print printed, new item'
+        },
+        'coupon': {
+            'subtraction': '($5 rebate when $30)',
+            'giveaway': '(Free Item when $20)',
+            'voucher': '($5 Dollar Value)',
+            'discount': '(10% Discount)',
+            'complimentary': '(Event Complimentray)'
         },
         'deprecated': {
             'priceArray': 'Price array is deprecated. Please edit price ASAP.'

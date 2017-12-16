@@ -64,17 +64,27 @@ export default {
     },
     create() {
       let coupon = {
-        for: "",
+        code: "",
+        alias: "",
         discount: 0,
         percentage: false,
         stack: false,
         expire: {
           enable: false,
-          count: 1000,
+          count: 0,
           date: ""
         },
         count: 0,
-        rules: []
+        // 'substruction':  '满减券',
+        // 'giveaway':      '礼品券',
+        // 'voucher':       '现金券',
+        // 'discount':      '折扣券',
+        // 'complimentary': '体验券'
+        type: "",
+        requireAmount: 0,
+        target: "",// order , category, item
+        excludes: [],
+        includes: []
       };
 
       this.edit(coupon);
