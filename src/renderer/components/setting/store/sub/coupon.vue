@@ -4,9 +4,9 @@
           <router-link tag="div" :to="{name:'Setting.promotion'}" class="back">
             <i class="fa fa-chevron-left"></i>
           </router-link>
-          <div class="title">{{$t('title.couponList')}}</div>
+          <div class="title"><h3>{{$t('title.couponList')}}</h3></div>
           <nav>
-            <span class="add" @click="create">{{$t('button.new')}}</span>
+            <span @click="create">{{$t('button.new')}}</span>
           </nav>
         </header>
           <table class="setting">

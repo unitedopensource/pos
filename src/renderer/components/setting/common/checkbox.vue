@@ -31,6 +31,11 @@ export default {
 
       this.$emit("input", value);
     }
+  },
+  watch: {
+    val(n) {
+      this.has(n)
+    }
   }
 };
 </script>

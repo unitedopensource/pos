@@ -4,8 +4,11 @@
       <router-link tag="div" :to="{name:'Setting.printer.config',params:{printer}}" class="back">
         <i class="fa fa-chevron-left"></i>
       </router-link>
+      <div class="title" v-if="obj === 'print'"><h3>{{$t('print.printTicket')}}</h3></div>
+      <div class="title" v-else><h3>{{$t('print.printDouble')}}</h3></div>
       <nav>
-        <span class="add" @click="setAll">{{$t('button.setAll')}}</span>
+        <span @click="setAll" v-if="print.length === 0">{{$t('button.setAll')}}</span>
+        <span @click="unset" v-else>{{$t('button.unset')}}</span>
       </nav>
     </header>
     <checkbox v-for="(opt,index) in opts" :key="opt" v-model="print" :val="opt.value" :label="opt.label" :multiple="true" class="list"></checkbox>
@@ -83,10 +86,9 @@ export default {
         "SALES",
         "TO_GO"
       ];
-      this.$router.push({
-        name: "Setting.printer.config",
-        params: { printer: this.printer }
-      });
+    },
+    unset() {
+      this.print = []
     }
   }
 };

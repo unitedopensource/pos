@@ -2,8 +2,7 @@
     <div>
         <header class="nav">
             <div class="title">
-                <h5></h5>
-                <h3>{{$t("title.list")}}</h3>
+                <h3>{{$t("title.printerList")}}</h3>
             </div>
             <nav>
                 <span class="add" @click="create">{{$t('button.new')}}</span>
@@ -26,7 +25,7 @@ export default {
   },
   methods: {
     create() {
-        
+
     },
     config(printer) {
       this.$emit("click", printer);

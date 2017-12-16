@@ -15,6 +15,9 @@ export default {
     title: String,
     value: [String, Number, Array],
     disabled: Boolean
+  },
+  watch: {
+    value() { }
   }
 };
 </script>

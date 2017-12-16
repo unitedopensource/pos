@@ -6,7 +6,7 @@
             </div>
             <div class="title"></div>
             <nav>
-                <span class="add" @click="create">{{$t('button.new')}}</span>
+                <span @click="create">{{$t('button.new')}}</span>
             </nav>
         </header>
         <toggle title="setting.surcharge" v-model="surcharge.enable">

@@ -4,9 +4,9 @@
       <router-link tag="div" :to="{name:'Setting.printer'}" class="back">
         <i class="fa fa-chevron-left"></i>
       </router-link>
-      <div class="title">{{printer}}</div>
+      <div class="title"><h3>{{printer}}</h3></div>
       <nav>
-        <span class="add">{{$t('button.remove')}}</span>
+        <span>{{$t('button.remove')}}</span>
       </nav>
     </header>
     <external title="print.printTicket" @open="$router.push({name:'Setting.printer.option',params:{printer,obj:'print'}})"></external>

@@ -240,7 +240,10 @@ export default {
         'refund': '退款',
         'break': '休息',
         'work': '工作',
-        'coupon': '促销'
+        'coupon': '促销',
+        'setAll': '全选',
+        'unset': '反选',
+        'default': '默认'
     },
     title: {
         'markPaymentType': '标记付款方式',
@@ -297,7 +300,8 @@ export default {
         'batch': '过账',
         'printerList': '打印机列表',
         'couponList': '折扣卷列表',
-        'taxList': '税种列表'
+        'taxList': '税种列表',
+        'setTitle': '设置抬头'
     },
     dialog: {
         'maintenance': '维护',

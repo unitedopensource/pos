@@ -4,8 +4,9 @@
             <router-link tag="div" :to="{name:'Setting.printer.config',params:{printer}}" class="back">
                 <i class="fa fa-chevron-left"></i>
             </router-link>
+            <div class="title"><h3>{{$t('title.setTitle')}}</h3></div>
             <nav>
-                <span class="add" @click="reset">{{$t('button.default')}}</span>
+                <span @click="reset">{{$t('button.default')}}</span>
             </nav>
         </header>
         <text-input v-model="title.PICK_UP" title="type.PICK_UP"></text-input>
@@ -64,10 +65,6 @@ export default {
   methods: {
     reset() {
       this.title = Object.assign({}, this.opts);
-      this.$router.push({
-        name: "Setting.printer.config",
-        params: { printer: this.printer }
-      });
     }
   }
 };

@@ -247,7 +247,10 @@ export default {
         'refund': 'Refund',
         'break': 'Break',
         'work': 'Work',
-        'coupon': 'Coupon'
+        'coupon': 'Coupon',
+        'setAll': 'Set All',
+        'unset': 'Unset All',
+        'default': 'Default'
     },
     thead: {
         'orderType': 'Order Type',
@@ -385,7 +388,8 @@ export default {
         'batch': 'Batch',
         'printerList': 'Printer List',
         'couponList' : 'Coupon List',
-        'taxList': 'Tax List'
+        'taxList': 'Tax List',
+        'setTitle': 'Set Title'
     },
     dialog: {
         'maintenance': 'Maintenance',
