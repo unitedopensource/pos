@@ -2,10 +2,11 @@
     <div>
         <header class="nav">
             <div class="back" @click="save">
-            <i class="fa fa-chevron-left"></i>
+              <i class="fa fa-chevron-left"></i>
             </div>
+            <div class="title">{{$t('title.taxList')}}</div>
             <nav>
-                <span class="add" @click="create">{{$t('button.new')}}</span>
+                <span @click="create">{{$t('button.new')}}</span>
             </nav>
         </header>
           <table class="setting">
@@ -43,13 +44,10 @@ export default {
   components: { editor },
   data() {
     return {
-      componentData: null,
       component: null,
-      taxes: []
+      componentData: null,
+      taxes: Object.assign({}, this.$store.getters.tax.class)
     };
-  },
-  created() {
-    this.taxes = Object.assign({}, this.$store.getters.tax.class);
   },
   methods: {
     create() {

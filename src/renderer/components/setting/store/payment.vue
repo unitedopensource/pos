@@ -61,6 +61,14 @@ export default {
   },
   created() {
     this.store = Object.assign({}, this.config.store);
+
+    //patch
+    !this.store.hasOwnProperty('tipSuggestion') && Object.assign(this.store, {
+      tipSuggestion: {
+        enable: false,
+        percentages: "15,18,20"
+      }
+    })
   },
   methods: {
     update(data) {

@@ -4,6 +4,7 @@
           <router-link tag="div" :to="{name:'Setting.promotion'}" class="back">
             <i class="fa fa-chevron-left"></i>
           </router-link>
+          <div class="title">{{$t('title.couponList')}}</div>
           <nav>
             <span class="add" @click="create">{{$t('button.new')}}</span>
           </nav>

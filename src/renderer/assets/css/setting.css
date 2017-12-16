@@ -123,13 +123,17 @@ header.nav .back:hover {
     border-radius: 4px;
 }
 
+header.nav .title{
+    flex:1;
+    text-align: center;
+}
+
 header.nav nav {
-    flex: 1;
     display: flex;
     justify-content: flex-end;
 }
 
-header.nav .add {
+header.nav nav > span {
     padding: 10px 20px;
     background: #eee;
     border-radius: 4px;

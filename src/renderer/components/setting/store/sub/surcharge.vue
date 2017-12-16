@@ -4,6 +4,7 @@
             <div class="back" @click="save">
                 <i class="fa fa-chevron-left"></i>
             </div>
+            <div class="title"></div>
             <nav>
                 <span class="add" @click="create">{{$t('button.new')}}</span>
             </nav>

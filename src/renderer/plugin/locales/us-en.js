@@ -382,7 +382,10 @@ export default {
         'category': 'Menu Category',
         'item': 'Menu Item',
         'coupon': 'Coupon Detail',
-        'batch': 'Batch'
+        'batch': 'Batch',
+        'printerList': 'Printer List',
+        'couponList' : 'Coupon List',
+        'taxList': 'Tax List'
     },
     dialog: {
         'maintenance': 'Maintenance',

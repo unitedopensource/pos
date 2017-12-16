@@ -294,7 +294,10 @@ export default {
         'category': '菜单类别',
         'item': '菜单物品',
         'coupon': '折价卷',
-        'batch': '过账'
+        'batch': '过账',
+        'printerList': '打印机列表',
+        'couponList': '折扣卷列表',
+        'taxList': '税种列表'
     },
     dialog: {
         'maintenance': '维护',
