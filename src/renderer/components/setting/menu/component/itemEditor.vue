@@ -7,7 +7,7 @@
           <h5 v-else>{{$t('title.create')}}</h5>
           <h3>{{item[language]}}</h3>
         </div>
-        <nav>
+        <nav class="tabs">
           <div>
             <input type="radio" v-model="mode" value="basic" name="tab" id="basic">
             <label for="basic">{{$t('text.itemInfo')}}</label>
@@ -223,7 +223,7 @@ header {
   justify-content: flex-start;
 }
 
-nav {
+/* nav {
   display: flex;
   height: 45px;
   flex: 1;
@@ -246,7 +246,7 @@ input:checked + label {
   border-bottom: 3px solid #ff9800;
   font-weight: bold;
   color: #0f1e29;
-}
+} */
 
 .wrap {
   display: flex;

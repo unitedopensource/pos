@@ -15,6 +15,8 @@
       <div class="opt">
 
       </div>
+      <button class="btn">{{$t('button.manualInput')}}</button>
+      <button class="btn">{{$t('button.scan')}}</button>
       <button class="btn" @click="init.resolve">{{$t('button.confirm')}}</button>
     </footer>
   </div>

@@ -234,6 +234,31 @@ td.amount {
     flex-wrap: wrap;
 }
 
+.editor nav.tabs {
+    display: flex;
+    height: 45px;
+    flex: 1;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.editor nav.tabs label{
+    padding: 13px;
+    min-width: 60px;
+    display: flex;
+    margin: 0 5px;
+    justify-content: center;
+    cursor: pointer;
+    color: #656565;
+    border-bottom: 3px solid transparent;
+}
+
+.editor nav.tabs input:checked + label{
+    border-bottom: 3px solid #ff9800;
+    font-weight: bold;
+    color: #0f1e29;
+}
+
 .clickable {
     cursor: pointer;
 }
@@ -247,6 +272,8 @@ td.amount {
     flex: 1;
     padding: 10px 5px;
 }
+
+
 
 
 /* 

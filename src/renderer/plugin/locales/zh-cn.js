@@ -1026,7 +1026,9 @@ export default {
         'multiplier': '乘数',
         'value': '数值',
         'affix': '词缀',
-        'setCondition': '设置条件'
+        'setCondition': '设置条件',
+        'couponStack': '优惠叠加',
+        'expiration': '过期'
     },
     nav: {
         'store': '店面',
@@ -1129,6 +1131,7 @@ export default {
         'basic': '基本设置',
         'style': '样式设置',
         'other': '其它设置',
+        'condition': '条件设置',
 
         'employee': '员工设置',
         'station': '工作站设定',

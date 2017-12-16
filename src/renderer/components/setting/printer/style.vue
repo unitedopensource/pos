@@ -4,6 +4,7 @@
             <router-link tag="div" :to="{name:'Setting.printer.config',params:{printer}}" class="back">
                 <i class="fa fa-chevron-left"></i>
             </router-link>
+            <div class="title"><h3>{{printer}}</h3></div>
             <nav>
                 <span class="add">{{$t('button.default')}}</span>
             </nav>
@@ -22,9 +23,10 @@ export default {
   },
   created() {
     this.style = this.$store.getters.config.printers[this.printer].style;
-
   },
-  methods: {}
+  methods: {
+      
+  }
 };
 </script>
 

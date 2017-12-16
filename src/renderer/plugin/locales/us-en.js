@@ -1032,7 +1032,9 @@ export default {
         'multiplier': 'Multiplier',
         'value': 'Value',
         'affix': 'Affix',
-        'setCondition': 'Set Condition'
+        'setCondition': 'Set Condition',
+        'couponStack': 'Coupon Stacking',
+        'expiration': 'Expiration'
     },
     nav: {
         'store': 'Store',
@@ -1135,6 +1137,7 @@ export default {
         'basic': 'Basic',
         'style': 'Style',
         'other': 'Other',
+        'condition': 'Condition',
 
         'employee': 'Employee',
         'station': 'Station Setting',

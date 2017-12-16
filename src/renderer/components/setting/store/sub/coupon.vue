@@ -24,7 +24,7 @@
                 <td>{{coupon.for}}</td>
                 <td class="amount" v-if="coupon.percentage">{{coupon.discount}} %</td>
                 <td class="amount" v-else>$ {{coupon.discount | decimal}}</td>
-                <td :class="{expired: (coupon.expire && today > coupon.expire)}">{{format(coupon.expire)}}</td>
+                <td :class="{expired: (coupon.expire.enable && today > coupon.expire.date)}">{{format(coupon.expire.date)}}</td>
                 <td>{{coupon.count}}</td>
                 <td class="opt" @click="edit(coupon,index)">
                   <i class="fa fa-ellipsis-v"></i>
@@ -67,7 +67,12 @@ export default {
         for: "",
         discount: 0,
         percentage: false,
-        expire: "",
+        stack: false,
+        expire: {
+          enable: false,
+          count: 1000,
+          date: ""
+        },
         count: 0,
         rules: []
       };
