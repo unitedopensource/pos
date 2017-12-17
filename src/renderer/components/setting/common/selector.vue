@@ -1,29 +1,29 @@
 <template>
-    <div class="selector">
-        <span class="title">{{$t(title)}}</span>
-        <div class="inner">
-            <input :type="type" :value="value" @input="$emit('input',$event.target.value)" @click.stop="isDisplay = true" v-if="editable">
-            <template v-else>
-              <span class="input" @click.stop="isDisplay = !isDisplay">{{label}}</span>
-              <i class="fa fa-sort"></i>
-            </template>
-            <transition name="menu">
-                <ul v-show="isDisplay" v-outer-click="close">
-                    <li v-for="(option,index) in opts" :key="index">
-                        <input type="radio" :value="option.value" @change="pick(option.value)" :id="id+index">
-                        <label :for="id+index" @click="pick(option.value)" v-if="option.plainText">
-                            <span class="label">{{option.label}}</span>
-                            <span class="tooltip">{{option.tooltip}}</span>
-                        </label>
-                        <label :for="id+index" @click="pick(option.value)" v-else>
-                            <span class="label">{{$t(option.label)}}</span>
-                            <span class="tooltip">{{$t(option.tooltip)}}</span>
-                        </label>
-                    </li>
-                </ul>
-            </transition>
-        </div>
+  <div class="selector">
+    <span class="title">{{$t(title)}}</span>
+    <div class="inner">
+      <input :type="type" :value="value" @input="$emit('input',$event.target.value)" v-if="editable" v-outer-click="resetOpts">
+      <template v-else>
+        <span class="input" @click.stop="isDisplay = !isDisplay">{{label}}</span>
+        <i class="fa fa-sort"></i>
+      </template>
+      <transition name="menu">
+        <ul v-show="isDisplay" v-outer-click="close">
+          <li v-for="(option,index) in opts" :key="index">
+            <input type="radio" :value="option.value" @change="pick(option.value)" :id="id+index">
+            <label :for="id+index" @click="pick(option.value)" v-if="option.plainText">
+              <span class="label">{{option.label}}</span>
+              <span class="tooltip">{{option.tooltip}}</span>
+            </label>
+            <label :for="id+index" @click="pick(option.value)" v-else>
+              <span class="label">{{$t(option.label)}}</span>
+              <span class="tooltip">{{$t(option.tooltip)}}</span>
+            </label>
+          </li>
+        </ul>
+      </transition>
     </div>
+  </div>
 </template>
 
 <script>
@@ -68,8 +68,17 @@ export default {
 
       this.value !== value && this.$emit("update", value);
     },
+    resetOpts(){
+      this.isDisplay = false;
+      Object.assign(this.opts,[]);
+    },
     close() {
       this.isDisplay = false;
+    }
+  },
+  watch:{
+    opts(n){
+      if(this.editable) this.isDisplay = true;
     }
   }
 };
@@ -84,7 +93,7 @@ export default {
 
 .inner {
   position: relative;
-  flex:1;
+  flex: 1;
 }
 
 i {
@@ -101,6 +110,7 @@ input {
   padding: 5px;
   cursor: pointer;
   outline: none;
+  width: calc(100% - 12px);
 }
 
 .input {

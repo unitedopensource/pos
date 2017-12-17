@@ -73,7 +73,10 @@ export default {
         'giveaway': 'Giveaway',
         'voucher': 'Voucher',
         'discount': 'Discount',
-        'complimentary': 'Complimentary'
+        'complimentary': 'Complimentary',
+        'order': 'Order',
+        'category': 'Category',
+        'item': 'Item'
     },
     filter: {
         'cashier': 'By Cashier',
@@ -798,7 +801,6 @@ export default {
         'qty': 'Qty',
         'item': 'Item',
         'price': 'Price',
-        'basePrice': 'Base Price',
         'discount': 'Discount',
         'marketPrice': 'Market Price',
         'weight': 'Weight',
@@ -1040,7 +1042,8 @@ export default {
         'setCondition': 'Set Condition',
         'couponStack': 'Coupon Stacking',
         'expiration': 'Expiration',
-        'type': 'Type'
+        'type': 'Type',
+        'couponCode': 'Code'
     },
     nav: {
         'store': 'Store',
@@ -1323,17 +1326,20 @@ export default {
             'normal': 'Always print all items',
             'difference': 'Only print new, deleted, edited item',
             'new': 'Only print new items',
-            'todo': 'Mark and print printed, new item'
+            'todo': 'Mark and print printed, new item',
+            'order': 'Apply to entire order',
+            'category': 'Apply to certain category',
+            'item': 'Apply to certain item'
         },
         'coupon': {
             'subtraction': '($5 rebate when $30)',
             'giveaway': '(Free Item when $20)',
             'voucher': '($5 Dollar Value)',
             'discount': '(10% Discount)',
-            'complimentary': '(Event Complimentray)'
-        },
-        'deprecated': {
-            'priceArray': 'Price array is deprecated. Please edit price ASAP.'
+            'complimentary': '(Event Complimentary)',
+            'order': 'Apply to entire order',
+            'category': 'Apply to category',
+            'item': 'Apply to item'
         }
     }
 }

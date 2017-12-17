@@ -9,7 +9,7 @@
           <inputer title="text.primary" v-model="category.usEN" length="19"></inputer>
           <inputer title="text.secondary" v-model="category.zhCN" length="19"></inputer>
           <inputer title="text.contain" v-model="category.contain" v-if="manual"></inputer>
-          <div class="options" v-else>
+          <div class="checkboxes" v-else>
             <checkbox :label="name" v-model="category.contain" :val="name" v-for="(name,index) in categories" :key="index" :multiple="true"></checkbox>
           </div>
         </div>
@@ -48,17 +48,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.options {
-  margin-top: 5px;
-  border: 1px solid #eee;
-  background: #fff;
-  border-radius: 2px;
-  width: 540px;
-  padding: 5px;
-}
-.options .checkbox {
-  width: 170px;
-}
-</style>

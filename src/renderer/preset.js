@@ -119,7 +119,7 @@ var Preset = function () {
       zhCN: "",
       usEN: "",
       menuID: "",
-      price: 0,
+      price: [0],
       prices: {},
       option: [],
       category: "",

@@ -29,7 +29,7 @@
             <selector title="text.category" v-model="item.category" :opts="init.categories" :editable="false"></selector>
             <inputer title="text.primary" v-model="item.usEN"></inputer>
             <inputer title="text.secondary" v-model="item.zhCN"></inputer>
-            <inputer title="text.basePrice" v-model.number="item.price" @keydown.native="save"></inputer>
+            <inputer title="text.price" v-model="item.price" @keydown.enter.native="save"></inputer>
             <selector title="text.taxClass" v-model="item.taxClass" :opts="taxes" :editable="false"></selector>
             <div class="options">
               <label class="title">{{$t('setting.print')}}</label>
@@ -182,7 +182,7 @@ export default {
       this.$forceUpdate();
     },
     save() {
-      this.item.price = isNumber(this.item.price) ? this.item.price : 0;
+      this.item.price = this.item.price.split(",");
       this.init.resolve(this.item);
     },
     isShowPrinter(device) {
@@ -222,31 +222,6 @@ header {
   flex-direction: row;
   justify-content: flex-start;
 }
-
-/* nav {
-  display: flex;
-  height: 45px;
-  flex: 1;
-  justify-content: flex-end;
-  align-items: center;
-}
-
-nav label {
-  padding: 13px;
-  min-width: 60px;
-  display: flex;
-  margin: 0 5px;
-  justify-content: center;
-  cursor: pointer;
-  color: #656565;
-  border-bottom: 3px solid transparent;
-}
-
-input:checked + label {
-  border-bottom: 3px solid #ff9800;
-  font-weight: bold;
-  color: #0f1e29;
-} */
 
 .wrap {
   display: flex;

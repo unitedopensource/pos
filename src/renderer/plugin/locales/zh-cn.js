@@ -66,7 +66,10 @@ export default {
         'giveaway': '礼品券',
         'voucher': '现金券',
         'discount': '折扣券',
-        'complimentary': '体验券'
+        'complimentary': '体验券',
+        'order': '订单',
+        'category': '类别',
+        'item': '物品'
     },
     filter: {
         'cashier': '按收银员',
@@ -790,7 +793,6 @@ export default {
         'qty': '数量',
         'item': '物品',
         'price': '价格',
-        'basePrice': '基础价格',
         'discount': '折扣',
         'marketPrice': '市场价格',
         'weight': '重量',
@@ -1034,7 +1036,8 @@ export default {
         'setCondition': '设置条件',
         'couponStack': '优惠券叠加',
         'expiration': '过期',
-        'type': '类型'
+        'type': '类型',
+        'couponCode': '优惠码'
     },
     nav: {
         'store': '店面',
@@ -1322,10 +1325,10 @@ export default {
             'giveaway': '(送左宗鸡)',
             'voucher': '(5 元现金)',
             'discount': '(10% 折扣)',
-            'complimentary': '(促销活动)'
-        },
-        'deprecated': {
-            'priceArray': '数组价格已经被遗弃,请将价格修改成单一数值'
+            'complimentary': '(促销活动)',
+            'order': '应用于整个订单',
+            'category': '应用于某组菜单',
+            'item': '应用于某个物品'
         }
     }
 }

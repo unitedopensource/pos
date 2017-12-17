@@ -1,119 +1,158 @@
 <template>
-    <div class="popupMask setting dark center" @click.self="init.reject(false)">
-        <div class="editor">
-            <header>
-              <div>
-                <h5 v-if="init.edit">{{$t('title.edit')}}</h5>
-                <h5 v-else>{{$t('title.create')}}</h5>
-                <h3>{{$t('title.coupon')}}</h3>
-              </div>
-              <nav class="tabs">
-                <div>
-                  <input type="radio" v-model="tab" value="basic" name="tab" id="basic">
-                  <label for="basic">{{$t('setting.basic')}}</label>
-                </div>
-                <div>
-                  <input type="radio" v-model="tab" value="condition" name="tab" id="condition">
-                  <label for="condition">{{$t('setting.condition')}}</label>
-                </div>
-              </nav>
-            </header>
-            <template v-if="tab === 'basic'">
-              <div class="wrap">
-                <div class="input">
-                    <selector title="text.type" v-model="coupon.type" :opts="opts"></selector>
-                    <inputer title="text.alias" v-model="coupon.alias"></inputer>
-                    <inputer title="text.amount" v-model.number="coupon.discount"></inputer>
-                    <switches title="text.percentage" v-model="coupon.percentage"></switches>
-                    <switches title="text.couponStack" v-model="coupon.stack"></switches>
-                    <toggle v-model="coupon.expire.enable" title="text.expiration" :defaultStyle="false">
-                      <transition name="dropdown">
-                        <div class="opt" v-if="coupon.expire.enable">
-                          <inputer title="thead.count" v-model.number="coupon.expire.count"></inputer>
-                          <inputer title="thead.expire" v-model="coupon.expire.date" placeholder="YYYY-MM-DD"></inputer>
-                        </div>
-                      </transition>
-                    </toggle>
-                </div>
-            </div>
-            </template>
-            <template v-else-if="tab === 'condition'">
-              <div class="wrap">
-                  <selector title="text.applyFor" v-model="coupon.apply" :opts="applyTargets"></selector>
-                  <inputer title="text.code" v-model="coupon.code"></inputer>
-                  <external title="text.option"></external>
-              </div>
-            </template>
-            <footer>
-                <div class="opt">
-                    <span class="del" @click="init.reject(true)" v-show="coupon._id">{{$t('button.delete')}}</span>
-                </div>
-                <button class="btn" @click="confirm" :disabled="invalid">{{$t('button.confirm')}}</button>
-            </footer>
+  <div class="popupMask setting dark center" @click.self="init.reject(false)">
+    <div class="editor">
+      <header>
+        <div>
+          <h5 v-if="init.edit">{{$t('title.edit')}}</h5>
+          <h5 v-else>{{$t('title.create')}}</h5>
+          <h3>{{$t('title.coupon')}}</h3>
         </div>
-        <div :is="component" :init="componentData"></div>
+        <nav class="tabs">
+          <div>
+            <input type="radio" v-model="tab" value="basic" name="tab" id="basic">
+            <label for="basic">{{$t('setting.basic')}}</label>
+          </div>
+          <div>
+            <input type="radio" v-model="tab" value="condition" name="tab" id="condition">
+            <label for="condition">{{$t('setting.condition')}}</label>
+          </div>
+        </nav>
+      </header>
+      <template v-if="tab === 'basic'">
+        <div class="wrap">
+          <div class="input">
+            <selector title="text.type" v-model="coupon.type" :opts="opts"></selector>
+            <inputer title="text.alias" v-model="coupon.alias"></inputer>
+            <inputer title="text.amount" v-model.number="coupon.discount"></inputer>
+            <switches title="text.percentage" v-model="coupon.percentage"></switches>
+            <switches title="text.couponStack" v-model="coupon.stack"></switches>
+            <toggle v-model="coupon.expire.enable" title="text.expiration" :defaultStyle="false">
+              <transition name="dropdown">
+                <div class="opt" v-if="coupon.expire.enable">
+                  <inputer title="thead.count" v-model.number="coupon.expire.count"></inputer>
+                  <inputer title="thead.expire" v-model="coupon.expire.date" placeholder="YYYY-MM-DD"></inputer>
+                </div>
+              </transition>
+            </toggle>
+          </div>
+        </div>
+      </template>
+      <template v-else-if="tab === 'condition'">
+        <div class="wrap">
+          <inputer title="text.couponCode" v-model="coupon.code"></inputer>
+          <selector title="text.apply" v-model="coupon.apply" :opts="applyTargets"></selector>
+          <template v-if="coupon.apply === 'order'">
+            <toggle title="text.require" v-model="coupon.require.enable" :defaultStyle="false">
+              <transition name="dropdown">
+                <div class="opt" v-if="coupon.require.enable">
+                  <inputer title="text.amount" v-model.number="coupon.require.amount"></inputer>
+                </div>
+              </transition>
+            </toggle>
+          </template>
+          <template v-if="coupon.apply === 'category'">
+            <div class="checkboxes">
+              <checkbox :label="name" v-model="coupon.reference" :val="name" v-for="(name,index) in categories" :key="index" :multiple="true"></checkbox>
+            </div>
+          </template>
+          <template v-else-if="coupon.apply === 'item'">
+            <selector title="text.search" v-model="search" :opts="itemOpts" :editable="true" @keydown.enter.native="query(search)"></selector>
+          </template>
+        </div>
+      </template>
+      <footer>
+        <div class="opt">
+          <span class="del" @click="init.reject(true)" v-show="coupon._id">{{$t('button.delete')}}</span>
+        </div>
+        <button class="btn" @click="confirm">{{$t('button.confirm')}}</button>
+      </footer>
     </div>
+    <div :is="component" :init="componentData"></div>
+  </div>
 </template>
 
 <script>
 import toggle from "../../common/toggle";
 import inputer from "../../common/inputer";
-import external from "../../common/external";
 import switches from "../../common/switches";
 import selector from "../../common/selector";
+import checkbox from "../../common/checkbox";
 
 export default {
   props: ["init"],
-  components: { external, inputer, switches, toggle, selector },
+  components: { inputer, switches, toggle, selector, checkbox },
   data() {
     return {
       tab: "basic",
       condition: false,
       component: null,
       componentData: null,
+      language: this.$store.getters.language,
+      categories: [],
+      itemOpts: [],
+      search: "",
       coupon: JSON.parse(JSON.stringify(this.init.coupon)),
-      opts: [{
-        label: this.$t('type.subtraction'),
-        tooltip: 'tip.coupon.subtraction',
-        value: 'subtraction'
-      }, {
-        label: this.$t('type.giveaway'),
-        tooltip: 'tip.coupon.giveaway',
-        value: 'giveaway'
-      }, {
-        label: this.$t('type.voucher'),
-        tooltip: 'tip.coupon.voucher',
-        value: 'voucher'
-      }, {
-        label: this.$t('type.discount'),
-        tooltip: 'tip.coupon.discount',
-        value: 'discount'
-      }, {
-        label: this.$t('type.complimentary'),
-        tooltip: 'tip.coupon.complimentary',
-        value: 'complimentary'
-      }],
-      applyTargets: [{
-        label: this.$t('type.order'),
-        tooltip: 'tip.coupon.order',
-        value: 'order'
-      }, {
-        label: this.$t('type.category'),
-        tooltip: 'tip.coupon.category',
-        value: 'category'
-      }, {
-        label: this.$t('type.item'),
-        tooltip: 'tip.coupon.item',
-        value: 'item'
-      }]
+      opts: [
+        {
+          label: this.$t("type.subtraction"),
+          tooltip: "tip.coupon.subtraction",
+          value: "subtraction"
+        },
+        {
+          label: this.$t("type.giveaway"),
+          tooltip: "tip.coupon.giveaway",
+          value: "giveaway"
+        },
+        {
+          label: this.$t("type.voucher"),
+          tooltip: "tip.coupon.voucher",
+          value: "voucher"
+        },
+        {
+          label: this.$t("type.discount"),
+          tooltip: "tip.coupon.discount",
+          value: "discount"
+        },
+        {
+          label: this.$t("type.complimentary"),
+          tooltip: "tip.coupon.complimentary",
+          value: "complimentary"
+        }
+      ],
+      applyTargets: [
+        {
+          label: this.$t("type.order"),
+          tooltip: "tip.coupon.order",
+          value: "order"
+        },
+        {
+          label: this.$t("type.category"),
+          tooltip: "tip.coupon.category",
+          value: "category"
+        },
+        {
+          label: this.$t("type.item"),
+          tooltip: "tip.coupon.item",
+          value: "item"
+        }
+      ]
     };
   },
-  computed: {
-    invalid() {
-      return !this.coupon.for || isNaN(this.coupon.discount);
-    }
+  created() {
+    this.$socket.emit("[CATEGORY] LIST", categories => {
+      this.categories = categories;
+    });
   },
   methods: {
+    query(keyword) {
+      this.$socket.emit("[MENU] SEARCH", keyword, items => {
+        this.itemOpts = items.map(item => ({
+          label: item[this.language],
+          tooltip: item.category,
+          value: item._id
+        }));
+      });
+    },
     confirm() {
       this.init.resolve(this.coupon);
     }

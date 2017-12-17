@@ -1,28 +1,28 @@
 <template>
-    <div class="popupMask setting dark center" @click.self="init.reject(false)">
-        <div class="editor">
-            <header>
-                <h5 v-if="category[language]">{{$t('title.edit')}}</h5>
-                <h5 v-else>{{$t('title.create')}}</h5>
-                <h3>{{$t(category[language])}}</h3>
-            </header>
-            <div class="wrap">
-                <inputer title="text.primary" v-model="category.usEN" length="19"></inputer>
-                <inputer title="text.secondary" v-model="category.zhCN" length="19"></inputer>
-                <inputer title="text.contain" v-model="category.contain" v-if="manual"></inputer>
-                <div class="options" v-else>
-                    <checkbox :label="name" v-model="category.contain" :val="name" v-for="(name,index) in categories" :key="index" :multiple="true"></checkbox>
-                </div>
-            </div>
-            <footer>
-                <div class="opt">
-                    <switches title="text.manualInput" v-model="manual" :reverse="true"></switches>
-                </div>
-                <button class="btn" @click="clear">{{$t('button.clear')}}</button>
-                <button class="btn" @click="confirm">{{$t('button.done')}}</button>
-            </footer>
+  <div class="popupMask setting dark center" @click.self="init.reject(false)">
+    <div class="editor">
+      <header>
+        <h5 v-if="category[language]">{{$t('title.edit')}}</h5>
+        <h5 v-else>{{$t('title.create')}}</h5>
+        <h3>{{$t(category[language])}}</h3>
+      </header>
+      <div class="wrap">
+        <inputer title="text.primary" v-model="category.usEN" length="19"></inputer>
+        <inputer title="text.secondary" v-model="category.zhCN" length="19"></inputer>
+        <inputer title="text.contain" v-model="category.contain" v-if="manual"></inputer>
+        <div class="checkboxes" v-else>
+          <checkbox :label="name" v-model="category.contain" :val="name" v-for="(name,index) in categories" :key="index" :multiple="true"></checkbox>
         </div>
+      </div>
+      <footer>
+        <div class="opt">
+          <switches title="text.manualInput" v-model="manual" :reverse="true"></switches>
+        </div>
+        <button class="btn" @click="clear">{{$t('button.clear')}}</button>
+        <button class="btn" @click="confirm">{{$t('button.done')}}</button>
+      </footer>
     </div>
+  </div>
 </template>
 
 <script>
@@ -65,17 +65,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.options {
-  margin-top: 5px;
-  border: 1px solid #eee;
-  background: #fff;
-  border-radius: 2px;
-  width: 540px;
-  padding: 5px;
-}
-.options .checkbox {
-  width: 120px;
-}
-</style>

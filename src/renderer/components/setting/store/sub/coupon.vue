@@ -1,39 +1,41 @@
 <template>
-    <div>
-        <header class="nav">
-          <router-link tag="div" :to="{name:'Setting.promotion'}" class="back">
-            <i class="fa fa-chevron-left"></i>
-          </router-link>
-          <div class="title"><h3>{{$t('title.couponList')}}</h3></div>
-          <nav>
-            <span @click="create">{{$t('button.new')}}</span>
-          </nav>
-        </header>
-          <table class="setting">
-            <thead>
-              <tr>
-                <th>{{$t('thead.name')}}</th>
-                <th>{{$t('thead.discount')}}</th>
-                <th>{{$t('thead.expire')}}</th>
-                <th>{{$t('thead.count')}}</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(coupon,index) in coupons" :key="index">
-                <td>{{coupon.for}}</td>
-                <td class="amount" v-if="coupon.percentage">{{coupon.discount}} %</td>
-                <td class="amount" v-else>$ {{coupon.discount | decimal}}</td>
-                <td :class="{expired: (coupon.expire.enable && today > coupon.expire.date)}">{{format(coupon.expire.date)}}</td>
-                <td>{{coupon.count}}</td>
-                <td class="opt" @click="edit(coupon,index)">
-                  <i class="fa fa-ellipsis-v"></i>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <div :is="component" :init="componentData"></div>
+  <div>
+    <header class="nav">
+      <router-link tag="div" :to="{name:'Setting.promotion'}" class="back">
+        <i class="fa fa-chevron-left"></i>
+      </router-link>
+      <div class="title">
+        <h3>{{$t('title.couponList')}}</h3>
       </div>
+      <nav>
+        <span @click="create">{{$t('button.new')}}</span>
+      </nav>
+    </header>
+    <table class="setting">
+      <thead>
+        <tr>
+          <th>{{$t('thead.name')}}</th>
+          <th>{{$t('thead.discount')}}</th>
+          <th>{{$t('thead.expire')}}</th>
+          <th>{{$t('thead.count')}}</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(coupon,index) in coupons" :key="index">
+          <td>{{coupon.alias}}</td>
+          <td class="amount" v-if="coupon.percentage">{{coupon.discount}} %</td>
+          <td class="amount" v-else>$ {{coupon.discount | decimal}}</td>
+          <td :class="{expired: (coupon.expire.enable && today > coupon.expire.date)}">{{format(coupon.expire.date)}}</td>
+          <td>{{coupon.count}}</td>
+          <td class="opt" @click="edit(coupon,index)">
+            <i class="fa fa-ellipsis-v"></i>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div :is="component" :init="componentData"></div>
+  </div>
 </template>
 
 <script>
@@ -81,8 +83,13 @@ export default {
         // 'discount':      '折扣券',
         // 'complimentary': '体验券'
         type: "",
-        requireAmount: 0,
-        apply: "",// order , category, item,
+        require: {
+          enable: false,
+          amount: 0,
+          item: [],
+          exclude: []
+        },
+        apply: "", // order , category, item,
         include: true,
         reference: []
       };
