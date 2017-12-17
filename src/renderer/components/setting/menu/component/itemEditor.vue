@@ -105,8 +105,6 @@
       <footer>
         <div class="opt">
           <span class="del" v-show="init.edit" @click="init.reject(true)">{{$t('button.delete')}}</span>
-          <p v-if="deprecated">
-            <i class="fa fa-warning"></i>{{$t('tip.deprecated.priceArray')}}</p>
         </div>
         <button class="btn" @click="init.reject(false)">{{$t('button.back')}}</button>
         <button class="btn" @click="save">{{$t('button.save')}}</button>
@@ -189,8 +187,6 @@ export default {
       return !/cashier/i.test(device);
     },
     patchItem() {
-      Array.isArray(this.init.item.price) && (this.deprecated = true);
-
       //update commission
       if (!this.item.commission) {
         Object.assign(this.item, {
