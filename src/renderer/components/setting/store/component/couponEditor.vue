@@ -38,8 +38,10 @@
             </div>
             </template>
             <template v-else-if="tab === 'condition'">
-              <div class="wrap wide">
-                  
+              <div class="wrap">
+                  <selector title="text.applyFor" v-model="coupon.apply" :opts="applyTargets"></selector>
+                  <inputer title="text.code" v-model="coupon.code"></inputer>
+                  <external title="text.option"></external>
               </div>
             </template>
             <footer>
@@ -90,6 +92,19 @@ export default {
         label: this.$t('type.complimentary'),
         tooltip: 'tip.coupon.complimentary',
         value: 'complimentary'
+      }],
+      applyTargets: [{
+        label: this.$t('type.order'),
+        tooltip: 'tip.coupon.order',
+        value: 'order'
+      }, {
+        label: this.$t('type.category'),
+        tooltip: 'tip.coupon.category',
+        value: 'category'
+      }, {
+        label: this.$t('type.item'),
+        tooltip: 'tip.coupon.item',
+        value: 'item'
       }]
     };
   },
@@ -109,9 +124,5 @@ export default {
 <style scoped>
 header {
   flex-direction: row;
-}
-
-.wrap.wide {
-  width: 650px;
 }
 </style>

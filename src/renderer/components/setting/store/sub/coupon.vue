@@ -82,9 +82,9 @@ export default {
         // 'complimentary': '体验券'
         type: "",
         requireAmount: 0,
-        target: "",// order , category, item
-        excludes: [],
-        includes: []
+        apply: "",// order , category, item,
+        include: true,
+        reference: []
       };
 
       this.edit(coupon);

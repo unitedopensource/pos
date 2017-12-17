@@ -4,7 +4,11 @@
             <div class="back" @click="save">
             <i class="fa fa-chevron-left"></i>
             </div>
-            <nav></nav>
+            <div class="title"><h3>{{$t('setting.printerGroup')}}</h3></div>
+            <nav>
+              <span @click="setAll" v-if="devices.length === 0">{{$t('button.setAll')}}</span>
+              <span @click="unsetAll" v-else>{{$t('button.unset')}}</span>
+            </nav>
         </header>
         <ul class="multiple">
             <li v-for="(printer,index) in printers" :key="index">
@@ -27,6 +31,12 @@ export default {
     };
   },
   methods: {
+    setAll() {
+      this.devices = this.printers.slice();
+    },
+    unsetAll() {
+      this.devices = [];
+    },
     save() {
       this.$socket.emit("[STATION] UPDATE", {
         _id: this.$store.getters.station._id,
