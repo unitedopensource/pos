@@ -45,7 +45,7 @@
                   <span class="index">{{index + 1}}</span>
                   <input type="text" v-model="option.usEN" :placeholder="$t('text.primary')">
                   <input type="text" v-model="option.zhCN" :placeholder="$t('text.secondary')">
-                  <input type="number" v-model.number="option.price" :placeholder="$t('text.price')">
+                  <input type="number" v-model="option.price" :placeholder="getPlaceholder(option,index)">
                   <i class="fa fa-bars drag"></i>
                   <i class="fa fa-ellipsis-v"></i>
                 </div>
@@ -151,6 +151,15 @@ export default {
     initialData() {
       this.printer = Object.keys(this.item.printer);
     },
+    getPlaceholder(option, index) {
+      const prices = Array.isArray(this.item.price)
+        ? this.item.price
+        : this.item.price.split(",");
+      const itemPrice = prices[index] || prices[0];
+
+      const price = option.price || (option.extra || 0) + itemPrice;
+      return price.toFixed(2);
+    },
     updatePrint(devices) {
       let { printer } = this.item;
       this.item.printer = {};
@@ -180,7 +189,10 @@ export default {
       this.$forceUpdate();
     },
     save() {
-      this.item.price = this.item.price.split(",");
+      this.item.price = Array.isArray(this.item.price)
+        ? this.item.price
+        : this.item.price.toString().split(",");
+
       this.init.resolve(this.item);
     },
     isShowPrinter(device) {

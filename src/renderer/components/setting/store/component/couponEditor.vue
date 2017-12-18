@@ -22,7 +22,7 @@
         <div class="wrap">
           <div class="input">
             <selector title="text.type" v-model="coupon.type" :opts="opts"></selector>
-            <inputer title="text.alias" v-model="coupon.alias"></inputer>
+            <inputer title="text.alias" v-model="coupon.alias" :length="27"></inputer>
             <inputer title="text.content" v-model="coupon.description" type="textarea"></inputer>
             <inputer title="text.amount" v-model.number="coupon.discount"></inputer>
             <toggle title="text.setCondition" v-model="coupon.require.enable" :defaultStyle="false">
@@ -54,7 +54,10 @@
             </div>
           </template>
           <template v-else-if="coupon.apply === 'item'">
-            <selector title="text.search" v-model="search" :opts="itemOpts" :editable="true" @keydown.enter.native="query(search)"></selector>
+            <selector title="text.search" v-model="search" :opts="itemOpts" :editable="true" @keydown.enter.native="query(search)" @update="addReference"></selector>
+            <ul class="items">
+              <li v-for="(reference,index) in coupon.reference" :key="index">{{reference}}</li>
+            </ul>
           </template>
         </div>
       </template>
@@ -135,6 +138,7 @@ export default {
     this.$socket.emit("[CATEGORY] LIST", categories => {
       this.categories = categories;
     });
+    console.log(this.coupon)
   },
   methods: {
     query(keyword) {
@@ -142,12 +146,17 @@ export default {
         this.itemOpts = items.map(item => ({
           label: item[this.language],
           tooltip: item.category,
+          plainText: true,
           value: item._id
         }));
       });
     },
     confirm() {
       this.init.resolve(this.coupon);
+    },
+    addReference(id) {
+      this.search = "";
+      this.coupon.reference.push(id);
     }
   }
 };
@@ -156,5 +165,14 @@ export default {
 <style scoped>
 header {
   flex-direction: row;
+}
+
+.items {
+  margin-left: 80px;
+  border: 1px solid #eee;
+  background: #fff;
+  border-radius: 2px;
+  padding: 10px 5px;
+  margin-top: 5px;
 }
 </style>
