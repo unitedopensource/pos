@@ -1,17 +1,17 @@
 <template>
-    <div class="offer" :class="{invalid}">
-      <div class="header">
-        <span>{{coupon.alias}}</span>
-        <switches v-model="coupon.redeem" :disabled="unqualify || !coupon.enable" @input="$emit('change',coupon)"></switches>
-      </div>
-        <div class="inner">
-            <p>{{coupon.description}}</p>
-        </div>
-        <div class="info">
-          <span class="tip">{{tooltip}}</span>
-          <span class="type">{{$t('type.'+coupon.type)}}</span>
-        </div>
+  <div class="offer" :class="{invalid}">
+    <div class="header">
+      <span>{{coupon.alias}}</span>
+      <switches v-model="coupon.redeem" :disabled="unqualify || !coupon.enable" @input="$emit('change',coupon)"></switches>
     </div>
+    <div class="inner">
+      <p>{{coupon.description}}</p>
+    </div>
+    <div class="info">
+      <span class="tip" :class="{unqualify}">{{tooltip}}</span>
+      <span class="type">{{$t('type.'+coupon.type)}}</span>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -25,11 +25,11 @@ export default {
       const { enable, count, date } = this.coupon.expire;
 
       if (!enable) {
-        return false
+        return false;
       } else {
         if (count > 0 && count >= this.coupon.count) return true;
         if (!!date && date > today()) return true;
-      };
+      }
 
       return false;
     },
@@ -42,23 +42,35 @@ export default {
         if (amount > 0) {
           let items = this.order.content;
           if (exclude.length > 0) {
-            items = items.filter(i => !exclude.includes(i.category))
+            items = items.filter(i => !exclude.includes(i.category));
           }
-          const subtotal = items.map(i => i.single * i.qty).reduce((a, b) => a + b, 0).toFixed(2).toFloat();
+          const subtotal = items
+            .map(i => i.single * i.qty)
+            .reduce((a, b) => a + b, 0)
+            .toFixed(2)
+            .toFloat();
           const insufficient = subtotal < amount;
-          this.tooltip = insufficient ? this.$t("tip.coupon.requireAmount", (amount - subtotal).toFixed(2)) : this.$t("tip.coupon.conditionMet");
+          this.tooltip = insufficient
+            ? this.$t(
+                "tip.coupon.requireAmount",
+                (amount - subtotal).toFixed(2)
+              )
+            : this.$t("tip.coupon.conditionMet");
           return insufficient;
         }
         if (item.length > 0) {
-          const unsatisfied = this.order.content.filter(i => item.includes(i._id)).length === 0;
-          this.tooltip = unsatisfied ? this.$t("tip.coupon.requireItem") : this.$t("tip.coupon.conditionMet");
+          const unsatisfied =
+            this.order.content.filter(i => item.includes(i._id)).length === 0;
+          this.tooltip = unsatisfied
+            ? this.$t("tip.coupon.requireItem")
+            : this.$t("tip.coupon.conditionMet");
           return unsatisfied;
         }
       }
 
-      return false
+      return false;
     },
-    ...mapGetters(['order'])
+    ...mapGetters(["order"])
   },
   data() {
     return {
@@ -67,12 +79,12 @@ export default {
     };
   },
   created() {
-    this.$bus.on("Enable Coupon", this.enable)
-    this.$bus.on("Disable Coupon", this.disable)
+    this.$bus.on("Enable Coupon", this.enable);
+    this.$bus.on("Disable Coupon", this.disable);
   },
   beforeDestroy() {
-    this.$bus.off("Enable Coupon", this.enable)
-    this.$bus.off("Disable Coupon", this.disable)
+    this.$bus.off("Enable Coupon", this.enable);
+    this.$bus.off("Disable Coupon", this.disable);
   },
   methods: {
     enable(coupon) {
@@ -83,7 +95,7 @@ export default {
         Object.assign(this.coupon, {
           enable: false,
           redeem: false
-        })
+        });
     }
   }
 };
@@ -136,6 +148,10 @@ p {
 
 .tip {
   flex: 1;
+  color: #009688;
+}
+
+.tip.unqualify {
   color: #ff9800;
 }
 

@@ -447,15 +447,15 @@ header.dock {
   box-shadow: 0 1px 1px #ECEFF1;
 }
 
+.dock .reward,.dock .op{
+  width:135px;
+}
+
 .dock .type {
   min-width: 94px;
   text-shadow: 0 1px 1px #fff;
   font-weight: bold;
   text-align: center;
-}
-
-.dock .op {
-  min-width: 120px;
 }
 
 .dock>.info {

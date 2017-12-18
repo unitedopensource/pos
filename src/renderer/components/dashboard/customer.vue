@@ -7,12 +7,12 @@
                     <div class="date">
                         <div>
                             <span class="text">{{$t('dashboard.firstTime')}}</span>
-                            <span class="value">{{customer.extra.firstDate | moment('MM/DD/YYYY')}}</span>
+                            <span class="value">{{customer.firstDate | moment('MM/DD/YYYY')}}</span>
                         </div>
                         <div>
                             <span class="text">{{$t('dashboard.lastTime')}}</span>
-                            <span class="value">{{customer.extra.lastDate | moment('MM/DD')}}
-                                <span class="days">({{customer.extra.lastDate | fromNow}})</span>
+                            <span class="value">{{customer.lastDate | moment('MM/DD')}}
+                                <span class="days">({{customer.lastDate | fromNow}})</span>
                             </span>
                         </div>
                     </div>
@@ -74,13 +74,13 @@ export default {
         this.getPolyline();
     },
     mounted() {
-        this.applied = this.customer.extra.hasOwnProperty('tag') ?
-            this.customer.extra.tag : this.applied = this.customer.extra.tag = [];
+        this.applied = this.customer.hasOwnProperty('tag') ?
+            this.customer.tag : this.applied = this.customer.tag = [];
     },
     methods: {
         add(tag) {
-            let index = this.customer.extra.tag.indexOf(tag);
-            index === -1 ? this.customer.extra.tag.push(tag) : this.customer.extra.tag.splice(index, 1);
+            let index = this.customer.tag.indexOf(tag);
+            index === -1 ? this.customer.tag.push(tag) : this.customer.tag.splice(index, 1);
         },
         has(tag) {
             return this.applied.indexOf(tag) === -1 ? "" : "yes";

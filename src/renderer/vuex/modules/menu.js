@@ -142,7 +142,6 @@ const mutations = {
     state.choiceSetTarget = null;
   },
   [types.ALTER_ITEM](state, item) {
-    //let index = state.order.content.getIndexOf(state.item);
     let index = state.order.content.findIndex(item => item === state.item);
     state.order.content.splice(index, 1, item);
     state.item = item;
@@ -225,7 +224,9 @@ const mutations = {
     } else {
       let currentActionTime = +new Date();
       let diff = currentActionTime - state.lastActionTime;
-      if (!state.item) state.item = state.order.content.last();
+
+      state.item = state.item || state.order.content.last();
+
       if (state.item.qty !== 1 && diff > 250) {
         state.item.total = toFixed(--state.item.qty * state.item.single, 2).toFixed(2);
         state.order.content.splice();

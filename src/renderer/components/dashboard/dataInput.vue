@@ -16,7 +16,7 @@
                 <div v-if="id === 'phone'" class="column">
                     <div class="top">
                         <span class="phone">{{data.phone | tel}}</span>
-                        <span class="time">{{data.extra.lastDate | fromNow}}</span>
+                        <span class="time">{{data.lastDate | fromNow}}</span>
                     </div>
                     <span class="address">{{data.address}}</span>
                 </div>

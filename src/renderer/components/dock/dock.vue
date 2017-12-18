@@ -6,6 +6,9 @@
       <span class="provider" v-show="$route.name === 'Menu' && order.source !== 'POS'">{{order.source}}</span>
       <div class="reward" v-if="config.store.reward"></div>
       <div class="info">
+        <div class="reward">
+
+        </div>
         <div class="customer" v-if="$route.name === 'Menu'" @click="editCustomer">
           <span v-show="customer.phone">{{customer.phone | phone}}</span>
           <span v-show="customer.address">{{customer.address}}</span>
@@ -40,12 +43,13 @@ import { mapGetters, mapActions } from "vuex";
 import dialoger from "../common/dialoger";
 import { ipcRenderer } from "electron";
 import messenger from "./messenger";
+import profiles from "./profiles";
 import switcher from "./switcher";
 import caller from "./caller";
 import panel from "./panel";
 import disc from "./disc";
 export default {
-  components: { caller, switcher, dialoger, panel, disc, messenger },
+  components: { caller, switcher, dialoger, panel, disc, messenger, profiles },
   data() {
     return {
       componentData: null,
@@ -180,7 +184,12 @@ export default {
       this.$socket.emit("[UPDATE] INVOICE", order);
     },
     editCustomer() {
-      this.$route.name === "Menu" && this.$router.push({ name: "Information" });
+      this.$route.name === "Menu" &&
+        this.$socket.emit("[CUSTOMER] PROFILE", this.customer._id, customer =>
+          this.$p("profiles", { customer })
+        );
+
+      //this.$router.push({ name: "Information" });
     },
     ...mapActions([
       "setApp",

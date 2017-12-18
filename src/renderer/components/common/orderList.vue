@@ -1,93 +1,93 @@
 <template>
-    <div>
-        <header v-if="layout === 'order'" class="simple">
-            <span class="qty">{{$t('text.qty')}}</span>
-            <span class="item">{{$t('text.item')}}</span>
-            <span class="price">{{$t('text.price')}}</span>
-        </header>
-        <header v-else class="info">
-            <div class="bar">
-                <span class="number">{{order.number}}</span>
-                <span class="type" v-show="order.type">{{$t('type.'+order.type)}}</span>
-                <span class="provider" v-show="order.source !== 'POS'">{{order.source}}</span>
-                <span class="timePass">
-                    <i class="fa fa-clock-o"></i>{{order.time | fromNow}}
-                </span>
-            </div>
-            <div class="content" v-if="order.type === 'DINE_IN'">
-                <span class="time">{{order.time | moment('YYYY-MM-DD HH:mm:ss')}}</span>
-                <span class="corner" v-if="undoneItems">{{$t('text.progressTicket',undoneItems)}}</span>
-                <span class="corner" v-else>{{$t('text.doneTicket')}}</span>
-                <div>
-                    <span class="text">{{$t('text.guest')}}</span>
-                    <span class="value">{{order.guest}}</span>
-                </div>
-            </div>
-            <div class="content" v-else>
-                <span class="time">{{order.time | moment('YYYY-MM-DD HH:mm:ss')}}</span>
-                <div>
-                    <span class="value">{{(order.customer && order.customer.phone) | phone}}</span>
-                </div>
-                <div>
-                    <span class="value">{{order.customer && order.customer.address}}</span>
-                </div>
-            </div>
-        </header>
-        <div class="order" @click.self="resetHighlight" v-if="layout === 'order'">
-            <v-touch class="inner" :style="scroll" @panup="move" @pandown="move" @panstart="panStart" @panend="panEnd" tag="ul">
-                <list-item v-for="(item,index) in order.content" :data-category="item.category" :key="index" :item="item" :checkbox="todo"></list-item>
-            </v-touch>
+  <div>
+    <header v-if="layout === 'order'" class="simple">
+      <span class="qty">{{$t('text.qty')}}</span>
+      <span class="item">{{$t('text.item')}}</span>
+      <span class="price">{{$t('text.price')}}</span>
+    </header>
+    <header v-else class="info">
+      <div class="bar">
+        <span class="number">{{order.number}}</span>
+        <span class="type" v-show="order.type">{{$t('type.'+order.type)}}</span>
+        <span class="provider" v-show="order.source !== 'POS'">{{order.source}}</span>
+        <span class="timePass">
+          <i class="fa fa-clock-o"></i>{{order.time | fromNow}}
+        </span>
+      </div>
+      <div class="content" v-if="order.type === 'DINE_IN'">
+        <span class="time">{{order.time | moment('YYYY-MM-DD HH:mm:ss')}}</span>
+        <span class="corner" v-if="undoneItems">{{$t('text.progressTicket',undoneItems)}}</span>
+        <span class="corner" v-else>{{$t('text.doneTicket')}}</span>
+        <div>
+          <span class="text">{{$t('text.guest')}}</span>
+          <span class="value">{{order.guest}}</span>
         </div>
-        <div class="order" v-else>
-            <v-touch class="inner" :style="scroll" @panup="move" @pandown="move" @panstart="panStart" @panend="panEnd" tag="ul">
-                <list-item v-for="(item,index) in order.content" :data-category="item.category" :key="index" :item="item" :class="{print:!item.print,pending:item.pending}" @click.native="addToSpooler(item)"></list-item>
-            </v-touch>
+      </div>
+      <div class="content" v-else>
+        <span class="time">{{order.time | moment('YYYY-MM-DD HH:mm:ss')}}</span>
+        <div>
+          <span class="value">{{(order.customer && order.customer.phone) | phone}}</span>
         </div>
-        <div class="middle">
-            <div class="fnWrap">
-                <button class="fn fa fa-credit-card-alt" @click="openCreditCard" :disabled="$route.name !== 'Menu'"></button>
-                <button class="fn" @click="separator" :disabled="$route.name !== 'Menu'">-----</button>
-                <button class="fn fa fa-print" @click="directPrint" v-if="$route.name !=='Menu'"></button>
-                <button class="fn fa fa-check-square-o" v-else @click="toggleTodoList" :disabled="app.mode ==='edit'"></button>
-                <button class="fn fa fa-keyboard-o" @click="openKeyboard" :disabled="$route.name !== 'Menu'"></button>
-            </div>
-            <div class="settle" @click="openConfig">
-                <div>
-                    <span class="text">{{$t("text.subtotal")}}:</span>
-                    <span class="value">{{payment.subtotal | decimal}}</span>
-                </div>
-                <div>
-                    <span class="text">{{$t("text.tax")}}:</span>
-                    <span class="value">{{payment.tax | decimal}}</span>
-                </div>
-                <template v-if="order.type === 'DELIVERY'">
-                  <div :class="{hidden:parseFloat(payment.tip) === 0}">
-                    <span class="text">{{$t("text.tip")}}:</span>
-                    <span class="value">{{payment.tip | decimal}}</span>
-                  </div>
-                  <div>
-                    <span class="text">{{$t("text.deliveryFee")}}:</span>
-                    <span class="value">{{payment.delivery | decimal}}</span>
-                  </div>
-                </template>
-                <template v-else>
-                  <div :class="{hidden:parseFloat(payment.tip) === 0}">
-                    <span class="text">{{$t("text.tip")}}:</span>
-                    <span class="value">{{payment.tip | decimal}}</span>
-                  </div>
-                  <div :class="{hidden:parseFloat(payment.discount) === 0}">
-                    <span class="text">{{$t("text.discount")}}:</span>
-                    <span class="value">- {{payment.discount | decimal}}</span>
-                  </div>
-                </template>
-                <div>
-                    <span class="text">{{$t("text.total")}}:</span>
-                    <span class="value">{{payment.due | decimal}}</span>
-                </div>
-            </div>
+        <div>
+          <span class="value">{{order.customer && order.customer.address}}</span>
         </div>
-        <div :is="component" :init="componentData" @trigger="update"></div>
+      </div>
+    </header>
+    <div class="order" @click.self="resetHighlight" v-if="layout === 'order'">
+      <v-touch class="inner" :style="scroll" @panup="move" @pandown="move" @panstart="panStart" @panend="panEnd" tag="ul">
+        <list-item v-for="(item,index) in order.content" :data-category="item.category" :key="index" :item="item" :checkbox="todo"></list-item>
+      </v-touch>
     </div>
+    <div class="order" v-else>
+      <v-touch class="inner" :style="scroll" @panup="move" @pandown="move" @panstart="panStart" @panend="panEnd" tag="ul">
+        <list-item v-for="(item,index) in order.content" :data-category="item.category" :key="index" :item="item" :class="{print:!item.print,pending:item.pending}" @click.native="addToSpooler(item)"></list-item>
+      </v-touch>
+    </div>
+    <div class="middle">
+      <div class="fnWrap">
+        <button class="fn fa fa-credit-card-alt" @click="openCreditCard" :disabled="$route.name !== 'Menu'"></button>
+        <button class="fn" @click="separator" :disabled="$route.name !== 'Menu'">-----</button>
+        <button class="fn fa fa-print" @click="directPrint" v-if="$route.name !=='Menu'"></button>
+        <button class="fn fa fa-check-square-o" v-else @click="toggleTodoList" :disabled="app.mode ==='edit'"></button>
+        <button class="fn fa fa-keyboard-o" @click="openKeyboard" :disabled="$route.name !== 'Menu'"></button>
+      </div>
+      <div class="settle" @click="openConfig">
+        <div>
+          <span class="text">{{$t("text.subtotal")}}:</span>
+          <span class="value">{{payment.subtotal | decimal}}</span>
+        </div>
+        <div>
+          <span class="text">{{$t("text.tax")}}:</span>
+          <span class="value">{{payment.tax | decimal}}</span>
+        </div>
+        <template v-if="order.type === 'DELIVERY'">
+          <div :class="{hidden:parseFloat(payment.tip) === 0}">
+            <span class="text">{{$t("text.tip")}}:</span>
+            <span class="value">{{payment.tip | decimal}}</span>
+          </div>
+          <div>
+            <span class="text">{{$t("text.deliveryFee")}}:</span>
+            <span class="value">{{payment.delivery | decimal}}</span>
+          </div>
+        </template>
+        <template v-else>
+          <div :class="{hidden:parseFloat(payment.tip) === 0}">
+            <span class="text">{{$t("text.tip")}}:</span>
+            <span class="value">{{payment.tip | decimal}}</span>
+          </div>
+          <div :class="{hidden:parseFloat(payment.discount) === 0}">
+            <span class="text">{{$t("text.discount")}}:</span>
+            <span class="value">- {{payment.discount | decimal}}</span>
+          </div>
+        </template>
+        <div>
+          <span class="text">{{$t("text.total")}}:</span>
+          <span class="value">{{payment.due | decimal}}</span>
+        </div>
+      </div>
+    </div>
+    <div :is="component" :init="componentData" @trigger="update"></div>
+  </div>
 </template>
 <script>
 import { mapGetters, mapActions } from "vuex";
@@ -245,9 +245,7 @@ export default {
       this.setOrder(config);
       this.calculator(this.order.content);
     },
-    openCreditCard() {
-
-    },
+    openCreditCard() {},
     toggleTodoList() {
       this.todo = !this.todo;
 
@@ -259,8 +257,8 @@ export default {
       if (items.length === 0) {
         let delivery =
           this.ticket.type === "DELIVERY" &&
-            this.store.delivery &&
-            !this.order.deliveryFree
+          this.store.delivery &&
+          !this.order.deliveryFree
             ? parseFloat(this.store.deliveryCharge)
             : 0;
 
@@ -286,8 +284,14 @@ export default {
       const { type, guest, coupons } = this.order;
       const { enable, rules } = this.dinein.surcharge;
 
-      let { tip, gratuity, discount, paid } = this.order.payment;
-      let subtotal = 0, tax = 0;
+      let delivery =
+        type === "DELIVERY" && this.store.delivery && !this.order.deliveryFree
+          ? parseFloat(this.store.deliveryCharge)
+          : 0;
+      let { tip, gratuity, paid } = this.order.payment;
+      let subtotal = 0,
+        tax = 0,
+        discount = 0;
 
       items.forEach(item => {
         if (item.void) return;
@@ -312,61 +316,6 @@ export default {
         }
       });
 
-      if (type === "DINE_IN" && enable) {
-        //find rule
-        const rule = rules.find(condition => guest >= condition.guest);
-        const { fee, percentage } = rule;
-
-        gratuity = percentage ? toFixed(subtotal * fee / 100, 2) : fee;
-      }
-
-
-      if (coupons && coupons.length > 0) {
-        let offer = 0;
-        coupons.forEach(coupon => {
-          const { reference } = coupon;
-
-          switch (coupon.type) {
-            // 'rebate':        '满减券',
-            // 'giveaway':      '礼物券',
-            // 'voucher':       '现金券',
-            // 'discount':      '折扣券',
-            case "rebate":
-              offer += coupon.discount;
-              break;
-            case "voucher":
-              break;
-            case "discount":
-              switch (coupon.apply) {
-                case "category":
-                  this.order.content.forEach(item => {
-                    if (!item.offered & reference.includes(item.category)) {
-                      //to be continued
-
-                    }
-                  })
-                  break;
-                case "item":
-
-                  break;
-                default:
-              }
-              break;
-          }
-        })
-
-        discount += offer;
-      }
-
-
-
-
-
-      let delivery =
-        type === "DELIVERY" && this.store.delivery && !this.order.deliveryFree
-          ? parseFloat(this.store.deliveryCharge)
-          : 0;
-
       if (this.tax.deliveryTax) {
         /*
             is Delivery fee taxable?
@@ -388,6 +337,53 @@ export default {
          * ------------------------------------------------------------------
         **/
         tax += toFixed(delivery * taxRate / 100, 2);
+      }
+
+      if (type === "DINE_IN" && enable) {
+        //find rule
+        const rule = rules.find(condition => guest >= condition.guest);
+        const { fee, percentage } = rule;
+
+        gratuity = percentage ? toFixed(subtotal * fee / 100, 2) : fee;
+      }
+
+      if (coupons && coupons.length > 0) {
+        let offer = 0;
+        coupons.forEach(coupon => {
+          const { reference } = coupon;
+
+          switch (coupon.type) {
+            // 'rebate':        '满减券',
+            // 'giveaway':      '礼物券',
+            // 'voucher':       '现金券',
+            // 'discount':      '折扣券',
+            case "rebate":
+              offer += coupon.discount;
+              break;
+            case "voucher":
+              offer += coupon.discount;
+              break;
+            case "discount":
+              switch (coupon.apply) {
+                case "category":
+                  let _offer = 0;
+                  this.order.content.forEach(item => {
+                    if (reference.includes(item.category)) {
+                      _offer += coupon.discount / 100 * item.single * item.qty;
+                    }
+                  });
+                  offer += _offer;
+                  break;
+                case "item":
+                  break;
+                default:
+                  offer += coupon.discount / 100 * subtotal;
+              }
+              break;
+          }
+        });
+
+        discount += offer;
       }
 
       let total = parseFloat(subtotal.toFixed(2)) + toFixed(tax, 2) + delivery;

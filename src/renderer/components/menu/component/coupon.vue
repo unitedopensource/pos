@@ -26,7 +26,7 @@ export default {
   props: ["init"],
   components: { offer },
   computed: {
-    ...mapGetters(['order'])
+    ...mapGetters(["order"])
   },
   data() {
     return {
@@ -40,7 +40,7 @@ export default {
       const index = coupons.findIndex(offer => offer._id === coupon._id);
       if (index !== -1) {
         coupons[index].redeem = true;
-        this.$nextTick(() => this.checkStack(coupons[index]))
+        this.$nextTick(() => this.checkStack(coupons[index]));
       }
     });
 
@@ -51,17 +51,48 @@ export default {
       const index = this.coupons.findIndex(c => c._id === coupon._id);
       this.coupons.splice(index, 1, coupon);
 
-      (!coupon.stack && coupon.redeem)
+      !coupon.stack && coupon.redeem
         ? this.$bus.emit("Disable Coupon", coupon)
-        : this.$bus.emit("Enable Coupon")
+        : this.$bus.emit("Enable Coupon");
+
+      if (!coupon.redeem) {
+        switch (coupon.type) {
+          case "giveaway":
+            coupon.reference.forEach(ref => {
+              const index = this.order.content.findIndex(
+                item => item._id === ref
+              );
+              
+              if (index !== -1) {
+                this.order.content.splice(index, 1);
+                this.resetPointer();
+              }
+            });
+            break;
+          case "discount":
+            break;
+        }
+      }
     },
     confirm() {
       const coupons = this.coupons.filter(coupon => coupon.redeem);
+      const references = coupons
+        .filter(coupon => coupon.type === "giveaway")
+        .map(coupon => coupon.reference)
+        .reduce((a, b) => a.concat(b), []);
 
-      this.setOrder({ coupons });
-      this.init.resolve()
+      if (references.length) {
+        this.$socket.emit("[COUPON] GIVEAWAY", references, items => {
+          items.forEach(item => this.addToOrder(item));
+          this.setOrder({ coupons });
+          this.init.resolve();
+        });
+      } else {
+        this.setOrder({ coupons });
+        this.init.resolve();
+      }
     },
-    ...mapActions(["setOrder"])
+    ...mapActions(["setOrder", "addToOrder", "resetPointer"])
   }
 };
 </script>
@@ -69,6 +100,7 @@ export default {
 <style scoped>
 .wrap {
   max-width: 765px;
+  min-width: 510px;
   display: flex;
   flex-wrap: wrap;
 }

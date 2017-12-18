@@ -1,16 +1,16 @@
 <template>
-    <section>
-        <form>
-            <data-input id="phone" label="dashboard.phone" v-model="customer.phone" :autoComplete="predict.phone" @focus="setInput" @fill="autoFill" @input="autoComplete"></data-input>
-            <data-input id="extension" label="dashboard.extension" v-model="customer.extension" :autoComplete="predict.extension" @focus="setInput"></data-input>
-            <data-input id="name" label="dashboard.name" v-model="customer.name" :autoComplete="predict.name" @focus="setInput"></data-input>
-            <data-input id="address" label="dashboard.address" v-model="customer.address" :autoComplete="predict.address" :distance="customer.distance" :duration="customer.duration" @focus="setInput" class="address" @fill="autoAddress" @input="autoComplete"></data-input>
-            <data-input id="city" label="dashboard.city" v-model="customer.city" :autoComplete="predict.city" @focus="setInput" @fill="autoCity"></data-input>
-            <data-input id="note" label="dashboard.note" v-model="customer.note" @focus="setInput" class="note"></data-input>
-        </form>
-        <keyboard @input="input" @backspace="delChar" @cancel="cancelOrder" @create="createOrder" @clear="clearInput" @search="search"></keyboard>
-        <div :is="component" :init="componentData"></div>
-    </section>
+  <section>
+    <form>
+      <data-input id="phone" label="dashboard.phone" v-model="customer.phone" :autoComplete="predict.phone" @focus="setInput" @fill="autoFill" @input="autoComplete"></data-input>
+      <data-input id="extension" label="dashboard.extension" v-model="customer.extension" :autoComplete="predict.extension" @focus="setInput"></data-input>
+      <data-input id="name" label="dashboard.name" v-model="customer.name" :autoComplete="predict.name" @focus="setInput"></data-input>
+      <data-input id="address" label="dashboard.address" v-model="customer.address" :autoComplete="predict.address" :distance="customer.distance" :duration="customer.duration" @focus="setInput" class="address" @fill="autoAddress" @input="autoComplete"></data-input>
+      <data-input id="city" label="dashboard.city" v-model="customer.city" :autoComplete="predict.city" @focus="setInput" @fill="autoCity"></data-input>
+      <data-input id="note" label="dashboard.note" v-model="customer.note" @focus="setInput" class="note"></data-input>
+    </form>
+    <keyboard @input="input" @backspace="delChar" @cancel="cancelOrder" @create="createOrder" @clear="clearInput" @search="search"></keyboard>
+    <div :is="component" :init="componentData"></div>
+  </section>
 </template>
 
 <script>
@@ -261,19 +261,17 @@ export default {
       });
     },
     highlight(list) {
-      let p = this.customer.address
+      const p = this.customer.address
         .replace(/ +/g, " ")
         .trim()
         .split(" ")
         .slice(1)
         .join(" ").length;
-      let next = list
+      const next = list
         .map(address => address.street[p] && address.street[p])
         .filter((v, i, s) => s.indexOf(v) === i);
-      let doms = document.querySelectorAll("span.next");
-      doms.forEach(dom => {
-        dom.classList.remove("next");
-      });
+      const doms = document.querySelectorAll("div.next");
+      doms.forEach(dom => dom.classList.remove("next"));
 
       next.forEach(key => {
         if (key) {
@@ -294,8 +292,11 @@ export default {
       if (this.ticket.type === "DELIVERY" && this.customer.phone.length !== 10)
         return;
 
-      this.$socket.emit("[UPDATE] CUSTOMER", this.customer);
-      this.$router.push({ path: "/main/menu" });
+      this.$socket.emit("[CUSTOMER] UPDATE", this.customer, customer => {
+        console.log(customer)
+        this.setCustomer(customer);
+        this.$router.push({ path: "/main/menu" });
+      });
     },
     clearInput() {
       this.customer[this.target] = "";
