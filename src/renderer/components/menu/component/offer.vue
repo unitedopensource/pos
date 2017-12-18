@@ -8,7 +8,7 @@
             <p>{{coupon.description}}</p>
         </div>
         <div class="info">
-          <span class="tooltip">{{tooltip}}</span>
+          <span class="tip">{{tooltip}}</span>
           <span class="type">{{$t('type.'+coupon.type)}}</span>
         </div>
     </div>
@@ -131,9 +131,10 @@ p {
 
 .info {
   display: flex;
+  align-items: center;
 }
 
-.tooltip {
+.tip {
   flex: 1;
   color: #ff9800;
 }

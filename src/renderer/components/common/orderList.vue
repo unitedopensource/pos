@@ -324,6 +324,8 @@ export default {
       if (coupons && coupons.length > 0) {
         let offer = 0;
         coupons.forEach(coupon => {
+          const { reference } = coupon;
+
           switch (coupon.type) {
             // 'rebate':        '满减券',
             // 'giveaway':      '礼物券',
@@ -332,11 +334,23 @@ export default {
             case "rebate":
               offer += coupon.discount;
               break;
-            case "giveaway":
-              break;
             case "voucher":
               break;
             case "discount":
+              switch (coupon.apply) {
+                case "category":
+                  this.order.content.forEach(item => {
+                    if (!item.offered & reference.includes(item.category)) {
+                      //to be continued
+
+                    }
+                  })
+                  break;
+                case "item":
+
+                  break;
+                default:
+              }
               break;
           }
         })
