@@ -206,6 +206,9 @@ String.prototype.toCapitalCase = function () {
     return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
   });
 };
+String.prototype.toFloat = function () {
+  return parseFloat(this)
+};
 window.toFixed = function (number, fractionSize) {
   return +(Math.round(+(number.toString() + 'e' + fractionSize)).toString() + 'e' + -fractionSize);
 }

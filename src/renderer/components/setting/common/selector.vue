@@ -8,9 +8,9 @@
         <i class="fa fa-sort"></i>
       </template>
       <transition name="menu">
-        <ul v-show="isDisplay" v-outer-click="close">
+        <ul v-if="isDisplay" v-outer-click="close">
           <li v-for="(option,index) in opts" :key="index">
-            <input type="radio" :value="option.value" @change="pick(option.value)" :id="id+index">
+            <input type="radio" :value="option.value" :id="id+index">
             <label :for="id+index" @click="pick(option.value)" v-if="option.plainText">
               <span class="label">{{option.label}}</span>
               <span class="tooltip">{{option.tooltip}}</span>
@@ -62,23 +62,22 @@ export default {
       this.label = label ? label.label : value;
     },
     pick(value) {
+      this.isDisplay = false;
       this.$emit("input", value);
       this.getLabel(value);
-      this.isDisplay = false;
-
       this.value !== value && this.$emit("update", value);
     },
-    resetOpts(){
+    resetOpts() {
       this.isDisplay = false;
-      Object.assign(this.opts,[]);
+      Object.assign(this.opts, []);
     },
     close() {
       this.isDisplay = false;
     }
   },
-  watch:{
-    opts(n){
-      if(this.editable) this.isDisplay = true;
+  watch: {
+    opts(n) {
+      if (this.editable) this.isDisplay = true;
     }
   }
 };

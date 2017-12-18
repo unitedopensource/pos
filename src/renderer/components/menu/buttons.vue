@@ -265,7 +265,14 @@ export default {
       this.callComponent("request");
     },
     promotion() {
-      this.$socket.emit("[COUPON] LIST", coupons => this.$p("coupon", { coupons }))
+      this.$socket.emit("[COUPON] LIST", coupons => {
+        this.$p("coupon", {
+          coupons: coupons.map(coupon => {
+            Object.assign(coupon, { redeem: false, enable: true });
+            return coupon;
+          })
+        })
+      })
     },
     timer() {
       if (this.isEmptyTicket) return;

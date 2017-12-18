@@ -69,7 +69,6 @@ export default {
         code: "",
         alias: "",
         discount: 0,
-        percentage: false,
         stack: false,
         expire: {
           enable: false,
@@ -77,8 +76,8 @@ export default {
           date: ""
         },
         count: 0,
-        // 'substruction':  '满减券',
-        // 'giveaway':      '礼品券',
+        // 'rebate':        '满减券',
+        // 'giveaway':      '礼物券',
         // 'voucher':       '现金券',
         // 'discount':      '折扣券',
         // 'complimentary': '体验券'
@@ -104,7 +103,10 @@ export default {
         .then(_coupon => {
           this.$socket.emit("[COUPON] UPDATE", _coupon, data => {
             this.coupons.splice(index, 1, data);
-            this.$q();
+            this.$socket.emit("[COUPON] LIST", coupons => {
+              this.coupons = coupons;
+              this.$q();
+            })
           });
         })
         .catch(del => {

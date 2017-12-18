@@ -18,6 +18,7 @@ const state = {
       log: []
     },
     content: [],
+    coupons: [],
     source: "POS"
   },
   diffs: null,
@@ -155,8 +156,8 @@ const mutations = {
       } else {
         item.single =
           data.side.hasOwnProperty('price') ? parseFloat(data.side.price) :
-          data.side.hasOwnProperty('extra') ? parseFloat(item.price[0]) + parseFloat(data.side.extra) :
-          item.price[data.index] ? parseFloat(item.price[data.index]) : parseFloat(item.price[0]);
+            data.side.hasOwnProperty('extra') ? parseFloat(item.price[0]) + parseFloat(data.side.extra) :
+              item.price[data.index] ? parseFloat(item.price[data.index]) : parseFloat(item.price[0]);
 
         item.total = item.single.toFixed(2);
 

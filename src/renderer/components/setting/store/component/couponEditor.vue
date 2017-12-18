@@ -23,8 +23,15 @@
           <div class="input">
             <selector title="text.type" v-model="coupon.type" :opts="opts"></selector>
             <inputer title="text.alias" v-model="coupon.alias"></inputer>
+            <inputer title="text.content" v-model="coupon.description" type="textarea"></inputer>
             <inputer title="text.amount" v-model.number="coupon.discount"></inputer>
-            <switches title="text.percentage" v-model="coupon.percentage"></switches>
+            <toggle title="text.setCondition" v-model="coupon.require.enable" :defaultStyle="false">
+              <transition name="dropdown">
+                <div class="opt" v-if="coupon.require.enable">
+                  <inputer title="text.amountGreaterThan" v-model.number="coupon.require.amount"></inputer>
+                </div>
+              </transition>
+            </toggle>
             <switches title="text.couponStack" v-model="coupon.stack"></switches>
             <toggle v-model="coupon.expire.enable" title="text.expiration" :defaultStyle="false">
               <transition name="dropdown">
@@ -41,15 +48,6 @@
         <div class="wrap">
           <inputer title="text.couponCode" v-model="coupon.code"></inputer>
           <selector title="text.apply" v-model="coupon.apply" :opts="applyTargets"></selector>
-          <template v-if="coupon.apply === 'order'">
-            <toggle title="text.require" v-model="coupon.require.enable" :defaultStyle="false">
-              <transition name="dropdown">
-                <div class="opt" v-if="coupon.require.enable">
-                  <inputer title="text.amount" v-model.number="coupon.require.amount"></inputer>
-                </div>
-              </transition>
-            </toggle>
-          </template>
           <template v-if="coupon.apply === 'category'">
             <div class="checkboxes">
               <checkbox :label="name" v-model="coupon.reference" :val="name" v-for="(name,index) in categories" :key="index" :multiple="true"></checkbox>
@@ -94,9 +92,9 @@ export default {
       coupon: JSON.parse(JSON.stringify(this.init.coupon)),
       opts: [
         {
-          label: this.$t("type.subtraction"),
-          tooltip: "tip.coupon.subtraction",
-          value: "subtraction"
+          label: this.$t("type.rebate"),
+          tooltip: "tip.coupon.rebate",
+          value: "rebate"
         },
         {
           label: this.$t("type.giveaway"),
@@ -112,11 +110,6 @@ export default {
           label: this.$t("type.discount"),
           tooltip: "tip.coupon.discount",
           value: "discount"
-        },
-        {
-          label: this.$t("type.complimentary"),
-          tooltip: "tip.coupon.complimentary",
-          value: "complimentary"
         }
       ],
       applyTargets: [

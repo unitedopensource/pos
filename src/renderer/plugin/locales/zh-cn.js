@@ -62,11 +62,10 @@ export default {
         'Deactivation': '注销',
         'Order': '订单',
         'Reload': '充值',
-        'subtraction': '满减券',
+        'rebate': '回扣券',
         'giveaway': '礼品券',
         'voucher': '现金券',
         'discount': '折扣券',
-        'complimentary': '体验券',
         'order': '订单',
         'category': '类别',
         'item': '物品'
@@ -309,7 +308,7 @@ export default {
         'printerList': '打印机列表',
         'couponList': '折扣卷列表',
         'taxList': '税种列表',
-        'setTitle': '设置抬头'
+        'setTitle': '设置抬头',
     },
     dialog: {
         'maintenance': '维护',
@@ -1037,7 +1036,9 @@ export default {
         'couponStack': '优惠券叠加',
         'expiration': '过期',
         'type': '类型',
-        'couponCode': '优惠码'
+        'couponCode': '优惠码',
+        'search': '搜索',
+        'amountGreaterThan':'金额大于'
     },
     nav: {
         'store': '店面',
@@ -1321,14 +1322,16 @@ export default {
             'todo': '标识出 已有, 新增 的物品'
         },
         'coupon': {
-            'subtraction': '(满 30 减 5)',
+            'rebate': '(满 30 减 5)',
             'giveaway': '(送左宗鸡)',
             'voucher': '(5 元现金)',
             'discount': '(10% 折扣)',
-            'complimentary': '(促销活动)',
             'order': '应用于整个订单',
             'category': '应用于某组菜单',
-            'item': '应用于某个物品'
+            'item': '应用于某个物品',
+            'conditionMet': '优惠可用',
+            'requireItem': '指定物品不存在',
+            'requireAmount': '还需要 $ {i}'
         }
     }
 }

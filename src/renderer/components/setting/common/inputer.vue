@@ -1,7 +1,15 @@
 <template>
     <div class="input">
         <label>{{$t(title)}}</label>
-        <input :type="type" 
+        <textarea v-if="type === 'textarea'"
+        :value="value"
+        :maxlength="length"
+        :disabled="disabled"
+        :placeholder="placeholder"
+        @input="$emit('input',$event.target.value)" 
+        @blur="$emit('update',$event.target.value)"></textarea>
+        <input v-else
+               :type="type" 
                :value="value"
                :maxlength="length"
                :disabled="disabled"
@@ -47,5 +55,14 @@ input {
 
 label {
   min-width: 80px;
+}
+
+textarea {
+  border: 1px solid #eee;
+  border-radius: 2px;
+  flex: 1;
+  resize: none;
+  padding: 5px;
+  height: 52px;
 }
 </style>

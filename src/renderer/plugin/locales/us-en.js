@@ -69,11 +69,10 @@ export default {
         'Deactivation': 'Deactivation',
         'Order': 'Ticket',
         'Reload': 'Reload',
-        'subtraction': 'Subtraction',
+        'rebate': 'Rebate',
         'giveaway': 'Giveaway',
         'voucher': 'Voucher',
         'discount': 'Discount',
-        'complimentary': 'Complimentary',
         'order': 'Order',
         'category': 'Category',
         'item': 'Item'
@@ -1043,7 +1042,9 @@ export default {
         'couponStack': 'Coupon Stacking',
         'expiration': 'Expiration',
         'type': 'Type',
-        'couponCode': 'Code'
+        'couponCode': 'Code',
+        'search': 'Search',
+        'amountGreaterThan':'Greater Than'
     },
     nav: {
         'store': 'Store',
@@ -1332,14 +1333,16 @@ export default {
             'item': 'Apply to certain item'
         },
         'coupon': {
-            'subtraction': '($5 rebate when $30)',
+            'rebate': '($5 rebate when $30)',
             'giveaway': '(Free Item when $20)',
             'voucher': '($5 Dollar Value)',
             'discount': '(10% Discount)',
-            'complimentary': '(Event Complimentary)',
             'order': 'Apply to entire order',
             'category': 'Apply to category',
-            'item': 'Apply to item'
+            'item': 'Apply to item',
+            'conditionMet': 'Coupon eligible',
+            'requireItem': 'Require item is missing',
+            'requireAmount': 'Require $ {i} more'
         }
     }
 }

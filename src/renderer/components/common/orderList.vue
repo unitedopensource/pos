@@ -245,8 +245,8 @@ export default {
       this.setOrder(config);
       this.calculator(this.order.content);
     },
-    openCreditCard(){
-      
+    openCreditCard() {
+
     },
     toggleTodoList() {
       this.todo = !this.todo;
@@ -259,8 +259,8 @@ export default {
       if (items.length === 0) {
         let delivery =
           this.ticket.type === "DELIVERY" &&
-          this.store.delivery &&
-          !this.order.deliveryFree
+            this.store.delivery &&
+            !this.order.deliveryFree
             ? parseFloat(this.store.deliveryCharge)
             : 0;
 
@@ -283,24 +283,25 @@ export default {
         return;
       }
 
-      let { type, guest, coupon } = this.order;
-      let { tip, gratuity, discount, paid } = this.order.payment;
-      let { enable, rules } = this.dinein.surcharge;
+      const { type, guest, coupons } = this.order;
+      const { enable, rules } = this.dinein.surcharge;
 
-      let subtotal = 0,
-        tax = 0;
+      let { tip, gratuity, discount, paid } = this.order.payment;
+      let subtotal = 0, tax = 0;
 
       items.forEach(item => {
         if (item.void) return;
-        let single = parseFloat(item.single);
-        let qty = item.qty || 1;
-        let taxClass = this.tax.class[item.taxClass];
+
+        const single = parseFloat(item.single);
+        const qty = item.qty || 1;
+        const taxClass = this.tax.class[item.taxClass];
+
         let amount = toFixed(single * qty, 2);
 
         item.choiceSet.forEach(set => {
-          let p = parseFloat(set.single);
-          let s = set.qty || 1;
-          let t = toFixed(p * s, 2);
+          const p = parseFloat(set.single);
+          const s = set.qty || 1;
+          const t = toFixed(p * s, 2);
           amount = toFixed(amount + t, 2);
         });
 
@@ -313,31 +314,39 @@ export default {
 
       if (type === "DINE_IN" && enable) {
         //find rule
-        let rule = rules.find(condition => guest >= condition.guest);
-        let { fee, percentage } = rule;
+        const rule = rules.find(condition => guest >= condition.guest);
+        const { fee, percentage } = rule;
 
         gratuity = percentage ? toFixed(subtotal * fee / 100, 2) : fee;
       }
 
-      if (coupon) {
-        /**
-         * Tax apply Before Discount (For Example: 10% Tax Rate, 20% Discount)
-         *
-         * Subtotal: 10.00
-         * Tax:       1.00
-         * Discount:  2.00
-         * Total:     9.00
-         * ------------------------------------------------------------------
-        **/
-        let value = parseFloat(coupon.discount.replace(/\D+/, ""));
 
-        if (coupon.discount.includes("%")) {
-          value = toFixed(value / 100, 2);
-          discount = toFixed(value * subtotal, 2);
-        } else {
-          discount = value;
-        }
+      if (coupons && coupons.length > 0) {
+        let offer = 0;
+        coupons.forEach(coupon => {
+          switch (coupon.type) {
+            // 'rebate':        '满减券',
+            // 'giveaway':      '礼物券',
+            // 'voucher':       '现金券',
+            // 'discount':      '折扣券',
+            case "rebate":
+              offer += coupon.discount;
+              break;
+            case "giveaway":
+              break;
+            case "voucher":
+              break;
+            case "discount":
+              break;
+          }
+        })
+
+        discount += offer;
       }
+
+
+
+
 
       let delivery =
         type === "DELIVERY" && this.store.delivery && !this.order.deliveryFree
@@ -349,12 +358,21 @@ export default {
             is Delivery fee taxable?
             Find out default tax rate and apply to delivery charge
         */
+
         let taxRate = 0;
         Object.keys(this.tax.class).forEach(type => {
           this.tax.class[type].default === true &&
             (taxRate = this.tax.class[type].rate);
         });
-
+        /**
+         * Tax apply Before Discount (For Example: 10% Tax Rate, 20% Discount)
+         *
+         * Subtotal: 10.00
+         * Tax:       1.00
+         * Discount:  2.00
+         * Total:     9.00
+         * ------------------------------------------------------------------
+        **/
         tax += toFixed(delivery * taxRate / 100, 2);
       }
 
