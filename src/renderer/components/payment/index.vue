@@ -62,17 +62,17 @@
                 </nav>
                 <article>
                     <section class="numpad">
-                        <div @click="input('7')">7</div>
-                        <div @click="input('8')">8</div>
-                        <div @click="input('9')">9</div>
-                        <div @click="input('4')">4</div>
-                        <div @click="input('5')">5</div>
-                        <div @click="input('6')">6</div>
-                        <div @click="input('1')">1</div>
-                        <div @click="input('2')">2</div>
-                        <div @click="input('3')">3</div>
-                        <div @click="input('0')">0</div>
-                        <div @click="input('00')" class="double">00</div>
+                        <div @click="input('7')" class="numKey">7</div>
+                        <div @click="input('8')" class="numKey">8</div>
+                        <div @click="input('9')" class="numKey">9</div>
+                        <div @click="input('4')" class="numKey">4</div>
+                        <div @click="input('5')" class="numKey">5</div>
+                        <div @click="input('6')" class="numKey">6</div>
+                        <div @click="input('1')" class="numKey">1</div>
+                        <div @click="input('2')" class="numKey">2</div>
+                        <div @click="input('3')" class="numKey">3</div>
+                        <div @click="input('0')" class="numKey">0</div>
+                        <div @click="input('00')" class="double numKey">00</div>
                     </section>
                     <section class="field">
                         <template v-if="paymentType === 'CASH'">
@@ -96,7 +96,7 @@
                                     <span class="value">{{evenly}}</span>
                                 </div>
                             </div>
-                            <aside class="numpad">
+                            <aside class="padCtrl">
                                 <div @click="del">&#8592;</div>
                                 <div @click="clear">C</div>
                                 <div @click="charge" :class="{disabled:payment.remain <= 0 || paid === '0.00'}">&#8626;</div>
@@ -121,7 +121,7 @@
                                     <input v-model="expiration" v-mask="'## / ##'">
                                 </div>
                             </div>
-                            <aside class="numpad">
+                            <aside class="padCtrl">
                                 <div @click="del">&#8592;</div>
                                 <div @click="clear">C</div>
                                 <div @click="charge">&#8626;</div>
@@ -164,7 +164,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <aside class="numpad">
+                            <aside class="padCtrl">
                                 <div @click="del">&#8592;</div>
                                 <div @click="clear">C</div>
                                 <div @click="charge">&#8626;</div>
@@ -197,7 +197,7 @@
                                     <span class="value">$ {{giftCard.balance | decimal}}</span>
                                 </div>
                             </div>
-                            <aside class="numpad">
+                            <aside class="padCtrl">
                                 <div @click="del">&#8592;</div>
                                 <div @click="clear">C</div>
                                 <div @click="queryGiftCard" v-if="anchor === 'giftCard' && typeof giftCard === 'string'" :class="{disabled:giftCard.length !== 19}"><i class="fa fa-search"></i></div>
@@ -435,10 +435,12 @@ section.numpad {
   flex-wrap: wrap;
   width: 315px;
 }
+
 section.field {
   display: flex;
   width: 386px;
 }
+
 .input {
   position: relative;
   display: flex;
@@ -503,7 +505,7 @@ section.field {
   font-weight: bold;
 }
 
-aside.numpad {
+aside.padCtrl {
   text-align: center;
   margin-left: 5px;
 }

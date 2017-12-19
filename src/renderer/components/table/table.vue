@@ -29,7 +29,7 @@
         <div class="side">
             <div class="wrap">
                 <order-list layout="display" :display="true"></order-list>
-                <grid class="grid" @switch="switchTable" :transfer="queue.length === 0"></grid>
+                <buttons class="grid" @switch="switchTable" :transfer="queue.length === 0"></buttons>
             </div>
         </div>
         <div :is="component" :init="componentData" @seat="place"></div>
@@ -43,10 +43,10 @@ import orderList from "../common/orderList";
 import dialoger from "../common/dialoger";
 import unlock from "../common/unlock";
 import setup from "./setup";
-import grid from "./grid";
+import buttons from "./buttons";
 import list from "./list";
 export default {
-  components: { grid, setup, unlock, dialoger, orderList, list, reservation },
+  components: { buttons, setup, unlock, dialoger, orderList, list, reservation },
   data() {
     return {
       componentData: null,

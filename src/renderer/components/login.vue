@@ -7,18 +7,18 @@
           <span v-for="(circle,index) in password" :key="index"></span>
         </transition-group>
         <section class="numpad">
-          <div @click="setPin(7)">7</div>
-          <div @click="setPin(8)">8</div>
-          <div @click="setPin(9)">9</div>
-          <div @click="setPin(4)">4</div>
-          <div @click="setPin(5)">5</div>
-          <div @click="setPin(6)">6</div>
-          <div @click="setPin(1)">1</div>
-          <div @click="setPin(2)">2</div>
-          <div @click="setPin(3)">3</div>
-          <div @click="setPin()">X</div>
-          <div @click="setPin(0)">0</div>
-          <div @click="access" :class="{disable:disableAccess}">√</div>
+          <div @click="setPin(7)" class="numKey">7</div>
+          <div @click="setPin(8)" class="numKey">8</div>
+          <div @click="setPin(9)" class="numKey">9</div>
+          <div @click="setPin(4)" class="numKey">4</div>
+          <div @click="setPin(5)" class="numKey">5</div>
+          <div @click="setPin(6)" class="numKey">6</div>
+          <div @click="setPin(1)" class="numKey">1</div>
+          <div @click="setPin(2)" class="numKey">2</div>
+          <div @click="setPin(3)" class="numKey">3</div>
+          <div @click="setPin()" class="numKey">X</div>
+          <div @click="setPin(0)" class="numKey">0</div>
+          <div @click="access" :class="{disable:disableAccess}" class="numKey">√</div>
         </section>
       </div>
       <div class="ctrl">

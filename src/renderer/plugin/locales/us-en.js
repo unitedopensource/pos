@@ -396,7 +396,8 @@ export default {
         'printerList': 'Printer List',
         'couponList': 'Coupon List',
         'taxList': 'Tax List',
-        'setTitle': 'Set Title'
+        'setTitle': 'Set Title',
+        'discount': 'Set Discount'
     },
     dialog: {
         'maintenance': 'Maintenance',

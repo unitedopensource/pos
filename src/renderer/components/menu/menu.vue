@@ -209,7 +209,7 @@ export default {
       return array;
     },
     configDineIn() {
-      this.store.table.seatOrder && (this.sort = 1);
+      this.dinein.seatOrder && (this.sort = 1);
       this.setOrder({
         table: this.currentTable.name,
         tableID: this.currentTable._id,
@@ -251,7 +251,7 @@ export default {
       this.app.mode === "edit" && Object.assign(item, {
         new: true
       });
-      //this.store.table.seatOrder && (item.sort = this.sort);
+      //this.dinein.seatOrder && (item.sort = this.sort);
       item.hasOwnProperty("prices") &&
         item.prices[this.ticket.type] &&
         (item.price = item.prices[this.ticket.type]);

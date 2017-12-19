@@ -27,8 +27,8 @@ export default {
       if (!enable) {
         return false;
       } else {
-        if (count > 0 && count >= this.coupon.count) return true;
-        if (!!date && date > today()) return true;
+        if (count > 0 && this.coupon.count >= count) return true;
+        if (!!date && date < today()) return true;
       }
 
       return false;
@@ -52,9 +52,9 @@ export default {
           const insufficient = subtotal < amount;
           this.tooltip = insufficient
             ? this.$t(
-                "tip.coupon.requireAmount",
-                (amount - subtotal).toFixed(2)
-              )
+              "tip.coupon.requireAmount",
+              (amount - subtotal).toFixed(2)
+            )
             : this.$t("tip.coupon.conditionMet");
           return insufficient;
         }

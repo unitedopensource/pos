@@ -309,6 +309,7 @@ export default {
         'couponList': '折扣卷列表',
         'taxList': '税种列表',
         'setTitle': '设置抬头',
+        'discount': '设定折扣'
     },
     dialog: {
         'maintenance': '维护',
