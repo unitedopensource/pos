@@ -65,9 +65,7 @@ export default {
     this.print = Array.isArray(print) ? print : [];
   },
   beforeDestroy() {
-    Object.assign(this.$store.getters.config.printers[this.printer], {
-      [this.obj]: this.print
-    });
+    Object.assign(this.$store.getters.config.printers[this.printer], { [this.obj]: this.print });
 
     this.$socket.emit("[CONFIG] UPDATE", {
       key: `printers.${this.printer}.${this.obj}`,
@@ -76,16 +74,7 @@ export default {
   },
   methods: {
     setAll() {
-      this.print = [
-        "WALK_IN",
-        "PICK_UP",
-        "DELIVERY",
-        "DINE_IN",
-        "BAR",
-        "BUFFET",
-        "SALES",
-        "TO_GO"
-      ];
+      this.print = ["WALK_IN", "PICK_UP", "DELIVERY", "DINE_IN", "BAR", "BUFFET", "SALES", "TO_GO"];
     },
     unset() {
       this.print = []

@@ -309,7 +309,10 @@ export default {
         'couponList': '折扣卷列表',
         'taxList': '税种列表',
         'setTitle': '设置抬头',
-        'discount': '设定折扣'
+        'discount': '设折扣',
+        'tip': '设小费',
+        'modify': '物品修改',
+        'timer': '定时出单'
     },
     dialog: {
         'maintenance': '维护',
@@ -1039,7 +1042,7 @@ export default {
         'type': '类型',
         'couponCode': '优惠码',
         'search': '搜索',
-        'amountGreaterThan':'金额大于'
+        'amountGreaterThan': '金额大于'
     },
     nav: {
         'store': '店面',

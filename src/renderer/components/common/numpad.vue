@@ -62,8 +62,13 @@ export default {
             }
         },
         clear() {
-            this.$emit("input", "0.00");
+            this.type === 'number' ? this.$emit("input", "0") : this.$emit("input", "0.00");
             this.reset = true;
+        }
+    },
+    watch: {
+        type(n) {
+            this.clear()
         }
     }
 }

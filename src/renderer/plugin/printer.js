@@ -122,42 +122,34 @@ var Printer = function (plugin, config, station) {
     }
 
     this.print = function (raw, receipt) {
-        let printers = this.getPrinters();
+        const printers = this.getPrinters();
         printers.forEach(printer => {
-            let setting = this.setting[printer];
-            let ticket = raw.type,
-                skip = false;
+            const setting = this.setting[printer];
 
-            try {
-                if (!receipt) {
-                    skip = setting.print.hasOwnProperty(raw.type) ? !setting.print[ticket] : true
-                }
+            let ticket = raw.type, skip = false;
 
-            } catch (e) {
-                skip = true
-            }
-
-            //  else {
-            //     skip = !setting.print[ticket] && setting.print[receipt]
-            // }
+            if (!receipt) skip = !setting.print.includes(ticket);
 
             if (skip) {
                 this.skip();
                 return
             }
+
             if (setting.labelPrinter) {
                 this.printLabel(printer, raw);
                 return;
             }
-            let items = raw.content.filter(item => item.printer[printer]);
+
+            const items = raw.content.filter(item => item.printer[printer]);
             if (items.length === 0) return false;
-            //change incoming
+
             let {
                 printStore,
                 printType,
                 printCustomer,
                 enlargeDetail
             } = setting.control;
+
             let header = createHeader(this.config, raw);
             let list = createList(printer, setting.control, raw);
             if (!list) return;
@@ -1169,7 +1161,6 @@ function createStyle(ctrl) {
         printPrimaryPrice,
         printSecondaryPrice,
         printPayment,
-        printCoupon,
         printActionTime,
         buzzer
     } = ctrl;
@@ -1354,7 +1345,7 @@ function createFooter(config, ctrl, device, ticket) {
     }
 
     let detail = [];
-    ['subtotal', 'discount', 'tax', 'delivery', 'tip', 'gratuity', 'total', ].forEach(key => {
+    ['subtotal', 'discount', 'tax', 'delivery', 'tip', 'gratuity', 'total',].forEach(key => {
         if (payment[key] > 0) {
             let cls = '';
             let value = payment[key].toFixed(2);

@@ -251,7 +251,7 @@ export default {
       this.reset = true;
       this.$socket.emit("[ACCESS] PIN", this.password.join(""));
     },
-    autoAccess: _debounce(function() {
+    autoAccess: _debounce(function () {
       if (this.$route.name === "Login") {
         this.access();
         this.reset = false;

@@ -397,7 +397,10 @@ export default {
         'couponList': 'Coupon List',
         'taxList': 'Tax List',
         'setTitle': 'Set Title',
-        'discount': 'Set Discount'
+        'discount': 'Set Discount',
+        'tip': 'Set Tip',
+        'modify': 'Modify Item',
+        'timer': 'Set Time'
     },
     dialog: {
         'maintenance': 'Maintenance',
@@ -1045,7 +1048,7 @@ export default {
         'type': 'Type',
         'couponCode': 'Code',
         'search': 'Search',
-        'amountGreaterThan':'Greater Than'
+        'amountGreaterThan': 'Greater Than'
     },
     nav: {
         'store': 'Store',

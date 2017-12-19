@@ -2,7 +2,7 @@
   <div class="popupMask center dark" @click.self="init.reject">
     <div class="window">
       <header class="title">
-        <span>{{$t("menu.modify")}}</span>
+        <span>{{$t("title.modify")}}</span>
         <span class="name">{{item[language]}}</span>
         <span class="price">${{total}}</span>
       </header>
@@ -38,19 +38,19 @@
       </section>
       <div class="inner">
         <section class="numpad">
-          <div @click="input('7')">7</div>
-          <div @click="input('8')">8</div>
-          <div @click="input('9')">9</div>
-          <div @click="input('4')">4</div>
-          <div @click="input('5')">5</div>
-          <div @click="input('6')">6</div>
-          <div @click="input('1')">1</div>
-          <div @click="input('2')">2</div>
-          <div @click="input('3')">3</div>
-          <div @click="input('0')">0</div>
-          <div @click="input('00')">00</div>
+          <div @click="input('7')" class="numKey">7</div>
+          <div @click="input('8')" class="numKey">8</div>
+          <div @click="input('9')" class="numKey">9</div>
+          <div @click="input('4')" class="numKey">4</div>
+          <div @click="input('5')" class="numKey">5</div>
+          <div @click="input('6')" class="numKey">6</div>
+          <div @click="input('1')" class="numKey">1</div>
+          <div @click="input('2')" class="numKey">2</div>
+          <div @click="input('3')" class="numKey">3</div>
+          <div @click="input('0')" class="numKey">0</div>
+          <div @click="input('00')" class="numKey">00</div>
         </section>
-        <aside class="numpad">
+        <aside class="padCtrl">
           <div @click="del">&#8592;</div>
           <div @click="clear">C</div>
           <div @click="confirm">&#8626;</div>

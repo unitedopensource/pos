@@ -544,18 +544,10 @@ import ticket from "../common/ticket";
 import creditCard from "./creditCard";
 import discount from "./discount";
 import thirdParty from "./mark";
-import tips from "./tips";
+import tiper from "./tiper";
 export default {
   props: ["init"],
-  components: {
-    tips,
-    ticket,
-    capture,
-    dialoger,
-    discount,
-    creditCard,
-    thirdParty
-  },
+  components: { tiper, ticket, capture, dialoger, discount, creditCard, thirdParty },
   computed: {
     isNewTicket() {
       return this.app.mode === "create" && this.$route.name === "Menu";
@@ -635,7 +627,7 @@ export default {
           : !this.station.terminal || this.order.source !== "POS";
 
         this.$socket.emit("[PAYMENT] CHECK_PAY", this.order._id, paid => {
-          let remain = toFixed(this.payment.balance - paid, 2);
+          const remain = toFixed(this.payment.balance - paid, 2);
           this.payment.remain = Math.max(0, remain);
 
           resolve();
@@ -644,7 +636,7 @@ export default {
     },
     checkComponentOccupy() {
       return new Promise((resolve, reject) => {
-        let data = {
+        const data = {
           component: "payment",
           operator: this.op.name,
           lock: this.order._id,
@@ -679,7 +671,7 @@ export default {
       this.order.split ? this.askPayMode() : this.initialized();
     },
     askPayMode() {
-      let data = {
+      const data = {
         type: "question",
         title: "dialog.splitPayment",
         msg: "dialog.splitPaymentTip",
@@ -697,7 +689,7 @@ export default {
       this.$q();
       this.payInFull = false;
 
-      let index = this.order.splitPayment.findIndex(
+      const index = this.order.splitPayment.findIndex(
         split => parseFloat(split.remain.toFixed(2)) > 0
       );
 
@@ -1523,12 +1515,11 @@ export default {
     setTip() {
       new Promise((resolve, reject) => {
         this.componentData = { resolve, reject, payment: this.payment };
-        this.component = "tips";
+        this.component = "tiper";
       })
-        .then(result => {
-          let { tip } = result;
-          this.tip = tip.toFixed(2);
-          Object.assign(this.payment, { tip });
+        .then(_tip => {
+          this.tip = _tip.toFixed(2);
+          Object.assign(this.payment, { tip: _tip.toFloat() });
           this.recalculatePayment();
           this.paid = "0.00";
           this.$q();
@@ -1536,47 +1527,26 @@ export default {
         .catch(() => this.$q());
     },
     setDiscount() {
-      this.$socket.emit("[COUPON] LIST", coupons => {
-        new Promise((resolve, reject) => {
-          this.componentData = {
-            resolve,
-            reject,
-            coupons,
-            payment: this.payment
-          };
-          this.component = "discount";
-        })
-          .then(result => {
-            let { discount, coupon } = result;
-
-            if (coupon) {
-              this.setOrder({ coupon });
-              Object.assign(this.order, { coupon });
-            } else {
-              this.setOrder({ coupon: undefined });
-              Object.assign(this.order, { coupon: undefined });
-            }
-
-            Object.assign(this.payment, { discount });
-            this.recalculatePayment();
-            this.paid = "0.00";
-
-            this.poleDisplay(
-              ["Discount:", -discount.toFixed(2)],
-              ["Due:", this.payment.remain.toFixed(2)]
-            );
-
-            this.$q();
-          })
-          .catch(() => this.$q());
-      });
+      new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject, payment: this.payment };
+        this.component = "discount";
+      }).then(_discount => {
+        Object.assign(this.payment, { discount: _discount });
+        this.recalculatePayment();
+        this.paid = "0.00";
+        this.poleDisplay(
+          ["Discount:", -discount.toFixed(2)],
+          ["Due:", this.payment.remain.toFixed(2)]
+        );
+        this.$q()
+      }).catch(() => this.$q())
     },
     preview(index) {
-      let ticket = JSON.parse(JSON.stringify(this.order));
+      const ticket = JSON.parse(JSON.stringify(this.order));
       ticket.payment = ticket.splitPayment[index];
       ticket.print = false;
 
-      let { sort } = ticket.payment;
+      const { sort } = ticket.payment;
 
       ticket.content = ticket.content.filter(
         item =>
@@ -1584,14 +1554,13 @@ export default {
             ? item.sort.includes(sort)
             : item.sort === sort
       );
-      ticket.content.forEach(item => {
-        item.print = false;
-      });
+
+      ticket.content.forEach(item => { item.print = false; });
 
       this.$p("ticket", { ticket, exit: true });
     },
     roundUp() {
-      let rounded = Math.ceil(this.payment.remain);
+      const rounded = Math.ceil(this.payment.remain);
 
       this.payment.gratuity = toFixed(rounded - this.payment.remain, 2);
       this.payment.tip = 0;
@@ -1601,7 +1570,7 @@ export default {
       this.recalculatePayment();
     },
     setQuickInput(val) {
-      let { anchor } = document.querySelector(".input.active").dataset;
+      const { anchor } = document.querySelector(".input.active").dataset;
       anchor === "tip"
         ? (this.tip = val.toFixed(2))
         : (this.paid = val.toFixed(2));
@@ -1610,57 +1579,24 @@ export default {
       this.setAnchor("paid");
     },
     getQuickInput(amount) {
-      let preset = [
-        1,
-        2,
-        3,
-        4,
-        5,
-        10,
-        15,
-        20,
-        25,
-        30,
-        35,
-        40,
-        45,
-        50,
-        60,
-        70,
-        80,
-        100,
-        120,
-        140,
-        150,
-        200,
-        300,
-        350,
-        400,
-        450,
-        500,
-        600,
-        700,
-        800,
-        900,
-        1000,
-        1100,
-        1500,
-        2000,
-        3000,
-        4000,
-        5000
-      ];
+      const preset = [1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 100, 120, 140, 150, 200, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1100, 1500, 2000, 3000, 4000, 5000];
+      const round = Math.ceil(isNumber(amount) ? toFixed(amount, 2) : 0);
+
       let array = [];
-      let round = Math.ceil(isNumber(amount) ? toFixed(amount, 2) : 0);
+
       array.push(amount.toFixed(2));
       amount === round ? array.push(round + 1) : array.push(round);
-      let index = preset.findIndex(i => i > round);
+
+      const index = preset.findIndex(i => i > round);
+
       array.push(preset.slice(index, index + 6));
       this.quickInput = [].concat.apply([], array);
     },
     getQuickTip(amount) {
+      const base = (Math.ceil(toFixed(amount, 2)) - amount).toFixed(2);
+
       let preset = [];
-      let base = (Math.ceil(toFixed(amount, 2)) - amount).toFixed(2);
+
       preset.push(base);
       preset.push((parseFloat(base) + 1).toFixed(2));
       preset.push("1.00");
@@ -1672,16 +1608,8 @@ export default {
       this.quickInput = preset;
     },
     recalculatePayment() {
-      let {
-        subtotal,
-        tax,
-        discount,
-        paid,
-        delivery,
-        tip,
-        gratuity,
-        type
-      } = this.payment;
+      let { subtotal, tax, discount, paid, delivery, tip, gratuity, type } = this.payment;
+
       let total = toFixed(subtotal + tax + delivery, 2);
       let due = toFixed(total - discount, 2);
       let surcharge = toFixed(tip + gratuity, 2);
@@ -1754,7 +1682,7 @@ export default {
       }
     },
     exceptionTicketSettled() {
-      let data = {
+      const data = {
         type: "alert",
         title: "dialog.ticketSettled",
         msg: "dialog.ticketSettledTip",

@@ -42,10 +42,10 @@
 <script>
 import { mapActions, mapGetters } from "vuex";
 import checkbox from "../../setting/common/checkbox";
-import tips from "../../payment/tips";
+import tiper from "../../payment/tiper";
 export default {
   props: ["init"],
-  components: { tips, checkbox },
+  components: { tiper, checkbox },
   computed: {
     scroll() {
       return { transform: `translate3d(0,${this.offset}px,0)` };
@@ -54,34 +54,7 @@ export default {
   },
   data() {
     return {
-      letters: [
-        "A",
-        "B",
-        "C",
-        "D",
-        "E",
-        "F",
-        "G",
-        "H",
-        "I",
-        "J",
-        "K",
-        "L",
-        "M",
-        "N",
-        "O",
-        "P",
-        "Q",
-        "R",
-        "S",
-        "T",
-        "U",
-        "V",
-        "W",
-        "X",
-        "Y",
-        "Z"
-      ],
+      letters: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],
       target: null,
       letter: null,
       orders: null,
@@ -120,7 +93,7 @@ export default {
       this.offset = this.lastDelta + e.deltaY;
     },
     panStart() {
-      let dom = document.querySelector(".orders.scrollable");
+      const dom = document.querySelector(".orders.scrollable");
       dom && dom.classList.remove("scrollable");
     },
     panEnd(e) {
@@ -143,8 +116,8 @@ export default {
     clear() {
       if (!this.order) return;
       Object.assign(this.order, { driver: "" });
-      
-      let dom = document.querySelector("ul.letters .active");
+
+      const dom = document.querySelector("ul.letters .active");
       dom && dom.classList.remove("active");
 
       this.$socket.emit("[UPDATE] INVOICE", this.order, false);
@@ -160,28 +133,20 @@ export default {
     setTip() {
       new Promise((resolve, reject) => {
         this.componentData = { resolve, reject, payment: this.order.payment };
-        this.component = "tips";
+        this.component = "tiper";
       })
         .then(value => {
-          let { tip } = value;
+          const { tip } = value;
 
           this.order.payment.tip = tip;
-          this.order.payment.surcharge = toFixed(
-            this.order.payment.gratuity + tip,
-            2
-          );
 
-          this.order.payment.balance = toFixed(
-            this.order.payment.total -
-              this.order.payment.discount +
-              this.order.payment.surcharge,
-            2
-          );
+          const { gratuity, total, discount, paid } = this.order.payment;
+          const surcharge = toFixed(gratuity + tip, 2);
+          const balance = toFixed(total - discount + surcharge, 2);
 
-          this.order.payment.remain = toFixed(
-            this.order.payment.balance - this.order.payment.paid,
-            2
-          );
+          this.order.payment.surcharge = surcharge;
+          this.order.payment.balance = balance;
+          this.order.payment.remain = toFixed(balance - paid, 2);
 
           this.$socket.emit("[UPDATE] INVOICE", this.order, false);
           this.$q();
@@ -194,18 +159,17 @@ export default {
       if (number) {
         this.order = this.orders.find(ticket => ticket.number === number);
       } else {
-        let next = this.orders.find(ticket => !ticket.driver);
+        const next = this.orders.find(ticket => !ticket.driver);
 
         if (next) {
           this.order = next;
 
           this.$nextTick(() => {
-            let dom = document.querySelector("ul.orders .active");
-            let { top, height } = dom.getBoundingClientRect();
+            const dom = document.querySelector("ul.orders .active");
+            const { top, height } = dom.getBoundingClientRect();
 
-            if (top > 560.5) {
+            if (top > 560.5)
               this.offset = -height;
-            }
           });
         }
       }

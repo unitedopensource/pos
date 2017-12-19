@@ -99,17 +99,35 @@ var Preset = function () {
   };
   this.printer = function () {
     return {
-      "print": [],
-      "double": [],
-      "control": {
-        "buzzer": false,
-        "prioritize": false,
-        "footer": [
+      print: [],
+      reprint: [],
+      control: {
+        buzzer: false,
+        prioritize: false,
+        footer: [
           "Thank You Very Much"
         ]
       },
-      style: {
-        
+      layout: {
+        contact: true,
+        title: true,
+        info: true,
+        payment: true,
+        languages: [{
+          ref: "zhCN",
+          enable: true,
+          fontFamily: "QingYuan",
+          fontSize: "21",
+          price: true,
+          id: false
+        }, {
+          ref: "usEN",
+          enable: true,
+          fontFamily: "QingYuan",
+          fontSize: "21",
+          price: true,
+          id: false
+        }]
       }
     }
   };
