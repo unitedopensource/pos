@@ -62,7 +62,7 @@ export default {
               const index = this.order.content.findIndex(
                 item => item._id === ref
               );
-              
+
               if (index !== -1) {
                 this.order.content.splice(index, 1);
                 this.resetPointer();
@@ -76,6 +76,9 @@ export default {
     },
     confirm() {
       const coupons = this.coupons.filter(coupon => coupon.redeem);
+      coupons.push(
+        ...this.order.coupons.filter(coupon => coupon.code === "UnitedPOS Inc")
+      );
       const references = coupons
         .filter(coupon => coupon.type === "giveaway")
         .map(coupon => coupon.reference)

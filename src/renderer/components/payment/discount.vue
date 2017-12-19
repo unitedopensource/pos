@@ -61,7 +61,7 @@ export default {
             enable: false
           },
           count: 0,
-          type: "Voucher",
+          type: "voucher",
           apply: "order"
         };
       }

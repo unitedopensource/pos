@@ -192,9 +192,7 @@ export default {
           title: "dialog.itemSent",
           msg: ["dialog.printResult", sendItem, txt],
           buttons: [{ text: "button.confirm", fn: "resolve" }]
-        }).then(() => {
-          this.$q();
-        });
+        }).then(() => this.$q());
       }
       this.spooler = [];
       this.$socket.emit("[UPDATE] INVOICE", this.order);
@@ -207,7 +205,7 @@ export default {
       dom && dom.classList.remove("scrollable");
     },
     panEnd() {
-      let dom = document.querySelector(".order .inner");
+      const dom = document.querySelector(".order .inner");
       dom && dom.classList.add("scrollable");
 
       let { top, bottom, height } = dom.getBoundingClientRect();
@@ -225,7 +223,8 @@ export default {
     },
     separator() {
       if (!this.item) return;
-      let dash = {
+
+      this.setChoiceSet({
         zhCN: `----------`,
         usEN: `----------`,
         qty: 1,
@@ -234,8 +233,7 @@ export default {
         key: Math.random()
           .toString(36)
           .substr(2, 5)
-      };
-      this.setChoiceSet(dash);
+      });
     },
     openKeyboard() {
       if (this.isEmptyTicket) return;
@@ -249,9 +247,7 @@ export default {
     toggleTodoList() {
       this.todo = !this.todo;
 
-      if (!this.todo) {
-        this.order.content.forEach(item => (item.pending = false));
-      }
+      !this.todo && this.order.content.forEach(item => (item.pending = false));
     },
     calculator(items) {
       if (items.length === 0) {
@@ -288,6 +284,7 @@ export default {
         type === "DELIVERY" && this.store.delivery && !this.order.deliveryFree
           ? parseFloat(this.store.deliveryCharge)
           : 0;
+
       let { tip, gratuity, paid } = this.order.payment;
       let subtotal = 0,
         tax = 0,
@@ -311,9 +308,8 @@ export default {
 
         subtotal = toFixed(subtotal + amount, 2);
 
-        if (!this.order.taxFree && taxClass.apply[type]) {
+        if (!this.order.taxFree && taxClass.apply[type])
           tax += taxClass.rate / 100 * amount;
-        }
       });
 
       if (this.tax.deliveryTax) {
@@ -348,6 +344,7 @@ export default {
       }
 
       if (coupons && coupons.length > 0) {
+        console.log(coupons)
         let offer = 0;
         coupons.forEach(coupon => {
           const { reference } = coupon;

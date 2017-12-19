@@ -1170,7 +1170,8 @@ function createStyle(setting) {
               .payment .value{min-width:40%;text-align:right;}
               .settle{${payment ? '' : 'display:none;'}}
               .payment p.bold{font-weight:bold;font-size:22px;}
-              section.details{border:1px dashed #000;margin-top:5px;text-align:center;}
+              .details{border:1px dashed #000;margin-top:5px;text-align:center;}
+              .details h3{letter-spacing:1px;}
               .details p{display:flex;}
               .details .text{text-align:right;padding-right:20px;flex:5;}
               .details .value{text-align:left;flex:6}
