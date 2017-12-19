@@ -1024,7 +1024,7 @@ section.cart {
   text-align: right;
   padding: 5px 10px;
   border-radius: 4px;
-  background: #607D8B;
+  background: rgba(96, 125, 139, 0.6);
   box-shadow: inset 0 1px 6px -1px rgba(0, 0, 0, 0.4)
 }
 

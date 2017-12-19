@@ -123,6 +123,7 @@ var Printer = function (plugin, config, station) {
 
     this.print = function (raw, receipt) {
         const printers = this.getPrinters();
+
         printers.forEach(printer => {
             const setting = this.setting[printer];
 
@@ -132,32 +133,27 @@ var Printer = function (plugin, config, station) {
 
             if (skip) {
                 this.skip();
-                return
+                return false;
             }
 
             if (setting.labelPrinter) {
                 this.printLabel(printer, raw);
-                return;
+                return false;
             }
 
             const items = raw.content.filter(item => item.printer[printer]);
+
             if (items.length === 0) return false;
 
-            let {
-                printStore,
-                printType,
-                printCustomer,
-                enlargeDetail
-            } = setting.control;
+            const header = createHeader(this.config, setting, raw);
+            const list = createList(printer, setting, raw);
 
-            let header = createHeader(this.config, raw);
-            let list = createList(printer, setting.control, raw);
-            if (!list) return;
+            if (list && list.length === 0) return false;
 
-            let style = createStyle(setting.control);
-            let footer = createFooter(this.config, setting.control, printer, raw);
+            const style = createStyle(setting);
+            const footer = createFooter(this.config, setting, printer, raw);
 
-            let html = header + list + footer + style;
+            const html = header + list + footer + style;
 
             setting.control.buzzer && this.buzzer(printer);
 
@@ -166,21 +162,22 @@ var Printer = function (plugin, config, station) {
             this.plugin.SET_PRINTER_INDEX(printer);
             this.plugin.PRINT();
 
-            if (raw.carryNote && (/cashier/i).test(printer)) {
-                this.plugin.PRINT_INIT('Ticket carry note');
-                this.plugin.SET_PRINTER_INDEX(printer);
-                this.plugin.PRINT_INITA(0, 0, 270, 500, "");
-                let cursor = 0;
-                raw.carryNote.content.forEach(line => {
-                    this.plugin.ADD_PRINT_TEXT(cursor, 10, 260, 20, line);
-                    this.plugin.SET_PRINT_STYLEA(0, "FontName", "Tensentype RuiHeiJ-W2");
-                    this.plugin.SET_PRINT_STYLEA(0, "FontSize", 16);
-                    this.plugin.SET_PRINT_STYLEA(0, "Alignment", 2);
-                    this.plugin.SET_PRINT_STYLEA(0, "LetterSpacing", 1);
-                    cursor += 22
-                })
-                this.plugin.PRINT()
-            }
+            // if (raw.carryNote && (/cashier/i).test(printer)) {
+            //     this.plugin.PRINT_INIT('Ticket carry note');
+            //     this.plugin.SET_PRINTER_INDEX(printer);
+            //     this.plugin.PRINT_INITA(0, 0, 270, 500, "");
+            //     let cursor = 0;
+            //     raw.carryNote.content.forEach(line => {
+            //         this.plugin.ADD_PRINT_TEXT(cursor, 10, 260, 20, line);
+            //         this.plugin.SET_PRINT_STYLEA(0, "FontName", "Tensentype RuiHeiJ-W2");
+            //         this.plugin.SET_PRINT_STYLEA(0, "FontSize", 16);
+            //         this.plugin.SET_PRINT_STYLEA(0, "Alignment", 2);
+            //         this.plugin.SET_PRINT_STYLEA(0, "LetterSpacing", 1);
+            //         cursor += 22
+            //     })
+            //     this.plugin.PRINT()
+            // }
+
             if (Array.isArray(setting.reprint) && setting.reprint.includes(ticket)) {
                 this.plugin.PRINT_INIT(`Reprint ticket ${raw.number}`)
                 this.plugin.ADD_PRINT_HTM(0, 0, "100%", "100%", html)
@@ -201,8 +198,8 @@ var Printer = function (plugin, config, station) {
             printType,
             printCustomer
         } = setting.control;
-        const header = createHeader(this.config, raw);
-        const list = createList(printer, setting.control, raw);
+        const header = createHeader(this.config, setting, raw);
+        const list = createList(printer, setting, raw);
         const style = createStyle(setting.control);
         const footer = createFooter(this.config, setting.control, 'cashier', raw);
 
@@ -883,47 +880,37 @@ var Printer = function (plugin, config, station) {
     Private methods
 */
 
-function createHeader(store, ticket) {
-    let {
-        type,
-        time,
-        number,
-        server,
-        cashier,
-        station,
-        table,
-        guest,
-        customer
-    } = ticket;
-    let phone = '';
-    try {
-        phone = customer.phone && customer.phone.replace(/^\D?(\d{3})\D?\D?(\d{3})\D?(\d{4})/, "$1.$2.$3");
-    } catch (e) {
-        phone = customer.phone
-    }
-    let title = type.replace('_', ' ').toCapitalCase()
-    let date = moment(Number(time)).format("MM-DD-YYYY");
-    let placeTime = moment(Number(time)).locale('en').format("hh:mm a");
-    let customerInfo = "";
-    customerInfo += phone ? `<p><span class="value tel">${phone}</span><span class="ext">${customer.extension}</span></p>` : "";
-    customerInfo += customer.address ? `<p><span class="value addr">${customer.address}</span></p>` : "";
-    customerInfo += customer.city ? `<p><span class="value">${customer.city}</span><span class="space">${customer.distance}</span><span class="space">${customer.duration}</span></p>` : "";
-    customerInfo += customer.name ? `<p><span class="value">${customer.name}</span></p>` : "";
-    customerInfo += customer.note ? `<p><span class="value">${customer.note}</span></p>` : "";
+function createHeader(store, setting, raw) {
+    const { type, time, number, server, cashier, station, table, guest, customer } = raw;
+    const phone = customer.phone ? customer.phone.replace(/^\D?(\d{3})\D?\D?(\d{3})\D?(\d{4})/, "$1.$2.$3") : null;
+    const title = setting.title[type] || type.replace('_', ' ').toCapitalCase();
+    const date = moment(Number(time)).format("MM-DD-YYYY");
+    const placeTime = moment(Number(time)).locale('en').format("hh:mm a");
+    const { address, distance, duration, city, name, note } = customer;
 
-    let ticketInfo = `<p><span class="wrap">
-                        <span class="text">Server:</span><span class="value">${server || cashier}</span>
+    let information = "";
+
+    information += phone ? `<p><span class="value tel">${phone}</span><span class="ext">${customer.extension}</span></p>` : "";
+    information += address ? `<p><span class="value addr">${address}</span></p>` : "";
+    information += (city && store.city !== city) ? `<p><span class="value">${city}</span><span class="space">${distance}</span><span class="space">${duration}</span></p>` : "";
+    information += name ? `<p><span class="value">${name}</span></p>` : "";
+    information += note ? `<p><span class="value">${note}</span></p>` : "";
+
+    let ticketFrom = `<p><span class="wrap">
+                        <span class="text">Server:</span><span class="value">${server}</span>
                         <span class="text">Station:</span><span class="value">${station || ""}</span>
                       </span></p>`;
 
-    let hasCashier = cashier ? `<span class="text">Cashier:</span><span class="value">${cashier}</span>` :
-        `<span class="text">Guest:</span><span class="value">${guest}</span>`;
+    // let hasCashier = cashier ? `<span class="text">Cashier:</span><span class="value">${cashier}</span>` :
+    //     `<span class="text">Guest:</span><span class="value">${guest}</span>`;
 
-    let extraInfo = type === 'DINE_IN' ? `<span class="text">Ticket:</span><span class="value">${number}</span>` :
-        `<span class="text">Table:</span><span class="value">${table || ""}</span>`;
+    // let extraInfo = type === 'DINE_IN' ? `<span class="text">Ticket:</span><span class="value">${number}</span>` :
+    //     `<span class="text">Table:</span><span class="value">${table || ""}</span>`;
 
-    ticketInfo += (type === 'DINE_IN' || type === 'BAR' || type === 'PRE_PAYMENT' || type === 'PAYMENT') ?
-        `<p><span class="wrap">${hasCashier}${extraInfo}</span></p>` : "";
+    // ticketInfo += (type === 'DINE_IN' || type === 'BAR' || type === 'PRE_PAYMENT' || type === 'PAYMENT') ?
+    //     `<p><span class="wrap">${hasCashier}${extraInfo}</span></p>` : "";
+
+
     return `<section class="header">
             <div class="store">
                 <h3>${store.name}</h3>
@@ -936,35 +923,27 @@ function createHeader(store, ticket) {
                 <span>Date: ${date}</span>
                 <span>Time: ${placeTime}</span>
                 <div class="number">${number}</div>
-                <div class="table">${type === 'DINE_IN' ? table : ''}</div>
+                <div class="table">${table || ""}</div>
             </div>
-            <div class="server">
-                ${ticketInfo}
-            </div>
-            <div class="customer">
-                ${customerInfo}
-            </div>
+            <div class="server">${ticketFrom}</div>
+            <div class="customer">${information}</div>
         </section>`;
 }
 
-function createList(printer, ctrl, invoice) {
-    let {
-        sortItem,
-        printMenuID,
-        sortPriority,
-        printMode
-    } = ctrl;
-    let content = [],
-        items = [];
-    let list = JSON.parse(JSON.stringify(invoice.content));
-    //print mode decided items
-    switch (printMode) {
+function createList(printer, setting, invoice) {
+    const list = JSON.parse(JSON.stringify(invoice.content));
+    const { categorize, prioritize, mode } = setting.control;
+    const { languages } = setting.layout;
+    const primary = languages.find(t => t.ref === 'usEN');
+    const secondary = languages.find(t => t.ref === 'zhCN');
+
+    let content = [], items = [];
+
+    switch (mode) {
         case "normal":
-            if (!invoice.print) {
-                items = list.filter(item => item.printer[printer]);
-            } else {
-                items = list.filter(item => item.printer[printer] && item.diffs !== 'removed')
-            }
+            items = !invoice.print ?
+                list.filter(item => item.printer[printer]) :
+                list.filter(item => item.printer[printer] && item.diffs !== 'removed');
             break;
         case "difference":
             if (!invoice.print) {
@@ -1010,7 +989,6 @@ function createList(printer, ctrl, invoice) {
                             })
                             break;
                     }
-
                 })
             }
             break;
@@ -1036,24 +1014,16 @@ function createList(printer, ctrl, invoice) {
             }
             break;
         default:
-            if (!invoice.print) {
-                items = list.filter(item => item.printer[printer]);
-            } else {
-                items = list.filter(item => item.printer[printer] && item.diffs !== 'removed')
-            }
+            items = !invoice.print ?
+                list.filter(item => item.printer[printer]) :
+                list.filter(item => item.printer[printer] && item.diffs !== 'removed');
     }
 
     if (items.length === 0) return false;
-    if (sortPriority) {
-        items.sort((p, n) => {
-            let prev = p.priority || 0;
-            let next = n.priority || 0;
 
-            return prev < next
-        })
-    }
+    prioritize && items.sort((p, n) => (p.priority || 0) < (n.priority || 0));
 
-    if (sortItem) {
+    if (categorize) {
         let sorted = [];
         let categoryMap = [];
 
@@ -1080,23 +1050,24 @@ function createList(printer, ctrl, invoice) {
     return `<table class="receipt"><tbody>${content}</tbody></table>`
 
     function mockup(item, name, sort) {
-        let nameCN = (item.printer[name] && item.printer[name].zhCN) ? item.printer[name].zhCN : item.zhCN;
-        let nameEN = (item.printer[name] && item.printer[name].usEN) ? item.printer[name].usEN : item.usEN;
-        let note = (item.printer[name] && item.printer[name].note) || null;
-        let sideCN = item.side.zhCN ? item.side.zhCN : "";
-        let sideEN = item.side.usEN ? item.side.usEN : "";
-        let qty = item.qty !== 1 ? `<td class="qty">${item.qty}</td>` : `<td></td>`;
-        let markA = item.mark[0].join(" ");
-        let markB = item.mark[1].join(" ");
-        let mark = (markA || markB) ? "markItem" : "";
-        let setCN = "",
-            setEN = "";
-        let diffs = item.diffs || "";
-        let indent = sort ? 'indent' : '';
-        let firstLine, secondLine;
+        const { replace = false, zhCN, usEN, note } = item.printer[name];
+        const idCN = secondary.id ? item.menuID + ' ' : '';
+        const idEN = primary.id ? item.menuID + ' ' : '';
+        const nameCN = replace ? idCN + zhCN : idCN + item.zhCN;
+        const nameEN = replace ? idEN + usEN : idEN + item.usEN;
+        const sideCN = item.side.zhCN || "";
+        const sideEN = item.side.usEN || "";
+        const qty = item.qty === 1 ? `<td></td>` : `<td class="qty">${item.qty}</td>`;
+        const diffs = item.diffs || "";
+        const indent = sort ? 'indent' : '';
+
+
+        let firstLine, secondLine, setCN = "", setEN = "";
 
         item.choiceSet.forEach(set => {
-            if (set.hasOwnProperty('print') && Array.isArray(set.print) && !set.print.includes(printer)) return;
+            const { print = [] } = set;
+            if (!print.includes(name)) return;
+
             setCN += `<div class="sub">
                         <span>${set.qty !== 1 ? set.qty + 'x' : ''}</span>
                         <span>${set.zhCN}</span>
@@ -1112,7 +1083,7 @@ function createList(printer, ctrl, invoice) {
             firstLine = `<tr class="zhCN ${indent}">
                             <td class="qty"><del>${item.qty !== 1 ? item.qty : ''}</del></td>
                             <td class="item">
-                                <del><div class="main">${printMenuID ? item.menuID : ''}${nameCN} <span class="side">${sideCN}</span></div></del>
+                                <del><div class="main">${nameCN} <span class="side">${sideCN}</span></div></del>
                                 <del>${setCN}</del>
                             </td>
                             <td class="price"><del>${item.total}</del></td>
@@ -1120,61 +1091,48 @@ function createList(printer, ctrl, invoice) {
             secondLine = `<tr class="usEN ${indent}">
                             <td class="qty"><del>${item.qty !== 1 ? item.qty : ''}</del></td>
                             <td class="item">
-                                <del><div class="main">${printMenuID ? item.menuID : ''}${nameEN} <span class="side">${sideEN}</span></div></del>
+                                <del><div class="main">${nameEN} <span class="side">${sideEN}</span></div></del>
                                 <del>${setEN}</del>
                             </td>
                             <td class="price"><del>${item.total}</del></td>
                         </tr>`;
         } else {
-            note = note ? `<tr class="zhCN"><td></td><td class="note">${note}</td><td></td></tr>` : '';
+            //let comment = note ? `<tr class="zhCN"><td></td><td class="note">${note}</td><td></td></tr>` : '';
+
+
             firstLine = `<tr class="zhCN ${indent}">
                         ${qty}
-                        <td class="item"><div class="main">${printMenuID ? item.menuID : ''}${nameCN} <span class="side">${sideCN}</span></div>${setCN}</td>
+                        <td class="item"><div class="main">${nameCN} <span class="side">${sideCN}</span></div>${setCN}</td>
                         <td class="price">${item.total}</td>
                         </tr>
-                        ${note}`;
+                        ${comment}`;
 
-            note = note ? `<tr class="usEN"><td></td><td class="note">${note}</td><td></td></tr>` : '';
+            //comment = note ? `<tr class="usEN"><td></td><td class="note">${note}</td><td></td></tr>` : '';
             secondLine = `<tr class="usEN ${indent}">
                             ${qty}
-                            <td class="item"><div class="main">${printMenuID ? item.menuID : ''}${nameEN} <span class="side">${sideEN}</span></div>${setEN}</td>
+                            <td class="item"><div class="main">${nameEN} <span class="side">${sideEN}</span></div>${setEN}</td>
                             <td class="price">${item.total}</td>
                         </tr>`;
         }
 
-        return firstLine + secondLine;
+        return languages[0].ref === "zhCN" ? firstLine + secondLine : secondLine + firstLine;
     }
 }
 
 function createStyle(ctrl) {
-    let {
-        printPrimary,
-        primaryFont,
-        primaryFontSize,
-        printSecondary,
-        secondaryFont,
-        secondaryFontSize,
-        sortItem,
-        printStore,
-        printType,
-        printCustomer,
-        printPrimaryPrice,
-        printSecondaryPrice,
-        printPayment,
-        printActionTime,
-        buzzer
-    } = ctrl;
+    const { contact, title, customer, payment, languages } = ctrl;
+    const primary = languages.find(t => t.ref === 'usEN');
+    const secondary = languages.find(t => t.ref === 'zhCN');
 
-    !primaryFontSize.includes('px') && (primaryFontSize += "px");
-    !secondaryFontSize.includes('px') && (secondaryFontSize += "px");
+
 
     return `<style>
               *{margin:0;padding:0}
               section.header{font-family:'Agency FB';text-align:center;}
-              div.store{margin-bottom:10px;${printStore ? '' : 'display:none;'}}
+              div.store{margin-bottom:10px;${contact ? '' : 'display:none;'}}
               .header h3{font-size:1.25em;}
               .header h5{font-size:16px;font-weight:lighter}
-              div.type{${printType ? '' : 'display:none;'}font-size:1.5em;font-weight:bold;font-family:"Agency FB"}
+              div.type{${title ? '' : 'display:none;'}font-size:1.5em;font-weight:bold;font-family:"Agency FB"}
               div.number,div.table{position:absolute;bottom:12px;font-size:2em;font-weight:bold;font-family:"Agency FB"}
               div.number{right:10px;}div.table{left:10px;}
               div.time span{display:inline-block;margin:0 10px;font-size:1em;}
@@ -1182,7 +1140,7 @@ function createStyle(ctrl) {
               .server{border-bottom:1px solid #000;padding-bottom:1px;text-align:left;}
               .server .wrap{display:flex;padding:0 10px;}
               .server .text{flex:2;}.server .value{flex:3;}
-              .customer {${printCustomer ? '' : 'display:none;'}}
+              .customer {${customer ? '' : 'display:none;'}}
               .customer p{text-align:left;}
               .customer p:last-child{border-bottom:1px solid #000;}
               .customer .text{display:inline-block;min-width:32px;margin-left:5px;}
@@ -1202,16 +1160,16 @@ function createStyle(ctrl) {
               .sub{text-indent:20px;} 
               td.qty{text-align:center;font-weight:bold;width:17px;padding-right:5px;}
               td.note{font-style:italic;font-size:0.8em;text-indent:1em;}
-              .zhCN .price{${printPrimaryPrice ? 'display:initial' : 'display:none'}}
-              .usEN .price{${printSecondaryPrice ? 'display:initial' : 'display:none'}}          
+              .zhCN .price{${secondary.price ? 'display:initial' : 'display:none'}}
+              .usEN .price{${secondary.price ? 'display:initial' : 'display:none'}}          
               footer{font-family:'Agency FB';}
               section.column{display:flex;}
-              .payment{min-width:150px;${printPayment ? 'display:flex;flex-direction:column;' : 'display:none;'}}
+              .payment{min-width:150px;${payment ? 'display:flex;flex-direction:column;' : 'display:none;'}}
               .empty{flex:1}
               .payment p{display:flex;font-family:'Tensentype RuiHeiJ-W2';width:200px;}
               .payment .text{flex:1;text-align:right;}
               .payment .value{min-width:40%;text-align:right;}
-              .settle{${printPayment ? '' : 'display:none;'}}
+              .settle{${payment ? '' : 'display:none;'}}
               .payment p.bold{font-weight:bold;font-size:22px;}
               section.details{border:1px dashed #000;margin-top:5px;text-align:center;}
               .details p{display:flex;}
@@ -1224,52 +1182,46 @@ function createStyle(ctrl) {
               .dash{margin: 0 5px;}
               .tips{margin-left:15px;}
               section.note{text-align:center;font-weight:lighter;margin-top:10px;border-top:1px solid #000;}
-              .printTime{${printActionTime ? '' : 'display:none;'}font-weight:bold;text-align:center;}
+              .printTime{${false ? '' : 'display:none;'}font-weight:bold;text-align:center;}
               .tm{text-align: center;margin:5px;}
               .tradeMark {font-weight: bold;display: inline-block;padding: 5px 7px;background: #000;color: #fff;}
-              .zhCN{font-family:'${primaryFont}';font-size:${primaryFontSize};${printPrimary ? '' : 'display:none!important;'}}
-              .usEN{font-family:'${secondaryFont}';font-size:${secondaryFontSize};${printSecondary ? '' : 'display:none!important;'}}
+              .zhCN{font-family:'${secondary.fontFamily}';font-size:${secondary.fontSize}px;${secondary.enable ? '' : 'display:none!important;'}}
+              .usEN{font-family:'${primary.fontFamily}';font-size:${primary.fontSize}px;${primary.enable ? '' : 'display:none!important;'}}
           </style>`
 }
 
-function createFooter(config, ctrl, device, ticket) {
+function createFooter(config, ctrl, printer, ticket) {
     if (!ticket.hasOwnProperty('payment')) return "";
 
-    const {
-        enable,
-        percentages
-    } = config.tipSuggestion;
-    const {
-        footer
-    } = ctrl;
-    const {
-        payment
-    } = ticket;
+    const { enable, percentages } = config.tipSuggestion;
+    const { footer } = ctrl;
+    const { type, payment, coupons } = ticket;
 
-    let suggestion = '';
+    let suggestions = '';
 
-    if (enable && ticket.type === 'PRE_PAYMENT') {
+    if (enable && type === 'PRE_PAYMENT') {
         const p = percentages.split(",");
+        const { balance } = payment;
 
         let data = [{
-            percentage: p[0],
-            value: toFixed(payment.balance * p[0] / 100, 2).toFixed(2),
-            total: toFixed(payment.balance * (1 + p[0] / 100), 2).toFixed(2)
+            pct: p[0],
+            val: toFixed(balance * p[0] / 100, 2).toFixed(2),
+            tip: toFixed(balance * (1 + p[0] / 100), 2).toFixed(2)
         }, {
-            percentage: p[1],
-            value: toFixed(payment.balance * p[1] / 100, 2).toFixed(2),
-            total: toFixed(payment.balance * (1 + p[1] / 100), 2).toFixed(2)
+            pct: p[1],
+            val: toFixed(balance * p[1] / 100, 2).toFixed(2),
+            tip: toFixed(balance * (1 + p[1] / 100), 2).toFixed(2)
         }, {
-            percentage: p[2],
-            value: toFixed(payment.balance * p[2] / 100, 2).toFixed(2),
-            total: toFixed(payment.balance * (1 + p[2] / 100), 2).toFixed(2)
-        }].map(kindness =>
+            pct: p[2],
+            val: toFixed(balance * p[2] / 100, 2).toFixed(2),
+            tip: toFixed(balance * (1 + p[2] / 100), 2).toFixed(2)
+        }].map(tip =>
             `<div class="outer">
-                <span>${kindness.percentage}%<span class="dash">-</span>$ ${kindness.value}</span>
-                <span class="tips">( $ ${kindness.total} )</span>
+                <span>${tip.pct}%<span class="dash">-</span>$ ${tip.val}</span>
+                <span class="tips">( $ ${tip.tip} )</span>
             </div>`).join("").toString();
 
-        suggestion = `<section class="suggestion">
+        suggestions = `<section class="suggestion">
                         <h5>Tips Suggestion</h5>
                         <i>These tip amounts are provided for your convenience.</i>
                         ${data}
@@ -1277,38 +1229,37 @@ function createFooter(config, ctrl, device, ticket) {
     }
 
     let delivery = parseFloat(payment.delivery) > 0 ? `<p><span class="text">Delivery:</span><span class="value">${payment.delivery.toFixed(2)}</span></p>` : "";
-    let note = footer ? footer.map(text => `<p>${text}</p>`).join("").toString() : "";
-    let settle = [];
-    let applyCoupon = ticket.payment.hasOwnProperty('applyCoupon') ? ticket.payment.applyCoupon : true;
+    const note = footer ? footer.map(text => `<p>${text}</p>`).join("").toString() : "";
 
-    if (ticket.coupon && applyCoupon) {
-        settle.push(`<section class="details">
-                    <h3>${ticket.coupon.for} - ${ticket.coupon.discount} OFF</h3>
-                    </section>`)
+    let settle = [];
+    let applied = payment.applyCoupon || true;
+
+    if (coupons && applied) {
+        coupons.forEach(coupon => settle.push(`<section class="details"><h3>${coupon.alias}</h3></section>`))
     }
 
     payment.log.forEach(log => {
-        switch (log.type) {
+        const { type, subType, lfd, paid, change } = log;
+        switch (type) {
             case 'CASH':
                 settle.push(`<section class="details">
                                 <h3>Paid by Cash - Thank You</h3>
                                 <p>
                                 <span class="text">Paid:</span>
-                                <span class="value">$ ${log.paid.toFixed(2)}</span>
+                                <span class="value">$ ${paid.toFixed(2)}</span>
                                 </p>
                                 <p>
                                 <span class="text">Change:</span>
-                                <span class="value">$ ${log.change.toFixed(2)}</span>
+                                <span class="value">$ ${change.toFixed(2)}</span>
                                 </p>
                             </section>`)
                 break;
             case 'CREDIT':
-                let cc = log.number ? `(${log.number})` : '';
                 settle.push(`<section class="details">
-                                <h3>Paid by CREDIT Card ${cc} - Thank You</h3>
+                                <h3>CREDIT CARD - ${subType} ( ${lfd} )</h3>
                                 <p>
                                 <span class="text">Paid:</span>
-                                <span class="value">$ ${log.paid.toFixed(2)}</span>
+                                <span class="value">$ ${paid.toFixed(2)}</span>
                                 </p>
                             </section>`)
                 break;
@@ -1317,20 +1268,17 @@ function createFooter(config, ctrl, device, ticket) {
                                 <h3>Paid by GIFT Card - Thank You</h3>
                                 <p>
                                 <span class="text">Paid:</span>
-                                <span class="value">$ ${log.paid.toFixed(2)}</span>
+                                <span class="value">$ ${paid.toFixed(2)}</span>
                                 </p>
                             </section>`)
                 break;
             default:
-                settle.push(`<section class="details">
-                                    <h3>Paid by ${log.subType} - Thank You</h3>
-                                </section>`)
+                settle.push(`<section class="details"><h3>Paid by ${subType} - Thank You</h3></section>`)
         }
     })
+
     if (!payment.settled && payment.paid !== 0) {
-        settle.push(`<section class="details">
-                        <h3>Balance Due: $ ${payment.remain.toFixed(2)}</h3>
-                    </section>`)
+        settle.push(`<section class="details"><h3>Balance Due: $ ${payment.remain.toFixed(2)}</h3></section>`)
     }
 
     if (ticket.status === 0) {
@@ -1364,18 +1312,16 @@ function createFooter(config, ctrl, device, ticket) {
                         </p>`)
         }
     });
+
     let discount = parseFloat(payment.discount) !== 0 ?
         `<p><span class="text">Disc.:</span><span class="value">- ${payment.discount.toFixed(2)}</span></p>` : "";
     let tip = parseFloat(payment.tip) > 0 ?
         `<p><span class="text">Tip:</span><span class="value">${payment.tip}</span></p>` : "";
     let gratuity = parseFloat(payment.gratuity) > 0 ?
         `<p><span class="text">Gratuity:</span><span class="value">${payment.gratuity}</span></p>` : "";
+    let tradeMark = ticket.source !== 'POS' && (/cashier/i).test(printer) ?
+        `<p class="tm"><span class="tradeMark">${ticket.source}</span></p>` : "";
 
-    let tradeMark = '';
-
-    if (ticket.source !== 'POS' && (/cashier/i).test(device)) {
-        tradeMark = `<p class="tm"><span class="tradeMark">${ticket.source}</span></p>`;
-    }
 
     return `<footer>
               <section class="column">
@@ -1385,11 +1331,11 @@ function createFooter(config, ctrl, device, ticket) {
                 </div>
               </section>
               <div class="settle">
-                ${suggestion + settle.join("").toString()}
+                ${suggestions + settle.join("").toString()}
               </div>
               <section class="note">${note}</section>
               ${tradeMark}
-              <p class="printTime">${device} print @ ${moment().format('hh:mm:ss')}</p>
+              <p class="printTime">${printer} print @ ${moment().format('hh:mm:ss')}</p>
             </footer>`
 }
 

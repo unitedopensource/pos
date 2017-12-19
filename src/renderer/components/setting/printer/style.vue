@@ -4,68 +4,125 @@
             <router-link tag="div" :to="{name:'Setting.printer.config',params:{printer}}" class="back">
                 <i class="fa fa-chevron-left"></i>
             </router-link>
-            <div class="title"><h3>{{printer}}</h3></div>
+            <div class="title">
+                <h3>{{printer}}</h3>
+            </div>
             <nav>
                 <span class="add">{{$t('button.default')}}</span>
             </nav>
         </header>
-        <toggle title="print.storeContact"></toggle>
-        <toggle title="print.title"></toggle>
-        <toggle title="print.customer"></toggle>
-        <toggle title="print.payment"></toggle>
-        <section class="cards">
-            <div class="card">
-                <div class="header">
-                    <span>{{$t('text.primary')}}</span>
-                    <i class="fa fa-bars"></i>
-                    <switches></switches>
+        <toggle title="print.storeContact" v-model="layout.contact"></toggle>
+        <toggle title="print.title" v-model="layout.title"></toggle>
+        <toggle title="print.customer" v-model="layout.customer"></toggle>
+        <toggle title="print.payment" v-model="layout.payment"></toggle>
+        <draggable v-model="layout.languages" :options="{animation: 300,ghostClass: 'ghost',handle:'.drag'}">
+            <transition-group tag="section" class="cards">
+                <div v-for="(language,index) in layout.languages" :key="index" class="card">
+                    <div class="header">
+                        <div>
+                            <span>{{languages[index]}}</span>
+                            <span class="gray">{{getLanguage(language.ref)}}</span>
+                        </div>
+                        <i class="fa fa-bars drag"></i>
+                        <switches title="text.enable" v-model="language.enable"></switches>
+                    </div>
+                    <div>
+                        <selector title="print.fontFamily" v-model="language.fontFamily" :opts="fonts"></selector>
+                        <range title="print.fontSize" :min="0" :max="40" :step="1" v-model="language.fontSize"></range>
+                        <switches title="print.itemPrice" v-model="language.price"></switches>
+                        <switches title="print.menuID" v-model="language.id"></switches>
+                    </div>
                 </div>
-                <div>
-                    <inputer title="print.fontFamily"></inputer>
-                    <range title="print.fontSize" :min="0" :max="40" :step="1"></range>
-                    <switches title="print.itemPrice"></switches>
-                    <switches title="print.menuID"></switches>
-                </div>
-            </div>
-             <div class="card">
-                <div class="header">
-                    <span>{{$t('text.secondary')}}</span>
-                    <i class="fa fa-bars"></i>
-                    <switches></switches>
-                </div>
-                <div>
-                    <inputer title="print.fontFamily"></inputer>
-                    <range title="print.fontSize" :min="0" :max="40" :step="1"></range>
-                    <switches title="print.itemPrice"></switches>
-                    <switches title="print.menuID"></switches>
-                </div>
-            </div>
-        </section>
+            </transition-group>
+        </draggable>
     </div>
 </template>
 
 <script>
 import range from "../common/range";
+import draggable from "vuedraggable";
 import toggle from "../common/toggle";
-import inputer from "../common/inputer";
-import options from "../common/options";
+import selector from "../common/selector";
 import switches from "../common/switches";
 
-
 export default {
-    props: ["printer"],
-    components: { range, inputer, switches, options, toggle },
-    data() {
-        return {
-            layout: {}
-        };
-    },
-    created() {
-        this.layout = this.$store.getters.config.printers[this.printer].style;
-    },
-    methods: {
-
+  props: ["printer"],
+  components: { range, switches, selector, toggle, draggable },
+  data() {
+    return {
+      layout: {},
+      languages: [this.$t("print.firstLine"), this.$t("print.secondLine")],
+      fonts: [
+        {
+          label: "Agency FB",
+          tooltip: "(English)",
+          plainText: true,
+          value: "Agency FB"
+        },
+        {
+          label: "Tahoma",
+          tooltip: "(English)",
+          plainText: true,
+          value: "Tahoma"
+        },
+        {
+          label: "Tensentype",
+          tooltip: "(English)",
+          plainText: true,
+          value: "Tensentype RuiHeiJ-W2"
+        },
+        {
+          label: "Futura LT Condensed",
+          tooltip: "(English)",
+          plainText: true,
+          value: "Futura LT Condensed"
+        },
+        {
+          label: "Roboto Condensed",
+          tooltip: "(English)",
+          plainText: true,
+          value: "Roboto Condensed"
+        },
+        {
+          label: "Noto Sans SC Light",
+          tooltip: "(中文)",
+          plainText: true,
+          value: "Noto Sans SC Light"
+        },
+        {
+          label: "Noto Sans CJK SC",
+          tooltip: "(中文)",
+          plainText: true,
+          value: "Noto Sans CJK SC"
+        },
+        {
+          label: "晴圆",
+          tooltip: "(中文)",
+          plainText: true,
+          value: "QingYuan"
+        }
+      ]
+    };
+  },
+  created() {
+    this.layout = this.$store.getters.config.printers[this.printer].layout;
+  },
+  beforeDestroy() {
+    Object.assign(this.$store.getters.config.printers[this.printer], {
+      layout: this.layout
+    });
+    this.$socket.emit("[CONFIG] UPDATE", {
+      key: `printers.${this.printer}.layout`,
+      value: this.layout
+    });
+  },
+  methods: {
+    getLanguage(ref) {
+      return ref === "zhCN"
+        ? this.$t("print.secondary")
+        : this.$t("print.primary");
     }
+  }
 };
 </script>
 
@@ -83,7 +140,7 @@ export default {
   border: 1px solid #e0e0e0;
 }
 
-.header span {
+.header div {
   flex: 1;
 }
 
@@ -96,5 +153,13 @@ export default {
 
 section.cards {
   padding: 0px 5px 5px;
+}
+
+.ghost {
+  opacity: 0.5;
+}
+
+.gray {
+  color: #656565;
 }
 </style>
