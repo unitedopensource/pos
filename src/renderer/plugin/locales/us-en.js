@@ -1247,7 +1247,7 @@ export default {
         'fontSize': 'Font Size',
         'itemPrice': 'Item Price',
         'storeContact': 'Store Contact',
-        'orderType': 'Ticket Type',
+        'title': 'Ticket Title',
         'customer': 'Customer Information',
         'jobTime': 'Job Time',
         'payment': 'Payment Detail',

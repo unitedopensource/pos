@@ -1242,7 +1242,7 @@ export default {
         'fontSize': '字体大小',
         'itemPrice': '打印价格',
         'storeContact': '店面信息',
-        'orderType': '订单类别',
+        'title': '订单类别',
         'customer': '客人资料',
         'jobTime': '打印时间',
         'payment': '打印总额',
