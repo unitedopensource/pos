@@ -4,7 +4,9 @@
       <router-link tag="div" :to="{name:'Setting.printer'}" class="back">
         <i class="fa fa-chevron-left"></i>
       </router-link>
-      <div class="title"><h3>{{printer}}</h3></div>
+      <div class="title">
+        <h3>{{printer}}</h3>
+      </div>
       <nav>
         <span>{{$t('button.remove')}}</span>
       </nav>
@@ -67,6 +69,12 @@ export default {
     Object.assign(
       this.$store.getters.config.printers[this.printer],
       this.config
+    );
+    
+    Printer.initial(
+      CLODOP,
+      this.$store.getters.config,
+      this.$store.getters.station
     );
   },
   methods: {

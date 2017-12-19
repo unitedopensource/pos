@@ -42,11 +42,11 @@ import reservation from "../reservation/index";
 import orderList from "../common/orderList";
 import dialoger from "../common/dialoger";
 import unlock from "../common/unlock";
-import setup from "./setup";
+import counter from "./counter";
 import buttons from "./buttons";
 import list from "./list";
 export default {
-  components: { buttons, setup, unlock, dialoger, orderList, list, reservation },
+  components: { buttons, counter, unlock, dialoger, orderList, list, reservation },
   data() {
     return {
       componentData: null,
@@ -150,7 +150,7 @@ export default {
             : this.dinein.passwordRequire
               ? this.unlockTable()
               : this.dinein.guestCount
-                ? this.$p("setup")
+                ? this.$p("counter")
                 : this.createTable(1);
       }
     },
@@ -169,7 +169,7 @@ export default {
         .then(op => {
           if (op._id === this.op._id) {
             this.dinein.guestCount
-              ? this.$p("setup")
+              ? this.$p("counter")
               : this.createTable(guest);
           } else {
             this.$dialog({

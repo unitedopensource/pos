@@ -200,8 +200,8 @@ var Printer = function (plugin, config, station) {
         } = setting.control;
         const header = createHeader(this.config, setting, raw);
         const list = createList(printer, setting, raw);
-        const style = createStyle(setting.control);
-        const footer = createFooter(this.config, setting.control, 'cashier', raw);
+        const style = createStyle(setting);
+        const footer = createFooter(this.config, setting, 'cashier', raw);
 
         const html = header + list + footer + style;
 
@@ -1104,8 +1104,7 @@ function createList(printer, setting, invoice) {
                         ${qty}
                         <td class="item"><div class="main">${nameCN} <span class="side">${sideCN}</span></div>${setCN}</td>
                         <td class="price">${item.total}</td>
-                        </tr>
-                        ${comment}`;
+                        </tr>`;
 
             //comment = note ? `<tr class="usEN"><td></td><td class="note">${note}</td><td></td></tr>` : '';
             secondLine = `<tr class="usEN ${indent}">
@@ -1119,8 +1118,8 @@ function createList(printer, setting, invoice) {
     }
 }
 
-function createStyle(ctrl) {
-    const { contact, title, customer, payment, languages } = ctrl;
+function createStyle(setting) {
+    const { contact, title, customer, payment, languages } = setting.layout;
     const primary = languages.find(t => t.ref === 'usEN');
     const secondary = languages.find(t => t.ref === 'zhCN');
 
@@ -1161,7 +1160,7 @@ function createStyle(ctrl) {
               td.qty{text-align:center;font-weight:bold;width:17px;padding-right:5px;}
               td.note{font-style:italic;font-size:0.8em;text-indent:1em;}
               .zhCN .price{${secondary.price ? 'display:initial' : 'display:none'}}
-              .usEN .price{${secondary.price ? 'display:initial' : 'display:none'}}          
+              .usEN .price{${primary.price ? 'display:initial' : 'display:none'}}          
               footer{font-family:'Agency FB';}
               section.column{display:flex;}
               .payment{min-width:150px;${payment ? 'display:flex;flex-direction:column;' : 'display:none;'}}
@@ -1190,11 +1189,11 @@ function createStyle(ctrl) {
           </style>`
 }
 
-function createFooter(config, ctrl, printer, ticket) {
+function createFooter(config, setting, printer, ticket) {
     if (!ticket.hasOwnProperty('payment')) return "";
 
     const { enable, percentages } = config.tipSuggestion;
-    const { footer } = ctrl;
+    const { footer } = setting.control;
     const { type, payment, coupons } = ticket;
 
     let suggestions = '';

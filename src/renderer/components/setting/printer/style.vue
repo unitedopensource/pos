@@ -108,13 +108,20 @@ export default {
     this.layout = this.$store.getters.config.printers[this.printer].layout;
   },
   beforeDestroy() {
-    Object.assign(this.$store.getters.config.printers[this.printer], {
-      layout: this.layout
-    });
     this.$socket.emit("[CONFIG] UPDATE", {
       key: `printers.${this.printer}.layout`,
       value: this.layout
     });
+
+    Object.assign(this.$store.getters.config.printers[this.printer], {
+      layout: this.layout
+    });
+
+    Printer.initial(
+      CLODOP,
+      this.$store.getters.config,
+      this.$store.getters.station
+    );
   },
   methods: {
     getLanguage(ref) {
