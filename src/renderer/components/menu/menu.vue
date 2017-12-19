@@ -519,6 +519,7 @@ export default {
       "op",
       "app",
       "config",
+      "dinein",
       "menu",
       "submenu",
       "item",

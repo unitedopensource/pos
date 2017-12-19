@@ -311,7 +311,7 @@ export default {
         'setTitle': '设置抬头',
         'discount': '设折扣',
         'tip': '设小费',
-        'modify': '物品修改',
+        'modify': '修改',
         'timer': '定时出单'
     },
     dialog: {
@@ -870,7 +870,6 @@ export default {
         'doneLock': '完成锁屏',
         'inactiveLock': '自动锁屏',
         'binding': '绑定',
-        'errorsAllow': '误差值',
         'apply': '应用',
         'setDefault': '设为默认',
         'title': '标题',

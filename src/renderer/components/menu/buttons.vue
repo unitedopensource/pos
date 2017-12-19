@@ -69,7 +69,7 @@
       <i class="fa fa-calculator"></i>
       <span class="text">{{$t('button.modify')}}</span>
     </button>
-      <button class="btn settle" @click="settle" :disabled="op.cashCtrl === 'disable' || isEmptyTicket">
+    <button class="btn settle" @click="settle" :disabled="op.cashCtrl === 'disable' || isEmptyTicket">
       <i class="fa fa-money"></i>
       <span class="text">{{$t('button.payment')}}</span>
     </button>
@@ -184,26 +184,24 @@ export default {
         this.approval(this.op.modify, "item")
           ? this.lessQty(boolean)
           : this.requestAccess()
-            .then(op => {
-              if (this.approval(op.modify, "item")) {
-                this.$q();
-                this.lessQty(boolean);
-              } else {
-                this.accessDenied();
-              }
-            })
-            .catch(() => {
-              this.accessDenied();
-            });
+              .then(op => {
+                if (this.approval(op.modify, "item")) {
+                  this.$q();
+                  this.lessQty(boolean);
+                } else {
+                  this.accessDenied();
+                }
+              })
+              .catch(() => this.accessDenied());
       }
     },
     more() {
       let focus = document.querySelector(".item.active");
       let subItemCount = Array.isArray(this.item.choiceSet)
         ? this.item.choiceSet
-          .filter(item => item.subItem)
-          .map(item => item.qty)
-          .reduce((a, b) => a + b, 0)
+            .filter(item => item.subItem)
+            .map(item => item.qty)
+            .reduce((a, b) => a + b, 0)
         : 0;
 
       if (!focus && this.item.hasOwnProperty("rules")) {
@@ -215,9 +213,7 @@ export default {
             msg: ["dialog.maxSubItem", this.item[this.language], max],
             timeout: { duration: 5000, fn: "resolve" },
             buttons: [{ text: "button.confirm", fn: "resolve" }]
-          }).then(() => {
-            this.$q();
-          });
+          }).then(() => this.$q());
           return true;
         }
       }
@@ -234,22 +230,20 @@ export default {
         title: "dialog.accessDenied",
         msg: "dialog.accessDeniedTip",
         buttons: [{ text: "button.confirm", fn: "resolve" }]
-      }).then(() => {
-        this.$q();
-      });
+      }).then(() => this.$q());
     },
     modify() {
       if (this.isEmptyTicket) return;
       let target = !!document.querySelector(".sub.target");
       target
         ? this.$p("modify", {
-          item: {
-            qty: this.choiceSet ? this.choiceSet.qty : 1,
-            single: this.choiceSet ? this.choiceSet.single : 0,
-            discount: 0
-          },
-          type: "choiceSet"
-        })
+            item: {
+              qty: this.choiceSet ? this.choiceSet.qty : 1,
+              single: this.choiceSet ? this.choiceSet.single : 0,
+              discount: 0
+            },
+            type: "choiceSet"
+          })
         : this.$p("modify", { item: this.item });
     },
     course() {
@@ -271,8 +265,8 @@ export default {
             Object.assign(coupon, { redeem: false, enable: true });
             return coupon;
           })
-        })
-      })
+        });
+      });
     },
     timer() {
       if (this.isEmptyTicket) return;
@@ -294,6 +288,7 @@ export default {
         .catch(this.placeFailed);
     },
     placeFailed(error) {
+      console.log(error);
       this.$socket.emit("[SYS] RECORD", {
         type: "System",
         event: "",
@@ -307,9 +302,7 @@ export default {
         title: "dialog.somethingWrong",
         msg: "dialog.somethingWrongTip",
         buttons: [{ text: "button.confirm", fn: "resolve" }]
-      }).then(() => {
-        this.$q();
-      });
+      }).then(() => this.$q());
     },
     combineTogoItems() {
       //combine togo list to origin dineIn placed items
@@ -369,24 +362,24 @@ export default {
                   );
                 });
               } else {
-                let { printOnDone } = this.store.table;
+                let { printOnDone } = this.dinein;
                 Object.assign(this.currentTable, { invoice: [order._id] });
                 this.$socket.emit("[TABLE] SETUP", this.currentTable);
                 this.$socket.emit("[SAVE] INVOICE", order, false, content => {
                   if (print) {
                     printOnDone
                       ? Printer.setTarget("All").print(
-                        Object.assign(order, {
-                          delay: +new Date(),
-                          content: items
-                        })
-                      )
+                          Object.assign(order, {
+                            delay: +new Date(),
+                            content: items
+                          })
+                        )
                       : Printer.setTarget("Order").print(
-                        Object.assign(order, {
-                          delay: +new Date(),
-                          content: items
-                        })
-                      );
+                          Object.assign(order, {
+                            delay: +new Date(),
+                            content: items
+                          })
+                        );
                   }
                 });
               }
@@ -397,7 +390,7 @@ export default {
               });
             } else {
               //dine in needs to update table status
-              let { printOnDone } = this.store.table;
+              let { printOnDone } = this.dinein;
               Object.assign(this.currentTable, { invoice: [order._id] });
               this.$socket.emit("[TABLE] SETUP", this.currentTable);
               this.$socket.emit("[SAVE] INVOICE", order, print, content => {
@@ -417,7 +410,7 @@ export default {
                 if (this.order.type !== "DINE_IN") {
                   Printer.setTarget("All").print(diffs);
                 } else {
-                  this.store.table.printOnDone
+                  this.dinein.printOnDone
                     ? Printer.setTarget("All").print(diffs)
                     : Printer.setTarget("Order").print(diffs);
                 }
@@ -466,21 +459,17 @@ export default {
       this.isEmptyTicket
         ? this.exitOut()
         : this.$dialog({
-          title: "dialog.exitConfirm",
-          msg: "dialog.exitConfirmTip"
-        })
-          .then(() => {
-            this.exitOut();
+            title: "dialog.exitConfirm",
+            msg: "dialog.exitConfirmTip"
           })
-          .catch(() => {
-            this.$q();
-          });
+            .then(() => this.exitOut())
+            .catch(() => this.$q());
     },
     combineOrderInfo(extra) {
       let customer = Object.assign({}, this.customer);
       let order = Object.assign({}, this.order);
       if (this.app.mode === "create") {
-        delete customer.extra;
+        delete customer.favorite;
         Object.assign(order, {
           customer,
           type: this.ticket.type,
@@ -594,15 +583,15 @@ export default {
       this.isEmptyTicket
         ? this.resetTableExit()
         : this.$dialog({
-          title: "dialog.exitConfirm",
-          msg: "dialog.exitConfirmTip"
-        })
-          .then(() => {
-            this.resetTableExit();
+            title: "dialog.exitConfirm",
+            msg: "dialog.exitConfirmTip"
           })
-          .catch(() => {
-            this.$q();
-          });
+            .then(() => {
+              this.resetTableExit();
+            })
+            .catch(() => {
+              this.$q();
+            });
     },
     resetTableExit() {
       this.app.mode === "create" &&

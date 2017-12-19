@@ -399,7 +399,7 @@ export default {
         'setTitle': 'Set Title',
         'discount': 'Set Discount',
         'tip': 'Set Tip',
-        'modify': 'Modify Item',
+        'modify': 'Modify',
         'timer': 'Set Time'
     },
     dialog: {
@@ -878,7 +878,6 @@ export default {
         'doneLock': 'Auto Lock',
         'inactiveLock': 'Inactive Lock',
         'binding': 'Binding',
-        'errorsAllow': 'Errors Allow',
         'apply': 'Apply',
         'setDefault': 'Set Default',
         'title': 'Title',

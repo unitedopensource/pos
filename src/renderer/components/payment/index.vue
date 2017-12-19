@@ -1,218 +1,220 @@
 <template>
-    <div class="popupMask center dark">
-        <transition-group name="payment" mode="out-in" appear>
-            <div class="window" v-show="!component" :key="0">
-                <header class="title">
-                    <span>{{$t('title.payment')}}</span>
-                    <div v-if="!payInFull && order.hasOwnProperty('splitPayment')" class="viewer">
-                        <label v-for="(split,index) in order.splitPayment" :key="index">
-                            <input type="radio" name="split" :id="'split_'+index" :value="index" v-model="current" @change="switchInvoice(index)">
-                            <label :for="'split_'+index" class="tag">{{index + 1}}</label>
-                            <div class="preview" @click="preview(index)">
-                                <i class="fa fa-wpforms"></i>
-                                <span>{{$t('text.preview')}}</span>
-                            </div>
-                        </label>
-                    </div>
-                    <i class="fa fa-times" @click="init.reject(false)"></i>
-                </header>
-                <nav>
-                    <div class="paymentTypes">
-                        <div class="type">
-                            <input type="radio" v-model="paymentType" name="paymentType" value="CASH" id="CASH" @change="setPaymentType('CASH')">
-                            <label for="CASH">{{$t('type.CASH')}}</label>
-                        </div>
-                        <div class="type" v-if="!isThirdPartyPayment">
-                            <input type="radio" v-model="paymentType" name="paymentType" value="CREDIT" id="CREDIT" @change="setPaymentType('CREDIT')">
-                            <label for="CREDIT">{{$t('type.CREDIT')}}</label>
-                        </div>
-                        <div class="type" v-else>
-                            <input type="radio" v-model="paymentType" name="paymentType" value="THIRD" id="THIRD" @change="setPaymentType('THIRD')">
-                            <label for="THIRD">{{$t('type.THIRD')}}</label>
-                        </div>
-                        <div class="type">
-                            <input type="radio" v-model="paymentType" name="paymentType" value="GIFT" id="GIFT" @change="setPaymentType('GIFT')">
-                            <label for="GIFT">{{$t('type.GIFT')}}</label>
-                        </div>
-                    </div>
-                    <div class="balanceDue" @dblclick="roundUp">
-                        <span class="for">{{$t('text.balanceDue')}}:</span>
-                        <div class="inner">
-                            <span class="due">
-                                <span class="symbol">$</span>{{payment.remain | decimal}}</span>
-                            <div class="addition" v-show="payment.discount > 0">
-                                <span class="text">{{$t('text.includeDiscount')}}</span>
-                                <span class="value">({{payment.discount | decimal}})</span>
-                            </div>
-                            <div class="addition" v-show="payment.tip > 0">
-                                <span class="text">{{$t('text.includeTip')}}</span>
-                                <span class="value">({{payment.tip | decimal}})</span>
-                            </div>
-                            <div class="addition" v-show="payment.gratuity > 0">
-                                <span class="text">{{$t('text.includeGratuity')}}</span>
-                                <span class="value">({{payment.gratuity | decimal}})</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="fn">
-                        <button class="btn" @click="setTip">{{$t('button.setTip')}}</button>
-                        <button class="btn" @click="setDiscount" :disabled="!discountable">{{$t('button.setDiscount')}}</button>
-                        <button class="btn" @click="save">{{$t('button.save')}}</button>
-                    </div>
-                </nav>
-                <article>
-                    <section class="numpad">
-                        <div @click="input('7')" class="numKey">7</div>
-                        <div @click="input('8')" class="numKey">8</div>
-                        <div @click="input('9')" class="numKey">9</div>
-                        <div @click="input('4')" class="numKey">4</div>
-                        <div @click="input('5')" class="numKey">5</div>
-                        <div @click="input('6')" class="numKey">6</div>
-                        <div @click="input('1')" class="numKey">1</div>
-                        <div @click="input('2')" class="numKey">2</div>
-                        <div @click="input('3')" class="numKey">3</div>
-                        <div @click="input('0')" class="numKey">0</div>
-                        <div @click="input('00')" class="double numKey">00</div>
-                    </section>
-                    <section class="field">
-                        <template v-if="paymentType === 'CASH'">
-                            <div class="inputs">
-                                <div class="input" @click="setAnchor($event)" data-anchor="paid" data-format="money">
-                                    <span class="text">{{$t('text.paid')}}</span>
-                                    <span class="value">{{paid}}</span>
-                                </div>
-                                <div class="input" @click="setAnchor($event)" data-anchor="tip" data-format="money">
-                                    <span class="text">{{$t('text.tip')}}</span>
-                                    <span class="value">{{tip}}</span>
-                                </div>
-                                <div class="input">
-                                    <span class="text">{{$t('text.changeDue')}}</span>
-                                    <span class="value">{{cashTender | decimal}}</span>
-                                </div>
-                                <div class="input" @click="setAnchor($event)" data-anchor="evenly" data-format="number">
-                                    <span class="text">{{$t('text.separate')}}
-                                        <span class="people">$ {{(payment.balance / evenly) | decimal}}</span>
-                                    </span>
-                                    <span class="value">{{evenly}}</span>
-                                </div>
-                            </div>
-                            <aside class="padCtrl">
-                                <div @click="del">&#8592;</div>
-                                <div @click="clear">C</div>
-                                <div @click="charge" :class="{disabled:payment.remain <= 0 || paid === '0.00'}">&#8626;</div>
-                            </aside>
-                        </template>
-                        <template v-else-if="paymentType === 'CREDIT'">
-                            <div class="inputs">
-                                <div class="input" @click="setAnchor($event)" data-anchor="paid" data-format="money">
-                                    <span class="text">{{$t('text.paid')}}</span>
-                                    <span class="value">{{paid}}</span>
-                                </div>
-                                <div class="input" @click="setAnchor($event)" data-anchor="tip" data-format="money">
-                                    <span class="text">{{$t('text.tip')}}</span>
-                                    <span class="value">{{tip}}</span>
-                                </div>
-                                <div class="input" @click="setAnchor($event)" data-anchor="creditCard" data-format="number">
-                                    <span class="text">{{$t('card.number')}}</span>
-                                    <input v-model="creditCard" v-mask="'#### #### #### ####'">
-                                </div>
-                                <div class="input" @click="setAnchor($event)" data-anchor="expiration" data-format="number">
-                                    <span class="text">{{$t('card.expirationDate')}}</span>
-                                    <input v-model="expiration" v-mask="'## / ##'">
-                                </div>
-                            </div>
-                            <aside class="padCtrl">
-                                <div @click="del">&#8592;</div>
-                                <div @click="clear">C</div>
-                                <div @click="charge">&#8626;</div>
-                            </aside>
-                        </template>
-                        <template v-else-if="paymentType === 'THIRD'">
-                            <div class="inputs">
-                                <div class="input" @click="setAnchor($event)" data-anchor="paid" data-format="money">
-                                    <span class="text">{{$t('text.paid')}}</span>
-                                    <span class="value">{{paid}}</span>
-                                </div>
-                                <div class="input" @click="setAnchor($event)" data-anchor="tip" data-format="money">
-                                    <span class="text">{{$t('text.tip')}}</span>
-                                    <span class="value">{{tip}}</span>
-                                </div>
-                                <div class="options">
-                                    <div class="type">
-                                        <input type="radio" v-model="thirdPartyType" value="Visa" id="Visa">
-                                        <label for="Visa">Visa</label>
-                                    </div>
-                                    <div class="type">
-                                        <input type="radio" v-model="thirdPartyType" value="Master" id="Master">
-                                        <label for="Master">Master</label>
-                                    </div>
-                                    <div class="type">
-                                        <input type="radio" v-model="thirdPartyType" value="Discover" id="Discover">
-                                        <label for="Discover">Discover</label>
-                                    </div>
-                                    <div class="type">
-                                        <input type="radio" v-model="thirdPartyType" value="AE" id="AE">
-                                        <label for="AE">AE</label>
-                                    </div>
-                                    <div class="type">
-                                        <input type="radio" v-model="thirdPartyType" value="GrubHub" id="GrubHub">
-                                        <label for="GrubHub">GrubHub</label>
-                                    </div>
-                                    <div class="type">
-                                        <input type="radio" v-model="thirdPartyType" value="Eat 24" id="Eat">
-                                        <label for="Eat">Eat 24</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <aside class="padCtrl">
-                                <div @click="del">&#8592;</div>
-                                <div @click="clear">C</div>
-                                <div @click="charge">&#8626;</div>
-                            </aside>
-                        </template>
-                        <template v-else>
-                            <div class="inputs">
-                                <div class="input" @click="setAnchor($event)" data-anchor="paid" data-format="money">
-                                    <span class="text">{{$t('text.paid')}}</span>
-                                    <span class="value">{{paid}}</span>
-                                </div>
-                                <div class="input" @click="setAnchor($event)" data-anchor="tip" data-format="money">
-                                    <span class="text">{{$t('text.tip')}}</span>
-                                    <span class="value">{{tip}}</span>
-                                </div>
-                                <div class="input" @click="setAnchor($event)" data-anchor="giftCard" data-format="number" v-if="typeof giftCard === 'string'">
-                                    <span class="text">{{$t('card.number')}}</span>
-                                    <input v-model="giftCard" type="text" v-mask="'#### #### #### ####'">
-                                </div>
-                                <div class="input" v-else>
-                                  <span class="text">{{$t('card.number')}}</span>
-                                    <input v-model="giftCard.number" v-mask="'#### #### #### ####'">
-                                </div>
-                                <div class="input" v-if="typeof giftCard === 'string'">
-                                    <span class="text">{{$t('text.balance')}}</span>
-                                    <span class="value">0.00</span>
-                                </div>
-                                <div class="input" v-else>
-                                    <span class="text">{{$t('text.balance')}}</span>
-                                    <span class="value">$ {{giftCard.balance | decimal}}</span>
-                                </div>
-                            </div>
-                            <aside class="padCtrl">
-                                <div @click="del">&#8592;</div>
-                                <div @click="clear">C</div>
-                                <div @click="queryGiftCard" v-if="anchor === 'giftCard' && typeof giftCard === 'string'" :class="{disabled:giftCard.length !== 19}"><i class="fa fa-search"></i></div>
-                                <div @click="charge" v-else>&#8626;</div>
-                            </aside>
-                        </template>
-                    </section>
-                    <section class="quickInput">
-                        <div class="numKey" v-for="(num,i) in quickInput" @click="setQuickInput(num)" :key="i">{{num}}</div>
-                    </section>
-                </article>
+  <div class="popupMask center dark">
+    <transition-group name="payment" mode="out-in" appear>
+      <div class="window" v-show="!component" :key="0">
+        <header class="title">
+          <span>{{$t('title.payment')}}</span>
+          <div v-if="!payInFull && order.hasOwnProperty('splitPayment')" class="viewer">
+            <label v-for="(split,index) in order.splitPayment" :key="index">
+              <input type="radio" name="split" :id="'split_'+index" :value="index" v-model="current" @change="switchInvoice(index)">
+              <label :for="'split_'+index" class="tag">{{index + 1}}</label>
+              <div class="preview" @click="preview(index)">
+                <i class="fa fa-wpforms"></i>
+                <span>{{$t('text.preview')}}</span>
+              </div>
+            </label>
+          </div>
+          <i class="fa fa-times" @click="init.reject(false)"></i>
+        </header>
+        <nav>
+          <div class="paymentTypes">
+            <div class="type">
+              <input type="radio" v-model="paymentType" name="paymentType" value="CASH" id="CASH" @change="setPaymentType('CASH')">
+              <label for="CASH">{{$t('type.CASH')}}</label>
             </div>
-            <div :is="component" :init="componentData" :key="1"></div>
-        </transition-group>
-    </div>
+            <div class="type" v-if="!isThirdPartyPayment">
+              <input type="radio" v-model="paymentType" name="paymentType" value="CREDIT" id="CREDIT" @change="setPaymentType('CREDIT')">
+              <label for="CREDIT">{{$t('type.CREDIT')}}</label>
+            </div>
+            <div class="type" v-else>
+              <input type="radio" v-model="paymentType" name="paymentType" value="THIRD" id="THIRD" @change="setPaymentType('THIRD')">
+              <label for="THIRD">{{$t('type.THIRD')}}</label>
+            </div>
+            <div class="type">
+              <input type="radio" v-model="paymentType" name="paymentType" value="GIFT" id="GIFT" @change="setPaymentType('GIFT')">
+              <label for="GIFT">{{$t('type.GIFT')}}</label>
+            </div>
+          </div>
+          <div class="balanceDue" @dblclick="roundUp">
+            <span class="for">{{$t('text.balanceDue')}}:</span>
+            <div class="inner">
+              <span class="due">
+                <span class="symbol">$</span>{{payment.remain | decimal}}</span>
+              <div class="addition" v-show="payment.discount > 0">
+                <span class="text">{{$t('text.includeDiscount')}}</span>
+                <span class="value">({{payment.discount | decimal}})</span>
+              </div>
+              <div class="addition" v-show="payment.tip > 0">
+                <span class="text">{{$t('text.includeTip')}}</span>
+                <span class="value">({{payment.tip | decimal}})</span>
+              </div>
+              <div class="addition" v-show="payment.gratuity > 0">
+                <span class="text">{{$t('text.includeGratuity')}}</span>
+                <span class="value">({{payment.gratuity | decimal}})</span>
+              </div>
+            </div>
+          </div>
+          <div class="fn">
+            <button class="btn" @click="setTip">{{$t('button.setTip')}}</button>
+            <button class="btn" @click="setDiscount" :disabled="!discountable">{{$t('button.setDiscount')}}</button>
+            <button class="btn" @click="save">{{$t('button.save')}}</button>
+          </div>
+        </nav>
+        <article>
+          <section class="numpad">
+            <div @click="input('7')" class="numKey">7</div>
+            <div @click="input('8')" class="numKey">8</div>
+            <div @click="input('9')" class="numKey">9</div>
+            <div @click="input('4')" class="numKey">4</div>
+            <div @click="input('5')" class="numKey">5</div>
+            <div @click="input('6')" class="numKey">6</div>
+            <div @click="input('1')" class="numKey">1</div>
+            <div @click="input('2')" class="numKey">2</div>
+            <div @click="input('3')" class="numKey">3</div>
+            <div @click="input('0')" class="numKey">0</div>
+            <div @click="input('00')" class="double numKey">00</div>
+          </section>
+          <section class="field">
+            <template v-if="paymentType === 'CASH'">
+              <div class="inputs">
+                <div class="input" @click="setAnchor($event)" data-anchor="paid" data-format="money">
+                  <span class="text">{{$t('text.paid')}}</span>
+                  <span class="value">{{paid}}</span>
+                </div>
+                <div class="input" @click="setAnchor($event)" data-anchor="tip" data-format="money">
+                  <span class="text">{{$t('text.tip')}}</span>
+                  <span class="value">{{tip}}</span>
+                </div>
+                <div class="input">
+                  <span class="text">{{$t('text.changeDue')}}</span>
+                  <span class="value">{{cashTender | decimal}}</span>
+                </div>
+                <div class="input" @click="setAnchor($event)" data-anchor="evenly" data-format="number">
+                  <span class="text">{{$t('text.separate')}}
+                    <span class="people">$ {{(payment.balance / evenly) | decimal}}</span>
+                  </span>
+                  <span class="value">{{evenly}}</span>
+                </div>
+              </div>
+              <aside class="padCtrl">
+                <div @click="del">&#8592;</div>
+                <div @click="clear">C</div>
+                <div @click="charge" :class="{disabled:payment.remain <= 0 || paid === '0.00'}">&#8626;</div>
+              </aside>
+            </template>
+            <template v-else-if="paymentType === 'CREDIT'">
+              <div class="inputs">
+                <div class="input" @click="setAnchor($event)" data-anchor="paid" data-format="money">
+                  <span class="text">{{$t('text.paid')}}</span>
+                  <span class="value">{{paid}}</span>
+                </div>
+                <div class="input" @click="setAnchor($event)" data-anchor="tip" data-format="money">
+                  <span class="text">{{$t('text.tip')}}</span>
+                  <span class="value">{{tip}}</span>
+                </div>
+                <div class="input" @click="setAnchor($event)" data-anchor="creditCard" data-format="number">
+                  <span class="text">{{$t('card.number')}}</span>
+                  <input v-model="creditCard" v-mask="'#### #### #### ####'">
+                </div>
+                <div class="input" @click="setAnchor($event)" data-anchor="expiration" data-format="number">
+                  <span class="text">{{$t('card.expirationDate')}}</span>
+                  <input v-model="expiration" v-mask="'## / ##'">
+                </div>
+              </div>
+              <aside class="padCtrl">
+                <div @click="del">&#8592;</div>
+                <div @click="clear">C</div>
+                <div @click="charge">&#8626;</div>
+              </aside>
+            </template>
+            <template v-else-if="paymentType === 'THIRD'">
+              <div class="inputs">
+                <div class="input" @click="setAnchor($event)" data-anchor="paid" data-format="money">
+                  <span class="text">{{$t('text.paid')}}</span>
+                  <span class="value">{{paid}}</span>
+                </div>
+                <div class="input" @click="setAnchor($event)" data-anchor="tip" data-format="money">
+                  <span class="text">{{$t('text.tip')}}</span>
+                  <span class="value">{{tip}}</span>
+                </div>
+                <div class="options">
+                  <div class="type">
+                    <input type="radio" v-model="thirdPartyType" value="Visa" id="Visa">
+                    <label for="Visa">Visa</label>
+                  </div>
+                  <div class="type">
+                    <input type="radio" v-model="thirdPartyType" value="Master" id="Master">
+                    <label for="Master">Master</label>
+                  </div>
+                  <div class="type">
+                    <input type="radio" v-model="thirdPartyType" value="Discover" id="Discover">
+                    <label for="Discover">Discover</label>
+                  </div>
+                  <div class="type">
+                    <input type="radio" v-model="thirdPartyType" value="AE" id="AE">
+                    <label for="AE">AE</label>
+                  </div>
+                  <div class="type">
+                    <input type="radio" v-model="thirdPartyType" value="GrubHub" id="GrubHub">
+                    <label for="GrubHub">GrubHub</label>
+                  </div>
+                  <div class="type">
+                    <input type="radio" v-model="thirdPartyType" value="Eat 24" id="Eat">
+                    <label for="Eat">Eat 24</label>
+                  </div>
+                </div>
+              </div>
+              <aside class="padCtrl">
+                <div @click="del">&#8592;</div>
+                <div @click="clear">C</div>
+                <div @click="charge">&#8626;</div>
+              </aside>
+            </template>
+            <template v-else>
+              <div class="inputs">
+                <div class="input" @click="setAnchor($event)" data-anchor="paid" data-format="money">
+                  <span class="text">{{$t('text.paid')}}</span>
+                  <span class="value">{{paid}}</span>
+                </div>
+                <div class="input" @click="setAnchor($event)" data-anchor="tip" data-format="money">
+                  <span class="text">{{$t('text.tip')}}</span>
+                  <span class="value">{{tip}}</span>
+                </div>
+                <div class="input" @click="setAnchor($event)" data-anchor="giftCard" data-format="number" v-if="typeof giftCard === 'string'">
+                  <span class="text">{{$t('card.number')}}</span>
+                  <input v-model="giftCard" type="text" v-mask="'#### #### #### ####'">
+                </div>
+                <div class="input" v-else>
+                  <span class="text">{{$t('card.number')}}</span>
+                  <input v-model="giftCard.number" v-mask="'#### #### #### ####'">
+                </div>
+                <div class="input" v-if="typeof giftCard === 'string'">
+                  <span class="text">{{$t('text.balance')}}</span>
+                  <span class="value">0.00</span>
+                </div>
+                <div class="input" v-else>
+                  <span class="text">{{$t('text.balance')}}</span>
+                  <span class="value">$ {{giftCard.balance | decimal}}</span>
+                </div>
+              </div>
+              <aside class="padCtrl">
+                <div @click="del">&#8592;</div>
+                <div @click="clear">C</div>
+                <div @click="queryGiftCard" v-if="anchor === 'giftCard' && typeof giftCard === 'string'" :class="{disabled:giftCard.length !== 19}">
+                  <i class="fa fa-search"></i>
+                </div>
+                <div @click="charge" v-else>&#8626;</div>
+              </aside>
+            </template>
+          </section>
+          <section class="quickInput">
+            <div class="numKey" v-for="(num,i) in quickInput" @click="setQuickInput(num)" :key="i">{{num}}</div>
+          </section>
+        </article>
+      </div>
+      <div :is="component" :init="componentData" :key="1"></div>
+    </transition-group>
+  </div>
 </template>
 
 <style scoped>
@@ -547,7 +549,15 @@ import thirdParty from "./mark";
 import tiper from "./tiper";
 export default {
   props: ["init"],
-  components: { tiper, ticket, capture, dialoger, discount, creditCard, thirdParty },
+  components: {
+    tiper,
+    ticket,
+    capture,
+    dialoger,
+    discount,
+    creditCard,
+    thirdParty
+  },
   computed: {
     isNewTicket() {
       return this.app.mode === "create" && this.$route.name === "Menu";
@@ -1530,16 +1540,29 @@ export default {
       new Promise((resolve, reject) => {
         this.componentData = { resolve, reject, payment: this.payment };
         this.component = "discount";
-      }).then(_discount => {
-        Object.assign(this.payment, { discount: _discount });
-        this.recalculatePayment();
-        this.paid = "0.00";
-        this.poleDisplay(
-          ["Discount:", -discount.toFixed(2)],
-          ["Due:", this.payment.remain.toFixed(2)]
-        );
-        this.$q()
-      }).catch(() => this.$q())
+      })
+        .then(result => {
+          const { discount, coupon } = result;
+          Object.assign(this.payment, { discount });
+
+          if (discount > 0) {
+            this.order.coupons.push(coupon);
+          } else {
+            const index = this.order.coupons.findIndex(
+              coupon => coupon.code === "UnitedPOS Inc"
+            );
+            index !== -1 && this.order.coupons.splice(index, 1);
+          }
+
+          this.recalculatePayment();
+          this.paid = "0.00";
+          this.poleDisplay(
+            ["Discount:", -discount.toFixed(2)],
+            ["Due:", this.payment.remain.toFixed(2)]
+          );
+          this.$q();
+        })
+        .catch(() => this.$q());
     },
     preview(index) {
       const ticket = JSON.parse(JSON.stringify(this.order));
@@ -1555,7 +1578,9 @@ export default {
             : item.sort === sort
       );
 
-      ticket.content.forEach(item => { item.print = false; });
+      ticket.content.forEach(item => {
+        item.print = false;
+      });
 
       this.$p("ticket", { ticket, exit: true });
     },
@@ -1579,7 +1604,46 @@ export default {
       this.setAnchor("paid");
     },
     getQuickInput(amount) {
-      const preset = [1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 100, 120, 140, 150, 200, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1100, 1500, 2000, 3000, 4000, 5000];
+      const preset = [
+        1,
+        2,
+        3,
+        4,
+        5,
+        10,
+        15,
+        20,
+        25,
+        30,
+        35,
+        40,
+        45,
+        50,
+        60,
+        70,
+        80,
+        100,
+        120,
+        140,
+        150,
+        200,
+        300,
+        350,
+        400,
+        450,
+        500,
+        600,
+        700,
+        800,
+        900,
+        1000,
+        1100,
+        1500,
+        2000,
+        3000,
+        4000,
+        5000
+      ];
       const round = Math.ceil(isNumber(amount) ? toFixed(amount, 2) : 0);
 
       let array = [];
@@ -1608,7 +1672,16 @@ export default {
       this.quickInput = preset;
     },
     recalculatePayment() {
-      let { subtotal, tax, discount, paid, delivery, tip, gratuity, type } = this.payment;
+      let {
+        subtotal,
+        tax,
+        discount,
+        paid,
+        delivery,
+        tip,
+        gratuity,
+        type
+      } = this.payment;
 
       let total = toFixed(subtotal + tax + delivery, 2);
       let due = toFixed(total - discount, 2);

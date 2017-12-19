@@ -17,25 +17,57 @@
 </template>
 
 <script>
-import numPad from "../common/numpad"
+import { mapGetters } from "vuex";
+import numPad from "../common/numpad";
 export default {
-    props: ["init"],
-    components: { numPad },
-    data() {
-        return {
-            unit: "%",
-            discount: "0.00",
-            reset: true
-        }
-    },
-    methods: {
-        confirm() {
-            let discount = this.discount.toFloat();
-            let { payment } = this.init;
-            if (this.unit === '%')
-                discount = toFixed(payment.subtotal * this.discount / 100, 2);
-            this.init.resolve(discount);
-        }
+  props: ["init"],
+  components: { numPad },
+  computed: {
+    ...mapGetters(["order"])
+  },
+  data() {
+    return {
+      unit: "%",
+      discount: "0",
+      reset: true
+    };
+  },
+  methods: {
+    confirm() {
+      let discount = this.discount.toFloat();
+      let { payment } = this.init;
+      let coupon;
+      if (this.unit === "%") {
+        discount = toFixed(payment.subtotal * this.discount / 100, 2);
+        coupon = {
+          code: "UnitedPOS Inc",
+          alias: `${this.discount} % OFF`,
+          discount,
+          stack: true,
+          expire: {
+            enable: false
+          },
+          count: 0,
+          type: "discount",
+          apply: "order"
+        };
+      } else {
+        coupon = {
+          code: "UnitedPOS Inc",
+          alias: `$ ${this.discount} OFF`,
+          discount,
+          stack: true,
+          expire: {
+            enable: false
+          },
+          count: 0,
+          type: "Voucher",
+          apply: "order"
+        };
+      }
+
+      this.init.resolve({ discount, coupon });
     }
-}
+  }
+};
 </script>
