@@ -246,6 +246,7 @@ export default {
     },
     UPDATE_STATION(data) {
       Object.assign(this.station, data);
+      Printer.initial(CLODOP, this.config, data);
     },
 
     UPDATE_TABLE_STATUS(data) {

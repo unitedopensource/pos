@@ -34,7 +34,7 @@
             <div class="options">
               <label class="title">{{$t('setting.print')}}</label>
               <div class="inner">
-                <checkbox v-for="(name,index) in printers" :key="index" v-model="printer" :label="name" :val="name" :multiple="true" @input="updatePrint"></checkbox>
+                <checkbox v-for="(name,index) in printers" :key="index" v-model="printer" :title="name" :val="name" :multiple="true" @input="updatePrint" :translate="false"></checkbox>
               </div>
             </div>
           </div>

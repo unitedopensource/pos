@@ -31,7 +31,7 @@
             </div>
             <footer>
                 <div class="f1">
-                    <checkbox v-model="ahead" label="text.tenMinuteAhead"></checkbox>
+                    <checkbox v-model="ahead" title="text.tenMinuteAhead"></checkbox>
                 </div>
                 <div class="btn" @click="init.reject">{{$t('button.cancel')}}</div>
                 <div class="btn" @click="confirm">{{$t('button.confirm')}}</div>
@@ -43,8 +43,9 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import checkbox from "../../setting/common/checkbox";
 import dialoger from "../../common/dialoger";
+import checkbox from "../../setting/common/checkbox";
+
 
 export default {
   props: ["init"],
@@ -52,10 +53,10 @@ export default {
   data() {
     return {
       timer: moment(),
+      ahead: true,
       time: null,
       componentData: null,
       component: null,
-      ahead: true,
       current: +new Date()
     };
   },

@@ -66,7 +66,7 @@
       </div>
       <footer>
         <div class="opt">
-          <checkbox v-model="batch" label="text.readyBatch"></checkbox>
+          <checkbox v-model="batch" title="text.readyBatch"></checkbox>
         </div>
         <button class="btn" v-if="batch" @click="init.resolve">{{$t('button.batch')}}</button>
         <button class="btn" v-else @click="init.reject(false)">{{$t('button.done')}}</button>

@@ -99,11 +99,13 @@ var Preset = function () {
   };
   this.printer = function () {
     return {
-      print: [],
+      print: ["WALK_IN", "PICK_UP", "DELIVERY", "DINE_IN", "BAR", "BUFFET", "SALES", "TO_GO"],
       reprint: [],
       control: {
         buzzer: false,
+        categorize: false,
         prioritize: false,
+        mode:"normal",
         footer: [
           "Thank You Very Much"
         ]
@@ -111,7 +113,7 @@ var Preset = function () {
       layout: {
         contact: true,
         title: true,
-        info: true,
+        customer: true,
         payment: true,
         languages: [{
           ref: "zhCN",
@@ -123,11 +125,23 @@ var Preset = function () {
         }, {
           ref: "usEN",
           enable: true,
-          fontFamily: "QingYuan",
+          fontFamily: "Roboto Condensed",
           fontSize: "21",
           price: true,
           id: false
         }]
+      },
+      title: {
+        "PICK_UP": "PICK UP",
+        "WALK_IN": "WALK IN",
+        "DELIVERY": "DELIVERY",
+        "PRE_PAYMENT": "PRE PAYMENT",
+        "RECEIPT": "RECEIPT",
+        "DINE_IN": "DINE IN",
+        "BUFFET": "BUFFET",
+        "SALES": "SALES",
+        "TO_GO": "TO GO",
+        "BAR": "BAR"
       }
     }
   };

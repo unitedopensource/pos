@@ -11,7 +11,7 @@
         <inputer title="text.secondary" v-model="category.zhCN" length="19"></inputer>
         <inputer title="text.contain" v-model="category.contain" v-if="manual"></inputer>
         <div class="checkboxes" v-else>
-          <checkbox :label="name" v-model="category.contain" :val="name" v-for="(name,index) in categories" :key="index" :multiple="true"></checkbox>
+          <checkbox :title="name" v-model="category.contain" :val="name" v-for="(name,index) in categories" :key="index" :multiple="true" :translate="false"></checkbox>
         </div>
       </div>
       <footer>

@@ -3,13 +3,30 @@
     <input :id="id" :value="val" :checked="has(val)" type="checkbox" @change="toggle($event)" v-if="multiple">
     <input :id="id" :checked="value" type="checkbox" :disabled="disabled" @change="$emit('input',$event.target.checked)" v-else>
     <label :for="id" class="box"></label>
-    <label class="text" :for="id">{{$t(label)}}</label>
+    <label class="text" :for="id" v-if="translate">{{$t(title)}}</label>
+    <label class="text" :for="id" v-else>{{title}}</label>
   </div>
 </template>
 
 <script>
 export default {
-  props: ["val", "label", "value", "multiple", "disabled"],
+  props: {
+    val: null,
+    title: String,
+    value: null,
+    multiple: {
+      type: Boolean,
+      default: false
+    },
+    disabled: {
+      type: Boolean,
+      default: false
+    },
+    translate: {
+      type: Boolean,
+      default: true
+    }
+  },
   data() {
     return {
       id: Math.random()
@@ -34,7 +51,7 @@ export default {
   },
   watch: {
     val(n) {
-      this.has(n)
+      this.has(n);
     }
   }
 };

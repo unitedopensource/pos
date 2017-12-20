@@ -50,7 +50,7 @@
           <selector title="text.apply" v-model="coupon.apply" :opts="applyTargets"></selector>
           <template v-if="coupon.apply === 'category'">
             <div class="checkboxes">
-              <checkbox :label="name" v-model="coupon.reference" :val="name" v-for="(name,index) in categories" :key="index" :multiple="true"></checkbox>
+              <checkbox :title="name" v-model="coupon.reference" :val="name" v-for="(name,index) in categories" :key="index" :multiple="true" :translate="false"></checkbox>
             </div>
           </template>
           <template v-else-if="coupon.apply === 'item'">

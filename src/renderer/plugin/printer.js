@@ -58,14 +58,7 @@ var Printer = function (plugin, config, station) {
     }
 
     this.testPage = function (device) {
-        const {
-            name,
-            address,
-            city,
-            state,
-            zipCode,
-            contact
-        } = this.config;
+        const { name, address, city, state, zipCode, contact } = this.config;
 
         this.plugin.PRINT_INIT('Test Page');
         this.plugin.PRINT_INITA(0, 0, 270, 2000, "");

@@ -14,14 +14,14 @@
                 <div class="options">
                     <label class="title">{{$t('text.apply')}}</label>
                     <div class="inner">
-                        <checkbox v-model="tax.apply.WALK_IN" label="type.WALK_IN"></checkbox>
-                        <checkbox v-model="tax.apply.PICK_UP" label="type.PICK_UP"></checkbox>
-                        <checkbox v-model="tax.apply.DELIVERY" label="type.DELIVERY"></checkbox>
-                        <checkbox v-model="tax.apply.DINE_IN" label="type.DINE_IN"></checkbox>
-                        <checkbox v-model="tax.apply.BUFFET" label="type.BUFFET"></checkbox>
-                        <checkbox v-model="tax.apply.TO_GO" label="type.TO_GO"></checkbox>
-                        <checkbox v-model="tax.apply.BAR" label="type.BAR"></checkbox>
-                        <checkbox v-model="tax.apply.SALES" label="type.SALES"></checkbox>
+                        <checkbox v-model="tax.apply.WALK_IN" title="type.WALK_IN"></checkbox>
+                        <checkbox v-model="tax.apply.PICK_UP" title="type.PICK_UP"></checkbox>
+                        <checkbox v-model="tax.apply.DELIVERY" title="type.DELIVERY"></checkbox>
+                        <checkbox v-model="tax.apply.DINE_IN" title="type.DINE_IN"></checkbox>
+                        <checkbox v-model="tax.apply.BUFFET" title="type.BUFFET"></checkbox>
+                        <checkbox v-model="tax.apply.TO_GO" title="type.TO_GO"></checkbox>
+                        <checkbox v-model="tax.apply.BAR" title="type.BAR"></checkbox>
+                        <checkbox v-model="tax.apply.SALES" title="type.SALES"></checkbox>
                     </div>
                 </div>
             </div>
