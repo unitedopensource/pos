@@ -79,7 +79,7 @@
         <button class="btn" @click="exit">{{$t('button.exit')}}</button>
       </footer>
     </div>
-    <div :is="component" :init="componentData"></div>
+    <div :is="component" :init="componentData" @refresh="initialData"></div>
   </div>
 </template>
 

@@ -7,7 +7,7 @@
             <order-summary :data="Array.isArray(this.prevHistory) ? prevHistory : history" :date="calendarDate || today" @filter="setFilter"></order-summary>
         </header>
         <article>
-            <side-function :date="calendarDate || today" @change="setCalendar"></side-function>
+            <side-buttons :date="calendarDate || today" @change="setCalendar"></side-buttons>
             <section class="tickets">
                 <div class="inner">
                     <ticket v-for="(invoice,index) in invoices" :key="index" :invoice="invoice"></ticket>
@@ -16,7 +16,7 @@
             </section>
             <section class="ticket">
                 <order-list layout="display" :display="true"></order-list>
-                <order-function :date="calendarDate || today"></order-function>
+                <order-buttons :date="calendarDate || today"></order-buttons>
             </section>
         </article>
         <div :is="component" :init="componentData"></div>
@@ -29,15 +29,15 @@ import Maintenance from "../dock/maintenance";
 import pagination from "../common/pagination";
 import orderList from "../common/orderList";
 import dialoger from "../common/dialoger";
-import orderFunction from "./orderFunction";
-import sideFunction from "./sideFunction";
+import orderButtons from "./orderButtons";
+import sideButtons from "./sideButtons";
 import orderSummary from "./summary";
 import ticket from "./component/ticket";
 
 export default {
   components: {
-    orderFunction,
-    sideFunction,
+    orderButtons,
+    sideButtons,
     orderSummary,
     Maintenance,
     pagination,

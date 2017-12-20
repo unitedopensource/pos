@@ -1,51 +1,51 @@
 <template>
-    <div class="popupMask center dark">
-        <div class="driver window">
-            <header class="title">
-                <span>{{$t('title.setDriver')}}</span>
-                <i class="fa fa-times" @click="init.reject"></i>
-            </header>
-            <div class="inner">
-              <section class="outer">
-                <v-touch tag="ul" class="orders" :style="scroll" @panup="move" @pandown="move" @panstart="panStart" @panend="panEnd">
-                    <li v-for="(order,index) in orders" :key="index" :data-ticket="order.number" @click="setTarget(order,$event)">
-                        <span class="number">{{order.number}}</span>
-                        <div class="info">
-                            <span class="phone">{{order.customer.phone | phone}}</span>
-                            <span class="address">{{order.customer.address}}</span>
-                        </div>
-                        <div class="prices">
-                          <span class="total">{{order.payment.total | decimal}}</span>
-                          <span class="tip" v-show="order.payment.tip > 0">({{order.payment.tip | decimal}})</span>
-                        </div>
-                        <span class="driver">{{order.driver}}</span>
-                    </li>
-                </v-touch>
-              </section>
-                <ul class="letters">
-                    <li v-for="(letter,index) in letters" :key="letter" @click="setDriver(letter,$event)" :class="letter" :data-letter="letter">{{letter}}</li>
-                    <li class="clear" @click="clear">{{$t('button.clear')}}</li>
-                </ul>
-            </div>
-            <footer>
-                <div class="f1">
-                    <checkbox v-model="loop" label="text.autoNext"></checkbox>
-                </div>
-                <div class="btn" @click="setTip">{{$t('button.setTip')}}</div>
-                <div class="btn" @click="init.resolve">{{$t('button.done')}}</div>
-            </footer>
+  <div class="popupMask center dark">
+    <div class="driver window">
+      <header class="title">
+        <span>{{$t('title.setDriver')}}</span>
+        <i class="fa fa-times" @click="init.reject"></i>
+      </header>
+      <div class="inner">
+        <section class="outer">
+          <v-touch tag="ul" class="orders" :style="scroll" @panup="move" @pandown="move" @panstart="panStart" @panend="panEnd">
+            <li v-for="(order,index) in orders" :key="index" :data-ticket="order.number" @click="setTarget(order,$event)">
+              <span class="number">{{order.number}}</span>
+              <div class="info">
+                <span class="phone">{{order.customer.phone | phone}}</span>
+                <span class="address">{{order.customer.address}}</span>
+              </div>
+              <div class="prices">
+                <span class="total">{{order.payment.total | decimal}}</span>
+                <span class="tip" v-show="order.payment.tip > 0">({{order.payment.tip | decimal}})</span>
+              </div>
+              <span class="driver">{{order.driver}}</span>
+            </li>
+          </v-touch>
+        </section>
+        <ul class="letters">
+          <li v-for="(letter,index) in letters" :key="letter" @click="setDriver(letter,$event)" :class="letter" :data-letter="letter">{{letter}}</li>
+          <li class="clear" @click="clear">{{$t('button.clear')}}</li>
+        </ul>
+      </div>
+      <footer>
+        <div class="f1">
+          <checkbox v-model="loop" label="text.autoNext"></checkbox>
         </div>
-        <div :is="component" :init="componentData"></div>
+        <div class="btn" @click="setTip">{{$t('button.setTip')}}</div>
+        <div class="btn" @click="init.resolve">{{$t('button.done')}}</div>
+      </footer>
     </div>
+    <div :is="component" :init="componentData"></div>
+  </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from "vuex";
 import checkbox from "../../setting/common/checkbox";
-import tiper from "../../payment/tiper";
+import tipper from "../../payment/tiper";
 export default {
   props: ["init"],
-  components: { tiper, checkbox },
+  components: { tipper, checkbox },
   computed: {
     scroll() {
       return { transform: `translate3d(0,${this.offset}px,0)` };
@@ -54,7 +54,34 @@ export default {
   },
   data() {
     return {
-      letters: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],
+      letters: [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "I",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "O",
+        "P",
+        "Q",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V",
+        "W",
+        "X",
+        "Y",
+        "Z"
+      ],
       target: null,
       letter: null,
       orders: null,
@@ -151,9 +178,7 @@ export default {
           this.$socket.emit("[UPDATE] INVOICE", this.order, false);
           this.$q();
         })
-        .catch(() => {
-          this.$q();
-        });
+        .catch(() => this.$q());
     },
     next(number) {
       if (number) {
@@ -168,8 +193,7 @@ export default {
             const dom = document.querySelector("ul.orders .active");
             const { top, height } = dom.getBoundingClientRect();
 
-            if (top > 560.5)
-              this.offset = -height;
+            if (top > 560.5) this.offset = -height;
           });
         }
       }

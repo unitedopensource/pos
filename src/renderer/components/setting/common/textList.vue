@@ -29,7 +29,7 @@
 export default {
   props: {
     title: String,
-    value: [String, Number],
+    value: null,
     opts: {
       type: Array,
       default: () => []

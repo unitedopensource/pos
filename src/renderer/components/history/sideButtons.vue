@@ -53,20 +53,20 @@ import { mapGetters, mapActions } from "vuex";
 
 import paymentMark from "../payment/mark";
 import Dialoger from "../common/dialoger";
+import transaction from "./transaction";
 import Reason from "./component/reason";
 import payLog from "./component/payLog";
 import Payment from "../payment/index";
 import Report from "../report/index";
 import Calendar from "./calendar";
 import Terminal from "./terminal";
-import history from "./history";
 import Search from "./search";
 
 export default {
   props: ["date"],
   components: {
     paymentMark,
-    history,
+    transaction,
     Calendar,
     Dialoger,
     Terminal,

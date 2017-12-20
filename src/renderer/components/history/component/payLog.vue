@@ -19,11 +19,15 @@
             <td>{{log.time | moment("HH:mm:ss")}}</td>
             <td v-if="log.type ==='CASH'">{{$t('type.'+log.type)}}</td>
             <td v-else-if="log.type === 'CREDIT'" class="info">
-              <span>{{$t('type.'+log.type)}}<span class="last">({{log.lfd}})</span></span>
+              <span>{{$t('type.'+log.type)}}
+                <span class="last">({{log.lfd}})</span>
+              </span>
               <span>{{log.subType}}</span>
             </td>
             <td v-else-if="log.type ==='GIFT'">
-              <span>{{$t('type.'+log.type)}}<span class="last">({{log.lfd}})</span></span>
+              <span>{{$t('type.'+log.type)}}
+                <span class="last">({{log.lfd}})</span>
+              </span>
             </td>
             <td v-else class="info">
               <span>{{$t('type.'+log.type)}}</span>

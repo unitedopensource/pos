@@ -9,7 +9,7 @@
         <thead>
           <tr>
             <th>{{$t('thead.terminal')}}</th>
-            <th>{{$t('thead.sum')}}</th>
+            <th>{{$t('thead.count')}}</th>
             <th>{{$t('thead.total')}}</th>
             <th>{{$t('thead.status')}}</th>
             <th>{{$t('thead.action')}}</th>
@@ -20,14 +20,14 @@
             <td>{{task.alias}}
               <span class="location">({{task.location}})</span>
             </td>
-            <td>{{task.count}}</td>
+            <td>{{$t('text.records',task.count)}}</td>
             <td>{{task.total | decimal}}</td>
             <td class="status">{{status(task.status)}}</td>
             <td v-if="task.status === 5" class="action">
-              <span class="print">{{$t('button.print')}}</span>
+              <span class="print" @click="reprint(index)">{{$t('button.print')}}</span>
             </td>
             <td v-else class="action">
-              <span class="batch" @click="batchAlone(task)">{{$t('button.batch')}}</span>
+              <span class="batch" @click="batchAlone(task,index)">{{$t('button.batch')}}</span>
             </td>
           </tr>
         </tbody>
@@ -55,8 +55,8 @@ export default {
       stationAlias: this.$store.getters.station.alias,
       componentData: null,
       component: null,
-      tasks: [],
-      detail: false
+      detail: false,
+      tasks: []
     };
   },
   created() {
@@ -142,13 +142,17 @@ export default {
     finalizing() {},
 
     next() {},
-    batchAlone(device) {
+    batchAlone(device, index) {
       this.batch(device).then(response => {
         const result = device.terminal.explainBatch(response.data);
         if (result.code === "000000") {
           device.status = 5;
           Printer.printBatchReport(result);
-          this.$socket.emit("[TERMINAL] CLOSED", result);
+
+          this.tasks[index].report = result;
+          this.$socket.emit("[TERMINAL] CLOSED", result, done =>
+            this.$emit("refresh")
+          );
         } else {
           device.status = -1;
         }
@@ -157,6 +161,10 @@ export default {
     batch(device) {
       device.status = 4;
       return device.terminal.batch();
+    },
+    reprint(index) {
+      const { report } = this.tasks[index];
+      Printer.printBatchReport(report);
     },
     getParser(model) {
       switch (model) {

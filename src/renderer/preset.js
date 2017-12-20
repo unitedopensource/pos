@@ -5,10 +5,7 @@ var Preset = function () {
       mac,
       username,
       wol: false,
-      terminal: {
-        enable: false,
-        target: ""
-      },
+      terminal: "",
       pole: {
         enable: false,
         port: 'COM4',

@@ -4,7 +4,7 @@
         <header>
             <div>
                 <h3>{{$t('title.paymentHistory')}}</h3>
-                <h5>{{$t('tip.foundPaymentRecords',transactions.length)}}</h5>
+                <h5>{{$t('tip.foundRecords',transactions.length)}}</h5>
             </div>
             <nav class="filter">
               <dropdown label="filter.cashier" :options="cashiers" filter="cashier"></dropdown>
