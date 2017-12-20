@@ -401,7 +401,8 @@ export default {
         'tip': 'Set Tip',
         'modify': 'Modify',
         'timer': 'Set Time',
-        'template': 'Item Template'
+        'template': 'Item Template',
+        'interface': 'Interface'
     },
     dialog: {
         'maintenance': 'Maintenance',

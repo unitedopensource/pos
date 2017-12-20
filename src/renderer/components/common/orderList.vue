@@ -243,7 +243,7 @@ export default {
       this.setOrder(config);
       this.calculator(this.order.content);
     },
-    openCreditCard() {},
+    openCreditCard() { },
     toggleTodoList() {
       this.todo = !this.todo;
 
@@ -253,8 +253,8 @@ export default {
       if (items.length === 0) {
         let delivery =
           this.ticket.type === "DELIVERY" &&
-          this.store.delivery &&
-          !this.order.deliveryFree
+            this.store.delivery &&
+            !this.order.deliveryFree
             ? parseFloat(this.store.deliveryCharge)
             : 0;
 
@@ -344,7 +344,6 @@ export default {
       }
 
       if (coupons && coupons.length > 0) {
-        console.log(coupons)
         let offer = 0;
         coupons.forEach(coupon => {
           const { reference } = coupon;
@@ -383,7 +382,7 @@ export default {
         discount += offer;
       }
 
-      let total = parseFloat(subtotal.toFixed(2)) + toFixed(tax, 2) + delivery;
+      let total = subtotal + tax + delivery;
       let due = Math.max(0, total - discount);
       let surcharge = tip + gratuity;
       let balance = due + surcharge;

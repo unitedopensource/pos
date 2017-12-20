@@ -61,10 +61,10 @@ input[type="range"]:focus {
 
 input[type="range"]::-webkit-slider-runnable-track {
   width: 100%;
-  height: 5px;
+  height: 7px;
   cursor: pointer;
   background: #b3e5fc;
-  border-radius: 10px;
+  border-radius: 6px;
   transition: background 0.22s linear;
 }
 
@@ -80,7 +80,7 @@ input[type="range"]::-webkit-slider-thumb {
   background: #fff;
   cursor: pointer;
   -webkit-appearance: none;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
   margin-top: -7px;
 }
 </style>

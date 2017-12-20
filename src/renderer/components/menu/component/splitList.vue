@@ -5,12 +5,8 @@
             <div v-for="(item,index) in instance" :key="index" @click.stop="pick(item.unique)" :data-key="item.unique">
                 <div class="main">
                     <span class="itemWrap">
-                        <span class="item">{{item[language]}}
-                            <span class="mark">{{item.mark[0] | mark}}</span>
-                        </span>
-                        <span class="side">{{item.side[language]}}
-                            <span class="mark">{{item.mark[1] | mark}}</span>
-                        </span>
+                        <span class="item">{{item[language]}}</span>
+                        <span class="side">{{item.side[language]}}</span>
                     </span>
                     <span>{{item.total}}</span>
                 </div>
@@ -29,11 +25,11 @@
                 </span>
             </div>
             <div class="apply">
-                <checkbox v-model="isTax" label="text.tax"></checkbox>
-                <checkbox v-model="isApplyCoupon" label="text.coupon"></checkbox>
+                <checkbox v-model="isTax" title="text.tax"></checkbox>
+                <checkbox v-model="isApplyCoupon" title="text.coupon"></checkbox>
                 <div v-show="toggle">
-                    <checkbox v-model="isChargeDelivery" label="text.deliveryFee"></checkbox>
-                    <checkbox v-model="isApplyGratuity" label="text.gratuity"></checkbox>
+                    <checkbox v-model="isChargeDelivery" title="text.deliveryFee"></checkbox>
+                    <checkbox v-model="isApplyGratuity" title="text.gratuity"></checkbox>
                 </div>
             </div>
         </div>
@@ -94,7 +90,7 @@ export default {
         .querySelector(`.ticket_${this.split} .done .print`)
         .classList.add("active");
     },
-    setDiscount() {},
+    setDiscount() { },
     selectAll() {
       this.instance.forEach(item => {
         this.pick(item.unique);
@@ -117,90 +113,94 @@ export default {
     instance() {
       return this.split
         ? this.invoice.filter(
-            item =>
-              typeof item.sort === "object"
-                ? item.sort.includes(this.split)
-                : item.sort === this.split
-          )
+          item =>
+            typeof item.sort === "object"
+              ? item.sort.includes(this.split)
+              : item.sort === this.split
+        )
         : this.invoice.filter(item => item.sort === 0);
     },
     payment() {
-      let type =
-        this.$route.name === "Menu" ? this.ticket.type : this.order.type;
-      let coupon = this.order.coupon;
+      const { enable, rules } = this.dinein.surcharge;
+      const { type, coupons } = this.order;
 
-      let tip = 0,
-        gratuity = 0,
-        discount = 0,
-        delivery = 0,
-        subtotal = 0,
-        tax = 0,
-        paid = 0,
-        log = [];
+      let tip = 0, gratuity = 0, discount = 0, delivery = 0, subtotal = 0, tax = 0, paid = 0, log = [];
 
       this.instance.forEach(item => {
-        let amount = toFixed(item.single * item.qty, 2);
+        const single = parseFloat(item.single);
+        const qty = item.qty || 1;
+
+        let amount = toFixed(single * qty, 2);
+
         item.choiceSet.forEach(set => {
-          amount += toFixed(set.single * set.qty, 2);
+          const p = parseFloat(set.single);
+          const s = set.qty || 1;
+          const t = toFixed(p * s, 2);
+          amount = toFixed(amount + t, 2);
         });
+
+        subtotal = toFixed(subtotal + amount, 2);
 
         if (this.isTax) {
-          let taxClass = this.tax.class[item.taxClass];
+          const taxClass = this.tax.class[item.taxClass];
           tax += taxClass.apply[type] ? taxClass.rate / 100 * amount : tax;
         }
-
-        subtotal += amount;
       });
 
-      delivery =
-        type === "DELIVERY" &&
-        this.isChargeDelivery &&
-        this.store.delivery &&
-        !this.invoice.deliveryFree
-          ? this.store.deliveryCharge
-          : 0;
+      delivery = (type === "DELIVERY" && this.isChargeDelivery && this.store.delivery && !this.invoice.deliveryFree) ? this.store.deliveryCharge : 0;
 
       if (this.tax.deliveryTax) {
-        /*
-            is Delivery fee taxable?
-            Find out default tax rate and apply to delivery charge
-        */
         let taxRate = 0;
         Object.keys(this.tax.class).forEach(type => {
-          this.tax.class[type].default === true &&
-            (taxRate = this.tax.class[type].rate);
+          this.tax.class[type].default === true && (taxRate = this.tax.class[type].rate);
         });
 
-        tax += toFixed(delivery * taxRate / 100, 2);
+        tax = toFixed(delivery * taxRate / 100 + tax, 2);
       }
 
-      tax = toFixed(tax, 2);
+      if (type === "DINE_IN" && enable) {
+        //find rule
+        const rule = rules.find(condition => guest >= condition.guest);
+        const { fee, percentage } = rule;
 
-      if (coupon && this.isApplyCoupon) {
-        let value = parseFloat(coupon.discount.replace(/\D+/, ""));
-        if (coupon.discount.includes("%")) {
-          discount = toFixed(value / 100 * subtotal, 2);
-        } else {
-          discount = value;
-        }
+        gratuity = percentage ? toFixed(subtotal * fee / 100, 2) : fee;
       }
 
-      let { enable, when, penalty } = this.store.table.surcharge;
-      if (
-        this.isApplyGratuity &&
-        this.order.type === "DINE_IN" &&
-        enable &&
-        this.order.guest > when
-      ) {
-        let value = parseFloat(penalty.replace(/[^0-9.]/g, ""));
+      if (coupons && this.isApplyCoupon) {
+        let offer = 0;
+        coupons.forEach(coupon => {
+          const { reference } = coupon;
 
-        if (penalty.includes("%")) {
-          value = value / 100;
-          gratuity = toFixed(subtotal * value, 2);
-        } else {
-          gratuity = value;
-        }
+          switch (coupon.type) {
+            case "rebate":
+              offer += coupon.discount;
+              break;
+            case "voucher":
+              offer += coupon.discount;
+              break;
+            case "discount":
+              switch (coupon.apply) {
+                case "category":
+                  let _offer = 0;
+                  this.order.content.forEach(item => {
+                    if (reference.includes(item.category)) {
+                      _offer += coupon.discount / 100 * item.single * item.qty;
+                    }
+                  });
+                  offer += _offer;
+                  break;
+                case "item":
+                  break;
+                default:
+                  offer += coupon.discount / 100 * subtotal;
+              }
+              break;
+          }
+        });
+
+        discount += offer;
       }
+
 
       let total = toFixed(subtotal + tax + delivery, 2);
       let due = toFixed(total - discount, 2);
@@ -211,24 +211,24 @@ export default {
       return this.settle && this.settle.settled
         ? this.settle
         : {
-            tip,
-            gratuity,
-            discount,
-            delivery,
-            subtotal,
-            paid,
-            log,
-            sort: this.split,
-            applyCoupon: this.isApplyCoupon,
-            total,
-            due,
-            tax,
-            surcharge,
-            balance,
-            remain
-          };
+          tip,
+          gratuity,
+          discount,
+          delivery,
+          subtotal,
+          paid,
+          log,
+          sort: this.split,
+          applyCoupon: this.isApplyCoupon,
+          total,
+          due,
+          tax,
+          surcharge,
+          balance,
+          remain
+        };
     },
-    ...mapGetters(["tax", "ticket", "store", "order", "language"])
+    ...mapGetters(["tax", "ticket", "store", "order", "dinein", "language"])
   },
   watch: {
     queue(n) {
@@ -243,11 +243,6 @@ export default {
           dom.classList.add("active");
       });
       this.$emit("queue", { origin: this.split, items: n });
-    }
-  },
-  filters: {
-    mark(text) {
-      return text.join(" ");
     }
   },
   beforeDestroy() {
