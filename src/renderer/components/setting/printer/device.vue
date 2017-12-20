@@ -30,12 +30,12 @@ export default {
   methods: {
     create() {
       new Promise((resolve, reject) => {
-        this.componentData = { resolve, reject };
+        this.componentData = { resolve, reject, printers: this.printers };
         this.component = "editor";
       })
         .then(name => {
           const printer = Preset.printer();
-          Object.assign(this.$sore.getters.config.printers, {
+          Object.assign(this.$store.getters.config.printers, {
             [name]: printer
           });
 

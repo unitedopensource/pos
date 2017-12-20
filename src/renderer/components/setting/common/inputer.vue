@@ -1,22 +1,9 @@
 <template>
-    <div class="input">
-        <label>{{$t(title)}}</label>
-        <textarea v-if="type === 'textarea'"
-        :value="value"
-        :maxlength="length"
-        :disabled="disabled"
-        :placeholder="placeholder"
-        @input="$emit('input',$event.target.value)" 
-        @blur="$emit('update',$event.target.value)"></textarea>
-        <input v-else
-               :type="type" 
-               :value="value"
-               :maxlength="length"
-               :disabled="disabled"
-               :placeholder="placeholder" 
-               @input="$emit('input',$event.target.value)" 
-               @blur="$emit('update',$event.target.value)">
-    </div>
+  <div class="input">
+    <label>{{$t(title)}}</label>
+    <textarea v-if="type === 'textarea'" :value="value" :maxlength="length" :disabled="disabled" :placeholder="placeholder" @input="$emit('input',$event.target.value)" @blur="$emit('update',$event.target.value)"></textarea>
+    <input v-else :type="type" :value="value" :maxlength="length" :disabled="disabled" :placeholder="placeholder" @input="$emit('input',$event.target.value)" @blur="$emit('update',$event.target.value)" ref="input">
+  </div>
 </template>
 
 <script>
@@ -33,8 +20,15 @@ export default {
       type: Boolean,
       default: false
     },
+    autoFocus: {
+      type: Boolean,
+      default: false
+    },
     placeholder: String
-  }
+  },
+  mounted(){
+    this.autoFocus && this.$refs.input.focus();
+  },
 };
 </script>
 

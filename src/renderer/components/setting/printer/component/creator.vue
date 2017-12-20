@@ -6,11 +6,11 @@
                 <h3>{{$t('text.printer')}}</h3>
             </header>
             <div class="wrap">
-                <inputer v-model="name" title="text.alias"></inputer>
+                <inputer v-model="name" title="text.alias" :autoFocus="true" @keydown.enter.native="confirm"></inputer>
                 <!-- label printer option -->
             </div>
             <footer>
-                <button class="btn" @click="init.resolve(name)">{{$t('button.create')}}</button>
+                <button class="btn" @click="confirm" :disabled="!name">{{$t('button.create')}}</button>
             </footer>
         </div>
     </div>
@@ -25,6 +25,14 @@ export default {
     return {
       name: ""
     };
+  },
+  methods: {
+    confirm() {
+      if (!this.name) return;
+      if (!this.init.printers.includes(this.name)) return;
+
+      this.init.resolve(this.name);
+    }
   }
 };
 </script>
