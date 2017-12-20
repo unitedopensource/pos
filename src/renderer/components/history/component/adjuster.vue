@@ -10,6 +10,7 @@
 
         </nav>
       </header>
+      <div class="banner"></div>
       <div class="wrap">
         <section class="list">
           <v-touch tag="ul" :style="scroll" @panup="move" @pandown="move" @panstart="panStart" @panend="panEnd" class="records">
@@ -19,7 +20,7 @@
                 <i class="fa fa-check-circle green" v-else></i>
                 <div class="index">
                   <span class="sharp">#</span>{{record.index}}</div>
-                <span class="account">...{{record.account.number}}</span>
+                <span class="tip" :class="{zero:record.amount.tip === '0.00'}">{{record.amount.tip}}</span>
                 <span class="amount">$ {{record.amount.approve}}</span>
                 <span class="card">{{record.account.type}}</span>
               </div>
@@ -125,16 +126,23 @@ export default {
         case "Enter":
           this.enter();
           break;
+        case "+":
+          this.prev();
+          break;
         case "ArrowUp":
-          this.index = this.transactions.some(t => t.index === this.index - 1)
-            ? this.index - 1
-            : this.index;
+          this.prev();
           break;
         case "ArrowDown":
-          this.index = this.transactions.some(t => t.index === this.index + 1)
-            ? this.index + 1
-            : this.index;
+          this.next();
           break;
+        case "Backspace":
+          this.tip = this.tip.slice(0, -1);
+          break;
+        default:
+          if (e.key.length === 1 && /[0-9.]/i.test(e.key)) {
+            this.tip = this.reset ? e.key : this.tip + e.key;
+            this.reset = false;
+          }
       }
     },
     setIndex(record, index) {
@@ -151,7 +159,18 @@ export default {
       let dom = document.querySelector("ul.records");
       dom && dom.classList.add("scrollable");
 
-      const { top, bottom, height } = dom.getBoundingClientRect();
+      let { top, bottom, height } = dom.getBoundingClientRect();
+      const offset = 170;
+      top -= offset;
+      bottom -= offset;
+
+      if (top > 0) {
+        this.offset = 0;
+      } else if (height < 465) {
+        this.offset = 0;
+      } else if (bottom < 450) {
+        this.offset = -(height - 476);
+      }
 
       console.log(top, bottom);
     },
@@ -204,9 +223,11 @@ export default {
     },
     executeTipAdjustment() {
       let record = this.transaction;
+
       const amount = Math.round(this.tip * 100);
       const invoice = record.order.number;
       const transaction = record.trace.trans;
+
       this.terminal.adjust(invoice, transaction, amount).then(response => {
         this.$q();
         const result = this.terminal.explainTransaction(response.data);
@@ -233,9 +254,38 @@ export default {
       console.log(e);
     },
     next() {
-      this.index = this.transactions.some(t => t.index === this.index + 1)
-        ? this.index + 1
-        : this.index;
+      const next = this.transactions.some(t => t.index === this.index + 1);
+
+      if (next) {
+        this.index++;
+
+        this.$nextTick(() => {
+          const dom = document.querySelector("ul.records .active");
+          const { top, height } = dom.getBoundingClientRect();
+
+          if (top > 550) {
+            this.offset -= height;
+          }
+        });
+      }else{
+        this.batch = true;
+      }
+    },
+    prev() {
+      const prev = this.transactions.some(t => t.index === this.index - 1);
+
+      if (prev) {
+        this.index--;
+
+        this.$nextTick(() => {
+          const dom = document.querySelector("ul.records .active");
+          const { top, height } = dom.getBoundingClientRect();
+          
+          if (top < 220) {
+            this.offset += height;
+          }
+        });
+      }
     },
     getParser(model) {
       switch (model) {
@@ -281,7 +331,8 @@ export default {
 
 li {
   display: flex;
-  padding: 8px 11px;
+  padding: 0 11px;
+  height: 43px;
   background: #fff;
   position: relative;
   color: #3c3c3c;
@@ -303,6 +354,13 @@ li .inner .index {
   font-family: "Agency FB";
   font-weight: bold;
   font-size: 22px;
+  width: 45px;
+}
+
+.tip {
+  margin-left: 10px;
+  font-family: fantasy;
+  color: #3c3c3c;
 }
 
 .index .sharp {
@@ -407,5 +465,9 @@ p {
   font-family: "Agency FB";
   font-weight: bold;
   font-size: 24px;
+}
+
+.zero {
+  color: transparent;
 }
 </style>

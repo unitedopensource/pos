@@ -755,7 +755,7 @@ export default {
         'phone': '电话号码',
         'address': '地址',
         'name': '名字',
-        'count': '次数',
+        'count': '计数',
         'lastUpdate': '最后一次',
         'type': '类别',
         'station': '工作站',

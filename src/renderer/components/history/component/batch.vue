@@ -9,7 +9,7 @@
         <thead>
           <tr>
             <th>{{$t('thead.terminal')}}</th>
-            <th>{{$t('thead.count')}}</th>
+            <th>{{$t('thead.sum')}}</th>
             <th>{{$t('thead.total')}}</th>
             <th>{{$t('thead.status')}}</th>
             <th>{{$t('thead.action')}}</th>
@@ -34,7 +34,7 @@
       </table>
       <footer>
         <div class="opt">
-          <checkbox label="text.print" v-model="print"></checkbox>
+          <checkbox title="button.printDetail" v-model="detail"></checkbox>
         </div>
         <button class="btn" @click="init.resolve">{{$t('button.done')}}</button>
       </footer>
@@ -56,7 +56,7 @@ export default {
       componentData: null,
       component: null,
       tasks: [],
-      print: true
+      detail: false
     };
   },
   created() {

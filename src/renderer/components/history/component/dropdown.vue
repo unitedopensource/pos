@@ -8,7 +8,7 @@
             <i class="fa fa-times" @click.stop="resetFilter" v-show="selected"></i>
         </div>
         <transition name="dropdown">
-        <ul v-show="isShowDropdown" class="content">
+        <ul v-if="isShowDropdown" class="content" v-outer-click="hideDropdown">
             <li v-for="(option,index) in options" :key="index" @click="select(option)" @contextmenu="reverseSelect(option)" :class="{active:option.value === (selected && selected.value)}">{{option.text}}</li>
         </ul>
         </transition>

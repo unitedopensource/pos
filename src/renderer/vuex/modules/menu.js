@@ -110,10 +110,6 @@ const mutations = {
       void: false,
       sort: item.sort || 0,
       qty: 1,
-      mark: [
-        [],
-        []
-      ],
       choiceSet: item.choiceSet ? item.choiceSet : [],
       single: parseFloat(item.price[0]),
       total: item.hasOwnProperty('total') ? item.total : item.price[0].toFixed(2)
@@ -142,7 +138,7 @@ const mutations = {
     state.choiceSetTarget = null;
   },
   [types.ALTER_ITEM](state, item) {
-    let index = state.order.content.findIndex(item => item === state.item);
+    const index = state.order.content.findIndex(item => item === state.item);
     state.order.content.splice(index, 1, item);
     state.item = item;
   },
