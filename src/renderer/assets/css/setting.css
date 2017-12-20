@@ -81,6 +81,10 @@ ul.tabs li.router-link-exact-active {
     box-shadow: var(--shadow);
 }
 
+.tab-content.wide {
+    width: 876px;
+}
+
 .tab-content header .title {
     padding: 0 15px
 }

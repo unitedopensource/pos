@@ -400,7 +400,8 @@ export default {
         'discount': 'Set Discount',
         'tip': 'Set Tip',
         'modify': 'Modify',
-        'timer': 'Set Time'
+        'timer': 'Set Time',
+        'template': 'Item Template'
     },
     dialog: {
         'maintenance': 'Maintenance',

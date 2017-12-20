@@ -44,7 +44,11 @@ export default {
     };
   },
   methods: {
-    edit(template, index) {}
+    create(){
+        
+    },
+    edit(template, index) {},
+    
   }
 };
 </script>

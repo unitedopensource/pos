@@ -312,7 +312,8 @@ export default {
         'discount': '设折扣',
         'tip': '设小费',
         'modify': '修改',
-        'timer': '定时出单'
+        'timer': '定时出单',
+        'template': '物品模板'
     },
     dialog: {
         'maintenance': '维护',

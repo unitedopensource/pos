@@ -5,7 +5,7 @@
             <router-link tag="li" class="tab" :to="{name:'Setting.station.interface'}">{{$t('setting.interface')}}</router-link>
         </ul>
         <transition name="slide" mode="out-in">
-            <router-view class="tab-content"></router-view>
+            <router-view class="tab-content" :class="{wide:$route.name === 'Setting.station.interface'}"></router-view>
         </transition>
     </div>
 </template>
