@@ -1,79 +1,79 @@
 <template>
-    <div class="popupMask center dark">
-        <div class="window" v-show="!component">
-            <header class="title">
-                <span>{{$t('title.report')}}</span>
-                <i class="fa fa-times" @click="init.reject"></i>
-            </header>
-            <div class="inner">
-                <section class="option">
-                    <div class="for">
-                        <span>{{$t('report.range')}}</span>
-                        <span class="range">
-                            <span v-if="reportRange">{{reportRange.from | moment('YYYY-MM-DD HH:mm')}} ~ {{reportRange.to | moment('YYYY-MM-DD HH:mm')}}</span>
-                        </span>
-                        <checkbox v-model="daily" label="report.dailyReport"></checkbox>
-                    </div>
-                    <div class="rangeWrap">
-                        <div>
-                            <input type="radio" name="range" v-model="range" value="today" id="today" @click="getRange('today')">
-                            <label for="today">{{$t('report.today')}}</label>
-                        </div>
-                        <div>
-                            <input type="radio" name="range" v-model="range" value="week" id="week" @click="getRange('week')">
-                            <label for="week">{{$t('report.currentWeek')}}</label>
-                        </div>
-                        <div>
-                            <input type="radio" name="range" v-model="range" value="month" id="month" @click="getRange('month')">
-                            <label for="month">{{$t('report.currentMonth')}}</label>
-                        </div>
-                        <div>
-                            <input type="radio" name="range" v-model="range" value="last" id="last" @click="getRange('last')">
-                            <label for="last">{{$t('report.lastMonth')}}</label>
-                        </div>
-                        <div>
-                            <input type="radio" name="range" v-model="range" value="custom" id="custom" @click="openCalendar">
-                            <label for="custom">{{$t('report.setDate')}}</label>
-                        </div>
-                    </div>
-                </section>
-                <section class="option">
-                    <div class="for">
-                        <span>{{$t('report.details')}}</span>
-                    </div>
-                    <div class="detailWrap">
-                        <div class="left">
-                            <h5>{{$t('report.configuration')}}</h5>
-                            <radiobox v-model="reportDetail" name="detail" val="simple" label="report.simple"></radiobox>
-                            <radiobox v-model="reportDetail" name="detail" val="customize" label="report.customize"></radiobox>
-                            <transition-group name="fadeDown" tag="div" class="options">
-                                <template v-if="reportDetail === 'customize'">
-                                    <checkbox v-model="detailPayment" label="report.detailPayment" :key="1"></checkbox>
-                                    <checkbox v-model="giftCard" label="report.giftCardSales" :key="2"></checkbox>
-                                    <checkbox v-model="managerWaive" label="report.redemptionReport" :key="3"></checkbox>
-                                    <checkbox v-model="itemSales" label="report.itemSales" :key="4"></checkbox>
-                                    <checkbox v-model="categorySales" label="report.categorySales" :key="5"></checkbox>
-                                    <checkbox v-model="hourly" label="report.hourlyReport" :key="6"></checkbox>
-                                </template>
-                            </transition-group>
-                        </div>
-                        <div class="right">
-                            <h5>{{$t('report.performance')}}</h5>
-                            <checkbox v-model="cashier" label="report.cashierLiability"></checkbox>
-                            <checkbox v-model="waitStaff" label="report.staffLiability"></checkbox>
-                            <checkbox v-model="driver" label="report.driverLiability"></checkbox>
-                            <checkbox v-model="thirdParty" label="report.thirdPartySummary"></checkbox>
-                        </div>
-                    </div>
-                </section>
+  <div class="popupMask center dark">
+    <div class="window" v-show="!component">
+      <header class="title">
+        <span>{{$t('title.report')}}</span>
+        <i class="fa fa-times" @click="init.reject"></i>
+      </header>
+      <div class="inner">
+        <section class="option">
+          <div class="for">
+            <span>{{$t('report.range')}}</span>
+            <span class="range">
+              <span v-if="reportRange">{{reportRange.from | moment('YYYY-MM-DD HH:mm')}} ~ {{reportRange.to | moment('YYYY-MM-DD HH:mm')}}</span>
+            </span>
+            <checkbox v-model="daily" label="report.dailyReport"></checkbox>
+          </div>
+          <div class="rangeWrap">
+            <div>
+              <input type="radio" name="range" v-model="range" value="today" id="today" @click="getRange('today')">
+              <label for="today">{{$t('report.today')}}</label>
             </div>
-            <footer>
-                <div class="f1"></div>
-                <div class="btn" @click="confirm">{{$t('button.confirm')}}</div>
-            </footer>
-        </div>
-        <div :is="component" :init="componentData"></div>
+            <div>
+              <input type="radio" name="range" v-model="range" value="week" id="week" @click="getRange('week')">
+              <label for="week">{{$t('report.currentWeek')}}</label>
+            </div>
+            <div>
+              <input type="radio" name="range" v-model="range" value="month" id="month" @click="getRange('month')">
+              <label for="month">{{$t('report.currentMonth')}}</label>
+            </div>
+            <div>
+              <input type="radio" name="range" v-model="range" value="last" id="last" @click="getRange('last')">
+              <label for="last">{{$t('report.lastMonth')}}</label>
+            </div>
+            <div>
+              <input type="radio" name="range" v-model="range" value="custom" id="custom" @click="openCalendar">
+              <label for="custom">{{$t('report.setDate')}}</label>
+            </div>
+          </div>
+        </section>
+        <section class="option">
+          <div class="for">
+            <span>{{$t('report.details')}}</span>
+          </div>
+          <div class="detailWrap">
+            <div class="left">
+              <h5>{{$t('report.configuration')}}</h5>
+              <radiobox v-model="reportDetail" name="detail" val="simple" label="report.simple"></radiobox>
+              <radiobox v-model="reportDetail" name="detail" val="customize" label="report.customize"></radiobox>
+              <transition-group name="fadeDown" tag="div" class="options">
+                <template v-if="reportDetail === 'customize'">
+                  <checkbox v-model="detailPayment" label="report.detailPayment" :key="1"></checkbox>
+                  <checkbox v-model="giftCard" label="report.giftCardSales" :key="2"></checkbox>
+                  <checkbox v-model="managerWaive" label="report.redemptionReport" :key="3"></checkbox>
+                  <checkbox v-model="itemSales" label="report.itemSales" :key="4"></checkbox>
+                  <checkbox v-model="categorySales" label="report.categorySales" :key="5"></checkbox>
+                  <checkbox v-model="hourly" label="report.hourlyReport" :key="6"></checkbox>
+                </template>
+              </transition-group>
+            </div>
+            <div class="right">
+              <h5>{{$t('report.performance')}}</h5>
+              <checkbox v-model="cashier" label="report.cashierLiability"></checkbox>
+              <checkbox v-model="waitStaff" label="report.staffLiability"></checkbox>
+              <checkbox v-model="driver" label="report.driverLiability"></checkbox>
+              <checkbox v-model="thirdParty" label="report.thirdPartySummary"></checkbox>
+            </div>
+          </div>
+        </section>
+      </div>
+      <footer>
+        <div class="f1"></div>
+        <div class="btn" @click="confirm">{{$t('button.confirm')}}</div>
+      </footer>
     </div>
+    <div :is="component" :init="componentData"></div>
+  </div>
 </template>
 
 <script>
@@ -245,7 +245,9 @@ export default {
         if (this.hourly)
           this.report["Hourly Report"] = this.hourlySalesReport(invoices);
         if (this.managerWaive)
-          this.report["Manager Waived Report"] = this.managerWaiveReport(invoices);
+          this.report["Manager Waived Report"] = this.managerWaiveReport(
+            invoices
+          );
         if (this.itemSales)
           this.report["Item Sales"] = this.itemSalesReport(invoices);
         if (this.categorySales)
@@ -263,7 +265,7 @@ export default {
     },
     salesAnalysis(range, data) {
       let report = [];
-      let { invoices, transactions } = data;
+      let { invoices, transactions, giftcards } = data;
       let validInvoices = invoices.filter(invoice => invoice.status === 1);
       let sum = (a, b) => a + b;
 
@@ -355,15 +357,16 @@ export default {
       });
 
       report.push({
-        text:this.$t('report.refund'),
-        style:"space",
-        value: "- " +
+        text: this.$t("report.refund"),
+        style: "space",
+        value:
+          "- " +
           transactions
             .filter(t => t.for === "Refund")
             .map(t => Math.abs(t.actual))
             .reduce(sum, 0)
             .toFixed(2)
-      })
+      });
 
       report.push({
         text: this.$t("report.payout"),
@@ -540,6 +543,38 @@ export default {
           text: this.$t("report.tipTotal"),
           style: "space",
           value: tipTotal.toFixed(2)
+        });
+      }
+
+      if (this.giftCard) {
+        report.push({
+          text: this.$t("report.activation"),
+          style: "",
+          value: giftcards
+            .filter(t => t.type === "Activation")
+            .map(t => t.change)
+            .reduce(sum, 0)
+            .toFixed(2)
+        });
+
+        report.push({
+          text: this.$t("card.giftCardCredit"),
+          style: "",
+          value: giftcards
+            .filter(t => t.type === "Reload")
+            .map(t => t.change)
+            .reduce(sum, 0)
+            .toFixed(2)
+        });
+
+        report.push({
+          text: this.$t("card.giftCardDebit"),
+          style: "",
+          value: giftcards
+            .filter(t => t.type === "Purchase")
+            .map(t => Math.abs(t.change))
+            .reduce(sum, 0)
+            .toFixed(2)
         });
       }
 
