@@ -513,8 +513,6 @@ export default {
         'invalidCreditCard': '无效的信用卡',
         'creditCardLengthIncorrect': '信用卡号码长度不正确',
         'expirationDateIncorrect': '信用卡日期格式不正确',
-        'assignPrinter': '分配打印机',
-        'assignPrinterToAllItems': '您是否将 {i} 打印机应用于所有的物品之上？',
         'ticketSettled': '此订单已结账',
         'ticketSettledTip': '您想要将此订单设置成已付吗？',
         'insufficientAmount': '所剩余额不足',
@@ -1041,7 +1039,8 @@ export default {
         'type': '类型',
         'couponCode': '优惠码',
         'search': '搜索',
-        'amountGreaterThan': '金额大于'
+        'amountGreaterThan': '金额大于',
+        'assignToItems': '分配到所有物品'
     },
     nav: {
         'store': '店面',

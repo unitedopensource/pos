@@ -601,8 +601,6 @@ export default {
         'invalidCreditCard': 'Invalid Credit Card',
         'creditCardLengthIncorrect': 'Credit card length incorrect',
         'expirationDateIncorrect': 'Credit card expiration date incorrect',
-        'assignPrinter': 'Assign Printer',
-        'assignPrinterToAllItems': 'Are you wish to assign {i} printer to all items?',
         'ticketSettled': 'All Split Ticket Are Settled',
         'ticketSettledTip': 'Are you wish to mark this ticket as paid?',
         'insufficientAmount': 'There is an insufficient amount of balance.',
@@ -1047,7 +1045,8 @@ export default {
         'type': 'Type',
         'couponCode': 'Code',
         'search': 'Search',
-        'amountGreaterThan': 'Greater Than'
+        'amountGreaterThan': 'Greater Than',
+        'assignToItems': 'Assign to all items'
     },
     nav: {
         'store': 'Store',

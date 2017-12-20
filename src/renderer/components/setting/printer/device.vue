@@ -33,7 +33,8 @@ export default {
         this.componentData = { resolve, reject, printers: this.printers };
         this.component = "editor";
       })
-        .then(name => {
+        .then(result => {
+          const { name, label, assign } = result;
           const printer = Preset.printer();
           Object.assign(this.$store.getters.config.printers, {
             [name]: printer
@@ -45,6 +46,9 @@ export default {
             key: `printers.${name}`,
             value: printer
           });
+
+          assign && this.$socket.emit("[MENU] ASSIGN_PRINTER", name);
+
           this.$q();
         })
         .catch(() => this.$q());

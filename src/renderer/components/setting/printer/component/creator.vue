@@ -7,9 +7,12 @@
             </header>
             <div class="wrap">
                 <inputer v-model="name" title="text.alias" :autoFocus="true" @keydown.enter.native="confirm"></inputer>
-                <!-- label printer option -->
+                <switches title="text.labelPrinter" v-model="label"></switches>
             </div>
             <footer>
+                <div class="opt">
+                    <checkbox title="text.assign" v-model="assign"></checkbox>
+                </div>
                 <button class="btn" @click="confirm" :disabled="!name">{{$t('button.create')}}</button>
             </footer>
         </div>
@@ -18,12 +21,16 @@
 
 <script>
 import inputer from "../../common/inputer";
+import checkbox from "../../common/checkbox";
+import switches from "../../common/switches";
 export default {
   props: ["init"],
-  components: { inputer },
+  components: { inputer, switches, checkbox },
   data() {
     return {
-      name: ""
+      name: "",
+      label: false,
+      assign: true
     };
   },
   methods: {
@@ -31,7 +38,11 @@ export default {
       if (!this.name) return;
       if (!this.init.printers.includes(this.name)) return;
 
-      this.init.resolve(this.name);
+      this.init.resolve({
+        name: this.name,
+        label: this.label,
+        assign: this.assign
+      });
     }
   }
 };
