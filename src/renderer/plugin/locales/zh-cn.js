@@ -313,7 +313,8 @@ export default {
         'tip': '设小费',
         'modify': '修改',
         'timer': '定时出单',
-        'template': '物品模板'
+        'template': '物品模板',
+        'interface': '界面',
     },
     dialog: {
         'maintenance': '维护',

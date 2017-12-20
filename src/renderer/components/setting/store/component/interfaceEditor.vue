@@ -14,7 +14,7 @@
             </div>
             <footer>
                 <div class="opt">
-                    <switches v-model="grid.enable" title="text.enable" :reverse="true"></switches>
+                    <checkbox v-model="grid.enable" title="text.enable"></checkbox>
                 </div>
                 <button class="btn">{{$t('button.confirm')}}</button>
             </footer>
@@ -25,70 +25,72 @@
 <script>
 import inputer from "../../common/inputer";
 import selector from "../../common/selector";
+import switches from "../../common/switches";
+import checkbox from "../../common/checkbox";
 export default {
   props: ["init"],
-  components: { inputer, selector },
+  components: { inputer, selector, switches, checkbox },
   data() {
     return {
       grid: JSON.parse(JSON.stringify(this.init.grid)),
       routers: [
         {
-          label: "type.sales",
+          label: this.$t("type.sales"),
           tooltip: "",
           value: "sale"
         },
         {
-          label: "type.WALK_IN",
+          label: this.$t("type.WALK_IN"),
           tooltip: "",
           value: "order"
         },
         {
-          label: "type.PICK_UP",
+          label: this.$t("type.PICK_UP"),
           tooltip: "",
           value: "pickup"
         },
         {
-          label: "type.DELIVERY",
+          label: this.$t("type.DELIVERY"),
           tooltip: "",
           value: "delivery"
         },
         {
-          label: "type.DINE_IN",
+          label: this.$t("type.DINE_IN"),
           tooltip: "",
           value: "table"
         },
         {
-          label: "type.buffet",
+          label: this.$t("type.buffet"),
           tooltip: "",
           value: "buffet"
         },
         {
-          label: "type.thirdParty",
+          label: this.$t("type.thirdParty"),
           tooltip: "",
           value: "thirdParty"
         },
         {
-          label: "text.history",
+          label: this.$t("text.history"),
           tooltip: "",
           value: "history"
         },
         {
-          label: "text.pickupList",
+          label: this.$t("text.pickupList"),
           tooltip: "",
           value: "list"
         },
         {
-          label: "text.setting",
+          label: this.$t("text.setting"),
           tooltip: "",
           value: "setting"
         },
         {
-          label: "text.cashDrawer",
+          label: this.$t("text.cashDrawer"),
           tooltip: "",
           value: "cashDrawer"
         },
         {
-          label: "text.lock",
+          label: this.$t("text.lock"),
           tooltip: "",
           value: "lock"
         }

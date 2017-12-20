@@ -93,7 +93,7 @@ figure {
   height: 104px;
   width: 170px;
   border-radius: 4px;
-  box-shadow: 0 3px 8px -2px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--shadow);
 }
 
 figure:active {
