@@ -1,25 +1,25 @@
 <template>
-    <div class="popupMask setting center dark" @click.self="init.reject">
-        <div class="editor">
-            <header>
-                <h5></h5>
-                <h3>{{$t('title.interface')}}</h3>
-            </header>
-            <div class="wrap">
-                <inputer v-model="grid.head" title="text.title"></inputer>
-                <inputer v-model="grid.subhead" title="text.subtitle"></inputer>
-                <selector title="text.function" v-model="grid.route" :opts="routers"></selector>
-                <selector title="text.icon" v-model="grid.icon" :opts="icons"></selector>
-                <switches v-model="grid.password" title="text.password"></switches>
-            </div>
-            <footer>
-                <div class="opt">
-                    <checkbox v-model="grid.enable" title="text.enable"></checkbox>
-                </div>
-                <button class="btn">{{$t('button.confirm')}}</button>
-            </footer>
+  <div class="popupMask setting center dark" @click.self="init.reject">
+    <div class="editor">
+      <header>
+        <h5></h5>
+        <h3>{{$t('title.interface')}}</h3>
+      </header>
+      <div class="wrap">
+        <inputer v-model="grid.head" title="text.title"></inputer>
+        <inputer v-model="grid.subhead" title="text.subtitle"></inputer>
+        <selector title="text.function" v-model="grid.route" :opts="routers"></selector>
+        <selector title="text.icon" v-model="grid.icon" :opts="icons"></selector>
+        <switches v-model="grid.password" title="text.password"></switches>
+      </div>
+      <footer>
+        <div class="opt">
+          <checkbox v-model="grid.enable" title="text.enable"></checkbox>
         </div>
+        <button class="btn" @click="init.resolve(grid)">{{$t('button.confirm')}}</button>
+      </footer>
     </div>
+  </div>
 </template>
 
 <script>
@@ -60,7 +60,7 @@ export default {
           value: "table"
         },
         {
-          label: this.$t("type.buffet"),
+          label: this.$t("type.BUFFET"),
           tooltip: "",
           value: "buffet"
         },
@@ -146,11 +146,6 @@ export default {
         }
       ]
     };
-  },
-  methods: {}
+  }
 };
 </script>
-
-<style scoped>
-
-</style>

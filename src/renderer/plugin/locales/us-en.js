@@ -396,13 +396,14 @@ export default {
         'printerList': 'Printer List',
         'couponList': 'Coupon List',
         'taxList': 'Tax List',
-        'setTitle': 'Set Title',
+        'setTitle': 'Receipt Title',
         'discount': 'Set Discount',
         'tip': 'Set Tip',
         'modify': 'Modify',
         'timer': 'Set Time',
         'template': 'Item Template',
-        'interface': 'Interface'
+        'interface': 'Interface',
+        'footer': 'Receipt Footer'
     },
     dialog: {
         'maintenance': 'Maintenance',
@@ -1048,7 +1049,8 @@ export default {
         'couponCode': 'Code',
         'search': 'Search',
         'amountGreaterThan': 'Greater Than',
-        'assignToItems': 'Assign to all items'
+        'assignToItems': 'Assign to all items',
+        'content': 'Content'
     },
     nav: {
         'store': 'Store',

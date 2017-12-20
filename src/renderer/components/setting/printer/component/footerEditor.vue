@@ -6,7 +6,7 @@
                 <h3>{{$t('title.footer')}}</h3>
             </header>
             <div class="wrap">
-                <inputer type="textarea" v-model="footer" title="text.footer" :center="true"></inputer>
+                <inputer type="textarea" v-model="footer" title="text.content" :center="true"></inputer>
             </div>
             <footer>
                 <button class="btn" @click="confirm">{{$t('button.confirm')}}</button>

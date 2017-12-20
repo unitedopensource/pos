@@ -308,13 +308,14 @@ export default {
         'printerList': '打印机列表',
         'couponList': '折扣卷列表',
         'taxList': '税种列表',
-        'setTitle': '设置抬头',
+        'setTitle': '收据抬头',
         'discount': '设折扣',
         'tip': '设小费',
         'modify': '修改',
         'timer': '定时出单',
         'template': '物品模板',
         'interface': '界面',
+        'footer': '收据页尾'
     },
     dialog: {
         'maintenance': '维护',
@@ -1042,7 +1043,8 @@ export default {
         'couponCode': '优惠码',
         'search': '搜索',
         'amountGreaterThan': '金额大于',
-        'assignToItems': '分配到所有物品'
+        'assignToItems': '分配到所有物品',
+        'content': '内容'
     },
     nav: {
         'store': '店面',

@@ -11,7 +11,7 @@
             </div>
             <footer>
                 <div class="opt">
-                    <checkbox title="text.assign" v-model="assign"></checkbox>
+                    <checkbox title="text.assignToItems" v-model="assign"></checkbox>
                 </div>
                 <button class="btn" @click="confirm" :disabled="!name">{{$t('button.create')}}</button>
             </footer>
@@ -36,7 +36,7 @@ export default {
   methods: {
     confirm() {
       if (!this.name) return;
-      if (!this.init.printers.includes(this.name)) return;
+      if (this.init.printers.includes(this.name)) return;
 
       this.init.resolve({
         name: this.name,

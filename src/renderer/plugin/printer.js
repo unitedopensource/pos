@@ -98,37 +98,30 @@ var Printer = function (plugin, config, station) {
     }
 
     this.getPrinters = function () {
-        let printer;
+        let printer = [];
         switch (this.target) {
-            case 'All':
-                printer = this.devices.filter(device => !(/cashier/i).test(device));
-                printer.splice(0, 0, this.station.receipt || 'cashier');
-                break;
             case 'Receipt':
                 printer = [this.station.receipt || 'cashier'];
                 break;
             case 'Order':
                 printer = this.devices.filter(device => !(/cashier/i).test(device));
                 break;
+            default:
+                printer = this.devices.filter(device => !(/cashier/i).test(device));
+                printer.splice(0, 0, this.station.receipt || 'cashier');
         }
         return this.targetDevices.length > 0 ? this.targetDevices : printer;
     }
 
     this.print = function (raw, receipt) {
         const printers = this.getPrinters();
+        const ticket = raw.type;
 
         printers.forEach(printer => {
             const setting = this.setting[printer];
 
-            let ticket = raw.type, skip = false;
-
-            if (!receipt) skip = !setting.print.includes(ticket);
-
-            if (skip) {
-                this.skip();
-                return false;
-            }
-
+            if (!setting) return false;
+            if (!receipt && !setting.print.includes(ticket)) return false;
             if (setting.labelPrinter) {
                 this.printLabel(printer, raw);
                 return false;
@@ -145,7 +138,6 @@ var Printer = function (plugin, config, station) {
 
             const style = createStyle(setting);
             const footer = createFooter(this.config, setting, printer, raw);
-
             const html = header + list + footer + style;
 
             setting.control.buzzer && this.buzzer(printer);
@@ -857,9 +849,6 @@ var Printer = function (plugin, config, station) {
         this.plugin.PRINT();
     }
 
-    this.skip = function () {
-
-    }
     this.reset = function () {
         this.target = 'All';
         this.template = '';

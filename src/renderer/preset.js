@@ -21,9 +21,10 @@ var Preset = function () {
       },
       callid: {
         enable: false,
-        port: 'COM3'
+        port: 'COM3',
+        command: ""
       },
-      receipt: null,
+      receipt: "",
       printers: [],
       cashDrawer: {
         enable: false,
@@ -105,7 +106,7 @@ var Preset = function () {
         buzzer: false,
         categorize: false,
         prioritize: false,
-        mode:"normal",
+        mode: "normal",
         footer: [
           "Thank You Very Much"
         ]

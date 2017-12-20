@@ -864,6 +864,8 @@ export default {
       }
     },
     payFailed(error) {
+      console.log(error)
+      
       error === Object(error)
         ? this.$dialog(error).then(() => this.$q())
         : this.$q();

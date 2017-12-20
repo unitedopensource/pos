@@ -1,16 +1,16 @@
 <template>
-    <div>
-        <draggable v-model="station.interface" :options="{animation: 300,ghostClass: 'ghost'}">
-            <transition-group tag="article" class="grid" :class="{enlarge:station.enlarge}">
-                <div v-for="(grid,index) in station.interface" :key="index" class="block" @click.prevent.stop="edit(grid,index)" :class="{disable:!grid.enable}">
-                    <i class="fa icon" :class="[grid.icon]"></i>
-                    <h1>{{grid.head}}</h1>
-                    <h4>{{grid.subhead}}</h4>
-                </div>
-            </transition-group>
-        </draggable>
-        <div :is="component" :init="componentData"></div>
-    </div>
+  <div>
+    <draggable v-model="station.interface" :options="{animation: 300,ghostClass: 'ghost'}">
+      <transition-group tag="article" class="grid" :class="{enlarge:station.enlarge}">
+        <div v-for="(grid,index) in station.interface" :key="index" class="block" @click.prevent.stop="edit(grid,index)" :class="{disable:!grid.enable}">
+          <i class="fa icon" :class="[grid.icon]"></i>
+          <h1>{{grid.head}}</h1>
+          <h4>{{grid.subhead}}</h4>
+        </div>
+      </transition-group>
+    </draggable>
+    <div :is="component" :init="componentData"></div>
+  </div>
 </template>
 
 <script>
@@ -32,6 +32,12 @@ export default {
         this.component = "editor";
       })
         .then(_grid => {
+          this.station.interface.splice(index, 1, _grid);
+          this.$socket.emit("[STATION] UPDATE", {
+            _id: this.station._id,
+            key: "interface",
+            value: this.station.interface
+          });
           this.$q();
         })
         .catch(() => this.$q());
