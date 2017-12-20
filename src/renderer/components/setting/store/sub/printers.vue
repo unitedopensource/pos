@@ -12,7 +12,7 @@
         </header>
         <ul class="multiple">
             <li v-for="(printer,index) in printers" :key="index">
-                <checkbox :val="printer" :multiple="true" :label="printer" v-model="devices"></checkbox>
+                <checkbox :val="printer" :multiple="true" :title="printer" v-model="devices"></checkbox>
             </li>
         </ul>
     </div>
@@ -27,7 +27,7 @@ export default {
       printers: Object.keys(this.$store.getters.config.printers).filter(
         name => !/cashier/i.test(name)
       ),
-      devices: []
+      devices: this.$store.getters.station.printers
     };
   },
   methods: {

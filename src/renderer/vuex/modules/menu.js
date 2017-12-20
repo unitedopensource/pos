@@ -49,6 +49,7 @@ const mutations = {
       },
       content: [],
       coupons: [],
+      date: today(),
       source: "POS"
     };
     state.item = null;

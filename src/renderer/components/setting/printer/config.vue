@@ -70,7 +70,7 @@ export default {
       this.$store.getters.config.printers[this.printer],
       this.config
     );
-    
+
     Printer.initial(
       CLODOP,
       this.$store.getters.config,
@@ -105,7 +105,22 @@ export default {
         value
       });
     },
-    openFooterEditor() {}
+    openFooterEditor() {
+      new Promise((resolve, reject) => {
+        const footer = this.config.control.footer.join(String.fromCharCode(10));
+        this.componentData = { resolve, reject, footer };
+        this.component = "editor";
+      })
+        .then(_footer => {
+          this.config.control.footer = _footer;
+          this.update({
+            key: `printers.${this.printer}.control.footer`,
+            value: _footer
+          });
+          this.$q();
+        })
+        .catch(() => this.$q());
+    }
   }
 };
 </script>

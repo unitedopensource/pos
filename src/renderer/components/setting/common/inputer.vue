@@ -1,7 +1,7 @@
 <template>
   <div class="input">
     <label>{{$t(title)}}</label>
-    <textarea v-if="type === 'textarea'" :value="value" :maxlength="length" :disabled="disabled" :placeholder="placeholder" @input="$emit('input',$event.target.value)" @blur="$emit('update',$event.target.value)"></textarea>
+    <textarea v-if="type === 'textarea'" :class="{center}" :value="value" :maxlength="length" :disabled="disabled" :placeholder="placeholder" @input="$emit('input',$event.target.value)" @blur="$emit('update',$event.target.value)"></textarea>
     <input v-else :type="type" :value="value" :maxlength="length" :disabled="disabled" :placeholder="placeholder" @input="$emit('input',$event.target.value)" @blur="$emit('update',$event.target.value)" ref="input">
   </div>
 </template>
@@ -24,11 +24,15 @@ export default {
       type: Boolean,
       default: false
     },
+    center: {
+      type: Boolean,
+      default: false
+    },
     placeholder: String
   },
-  mounted(){
+  mounted() {
     this.autoFocus && this.$refs.input.focus();
-  },
+  }
 };
 </script>
 
@@ -58,5 +62,9 @@ textarea {
   resize: none;
   padding: 5px;
   height: 52px;
+}
+
+textarea.center {
+  text-align: center;
 }
 </style>
