@@ -189,8 +189,9 @@ export default {
       });
     },
     calculateDistance(data) {
-      if (!this.store.mapAPI && !this.store.calcDistance) return;
-      let api = this.store.mapAPI;
+      const { enable, api } = this.store.matrix;
+      if (!enable || !api) return;
+      
       let { address, city, state, zipCode } = this.store;
       address = this.$options.filters
         .formatAddress(address)
@@ -293,7 +294,7 @@ export default {
         return;
 
       this.$socket.emit("[CUSTOMER] UPDATE", this.customer, customer => {
-        console.log(customer)
+        console.log(customer);
         this.setCustomer(customer);
         this.$router.push({ path: "/main/menu" });
       });
