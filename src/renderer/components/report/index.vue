@@ -1,18 +1,18 @@
 <template>
-  <div class="popupMask center dark">
-    <div class="window" v-show="!component">
-      <header class="title">
-        <span>{{$t('title.report')}}</span>
-        <i class="fa fa-times" @click="init.reject"></i>
+  <div class="popupMask center dark" @click.self="init.reject">
+    <div class="editor" v-show="!component">
+      <header>
+        <h5>{{reportRange.from | moment('YYYY-MM-DD HH:mm')}} ~ {{reportRange.to | moment('YYYY-MM-DD HH:mm')}}</h5>
+        <h3>{{$t('title.report')}}</h3>
       </header>
+      <div class="banner"></div>
       <div class="inner">
         <section class="option">
           <div class="for">
             <span>{{$t('report.range')}}</span>
-            <span class="range">
+            <!-- <span class="range">
               <span v-if="reportRange">{{reportRange.from | moment('YYYY-MM-DD HH:mm')}} ~ {{reportRange.to | moment('YYYY-MM-DD HH:mm')}}</span>
-            </span>
-            <checkbox v-model="daily" label="report.dailyReport"></checkbox>
+            </span> -->
           </div>
           <div class="rangeWrap">
             <div>
@@ -43,32 +43,34 @@
           </div>
           <div class="detailWrap">
             <div class="left">
-              <h5>{{$t('report.configuration')}}</h5>
+              <h1>{{$t('report.configuration')}}</h1>
               <radiobox v-model="reportDetail" name="detail" val="simple" label="report.simple"></radiobox>
               <radiobox v-model="reportDetail" name="detail" val="customize" label="report.customize"></radiobox>
               <transition-group name="fadeDown" tag="div" class="options">
                 <template v-if="reportDetail === 'customize'">
-                  <checkbox v-model="detailPayment" label="report.detailPayment" :key="1"></checkbox>
-                  <checkbox v-model="giftCard" label="report.giftCardSales" :key="2"></checkbox>
-                  <checkbox v-model="managerWaive" label="report.redemptionReport" :key="3"></checkbox>
-                  <checkbox v-model="itemSales" label="report.itemSales" :key="4"></checkbox>
-                  <checkbox v-model="categorySales" label="report.categorySales" :key="5"></checkbox>
-                  <checkbox v-model="hourly" label="report.hourlyReport" :key="6"></checkbox>
+                  <checkbox v-model="detailPayment" title="report.detailPayment" :key="1"></checkbox>
+                  <checkbox v-model="giftCard" title="report.giftCardSales" :key="2"></checkbox>
+                  <checkbox v-model="managerWaive" title="report.redemptionReport" :key="3"></checkbox>
+                  <checkbox v-model="itemSales" title="report.itemSales" :key="4"></checkbox>
+                  <checkbox v-model="categorySales" title="report.categorySales" :key="5"></checkbox>
+                  <checkbox v-model="hourly" title="report.hourlyReport" :key="6"></checkbox>
                 </template>
               </transition-group>
             </div>
             <div class="right">
-              <h5>{{$t('report.performance')}}</h5>
-              <checkbox v-model="cashier" label="report.cashierLiability"></checkbox>
-              <checkbox v-model="waitStaff" label="report.staffLiability"></checkbox>
-              <checkbox v-model="driver" label="report.driverLiability"></checkbox>
-              <checkbox v-model="thirdParty" label="report.thirdPartySummary"></checkbox>
+              <h1>{{$t('report.performance')}}</h1>
+              <checkbox v-model="cashier" title="report.cashierLiability"></checkbox>
+              <checkbox v-model="waitStaff" title="report.staffLiability"></checkbox>
+              <checkbox v-model="driver" title="report.driverLiability"></checkbox>
+              <checkbox v-model="thirdParty" title="report.thirdPartySummary"></checkbox>
             </div>
           </div>
         </section>
       </div>
       <footer>
-        <div class="f1"></div>
+        <div class="opt">
+          <checkbox v-model="daily" title="report.dailyReport"></checkbox>
+        </div>
         <div class="btn" @click="confirm">{{$t('button.confirm')}}</div>
       </footer>
     </div>
@@ -1133,12 +1135,7 @@ export default {
   padding-left: 25px;
 }
 
-.f1 {
-  align-items: center;
-  display: flex;
-}
-
-h5 {
+h1 {
   text-align: center;
   font-size: 20px;
   margin-bottom: 10px;

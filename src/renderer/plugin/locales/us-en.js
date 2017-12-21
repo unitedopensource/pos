@@ -1050,7 +1050,8 @@ export default {
         'search': 'Search',
         'amountGreaterThan': 'Greater Than',
         'assignToItems': 'Assign to all items',
-        'content': 'Content'
+        'content': 'Content',
+        'osk': 'On Screen Keyboard'
     },
     nav: {
         'store': 'Store',

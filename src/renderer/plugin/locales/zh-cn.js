@@ -1044,7 +1044,8 @@ export default {
         'search': '搜索',
         'amountGreaterThan': '金额大于',
         'assignToItems': '分配到所有物品',
-        'content': '内容'
+        'content': '内容',
+        'osk': '屏幕键盘'
     },
     nav: {
         'store': '店面',
