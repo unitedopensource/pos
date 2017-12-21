@@ -9,8 +9,8 @@
                 <span @click="reset">{{$t('button.default')}}</span>
             </nav>
         </header>
-        <text-input v-model="title.PICK_UP" title="type.PICK_UP"></text-input>
         <text-input v-model="title.WALK_IN" title="type.WALK_IN"></text-input>
+        <text-input v-model="title.PICK_UP" title="type.PICK_UP"></text-input>
         <text-input v-model="title.DELIVERY" title="type.DELIVERY"></text-input>
         <text-input v-model="title.DINE_IN" title="type.DINE_IN"></text-input>
         <text-input v-model="title.PRE_PAYMENT" title="type.PRE_PAYMENT"></text-input>
