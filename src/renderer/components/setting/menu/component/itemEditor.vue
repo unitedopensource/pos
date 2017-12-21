@@ -37,6 +37,7 @@
                 <checkbox v-for="(name,index) in printers" :key="index" v-model="printer" :title="name" :val="name" :multiple="true" @input="updatePrint" :translate="false"></checkbox>
               </div>
             </div>
+            <switches title="text.disableAutoAdd" v-model="item.disableAutoOption"></switches>
           </div>
           <draggable class="side" tag="div" :options="{animation: 300,ghostClass: 'ghost' ,handle:'.drag',draggable:'.draggable'}" v-model="item.option">
             <transition-group tag="ul" class="options" name="dropdown">
@@ -47,9 +48,9 @@
                   <input type="text" v-model="option.zhCN" :placeholder="$t('text.secondary')">
                   <input type="number" v-model="option.price" :placeholder="getPlaceholder(option,index)">
                   <i class="fa fa-bars drag"></i>
-                  <i class="fa fa-ellipsis-v"></i>
+                  <i class="fa fa-ellipsis-v" @click="editOption(option,index)"></i>
                 </div>
-                <i class="fa fa-trash remove"></i>
+                <i class="fa fa-trash remove" @click="removeOption(index)"></i>
               </li>
               <li @click="addOption" :key="-1" v-if="item.option.length < 11" class="add">
                 <i class="fa fa-plus"></i>
@@ -115,6 +116,7 @@
 </template>
 
 <script>
+import editor from "./optionEditor";
 import draggable from "vuedraggable";
 import toggle from "../../common/toggle";
 import inputer from "../../common/inputer";
@@ -124,7 +126,15 @@ import switches from "../../common/switches";
 
 export default {
   props: ["init"],
-  components: { toggle, switches, inputer, selector, checkbox, draggable },
+  components: {
+    editor,
+    toggle,
+    switches,
+    inputer,
+    selector,
+    checkbox,
+    draggable
+  },
   data() {
     return {
       componentData: null,
@@ -185,6 +195,20 @@ export default {
         replace: false
       });
     },
+    removeOption(index) {
+      this.item.option.splice(index, 1);
+    },
+    editOption(option, index) {
+      new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject, option };
+        this.component = "editor";
+      })
+        .then(_option => {
+          this.item.option.splice(index, 1, _option);
+          this.$q();
+        })
+        .catch(() => this.$q());
+    },
     render() {
       this.$forceUpdate();
     },
@@ -237,7 +261,7 @@ header {
 }
 
 .wrap.info {
-  min-width: 550px;
+  min-width: 624px;
 }
 
 .wrap.column {
@@ -268,7 +292,9 @@ label.title {
 div.options .inner {
   display: flex;
   flex-wrap: wrap;
+  align-items: flex-start;
   width: 189px;
+  height: 178px;
   border: 1px solid #eee;
   background: #fff;
   border-radius: 2px;
