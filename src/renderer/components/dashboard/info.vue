@@ -1,44 +1,36 @@
 <template>
-    <main class="window">
-        <div class="switch">
-            <figure :class="{active:type === 'PICK_UP'}" @click="setTicket({type:'PICK_UP'});setOrder({type:'PICK_UP'})">
-                <i class="fa fa-user"></i>
-                <span class="text">{{$t('type.PICK_UP')}}</span>
-            </figure>
-            <figure :class="{active:type === 'DELIVERY'}" @click="setTicket({type:'DELIVERY'});setOrder({type:'DELIVERY'})">
-                <i class="fa fa-car"></i>
-                <span class="text">{{$t('type.DELIVERY')}}</span>
-            </figure>
-        </div>
-        <header>
-            <span class="fa fa-user-circle avatar" @click="tap('customer')"></span>
-            <div>
-                <span>{{$t('dashboard.customerInfo')}}</span>
-                <i class="fa fa-times close" @click="cancel"></i>
-            </div>
-        </header>
-        <nav>
-            <div class="tab active" @click="tap('form',$event)">{{$t('dashboard.customerInfo')}}</div>
-            <div class="tab" @click="tap('note',$event)">{{$t('dashboard.note')}}</div>
-            <div class="tab" @click="tap('history',$event)">{{$t('dashboard.history')}}</div>
-            <div class="tab" @click="tap('log',$event)">{{$t('dashboard.callLog')}}</div>
-            <div class="tab" @click="tap('giftCard',$event)">{{$t('dashboard.giftCard')}}</div>
-        </nav>
-        <router-view></router-view>
-    </main>
+  <main class="window">
+    <div class="switch">
+      <figure :class="{active:ticket.type === 'PICK_UP'}" @click="setTicket({type:'PICK_UP'});setOrder({type:'PICK_UP'})">
+        <i class="fa fa-user"></i>
+        <span class="text">{{$t('type.PICK_UP')}}</span>
+      </figure>
+      <figure :class="{active:ticket.type === 'DELIVERY'}" @click="setTicket({type:'DELIVERY'});setOrder({type:'DELIVERY'})">
+        <i class="fa fa-car"></i>
+        <span class="text">{{$t('type.DELIVERY')}}</span>
+      </figure>
+    </div>
+    <header>
+      <span class="fa fa-user-circle avatar" @click="tap('customer')"></span>
+      <div>
+        <span>{{$t('dashboard.customerInfo')}}</span>
+        <i class="fa fa-times close" @click="cancel"></i>
+      </div>
+    </header>
+    <nav>
+      <div class="tab active" @click="tap('form',$event)">{{$t('dashboard.customerInfo')}}</div>
+      <div class="tab" @click="tap('note',$event)">{{$t('dashboard.note')}}</div>
+      <div class="tab" @click="tap('history',$event)">{{$t('dashboard.history')}}</div>
+      <div class="tab" @click="tap('log',$event)">{{$t('dashboard.callLog')}}</div>
+      <div class="tab" @click="tap('giftCard',$event)">{{$t('dashboard.giftCard')}}</div>
+    </nav>
+    <router-view></router-view>
+  </main>
 </template>
 
 <script>
 import { mapGetters, mapActions } from "vuex";
 export default {
-  data() {
-    return {
-      type: null
-    };
-  },
-  created() {
-    this.type = this.order.type || this.ticket.type;
-  },
   methods: {
     tap(tab, e) {
       e && document.querySelector(".tab.active").classList.remove("active");

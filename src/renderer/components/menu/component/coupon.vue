@@ -58,9 +58,9 @@ export default {
       if (!coupon.redeem) {
         switch (coupon.type) {
           case "giveaway":
-            coupon.reference.forEach(ref => {
+            coupon.reference.forEach(free => {
               const index = this.order.content.findIndex(
-                item => item._id === ref
+                item => item._id === free._id
               );
 
               if (index !== -1) {
@@ -79,21 +79,14 @@ export default {
       coupons.push(
         ...this.order.coupons.filter(coupon => coupon.code === "UnitedPOS Inc")
       );
-      const references = coupons
+      const refs = coupons
         .filter(coupon => coupon.type === "giveaway")
         .map(coupon => coupon.reference)
         .reduce((a, b) => a.concat(b), []);
 
-      if (references.length) {
-        this.$socket.emit("[COUPON] GIVEAWAY", references, items => {
-          items.forEach(item => this.addToOrder(item));
-          this.setOrder({ coupons });
-          this.init.resolve();
-        });
-      } else {
-        this.setOrder({ coupons });
-        this.init.resolve();
-      }
+      refs.forEach(item => this.addToOrder(item));
+      this.setOrder({ coupons });
+      this.init.resolve();
     },
     ...mapActions(["setOrder", "addToOrder", "resetPointer"])
   }

@@ -55,8 +55,11 @@
           </template>
           <template v-else-if="coupon.apply === 'item'">
             <selector title="text.search" v-model="search" :opts="itemOpts" :editable="true" @keydown.enter.native="query(search)" @update="addReference"></selector>
-            <ul class="items">
-              <li v-for="(reference,index) in coupon.reference" :key="index">{{reference}}</li>
+            <ul class="items" v-show="coupon.reference.length">
+              <li v-for="(item,index) in coupon.reference" :key="index">
+                <span class="item">{{item[language]}}</span>
+                <i class="fa fa-trash" @click="remove(index)"></i>
+              </li>
             </ul>
           </template>
         </div>
@@ -138,7 +141,6 @@ export default {
     this.$socket.emit("[CATEGORY] LIST", categories => {
       this.categories = categories;
     });
-    console.log(this.coupon)
   },
   methods: {
     query(keyword) {
@@ -147,16 +149,19 @@ export default {
           label: item[this.language],
           tooltip: item.category,
           plainText: true,
-          value: item._id
+          value: item
         }));
       });
     },
     confirm() {
       this.init.resolve(this.coupon);
     },
-    addReference(id) {
+    addReference(item) {
       this.search = "";
-      this.coupon.reference.push(id);
+      this.coupon.reference.push(item);
+    },
+    remove(index) {
+      this.coupon.reference.splice(index, 1);
     }
   }
 };
@@ -174,5 +179,14 @@ header {
   border-radius: 2px;
   padding: 10px 5px;
   margin-top: 5px;
+}
+
+li {
+  display: flex;
+  padding: 0 10px;
+}
+
+.item {
+  flex: 1;
 }
 </style>
