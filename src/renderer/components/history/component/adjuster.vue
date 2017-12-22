@@ -110,7 +110,7 @@ export default {
   created() {
     this.transactions = this.init.transactions.filter(
       t => t.status !== 0 && !t.close
-    );
+    ).reverse();
     const next = this.transactions.find(t => t.status !== 2);
     this.index = next ? next.index : 0;
   },
@@ -267,7 +267,7 @@ export default {
             this.offset -= height;
           }
         });
-      }else{
+      } else {
         this.batch = true;
       }
     },
@@ -280,7 +280,7 @@ export default {
         this.$nextTick(() => {
           const dom = document.querySelector("ul.records .active");
           const { top, height } = dom.getBoundingClientRect();
-          
+
           if (top < 220) {
             this.offset += height;
           }
@@ -451,12 +451,13 @@ p {
 
 .card {
   position: absolute;
-  right: 2px;
-  bottom: 0;
+  right: 0px;
+  bottom: -3px;
   font-family: fantasy;
   opacity: 0.75;
   text-shadow: 0 1px 1px #fff;
-  color: #1b0f31;
+  color: rgba(27, 15, 49, 0.71);
+  font-size: 14px;
 }
 
 .amount {
