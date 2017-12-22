@@ -1415,11 +1415,15 @@ export default {
                 this.printCurrentReceipt();
                 next();
               })
-              .catch(() => next());
+              .catch(() => {
+                this.$q();
+                next();
+              });
         }
       });
     },
     printCurrentReceipt() {
+      console.log("trigger")
       if (this.payInFull) {
         Printer.setTarget("Receipt").print(this.order, true);
       } else {
@@ -1606,6 +1610,7 @@ export default {
       this.setAnchor("paid");
     },
     getQuickInput(amount) {
+      console.log(this.payment)
       const preset = [
         1,
         2,
