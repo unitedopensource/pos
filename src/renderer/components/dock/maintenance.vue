@@ -57,16 +57,22 @@ export default {
         case "unban":
           this.$socket.emit("MAINT_REQUEST_UNBAN");
           break;
-        case "checkprinter":
-          break;
         case "relistorder":
           break;
         case "see":
           console.log("check invoice #", arg);
           break;
+        case "buzzer":
+          Printer.buzzer(arg);
+          break;
+        case "testpage":
+          Printer.testPage(arg);
+          break;
         case "reload":
           if (arg === 'order') {
             this.$socket.emit("[SYNC] ORDER_LIST");
+            this.ban = false;
+            this.init.resolve();
           }
           break;
         case "debug":

@@ -233,8 +233,6 @@ export default {
         backup: this.init.item
       });
 
-      console.log(this.item)
-
       this.init.resolve();
     },
     fillOption(side) {
