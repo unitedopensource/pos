@@ -23,7 +23,7 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import checkbox from "../setting/common/checkbox";
+import checkbox from "../../setting/common/checkbox";
 export default {
   props: ["item", "checkbox"],
   components: { checkbox },

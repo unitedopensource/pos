@@ -1,44 +1,23 @@
 <template>
   <div class="popupMask center dark" @click.self="init.reject">
-    <div class="window inputter">
-      <header class="title">
-        <span>{{$t('title.giftCardReload')}}</span>
-        <i class="fa fa-times" @click="init.reject"></i>
+    <div class="editor">
+      <header>
+        <h5>{{giftCard}}</h5>
+        <h3>{{$t('title.reload')}}</h3>
       </header>
-      <div class="inner">
-        <div class="display">
-          <h5>{{giftCard}}</h5>
-          <span class="due">
-            <span class="symbol">$</span>
-            <span class="balance">{{balance}}</span>
-          </span>
-          <div class="entry">
-            <div v-if="payment === 'CASH'" class="unit" @click="payment = 'CREDIT'">CASH</div>
-            <div v-else class="unit" @click="payment = 'CASH'">CREDIT</div>
-            <input type="text" v-model="reload">
-          </div>
-        </div>
-        <div class="wrap">
-          <section class="numpad">
-            <div @click="input('7')">7</div>
-            <div @click="input('8')">8</div>
-            <div @click="input('9')">9</div>
-            <div @click="input('4')">4</div>
-            <div @click="input('5')">5</div>
-            <div @click="input('6')">6</div>
-            <div @click="input('1')">1</div>
-            <div @click="input('2')">2</div>
-            <div @click="input('3')">3</div>
-            <div @click="input('0')">0</div>
-            <div @click="input('00')" class="double">00</div>
-          </section>
-          <aside class="numpad">
-            <div @click="del">&#8592;</div>
-            <div @click="clear">C</div>
-            <div @click="enter">&#8626;</div>
-          </aside>
-        </div>
+      <div class="banner"></div>
+      <div class="header">
+        <span class="due">
+          <span class="symbol">$</span>
+          <span class="balance">{{balance}}</span>
+        </span>
       </div>
+      <div class="display">
+        <input type="text" v-model="reload">
+        <span class="unit" v-if="payment === 'CASH'">CASH</span>
+        <span class="unit" v-else>CREDIT</span>
+      </div>
+      <num-pad v-model="reload" type="number" @enter="enter"></num-pad>
     </div>
     <div :is="component" :init="componentData"></div>
   </div>
@@ -47,12 +26,13 @@
 <script>
 import { mapGetters } from "vuex";
 import TWEEN from "@tweenjs/tween.js";
+import numPad from "../common/numpad";
 import dialoger from "../common/dialoger";
 import creditCard from "../payment/creditCard";
 
 export default {
   props: ["init"],
-  components: { dialoger, creditCard },
+  components: { dialoger, creditCard, numPad },
   computed: {
     ...mapGetters(["op", "station"])
   },
@@ -64,7 +44,6 @@ export default {
       balance: "0.00",
       payment: "CASH",
       reload: "0.00",
-      reset: true,
       value: 0
     };
   },
@@ -77,22 +56,6 @@ export default {
     this.balance = this.init.balance.toFixed(2);
   },
   methods: {
-    clear() {
-      this.reload = "0.00";
-      this.reset = true;
-    },
-    input(val) {
-      if (this.reset) {
-        this.reload = (val / 100).toFixed(2);
-      } else {
-        let value = (this.reload * 100).toFixed(0) + val;
-        this.reload = (value / 100).toFixed(2);
-      }
-      this.reset = false;
-    },
-    del() {
-      this.reload = (this.reload.slice(0, -1) / 10).toFixed(2);
-    },
     enter() {
       this.verifyEntry()
         .then(this.confirmReload)

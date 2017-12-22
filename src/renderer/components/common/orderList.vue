@@ -45,7 +45,7 @@
     </div>
     <div class="middle">
       <div class="fnWrap">
-        <button class="fn fa fa-credit-card-alt" @click="openCreditCard" :disabled="$route.name !== 'Menu'"></button>
+        <button class="fn fa fa-credit-card-alt" @click="openVault" :disabled="$route.name !== 'Menu'"></button>
         <button class="fn" @click="separator" :disabled="$route.name !== 'Menu'">-----</button>
         <button class="fn fa fa-print" @click="directPrint" v-if="$route.name !=='Menu'"></button>
         <button class="fn fa fa-check-square-o" v-else @click="toggleTodoList" :disabled="app.mode ==='edit'"></button>
@@ -93,10 +93,11 @@
 import { mapGetters, mapActions } from "vuex";
 import dialoger from "../common/dialoger";
 import entry from "../menu/component/entry";
-import listItem from "./listItem";
-import config from "./config";
+import creditVault from "./component/creditVault";
+import listItem from "./component/listItem";
+import config from "./component/config";
 export default {
-  components: { config, dialoger, listItem, entry },
+  components: { config, dialoger, listItem, entry, creditVault },
   props: ["layout", "group", "display", "sort"],
   data() {
     return {
@@ -243,7 +244,9 @@ export default {
       this.setOrder(config);
       this.calculator(this.order.content);
     },
-    openCreditCard() { },
+    openVault() {
+      this.$p("creditVault");
+    },
     toggleTodoList() {
       this.todo = !this.todo;
 
@@ -253,8 +256,8 @@ export default {
       if (items.length === 0) {
         let delivery =
           this.ticket.type === "DELIVERY" &&
-            this.store.delivery &&
-            !this.order.deliveryFree
+          this.store.delivery &&
+          !this.order.deliveryFree
             ? parseFloat(this.store.deliveryCharge)
             : 0;
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="popupMask dark center">
+  <div class="popupMask dark center" @click.self="init.reject">
     <div class="editor">
       <header>
         <div class="title">
@@ -43,7 +43,8 @@
           <div class="inner">
             <input type="text" v-model="tip" :placeholder="placeholder">
           </div>
-          <div class="pad">
+          <num-pad type="decimal" v-model="tip" @enter="enter"></num-pad>
+          <!-- <div class="pad">
             <section class="numpad">
               <div @click="input('7')" class="numKey">7</div>
               <div @click="input('8')" class="numKey">8</div>
@@ -62,7 +63,7 @@
               <div @click="clear">C</div>
               <div @click="enter">&#8626;</div>
             </aside>
-          </div>
+          </div> -->
         </section>
       </div>
       <footer>
@@ -78,13 +79,14 @@
 </template>
 
 <script>
+import numPad from "../../common/numpad";
 import dialoger from "../../common/dialoger";
 import processor from "../../common/processor";
 import checkbox from "../../setting/common/checkbox";
 
 export default {
   props: ["init"],
-  components: { dialoger, checkbox, processor },
+  components: { numPad, dialoger, checkbox, processor },
   computed: {
     scroll() {
       return { transform: `translate3d(0,${this.offset}px,0)` };
@@ -108,9 +110,9 @@ export default {
     };
   },
   created() {
-    this.transactions = this.init.transactions.filter(
-      t => t.status !== 0 && !t.close
-    ).reverse();
+    this.transactions = this.init.transactions
+      .filter(t => t.status !== 0 && !t.close)
+      .reverse();
     const next = this.transactions.find(t => t.status !== 2);
     this.index = next ? next.index : 0;
   },
@@ -136,7 +138,7 @@ export default {
           this.next();
           break;
         case "Backspace":
-          this.tip = this.tip.slice(0, -1);
+          this.del();
           break;
         default:
           if (e.key.length === 1 && /[0-9.]/i.test(e.key)) {
@@ -171,8 +173,6 @@ export default {
       } else if (bottom < 450) {
         this.offset = -(height - 476);
       }
-
-      console.log(top, bottom);
     },
     input(val) {
       if (this.reset) {
@@ -380,12 +380,8 @@ li:nth-child(even) {
 section.entryWrap {
   display: flex;
   flex-direction: column;
-  padding-left: 15px;
+  padding-left: 10px;
   border-left: 1px solid #fff;
-}
-
-.pad {
-  display: flex;
 }
 
 section.numpad {
@@ -400,31 +396,6 @@ section.list {
   padding-right: 15px;
   height: 476px;
   overflow: hidden;
-}
-
-.entryWrap .header {
-  text-align: center;
-  padding: 5px 0 15px;
-  height: 44px;
-}
-
-.entryWrap .inner {
-  position: relative;
-  margin-bottom: 5px;
-}
-
-.entryWrap input {
-  border: none;
-  width: calc(100% - 22px);
-  font-size: 34px;
-  text-align: right;
-  padding: 5px 10px;
-  font-weight: bold;
-  font-family: "Agency FB";
-  outline: none;
-  border-radius: 4px;
-  color: #3c3c3c;
-  box-shadow: inset 0 1px 6px -1px rgba(0, 0, 0, 0.4);
 }
 
 .gray {
@@ -452,7 +423,7 @@ p {
 .card {
   position: absolute;
   right: 0px;
-  bottom: -3px;
+  bottom: -2px;
   font-family: fantasy;
   opacity: 0.75;
   text-shadow: 0 1px 1px #fff;
