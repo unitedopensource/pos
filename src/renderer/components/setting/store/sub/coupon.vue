@@ -24,7 +24,7 @@
       <tbody>
         <tr v-for="(coupon,index) in coupons" :key="index">
           <td>{{coupon.alias}}</td>
-          <td class="amount" v-if="coupon.percentage">{{coupon.discount}} %</td>
+          <td class="amount" v-if="coupon.type === 'discount'">{{coupon.discount}} %</td>
           <td class="amount" v-else>$ {{coupon.discount | decimal}}</td>
           <td :class="{expired: (coupon.expire.enable && today > coupon.expire.date)}">{{format(coupon.expire.date)}}</td>
           <td>{{coupon.count}}</td>

@@ -1006,7 +1006,7 @@ export default {
         'receiver': 'Receiver',
         'cashier': 'Cashier',
         'signature': 'Signature',
-        'comment': 'comment',
+        'comment': 'Comment',
         'server': 'Server',
         'taxOnDelivery': 'Tax On Delivery',
         'ignorePrice': 'Ignore Price',

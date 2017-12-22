@@ -20,33 +20,40 @@
       </header>
       <template v-if="tab === 'basic'">
         <div class="wrap">
-          <div class="input">
-            <selector title="text.type" v-model="coupon.type" :opts="opts"></selector>
-            <inputer title="text.alias" v-model="coupon.alias" :length="27"></inputer>
-            <inputer title="text.content" v-model="coupon.description" type="textarea"></inputer>
-            <inputer title="text.amount" v-model.number="coupon.discount"></inputer>
-            <toggle title="text.setCondition" v-model="coupon.require.enable" :defaultStyle="false">
-              <transition name="dropdown">
-                <div class="opt" v-if="coupon.require.enable">
-                  <inputer title="text.amountGreaterThan" v-model.number="coupon.require.amount"></inputer>
-                </div>
-              </transition>
-            </toggle>
-            <switches title="text.couponStack" v-model="coupon.stack"></switches>
-            <toggle v-model="coupon.expire.enable" title="text.expiration" :defaultStyle="false">
-              <transition name="dropdown">
-                <div class="opt" v-if="coupon.expire.enable">
-                  <inputer title="thead.count" v-model.number="coupon.expire.count"></inputer>
-                  <inputer title="thead.expire" v-model="coupon.expire.date" placeholder="YYYY-MM-DD"></inputer>
-                </div>
-              </transition>
-            </toggle>
-          </div>
+          <selector title="text.type" v-model="coupon.type" :opts="opts"></selector>
+          <inputer title="text.alias" v-model="coupon.alias" :length="27"></inputer>
+          <inputer title="text.content" v-model="coupon.description" type="textarea"></inputer>
+          <inputer title="text.couponCode" v-model="coupon.code"></inputer>
+          <template v-if="coupon.type === 'giveaway'">
+            <selector title="text.search" v-model="search" :opts="itemOpts" :editable="true" @keydown.enter.native="query(search)" @update="addReference"></selector>
+            <div class="items" v-show="coupon.reference.length">
+              <p v-for="(item,index) in coupon.reference" :key="index">
+                <span class="item">{{item[language]}}</span>
+                <i class="fa fa-trash" @click="remove(index)"></i>
+              </p>
+            </div>
+          </template>
+          <inputer title="text.amount" v-model.number="coupon.discount" v-else></inputer>
         </div>
       </template>
       <template v-else-if="tab === 'condition'">
         <div class="wrap">
-          <inputer title="text.couponCode" v-model="coupon.code"></inputer>
+          <toggle v-model="coupon.expire.enable" title="text.expiration" :defaultStyle="false">
+            <transition name="dropdown">
+              <div class="opt" v-if="coupon.expire.enable">
+                <inputer title="thead.count" v-model.number="coupon.expire.count"></inputer>
+                <inputer title="thead.expire" v-model="coupon.expire.date" placeholder="YYYY-MM-DD"></inputer>
+              </div>
+            </transition>
+          </toggle>
+          <toggle title="text.setCondition" v-model="coupon.require.enable" :defaultStyle="false">
+            <transition name="dropdown">
+              <div class="opt" v-if="coupon.require.enable">
+                <inputer title="text.amountGreaterThan" v-model.number="coupon.require.amount"></inputer>
+              </div>
+            </transition>
+          </toggle>
+          <switches title="text.couponStack" v-model="coupon.stack"></switches>
           <selector title="text.apply" v-model="coupon.apply" :opts="applyTargets"></selector>
           <template v-if="coupon.apply === 'category'">
             <div class="checkboxes">
@@ -55,12 +62,12 @@
           </template>
           <template v-else-if="coupon.apply === 'item'">
             <selector title="text.search" v-model="search" :opts="itemOpts" :editable="true" @keydown.enter.native="query(search)" @update="addReference"></selector>
-            <ul class="items" v-show="coupon.reference.length">
-              <li v-for="(item,index) in coupon.reference" :key="index">
+            <div class="items" v-show="coupon.reference.length">
+              <p v-for="(item,index) in coupon.reference" :key="index">
                 <span class="item">{{item[language]}}</span>
                 <i class="fa fa-trash" @click="remove(index)"></i>
-              </li>
-            </ul>
+              </p>
+            </div>
           </template>
         </div>
       </template>
@@ -149,7 +156,7 @@ export default {
           label: item[this.language],
           tooltip: item.category,
           plainText: true,
-          value: item
+          value: this.coupon.type === "giveaway" ? item : item._id
         }));
       });
     },
@@ -181,7 +188,7 @@ header {
   margin-top: 5px;
 }
 
-li {
+p {
   display: flex;
   padding: 0 10px;
 }
