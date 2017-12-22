@@ -290,9 +290,6 @@ label.title {
 }
 
 div.options .inner {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
   width: 189px;
   height: 178px;
   border: 1px solid #eee;

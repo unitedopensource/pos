@@ -367,23 +367,3 @@ td.amount {
     color: #3c3c3c;
     box-shadow: inset 0 1px 6px -1px rgba(0, 0, 0, 0.4);
 }
-
-
-/* 
-.editor header {
-    display: flex;
-    align-items: center;
-    padding: 10px 15px;
-}
-
-.editor header span {
-    flex: 1;
-}
-
-.editor header i {
-    cursor: pointer;
-}
-
-.editor .body {
-    background: #fff;
-} */

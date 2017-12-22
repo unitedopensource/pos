@@ -137,7 +137,7 @@ export default {
         tip: 0,
         cashier: this.op.name,
         cashDrawer,
-        station: this.station.alies,
+        station: this.station.alias,
         type: "CASH",
         for: "Reload",
         subType: null,

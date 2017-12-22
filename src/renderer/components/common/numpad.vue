@@ -23,55 +23,63 @@
 
 <script>
 export default {
-    props: {
-        value: {
-            type: [String, Number],
-            default: "0.00"
-        },
-        type: {
-            type: String,
-            default: "decimal"
-        }
+  props: {
+    value: {
+      type: [String, Number],
+      default: "0.00"
     },
-    data() {
-        return {
-            reset: true
-        }
-    },
-    methods: {
-        input(value) {
-            switch (this.type) {
-                case "number":
-                    this.reset ? this.$emit("input", value) : this.$emit("input", this.value + value);
-                    break;
-                case "decimal":
-                    const _value = (((this.value * 100).toFixed(0) + value) / 100).toFixed(2);
-                    this.reset ? this.$emit("input", (value / 100).toFixed(2)) : this.$emit("input", _value);
-                    break;
-            }
-            this.reset = false;
-        },
-        del() {
-            switch (this.type) {
-                case "number":
-                    this.$emit("input", this.value.slice(0, -1));
-                    break;
-                case "decimal":
-                    this.$emit("input", (this.value.slice(0, -1) / 10).toFixed(2));
-                    break;
-            }
-        },
-        clear() {
-            this.type === 'number' ? this.$emit("input", "0") : this.$emit("input", "0.00");
-            this.reset = true;
-        }
-    },
-    watch: {
-        type(n) {
-            this.clear()
-        }
+    type: {
+      type: String,
+      default: "decimal"
     }
-}
+  },
+  data() {
+    return {
+      reset: true
+    };
+  },
+  methods: {
+    input(value) {
+      switch (this.type) {
+        case "number":
+          this.reset
+            ? this.$emit("input", value)
+            : this.$emit("input", this.value + value);
+          break;
+        case "decimal":
+          const _value = (((this.value * 100).toFixed(0) + value) /
+            100
+          ).toFixed(2);
+          this.reset
+            ? this.$emit("input", (value / 100).toFixed(2))
+            : this.$emit("input", _value);
+          break;
+      }
+      this.reset = false;
+    },
+    del() {
+      switch (this.type) {
+        case "number":
+          this.$emit("input", this.value.slice(0, -1));
+          break;
+        case "decimal":
+          this.$emit("input", (this.value.slice(0, -1) / 10).toFixed(2));
+          break;
+      }
+    },
+    clear() {
+      this.type === "number"
+        ? this.$emit("input", "0")
+        : this.$emit("input", "0.00");
+      this.reset = true;
+    }
+  },
+  watch: {
+    type(n) {
+      this.clear();
+    }
+  }
+};
 </script>
 
 <style scoped>

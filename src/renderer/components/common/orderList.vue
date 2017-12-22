@@ -45,7 +45,7 @@
     </div>
     <div class="middle">
       <div class="fnWrap">
-        <button class="fn fa fa-credit-card-alt" @click="openVault" :disabled="$route.name !== 'Menu'"></button>
+        <button class="fn fa fa-credit-card-alt" @click="openVault" :disabled="!customer._id"></button>
         <button class="fn" @click="separator" :disabled="$route.name !== 'Menu'">-----</button>
         <button class="fn fa fa-print" @click="directPrint" v-if="$route.name !=='Menu'"></button>
         <button class="fn fa fa-check-square-o" v-else @click="toggleTodoList" :disabled="app.mode ==='edit'"></button>
@@ -245,7 +245,13 @@ export default {
       this.calculator(this.order.content);
     },
     openVault() {
-      this.$p("creditVault");
+      this.$socket.emit(
+        "[CUSTOMER] GET_CREDIT_CARD",
+        this.customer._id,
+        opts => {
+          this.$p("creditVault", { opts });
+        }
+      );
     },
     toggleTodoList() {
       this.todo = !this.todo;
@@ -433,6 +439,7 @@ export default {
       "order",
       "ticket",
       "language",
+      "customer",
       "isEmptyTicket"
     ])
   },
