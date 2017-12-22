@@ -1423,7 +1423,6 @@ export default {
       });
     },
     printCurrentReceipt() {
-      console.log("trigger")
       if (this.payInFull) {
         Printer.setTarget("Receipt").print(this.order, true);
       } else {
