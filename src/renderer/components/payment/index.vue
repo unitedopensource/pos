@@ -865,7 +865,7 @@ export default {
     },
     payFailed(error) {
       console.log(error)
-      
+
       error === Object(error)
         ? this.$dialog(error).then(() => this.$q())
         : this.$q();
@@ -1415,10 +1415,7 @@ export default {
                 this.printCurrentReceipt();
                 next();
               })
-              .catch(() => {
-                this.$q();
-                next();
-              });
+              .catch(() => next());
         }
       });
     },
@@ -1439,9 +1436,9 @@ export default {
         });
         Printer.setTarget("Receipt").print(order, true);
       }
-      this.$q();
     },
     checkBalance() {
+      this.$q();
       if (this.payInFull) {
         if (toFixed(this.payment.remain.toFixed(2), 2) > 0) {
           this.$q();
@@ -1609,7 +1606,6 @@ export default {
       this.setAnchor("paid");
     },
     getQuickInput(amount) {
-      console.log(this.payment)
       const preset = [
         1,
         2,

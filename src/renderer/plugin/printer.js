@@ -1047,8 +1047,7 @@ function createList(printer, setting, invoice) {
         let firstLine, secondLine, setCN = "", setEN = "";
 
         item.choiceSet.forEach(set => {
-            const { print = [] } = set;
-            if (!print.includes(name)) return;
+            if (set.hasOwnProperty(print) && !set.print.includes(name)) return;
 
             setCN += `<div class="sub">
                         <span>${set.qty !== 1 ? set.qty + 'x' : ''}</span>

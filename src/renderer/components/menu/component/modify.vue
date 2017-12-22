@@ -69,8 +69,8 @@ export default {
       target: "single",
       item: null,
       reset: true,
-      unit: true,
-      discount: "0.00"
+      unit: false,
+      discount: "0"
     };
   },
   created() {
@@ -129,7 +129,7 @@ export default {
           this.reset
             ? (this.item.qty = num)
             : this.item.qty + num < 1000 &&
-              (this.item.qty = String(this.item.qty) + num);
+            (this.item.qty = String(this.item.qty) + num);
           break;
         case "discount":
           if (this.reset) {
@@ -209,15 +209,15 @@ export default {
         qty: ~~this.item.qty,
         total: (single * this.item.qty).toFixed(2)
       });
+
+      const zhCN = this.unit ? "$ " + this.discount.toFixed(2) : this.discount + " % " + this.$t('text.discount');
+      const usEN = this.unit ? "$ " + this.discount.toFixed(2) : this.discount + " % Discount";
+
       discount > 0 &&
         item.choiceSet.push({
           qty: 1,
-          zhCN: `${this.unit
-            ? "$" + this.discount.toFixed(2)
-            : this.discount + " %"} Discount`,
-          usEN: `${this.unit
-            ? "$" + this.discount.toFixed(2)
-            : this.discount + " %"} Discount`,
+          zhCN,
+          usEN,
           single: -discount,
           price: -discount
         });
@@ -232,6 +232,8 @@ export default {
         data: this.item,
         backup: this.init.item
       });
+
+      console.log(this.item)
 
       this.init.resolve();
     },
