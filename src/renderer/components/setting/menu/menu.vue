@@ -153,7 +153,7 @@ export default {
           usEN: "",
           zhCN: "",
           spicy: "",
-          price: 0,
+          price: [0],
           num: this.items[group].filter(i => i.clickable).length,
           prices: {}
         });
