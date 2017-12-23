@@ -51,7 +51,7 @@
         <div class="f1">
           <button class="btn" @click="newRecord" v-show="opts.length < 4">{{$t('button.new')}}</button>
         </div>
-        <button class="btn" @click="init.resolve">{{$t('button.confirm')}}</button>
+        <button class="btn" @click="confirm" :disabled="!select">{{$t('button.confirm')}}</button>
       </footer>
       <div :is="component" :init="componentData"></div>
     </div>
@@ -142,7 +142,7 @@ export default {
     },
     save() {
       const _id = this.$store.getters.customer._id;
-      const card = [this.card, this.exp, this.cvc];
+      const card = [this.card.replace(" ", ""), this.exp, this.cvc];
       const key = this.card.split(" ").last();
       this.encrypt(card, key).then(cipher => {
         this.$socket.emit(
@@ -194,6 +194,15 @@ export default {
           this.$q();
         })
         .catch(() => this.$q());
+    },
+    confirm() {
+      Object.assign(this.$store.getters.order, {
+        __creditPayment__: {
+          number: this.select.number,
+          date: this.select.exp
+        }
+      });
+      this.init.resolve();
     }
   },
   watch: {

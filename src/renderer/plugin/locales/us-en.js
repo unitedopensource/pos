@@ -401,7 +401,8 @@ export default {
         'timer': 'Set Time',
         'template': 'Item Template',
         'interface': 'Interface',
-        'footer': 'Receipt Footer'
+        'footer': 'Receipt Footer',
+        'creditVault': 'Credit Card Safe Vault'
     },
     dialog: {
         'maintenance': 'Maintenance',

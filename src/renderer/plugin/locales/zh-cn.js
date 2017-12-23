@@ -313,7 +313,8 @@ export default {
         'timer': '定时出单',
         'template': '物品模板',
         'interface': '界面',
-        'footer': '收据页尾'
+        'footer': '收据页尾',
+        'creditVault': '信用卡储存记录'
     },
     dialog: {
         'maintenance': '维护',
