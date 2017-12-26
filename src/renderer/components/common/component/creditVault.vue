@@ -62,6 +62,7 @@
 import crypto from "crypto";
 import numPad from "../numpad";
 import dialoger from "../dialoger";
+import { mapActions } from "vuex";
 
 export default {
   props: ["init"],
@@ -196,14 +197,18 @@ export default {
         .catch(() => this.$q());
     },
     confirm() {
-      Object.assign(this.$store.getters.order, {
-        __creditPayment__: {
-          number: this.select.number,
-          date: this.select.exp
-        }
-      });
+      this.select.unlock &&
+        this.setOrder({
+          __creditPayment__: {
+            number: this.select.number,
+            date: this.select.exp,
+            cvc: this.select.cvc
+          }
+        });
+
       this.init.resolve();
-    }
+    },
+    ...mapActions(["setOrder"])
   },
   watch: {
     entry(n) {

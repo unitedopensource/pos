@@ -16,34 +16,34 @@
             <i class="fa fa-money"></i>
             <span class="text">{{$t('button.payment')}}</span>
         </button>
-        <div class="btn" @click="receipt">
+        <button class="btn" @click="receipt">
             <i class="fa fa-print"></i>
             <span class="text">{{$t('button.receipt')}}</span>
-        </div>
-        <div class="btn" @click="print">
+        </button>
+        <button class="btn" @click="print">
             <i class="fa fa-print"></i>
             <span class="text">{{$t('button.print')}}</span>
-        </div>
-        <div class="btn" @click="calendar">
+        </button>
+        <button class="btn" @click="calendar">
             <i class="fa fa-calendar"></i>
             <span class="text">{{$t('button.calendar')}}</span>
-        </div>
-        <div class="btn" @click="search">
-            <i class="fa fa-search"></i>
-            <span class="text">{{$t('button.search')}}</span>
-        </div>
-        <div class="btn" @click="terminal">
+        </button>
+        <button class="btn" @click="terminal">
             <i class="fa fa-tablet"></i>
             <span class="text">{{$t('button.terminal')}}</span>
-        </div>
-        <div class="btn" @click="report">
+        </button>
+        <button class="btn" @click="report">
             <i class="fa fa-file-text"></i>
             <span class="text">{{$t('button.report')}}</span>
-        </div>
+        </button>
         <button class="btn" @click="paymentTransaction" :disabled="!reportable">
             <i class="fa fa-bar-chart"></i>
             <span class="text">{{$t('button.stats')}}</span>
         </button>
+                <div class="btn" @click="search">
+            <i class="fa fa-search"></i>
+            <span class="text">{{$t('button.search')}}</span>
+        </div>
         <div :is="component" :init="componentData"></div>
     </aside>
 </template>

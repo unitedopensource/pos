@@ -636,6 +636,15 @@ export default {
           ? false
           : !this.station.terminal || this.order.source !== "POS";
 
+        if (
+          this.station.terminal &&
+          this.order.hasOwnProperty("__creditPayment__")
+        ) {
+          const { number, date, cvc } = this.order.__creditPayment__;
+          this.creditCard = number;
+          this.expiration = date;
+        }
+
         this.$socket.emit("[PAYMENT] CHECK_PAY", this.order._id, paid => {
           const remain = toFixed(this.payment.balance - paid, 2);
           this.payment.remain = Math.max(0, remain);
@@ -864,7 +873,7 @@ export default {
       }
     },
     payFailed(error) {
-      console.log(error)
+      console.log(error);
 
       error === Object(error)
         ? this.$dialog(error).then(() => this.$q())
@@ -899,7 +908,7 @@ export default {
     },
     checkOverPay() {
       return new Promise((resolve, reject) => {
-        let paidZeroError = {
+        const paidZeroError = {
           type: "error",
           title: "dialog.paymentFailed",
           msg: "dialog.canNotPayZeroAmount",
@@ -907,16 +916,17 @@ export default {
         };
         if (this.paid === "0.00") throw paidZeroError;
         if (this.paid > this.payment.remain) {
-          let extra = toFixed(this.paid - this.payment.remain, 2);
-
-          this.$dialog({
+          const extra = toFixed(this.paid - this.payment.remain, 2);
+          const content = {
             title: "dialog.paidAmountGreaterThanDue",
             msg: ["dialog.extraAmountSetAsTip", extra.toFixed(2)],
             buttons: [
               { text: "button.cancel", fn: "reject" },
               { text: "button.setTip", fn: "resolve" }
             ]
-          })
+          };
+
+          this.$dialog(content)
             .then(() => {
               this.payment.tip = extra;
               this.tip = extra.toFixed(2);
@@ -937,13 +947,13 @@ export default {
     },
     checkCashDrawer() {
       return new Promise((resolve, reject) => {
-        let paidZeroError = {
+        const paidZeroError = {
           type: "error",
           title: "dialog.paymentFailed",
           msg: "dialog.canNotPayZeroAmount",
           buttons: [{ text: "button.confirm", fn: "resolve" }]
         };
-        let noCashDrawerError = {
+        const noCashDrawerError = {
           title: "dialog.cashDrawerUnavailable",
           msg: "dialog.cashDrawerUnavailableTip",
           buttons: [{ text: "button.confirm", fn: "resolve" }]
@@ -958,18 +968,18 @@ export default {
     },
     checkEntryInput() {
       return new Promise((resolve, reject) => {
-        let number = this.creditCard.replace(/[^0-9\.]+/g, "");
-        let date = this.expiration.replace(/[^0-9\.]+/g, "");
-        let today = moment().format("MMYY");
-        let tip = parseFloat(this.tip) || this.payment.tip;
+        const number = this.creditCard.replace(/[^0-9\.]+/g, "");
+        const date = this.expiration.replace(/[^0-9\.]+/g, "");
+        const today = moment().format("MMYY");
+        const tip = parseFloat(this.tip) || this.payment.tip;
 
-        let cardLengthError = {
+        const cardLengthError = {
           type: "error",
           title: "dialog.invalidCreditCard",
           msg: "dialog.creditCardLengthIncorrect",
           buttons: [{ text: "button.confirm", fn: "resolve" }]
         };
-        let expError = {
+        const expError = {
           type: "error",
           title: "dialog.invalidCreditCard",
           msg: "dialog.expirationDateIncorrect",
@@ -980,19 +990,17 @@ export default {
         if (date.length > 0 && date.length !== 4 && date < today)
           throw expError;
 
-        let card = {
+        resolve({
           creditCard: { number, date },
           amount: this.paid - tip,
           tip
-        };
-
-        resolve(card);
+        });
       });
     },
     chargeCash() {
-      return new Promise(resolve => {
+      return new Promise(next => {
         this.op.cashCtrl === "enable" && Printer.openCashDrawer();
-        resolve();
+        next();
       });
     },
     chargeCreditCard(card) {
@@ -1043,10 +1051,10 @@ export default {
     },
     chargeGiftCard() {
       return new Promise((resolve, reject) => {
-        let paid = parseFloat(this.paid);
+        const paid = parseFloat(this.paid);
         this.giftCard.balance = toFixed(this.giftCard.balance - paid, 2);
 
-        let log = {
+        const log = {
           balance: this.giftCard.balance,
           change: -paid,
           date: today(),
