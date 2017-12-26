@@ -21,6 +21,7 @@ export default {
         'DINE_IN': '堂吃',
         'BAR': '酒吧',
         'BUFFET': '自助餐',
+        'HIBACHI': '铁板',
         'SALES': '销售',
         'TO_GO': '带走',
         'PRE_PAYMENT': '预付款',

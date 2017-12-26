@@ -1,25 +1,28 @@
 <template>
-    <div>
-        <header class="nav">
-            <router-link tag="div" :to="{name:'Setting.printer.config',params:{printer}}" class="back">
-                <i class="fa fa-chevron-left"></i>
-            </router-link>
-            <div class="title"><h3>{{$t('title.setTitle')}}</h3></div>
-            <nav>
-                <span @click="reset">{{$t('button.default')}}</span>
-            </nav>
-        </header>
-        <text-input v-model="title.WALK_IN" title="type.WALK_IN"></text-input>
-        <text-input v-model="title.PICK_UP" title="type.PICK_UP"></text-input>
-        <text-input v-model="title.DELIVERY" title="type.DELIVERY"></text-input>
-        <text-input v-model="title.DINE_IN" title="type.DINE_IN"></text-input>
-        <text-input v-model="title.PRE_PAYMENT" title="type.PRE_PAYMENT"></text-input>
-        <text-input v-model="title.RECEIPT" title="type.RECEIPT"></text-input>
-        <text-input v-model="title.BUFFET" title="type.BUFFET"></text-input>
-        <text-input v-model="title.TO_GO" title="type.TO_GO"></text-input>
-        <text-input v-model="title.BAR" title="type.BAR"></text-input>
-        <text-input v-model="title.SALES" title="type.SALES"></text-input>
-    </div>
+  <div>
+    <header class="nav">
+      <router-link tag="div" :to="{name:'Setting.printer.config',params:{printer}}" class="back">
+        <i class="fa fa-chevron-left"></i>
+      </router-link>
+      <div class="title">
+        <h3>{{$t('title.setTitle')}}</h3>
+      </div>
+      <nav>
+        <span @click="reset">{{$t('button.default')}}</span>
+      </nav>
+    </header>
+    <text-input v-model="title.WALK_IN" title="type.WALK_IN"></text-input>
+    <text-input v-model="title.PICK_UP" title="type.PICK_UP"></text-input>
+    <text-input v-model="title.DELIVERY" title="type.DELIVERY"></text-input>
+    <text-input v-model="title.DINE_IN" title="type.DINE_IN"></text-input>
+    <text-input v-model="title.BUFFET" title="type.BUFFET"></text-input>
+    <text-input v-model="title.HIBACHI" title="type.HIBACHI"></text-input>
+    <text-input v-model="title.BAR" title="type.BAR"></text-input>
+    <text-input v-model="title.SALES" title="type.SALES"></text-input>
+    <text-input v-model="title.TO_GO" title="type.TO_GO"></text-input>
+    <text-input v-model="title.PRE_PAYMENT" title="type.PRE_PAYMENT"></text-input>
+    <text-input v-model="title.RECEIPT" title="type.RECEIPT"></text-input>
+  </div>
 </template>
 
 <script>
@@ -37,6 +40,7 @@ export default {
         PRE_PAYMENT: "PRE PAYMENT",
         RECEIPT: "RECEIPT",
         DINE_IN: "DINE IN",
+        HIBACHI: "HIBACHI",
         BUFFET: "BUFFET",
         SALES: "SALES",
         TO_GO: "TO GO",

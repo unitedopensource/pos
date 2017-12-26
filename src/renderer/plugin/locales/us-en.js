@@ -27,6 +27,7 @@ export default {
         'DINE_IN': 'Dine In',
         'BAR': 'Bar',
         'BUFFET': 'Buffet',
+        'HIBACHI': 'Hibachi',
         'SALES': 'Sales',
         'TO_GO': 'To Go',
         'PRE_PAYMENT': 'Pre Pay.',

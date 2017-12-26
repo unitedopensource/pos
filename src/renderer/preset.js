@@ -221,26 +221,6 @@ var Preset = function () {
       }]
     }
   };
-  this.cashIn = function (op, name, amount) {
-    return {
-      date: today(),
-      cashDrawer: name,
-      operator: op,
-      begin: amount.toFixed(2),
-      beginTime: +new Date(),
-      end: null,
-      endTime: null,
-      close: false,
-      activity: [{
-        type: 'START',
-        inflow: parseFloat(amount),
-        outflow: 0,
-        time: +new Date(),
-        ticket: null,
-        operator: op
-      }]
-    }
-  }
 }
 
 module.exports = new Preset();

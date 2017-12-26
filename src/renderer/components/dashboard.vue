@@ -119,14 +119,12 @@ h1 {
 <script>
 import { mapActions, mapGetters } from "vuex";
 import dialoger from "./common/dialoger";
-import thirdParty from "./dock/source";
 import counter from "./common/counter";
 import toast from "./dashboard/toast";
 import unlock from "./common/unlock";
-import Preset from "../preset";
 
 export default {
-  components: { dialoger, counter, toast, unlock, thirdParty },
+  components: { dialoger, counter, toast, unlock },
   computed: {
     ...mapGetters([
       "op",
@@ -308,21 +306,21 @@ export default {
           this.ring && this.setCustomer(this.callLog[0]);
           this.$router.push({ path: "/main/info" });
           break;
-        case "thirdParty":
-          new Promise((resolve, reject) => {
-            this.componentData = { resolve, reject };
-            this.component = "thirdParty";
-          })
-            .then(source => {
-              this.$q();
-              this.setOrder({ source });
-              this.setTicket({ type: "DELIVERY" });
-              this.$router.push({ path: "/main/info" });
-            })
-            .catch(() => {
-              this.$q();
-            });
-          break;
+        // case "thirdParty":
+        //   new Promise((resolve, reject) => {
+        //     this.componentData = { resolve, reject };
+        //     this.component = "thirdParty";
+        //   })
+        //     .then(source => {
+        //       this.$q();
+        //       this.setOrder({ source });
+        //       this.setTicket({ type: "DELIVERY" });
+        //       this.$router.push({ path: "/main/info" });
+        //     })
+        //     .catch(() => {
+        //       this.$q();
+        //     });
+        //   break;
         case "table":
           this.dinein.table
             ? this.$router.push({ path: "/main/table" })
@@ -438,11 +436,31 @@ export default {
       }
     },
     acceptCashIn(amount) {
-      let name =
+      let cashDrawer =
         this.op.cashCtrl === "enable"
           ? this.station.cashDrawer.name
           : this.op.name;
-      let record = Preset.cashIn(this.op.name, name, amount);
+      let record = {
+        date: today(),
+        cashDrawer,
+        operator: this.op.name,
+        begin: amount.toFixed(2),
+        beginTime: +new Date(),
+        end: null,
+        endTime: null,
+        close: false,
+        activity: [
+          {
+            type: "START",
+            inflow: parseFloat(amount),
+            outflow: 0,
+            time: +new Date(),
+            ticket: null,
+            operator: this.op.name
+          }
+        ]
+      };
+
       this.$socket.emit("[CASHFLOW] INITIAL", record);
       Printer.printCashInReport(record);
       this.$q();
