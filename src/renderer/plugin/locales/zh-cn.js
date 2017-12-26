@@ -1047,6 +1047,7 @@ export default {
         'english': '英文',
         'chinese': '中文',
         'restrict': '严格模式',
+        'accessPin': '登陆密码'
     },
     nav: {
         'store': '店面',

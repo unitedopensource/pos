@@ -2,7 +2,7 @@
   <div class="input">
     <div class="wrap">
       <label>{{$t(title)}}</label>
-      <input type="text" :value="value" :disabled="disabled" @input="$emit('input',$event.target.value)" @blur="$emit('update',$event.target.value)">
+      <input :type="type" :value="value" :disabled="disabled" @input="$emit('input',$event.target.value)" @blur="$emit('update',$event.target.value)">
     </div>
     <slot></slot>
   </div>
@@ -14,10 +14,14 @@ export default {
     label: String,
     title: String,
     value: [String, Number, Array],
-    disabled: Boolean
+    disabled: Boolean,
+    type: {
+      type: String,
+      default: "text"
+    }
   },
   watch: {
-    value() { }
+    value() {}
   }
 };
 </script>

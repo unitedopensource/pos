@@ -1,32 +1,32 @@
 <template>
-    <div class="pagination" v-show="totalPage > 1">
-        <div class="page" @click="prev">
-            <i class="fa fa-angle-left"></i>
-        </div>
-        <template v-if="style==='full'">
-            <div class="page" v-for="i in pages" :key="i" :class="{active:i === page}" @click="setPage(i)">{{i}}</div>
-        </template>
-        <template v-else-if="style==='side'">
-            <div class="page" v-for="i in first(pages)" :key="i" :class="{active:i === page}" @click="setPage(i)">{{i}}</div>
-            <div>......</div>
-            <div class="page" v-for="i in last(pages)" :key="i" :class="{active:i === page}" @click="setPage(i)">{{i}}</div>
-        </template>
-        <template v-else-if="style==='end'">
-            <div class="page" @click="setPage(1)">1</div>
-            <div>......</div>
-            <div class="page" v-for="i in rear(pages)" :key="i" :class="{active:i === page}" @click="setPage(i)">{{i}}</div>
-        </template>
-        <template v-else>
-            <div class="page" @click="setPage(1)">1</div>
-            <div>......</div>
-            <div class="page" v-for="i in middle(pages)" :key="i" :class="{active:i === page}" @click="setPage(i)">{{i}}</div>
-            <div>......</div>
-            <div class="page" v-for="i in last(pages)" :key="i" :class="{active:i === page}" @click="setPage(i)">{{i}}</div>
-        </template>
-        <div class="page" @click="next">
-            <i class="fa fa-angle-right"></i>
-        </div>
+  <div class="pagination" v-show="totalPage > 1">
+    <div class="page direction" @click="prev">
+      <i class="fa fa-angle-left"></i>
     </div>
+    <template v-if="style==='full'">
+      <div class="page" v-for="i in pages" :key="i" :class="{active:i === page}" @click="setPage(i)">{{i}}</div>
+    </template>
+    <template v-else-if="style==='side'">
+      <div class="page" v-for="i in first(pages)" :key="i" :class="{active:i === page}" @click="setPage(i)">{{i}}</div>
+      <div>......</div>
+      <div class="page" v-for="i in last(pages)" :key="i" :class="{active:i === page}" @click="setPage(i)">{{i}}</div>
+    </template>
+    <template v-else-if="style==='end'">
+      <div class="page" @click="setPage(1)">1</div>
+      <div>......</div>
+      <div class="page" v-for="i in rear(pages)" :key="i" :class="{active:i === page}" @click="setPage(i)">{{i}}</div>
+    </template>
+    <template v-else>
+      <div class="page" @click="setPage(1)">1</div>
+      <div>......</div>
+      <div class="page" v-for="i in middle(pages)" :key="i" :class="{active:i === page}" @click="setPage(i)">{{i}}</div>
+      <div>......</div>
+      <div class="page" v-for="i in last(pages)" :key="i" :class="{active:i === page}" @click="setPage(i)">{{i}}</div>
+    </template>
+    <div class="page direction" @click="next">
+      <i class="fa fa-angle-right"></i>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -44,23 +44,23 @@ export default {
   },
   methods: {
     first(pages) {
-      let min = 0;
-      let max = 10;
+      const min = 0;
+      const max = 10;
       return pages.slice(min, max);
     },
     last(pages) {
-      let length = pages.length - 1;
+      const length = pages.length - 1;
       return pages.slice(length - 1, length);
     },
     middle(pages) {
-      let page = this.page;
-      let min = page - 4;
-      let max = page + 4;
+      const page = this.page;
+      const min = page - 4;
+      const max = page + 4;
       return pages.slice(min, max);
     },
     rear(pages) {
-      let max = this.pages.length;
-      let min = max - 10;
+      const max = this.pages.length;
+      const min = max - 10;
       return pages.slice(min, max);
     },
     format(page) {
@@ -113,7 +113,7 @@ export default {
 .pagination .page {
   margin: 5px;
   flex: 1;
-  max-width: 50px;
+  max-width: 35px;
   text-align: center;
   cursor: pointer;
   padding: 10px 10px;

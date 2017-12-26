@@ -1051,7 +1051,8 @@ export default {
         'osk': 'On Screen Keyboard',
         'english': 'English',
         'chinese': 'Chinese',
-        'restrict': 'Restrict Mode'
+        'restrict': 'Restrict Mode',
+        'accessPin': 'Access Pin'
     },
     nav: {
         'store': 'Store',

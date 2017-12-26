@@ -12,6 +12,10 @@
         <span class="add" @click="remove">{{$t('button.remove')}}</span>
       </nav>
     </header>
+    <text-input v-model="op.pin" title="text.accessPin" :type="view">
+      <i class="fa fa-eye view" v-if="view === 'password'" @click="view = 'text'"></i>
+      <i class="fa fa-eye-slash view" v-else @click="view = 'password'"></i>
+    </text-input>
     <toggle v-model="op.timecard" title="text.timecard" tooltip="tip.timecard"></toggle>
     <text-list v-model="op.language" title="text.defaultLanguage" :opts="languages"></text-list>
     <text-list v-model="op.cashCtrl" title="setting.cashDrawer" :opts="ctrl"></text-list>
@@ -27,15 +31,17 @@
 import toggle from "../common/toggle";
 import textList from "../common/textList";
 import external from "../common/external";
+import textInput from "../common/textInput";
 
 export default {
   props: ["operator"],
-  components: { toggle, textList, external },
+  components: { toggle, textList, external, textInput },
   data() {
     return {
       op: {},
       componentData: null,
       component: null,
+      view: "password",
       languages: [
         {
           label: "text.english",
@@ -76,7 +82,8 @@ export default {
     );
   },
   methods: {
-    remove() {}
+    remove() {},
+
   }
 };
 </script>
@@ -85,5 +92,12 @@ export default {
 h5 {
   color: #9e9e9e;
   font-weight: normal;
+}
+
+i.view {
+  padding: 10px 21px;
+  color: #555;
+  cursor: pointer;
+  margin: 0 10px;
 }
 </style>

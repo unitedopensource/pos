@@ -15,18 +15,24 @@
                 <span class="role">{{op.role}}</span>
                 <i class="fa fa-caret-right" @click="$emit('set',op.name)"></i>
             </li>
+            <li class="footer">
+                <pagination :of="list" :max="5" :contain="14" @page="setPage" class="f1"></pagination>
+            </li>
         </ul>
         <div :is="component" :init="componentData"></div>
     </div>
 </template>
 
 <script>
+import pagination from "../../common/pagination";
 export default {
+  components: { pagination },
   data() {
     return {
       componentData: null,
       component: null,
-      operators: []
+      list: [],
+      page: 0
     };
   },
   beforeRouteEnter: (to, from, next) => {
@@ -40,29 +46,46 @@ export default {
           "Bartender",
           "ThirdParty"
         ];
-        vm.operators = data.sort(
+        vm.list = data.sort(
           (a, b) => (sort.indexOf(a.role) > sort.indexOf(b.role) ? 1 : -1)
         );
       });
     });
   },
+  computed: {
+    operators() {
+      const min = this.page * 14;
+      const max = min + 14;
+      return this.list.slice(min, max);
+    }
+  },
   methods: {
-    create() {}
+    create() {},
+    setPage(num) {
+      this.page = num;
+    }
   }
 };
 </script>
 
 <style scoped>
+ul {
+  height: 630px;
+  background: #fcfcfc;
+  position: relative;
+}
+
 li {
   display: flex;
   height: 41px;
   align-items: center;
-  padding: 0 0 0 20px;
+  background: #fff;
   border-bottom: 1px solid #eee;
 }
 
 .name {
   font-weight: bold;
+  padding-left: 20px;
 }
 
 .role {
@@ -81,5 +104,11 @@ i {
 i:hover {
   background: #eee;
   border-radius: 4px;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
 }
 </style>
