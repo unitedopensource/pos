@@ -347,7 +347,7 @@ export default {
         'stats': 'Stats',
         'voidNote': 'Void Note',
         'databaseHealth': 'Database Health Report',
-        'softwareOperator': 'Software Users Management',
+        'operators': 'Employee List',
         'setDriver': 'Set Driver',
         'timecard': 'Timecard Records',
         'scanner': 'Scanner',
@@ -976,11 +976,6 @@ export default {
         'guest': 'Guest',
         'delayTask': '{i} tasks delayed',
         'sales': 'Sales',
-        'managerCount': 'User Count',
-        'managerCount': 'Manager: {i}',
-        'staffCount': 'Staff: {i}',
-        'thirdPartyCount': 'Third Party: {i}',
-        'newOperator': 'New User',
         'enterPin': 'Please Enter Your Pin',
         'printReceipt': 'Print Receipt',
         'count': 'Count',
@@ -1053,7 +1048,10 @@ export default {
         'amountGreaterThan': 'Greater Than',
         'assignToItems': 'Assign to all items',
         'content': 'Content',
-        'osk': 'On Screen Keyboard'
+        'osk': 'On Screen Keyboard',
+        'english': 'English',
+        'chinese': 'Chinese',
+        'restrict': 'Restrict Mode'
     },
     nav: {
         'store': 'Store',
@@ -1190,8 +1188,6 @@ export default {
         'menu': 'Menu',
         'acceptance': 'Acceptance',
         'other': 'Other setting',
-        'permission': 'Permission',
-        'permissionTip': 'Permission setup for operator',
         'access': 'Access',
         'modify': 'Modify',
         'view': 'View',
@@ -1206,11 +1202,15 @@ export default {
         'userRemoval': 'User Remove',
         'userRemovalTip': 'Permanent remove user account',
         'review': 'Approval',
-
         'byPriority': 'Prioritize',
         'employeeCard': 'Employee Card',
         'employeeCardRegistration': 'Register employee card',
-        'settledReceipt': 'Settle Payment Receipt'
+        'settledReceipt': 'Settle Payment Receipt',
+        'permission': {
+            'access': 'Access permission',
+            'modify': 'Modify permission',
+            'view': 'View permission'
+        }
     },
     reservation: {
         'create': 'Create Reservation',
@@ -1316,6 +1316,8 @@ export default {
         'replaceItemName': 'Will replace item name',
         'noReplaceItemName': 'Print item name',
         'unifiedBatch': 'Batch all terminal at once',
+        'restrictPermission': 'Directly deny access',
+        'temporaryPermission': 'Temporary access via password',
         'dinein': {
             'useTableLayout': 'Use table to place order',
             'noTableLayout': 'Skip table to place order',
@@ -1352,6 +1354,11 @@ export default {
             'conditionMet': 'Coupon eligible',
             'requireItem': 'Require item is missing',
             'requireAmount': 'Require $ {i} more'
+        },
+        'cashdrawer': {
+            'enable': 'Employee may use cash drawer',
+            'disable': 'Cash drawer restricted use',
+            'staffBank': 'Employee as a cash drawer'
         }
     }
 }

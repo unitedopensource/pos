@@ -22,6 +22,11 @@
                 <figcaption>{{$t('setting.print')}}</figcaption>
                 <p>{{$t('setting.printTip')}}</p>
             </router-link>
+            <router-link tag="figure" :to="{name:'Setting.operator'}">
+                <i class="fa fa-2x fa-users"></i>
+                <figcaption>{{$t('setting.operator')}}</figcaption>
+                <p>{{$t('setting.operatorTip')}}</p>
+            </router-link>
             <router-link tag="figure" :to="{name:'Dashboard'}">
                 <i class="fa fa-2x fa-external-link"></i>
                 <figcaption>{{$t('setting.exit')}}</figcaption>

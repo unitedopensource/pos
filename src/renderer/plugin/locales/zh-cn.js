@@ -259,7 +259,7 @@ export default {
         'stats': '数据',
         'voidNote': '作废原因',
         'databaseHealth': '数据库健康报告',
-        'softwareOperator': '软件用户管理',
+        'operators': '员工列表',
         'setDriver': '设定司机',
         'timecard': '打卡记录',
         'scanner': '扫描器',
@@ -968,10 +968,6 @@ export default {
         'guest': '人数',
         'delayTask': '有{i}个打印任务',
         'sales': '销售',
-        'managerCount': '经理 {i} 名',
-        'staffCount': '职员 {i} 名',
-        'thirdPartyCount': '第三方 {i} 名',
-        'newOperator': '新建用户',
         'enterPin': '输入密码',
         'printReceipt': '打印收据',
         'count': '计数',
@@ -1047,7 +1043,10 @@ export default {
         'amountGreaterThan': '金额大于',
         'assignToItems': '分配到所有物品',
         'content': '内容',
-        'osk': '屏幕键盘'
+        'osk': '屏幕键盘',
+        'english': '英文',
+        'chinese': '中文',
+        'restrict': '严格模式',
     },
     nav: {
         'store': '店面',
@@ -1099,7 +1098,7 @@ export default {
         'onlineOrderTip': '网络点餐服务器配置',
         'print': '打印',
         'printTip': '打印机设置 · 样式控制',
-        'operator': '用户',
+        'operator': '员工',
         'operatorTip': '权限设置 · 默认语言 · 活动记录',
         'database': '数据库',
         'databaseTip': '客户资料 · 来电历史 · 地址数据',
@@ -1151,7 +1150,6 @@ export default {
         'style': '样式设置',
         'other': '其它设置',
         'condition': '条件设置',
-
         'employee': '员工设置',
         'station': '工作站设定',
         'staffBank': '虚拟钱箱设定',
@@ -1187,8 +1185,6 @@ export default {
         'menu': '菜单',
         'acceptance': '接收设置',
         'other': '其它设置',
-        'permission': '权限设置',
-        'permissionTip': '配置用户的权限',
         'access': '开启',
         'modify': '修改',
         'view': '查看',
@@ -1205,7 +1201,12 @@ export default {
         'review': '审核',
         'employeeCard': '员工卡',
         'employeeCardRegistration': '注册员工卡',
-        'settledReceipt': '结账收据'
+        'settledReceipt': '结账收据',
+        'permission': {
+            'access': '开启权限',
+            'modify': '修改权限',
+            'view': '查看权限'
+        }
     },
     reservation: {
         'create': '创建预约',
@@ -1311,6 +1312,8 @@ export default {
         'replaceItemName': '替换物品名字',
         'noReplaceItemName': '正常打印',
         'unifiedBatch': '一次性处理所有刷卡机过账信息',
+        'restrictPermission': '当权限不足时直接拒绝',
+        'temporaryPermission': '允许输入密码来临时提升权限',
         'dinein': {
             'useTableLayout': '使用座位下单',
             'noTableLayout': '跳过座位直接下单',
@@ -1341,6 +1344,11 @@ export default {
             'conditionMet': '优惠可用',
             'requireItem': '指定物品不存在',
             'requireAmount': '还需要 $ {i}'
+        },
+        'cashdrawer': {
+            'enable': '可以使用钱箱',
+            'disable': '不可以结算订单',
+            'staffBank': '员工私场'
         }
     }
 }

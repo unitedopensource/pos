@@ -37,6 +37,7 @@ export default {
     confirm() {
       if (!this.name) return;
       if (this.init.printers.includes(this.name)) return;
+      this.assign && this.$socket.emit("[PRINTER] ASSIGN",this.name);
 
       this.init.resolve({
         name: this.name,

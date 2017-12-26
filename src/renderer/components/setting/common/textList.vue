@@ -1,28 +1,28 @@
 <template>
-    <div class="list">
-        <div class="wrap" @click.stop="isDisplay = !isDisplay">
-          <div class="inner">
-            <label>{{$t(title)}}</label>
-            <p>{{$t(label)}}</p>
-          </div>
-          <i class="fa fa-sort"></i>
-        </div>
-        <transition name="menu">
-            <ul v-show="isDisplay" v-outer-click="close" :style="edge" ref="list">
-                <li v-for="(option,index) in opts" :key="index">
-                    <input type="radio" :checked="option.value === value" @change="pick(option.value)" :id="id+index">
-                    <label :for="id+index" @click="pick(option.value)" v-if="option.plainText">
-                        <span class="label">{{option.label}}</span>
-                        <span class="tooltip">{{option.tooltip}}</span>
-                    </label>
-                    <label :for="id+index" @click="pick(option.value)" v-else>
-                        <span class="label">{{$t(option.label)}}</span>
-                        <span class="tooltip">{{$t(option.tooltip)}}</span>
-                    </label>
-                </li>
-            </ul>
-        </transition>
+  <div class="list">
+    <div class="wrap" @click.stop="isDisplay = !isDisplay">
+      <div class="inner">
+        <label>{{$t(title)}}</label>
+        <p>{{$t(label)}}</p>
+      </div>
+      <i class="fa fa-sort"></i>
     </div>
+    <transition name="menu">
+      <ul v-show="isDisplay" v-outer-click="close" :style="edge" ref="list">
+        <li v-for="(option,index) in opts" :key="index">
+          <input type="radio" :checked="option.value === value" @change="pick(option.value)" :id="id+index">
+          <label :for="id+index" @click="pick(option.value)" v-if="option.plainText">
+            <span class="label">{{option.label}}</span>
+            <span class="tooltip">{{option.tooltip}}</span>
+          </label>
+          <label :for="id+index" @click="pick(option.value)" v-else>
+            <span class="label">{{$t(option.label)}}</span>
+            <span class="tooltip">{{$t(option.tooltip)}}</span>
+          </label>
+        </li>
+      </ul>
+    </transition>
+  </div>
 </template>
 
 <script>
@@ -76,6 +76,9 @@ export default {
           }
         });
       }
+    },
+    value(n) {
+      this.getLabel();
     }
   }
 };
