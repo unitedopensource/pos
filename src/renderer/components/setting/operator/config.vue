@@ -19,7 +19,7 @@
     <toggle v-model="op.timecard" title="text.timecard" tooltip="tip.timecard"></toggle>
     <text-list v-model="op.language" title="text.defaultLanguage" :opts="languages"></text-list>
     <text-list v-model="op.cashCtrl" title="setting.cashDrawer" :opts="ctrl"></text-list>
-    <external title="setting.permission.access"></external>
+    <external title="setting.permission.access" @open="$router.push({name:'Setting.operator.access',params:{op}})"></external>
     <external title="setting.permission.modify"></external>
     <external title="setting.permission.view"></external>
     <toggle v-model="op.restrict" title="text.restrict" true-tooltip="tip.restrictPermission" false-tooltip="tip.temporaryPermission" :conditionalTooltip="true"></toggle>
@@ -82,18 +82,12 @@ export default {
     );
   },
   methods: {
-    remove() {},
-
+    remove() {}
   }
 };
 </script>
 
 <style scoped>
-h5 {
-  color: #9e9e9e;
-  font-weight: normal;
-}
-
 i.view {
   padding: 10px 21px;
   color: #555;

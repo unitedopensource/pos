@@ -864,8 +864,6 @@ export default {
         'email': 'Email',
         'area': 'Area',
         'openHour': 'Open Hour',
-        'saveSetting': 'To apply new setting please save.',
-        'settingUpdated': 'Setting is Updated',
         'orderBySeat': 'Order By Seat',
         'initialAmount': 'Initial Amount',
         'chargeAbove': '{i} Customers or above',
@@ -1007,9 +1005,7 @@ export default {
         'server': 'Server',
         'taxOnDelivery': 'Tax On Delivery',
         'ignorePrice': 'Ignore Price',
-        'autoNext': 'Auto Next',
         'removeItem': 'Remove Item',
-        'historyInvoice': 'History Invoice',
         'clockIn': 'Clock In',
         'clockOut': 'Clock Out',
         'verify': 'Verify',
@@ -1211,6 +1207,12 @@ export default {
             'access': 'Access permission',
             'modify': 'Modify permission',
             'view': 'View permission'
+        },
+        'access': {
+            'setting': 'Back Office Setting',
+            'report': 'Report',
+            'terminal': 'Terminal Records',
+            'history': 'History Invoice'
         }
     },
     reservation: {

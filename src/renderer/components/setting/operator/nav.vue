@@ -6,7 +6,7 @@
                     <i class="fa fa-users"></i>
                     <span class="text">{{$t('nav.overview')}}</span>
                 </router-link>
-                <router-link tag="li" :to="{name:'Setting.timecardReport'}">
+                <router-link tag="li" :to="{name:'Setting.operator.report'}">
                     <i class="fa fa-list-alt"></i>
                     <span class="text">{{$t('nav.report')}}</span>
                 </router-link>

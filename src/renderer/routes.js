@@ -231,20 +231,40 @@ export default [{
       children: [{
         path: '/',
         component: require('./components/setting/operator/tab'),
-        children:[{
-          path:'/',
-          name:'Setting.operator',
-          component:require('./components/setting/operator/index')
-        },{
+        children: [{
+          path: '/',
+          name: 'Setting.operator',
+          component: require('./components/setting/operator/index')
+        }, {
           path: 'config/:operator',
           props: true,
           name: 'Setting.operator.config',
           component: require('./components/setting/operator/config')
+        }, {
+          path: 'timecard/:operator',
+          props: true,
+          name: 'Setting.operator.timecard',
+          component: require('./components/setting/operator/timecard')
+        }, {
+          path: 'access/:op',
+          props: true,
+          name: 'Setting.operator.access',
+          component: require('./components/setting/operator/sub/access')
+        }, {
+          path: 'modify/:op',
+          props: true,
+          name: 'Setting.operator.modify',
+          component: require('./components/setting/operator/sub/modify')
+        }, {
+          path: 'view/:op',
+          props: true,
+          name: 'Setting.operator.view',
+          component: require('./components/setting/operator/sub/view')
         }]
       }, {
         path: 'timecard',
-        name: 'Setting.timecardReport',
-        component: require('./components/setting/operator/timecard')
+        name: 'Setting.operator.report',
+        component: require('./components/setting/operator/report')
       }]
     }
     ]

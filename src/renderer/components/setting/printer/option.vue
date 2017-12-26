@@ -82,12 +82,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.checkbox.list {
-  border-bottom: 1px solid #eee;
-  margin: 0;
-  height: 40px;
-  padding-left: 30px;
-}
-</style>

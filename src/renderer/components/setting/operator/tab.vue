@@ -1,9 +1,10 @@
 <template>
   <div>
     <ul class="tabs">
-      <router-link tag="li" class="tab" :to="{name:'Setting.operator'}">{{$t('nav.list')}}</router-link>
+      <router-link tag="li" class="tab" :to="{name:'Setting.operator'}">{{$t('title.operators')}}</router-link>
       <template v-if="operator">
-        <router-link tag="li" class="tab" :to="{name:'Setting.operator.config',params:{operator}}">{{$t('nav.permission')}}</router-link>
+        <router-link tag="li" class="tab" :to="{name:'Setting.operator.config',params:{operator}}">{{$t('setting.basic')}}</router-link>
+        <router-link tag="li" class="tab" :to="{name:'Setting.operator.timecard',params:{operator}}">{{$t('title.timecard')}}</router-link>
       </template>
     </ul>
     <transition name="slide" mode="out-in">

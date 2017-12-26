@@ -85,10 +85,6 @@ ul.tabs li.router-link-exact-active {
     width: 876px;
 }
 
-.tab-content header .title {
-    padding: 0 15px
-}
-
 .tooltip {
     color: rgba(0, 0, 0, 0.5);
     margin-top: 2px;
@@ -130,6 +126,11 @@ header.nav .back:hover {
 header.nav .title {
     flex: 1;
     text-align: center;
+}
+
+header.nav .title h5 {
+    color: #9e9e9e;
+    font-weight: normal;
 }
 
 header.nav nav {
@@ -205,6 +206,12 @@ td.amount {
     width: 100px;
     text-indent: 10px;
     color: #3c3c3c;
+}
+.checkbox.list {
+    border-bottom: 1px solid #eee;
+    margin: 0;
+    height: 40px;
+    padding-left: 30px;
 }
 
 .editor {

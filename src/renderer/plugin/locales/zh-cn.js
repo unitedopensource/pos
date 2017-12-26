@@ -856,8 +856,6 @@ export default {
         'email': '电子邮箱',
         'area': '地区',
         'openHour': '营业时间',
-        'saveSetting': '设置已经改变，请保存',
-        'settingUpdated': '设置已保存',
         'orderBySeat': '按位点餐',
         'initialAmount': '起始金额',
         'chargeAbove': '{i} 个客人以上',
@@ -999,9 +997,7 @@ export default {
         'server': '服务员',
         'taxOnDelivery': '送餐税',
         'ignorePrice': '忽略价格',
-        'autoNext': '自动下移',
         'removeItem': '移除物品',
-        'historyInvoice': '历史订单',
         'clockIn': '上班时间',
         'clockOut': '下班时间',
         'verify': '认证',
@@ -1207,6 +1203,12 @@ export default {
             'access': '开启权限',
             'modify': '修改权限',
             'view': '查看权限'
+        },
+        'access': {
+            'setting': '后台设定',
+            'report': '报表',
+            'terminal': '信用卡',
+            'history': '历史订单'
         }
     },
     reservation: {
