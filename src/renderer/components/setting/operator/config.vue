@@ -20,8 +20,8 @@
     <text-list v-model="op.language" title="text.defaultLanguage" :opts="languages"></text-list>
     <text-list v-model="op.cashCtrl" title="setting.cashDrawer" :opts="ctrl"></text-list>
     <external title="setting.permission.access" @open="$router.push({name:'Setting.operator.access',params:{op}})"></external>
-    <external title="setting.permission.modify"></external>
-    <external title="setting.permission.view"></external>
+    <external title="setting.permission.modify" @open="$router.push({name:'Setting.operator.modify',params:{op}})"></external>
+    <external title="setting.permission.view" @open="$router.push({name:'Setting.operator.view',params:{op}})"></external>
     <toggle v-model="op.restrict" title="text.restrict" true-tooltip="tip.restrictPermission" false-tooltip="tip.temporaryPermission" :conditionalTooltip="true"></toggle>
     <div :is="component" :init="componentData"></div>
   </div>
@@ -32,10 +32,10 @@ import toggle from "../common/toggle";
 import textList from "../common/textList";
 import external from "../common/external";
 import textInput from "../common/textInput";
-
+import dialoger from "../../common/dialoger";
 export default {
   props: ["operator"],
-  components: { toggle, textList, external, textInput },
+  components: { toggle, textList, external, textInput, dialoger },
   data() {
     return {
       op: {},
@@ -82,7 +82,21 @@ export default {
     );
   },
   methods: {
-    remove() {}
+    remove() {
+      const content = {
+        type: "question",
+        title: "dialog.deleteOperatorConfirm",
+        msg: ["dialog.deleteOperatorConfirmTip", this.op.name]
+      };
+
+      this.$dialog(content)
+        .then(() => {
+          this.$socket.emit("[OPERATOR] REMOVE", this.op._id, () =>
+            this.$router.push({ name: "Setting.operator" })
+          );
+        })
+        .catch(() => this.$q());
+    }
   }
 };
 </script>

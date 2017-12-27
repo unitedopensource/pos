@@ -15,7 +15,7 @@
                 <span class="role">{{op.role}}</span>
                 <i class="fa fa-caret-right" @click="$emit('set',op.name)"></i>
             </li>
-            <li class="footer">
+            <li class="footer" v-if="list.length > 14">
                 <pagination :of="list" :max="5" :contain="14" @page="setPage" class="f1"></pagination>
             </li>
         </ul>

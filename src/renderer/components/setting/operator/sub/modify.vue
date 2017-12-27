@@ -5,7 +5,7 @@
                 <i class="fa fa-chevron-left"></i>
             </router-link>
             <div class="title">
-                <h5>{{$t('setting.permission.access')}}</h5>
+                <h5>{{$t('setting.permission.modify')}}</h5>
                 <h3>{{op.name}}</h3>
             </div>
             <nav></nav>
