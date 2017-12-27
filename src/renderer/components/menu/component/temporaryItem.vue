@@ -10,32 +10,52 @@
         <inputer v-model="item" title="text.item" :autoFocus="true"></inputer>
         <inputer v-model.number="single" title="text.price" placeholder="0.00" @keydown.enter.native="confirm"></inputer>
         <inputer v-model="comment" title="text.comment" type="textarea"></inputer>
+        <div class="options">
+          <label>{{$t('text.printer')}}</label>
+          <div class="inner">
+            <checkbox v-model="printer" v-for="(device,index) in printers" :val="device" :multiple="true" :key="index" :title="device"></checkbox>
+          </div>
+        </div>
       </div>
       <footer>
         <div class="opt">
           <switches title="text.osk" v-model="keyboard" :disabled="true" :reverse="true"></switches>
         </div>
-        <div class="btn" @click="confirm">{{$t('button.confirm')}}</div>
+        <button class="btn" @click="confirm" :disabled="!item">{{$t('button.confirm')}}</button>
       </footer>
     </div>
   </div>
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import inputer from "../../setting/common/inputer";
 import switches from "../../setting/common/switches";
+import checkbox from "../../setting/common/checkbox";
 
 export default {
   props: ["init"],
-  components: { inputer,switches },
+  components: { inputer, switches, checkbox },
+  computed: {
+    ...mapGetters(["config"])
+  },
   data() {
     return {
       item: "",
       single: null,
-      keyboard:false,
+      keyboard: false,
+      printers: [],
+      printer: [],
       comment: ""
     };
+  },
+  created() {
+    let printers = Object.keys(this.config.printers).filter(
+      d => !/cashier/i.test(d)
+    );
+
+    this.printers = printers.slice();
+    this.printer = printers.slice();
   },
   methods: {
     confirm() {
@@ -46,6 +66,22 @@ export default {
         ? this.item.replace(/\b[a-z]/g, t => t.toUpperCase())
         : "Open Food";
 
+      let printer = {};
+
+      Object.keys(this.config.printers)
+        .filter(d => /cashier/i.test(d))
+        .forEach(name => {
+          this.printer.push(name);
+        });
+
+      this.printer.forEach(name => {
+        printer[name] = {
+          replace: false,
+          zhCN: "",
+          usEN: ""
+        };
+      });
+
       Object.assign(item, {
         zhCN: `* ${name} *`,
         usEN: `* ${name} *`,
@@ -53,6 +89,7 @@ export default {
         price: [single],
         comment: this.comment,
         temporary: true,
+        printer,
         prices: {}
       });
 
@@ -64,3 +101,27 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.options {
+  padding: 5px 0;
+  align-items: center;
+}
+
+.options label {
+  width: 80px;
+  display: block;
+}
+
+.options .inner {
+  border: 1px solid #eee;
+  background: #fff;
+  flex: 1;
+  border-radius: 2px;
+  padding: 4px 2px;
+  display: flex;
+  max-width: 264px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+</style>
