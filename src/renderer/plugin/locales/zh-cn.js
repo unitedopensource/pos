@@ -1152,6 +1152,7 @@ export default {
         'basic': '基本设置',
         'style': '样式设置',
         'other': '其它设置',
+        'preview': '打印浏览',
         'condition': '条件设置',
         'employee': '员工设置',
         'station': '工作站设定',

@@ -222,6 +222,11 @@ export default [{
           props: true,
           name: 'Setting.printer.title',
           component: require('./components/setting/printer/title')
+        }, {
+          path: 'preview/:printer',
+          props: true,
+          name: 'Setting.printer.preview',
+          component: require('./components/setting/printer/preview')
         }]
       }]
     },

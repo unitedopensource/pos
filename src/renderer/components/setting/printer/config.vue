@@ -12,7 +12,7 @@
       </nav>
     </header>
     <external title="print.printTicket" @open="$router.push({name:'Setting.printer.option',params:{printer,obj:'print'}})"></external>
-    <external title="print.printDouble" @open="$router.push({name:'Setting.printer.option',params:{printer,obj:'double'}})"></external>
+    <external title="print.printDouble" @open="$router.push({name:'Setting.printer.option',params:{printer,obj:'reprint'}})"></external>
     <external title="print.title" @open="$router.push({name:'Setting.printer.title',params:{printer}})"></external>
     <external title="print.footer" @open="openFooterEditor"></external>
     <toggle title="print.buzzer" v-model="config.control.buzzer" @update="updateBuzzer"></toggle>

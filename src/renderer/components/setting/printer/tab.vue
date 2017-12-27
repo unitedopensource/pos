@@ -5,6 +5,7 @@
       <template v-if="printer">
         <router-link tag="li" class="tab" :to="{name:'Setting.printer.config',params:{printer}}">{{$t('setting.basic')}}</router-link>
         <router-link tag="li" class="tab" :to="{name:'Setting.printer.style',params:{printer}}">{{$t('setting.style')}}</router-link>
+        <router-link tag="li" class="tab" :to="{name:'Setting.printer.preview',params:{printer}}">{{$t('setting.preview')}}</router-link>
       </template>
     </ul>
     <transition name="slide" mode="out-in">

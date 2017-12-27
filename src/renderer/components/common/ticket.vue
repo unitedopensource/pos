@@ -1,15 +1,16 @@
 <template>
-    <div>
-        <div v-html="ticket" class="receipt" @click="fn"></div>
-        <button class="btn print" @click="print">{{$t('button.print')}}</button>
-    </div>
+  <div>
+    <div v-html="ticket" class="receipt" @click="fn"></div>
+    <!-- <button class="btn print" @click="print">{{$t('button.print')}}</button> -->
+  </div>
 </template>
 
 <script>
 export default {
   props: ["init"],
   created() {
-    this.ticket = Printer.preview(this.init.ticket);
+    const printer = this.init.printer || "cashier";
+    this.ticket = Printer.preview(printer,this.init.ticket);
   },
   data() {
     return {

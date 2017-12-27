@@ -4,8 +4,6 @@ var Printer = function (plugin, config, station) {
     this.station = station;
     this.setting = config.printers;
     this.devices = station ? station.printers || Object.keys(config.printers) : Object.keys(config.printers);
-    this.targetDevices = [];
-    this.template = null;
     this.target = 'Receipt';
 
     /**
@@ -27,18 +25,7 @@ var Printer = function (plugin, config, station) {
     }
 
     this.setTarget = function (name) {
-        this.target = name || 'All';
-        return this
-    }
-
-    this.setTemplate = function (type) {
-        this.template = type || 'Receipt';
-        return this
-    }
-
-    this.setPrinter = function (name, template) {
-        this.targetDevices = [name];
-        template && (this.template = template);
+        this.target = name || this.station.receipt || 'cashier';
         return this
     }
 
@@ -100,6 +87,11 @@ var Printer = function (plugin, config, station) {
     this.getPrinters = function () {
         let printer = [];
         switch (this.target) {
+            case "All":
+            case "ticket":
+                printer = this.devices.filter(device => !(/cashier/i).test(device));
+                printer.splice(0, 0, this.station.receipt || 'cashier');
+                break;
             case 'Receipt':
                 printer = [this.station.receipt || 'cashier'];
                 break;
@@ -107,10 +99,9 @@ var Printer = function (plugin, config, station) {
                 printer = this.devices.filter(device => !(/cashier/i).test(device));
                 break;
             default:
-                printer = this.devices.filter(device => !(/cashier/i).test(device));
-                printer.splice(0, 0, this.station.receipt || 'cashier');
+                printer = [this.target]
         }
-        return this.targetDevices.length > 0 ? this.targetDevices : printer;
+        return printer;
     }
 
     this.print = function (raw, receipt) {
@@ -174,20 +165,21 @@ var Printer = function (plugin, config, station) {
         this.reset()
     }
 
-    this.preview = function (raw) {
-        const printer = 'cashier';
-        const setting = this.setting.cashier;
+    this.preview = function (printer, ticket) {
+        printer = printer || 'cashier';
 
+        const setting = this.setting[printer];
+        console.log(this.setting, printer)
         const {
             printStore,
             printType,
             printCustomer
         } = setting.control;
-        const header = createHeader(this.config, setting, raw);
-        const list = createList(printer, setting, raw);
-        const style = createStyle(setting);
-        const footer = createFooter(this.config, setting, 'cashier', raw);
 
+        const header = createHeader(this.config, setting, ticket);
+        const list = createList(printer, setting, ticket);
+        const style = createStyle(setting);
+        const footer = createFooter(this.config, setting, printer, ticket);
         const html = header + list + footer + style;
 
         return html;
@@ -852,7 +844,6 @@ var Printer = function (plugin, config, station) {
     this.reset = function () {
         this.target = 'All';
         this.template = '';
-        this.targetDevices = [];
     }
     return this
 }

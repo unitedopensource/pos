@@ -1157,8 +1157,8 @@ export default {
         'basic': 'Basic',
         'style': 'Style',
         'other': 'Other',
+        'preview': 'Print Preview',
         'condition': 'Condition',
-
         'employee': 'Employee',
         'station': 'Station Setting',
         'staffBank': 'Staff Bank',
