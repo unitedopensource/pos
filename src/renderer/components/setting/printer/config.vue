@@ -8,7 +8,7 @@
         <h3>{{printer}}</h3>
       </div>
       <nav>
-        <span>{{$t('button.remove')}}</span>
+        <span @click="removePrinter">{{$t('button.remove')}}</span>
       </nav>
     </header>
     <external title="print.printTicket" @open="$router.push({name:'Setting.printer.option',params:{printer,obj:'print'}})"></external>
@@ -27,16 +27,18 @@
 import toggle from "../common/toggle";
 import options from "../common/options";
 import external from "../common/external";
+import dialoger from "../../common/dialoger";
 import editor from "./component/footerEditor";
 
 export default {
   props: ["printer"],
-  components: { editor, toggle, options, external },
+  components: { editor, toggle, options, external, dialoger },
   data() {
     return {
       config: null,
       componentData: null,
       component: null,
+      removed: false,
       modeOpts: [
         {
           label: "print.normal",
@@ -66,16 +68,18 @@ export default {
     this.config = JSON.parse(JSON.stringify(config));
   },
   beforeDestroy() {
-    Object.assign(
-      this.$store.getters.config.printers[this.printer],
-      this.config
-    );
+    if (!this.removed) {
+      Object.assign(
+        this.$store.getters.config.printers[this.printer],
+        this.config
+      );
 
-    Printer.initial(
-      CLODOP,
-      this.$store.getters.config,
-      this.$store.getters.station
-    );
+      Printer.initial(
+        CLODOP,
+        this.$store.getters.config,
+        this.$store.getters.station
+      );
+    }
   },
   methods: {
     update(data) {
@@ -118,6 +122,34 @@ export default {
             value: _footer
           });
           this.$q();
+        })
+        .catch(() => this.$q());
+    },
+    removePrinter() {
+      const content = {
+        type: "question",
+        title: "dialog.removePrinter",
+        msg: "dialog.removePrinterConfirm",
+        buttons: [
+          { text: "button.cancel", fn: "reject" },
+          { text: "button.remove", fn: "resolve" }
+        ]
+      };
+
+      this.$dialog(content)
+        .then(() => {
+          this.$q();
+          this.removed = true;
+          this.$socket.emit("[PRINTER] REMOVE", this.printer);
+          delete this.$store.getters.config.printers[this.printer];
+
+          Printer.initial(
+            CLODOP,
+            this.$store.getters.config,
+            this.$store.getters.station
+          );
+
+          this.$router.push({ name: "Setting.printer" });
         })
         .catch(() => this.$q());
     }

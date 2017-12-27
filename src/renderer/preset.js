@@ -97,8 +97,21 @@ var Preset = function () {
   };
   this.printer = function () {
     return {
-      print: ["WALK_IN", "PICK_UP", "DELIVERY", "DINE_IN", "BAR", "BUFFET", "SALES", "TO_GO"],
+      print: ["WALK_IN", "PICK_UP", "DELIVERY", "DINE_IN", "BAR", "BUFFET", "HIBACHI", "SALES", "TO_GO"],
       reprint: [],
+      title: {
+        "PICK_UP": "PICK UP",
+        "WALK_IN": "WALK IN",
+        "DELIVERY": "DELIVERY",
+        "PRE_PAYMENT": "PRE PAYMENT",
+        "RECEIPT": "RECEIPT",
+        "DINE_IN": "DINE IN",
+        "HIBACHI": "HIBACHI",
+        "BUFFET": "BUFFET",
+        "SALES": "SALES",
+        "TO_GO": "TO GO",
+        "BAR": "BAR"
+      },
       control: {
         buzzer: false,
         categorize: false,
@@ -128,18 +141,6 @@ var Preset = function () {
           price: true,
           id: false
         }]
-      },
-      title: {
-        "PICK_UP": "PICK UP",
-        "WALK_IN": "WALK IN",
-        "DELIVERY": "DELIVERY",
-        "PRE_PAYMENT": "PRE PAYMENT",
-        "RECEIPT": "RECEIPT",
-        "DINE_IN": "DINE IN",
-        "BUFFET": "BUFFET",
-        "SALES": "SALES",
-        "TO_GO": "TO GO",
-        "BAR": "BAR"
       }
     }
   };

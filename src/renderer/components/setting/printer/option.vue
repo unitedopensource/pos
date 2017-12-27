@@ -4,8 +4,12 @@
       <router-link tag="div" :to="{name:'Setting.printer.config',params:{printer}}" class="back">
         <i class="fa fa-chevron-left"></i>
       </router-link>
-      <div class="title" v-if="obj === 'print'"><h3>{{$t('print.printTicket')}}</h3></div>
-      <div class="title" v-else><h3>{{$t('print.printDouble')}}</h3></div>
+      <div class="title" v-if="obj === 'print'">
+        <h3>{{$t('print.printTicket')}}</h3>
+      </div>
+      <div class="title" v-else>
+        <h3>{{$t('print.printDouble')}}</h3>
+      </div>
       <nav>
         <span @click="setAll" v-if="print.length === 0">{{$t('button.setAll')}}</span>
         <span @click="unset" v-else>{{$t('button.unset')}}</span>
@@ -41,6 +45,10 @@ export default {
           value: "DINE_IN"
         },
         {
+          label: "type.HIBACHI",
+          value: "HIBACHI"
+        },
+        {
           label: "type.BUFFET",
           value: "BUFFET"
         },
@@ -65,7 +73,9 @@ export default {
     this.print = Array.isArray(print) ? print : [];
   },
   beforeDestroy() {
-    Object.assign(this.$store.getters.config.printers[this.printer], { [this.obj]: this.print });
+    Object.assign(this.$store.getters.config.printers[this.printer], {
+      [this.obj]: this.print
+    });
 
     this.$socket.emit("[CONFIG] UPDATE", {
       key: `printers.${this.printer}.${this.obj}`,
@@ -74,10 +84,20 @@ export default {
   },
   methods: {
     setAll() {
-      this.print = ["WALK_IN", "PICK_UP", "DELIVERY", "DINE_IN", "BAR", "BUFFET", "SALES", "TO_GO"];
+      this.print = [
+        "WALK_IN",
+        "PICK_UP",
+        "DELIVERY",
+        "DINE_IN",
+        "HIBACHI",
+        "BUFFET",
+        "BAR",
+        "SALES",
+        "TO_GO"
+      ];
     },
     unset() {
-      this.print = []
+      this.print = [];
     }
   }
 };
