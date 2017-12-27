@@ -23,21 +23,25 @@
                     <td>{{log.clockOut | moment('HH:mm:ss')}}</td>
                     <td class="hours">{{calculate(log.clockIn,log.clockOut)}}</td>
                     <td class="break">{{log.break && log.break.length}}</td>
-                    <td v-if="log.valid" :title="log.note" class="wage">$ {{log.wage | decimal}}<i class="fa fa-exclamation-circle" v-if="log.note"></i></td>
-                    <td v-else class="invalid">${{(operator.wage || 0) | decimal}}</td>
-                    <td>$ {{salary(log)}}</td>
+                    <td v-if="log.valid" :title="log.note" class="wage decimal">$ {{log.wage | decimal}}<i class="fa fa-exclamation-circle" v-if="log.note"></i></td>
+                    <td v-else class="invalid decimal">$ {{(operator.wage || 0) | decimal}}</td>
+                    <td class="decimal">$ {{salary(log)}}</td>
                     <td v-if="editable && !log.lock" class="edit" @click="edit(log)">
                         <i class="fa fa-pencil-square"></i>
                     </td>
-                    <td v-else></td>
+                    <td v-else>
+                        <i class="fa fa-lock"></i>
+                    </td>
                 </tr>
             </tbody>
             <tfoot>
                 <tr>
                     <td colspan="9" class="f1">
                         <div class="summary">
-                            <span>$50.00</span>
-                            <span>Total Work salary for this week</span>
+                            <span>{{totalHours}}</span>
+                            <span>{{totalSalary}}</span>
+                            <span>Total Salary</span>
+                            <span>From {{dateRange}}</span>
                         </div>
                     </td>
                 </tr>
@@ -53,6 +57,30 @@ import editor from "./component/timecardEditor"
 export default {
     props: ["operator"],
     components: { editor },
+    computed: {
+        validSession() {
+            return this.logs.filter(log => log.valid).length;
+        },
+        totalHours() {
+            let total = this.logs
+                .filter(log => log.valid)
+                .map(log => log.clockOut - log.clockIn)
+                .reduce((a, b) => a + b, 0);
+            return this.calculate(0, total);
+        },
+        totalSalary() {
+            return this.logs
+                .filter(log => log.valid)
+                .map(log => this.salary(log))
+                .reduce((a, b) => a + b, 0);
+        },
+        dateRange() {
+            if (this.logs.length === 0) return;
+            let to = this.logs[0].date;
+            let from = this.logs[this.logs.length - 1].date;
+            return `${from} ~ ${to}`;
+        },
+    },
     data() {
         return {
             componentData: null,
@@ -141,6 +169,8 @@ export default {
             clockOut = clockOut || +new Date();
             const duration = clockOut - clockIn;
 
+            if (duration === 0) return;
+
             if (isNumber(duration)) {
                 const hh = ("00" + Math.floor(duration % 8.64e7 / 3.6e6)).slice(-2);
                 const mm = ("00" + Math.floor(duration % 3.6e6 / 6e4)).slice(-2);
@@ -155,7 +185,7 @@ export default {
 
             const hour = toFixed((clockOut - clockIn) / 3.6e6, 2);
 
-            return toFixed((wage || this.operator.wage || 0) * hour, 2);
+            return ((wage || this.operator.wage || 0) * hour).toFixed(2);
         },
         edit(log) {
 

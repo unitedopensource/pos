@@ -5,7 +5,7 @@
         <i class="fa fa-chevron-left"></i>
       </router-link>
       <div class="title">
-        <h5>{{operator.role}}</h5>
+        <h5>{{$t('type.'+operator.role)}}</h5>
         <h3>{{operator.name}}</h3>
       </div>
       <nav>
@@ -72,14 +72,6 @@ export default {
       ]
     };
   },
-  // beforeRouteEnter: (to, from, next) => {
-  //   const { operator } = to.params;
-  //   appSocket.emit("[OPERATOR] CONFIG", operator, op =>
-  //     next(vm => {
-  //       vm.op = op;
-  //     })
-  //   );
-  // },
   methods: {
     remove() {
       const content = {

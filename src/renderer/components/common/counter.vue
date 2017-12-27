@@ -131,7 +131,6 @@ export default {
 <style scoped>
 .inner {
   display: flex;
-  flex-direction: row;
 }
 
 aside > div {

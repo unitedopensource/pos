@@ -75,7 +75,12 @@ export default {
         'discount': 'Discount',
         'order': 'Order',
         'category': 'Category',
-        'item': 'Item'
+        'item': 'Item',
+        'owner': 'Owner',
+        'manager': 'Manager',
+        'cashier': 'Cashier',
+        'waitstaff': 'Waitstaff',
+        'bartender': 'Bartender'
     },
     filter: {
         'cashier': 'By Cashier',

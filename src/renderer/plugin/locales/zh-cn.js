@@ -68,7 +68,12 @@ export default {
         'discount': '折扣券',
         'order': '订单',
         'category': '类别',
-        'item': '物品'
+        'item': '物品',
+        'owner': '店主',
+        'manager': '经理',
+        'cashier': '收银员',
+        'waitstaff': '企台',
+        'bartender': '酒保'
     },
     filter: {
         'cashier': '按收银员',
