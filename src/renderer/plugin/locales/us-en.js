@@ -76,11 +76,11 @@ export default {
         'order': 'Order',
         'category': 'Category',
         'item': 'Item',
-        'owner': 'Owner',
-        'manager': 'Manager',
-        'cashier': 'Cashier',
-        'waitstaff': 'Waitstaff',
-        'bartender': 'Bartender'
+        'Owner': 'Owner',
+        'Manager': 'Manager',
+        'Cashier': 'Cashier',
+        'Waitstaff': 'Waitstaff',
+        'Bartender': 'Bartender'
     },
     filter: {
         'cashier': 'By Cashier',

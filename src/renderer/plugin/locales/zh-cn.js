@@ -69,11 +69,11 @@ export default {
         'order': '订单',
         'category': '类别',
         'item': '物品',
-        'owner': '店主',
-        'manager': '经理',
-        'cashier': '收银员',
-        'waitstaff': '企台',
-        'bartender': '酒保'
+        'Owner': '店主',
+        'Manager': '经理',
+        'Cashier': '收银员',
+        'Waitstaff': '企台',
+        'Bartender': '酒保'
     },
     filter: {
         'cashier': '按收银员',
