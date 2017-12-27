@@ -77,12 +77,12 @@ export default {
       const content = {
         type: "question",
         title: "dialog.deleteOperatorConfirm",
-        msg: ["dialog.deleteOperatorConfirmTip", this.op.name]
+        msg: ["dialog.deleteOperatorConfirmTip", this.operator.name]
       };
 
       this.$dialog(content)
         .then(() => {
-          this.$socket.emit("[OPERATOR] REMOVE", this.op._id, () =>
+          this.$socket.emit("[OPERATOR] REMOVE", this.operator._id, () =>
             this.$router.push({ name: "Setting.operator" })
           );
         })
