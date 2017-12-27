@@ -1216,6 +1216,21 @@ export default {
             'report': '报表',
             'terminal': '信用卡',
             'history': '历史订单'
+        },
+        'modify': {
+            'discount': '订单折扣',
+            'price': '修改物品价格',
+            'item': '移除物品',
+            'order': '修改订单',
+            'table': '修改座位',
+            'driver': '修改订单派送司机',
+            'tip': '修改订单小费',
+            'transaction': '修改信用卡交易记录'
+        },
+        'view': {
+            'summary': '允许查看当前销售总金额',
+            'invoices': '允许查看所有订单',
+            'tables': '允许查看所有座位'
         }
     },
     reservation: {

@@ -1219,6 +1219,21 @@ export default {
             'report': 'Report',
             'terminal': 'Terminal Records',
             'history': 'History Invoice'
+        },
+        'modify': {
+            'discount': 'Bill Discount',
+            'price': 'Modify Item Price',
+            'item': 'Remove Placed Item',
+            'order': 'Modify Exist Ticket',
+            'table': 'Modify Table Ticket',
+            'driver': 'Assign Ticket Driver',
+            'tip': 'Modify Bill Tip',
+            'transaction': 'Modify Credit Card Transaction'
+        },
+        'view': {
+            'summary': 'Be Able To View All Sales Total',
+            'invoices': 'Be Able To View All Invoices',
+            'tables': 'Be Able to View All Tables'
         }
     },
     reservation: {

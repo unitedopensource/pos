@@ -9,7 +9,7 @@
       <div class="display">
           <input type="text" v-model="guest">
       </div>
-      <num-pad v-model="guest" type="number" @enter="enter"></num-pad>
+      <num-pad v-model="guest" type="number" @enter="enter" :max="999"></num-pad>
     </div>
   </div>
 </template>

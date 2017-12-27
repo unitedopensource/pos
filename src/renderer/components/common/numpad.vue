@@ -1,24 +1,24 @@
 <template>
-    <div class="pad">
-        <section>
-            <div @click="input('7')" class="numKey">7</div>
-            <div @click="input('8')" class="numKey">8</div>
-            <div @click="input('9')" class="numKey">9</div>
-            <div @click="input('4')" class="numKey">4</div>
-            <div @click="input('5')" class="numKey">5</div>
-            <div @click="input('6')" class="numKey">6</div>
-            <div @click="input('1')" class="numKey">1</div>
-            <div @click="input('2')" class="numKey">2</div>
-            <div @click="input('3')" class="numKey">3</div>
-            <div @click="input('0')" class="numKey">0</div>
-            <div @click="input('00')" class="double numKey">00</div>
-        </section>
-        <aside class="padCtrl">
-            <div @click="del">&#8592;</div>
-            <div @click="clear">C</div>
-            <div @click="$emit('enter')">&#8626;</div>
-        </aside>
-    </div>
+  <div class="pad">
+    <section>
+      <div @click="input('7')" class="numKey">7</div>
+      <div @click="input('8')" class="numKey">8</div>
+      <div @click="input('9')" class="numKey">9</div>
+      <div @click="input('4')" class="numKey">4</div>
+      <div @click="input('5')" class="numKey">5</div>
+      <div @click="input('6')" class="numKey">6</div>
+      <div @click="input('1')" class="numKey">1</div>
+      <div @click="input('2')" class="numKey">2</div>
+      <div @click="input('3')" class="numKey">3</div>
+      <div @click="input('0')" class="numKey">0</div>
+      <div @click="input('00')" class="double numKey">00</div>
+    </section>
+    <aside class="padCtrl">
+      <div @click="del">&#8592;</div>
+      <div @click="clear">C</div>
+      <div @click="$emit('enter')">&#8626;</div>
+    </aside>
+  </div>
 </template>
 
 <script>
@@ -31,6 +31,10 @@ export default {
     type: {
       type: String,
       default: "decimal"
+    },
+    max: {
+      type: [String, Number],
+      default: Infinity
     }
   },
   data() {
@@ -44,7 +48,10 @@ export default {
         case "number":
           this.reset
             ? this.$emit("input", value)
-            : this.$emit("input", this.value + value);
+            : this.$emit(
+                "input",
+                this.value + value > this.max ? this.max : this.value + value
+              );
           break;
         case "decimal":
           const _value = (((this.value * 100).toFixed(0) + value) /

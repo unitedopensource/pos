@@ -362,24 +362,19 @@ export default {
                   );
                 });
               } else {
-                let { printOnDone } = this.dinein;
+                const { printOnDone } = this.dinein;
                 Object.assign(this.currentTable, { invoice: [order._id] });
                 this.$socket.emit("[TABLE] SETUP", this.currentTable);
                 this.$socket.emit("[SAVE] INVOICE", order, false, content => {
                   if (print) {
+                    const ticket = Object.assign({}, order, {
+                      delay: +new Date(),
+                      content: items
+                    });
+
                     printOnDone
-                      ? Printer.setTarget("All").print(
-                          Object.assign(order, {
-                            delay: +new Date(),
-                            content: items
-                          })
-                        )
-                      : Printer.setTarget("Order").print(
-                          Object.assign(order, {
-                            delay: +new Date(),
-                            content: items
-                          })
-                        );
+                      ? Printer.setTarget("All").print(ticket)
+                      : Printer.setTarget("Order").print(ticket);
                   }
                 });
               }

@@ -269,12 +269,13 @@ input:checked + label i.trash {
 }
 
 label {
-  border: 2px solid transparent;
   flex: 1;
+  border: 2px solid #eee;
   padding: 5px 15px 5px 60px;
   border-radius: 4px;
   cursor: pointer;
   position: relative;
+  background: #fff;
 }
 
 label i {

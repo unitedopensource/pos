@@ -160,9 +160,8 @@ var Printer = function (plugin, config, station) {
                 this.plugin.SET_PRINTER_INDEX(printer)
                 this.plugin.PRINT()
             }
-        })
-
-        this.reset()
+        });
+        this.reset();
     }
 
     this.preview = function (printer, ticket) {

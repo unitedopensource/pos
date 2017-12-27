@@ -1,41 +1,41 @@
 <template>
-    <div>
-        <header class="nav">
-            <router-link tag="div" :to="{name:'Setting.printer.config',params:{printer}}" class="back">
-                <i class="fa fa-chevron-left"></i>
-            </router-link>
-            <div class="title">
-                <h3>{{printer}}</h3>
+  <div>
+    <header class="nav">
+      <router-link tag="div" :to="{name:'Setting.printer.config',params:{printer}}" class="back">
+        <i class="fa fa-chevron-left"></i>
+      </router-link>
+      <div class="title">
+        <h3>{{printer}}</h3>
+      </div>
+      <nav>
+        <span class="add">{{$t('button.default')}}</span>
+      </nav>
+    </header>
+    <toggle title="print.storeContact" v-model="layout.contact"></toggle>
+    <toggle title="print.title" v-model="layout.title"></toggle>
+    <toggle title="print.customer" v-model="layout.customer"></toggle>
+    <toggle title="print.payment" v-model="layout.payment"></toggle>
+    <draggable v-model="layout.languages" :options="{animation: 300,ghostClass: 'ghost',handle:'.drag'}">
+      <transition-group tag="section" class="cards">
+        <div v-for="(language,index) in layout.languages" :key="index" class="card">
+          <div class="header">
+            <div>
+              <span>{{languages[index]}}</span>
+              <span class="gray">{{getLanguage(language.ref)}}</span>
             </div>
-            <nav>
-                <span class="add">{{$t('button.default')}}</span>
-            </nav>
-        </header>
-        <toggle title="print.storeContact" v-model="layout.contact"></toggle>
-        <toggle title="print.title" v-model="layout.title"></toggle>
-        <toggle title="print.customer" v-model="layout.customer"></toggle>
-        <toggle title="print.payment" v-model="layout.payment"></toggle>
-        <draggable v-model="layout.languages" :options="{animation: 300,ghostClass: 'ghost',handle:'.drag'}">
-            <transition-group tag="section" class="cards">
-                <div v-for="(language,index) in layout.languages" :key="index" class="card">
-                    <div class="header">
-                        <div>
-                            <span>{{languages[index]}}</span>
-                            <span class="gray">{{getLanguage(language.ref)}}</span>
-                        </div>
-                        <i class="fa fa-bars drag"></i>
-                        <switches title="text.enable" v-model="language.enable"></switches>
-                    </div>
-                    <div>
-                        <selector title="print.fontFamily" v-model="language.fontFamily" :opts="fonts"></selector>
-                        <range title="print.fontSize" :min="0" :max="40" :step="1" v-model="language.fontSize"></range>
-                        <switches title="print.itemPrice" v-model="language.price"></switches>
-                        <switches title="print.menuID" v-model="language.id"></switches>
-                    </div>
-                </div>
-            </transition-group>
-        </draggable>
-    </div>
+            <i class="fa fa-bars drag"></i>
+            <switches title="text.enable" v-model="language.enable"></switches>
+          </div>
+          <div>
+            <selector title="print.fontFamily" v-model="language.fontFamily" :opts="fonts"></selector>
+            <range title="print.fontSize" :min="0" :max="40" :step="1" v-model="language.fontSize"></range>
+            <switches title="print.itemPrice" v-model="language.price"></switches>
+            <switches title="print.menuID" v-model="language.id"></switches>
+          </div>
+        </div>
+      </transition-group>
+    </draggable>
+  </div>
 </template>
 
 <script>
@@ -78,6 +78,18 @@ export default {
           value: "Futura LT Condensed"
         },
         {
+          label: "Franklin Gothic Bold",
+          tooltip: "(English)",
+          plainText: true,
+          value: "Franklin Gothic Medium"
+        },
+        {
+          label: "Impact Bolder",
+          tooltip: "(English)",
+          plainText: true,
+          value: "Impact"
+        },
+        {
           label: "Roboto Condensed",
           tooltip: "(English)",
           plainText: true,
@@ -100,6 +112,12 @@ export default {
           tooltip: "(中文)",
           plainText: true,
           value: "QingYuan"
+        },
+        {
+          label: "微软雅黑",
+          tooltip: "(中文)",
+          plainText: true,
+          value: "微软雅黑"
         }
       ]
     };
