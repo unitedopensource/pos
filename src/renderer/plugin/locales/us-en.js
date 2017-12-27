@@ -1048,7 +1048,8 @@ export default {
         'english': 'English',
         'chinese': 'Chinese',
         'restrict': 'Restrict Mode',
-        'accessPin': 'Access Pin'
+        'accessPin': 'Access Pin',
+        'hhmmss': '{i} hr {i} mi {i} sc'
     },
     nav: {
         'store': 'Store',

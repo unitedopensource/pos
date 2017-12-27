@@ -21,11 +21,11 @@ export default {
     };
   },
   methods: {
-    setOperator(name) {
-      this.operator = name;
+    setOperator(operator) {
+      this.operator = operator;
       this.$router.push({
         name: "Setting.operator.config",
-        params: { operator: name }
+        params: { operator }
       });
     }
   }

@@ -13,6 +13,7 @@ section.content {
 .content .page {
     flex: 1;
     overflow-y: auto;
+    overflow-x: hidden;
 }
 
 ul.nav {
@@ -81,8 +82,34 @@ ul.tabs li.router-link-exact-active {
     box-shadow: var(--shadow);
 }
 
-.tab-content.wide {
+.wide.tab-content {
     width: 876px;
+}
+
+.table.tab-content {
+    width: 100%;
+    margin: initial;
+}
+
+table.data tbody tr td {
+    text-align: center;
+    height: 40px;
+}
+
+table.data tr th {
+    height: 30px;
+    background: #607D8B;
+    color: #fff;
+    text-shadow: 0 1px 1px #333;
+    font-weight: normal;
+}
+
+table.data thead,
+table.data tbody tr,
+table.data tfoot tr {
+  display: table;
+  table-layout: fixed;
+  width: 100%;
 }
 
 .tooltip {

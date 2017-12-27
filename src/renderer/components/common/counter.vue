@@ -1,10 +1,9 @@
 <template>
     <div class="popupMask center dark">
-        <div class="window">
+        <div class="editor">
             <header class="title">
-                <span>{{$t('text.cashInCount')}}</span>
-                <span class="cash">$ {{amount.toFixed(2)}}</span>
-                <i class="fa fa-times" @click="init.reject"></i>
+                <h5 class="cash">$ {{amount.toFixed(2)}}</h5>
+                <h3>{{$t('text.cashInCount')}}</h3>
             </header>
             <section class="inner">
                 <aside>
@@ -49,35 +48,25 @@
                         <input type="text" v-model="penny">
                     </div>
                 </aside>
-                <section class="numpad">
-                    <div @click="input('7')">7</div>
-                    <div @click="input('8')">8</div>
-                    <div @click="input('9')">9</div>
-                    <div @click="input('4')">4</div>
-                    <div @click="input('5')">5</div>
-                    <div @click="input('6')">6</div>
-                    <div @click="input('1')">1</div>
-                    <div @click="input('2')">2</div>
-                    <div @click="input('3')">3</div>
-                    <div @click="input('0')">0</div>
-                    <div @click="del" class="del">←</div>
-                </section>
+                <num-pad v-model="number" @input="input" type="number"></num-pad>
             </section>
             <footer>
-                <div class="f1">
-                    <checkbox v-model="detail" label="text.recordDetail"></checkbox>
+                <div class="opt">
+                    <checkbox v-model="detail" title="text.recordDetail"></checkbox>
                 </div>
-                <div class="btn" @click="confirm">{{$t('button.confirm')}}</div>
+                <button class="btn" @click="init.reject(false)">{{$t('button.cancel')}}</button>
+                <button class="btn" @click="confirm">{{$t('button.confirm')}}</button>
             </footer>
         </div>
     </div>
 </template>
 
 <script>
+import numPad from "./numpad"
 import checkbox from "../setting/common/checkbox";
 export default {
   props: ["init"],
-  components: { checkbox },
+  components: { numPad, checkbox },
   data() {
     return {
       hundred: 0,
@@ -92,7 +81,8 @@ export default {
       penny: 0,
       anchor: "",
       reset: true,
-      detail: false
+      detail: false,
+      number: ""
     };
   },
   mounted() {
@@ -100,20 +90,12 @@ export default {
   },
   methods: {
     input(num) {
-      if (parseInt(this[this.anchor]) === 0 || this.reset === true) {
-        this[this.anchor] = num;
-        this.reset = false;
-      } else if (parseInt(this[this.anchor] + num) < 1000) {
-        this[this.anchor] += num;
-      }
+      this[this.anchor] = num;
+      this.reset = false;
     },
     change(anchor) {
       this.anchor = anchor;
-      this.reset = true;
-    },
-    del() {
-      this[this.anchor] =
-        Number(this[this.anchor]) < 10 ? 0 : this[this.anchor].slice(0, -1);
+      this.number = "";
     },
     confirm() {
       this.init.resolve(this.amount);
@@ -189,22 +171,5 @@ aside span {
 
 .active span.text {
   color: #3c3c3c;
-}
-
-section.numpad {
-  display: flex;
-  flex-wrap: wrap;
-  max-width: 315px;
-  padding: 5px 0 0px 5px;
-}
-
-.del {
-  width: 205px;
-  background: #78909c;
-}
-
-.f1 {
-  display: flex;
-  align-items: center;
 }
 </style>

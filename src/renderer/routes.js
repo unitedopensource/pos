@@ -246,23 +246,23 @@ export default [{
           name: 'Setting.operator.timecard',
           component: require('./components/setting/operator/timecard')
         }, {
-          path: 'access/:op',
+          path: 'access/:operator',
           props: true,
           name: 'Setting.operator.access',
           component: require('./components/setting/operator/sub/access')
         }, {
-          path: 'modify/:op',
+          path: 'modify/:operator',
           props: true,
           name: 'Setting.operator.modify',
           component: require('./components/setting/operator/sub/modify')
         }, {
-          path: 'view/:op',
+          path: 'view/:operator',
           props: true,
           name: 'Setting.operator.view',
           component: require('./components/setting/operator/sub/view')
         }]
       }, {
-        path: 'timecard',
+        path: 'report',
         name: 'Setting.operator.report',
         component: require('./components/setting/operator/report')
       }]

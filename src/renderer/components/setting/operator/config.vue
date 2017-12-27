@@ -5,24 +5,24 @@
         <i class="fa fa-chevron-left"></i>
       </router-link>
       <div class="title">
-        <h5>{{op.role}}</h5>
-        <h3>{{operator}}</h3>
+        <h5>{{operator.role}}</h5>
+        <h3>{{operator.name}}</h3>
       </div>
       <nav>
         <span class="add" @click="remove">{{$t('button.remove')}}</span>
       </nav>
     </header>
-    <text-input v-model="op.pin" title="text.accessPin" :type="view">
+    <text-input v-model="operator.pin" title="text.accessPin" :type="view">
       <i class="fa fa-eye view" v-if="view === 'password'" @click="view = 'text'"></i>
       <i class="fa fa-eye-slash view" v-else @click="view = 'password'"></i>
     </text-input>
-    <toggle v-model="op.timecard" title="text.timecard" tooltip="tip.timecard"></toggle>
-    <text-list v-model="op.language" title="text.defaultLanguage" :opts="languages"></text-list>
-    <text-list v-model="op.cashCtrl" title="setting.cashDrawer" :opts="ctrl"></text-list>
-    <external title="setting.permission.access" @open="$router.push({name:'Setting.operator.access',params:{op}})"></external>
-    <external title="setting.permission.modify" @open="$router.push({name:'Setting.operator.modify',params:{op}})"></external>
-    <external title="setting.permission.view" @open="$router.push({name:'Setting.operator.view',params:{op}})"></external>
-    <toggle v-model="op.restrict" title="text.restrict" true-tooltip="tip.restrictPermission" false-tooltip="tip.temporaryPermission" :conditionalTooltip="true"></toggle>
+    <toggle v-model="operator.timecard" title="text.timecard" tooltip="tip.timecard"></toggle>
+    <text-list v-model="operator.language" title="text.defaultLanguage" :opts="languages"></text-list>
+    <text-list v-model="operator.cashCtrl" title="setting.cashDrawer" :opts="ctrl"></text-list>
+    <external title="setting.permission.access" @open="$router.push({name:'Setting.operator.access',params:{operator}})"></external>
+    <external title="setting.permission.modify" @open="$router.push({name:'Setting.operator.modify',params:{operator}})"></external>
+    <external title="setting.permission.view" @open="$router.push({name:'Setting.operator.view',params:{operator}})"></external>
+    <toggle v-model="operator.restrict" title="text.restrict" true-tooltip="tip.restrictPermission" false-tooltip="tip.temporaryPermission" :conditionalTooltip="true"></toggle>
     <div :is="component" :init="componentData"></div>
   </div>
 </template>
@@ -38,7 +38,6 @@ export default {
   components: { toggle, textList, external, textInput, dialoger },
   data() {
     return {
-      op: {},
       componentData: null,
       component: null,
       view: "password",
@@ -73,14 +72,14 @@ export default {
       ]
     };
   },
-  beforeRouteEnter: (to, from, next) => {
-    const { operator } = to.params;
-    appSocket.emit("[OPERATOR] CONFIG", operator, op =>
-      next(vm => {
-        vm.op = op;
-      })
-    );
-  },
+  // beforeRouteEnter: (to, from, next) => {
+  //   const { operator } = to.params;
+  //   appSocket.emit("[OPERATOR] CONFIG", operator, op =>
+  //     next(vm => {
+  //       vm.op = op;
+  //     })
+  //   );
+  // },
   methods: {
     remove() {
       const content = {

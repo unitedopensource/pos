@@ -1043,7 +1043,8 @@ export default {
         'english': '英文',
         'chinese': '中文',
         'restrict': '严格模式',
-        'accessPin': '登陆密码'
+        'accessPin': '登陆密码',
+        'hhmmss': '{i} 小时 {i} 分 {i} 秒'
     },
     nav: {
         'store': '店面',
