@@ -28,11 +28,13 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
 import toggle from "../common/toggle";
 import textList from "../common/textList";
 import external from "../common/external";
 import textInput from "../common/textInput";
 import dialoger from "../../common/dialoger";
+
 export default {
   props: ["operator"],
   components: { toggle, textList, external, textInput, dialoger },
@@ -72,6 +74,13 @@ export default {
       ]
     };
   },
+  beforeRouteLeave(to, from, next) {
+    const op = this.$store.getters.op;
+
+    op._id === this.operator._id && this.setOp(this.operator);
+
+    this.$socket.emit("[OPERATOR] UPDATE", this.operator, () => next());
+  },
   methods: {
     remove() {
       const content = {
@@ -87,7 +96,8 @@ export default {
           );
         })
         .catch(() => this.$q());
-    }
+    },
+    ...mapActions(["setOp"])
   }
 };
 </script>

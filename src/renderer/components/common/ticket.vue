@@ -10,7 +10,7 @@ export default {
   props: ["init"],
   created() {
     const printer = this.init.printer || "cashier";
-    this.ticket = Printer.preview(printer,this.init.ticket);
+    this.ticket = Printer.preview(printer, this.init.ticket);
   },
   data() {
     return {
@@ -23,6 +23,12 @@ export default {
     },
     print() {
       Printer.setTarget("Receipt").print(this.init.ticket);
+    }
+  },
+  watch: {
+    'init.ticket'(content) {
+      const printer = this.init.printer || "cashier";
+      this.ticket = Printer.preview(printer, content);
     }
   }
 };

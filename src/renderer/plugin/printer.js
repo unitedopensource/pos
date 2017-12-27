@@ -88,7 +88,7 @@ var Printer = function (plugin, config, station) {
         let printer = [];
         switch (this.target) {
             case "All":
-            case "ticket":
+            case "Ticket":
                 printer = this.devices.filter(device => !(/cashier/i).test(device));
                 printer.splice(0, 0, this.station.receipt || 'cashier');
                 break;
@@ -169,7 +169,6 @@ var Printer = function (plugin, config, station) {
         printer = printer || 'cashier';
 
         const setting = this.setting[printer];
-        console.log(this.setting, printer)
         const {
             printStore,
             printType,

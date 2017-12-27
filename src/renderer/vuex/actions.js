@@ -364,11 +364,6 @@ export const removePayment = ({
 }) => {
   commit(types.REMOVE_PAYMENT)
 }
-// export const replaceMenuItem = ({
-//   commit
-// }, change) => {
-//   commit(types.REPLACE_MENU_ITEM, change)
-// }
 export const setPrinter = ({
   commit
 }, data) => {
