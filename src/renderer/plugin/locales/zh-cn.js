@@ -73,7 +73,8 @@ export default {
         'Manager': '经理',
         'Cashier': '收银员',
         'Waitstaff': '企台',
-        'Bartender': '酒保'
+        'Bartender': '酒保',
+        'Worker': '员工'
     },
     filter: {
         'cashier': '按收银员',

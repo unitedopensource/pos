@@ -80,7 +80,8 @@ export default {
         'Manager': 'Manager',
         'Cashier': 'Cashier',
         'Waitstaff': 'Waitstaff',
-        'Bartender': 'Bartender'
+        'Bartender': 'Bartender',
+        'Worker': 'Worker'
     },
     filter: {
         'cashier': 'By Cashier',

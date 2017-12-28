@@ -6,7 +6,7 @@ const dialog = {
           let approve = false;
 
           try {
-            approve = this.op.role === 'Admin' ? true : credential.includes(permit)
+            approve = this.op.role === 'Developer' ? true : credential.includes(permit)
           } catch (e) {
             console.log(e)
           }

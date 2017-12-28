@@ -322,7 +322,6 @@ p {
 .dialog input {
   border: 2px solid #eee;
   font-family: "Agency FB";
-  outline: none;
   font-size: 26px;
   font-weight: bold;
   color: #3c3c3c;
