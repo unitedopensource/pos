@@ -7,18 +7,19 @@
             </header>
             <div class="wrap">
                 <inputer title="text.name" v-model="name" :autoFocus="true"></inputer>
-                <selector title="text.role" v-model="role" :opts="roles"></selector>
                 <inputer title="text.accessPin" v-model="pin"></inputer>
+                <selector title="text.role" v-model="role" :opts="roles"></selector>
             </div>
             <footer>
-                <button class="btn" @click="confirm" :disabled="!name || !pin">{{$t('button.confirm')}}</button>
+                <button class="btn" @click="confirm" :disabled="!name || !pin || !role">{{$t('button.confirm')}}</button>
             </footer>
         </div>
+        <div :is="component" :init="componentData"></div>
     </div>
 </template>
 
 <script>
-import Preset from "../../../preset";
+import Preset from "../../../../preset";
 import inputer from "../../common/inputer";
 import selector from "../../common/selector";
 import dialoger from "../../../common/dialoger";
@@ -28,6 +29,8 @@ export default {
   components: { inputer, selector, dialoger },
   data() {
     return {
+      componentData: null,
+      component: null,
       name: "",
       role: "",
       pin: "",
@@ -92,7 +95,6 @@ export default {
     checkPin() {
       return new Promise((resolve, reject) => {
         this.$socket.emit("[OPERATOR] CHECK_PIN", { pin: this.pin }, exist => {
-          console.log(exist);
           exist ? reject("pin") : resolve();
         })
       })
@@ -114,6 +116,7 @@ export default {
           content.msg = "dialog.operatorPinDuplicate";
           break;
       }
+
       this.$dialog(content).then(() => this.$q())
     }
   }

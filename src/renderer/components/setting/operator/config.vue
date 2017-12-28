@@ -16,6 +16,7 @@
       <i class="fa fa-eye view" v-if="view === 'password'" @click="view = 'text'"></i>
       <i class="fa fa-eye-slash view" v-else @click="view = 'password'"></i>
     </text-input>
+    <text-input v-model.number="operator.wage" title="text.salary"></text-input>
     <toggle v-model="operator.timecard" title="text.timecard" tooltip="tip.timecard"></toggle>
     <text-list v-model="operator.language" title="text.defaultLanguage" :opts="languages"></text-list>
     <text-list v-model="operator.cashCtrl" title="setting.cashDrawer" :opts="ctrl"></text-list>
@@ -43,6 +44,7 @@ export default {
       componentData: null,
       component: null,
       view: "password",
+      removed: false,
       languages: [
         {
           label: "text.english",
@@ -75,11 +77,13 @@ export default {
     };
   },
   beforeRouteLeave(to, from, next) {
-    const op = this.$store.getters.op;
-
-    op._id === this.operator._id && this.setOp(this.operator);
-
-    this.$socket.emit("[OPERATOR] UPDATE", this.operator, () => next());
+    if (!this.removed) {
+      const op = this.$store.getters.op;
+      op._id === this.operator._id && this.setOp(this.operator);
+      this.$socket.emit("[OPERATOR] UPDATE", this.operator, () => next());
+    } else {
+      next()
+    }
   },
   methods: {
     remove() {
@@ -91,6 +95,8 @@ export default {
 
       this.$dialog(content)
         .then(() => {
+          this.$q();
+          this.removed = true;
           this.$socket.emit("[OPERATOR] REMOVE", this.operator._id, () =>
             this.$router.push({ name: "Setting.operator" })
           );

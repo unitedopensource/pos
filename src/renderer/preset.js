@@ -225,7 +225,7 @@ var Preset = function () {
       name,
       role,
       pin,
-      wage: 0,
+      wage: "",
       language: 'usEN',
       timecard: false,
       cashCtrl: 'disable',

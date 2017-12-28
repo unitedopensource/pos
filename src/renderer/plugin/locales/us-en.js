@@ -1053,7 +1053,8 @@ export default {
         'chinese': 'Chinese',
         'restrict': 'Restrict Mode',
         'accessPin': 'Access Pin',
-        'hhmmss': '{i} hr {i} mi {i} sc'
+        'hhmmss': '{i} hr {i} mi {i} sc',
+        'salary': 'Salary'
     },
     nav: {
         'store': 'Store',
