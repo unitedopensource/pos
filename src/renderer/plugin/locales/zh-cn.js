@@ -288,7 +288,7 @@ export default {
         'deliveryRelated': '送餐相关',
         'optionList': '列表选项',
         'thirdPartyOrder': '第三方订单',
-        'timeSession': '修改打卡时间',
+        'timeSession': '打卡时段',
         'payLog': '付款记录',
         'setTips': '调整小费',
         'report': '报表',
@@ -1045,7 +1045,9 @@ export default {
         'restrict': '严格模式',
         'accessPin': '登陆密码',
         'hhmmss': '{i} 小时 {i} 分 {i} 秒',
-        'salary': '时薪'
+        'salary': '时薪',
+        'workHour': '总工时: {i}',
+        'workSalary': '薪水: {i}'
     },
     nav: {
         'store': '店面',
@@ -1083,7 +1085,8 @@ export default {
         'live': '监控',
         'department': '部门',
         'terminal': '终端',
-        'promotion': '促销'
+        'promotion': '促销',
+        'report': '报表'
     },
     setting: {
         'softwareSetting': 'UnitedPOS 后台设置',
@@ -1205,7 +1208,8 @@ export default {
         'permission': {
             'access': '开启权限',
             'modify': '修改权限',
-            'view': '查看权限'
+            'view': '查看权限',
+            'permission': '管理权限'
         },
         'access': {
             'setting': '后台设定',

@@ -425,7 +425,7 @@ aside {
 }
 
 .grid {
-  padding: 6px 3px 0;
+  padding: 3px 3px 0;
 }
 
 .icon {

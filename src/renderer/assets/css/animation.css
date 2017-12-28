@@ -40,7 +40,9 @@
 }
 
 .dropdown-enter-active,
-.drodown-leave-active {
+.drodown-leave-active,
+.popup-enter-active,
+.popup-leave-active {
     transition: all 0.22s ease-out;
 }
 
@@ -48,6 +50,12 @@
 .dropdown-leave-to {
     opacity: 0;
     transform: translateY(-10px);
+}
+
+.popupup-enter,
+.popup-leave-to{
+    opacity: 0;
+    transform: translateY(10px);
 }
 
 .slideDown-enter-active,

@@ -376,7 +376,7 @@ export default {
         'deliveryRelated': 'Delivery Related',
         'optionList': 'Options',
         'thirdPartyOrder': 'Third Party Order',
-        'timeSession': 'Time Session Editor',
+        'timeSession': 'Time Session',
         'payLog': 'Payment History',
         'setTips': 'Set Tips',
         'report': 'Report',
@@ -1050,7 +1050,9 @@ export default {
         'restrict': 'Restrict Mode',
         'accessPin': 'Access Pin',
         'hhmmss': '{i} hr {i} mi {i} sc',
-        'salary': 'Salary'
+        'salary': 'Salary',
+        'workHour': 'Work Hours: {i}',
+        'workSalary': 'Salary: {i}'
     },
     nav: {
         'store': 'Store',
@@ -1088,7 +1090,8 @@ export default {
         'live': 'Live',
         'department': 'Dept.',
         'terminal': 'Terminal',
-        'promotion': 'Promo.'
+        'promotion': 'Promo.',
+        'report': 'Report'
     },
     setting: {
         'softwareSetting': 'UnitedPOS Setting',
@@ -1208,7 +1211,8 @@ export default {
         'permission': {
             'access': 'Access permission',
             'modify': 'Modify permission',
-            'view': 'View permission'
+            'view': 'View permission',
+            'permission': 'Admin Control'
         },
         'access': {
             'setting': 'Back Office Setting',

@@ -113,6 +113,10 @@ table.data tfoot tr {
   width: 100%;
 }
 
+.data .fa-check-circle-o {
+    color: #9E9E9E;
+}
+
 td.decimal {
     font-weight: bold;
     font-family: 'Agency FB';

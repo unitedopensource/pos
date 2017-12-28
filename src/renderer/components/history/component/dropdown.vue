@@ -7,17 +7,34 @@
       </div>
       <i class="fa fa-times" @click.stop="resetFilter" v-show="selected"></i>
     </div>
-    <transition name="dropdown">
-      <ul v-if="isShowDropdown" class="content" v-outer-click="hideDropdown">
-        <li v-for="(option,index) in options" :key="index" @click="select(option)" @contextmenu="reverseSelect(option)" :class="{active:option.value === (selected && selected.value)}">{{option.text}}</li>
-      </ul>
-    </transition>
+    <template v-if="reverse">
+      <transition name="popup">
+        <ul v-if="isShowDropdown" class="up" v-outer-click="hideDropdown">
+          <li v-for="(option,index) in options" :key="index" @click="select(option)" :class="{active:option.value === (selected && selected.value)}">{{option.text}}</li>
+        </ul>
+      </transition>
+    </template>
+    <template v-else>
+      <transition name="dropdown">
+        <ul v-if="isShowDropdown" class="down" v-outer-click="hideDropdown">
+          <li v-for="(option,index) in options" :key="index" @click="select(option)" :class="{active:option.value === (selected && selected.value)}">{{option.text}}</li>
+        </ul>
+      </transition>
+    </template>
   </div>
 </template>
 
 <script>
 export default {
-  props: ["label", "options", "filter"],
+  props: {
+    label: [String],
+    options: Array,
+    filter: [String, Number],
+    reverse: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
       isShowDropdown: false,
@@ -39,9 +56,6 @@ export default {
         value: this.selected.value
       });
     },
-    reverseSelect(value) {
-      console.log(value);
-    },
     resetFilter() {
       this.selected = null;
       this.isShowDropdown = false;
@@ -62,6 +76,7 @@ export default {
 
 <style scoped>
 .dropdown {
+  position: relative;
   margin-left: 15px;
 }
 
@@ -91,9 +106,17 @@ ul {
   background: #fff;
   width: 154px;
   border: 1px solid #eee;
-  border-top: none;
+}
+
+ul.down {
   top: 38px;
-  box-shadow: 0 3px 6px -2px rgba(0, 0, 0, 0.4);
+  border-top: none;
+}
+
+ul.up {
+  bottom: 37px;
+  border-bottom: none;
+  box-shadow: 0 0px 6px -2px rgba(0, 0, 0, 0.4);
 }
 
 .dropdown li {

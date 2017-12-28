@@ -23,13 +23,14 @@
     <external title="setting.permission.access" @open="$router.push({name:'Setting.operator.access',params:{operator}})"></external>
     <external title="setting.permission.modify" @open="$router.push({name:'Setting.operator.modify',params:{operator}})"></external>
     <external title="setting.permission.view" @open="$router.push({name:'Setting.operator.view',params:{operator}})"></external>
+    <external title="setting.permission.permission" v-show="authorization"></external>
     <toggle v-model="operator.restrict" title="text.restrict" true-tooltip="tip.restrictPermission" false-tooltip="tip.temporaryPermission" :conditionalTooltip="true"></toggle>
     <div :is="component" :init="componentData"></div>
   </div>
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import toggle from "../common/toggle";
 import textList from "../common/textList";
 import external from "../common/external";
@@ -39,6 +40,9 @@ import dialoger from "../../common/dialoger";
 export default {
   props: ["operator"],
   components: { toggle, textList, external, textInput, dialoger },
+  computed: {
+    ...mapGetters(["authorization"])
+  },
   data() {
     return {
       componentData: null,
@@ -82,7 +86,7 @@ export default {
       op._id === this.operator._id && this.setOp(this.operator);
       this.$socket.emit("[OPERATOR] UPDATE", this.operator, () => next());
     } else {
-      next()
+      next();
     }
   },
   methods: {
