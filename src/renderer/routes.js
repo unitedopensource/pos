@@ -265,6 +265,11 @@ export default [{
           props: true,
           name: 'Setting.operator.view',
           component: require('./components/setting/operator/sub/view')
+        }, {
+          path: 'permission/:operator',
+          props: true,
+          name: 'Setting.operator.permission',
+          component: require('./components/setting/operator/sub/permission')
         }]
       }, {
         path: 'report',

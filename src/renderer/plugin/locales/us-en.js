@@ -88,7 +88,8 @@ export default {
         'server': 'By Server',
         'order': 'By Order Type',
         'payment': 'By Payment Type',
-        'station': 'By Station'
+        'station': 'By Station',
+        'period': 'Select Date Range'
     },
     tag: {
         'goodCustomer': 'Good',
@@ -936,7 +937,6 @@ export default {
         'approve': 'Approve',
         'clockInTime': 'Clock In Time',
         'clockOutTime': 'Clock Out Time',
-        'workHour': 'Work Hour',
         'name': 'Name',
         'account': 'Account',
         'database': 'Database',
@@ -1231,9 +1231,16 @@ export default {
             'transaction': 'Modify Credit Card Transaction'
         },
         'view': {
-            'summary': 'Be Able To View All Sales Total',
-            'invoices': 'Be Able To View All Invoices',
-            'tables': 'Be Able to View All Tables'
+            'summary': 'Allow To View All Sales Total',
+            'invoices': 'Allow To View All Invoices',
+            'tables': 'Allow to View All Tables'
+        },
+        'privilege': {
+            'employee':'Allow Modify Employee',
+            'database':'Allow View Database',
+            'timecard': 'Allow Modify Employee Time Card',
+            'giftcard': 'Allow Issue New Gift Card',
+            'promotion': 'All Create New Promotion Rule',
         }
     },
     reservation: {

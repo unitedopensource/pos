@@ -16,7 +16,7 @@
         <div class="btn" @click="confirm">{{$t('button.confirm')}}</div>
       </footer>
     </div>
-    <div :is="component" :init="componentData" />
+    <div :is="component" :init="componentData"></div>
   </div>
 </template>
 
@@ -56,12 +56,12 @@ export default {
   created() {
     this.order.split
       ? this.checkComponentUsage()
-        .then(this.checkPermission)
-        .then(this.createSplitOrder)
-        .catch(this.initialFailed)
+          .then(this.checkPermission)
+          .then(this.createSplitOrder)
+          .catch(this.initialFailed)
       : this.checkComponentUsage()
-        .then(this.checkPermission)
-        .catch(this.initialFailed);
+          .then(this.checkPermission)
+          .catch(this.initialFailed);
   },
   beforeDestroy() {
     this.releaseComponentLock &&
@@ -115,12 +115,12 @@ export default {
       });
     },
     initialFailed(reason) {
-      let { error, data } = reason;
+      const { error, data } = reason;
       switch (error) {
         case "paymentPending":
-          let current = +new Date();
-          let exp = data.exp;
-          let duration = exp - current;
+          const current = +new Date();
+          const exp = data.exp;
+          const duration = exp - current;
 
           this.releaseComponentLock = false;
 
@@ -129,9 +129,7 @@ export default {
             msg: "dialog.pendingOrderAccessDenied",
             timeout: { duration, fn: "resolve" },
             buttons: [{ text: "button.confirm", fn: "resolve" }]
-          }).then(() => {
-            this.exit();
-          });
+          }).then(() => this.exit());
           break;
         case "accessDenied":
           this.$dialog({
@@ -152,7 +150,12 @@ export default {
         : this.saveToDatabase();
     },
     saveToDatabase() {
-      let transaction = {
+      const cashDrawer =
+        this.op.cashCtrl === "staffBank"
+          ? this.op.name
+          : this.station.cashDrawer.name;
+
+      const transaction = {
         _id: ObjectId(),
         date: today(),
         time: +new Date(),
@@ -167,11 +170,8 @@ export default {
         tip: 0,
         cashier: this.op.name,
         server: this.order.server || this.op.name,
-        cashDrawer:
-        this.op.cashCtrl === "staffBank"
-          ? this.op.name
-          : this.station.cashDrawer.name,
-        station: this.station.alies,
+        cashDrawer,
+        station: this.station.alias,
         type: "THIRD",
         for: "Order",
         subType: this.type,
@@ -190,7 +190,7 @@ export default {
       Object.assign(this.order, { settled: true, cashier: this.op.name });
 
       this.$socket.emit("[UPDATE] INVOICE", this.order, false);
-      this.$socket.emit("[SAVE] TRANSACTION", transaction);
+      this.$socket.emit("[TRANSACTION] SAVE", transaction);
       this.init.resolve();
     },
     exit() {

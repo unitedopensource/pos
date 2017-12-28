@@ -1,12 +1,12 @@
 <template>
-    <div class="preview">
-        <div :is="component" :init="componentData"></div>
-        <div class="fn">
-            <i class="fa fa-refresh" @click="refresh"></i>
-            <i class="fa fa-volume-up" @click="buzzer"></i>
-            <i class="fa fa-print" @click="preview"></i>
-        </div>
+  <div class="preview">
+    <div :is="component" :init="componentData"></div>
+    <div class="fn">
+      <i class="fa fa-refresh" @click="refresh"></i>
+      <i class="fa fa-volume-up" @click="buzzer"></i>
+      <i class="fa fa-print" @click="preview"></i>
     </div>
+  </div>
 </template>
 
 <script>
@@ -49,13 +49,14 @@ export default {
 <style scoped>
 .preview {
   width: 949px;
-  margin: initial;
+  margin:initial;
   background: transparent;
   box-shadow: initial;
   height: 677px;
   display: flex;
   justify-content: center;
   padding: 10px 0;
+  overflow: scroll;
 }
 
 .fn {

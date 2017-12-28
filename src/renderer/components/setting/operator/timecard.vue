@@ -47,8 +47,8 @@
                             <div class="static">
                                 <p class="date">{{dateRange}}</p>
                                 <p class="value">
-                                    <span>{{$t("workHour",totalHours.toFixed(2))}}</span>
-                                    <span>{{$t("workSalary",totalSalary.toFixed(2))}}</span>
+                                    <span>{{$t("text.workHour",totalHours.toFixed(2))}}</span>
+                                    <span>{{$t("text.workSalary",totalSalary.toFixed(2))}}</span>
                                 </p>
                             </div>
                             <div class="option">
@@ -241,7 +241,7 @@ export default {
         this.component = "editor";
       })
         .then(_log => {
-            
+
         })
         .catch(() => this.$q());
     }

@@ -81,7 +81,8 @@ export default {
         'server': '按服务员',
         'order': '按订单类别',
         'payment': '按付款方式',
-        'station': '按工作站'
+        'station': '按工作站',
+        'period': '选择时段'
     },
     tag: {
         'goodCustomer': '好客人',
@@ -928,7 +929,6 @@ export default {
         'approve': '核对',
         'clockInTime': '上班时间',
         'clockOutTime': '下班时间',
-        'workHour': '工作时长',
         'name': '名称',
         'account': '账号',
         'database': '数据库',
@@ -1231,6 +1231,13 @@ export default {
             'summary': '允许查看当前销售总金额',
             'invoices': '允许查看所有订单',
             'tables': '允许查看所有座位'
+        },
+        'privilege': {
+            'employee':'允许管理员工信息',
+            'database':'允许查看数据库',
+            'timecard': '允许修改打卡时段',
+            'giftcard': '允许发行礼物卡',
+            'promotion': '允许创建促销规则',
         }
     },
     reservation: {
