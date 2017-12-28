@@ -8,48 +8,58 @@
             <div class="wrap">
                 <inputer title="text.name" v-model="name" :autoFocus="true"></inputer>
                 <selector title="text.role" v-model="role" :opts="roles"></selector>
+                <inputer title="text.accessPin" v-model="pin"></inputer>
             </div>
             <footer>
-                <button class="btn">{{$t('button.confirm')}}</button>
+                <button class="btn" @click="confirm" :disabled="!name || !pin">{{$t('button.confirm')}}</button>
             </footer>
         </div>
     </div>
 </template>
 
 <script>
+import Preset from "../../../preset";
 import inputer from "../../common/inputer";
 import selector from "../../common/selector";
+import dialoger from "../../../common/dialoger";
+
 export default {
   props: ["init"],
-  components: { inputer, selector },
+  components: { inputer, selector, dialoger },
   data() {
     return {
       name: "",
       role: "",
+      pin: "",
       roles: [
         {
-          label: "type.Manager",
+          label: this.$t("type.Manager"),
           tooltip: "",
+          plainText: true,
           value: "Manager"
         },
         {
-          label: "type.Cashier",
+          label: this.$t("type.Cashier"),
           tooltip: "",
+          plainText: true,
           value: "Cashier"
         },
         {
-          label: "type.Waitstaff",
+          label: this.$t("type.Waitstaff"),
           tooltip: "",
+          plainText: true,
           value: "Waitstaff"
         },
         {
-          label: "type.Bartender",
+          label: this.$t("type.Bartender"),
           tooltip: "",
+          plainText: true,
           value: "Bartender"
         },
         {
-          label: "type.Worker",
+          label: this.$t("type.Worker"),
           tooltip: "",
+          plainText: true,
           value: "Worker"
         }
       ]
@@ -64,6 +74,48 @@ export default {
         tooltip: "",
         value: "Owner"
       });
+  },
+  methods: {
+    confirm() {
+      this.checkName()
+        .then(this.checkPin)
+        .then(this.addOperator)
+        .catch(this.addFailed)
+    },
+    checkName() {
+      return new Promise((resolve, reject) => {
+        this.$socket.emit("[OPERATOR] CHECK_NAME", this.name, exist => {
+          exist ? reject("name") : resolve()
+        })
+      })
+    },
+    checkPin() {
+      return new Promise((resolve, reject) => {
+        this.$socket.emit("[OPERATOR] CHECK_PIN", { pin: this.pin }, exist => {
+          console.log(exist);
+          exist ? reject("pin") : resolve();
+        })
+      })
+    },
+    addOperator() {
+      const operator = Preset.operator(this.name, this.role, this.pin);
+      this.init.resolve(operator);
+    },
+    addFailed(error) {
+      let content = {
+        title: "dialog.addFailed",
+        buttons: [{ text: "button.confirm", fn: "resolve" }]
+      };
+      switch (error) {
+        case "name":
+          content.msg = "dialog.operatorNameDuplicate";
+          break;
+        case "pin":
+          content.msg = "dialog.operatorPinDuplicate";
+          break;
+      }
+      this.$dialog(content).then(() => this.$q())
+    }
   }
 };
 </script>

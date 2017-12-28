@@ -889,7 +889,7 @@ function createHeader(store, setting, raw) {
                 <h5>${store.city} ${store.state} ${store.zipCode}</h5>
                 <h5>${store.contact}</h5>
             </div>
-            <div class="type">${title}</div>
+            <div class="title">${title}</div>
             <div class="time">
                 <span>Date: ${date}</span>
                 <span>Time: ${placeTime}</span>
@@ -1092,8 +1092,7 @@ function createStyle(setting) {
     const { contact, title, customer, payment, languages } = setting.layout;
     const primary = languages.find(t => t.ref === 'usEN');
     const secondary = languages.find(t => t.ref === 'zhCN');
-
-
+    const fontFamily = navigator.language === 'zh-CN' ? "微软雅黑" : "Microsoft YaHei";
 
     return `<style>
               *{margin:0;padding:0}
@@ -1101,7 +1100,7 @@ function createStyle(setting) {
               div.store{margin-bottom:10px;${contact ? '' : 'display:none;'}}
               .header h3{font-size:1.25em;}
               .header h5{font-size:16px;font-weight:lighter}
-              div.type{${title ? '' : 'display:none;'}font-size:1.5em;font-weight:bold;font-family:"Agency FB"}
+              div.title{${title ? '' : 'display:none;'}font-size:1.5em;font-family:"${fontFamily}"}
               div.number,div.table{position:absolute;bottom:12px;font-size:2em;font-weight:bold;font-family:"Agency FB"}
               div.number{right:10px;}div.table{left:10px;}
               div.time span{display:inline-block;margin:0 10px;font-size:1em;}

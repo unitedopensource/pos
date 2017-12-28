@@ -48,8 +48,14 @@ export default {
 
 <style scoped>
 .preview {
-  width: 320px;
-  margin: 10px auto;
+  width: 949px;
+  margin: initial;
+  background: transparent;
+  box-shadow: initial;
+  height: 677px;
+  display: flex;
+  justify-content: center;
+  padding: 10px 0;
 }
 
 .fn {

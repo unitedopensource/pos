@@ -45,6 +45,7 @@ import toggle from "../common/toggle";
 import selector from "../common/selector";
 import switches from "../common/switches";
 
+
 export default {
   props: ["printer"],
   components: { range, switches, selector, toggle, draggable },
@@ -102,7 +103,7 @@ export default {
           value: "Noto Sans SC Light"
         },
         {
-          label: "Noto Sans CJK SC",
+          label: "Noto Sans SC Normal",
           tooltip: "(中文)",
           plainText: true,
           value: "Noto Sans CJK SC"
@@ -111,19 +112,20 @@ export default {
           label: "晴圆",
           tooltip: "(中文)",
           plainText: true,
-          value: "QingYuan"
+          value: navigator.language === "zh-CN" ? "晴圆" : "QingYuan"
         },
         {
           label: "微软雅黑",
           tooltip: "(中文)",
           plainText: true,
-          value: "微软雅黑"
+          value: navigator.language === "zh-CN" ? "微软雅黑" : "Microsoft YaHei"
         }
       ]
     };
   },
   created() {
     this.layout = this.$store.getters.config.printers[this.printer].layout;
+
   },
   beforeDestroy() {
     this.$socket.emit("[CONFIG] UPDATE", {

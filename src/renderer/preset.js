@@ -187,20 +187,52 @@ var Preset = function () {
       distance: ""
     }
   };
-  this.operator = function () {
+  this.operator = function (name, role, pin) {
+    let access = [], modify = [], view = [], permission = [], cashCtrl;
+    switch (role) {
+      case "Manager":
+        access = ["setting", "cashdrawer", "report", "terminal", "history"];
+        view = ["summary", "invoices", "tables"];
+        modify = ["price", "item", "order", "table", "driver", "discount", "tip", "transaction"];
+        permission = ["giftcard"];
+        cashCtrl = "enable";
+        break;
+      case "Cashier":
+        access = ["cashdrawer", "terminal", "history"];
+        view = ["summary", "invoices", "tables"];
+        modify = ["price", "item", "order", "table", "driver", "discount", "tip", "transaction"];
+        cashCtrl = "enable";
+        break;
+      case "Waitstaff":
+        access = ["setting", "cashdrawer", "history"];
+        view = ["summary", "invoices", "tables"];
+        modify = ["price", "item", "order", "table", "driver", "discount", "tip", "transaction"];
+        cashCtrl = "enable";
+        break;
+      case "Bartender":
+        access = ["cashdrawer", "history"];
+        view = ["tables"];
+        modify = ["item", "order", "table", "discount", "tip"];
+        cashCtrl = "enable";
+        break;
+      case "Worker":
+        cashCtrl = "disable";
+        break;
+    }
+
+
     return {
-      _id: ObjectId(),
-      name: 'New User',
-      role: 'Waitstaff',
-      pin: '',
+      name,
+      role,
+      pin,
+      wage: 0,
       language: 'usEN',
-      timeCard: false,
+      timecard: false,
       cashCtrl: 'disable',
-      access: [],
-      review: [],
-      modify: [],
-      view: [],
-      permission: []
+      access,
+      modify,
+      view,
+      permission
     }
   };
   this.giftCard = function (number, seller, amount, bouns) {
