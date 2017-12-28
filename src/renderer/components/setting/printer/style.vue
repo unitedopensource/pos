@@ -45,7 +45,6 @@ import toggle from "../common/toggle";
 import selector from "../common/selector";
 import switches from "../common/switches";
 
-
 export default {
   props: ["printer"],
   components: { range, switches, selector, toggle, draggable },
@@ -109,6 +108,12 @@ export default {
           value: "Noto Sans CJK SC"
         },
         {
+          label: "细黑",
+          tooltip: "(中文)",
+          plainText: true,
+          value: "Cloud-XiHei"
+        },
+        {
           label: "晴圆",
           tooltip: "(中文)",
           plainText: true,
@@ -125,7 +130,6 @@ export default {
   },
   created() {
     this.layout = this.$store.getters.config.printers[this.printer].layout;
-
   },
   beforeDestroy() {
     this.$socket.emit("[CONFIG] UPDATE", {

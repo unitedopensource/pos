@@ -117,6 +117,14 @@ table.data tfoot tr {
     color: #9E9E9E;
 }
 
+.data .fa-check-circle {
+    color: #009688;
+}
+
+td.invalid {
+    color: #E0E0E0;
+}
+
 td.decimal {
     font-weight: bold;
     font-family: 'Agency FB';

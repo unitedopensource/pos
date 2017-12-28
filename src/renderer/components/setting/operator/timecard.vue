@@ -1,67 +1,66 @@
 <template>
-    <div class="table">
-        <table class="data">
-            <thead>
-                <tr>
-                    <th class="icon">{{$t('thead.verify')}}</th>
-                    <th class="date">{{$t('thead.date')}}</th>
-                    <th>{{$t('thead.start')}}</th>
-                    <th>{{$t('thead.end')}}</th>
-                    <th class="hours">{{$t('thead.workHour')}}</th>
-                    <th>{{$t('thead.breakTime')}}</th>
-                    <th>{{$t('thead.wage')}}</th>
-                    <th>{{$t('thead.salary')}}</th>
-                    <th class="padding">{{$t('thead.edit')}}</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(log,index) in logs" :key="index">
-                    <td v-if="log.valid" class="icon">
-                        <i class="fa fa-check-circle"></i>
-                    </td>
-                    <td v-else class="icon">
-                        <i class="fa fa-check-circle-o"></i>
-                    </td>
-                    <td class="date">{{log.date}}</td>
-                    <td>{{log.clockIn | moment('HH:mm:ss')}}</td>
-                    <td>{{log.clockOut | moment('HH:mm:ss')}}</td>
-                    <td class="hours">{{calculate(log.clockIn,log.clockOut)}}</td>
-                    <td class="break">{{log.break && log.break.length}}</td>
-                    <td v-if="log.valid" :title="log.note" class="wage decimal">$ {{log.wage | decimal}}
-                        <i class="fa fa-exclamation-circle" v-if="log.note"></i>
-                    </td>
-                    <td v-else class="invalid decimal">$ {{(operator.wage || 0) | decimal}}</td>
-                    <td class="decimal">$ {{salary(log)}}</td>
-                    <td v-if="editable && !log.lock" class="edit" @click="edit(log)">
-                        <i class="fa fa-pencil-square"></i>
-                    </td>
-                    <td v-else>
-                        <i class="fa fa-lock"></i>
-                    </td>
-                </tr>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="9" class="f1">
-                        <div class="summary">
-                            <div class="static">
-                                <p class="date">{{dateRange}}</p>
-                                <p class="value">
-                                    <span>{{$t("text.workHour",totalHours.toFixed(2))}}</span>
-                                    <span>{{$t("text.workSalary",totalSalary.toFixed(2))}}</span>
-                                </p>
-                            </div>
-                            <div class="option">
-                                <dropdown label="filter.period" :options="ranges" filter="period" :reverse="true"></dropdown>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
-        <div :is="component" :init="componentData"></div>
-    </div>
-
+  <div class="table">
+    <table class="data">
+      <thead>
+        <tr>
+          <th class="icon">{{$t('thead.verify')}}</th>
+          <th class="date">{{$t('thead.date')}}</th>
+          <th>{{$t('thead.start')}}</th>
+          <th>{{$t('thead.end')}}</th>
+          <th class="hours">{{$t('thead.workHour')}}</th>
+          <th>{{$t('thead.breakTime')}}</th>
+          <th>{{$t('thead.wage')}}</th>
+          <th>{{$t('thead.salary')}}</th>
+          <th class="padding">{{$t('thead.edit')}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(log,index) in logs" :key="index">
+          <td v-if="log.valid" class="icon">
+            <i class="fa fa-check-circle"></i>
+          </td>
+          <td v-else class="icon">
+            <i class="fa fa-check-circle-o"></i>
+          </td>
+          <td class="date">{{log.date}}</td>
+          <td>{{log.clockIn | moment('HH:mm:ss')}}</td>
+          <td>{{log.clockOut | moment('HH:mm:ss')}}</td>
+          <td class="hours">{{calculate(log.clockIn,log.clockOut)}}</td>
+          <td class="break">{{log.break && log.break.length}}</td>
+          <td v-if="log.valid" :title="log.note" class="wage decimal">$ {{log.wage | decimal}}
+            <i class="fa fa-exclamation-circle" v-if="log.note"></i>
+          </td>
+          <td v-else class="invalid decimal">$ {{(operator.wage || 0) | decimal}}</td>
+          <td class="decimal">$ {{salary(log)}}</td>
+          <td v-if="editable && !log.lock" class="edit" @click="edit(log)">
+            <i class="fa fa-pencil-square"></i>
+          </td>
+          <td v-else>
+            <i class="fa fa-lock" @click="unlock(log)"></i>
+          </td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="9" class="f1">
+            <div class="summary">
+              <div class="static">
+                <p class="date">{{dateRange}}</p>
+                <p class="value">
+                  <span>{{$t("text.workHour",totalHours)}}</span>
+                  <span>{{$t("text.workSalary",totalSalary.toFixed(2))}}</span>
+                </p>
+              </div>
+              <div class="option">
+                <dropdown label="filter.period" :options="ranges" filter="period" :reverse="true"></dropdown>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+    <div :is="component" :init="componentData" @refresh="fetchData"></div>
+  </div>
 </template>
 
 <script>
@@ -101,6 +100,7 @@ export default {
   },
   data() {
     return {
+      op: this.$store.getters.op,
       componentData: null,
       component: null,
       editable: false,
@@ -135,6 +135,7 @@ export default {
   created() {
     this.fetchData();
     this.$bus.on("filter", this.setFilter);
+    this.editable = this.approval(this.op.permission, "timecard");
   },
   beforeDestroy() {
     this.$bus.off("filter", this.setFilter);
@@ -236,14 +237,11 @@ export default {
       this.fetchData();
     },
     edit(log) {
-      new Promise((resolve, reject) => {
-        this.componentData = { resolve, reject, log };
-        this.component = "editor";
-      })
-        .then(_log => {
-
-        })
-        .catch(() => this.$q());
+      this.$p("editor", { operator: this.operator, log });
+    },
+    unlock(log) {
+      if (this.op.role !== "Developer") return;
+      log.lock = false;
     }
   }
 };

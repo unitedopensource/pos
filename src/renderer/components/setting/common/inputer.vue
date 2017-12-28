@@ -2,7 +2,12 @@
   <div class="input">
     <label>{{$t(title)}}</label>
     <textarea v-if="type === 'textarea'" :class="{center}" :value="value" :maxlength="length" :disabled="disabled" :placeholder="placeholder" @input="$emit('input',$event.target.value)" @blur="$emit('update',$event.target.value)"></textarea>
-    <input v-else :type="type" :value="value" :maxlength="length" :disabled="disabled" :placeholder="placeholder" @input="$emit('input',$event.target.value)" @blur="$emit('update',$event.target.value)" ref="input">
+    <template v-else-if="mask">
+      <input :type="type" :value="value" :maxlength="length" :disabled="disabled" :placeholder="placeholder" @input="$emit('input',$event.target.value)" @blur="$emit('update',$event.target.value)" ref="input" v-mask="mask">
+    </template>
+    <template v-else>
+      <input :type="type" :value="value" :maxlength="length" :disabled="disabled" :placeholder="placeholder" @input="$emit('input',$event.target.value)" @blur="$emit('update',$event.target.value)" ref="input">
+    </template>
   </div>
 </template>
 
@@ -28,6 +33,7 @@ export default {
       type: Boolean,
       default: false
     },
+    mask: String,
     placeholder: String
   },
   mounted() {
