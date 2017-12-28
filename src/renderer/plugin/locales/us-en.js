@@ -1051,8 +1051,9 @@ export default {
         'accessPin': 'Access Pin',
         'hhmmss': '{i} hr {i} mi {i} sc',
         'salary': 'Salary',
-        'workHour': 'Work Hours: {i}',
-        'workSalary': 'Salary: {i}'
+        'workHour': 'Work Hours',
+        'workSalary': 'Salary',
+        'validRecord':'Valid Record'
     },
     nav: {
         'store': 'Store',
@@ -1236,8 +1237,8 @@ export default {
             'tables': 'Allow to View All Tables'
         },
         'privilege': {
-            'employee':'Allow Modify Employee',
-            'database':'Allow View Database',
+            'employee': 'Allow Modify Employee',
+            'database': 'Allow View Database',
             'timecard': 'Allow Modify Employee Time Card',
             'giftcard': 'Allow Issue New Gift Card',
             'promotion': 'All Create New Promotion Rule',

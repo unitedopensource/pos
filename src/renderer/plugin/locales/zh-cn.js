@@ -1046,8 +1046,9 @@ export default {
         'accessPin': '登陆密码',
         'hhmmss': '{i} 小时 {i} 分 {i} 秒',
         'salary': '时薪',
-        'workHour': '总工时: {i}',
-        'workSalary': '薪水: {i}'
+        'workHour': '总工时',
+        'workSalary': '薪水',
+        'validRecord': '有效记录'
     },
     nav: {
         'store': '店面',

@@ -46,9 +46,16 @@
             <div class="summary">
               <div class="static">
                 <p class="date">{{dateRange}}</p>
-                <p class="value">
-                  <span>{{$t("text.workHour",totalHours)}}</span>
-                  <span>{{$t("text.workSalary",totalSalary.toFixed(2))}}</span>
+                <p class="compensation">
+                  <span class="text">{{$t('text.validRecord')}}
+                    <span class="value">{{validSession}}</span>
+                  </span>
+                  <span class="text">{{$t("text.workHour")}}
+                    <span class="value">{{totalHours}}</span>
+                  </span>
+                  <span class="text">{{$t("text.workSalary")}}
+                    <span class="value">$ {{totalSalary.toFixed(2)}}</span>
+                  </span>
                 </p>
               </div>
               <div class="option">
@@ -214,7 +221,7 @@ export default {
       clockOut = isNumber(clockOut) ? clockOut : +new Date();
       const duration = clockOut - clockIn;
 
-      if (duration === 0) return 0;
+      if (duration === 0) return this.$t("text.hhmmss", "00", "00", "00");
 
       if (isNumber(duration)) {
         const hh = ("00" + Math.floor((duration % 8.64e7) / 3.6e6)).slice(-2);
@@ -279,12 +286,13 @@ tfoot tr {
 p.date {
   font-size: 14px;
   font-family: "Agency FB";
-  color: #e1f5fe;
+  color: #abb2df;
   letter-spacing: 1px;
 }
 
-.value span {
+.compensation span {
   flex: 1;
+  margin-right: 10px;
 }
 
 p.value {
@@ -292,7 +300,7 @@ p.value {
 }
 
 .static {
-  flex: 1;
+  flex: 4;
 }
 
 .option {
@@ -300,5 +308,15 @@ p.value {
   display: flex;
   justify-content: flex-end;
   color: #333;
+}
+
+.text {
+  color: #c5cae9;
+}
+
+.value {
+  color: #fff;
+  text-shadow: 0 1px 1px #333;
+  margin-left: 5px;
 }
 </style>

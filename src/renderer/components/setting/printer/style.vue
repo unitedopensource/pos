@@ -107,12 +107,12 @@ export default {
           plainText: true,
           value: "Noto Sans CJK SC"
         },
-        {
-          label: "细黑",
-          tooltip: "(中文)",
-          plainText: true,
-          value: "Cloud-XiHei"
-        },
+        // {
+        //   label: "细黑",
+        //   tooltip: "(中文)",
+        //   plainText: true,
+        //   value: "Cloud-XiHei"
+        // },
         {
           label: "晴圆",
           tooltip: "(中文)",
