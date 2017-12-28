@@ -1,16 +1,15 @@
 <template>
-    <div class="popupMask setting dark center">
+    <div class="popupMask setting dark center" @click.self="init.reject">
         <div class="editor">
             <header>
                 <h5>{{$t('title.create')}}</h5>
-                <h3>{{$t('title.operator')}}</h3>
+                <h3>{{$t('setting.operator')}}</h3>
             </header>
             <div class="wrap">
-                <inputer title="text.name" v-model="name"></inputer>
+                <inputer title="text.name" v-model="name" :autoFocus="true"></inputer>
                 <selector title="text.role" v-model="role" :opts="roles"></selector>
             </div>
             <footer>
-                <button class="btn" @click="init.reject">{{$t('button.cancel')}}</button>
                 <button class="btn">{{$t('button.confirm')}}</button>
             </footer>
         </div>
