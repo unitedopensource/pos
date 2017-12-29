@@ -90,7 +90,7 @@ export default {
     totalSalary() {
       return this.logs
         .filter(log => log.valid)
-        .map(log => this.salary(log))
+        .map(log => this.salary(log).toFloat())
         .reduce((a, b) => a + b, 0);
     },
     dateRange() {

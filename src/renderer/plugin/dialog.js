@@ -15,10 +15,7 @@ const dialog = {
     });
     Vue.prototype.$p = function (component, args, resolveHandler, rejectHandler) {
       return new Promise((resolve, reject) => {
-        this.componentData = Object.assign({
-          resolve,
-          reject
-        }, args);
+        this.componentData = Object.assign({ resolve, reject }, args);
         this.component = component;
       }).then((result) => {
         resolveHandler && resolveHandler(result);
@@ -66,10 +63,7 @@ const dialog = {
       if (login) {
         //allow operator enter access pin
         return new Promise((resolve, reject) => {
-          this.componentData = {
-            resolve,
-            reject
-          };
+          this.componentData = { resolve, reject };
           this.component = 'unlock';
         })
       } else {
@@ -91,43 +85,32 @@ const dialog = {
         })
       }
     }
-    Vue.prototype.$accessDenied = function (restriction) {
+    Vue.prototype.$checkPermission = function (credential, permit) {
+      let approval = false;
+      const { role, restrict } = this.op;
+
+      approve = (role === 'Developer' || role === 'Owner') ? true : credential.includes(permit);
+
       if (restriction) {
         //No login allowed
 
         this.$dialog({
-          type: 'warning',
           title: 'dialog.accessDenied',
           msg: 'dialog.accessDeniedTip',
-          timeout: {
-            duration: 10000
-          },
-          buttons: [{
-            text: 'button.confirm',
-            fn: 'resolve'
-          }]
-        }).then(() => {
-          this.$q()
-        }).catch(() => {
-          this.$q()
-        })
+          timeout: { duration: 10000, fn: "resolve" },
+          buttons: [{ text: 'button.confirm', fn: 'resolve' }]
+        }).then(() => this.$q());
+
       } else {
         //allow operator to access
 
-        return new Promise((resolve, reject) => {
-          this.componentData = {
-            resolve,
-            reject
-          };
+        new Promise((resolve, reject) => {
+          this.componentData = { resolve, reject };
           this.component = 'unlock'
         })
       }
     }
     Vue.prototype.$q = function () {
-      this.component = null;
-      this.componentData = null;
-    }
-    Vue.prototype.$exitComponent = function () {
       this.component = null;
       this.componentData = null;
     }

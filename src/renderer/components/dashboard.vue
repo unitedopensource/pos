@@ -306,21 +306,6 @@ export default {
           this.ring && this.setCustomer(this.callLog[0]);
           this.$router.push({ path: "/main/info" });
           break;
-        // case "thirdParty":
-        //   new Promise((resolve, reject) => {
-        //     this.componentData = { resolve, reject };
-        //     this.component = "thirdParty";
-        //   })
-        //     .then(source => {
-        //       this.$q();
-        //       this.setOrder({ source });
-        //       this.setTicket({ type: "DELIVERY" });
-        //       this.$router.push({ path: "/main/info" });
-        //     })
-        //     .catch(() => {
-        //       this.$q();
-        //     });
-        //   break;
         case "table":
           this.dinein.table
             ? this.$router.push({ path: "/main/table" })

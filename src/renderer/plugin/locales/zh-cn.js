@@ -1231,7 +1231,7 @@ export default {
         'view': {
             'summary': '允许查看当前销售总金额',
             'invoices': '允许查看所有订单',
-            'tables': '允许查看所有座位'
+            'tables': '允许查看所有座位',
         },
         'privilege': {
             'employee':'允许管理员工信息',
