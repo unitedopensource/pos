@@ -364,7 +364,7 @@ export default {
         'cashDrawerUnavailable': '钱箱无法使用',
         'cashDrawerUnavailableTip': '您需要在设置中为此工作站配置一个钱机',
         'accessDenied': '权限不足',
-        'accessDeniedTip': '您没有执行这个的权限，请联系本店经理',
+        'accessDeniedTip': '您没有执行此操作的权限，请联系本店经理',
         'addFailed': '无法添加',
         'saveOperatorFailed': '无法保存',
         'operatorNameDuplicate': '此用户名已经被占用，请重新设定一个新的用户名',

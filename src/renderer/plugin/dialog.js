@@ -47,15 +47,10 @@ const dialog = {
               load: !!button.load
             })
           }) :
-          this.componentData.buttons = [{
-            text: 'button.cancel',
-            fn: reject,
-            load: false
-          }, {
-            text: 'button.confirm',
-            fn: resolve,
-            load: false
-          }]
+          this.componentData.buttons = [
+            { text: 'button.cancel', fn: reject, load: false },
+            { text: 'button.confirm', fn: resolve, load: false }
+          ];
         this.component = "dialoger";
       });
     }
@@ -71,44 +66,42 @@ const dialog = {
           type: 'warning',
           title: 'dialog.accessDenied',
           msg: 'dialog.accessDeniedTip',
-          timeout: {
-            duration: 10000
-          },
-          buttons: [{
-            text: 'button.confirm',
-            fn: 'reject'
-          }]
-        }).then(() => {
-          this.$q()
-        }).catch(() => {
-          this.$q()
-        })
+          timeout: { duration: 10000, fn: "reject" },
+          buttons: [{ text: 'button.confirm', fn: 'reject' }]
+        }).then(() => this.$q()).catch(() => this.$q())
       }
     }
     Vue.prototype.$checkPermission = function (credential, permit) {
-      let approval = false;
+      let approve = false;
       const { role, restrict } = this.op;
+      const permission = this.op[credential];
 
-      approve = (role === 'Developer' || role === 'Owner') ? true : credential.includes(permit);
+      approve = (role === 'Developer' || role === 'Owner') ? true : permission.includes(permit);
 
-      if (restriction) {
-        //No login allowed
+      return new Promise((authorized, unauthorized) => {
+        if (approve) {
+          authorized();
+        } else if (restrict) {
+          const content = {
+            title: 'dialog.accessDenied',
+            msg: 'dialog.accessDeniedTip',
+            timeout: { duration: 10000, fn: "reject" },
+            buttons: [{ text: 'button.confirm', fn: 'reject' }]
+          }
 
-        this.$dialog({
-          title: 'dialog.accessDenied',
-          msg: 'dialog.accessDeniedTip',
-          timeout: { duration: 10000, fn: "resolve" },
-          buttons: [{ text: 'button.confirm', fn: 'resolve' }]
-        }).then(() => this.$q());
-
-      } else {
-        //allow operator to access
-
-        new Promise((resolve, reject) => {
-          this.componentData = { resolve, reject };
-          this.component = 'unlock'
-        })
-      }
+          this.$dialog(content).catch(() => unauthorized())
+        } else {
+          new Promise((resolve, reject) => {
+            this.componentData = { resolve, reject };
+            this.component = "unlock"
+          }).then((operator) => {
+            let _approve = false;
+            const _permission = operator[credential];
+            _approve = (operator.role === 'Developer' || operator.role === 'Owner') ? true : _permission.includes(permit);
+            _approve ? authorized() : unauthorized();
+          }).catch(() => unauthorized())
+        }
+      })
     }
     Vue.prototype.$q = function () {
       this.component = null;
