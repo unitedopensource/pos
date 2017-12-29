@@ -10,6 +10,10 @@ const dialog = {
           } catch (e) { }
 
           return approve
+        },
+        $log() {
+
+          this.$socket.emit("[SYS] LOG", log);
         }
       }
     });
@@ -96,11 +100,11 @@ const dialog = {
             if (_approve) {
               this.$q();
               authorized();
-              this.$socket.emit("[SYS] RECORD", { type: "Software", event: "grantPermission", status: 1, cause: "Authorized", data: operator })
+              this.$socket.emit("[SYS] RECORD", { type: "Software", event: "grantPermission", status: 1, cause: "Authorized", data: operator.name })
             } else {
               this.$accessDenied();
               unauthorized();
-              this.$socket.emit("[SYS] RECORD", { type: "Software", event: "grantPermission", status: 0, cause: "Unauthorized", data: operator })
+              this.$socket.emit("[SYS] RECORD", { type: "Software", event: "grantPermission", status: 0, cause: "Unauthorized", data: operator.name })
             }
           }).catch(() => {
             this.$accessDenied();

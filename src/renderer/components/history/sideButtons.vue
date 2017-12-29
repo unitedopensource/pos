@@ -1,51 +1,51 @@
 <template>
-    <aside>
-        <div class="btn" @click="editOrder">
-            <i class="fa fa-pencil-square-o"></i>
-            <span class="text">{{$t('button.edit')}}</span>
-        </div>
-        <div class="btn" @click="reOpenOrder" v-if="this.order && this.order.status !== 1">
-            <i class="fa fa-ban"></i>
-            <span class="text">{{$t('button.recover')}}</span>
-        </div>
-        <div class="btn" @click="voidOrder" v-else>
-            <i class="fa fa-ban"></i>
-            <span class="text">{{$t('button.void')}}</span>
-        </div>
-        <button class="btn" @click="isSettled" :disabled="order.settled">
-            <i class="fa fa-money"></i>
-            <span class="text">{{$t('button.payment')}}</span>
-        </button>
-        <button class="btn" @click="receipt">
-            <i class="fa fa-print"></i>
-            <span class="text">{{$t('button.receipt')}}</span>
-        </button>
-        <button class="btn" @click="print">
-            <i class="fa fa-print"></i>
-            <span class="text">{{$t('button.print')}}</span>
-        </button>
-        <button class="btn" @click="calendar">
-            <i class="fa fa-calendar"></i>
-            <span class="text">{{$t('button.calendar')}}</span>
-        </button>
-        <button class="btn" @click="terminal">
-            <i class="fa fa-tablet"></i>
-            <span class="text">{{$t('button.terminal')}}</span>
-        </button>
-        <button class="btn" @click="report">
-            <i class="fa fa-file-text"></i>
-            <span class="text">{{$t('button.report')}}</span>
-        </button>
-        <button class="btn" @click="paymentTransaction" :disabled="!reportable">
-            <i class="fa fa-bar-chart"></i>
-            <span class="text">{{$t('button.stats')}}</span>
-        </button>
-                <div class="btn" @click="search">
-            <i class="fa fa-search"></i>
-            <span class="text">{{$t('button.search')}}</span>
-        </div>
-        <div :is="component" :init="componentData"></div>
-    </aside>
+  <aside>
+    <div class="btn" @click="editOrder">
+      <i class="fa fa-pencil-square-o"></i>
+      <span class="text">{{$t('button.edit')}}</span>
+    </div>
+    <div class="btn" @click="reOpenOrder" v-if="this.order && this.order.status !== 1">
+      <i class="fa fa-ban"></i>
+      <span class="text">{{$t('button.recover')}}</span>
+    </div>
+    <div class="btn" @click="voidOrder" v-else>
+      <i class="fa fa-ban"></i>
+      <span class="text">{{$t('button.void')}}</span>
+    </div>
+    <button class="btn" @click="isSettled" :disabled="order.settled">
+      <i class="fa fa-money"></i>
+      <span class="text">{{$t('button.payment')}}</span>
+    </button>
+    <button class="btn" @click="receipt">
+      <i class="fa fa-print"></i>
+      <span class="text">{{$t('button.receipt')}}</span>
+    </button>
+    <button class="btn" @click="print">
+      <i class="fa fa-print"></i>
+      <span class="text">{{$t('button.print')}}</span>
+    </button>
+    <button class="btn" @click="calendar">
+      <i class="fa fa-calendar"></i>
+      <span class="text">{{$t('button.calendar')}}</span>
+    </button>
+    <button class="btn" @click="terminal">
+      <i class="fa fa-tablet"></i>
+      <span class="text">{{$t('button.terminal')}}</span>
+    </button>
+    <button class="btn" @click="report">
+      <i class="fa fa-file-text"></i>
+      <span class="text">{{$t('button.report')}}</span>
+    </button>
+    <button class="btn" @click="paymentTransaction" :disabled="!reportable">
+      <i class="fa fa-bar-chart"></i>
+      <span class="text">{{$t('button.stats')}}</span>
+    </button>
+    <div class="btn" @click="search">
+      <i class="fa fa-search"></i>
+      <span class="text">{{$t('button.search')}}</span>
+    </div>
+    <div :is="component" :init="componentData"></div>
+  </aside>
 </template>
 
 <script>
@@ -55,8 +55,9 @@ import paymentMark from "../payment/mark";
 import Dialoger from "../common/dialoger";
 import transaction from "./transaction";
 import Reason from "./component/reason";
-import payLog from "./component/payLog";
 import Payment from "../payment/index";
+import logs from "./component/payLog";
+import unlock from "../common/unlock";
 import Report from "../report/index";
 import Calendar from "./calendar";
 import Terminal from "./terminal";
@@ -71,28 +72,27 @@ export default {
     Dialoger,
     Terminal,
     Payment,
+    unlock,
     Reason,
     Report,
-    payLog
+    logs
   },
   data() {
     return {
       today: today(),
-      editable: false,
       reportable: false,
       component: null,
       componentData: null
     };
   },
   created() {
-    this.editable = this.approval(this.op.modify, "order");
     this.reportable = this.approval(this.op.access, "report");
   },
   methods: {
     editOrder() {
       if (this.isEmptyTicket) return;
 
-      this.checkPermission(this.editable)
+      this.$checkPermission("modify", "order")
         .then(this.checkDate)
         .then(this.checkStatus)
         .then(this.checkSettlement)
@@ -102,34 +102,21 @@ export default {
     voidOrder() {
       if (this.isEmptyTicket) return;
 
-      this.checkPermission(this.editable)
+      this.$checkPermission("modify", "order")
         .then(this.checkDate)
         .then(this.checkSettlement)
         .then(this.voidTicket)
         .catch(this.voidFailed);
-    },
-    checkPermission(boolean) {
-      return new Promise((resolve, reject) => {
-        boolean
-          ? resolve()
-          : reject({
-            type: "warning",
-            title: "dialog.accessDenied",
-            msg: "dialog.accessDeniedTip",
-            timeout: { duration: 5000, fn: "reject" },
-            buttons: [{ text: "button.confirm", fn: "reject" }]
-          });
-      });
     },
     checkDate() {
       return new Promise((resolve, reject) => {
         this.date === this.today
           ? resolve()
           : reject({
-            title: "dialog.unableEdit",
-            msg: "dialog.editPrevOrderTip",
-            buttons: [{ text: "button.confirm", fn: "reject" }]
-          });
+              title: "dialog.unableEdit",
+              msg: "dialog.editPrevOrderTip",
+              buttons: [{ text: "button.confirm", fn: "reject" }]
+            });
       });
     },
     checkStatus() {
@@ -137,10 +124,10 @@ export default {
         this.order.status === 1
           ? resolve()
           : reject({
-            title: "dialog.unableEdit",
-            msg: ["dialog.editVoidOrderTip", this.order.void.by],
-            buttons: [{ text: "button.confirm", fn: "reject" }]
-          });
+              title: "dialog.unableEdit",
+              msg: ["dialog.editVoidOrderTip", this.order.void.by],
+              buttons: [{ text: "button.confirm", fn: "reject" }]
+            });
       });
     },
     checkSettlement() {
@@ -191,7 +178,10 @@ export default {
           this.$t("type." + this.order.type)
         ],
         msg: "dialog.voidOrderConfirmTip",
-        buttons: [{ text: "button.cancel", fn: "reject" }, { text: "button.void", fn: "resolve" }]
+        buttons: [
+          { text: "button.cancel", fn: "reject" },
+          { text: "button.void", fn: "resolve" }
+        ]
       })
         .then(confirm => this.$p("Reason"))
         .catch(() => this.$q());
@@ -204,19 +194,15 @@ export default {
     removeRecordFromList() {
       new Promise((resolve, reject) => {
         this.$socket.emit("[PAYMENT] GET_LOG", this.order._id, logs => {
-          this.componentData = {
-            resolve,
-            reject,
-            number: this.order.number,
-            logs
-          };
-          this.component = "payLog";
+          const { number } = this.order;
+          this.componentData = { resolve, reject, number, logs };
+          this.component = "logs";
         });
       }).then(() => this.$q());
     },
     reOpenOrder() {
       if (this.isEmptyTicket) return;
-      this.$dialog({
+      const prompt = {
         type: "question",
         title: ["dialog.recoverOrderConfirm", this.order.number],
         msg: [
@@ -224,7 +210,9 @@ export default {
           this.order.void.by,
           this.$t("reason." + this.order.void.note)
         ]
-      })
+      };
+
+      this.$dialog(prompt)
         .then(() => {
           let order = JSON.parse(JSON.stringify(this.order));
           order.status = 1;
@@ -358,18 +346,25 @@ export default {
       }
     },
     terminal() {
-      this.station.terminal
-        ? this.$p("Terminal")
-        : this.$dialog({
-          title: "dialog.noTerminal",
-          msg: "dialog.stationNoTerminal",
-          buttons: [{ text: "button.confirm", fn: "resolve" }]
-        }).then(() => this.$q());
+      this.$checkPermission("access", "terminal")
+        .then(() => this.$p("Terminal"))
+        .catch(() => this.accessFailedLog("terminal"));
     },
     report() {
-      this.reportable ? this.$p("Report") : this.$denyAccess();
+      this.$checkPermission("access", "report")
+        .then(() => this.$p("Report"))
+        .catch(() => this.accessFailedLog("report"));
     },
-    search() { },
+    search() {},
+    accessFailedLog(component) {
+      this.$socket.emit("[SYS] RECORD", {
+        type: "Software",
+        event: "access",
+        status: 0,
+        cause: "attempt access " + component,
+        data: this.op
+      });
+    },
     updateInvoice(ticket) {
       this.$socket.emit("[UPDATE] INVOICE", ticket, true);
     },

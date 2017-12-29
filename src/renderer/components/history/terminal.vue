@@ -142,7 +142,7 @@ export default {
     };
   },
   created() {
-    this.checkPermission()
+    this.checkTerminal()
       .then(this.checkOccupy)
       .then(this.initialConfig)
       .then(this.initialData)
@@ -153,17 +153,17 @@ export default {
     this.$bus.off("filter", this.applyFilter);
   },
   methods: {
-    checkPermission() {
-      return new Promise((next, reject) => {
-        let data = {
-          title: "dialog.accessDenied",
-          msg: "dialog.accessDeniedTip",
-          timeout: { duration: 1000, fn: "resolve" },
-          buttons: [{ text: "button.confirm", fn: "resolve" }]
-        };
-
-        this.adjustable = this.approval(this.op.modify, "tip");
-        this.approval(this.op.access, "terminal") ? next() : reject(data);
+    checkTerminal() {
+      return new Promise((next, stop) => {
+        this.$socket.emit("[TERMINAL] DEVICE", devices => {
+          const reason = {
+            title: "dialog.noTerminal",
+            msg: "dialog.missTerminalConfig",
+            timeout: { duration: 1000, fn: "resolve" },
+            buttons: [{ text: "button.confirm", fn: "resolve" }]
+          };
+          devices.length > 0 ? next() : stop(reason);
+        });
       });
     },
     checkOccupy() {
@@ -178,9 +178,9 @@ export default {
       });
     },
     initialConfig() {
-      return new Promise((next, reject) => {
+      return new Promise((next, stop) => {
         this.$socket.emit("[TERMINAL] DEVICE", devices => {
-          let data = {
+          const reason = {
             type: "warning",
             title: "dialog.noTerminal",
             msg: "dialog.missTerminalConfig",
@@ -188,7 +188,7 @@ export default {
             buttons: [{ text: "button.confirm", fn: "resolve" }]
           };
           this.devices = devices;
-          devices.length === 0 ? reject(data) : next();
+          devices.length === 0 ? stop(reason) : next();
         });
       });
     },
@@ -245,7 +245,7 @@ export default {
       Printer.printCreditCard(record, true);
     },
     voidSale(record) {
-      let msg =
+      const msg =
         record.for === "Order"
           ? [
               "dialog.voidCreditInvoice",
@@ -254,7 +254,7 @@ export default {
             ]
           : "dialog.voidCreditReload";
 
-      let data = {
+      const prompt = {
         title: "dialog.voidCreditSale",
         msg,
         buttons: [
@@ -263,7 +263,7 @@ export default {
         ]
       };
 
-      this.$dialog(data)
+      this.$dialog(prompt)
         .then(() => {
           this.$p("processor", { timeout: 30000 });
           this.initialParser(record.terminal)
@@ -274,7 +274,7 @@ export default {
     },
     askRefund(record) {
       const amount = record.amount.approve;
-      let data = {
+      const prompt = {
         title: "terminal.refundConfirm",
         msg: ["terminal.refundAmount", amount],
         buttons: [
@@ -283,7 +283,7 @@ export default {
         ]
       };
 
-      this.$dialog(data)
+      this.$dialog(prompt)
         .then(() => this.refund(record))
         .catch(() => this.$q());
     },
@@ -328,13 +328,13 @@ export default {
             this.$socket.emit("[TRANSACTION] SAVE", transaction);
             this.$q();
           } else {
-            let data = {
+            const prompt = {
               title: ["terminal.error", result.code],
               msg: result.msg,
               buttons: [{ text: "button.confirm", fn: "resolve" }]
             };
 
-            this.$dialog(data).then(() => this.$q());
+            this.$dialog(prompt).then(() => this.$q());
           }
         });
       });
@@ -343,6 +343,7 @@ export default {
       return new Promise((resolve, reject) => {
         const config = this.devices.find(d => d.alias === terminal);
         const { ip, port, sn, model } = config;
+
         this.terminal = this.getParser(model)();
         this.terminal
           .initial(ip, port, sn, this.station.alias, terminal)
@@ -378,21 +379,24 @@ export default {
     executeFailed(error) {
       console.log(error);
     },
+    accessAdjuster() {
+      this.$checkPermission("modify", "transaction")
+        .then(this.openAdjuster)
+        .catch(() => this.log());
+    },
     openAdjuster() {
       new Promise((resolve, reject) => {
-        this.componentData = {
-          resolve,
-          reject,
-          transactions: this.filteredTransactions,
-          devices: this.devices
-        };
+        const transactions = this.filteredTransactions;
+        const devices = this.devices;
+
+        this.componentData = { resolve, reject, transactions, devices };
         this.component = "adjuster";
       })
         .then(this.preBatch)
         .catch(() => this.$q());
     },
     preBatch() {
-      const data = {
+      const prompt = {
         title: "dialog.batchClose",
         msg: "dialog.batchCloseTip",
         buttons: [
@@ -401,7 +405,7 @@ export default {
         ]
       };
 
-      this.$dialog(data)
+      this.$dialog(prompt)
         .then(this.batch)
         .catch(() => this.$q());
     },
