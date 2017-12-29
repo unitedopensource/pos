@@ -86,7 +86,7 @@ const dialog = {
           unauthorized();
         } else {
           new Promise((resolve, reject) => {
-            this.componentData = { resolve, reject };
+            this.componentData = { resolve, reject, grant: true };
             this.component = "unlock"
           }).then((operator) => {
             let _approve = false;
@@ -111,6 +111,7 @@ const dialog = {
     }
     Vue.prototype.$accessDenied = function (prompt) {
       prompt = prompt || {
+        type: 'warning',
         title: 'dialog.permissionDenied',
         msg: 'dialog.permissionDeniedTip',
         timeout: { duration: 10000, fn: "reject" },

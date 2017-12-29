@@ -1,7 +1,8 @@
 <template>
   <div class="popupMask center dark" @click.self="init.reject">
     <div class="accessor shadow">
-      <h2>{{$t('text.enterPin')}}</h2>
+      <h2 v-if="self">{{$t('title.operatorPin')}}</h2>
+      <h2 v-else>{{$t('title.accessPin')}}</h2>
       <div class="input">
         <span v-for="(circle,index) in pin" :key="index"></span>
       </div>
@@ -28,8 +29,12 @@ export default {
   props: ["init"],
   data() {
     return {
-      pin: []
+      pin: [],
+      self: true
     };
+  },
+  created() {
+    this.self = this.init.hasOwnProperty("grant") ? false : true;
   },
   mounted() {
     window.addEventListener("keydown", this.entry, false);

@@ -305,9 +305,10 @@ export default {
         })
         .catch(() => {
           const prompt = {
+            type: 'warning',
             title: "dialog.accessDenied",
             msg: "dialog.accessPinNotMatch",
-            buttons: [{ button: "confirm", fn: "reject" }]
+            buttons: [{ text: "button.confirm", fn: "reject" }]
           };
           this.$accessDenied(prompt);
           this.$socket.emit("[SYS] RECORD", {

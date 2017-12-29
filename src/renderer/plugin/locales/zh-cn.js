@@ -322,7 +322,9 @@ export default {
         'template': '物品模板',
         'interface': '界面',
         'footer': '收据页尾',
-        'creditVault': '信用卡储存记录'
+        'creditVault': '信用卡储存记录',
+        'operatorPin': '请输入您的密码',
+        'accessPin': '请输入经理的密码'
     },
     dialog: {
         'maintenance': '维护',
@@ -365,8 +367,8 @@ export default {
         'cashDrawerUnavailableTip': '您需要在设置中为此工作站配置一个钱机',
         'accessDenied': '访问被拒绝',
         'accessPinNotMatch': '您所输入的密码与该账户的不匹配',
-        'permissionDenied':'权限不足',
-        'permissionDeniedTip':'您没有执行此操作的权限，请联系本店经理',
+        'permissionDenied': '权限不足',
+        'permissionDeniedTip': '您没有执行此操作的权限，请联系本店经理',
         'addFailed': '无法添加',
         'saveOperatorFailed': '无法保存',
         'operatorNameDuplicate': '此用户名已经被占用，请重新设定一个新的用户名',
@@ -968,7 +970,6 @@ export default {
         'guest': '人数',
         'delayTask': '有{i}个打印任务',
         'sales': '销售',
-        'enterPin': '输入密码',
         'printReceipt': '打印收据',
         'count': '计数',
         'lastDate': '最后日期',

@@ -410,7 +410,9 @@ export default {
         'template': 'Item Template',
         'interface': 'Interface',
         'footer': 'Receipt Footer',
-        'creditVault': 'Credit Card Safe Vault'
+        'creditVault': 'Credit Card Safe Vault',
+        'operatorPin': 'Please Enter Your Pin ',
+        'accessPin': 'Please Enter Manager\'s Pin'
     },
     dialog: {
         'maintenance': 'Maintenance',
@@ -453,8 +455,8 @@ export default {
         'cashDrawerUnavailableTip': 'You have to set up a cash drawer for current station',
         'accessDenied': 'Access Denied',
         'accessPinNotMatch': 'The pin does not match to your account',
-        'permissionDenied':'Permission Denied',
-        'permissionDeniedTip':'You do not have such permission to do so. Please contact the store manager',
+        'permissionDenied': 'Permission Denied',
+        'permissionDeniedTip': 'You do not have such permission to do so. Please contact the store manager',
         'addFailed': 'Unable To Add',
         'saveOperatorFailed': 'Unable To Save',
         'operatorNameDuplicate': 'This name is occupied. Please enter a new name',
@@ -976,7 +978,6 @@ export default {
         'guest': 'Guest',
         'delayTask': '{i} tasks delayed',
         'sales': 'Sales',
-        'enterPin': 'Please Enter Your Pin',
         'printReceipt': 'Print Receipt',
         'count': 'Count',
         'lastDate': 'Last Date',
@@ -1055,7 +1056,7 @@ export default {
         'salary': 'Salary',
         'workHour': 'Work Hours',
         'workSalary': 'Salary',
-        'validRecord':'Valid Record'
+        'validRecord': 'Valid Record'
     },
     nav: {
         'store': 'Store',
