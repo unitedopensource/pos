@@ -64,8 +64,8 @@ const dialog = {
       } else {
         this.$dialog({
           type: 'warning',
-          title: 'dialog.accessDenied',
-          msg: 'dialog.accessDeniedTip',
+          title: 'dialog.permissionDenied',
+          msg: 'dialog.permissionDeniedTip',
           timeout: { duration: 10000, fn: "reject" },
           buttons: [{ text: 'button.confirm', fn: 'reject' }]
         }).then(() => this.$q()).catch(() => this.$q())
@@ -82,14 +82,8 @@ const dialog = {
         if (approve) {
           authorized();
         } else if (restrict) {
-          const content = {
-            title: 'dialog.accessDenied',
-            msg: 'dialog.accessDeniedTip',
-            timeout: { duration: 10000, fn: "reject" },
-            buttons: [{ text: 'button.confirm', fn: 'reject' }]
-          }
-
-          this.$dialog(content).catch(() => unauthorized())
+          this.$accessDenied();
+          unauthorized();
         } else {
           new Promise((resolve, reject) => {
             this.componentData = { resolve, reject };
@@ -98,10 +92,32 @@ const dialog = {
             let _approve = false;
             const _permission = operator[credential];
             _approve = (operator.role === 'Developer' || operator.role === 'Owner') ? true : _permission.includes(permit);
-            _approve ? authorized() : unauthorized();
-          }).catch(() => unauthorized())
+
+            if (_approve) {
+              this.$q();
+              authorized();
+              this.$socket.emit("[SYS] RECORD", { type: "Software", event: "grantPermission", status: 1, cause: "Authorized", data: operator })
+            } else {
+              this.$accessDenied();
+              unauthorized();
+              this.$socket.emit("[SYS] RECORD", { type: "Software", event: "grantPermission", status: 0, cause: "Unauthorized", data: operator })
+            }
+          }).catch(() => {
+            this.$accessDenied();
+            unauthorized();
+          })
         }
       })
+    }
+    Vue.prototype.$accessDenied = function (prompt) {
+      prompt = prompt || {
+        title: 'dialog.permissionDenied',
+        msg: 'dialog.permissionDeniedTip',
+        timeout: { duration: 10000, fn: "reject" },
+        buttons: [{ text: 'button.confirm', fn: 'reject' }]
+      };
+
+      this.$dialog(prompt).catch(() => this.$q());
     }
     Vue.prototype.$q = function () {
       this.component = null;

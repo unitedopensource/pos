@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard">
     <div class="cardWrap" v-if="station" :class="{enlarge:station.enlargeTitle}">
-      <div class="card" v-for="(grid,index) in station.interface" @click="go(grid)" :class="{disable:!grid.enable}" :key="index">
+      <div class="card" v-for="(grid,index) in station.interface" @click="access(grid)" :class="{disable:!grid.enable}" :key="index">
         <i class="fa" :class="[grid.icon]"></i>
         <h1>{{grid.head}}</h1>
         <h4>{{grid.subhead}}</h4>
@@ -191,7 +191,7 @@ export default {
             })
             .catch(() => next());
         } else if (this.op.break) {
-          let duration = moment
+          const duration = moment
             .duration(+new Date() - this.op.break, "milliseconds")
             .humanize();
 
@@ -213,7 +213,7 @@ export default {
     },
     checkCashCtrl() {
       return new Promise(next => {
-        let { enable, cashFlowCtrl } = this.station.cashDrawer;
+        const { enable, cashFlowCtrl } = this.station.cashDrawer;
 
         this.$socket.emit(
           "[CASHFLOW] CHECK",
@@ -223,7 +223,7 @@ export default {
             close: false
           },
           data => {
-            let { name, initial } = data;
+            const { name, initial } = data;
             if (initial && enable && cashFlowCtrl) {
               this.askCashIn();
               next();
@@ -236,22 +236,25 @@ export default {
       });
     },
     askCashIn() {
-      let amount = this.station.cashDrawer.initialAmount;
-      this.$dialog({ title: "dialog.cashIn", msg: "dialog.cashInTip" })
+      const amount = this.station.cashDrawer.initialAmount;
+      const prompt = { title: "dialog.cashIn", msg: "dialog.cashInTip" };
+
+      this.$dialog(prompt)
         .then(() => this.countInitialCash(amount))
         .catch(() => this.$q());
     },
     countInitialCash(amount) {
       if (isNumber(amount)) {
-        Printer.openCashDrawer();
-        this.$dialog({
+        const prompt = {
           title: "dialog.cashInConfirm",
           msg: ["dialog.cashInConfirmTip", amount.toFixed(2)],
           buttons: [
             { text: "button.modify", fn: "reject" },
             { text: "button.confirm", fn: "resolve" }
           ]
-        })
+        };
+        Printer.openCashDrawer();
+        this.$dialog(prompt)
           .then(() => this.acceptCashIn(amount))
           .catch(() => this.countInitialCash());
       } else {
@@ -275,14 +278,48 @@ export default {
       console.log(error);
     },
     welcomeScreen() {
-      let { top, bot } = this.station.pole;
+      const { top, bot } = this.station.pole;
       poleDisplay.write("\f");
       poleDisplay.write(line(top, bot));
     },
-    go(grid) {
-      if (!grid) return;
+    access(grid) {
+      const { route, password } = grid;
 
-      let { route } = grid;
+      new Promise((next, stop) => {
+        if (password) {
+          new Promise((resolve, reject) => {
+            this.componentData = { resolve, reject };
+            this.component = "unlock";
+          })
+            .then(_op => {
+              _op._id === this.op._id ? next() : stop();
+            })
+            .catch(() => stop());
+        } else {
+          next();
+        }
+      })
+        .then(() => {
+          this.$q();
+          this.go(route);
+        })
+        .catch(() => {
+          const prompt = {
+            title: "dialog.accessDenied",
+            msg: "dialog.accessPinNotMatch",
+            buttons: [{ button: "confirm", fn: "reject" }]
+          };
+          this.$accessDenied(prompt);
+          this.$socket.emit("[SYS] RECORD", {
+            type: "Software",
+            event: "access",
+            status: 0,
+            cause: "attempt access " + route,
+            data: this.op
+          });
+        });
+    },
+    go(route) {
       switch (route) {
         case "buffet":
           this.setTicket({ type: "BUFFET" });
@@ -307,34 +344,40 @@ export default {
           this.$router.push({ path: "/main/info" });
           break;
         case "table":
-          this.dinein.table
-            ? this.$router.push({ path: "/main/table" })
-            : this.$dialog({
-                title: "dialog.dineInDisabled",
-                msg: "dialog.dineInEnableTip",
-                buttons: [{ text: "button.confirm", fn: "resolve" }]
-              }).then(() => this.$q());
+          if (this.dinein.table) {
+            this.$router.push({ path: "/main/table" });
+          } else {
+            //set up table without
+          }
           break;
         case "pickupList":
           this.$router.push({ path: "/main/list" });
           break;
         case "history":
-          this.approval(this.op.access, route)
-            ? this.$router.push({ path: "/main/history" })
-            : this.$denyAccess(true)
-                .then(op => {
-                  if (this.approval(op.access, route)) {
-                    this.$router.push({ path: "/main/history" });
-                  } else {
-                    this.$denyAccess();
-                  }
-                })
-                .catch(() => this.$denyAccess());
+          this.$checkPermission("access", route)
+            .then(() => this.$router.push({ path: "/main/history" }))
+            .catch(() => {
+              this.$socket.emit("[SYS] RECORD", {
+                type: "Software",
+                event: "access",
+                status: 0,
+                cause: "attempt access " + route,
+                data: this.op
+              });
+            });
           break;
         case "setting":
-          this.approval(this.op.access, route)
-            ? this.$router.push({ path: "/main/setting" })
-            : this.$denyAccess();
+          this.$checkPermission("access", route)
+            .then(() => this.$router.push({ path: "/main/setting" }))
+            .catch(() => {
+              this.$socket.emit("[SYS] RECORD", {
+                type: "Software",
+                event: "access",
+                status: 0,
+                cause: "attempt access " + route,
+                data: this.op
+              });
+            });
           break;
         case "cashDrawer":
           this.station.cashDrawer.enable
