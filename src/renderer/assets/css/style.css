@@ -978,7 +978,7 @@ section.cart {
   flex: 3;
 }
 
-.keyboard .alphabetic .space {
+.keyboard div.space {
   width: 307px;
 }
 
@@ -986,14 +986,15 @@ section.cart {
   width: 149.4px!important;
 }
 
-.keyboard .alphabetic .created {
-  background: linear-gradient(#2196F3, #1f47ad);
+.keyboard div.created {
+  background: linear-gradient(to bottom, #51b2ff 0%, #245094 100%);
   text-shadow: 0 2px 1px #0D47A1;
   color: #fff;
+  border-top: 1px solid #3f7eb1;
 }
 
-.keyboard .created:active {
-  background: linear-gradient(#2577fb, #053bc5);
+.keyboard div.created:active {
+  background: linear-gradient(to bottom, #51b2ff 0%, #245094 100%);
 }
 
 .keyboard .keyboard .next {

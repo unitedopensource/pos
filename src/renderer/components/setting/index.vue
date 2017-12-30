@@ -88,7 +88,7 @@ h3 {
 }
 
 figure {
-  background: rgba(255, 255, 255, 0.9);
+  background: linear-gradient(to bottom, #fff 0%, #e5e5e5 100%);
   cursor: pointer;
   display: flex;
   flex-direction: column;

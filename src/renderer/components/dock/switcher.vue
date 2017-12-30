@@ -34,9 +34,13 @@
 import { mapGetters, mapActions } from "vuex";
 import dialoger from "../common/dialoger";
 import tpp from "./source";
+
 export default {
   props: ["init"],
   components: { dialoger, tpp },
+  computed: {
+    ...mapGetters(["app", "store", "ticket", "order", "currentTable"])
+  },
   data() {
     return {
       componentData: null,
@@ -46,9 +50,6 @@ export default {
   },
   created() {
     this.type = this.ticket.type = this.order.type;
-  },
-  computed: {
-    ...mapGetters(["app", "store", "ticket", "order", "currentTable"])
   },
   methods: {
     change(type) {
@@ -65,9 +66,7 @@ export default {
           this.switchType(type);
           this.init.resolve();
         })
-        .catch(() => {
-          this.$q();
-        });
+        .catch(() => this.$q());
     },
     switchType(type) {
       this.ticket.type === "DINE_IN" &&
@@ -100,12 +99,10 @@ export default {
           this.$bus.emit("FOOD_TOGO");
           this.init.resolve();
         })
-        .catch(() => {
-          this.$q();
-        });
+        .catch(() => this.$q());
     },
     applyPrice(type) {
-      let content = this.order.content.map(item => {
+      const content = this.order.content.map(item => {
         if (item.hasOwnProperty("prices") && item.prices[type])
           item.price = item.prices[type];
         return item;
@@ -114,16 +111,15 @@ export default {
     },
     thirdParty() {
       new Promise((resolve, reject) => {
-        this.componentData = { resolve, reject, source: this.order.source };
+        const { source } = this.order;
+        this.componentData = { resolve, reject, source };
         this.component = "tpp";
       })
         .then(type => {
           this.setOrder({ source: type });
           this.init.resolve();
         })
-        .catch(() => {
-          this.$q();
-        });
+        .catch(() => this.$q());
     },
     ...mapActions(["setOrder", "setTicket", "resetTable", "resetCurrentTable"])
   }
@@ -144,9 +140,9 @@ ul {
 }
 
 li {
-  background: #fff;
+  background: linear-gradient(to bottom, #fff 0%, #e5e5e5 100%);
   padding: 18px 10px 18px 15px;
-  color: #555;
+  color: #3c3c3c;
   width: 170px;
   text-shadow: none;
   border-radius: 4px;

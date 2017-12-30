@@ -114,35 +114,26 @@ export default {
           this.$socket.emit("[TIMECARD] CLOCK_IN", this.op);
           this.$q();
         })
-        .catch(() => {
-          this.$q();
-        });
+        .catch(() => this.$q());
     },
     askClockOut() {
-      let diff = moment().diff(moment(this.op.clockIn));
-      let h =
-        ("0" + Math.floor(diff / 36e5)).slice(-2) + " " + this.$t("text.hour");
-      let m =
-        ("0" + Math.floor(diff / 6e4)).slice(-2) + " " + this.$t("text.minute");
-
-      this.$dialog({
+      const diff = moment().diff(moment(this.op.clockIn));
+      const h = ("0" + Math.floor(diff / 36e5)).slice(-2) + " " + this.$t("text.hour");
+      const m = ("0" + Math.floor(diff / 6e4)).slice(-2) + " " + this.$t("text.minute");
+      const prompt = {
         type: "question",
         title: "dialog.clockOutConfirm",
-        msg: [
-          "dialog.clockOutTip",
-          moment(this.op.clockIn).format("hh:mm:ss a"),
-          h + " " + m
-        ]
-      })
+        msg: ["dialog.clockOutTip", moment(this.op.clockIn).format("hh:mm:ss a"), h + " " + m]
+      };
+
+      this.$dialog(prompt)
         .then(() => {
           this.$socket.emit("[TIMECARD] CLOCK_OUT", this.op);
           this.setOp({ clockIn: null, session: null });
           this.$router.push({ path: "/main/lock" });
           this.init.resolve();
         })
-        .catch(() => {
-          this.$q();
-        });
+        .catch(() => this.$q());
     },
     logout() {
       switch (this.op.cashCtrl) {
@@ -169,41 +160,34 @@ export default {
       );
     },
     staffCashOut(name) {
-      this.$dialog({
+      const prompt = {
         type: "question",
         title: "dialog.staffCashOut",
         msg: "dialog.staffCashOutTip"
-      })
-        .then(() => {
-          this.cashOut(name);
-        })
-        .catch(() => {
-          this.exit();
-        });
+      };
+
+      this.$dialog(prompt)
+        .then(() => this.cashOut(name))
+        .catch(() => this.exit());
     },
     regularCashOut(name) {
-      this.$dialog({
+      const prompt = {
         type: "question",
         title: "dialog.cashOut",
         msg: ["dialog.cashOutTip", name]
-      })
-        .then(() => {
-          this.cashOut(name);
-        })
-        .catch(() => {
-          this.exit();
-        });
+      };
+
+      this.$dialog(prompt)
+        .then(() => this.cashOut(name))
+        .catch(() => this.exit());
     },
     cashOut(cashDrawer) {
       this.$q();
-      this.$socket.emit("[CASHFLOW] SETTLE", cashDrawer, cashFlow => {
-        this.reconciliation(cashFlow);
-      });
+      this.$socket.emit("[CASHFLOW] SETTLE", cashDrawer, cashFlow => this.reconciliation(cashFlow));
     },
     reconciliation(cashflow) {
       this.recordCashDrawerAction();
-      let diff = (parseFloat(cashflow.end) - parseFloat(cashflow.begin)
-      ).toFixed(2);
+      const diff = (parseFloat(cashflow.end) - parseFloat(cashflow.begin)).toFixed(2);
 
       cashflow.activity = cashflow.activity.filter(
         log =>
@@ -212,7 +196,7 @@ export default {
           log.type === "PAYOUT"
       );
 
-      this.$dialog({
+      const prompt = {
         type: "question",
         title: ["dialog.cashOutSettle", cashflow.end],
         msg: ["dialog.cashOutSettleTip", cashflow.begin, diff, cashflow.end],
@@ -220,7 +204,9 @@ export default {
           { text: "button.printDetail", fn: "reject" },
           { text: "button.print", fn: "resolve" }
         ]
-      })
+      };
+
+      this.$dialog(prompt)
         .then(() => {
           Printer.printCashOutReport(cashflow, false);
           this.exit();
@@ -232,8 +218,10 @@ export default {
     },
     recordCashDrawerAction() {
       this.op.cashCtrl === "enable" && Printer.openCashDrawer();
-
-      let activity = {
+      const cashDrawer = this.op.cashCtrl === "enable"
+        ? this.station.cashDrawer.name
+        : this.op.name;
+      const activity = {
         type: "END",
         inflow: 0,
         outflow: 0,
@@ -241,13 +229,8 @@ export default {
         ticket: null,
         operator: this.op.name
       };
-      this.$socket.emit("[CASHFLOW] ACTIVITY", {
-        cashDrawer:
-          this.op.cashCtrl === "enable"
-            ? this.station.cashDrawer.name
-            : this.op.name,
-        activity
-      });
+
+      this.$socket.emit("[CASHFLOW] ACTIVITY", { cashDrawer, activity });
     },
     getTerminal() {
       this.$p("terminal");
@@ -256,70 +239,63 @@ export default {
       this.$p("giftCard");
     },
     startBreakTime() {
-      let data = {
+      const prompt = {
         type: "question",
         title: "dialog.startBreakTime",
         msg: "dialog.startBreakTimeTip"
       };
 
-      this.$dialog(data)
+      this.$dialog(prompt)
         .then(() => {
           this.$socket.emit("[TIMECARD] BREAK_START", this.op);
           this.setOp({ clockIn: null, session: null });
           this.$router.push({ path: "/main/lock" });
           this.init.resolve();
         })
-        .catch(() => {
-          this.$q();
-        });
+        .catch(() => this.$q());
     },
     endBreakTime() {
-      let duration = moment
+      const duration = moment
         .duration(+new Date() - this.op.break, "milliseconds")
         .humanize();
 
-      let data = {
+      const prompt = {
         type: "question",
         title: "dialog.endBreakTime",
         msg: ["dialog.endBreakTimeTip", duration]
       };
 
-      this.$dialog(data)
+      this.$dialog(prompt)
         .then(() => {
           this.$socket.emit("[TIMECARD] BREAK_END", this.op);
           this.setOp({ break: null });
           this.$q();
         })
-        .catch(() => {
-          this.$q();
-        });
+        .catch(() => this.$q());
     },
     openPayout() {
       this.$p("payout");
     },
-    askCashOut() {},
+    askCashOut() {
+
+    },
     changeLanguage() {
-      let language = this.app.language === "usEN" ? "zhCN" : "usEN";
+      const language = this.app.language === "usEN" ? "zhCN" : "usEN";
       this.$setLanguage(language);
       this.setApp({ language });
       moment.locale(language === "usEN" ? "en" : "zh-cn");
       this.$forceUpdate();
     },
     setting() {
-      if (this.approval(this.op.access, "setting")) {
-        this.$router.push({ path: "/main/setting" });
-        this.init.reject();
-      } else {
-        this.$denyAccess();
-      }
+      this.$checkPermission("access", "setting")
+        .then(() => this.$router.push({ path: "/main/setting" }))
+        .catch(() => {
+          console.log("denied")
+        })
     },
     exit() {
       this.$router.push({ name: "Login" });
-      this.$socket.emit("[SYS] RECORD", {
-        type: "User",
-        event: "logOut",
-        status: 1
-      });
+      this.$socket.emit("[SYS] RECORD", { type: "User", event: "logOut", status: 1 });
     },
     ...mapActions(["setOp", "setApp"])
   }
@@ -344,7 +320,7 @@ ul.panel {
 }
 
 li {
-  background: #fff;
+  background: linear-gradient(to bottom, #fff 0%, #e5e5e5 100%);
   margin-bottom: 5px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
   display: flex;
