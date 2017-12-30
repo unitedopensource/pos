@@ -9,13 +9,16 @@
             </nav>
         </header>
         <div class="status">
-            <h3>
-                <span class="name">{{database.db}}</span>{{$t('database.dataSize')}}</h3>
+            <h3>{{$t('database.dataSize')}}</h3>
             <h5>{{space | mb}} / {{database.dataSize | mb}}</h5>
         </div>
         <div class="status">
             <h3>{{$t('database.storageSize')}}</h3>
             <h5>{{database.storageSize | mb}}</h5>
+        </div>
+        <div class="status">
+            <h3>{{$t('database.collection')}}</h3>
+            <h5>{{database.collections}}</h5>
         </div>
         <div class="status">
             <h3>{{$t('database.objects')}}</h3>
@@ -24,6 +27,14 @@
         <div class="status">
             <h3>{{$t('database.averageSize')}}</h3>
             <h5>{{database.avgObjSize | kb}}</h5>
+        </div>
+        <div class="status">
+            <h3>{{$t('database.index')}}</h3>
+            <h5>{{database.indexes}}</h5>
+        </div>
+        <div class="status">
+            <h3>{{$t('database.indexSize')}}</h3>
+            <h5>{{database.indexSize | kb}}</h5>
         </div>
         <div class="status">
             <h3>{{$t('database.version')}}</h3>
@@ -48,7 +59,7 @@ export default {
     props: ["space", "database", "server"],
     filters: {
         mb(value) {
-            return value ? (value / 1024 / 1024).toFixed(2) + " MB" : value;
+            return value ? (value / 1048576).toFixed(2) + " MB" : value;
         },
         kb(value) {
             return value ? (value / 1024).toFixed(2) + " KB" : value;
@@ -59,7 +70,6 @@ export default {
     },
     methods: {
         uptime(duration) {
-            console.log(duration)
             const hh = ("00" + Math.floor(duration / 3600)).slice(-2);
             const mm = ("00" + Math.floor(duration / 60 % 60)).slice(-2);
             const ss = ("00" + Math.floor(duration % 60)).slice(-2);

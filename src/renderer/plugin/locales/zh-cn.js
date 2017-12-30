@@ -1093,7 +1093,7 @@ export default {
         'terminal': '终端',
         'promotion': '促销',
         'report': '报表',
-        'performance': ''
+        'performance': '性能'
     },
     setting: {
         'softwareSetting': 'UnitedPOS 后台设置',
@@ -1268,14 +1268,35 @@ export default {
     },
     database: {
         'dataSize': '数据库大小',
-        'collection': '集合',
+        'collection': '集合对象',
         'index': '索引',
+        'indexSize': '索引大小',
         'storageSize': '硬盘占用',
         'objects': '数据行',
         'averageSize': '平均大小',
         'version': '数据库版本',
         'memoryUsage': '内存占用',
-        'uptime': '运行时间'
+        'uptime': '运行时间',
+        'asserts': '断言状态',
+        'warningAssert': '断言警告次数',
+        'msgAssert': '断言内部错误次数',
+        'userAssert': '用户断言错误次数',
+        'connection': '连接状态',
+        'available': '可用连接数',
+        'current': '当前连接数',
+        'totalCreated': '总共创建数',
+        'network': '网络状态',
+        'bytesIn': '接收数据大小',
+        'bytesOut': '发送数据大小',
+        'request': '请求量',
+        'operation': '操作状态',
+        'insert': '数据插入',
+        'query': '数据查询',
+        'update':'数据更新',
+        'delete':'数据删除',
+        'command': '操作次数',
+        'extraInfo': '额外信息',
+        'pageFaults': '页错误次数'
     },
     print: {
         'printTicket': '订单打印',
