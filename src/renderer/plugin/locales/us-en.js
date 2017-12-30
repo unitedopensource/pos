@@ -264,7 +264,8 @@ export default {
         'coupon': 'Coupon',
         'setAll': 'Set All',
         'unset': 'Unset All',
-        'default': 'Default'
+        'default': 'Default',
+        'backup': 'Backup'
     },
     thead: {
         'orderType': 'Order Type',
@@ -1056,7 +1057,8 @@ export default {
         'salary': 'Salary',
         'workHour': 'Work Hours',
         'workSalary': 'Salary',
-        'validRecord': 'Valid Record'
+        'validRecord': 'Valid Record',
+        'bit': '{i} Bit'
     },
     nav: {
         'store': 'Store',
@@ -1095,7 +1097,8 @@ export default {
         'department': 'Dept.',
         'terminal': 'Terminal',
         'promotion': 'Promo.',
-        'report': 'Report'
+        'report': 'Report',
+        'performance': 'Performance'
     },
     setting: {
         'softwareSetting': 'UnitedPOS Setting',
@@ -1272,7 +1275,8 @@ export default {
         'index': 'Index',
         'storageSize': 'Storage Size',
         'objects': 'Objects',
-        'averageSize': 'Average Size'
+        'averageSize': 'Average Size',
+        'uptime': 'Uptime'
     },
     print: {
         'printTicket': 'Print Ticket',

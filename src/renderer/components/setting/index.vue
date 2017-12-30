@@ -27,6 +27,11 @@
                 <figcaption>{{$t('setting.operator')}}</figcaption>
                 <p>{{$t('setting.operatorTip')}}</p>
             </router-link>
+            <router-link tag="figure" :to="{name:'Setting.database'}">
+                <i class="fa fa-2x fa-database"></i>
+                <figcaption>{{$t('setting.database')}}</figcaption>
+                <p>{{$t('setting.databaseTip')}}</p>
+            </router-link>
             <router-link tag="figure" :to="{name:'Dashboard'}">
                 <i class="fa fa-2x fa-external-link"></i>
                 <figcaption>{{$t('setting.exit')}}</figcaption>

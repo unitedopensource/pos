@@ -257,7 +257,8 @@ export default {
         'coupon': '促销',
         'setAll': '全选',
         'unset': '反选',
-        'default': '默认'
+        'default': '默认',
+        'backup': '备份'
     },
     title: {
         'markPaymentType': '标记付款方式',
@@ -265,7 +266,7 @@ export default {
         'search': '搜索',
         'stats': '数据',
         'voidNote': '作废原因',
-        'databaseHealth': '数据库健康报告',
+        'databaseHealth': '数据库健康',
         'operators': '员工列表',
         'setDriver': '设定司机',
         'timecard': '打卡记录',
@@ -1051,7 +1052,8 @@ export default {
         'salary': '时薪',
         'workHour': '总工时',
         'workSalary': '薪水',
-        'validRecord': '有效记录'
+        'validRecord': '有效记录',
+        'bit': '{i} 位'
     },
     nav: {
         'store': '店面',
@@ -1090,7 +1092,8 @@ export default {
         'department': '部门',
         'terminal': '终端',
         'promotion': '促销',
-        'report': '报表'
+        'report': '报表',
+        'performance': ''
     },
     setting: {
         'softwareSetting': 'UnitedPOS 后台设置',
@@ -1269,7 +1272,10 @@ export default {
         'index': '索引',
         'storageSize': '硬盘占用',
         'objects': '数据行',
-        'averageSize': '平均大小'
+        'averageSize': '平均大小',
+        'version': '数据库版本',
+        'memoryUsage': '内存占用',
+        'uptime': '运行时间'
     },
     print: {
         'printTicket': '订单打印',

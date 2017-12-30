@@ -276,6 +276,30 @@ export default [{
         name: 'Setting.operator.report',
         component: require('./components/setting/operator/report')
       }]
+    }, {
+      path: 'database',
+      component: require('./components/setting/database/nav'),
+      children: [{
+        path: '/',
+        component: require('./components/setting/database/tab'),
+        children: [{
+          path: '/',
+          name: 'Setting.database',
+          component: require('./components/setting/database/index')
+        }, {
+          path: 'performance',
+          name: 'Setting.database.performance',
+          component: require('./components/setting/database/performance')
+        }]
+      }, {
+        path: 'customer',
+        name: 'Setting.database.customer',
+        component: require('./components/setting/database/customer')
+      }, {
+        path: 'address',
+        name: 'Setting.database.address',
+        component: require('./components/setting/database/address')
+      }]
     }
     ]
   }

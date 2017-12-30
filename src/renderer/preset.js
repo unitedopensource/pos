@@ -187,7 +187,7 @@ var Preset = function () {
       distance: ""
     }
   };
-  this.operator = function (name, role, pin) {
+  this.operator = function (name, role, pin, wage) {
     let access = [], modify = [], view = [], permission = [], cashCtrl;
     switch (role) {
       case "Manager":
@@ -225,7 +225,7 @@ var Preset = function () {
       name,
       role,
       pin,
-      wage: "",
+      wage,
       language: 'usEN',
       timecard: false,
       cashCtrl: 'disable',

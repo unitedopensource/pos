@@ -8,6 +8,7 @@
             <div class="wrap">
                 <inputer title="text.name" v-model="name" :autoFocus="true"></inputer>
                 <inputer title="text.accessPin" v-model="pin"></inputer>
+                <inputer title="text.salary" v-model.number="wage"></inputer>
                 <selector title="text.role" v-model="role" :opts="roles"></selector>
             </div>
             <footer>
@@ -32,8 +33,9 @@ export default {
       componentData: null,
       component: null,
       name: "",
-      role: "",
+      role: "Worker",
       pin: "",
+      wage: "",
       roles: [
         {
           label: this.$t("type.Manager"),
@@ -100,7 +102,7 @@ export default {
       })
     },
     addOperator() {
-      const operator = Preset.operator(this.name, this.role, this.pin);
+      const operator = Preset.operator(this.name, this.role, this.pin, this.wage);
       this.init.resolve(operator);
     },
     addFailed(error) {

@@ -3,9 +3,7 @@ import Electron from 'vue-electron'
 import Router from 'vue-router'
 import VueSocketio from 'vue-socket.io'
 import VueTouch from 'vue-touch'
-import {
-  VueMaskDirective
-} from 'v-mask'
+import { VueMaskDirective } from 'v-mask'
 import moment from 'moment'
 import Net from 'net'
 import Ip from 'ip'
@@ -21,9 +19,7 @@ Vue.use(Electron)
 Vue.use(VueBus)
 Vue.use(Trend)
 Vue.use(Bars)
-Vue.use(VueTouch, {
-  name: 'v-touch'
-})
+Vue.use(VueTouch, { name: 'v-touch' })
 Vue.use(Router)
 Vue.use(dialog)
 Vue.use(i18n)
@@ -80,9 +76,6 @@ moment.updateLocale('en', {
     yy: "%d years"
   }
 });
-
-var attachFastClick = require('fastclick');
-attachFastClick(document.body);
 
 const ip = Ip.address().split(".").splice(0, 3).join(".") + ".";
 let findHost = new Promise((resolve, reject) => {
@@ -179,14 +172,6 @@ Array.prototype.remove = function (object) {
     }
   }
 };
-// Array.prototype.getIndexOf = function (array) {
-//   for (var i = 0; i < this.length; i++) {
-//     if (this[i] === array) {
-//       return i;
-//     }
-//   }
-//   return undefined;
-// };
 Array.prototype.getLastInsertIndex = function (array) {
   var index = 0;
   for (var i = 0; i < this.length; i++) {
