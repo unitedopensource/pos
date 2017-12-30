@@ -417,7 +417,7 @@ export default {
     dialog: {
         'maintenance': 'Maintenance',
         'maintenanceTip': 'POS is under maintenance...',
-        'communicationInterrupted': 'Communication is interrupted',
+        'communicationInterrupted': 'Communication interrupted',
         'communicationInterruptedTip': 'Trying to reconnect to host... If problem persist, please contact UnitedPOS technical support team',
         'technicalSupportNumber': '(888)299-0524',
         'exitConfirm': 'Are you sure you want to exit?',

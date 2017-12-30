@@ -213,13 +213,13 @@ export default {
     },
     checkCashCtrl() {
       return new Promise(next => {
-        const { enable, cashFlowCtrl } = this.station.cashDrawer;
+        const { enable, name, cashFlowCtrl } = this.station.cashDrawer;
 
         this.$socket.emit(
           "[CASHFLOW] CHECK",
           {
             date: today(),
-            cashDrawer: this.station.cashDrawer.name,
+            cashDrawer: name,
             close: false
           },
           data => {
@@ -403,19 +403,19 @@ export default {
         case "enable":
           this.station.cashDrawer.cashFlowCtrl
             ? this.$socket.emit(
-                "[CASHFLOW] CHECK",
-                {
-                  date: today(),
-                  cashDrawer: this.station.cashDrawer.name,
-                  close: false
-                },
-                data => {
-                  let { name, initial } = data;
-                  initial
-                    ? this.initialCashFlow(name)
-                    : this.recordCashFlow(name);
-                }
-              )
+              "[CASHFLOW] CHECK",
+              {
+                date: today(),
+                cashDrawer: this.station.cashDrawer.name,
+                close: false
+              },
+              data => {
+                let { name, initial } = data;
+                initial
+                  ? this.initialCashFlow(name)
+                  : this.recordCashFlow(name);
+              }
+            )
             : Printer.openCashDrawer();
           break;
         case "staffBank":
