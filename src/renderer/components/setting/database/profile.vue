@@ -1,7 +1,7 @@
 <template>
     <div>
         <header class="nav">
-            <div class="back" @click="$router.push({ name: 'Setting.database.customer' })">
+            <div class="back" @click="save">
                 <i class="fa fa-chevron-left"></i>
             </div>
             <div class="title">
@@ -22,6 +22,16 @@
             <external title="text.viewTag"></external>
             <external title="text.viewFavoriteItem"></external>
             <external title="text.viewProfile"></external>
+            <div class="date">
+                <p>{{$t('text.firstDate')}}</p>
+                <span>{{profile.firstDate | moment('YYYY-MM-DD HH:mm:ss')}}</span>
+            </div>
+            <div class="date">
+                <p>{{$t('text.lastDate')}}</p>
+                <span>{{profile.lastDate | moment('YYYY-MM-DD HH:mm:ss')}}
+                    <span class="from">({{profile.lastDate | fromNow}})</span>
+                </span>
+            </div>
         </div>
     </div>
 </template>
@@ -29,13 +39,38 @@
 <script>
 import external from "../common/external";
 import textInput from "../common/textInput";
+
 export default {
     props: ["profile"],
     components: { external, textInput },
     methods: {
         remove() {
 
+        },
+        save() {
+            this.$emit('reset');
+            this.$router.push({ name: 'Setting.database.customer' });
         }
     }
 }
 </script>
+
+<style scoped>
+.date {
+  padding: 4px 20px 0;
+  border-bottom: 1px solid #eee;
+  height: 44px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+p {
+  color: #656565;
+}
+
+.from {
+  margin-left: 10px;
+  color: #009688;
+}
+</style>

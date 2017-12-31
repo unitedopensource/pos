@@ -1,7 +1,7 @@
 <template>
     <div>
         <header class="nav">
-            <div class="back" @click="$router.push({ name: 'Setting.database.address' })">
+            <div class="back" @click="save">
                 <i class="fa fa-chevron-left"></i>
             </div>
             <div class="title">
@@ -26,7 +26,6 @@ import toggle from "../common/toggle"
 import external from "../common/external";
 import textInput from "../common/textInput";
 
-
 export default {
     props: ["address"],
     components: { toggle, external, textInput },
@@ -38,6 +37,10 @@ export default {
     methods: {
         remove() {
 
+        },
+        save() {
+            this.$emit("reset");
+            this.$router.push({ name: 'Setting.database.address' });
         }
     }
 }

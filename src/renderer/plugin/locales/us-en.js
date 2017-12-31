@@ -1056,7 +1056,12 @@ export default {
         'workHour': 'Work Hours',
         'workSalary': 'Salary',
         'validRecord': 'Valid Record',
-        'bit': '{i} Bit'
+        'bit': '{i} Bit',
+        'viewTag': 'View Tags',
+        'viewFavoriteItem': 'View Favorite Items',
+        'viewProfile': 'View Profiles',
+        'firstDate': 'First Date',
+        'lastDate': 'Last Date'
     },
     nav: {
         'store': 'Store',
@@ -1293,7 +1298,7 @@ export default {
         'bytesIn': 'Received Data Size',
         'bytesOut': 'Send Data Size',
         'request': 'Request Total',
-        'operation': 'Operation',
+        'operation': 'Input / Output',
         'insert': 'Insert',
         'query': 'Query',
         'update': 'Update',

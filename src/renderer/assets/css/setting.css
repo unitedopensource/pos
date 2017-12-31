@@ -70,6 +70,12 @@ ul.tabs li {
     border-bottom: 2px solid transparent;
 }
 
+li.tab.disable{
+    pointer-events: none;
+    opacity: 0.7;
+    color: #BDBDBD;
+}
+
 ul.tabs li.router-link-exact-active {
     color: #333;
     font-weight: bold;

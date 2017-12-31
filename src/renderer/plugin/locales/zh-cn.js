@@ -1051,7 +1051,12 @@ export default {
         'workHour': '总工时',
         'workSalary': '薪水',
         'validRecord': '有效记录',
-        'bit': '{i} 位'
+        'bit': '{i} 位',
+        'viewTag': '查看标签',
+        'viewFavoriteItem': '查看常点物品',
+        'viewProfile': '查看备用档案',
+        'firstDate': '首次日期',
+        'lastDate': '最后日期'
     },
     nav: {
         'store': '店面',
@@ -1290,11 +1295,11 @@ export default {
         'bytesIn': '接收数据大小',
         'bytesOut': '发送数据大小',
         'request': '请求量',
-        'operation': '操作状态',
+        'operation': '读写状态',
         'insert': '数据插入',
         'query': '数据查询',
-        'update':'数据更新',
-        'delete':'数据删除',
+        'update': '数据更新',
+        'delete': '数据删除',
         'command': '执行次数',
         'extraInfo': '额外信息',
         'pageFaults': '页错误次数',
