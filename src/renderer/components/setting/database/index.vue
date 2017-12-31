@@ -65,9 +65,6 @@ export default {
             return value ? (value / 1024).toFixed(2) + " KB" : value;
         }
     },
-    created() {
-
-    },
     methods: {
         uptime(duration) {
             const hh = ("00" + Math.floor(duration / 3600)).slice(-2);

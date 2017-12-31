@@ -3,7 +3,7 @@
         <header class="nav">
             <div class="title">
                 <h5></h5>
-                <h3>{{$t("title.customer")}}</h3>
+                <h3>{{$t("title.customerList")}}</h3>
             </div>
             <nav>
                 <span class="add" @click="create">{{$t('button.new')}}</span>
@@ -18,7 +18,7 @@
                     </h5>
                 </div>
                 <span class="time">{{customer.lastDate | fromNow}}</span>
-                <i class="fa fa-caret-right"></i>
+                <i class="fa fa-caret-right" @click=""></i>
             </li>
         </ul>
         <div :is="component" :init="componentData"></div>
@@ -41,6 +41,9 @@ export default {
     methods: {
         create() {
             const customer = Preset.customer();
+            this.$p("editor", { customer })
+        },
+        edit(customer) {
             this.$p("editor", { customer })
         }
     }

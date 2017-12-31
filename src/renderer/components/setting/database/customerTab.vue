@@ -5,7 +5,7 @@
             <router-link tag="li" class="tab" :to="{name:'Setting.database.customer.analyze'}">{{$t('nav.analyze')}}</router-link>
         </ul>
         <transition name="slide" mode="out-in">
-            <router-view class="tab-content" :customers="customers"></router-view>
+            <router-view class="tab-content" :customers="customers" @update="setPage"></router-view>
         </transition>
     </div>
 </template>
@@ -24,7 +24,18 @@ export default {
                 vm.customers = customers
             })
         })
+    },
+    methods: {
+        setPage(page) {
+            this.page = page;
+        }
+    },
+    watch: {
+        page(n) {
+            this.$socket.emit("[CUSTOMER] LIST", n, customer => {
+                this.customers = customer;
+            })
+        }
     }
-
 }
 </script>

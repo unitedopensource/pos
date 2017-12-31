@@ -28,9 +28,8 @@ Vue.directive('mask', VueMaskDirective);
 
 Vue.directive('outer-click', {
   bind: function (el, binding, vNode) {
-
     if (typeof binding.value !== 'function') {
-      const component = vNode.context.name
+      const component = vNode.context.name;
       let warn = `[Vue-outer-click:] provided expression '${binding.expression}' is not a function.`
       if (component) {
         warn += `Found in component '${component}'`
@@ -94,8 +93,7 @@ let findHost = new Promise((resolve, reject) => {
     resolve(args[++host]);
     return;
   }
-  let start = 0,
-    end = 255;
+  let start = 0, end = 255;
   while (start <= end) {
     let target = ip + start;
     (function (target) {
@@ -165,7 +163,7 @@ Array.prototype.last = function () {
   return this[this.length - 1] || null;
 }
 Array.prototype.remove = function (object) {
-  for (var i = 0; i < this.length; i++) {
+  for (let i = 0; i < this.length; i++) {
     if (this[i] === object) {
       this.splice(i, 1);
       break;
@@ -173,8 +171,8 @@ Array.prototype.remove = function (object) {
   }
 };
 Array.prototype.getLastInsertIndex = function (array) {
-  var index = 0;
-  for (var i = 0; i < this.length; i++) {
+  let index = 0;
+  for (let i = 0; i < this.length; i++) {
     if (this[i].key === array.key) {
       index = i;
     }
@@ -192,11 +190,9 @@ String.prototype.toCapitalCase = function () {
 String.prototype.toFloat = function () {
   return parseFloat(this)
 };
-window.toFixed = function (number, fractionSize) {
-  return +(Math.round(+(number.toString() + 'e' + fractionSize)).toString() + 'e' + -fractionSize);
-}
+window.toFixed = (number, fractionSize) => +(Math.round(+(number.toString() + 'e' + fractionSize)).toString() + 'e' + -fractionSize);
 window.ObjectId = (m = Math, d = Date, h = 16, s = s => m.floor(s).toString(h)) => s(d.now() / 1000) + ' '.repeat(h).replace(/./g, () => s(m.random() * h));
-window.isNumber = (n => (/^-?[\d.]+(?:e-?\d+)?$/.test(n)));
+window.isNumber = (n) => (/^-?[\d.]+(?:e-?\d+)?$/.test(n));
 window.today = function (offset = 0) {
   let d = new Date();
   d = d.setHours(d.getHours() - 4 + (offset * 24));
@@ -204,13 +200,14 @@ window.today = function (offset = 0) {
   return `${d.getFullYear()}-${("0" + (d.getMonth() + 1)).slice(-2)}-${("0" + d.getDate()).slice(-2)}`;
 }
 window.line = function (line1, line2) {
-  let f = function (data) {
+  const f = function (data) {
     if (typeof data === 'string') {
-      let i = Math.floor(Math.abs(20 - data.length) / 2);
+      const i = Math.floor(Math.abs(20 - data.length) / 2);
       return (' '.repeat(i) + data + ' '.repeat(i + 10)).slice(0, 20);
     } else {
-      let string = data[0];
-      let amount = isNumber(data[1]) ? data[1] > 0 ? '$ ' + data[1] : '-$ ' + data[1] : data[1];
+      const string = data[0];
+      const amount = isNumber(data[1]) ? data[1] > 0 ? '$ ' + data[1] : '-$ ' + data[1] : data[1];
+
       let i = 20 - (string + amount).length;
       i < 0 && (i = 0);
       return (string + ' '.repeat(i) + amount).slice(0, 20);

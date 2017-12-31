@@ -305,8 +305,16 @@ export default [{
         }]
       }, {
         path: 'address',
-        name: 'Setting.database.address',
-        component: require('./components/setting/database/address')
+        component: require('./components/setting/database/addressTab'),
+        children: [{
+          path: '/',
+          name: 'Setting.database.address',
+          component: require('./components/setting/database/address'),
+        }, {
+          path: 'detail',
+          name: 'Setting.database.address.detail',
+          component: require('./components/setting/database/detail')
+        }]
       }]
     }
     ]

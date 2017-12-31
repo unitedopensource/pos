@@ -17,10 +17,10 @@
 
 <script>
 export default {
-    props: ["init"],
-    data() {
-        return {
-
+    props:["init"],
+    data(){
+        return{
+            
         }
     }
 }
