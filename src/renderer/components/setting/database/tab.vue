@@ -27,7 +27,7 @@ export default {
             const info = disk.checkSync('c:');
             next(vm => {
                 const { database, server } = result;
-console.log(result)
+
                 vm.server = server;
                 vm.database = database;
                 vm.space = info.free;

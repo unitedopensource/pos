@@ -1269,7 +1269,7 @@ export default {
     database: {
         'dataSize': '数据库大小',
         'collection': '集合对象',
-        'index': '索引',
+        'index': '索引数',
         'indexSize': '索引大小',
         'storageSize': '硬盘占用',
         'objects': '数据行',
@@ -1294,9 +1294,11 @@ export default {
         'query': '数据查询',
         'update':'数据更新',
         'delete':'数据删除',
-        'command': '操作次数',
+        'command': '执行次数',
         'extraInfo': '额外信息',
-        'pageFaults': '页错误次数'
+        'pageFaults': '页错误次数',
+        'resident': '物理内存',
+        'virtual': '虚拟内存'
     },
     print: {
         'printTicket': '订单打印',

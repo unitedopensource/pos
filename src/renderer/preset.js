@@ -184,7 +184,23 @@ var Preset = function () {
       name: "",
       note: "",
       duration: "",
-      distance: ""
+      distance: "",
+      direction:"",
+      coordinate: [],
+      firstDate: +new Date,
+      lastDate: +new Date,
+      dob: "",
+      email: "",
+      carrier: "",
+      orderCount: 0,
+      orderAmount: 0,
+      callCount: 0,
+      cancelCount: 0,
+      cancelAmount: 0,
+      favorite: [],
+      tag: [],
+      profiles: [],
+      creditCard: []
     }
   };
   this.operator = function (name, role, pin, wage) {

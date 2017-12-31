@@ -293,8 +293,16 @@ export default [{
         }]
       }, {
         path: 'customer',
-        name: 'Setting.database.customer',
-        component: require('./components/setting/database/customer')
+        component: require('./components/setting/database/customerTab'),
+        children: [{
+          path: '/',
+          name: 'Setting.database.customer',
+          component: require('./components/setting/database/customer')
+        }, {
+          path: 'analyze',
+          name: 'Setting.database.customer.analyze',
+          component: require('./components/setting/database/customerAnalyze')
+        }]
       }, {
         path: 'address',
         name: 'Setting.database.address',

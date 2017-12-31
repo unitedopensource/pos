@@ -1297,9 +1297,11 @@ export default {
         'query': 'Query',
         'update': 'Update',
         'delete': 'Delete',
-        'command': 'Command Count',
+        'command': 'Command Excuted',
         'extraInfo': 'Extra Information',
-        'pageFaults': 'Page Faults'
+        'pageFaults': 'Page Faults',
+        'resident': 'Physical Memory',
+        'virtual': 'Virtual Memory'
     },
     print: {
         'printTicket': 'Print Ticket',

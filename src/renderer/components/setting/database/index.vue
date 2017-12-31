@@ -82,13 +82,19 @@ export default {
 
 <style scoped>
 .status {
-  padding: 10px 25px 5px;
+  padding: 6px 25px 4px;
+  height: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   border-bottom: 1px solid #eee;
 }
+
 h3 {
   font-size: 18px;
   color: #3c3c3c;
 }
+
 h5 {
   font-weight: normal;
   color: #656565;

@@ -15,7 +15,7 @@
         <span @click="unset" v-else>{{$t('button.unset')}}</span>
       </nav>
     </header>
-    <checkbox v-for="(opt,index) in opts" :key="opt" v-model="print" :val="opt.value" :title="opt.label" :multiple="true" class="list"></checkbox>
+    <checkbox v-for="(opt,index) in opts" :key="index" v-model="print" :val="opt.value" :title="opt.label" :multiple="true" class="list"></checkbox>
   </div>
 </template>
 
