@@ -544,7 +544,9 @@ export default {
         'itemSorted': '物品排序',
         'updateSortedItem': '您要更新本次物品排序吗?',
         'removeCreditCard': '移除信用卡',
-        'removeCreditCardConfirm': '您确定要移除这个信用卡信息吗？'
+        'removeCreditCardConfirm': '您确定要移除这个信用卡信息吗?',
+        'removeCustomer': '移除客户档案',
+        'removeCustomerConfirm': '您确定要移除这个客户的资料吗? '
     },
     terminal: {
         'initial': '正在初始化 {i}...',
@@ -971,7 +973,6 @@ export default {
         'sales': '销售',
         'printReceipt': '打印收据',
         'count': '计数',
-        'lastDate': '最后日期',
         'content': '内容',
         'coupon': '优惠',
         'tipPercentage': '小费百分比',
@@ -1056,7 +1057,8 @@ export default {
         'viewFavoriteItem': '查看常点物品',
         'viewProfile': '查看备用档案',
         'firstDate': '首次日期',
-        'lastDate': '最后日期'
+        'lastDate': '最后日期',
+        'viewCustomer': '查看此地址客户'
     },
     nav: {
         'store': '店面',

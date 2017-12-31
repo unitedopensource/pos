@@ -632,7 +632,9 @@ export default {
         'itemSorted': 'Item Sorted',
         'updateSortedItem': 'Are you wish to save sorted order?',
         'removeCreditCard': 'Remove Credit Card',
-        'removeCreditCardConfirm': 'Are you sure to remove this credit card information?'
+        'removeCreditCardConfirm': 'Are you sure to remove this credit card information?',
+        'removeCustomer': 'Remove Customer',
+        'removeCustomerConfirm': 'Are you sure to remove this customer profile?'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',
@@ -979,7 +981,6 @@ export default {
         'sales': 'Sales',
         'printReceipt': 'Print Receipt',
         'count': 'Count',
-        'lastDate': 'Last Date',
         'content': 'Content',
         'coupon': 'Coupon',
         'tipPercentage': 'Tip Percentage',
@@ -1061,7 +1062,8 @@ export default {
         'viewFavoriteItem': 'View Favorite Items',
         'viewProfile': 'View Profiles',
         'firstDate': 'First Date',
-        'lastDate': 'Last Date'
+        'lastDate': 'Last Date',
+        'viewCustomer': 'View Address Customer'
     },
     nav: {
         'store': 'Store',

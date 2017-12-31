@@ -1,64 +1,67 @@
 <template>
-    <div class="customer">
-        <header>
-            <nav>
-                <h3><i class="fa fa-users"></i><span>{{$t('title.customerList')}}</span></h3>
-            </nav>
-            <section class="filter">
-                <div class="search">
-                    <i class="fa fa-search"></i>
-                    <input type="text" v-model="phone" @keypress.enter="search">
-                </div>
-                <div></div>
-                <div></div>
-            </section>
-        </header>
-        <table>
-            <thead>
-                <tr>
-                    <th class="phone">{{$t('thead.phone')}}</th>
-                    <th class="address">{{$t('thead.address')}}</th>
-                    <th class="name">{{$t('thead.name')}}</th>
-                    <th class="amount">{{$t('thead.total')}}</th>
-                    <th class="amount">{{$t('thead.count')}}</th>
-                    <th>{{$t('thead.lastUpdate')}}</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(customer,index) in customers" :key="index" @click="edit(customer)">
-                    <td class="phone">{{customer.phone | phone}}</td>
-                    <td class="address">{{customer.address}}</td>
-                    <td class="name">{{customer.name}}</td>
-                    <td class="amount">{{customer.extra.orderAmount | decimal}}</td>
-                    <td class="amount">{{customer.extra.orderCount}}</td>
-                    <td>{{customer.extra.lastDate | fromNow}}</td>
-                </tr>
-            </tbody>
-        </table>
-        <footer>
-            <div>
-                <span class="text">{{$t("text.totalCustomers")}}</span>
-                <span class="value">{{totalCustomers}}</span>
-            </div>
-            <div class="svg">
-                <trend :data="customerTrend" :gradient="['#6fa8dc', '#42b983', '#2c3e50']" :height="51" auto-draw smooth></trend>
-            </div>
-            <div class="pagination">
-                <button @click="page--" :disabled="page === 0">
-                    <i class="fa fa-chevron-left"></i>
-                </button>
-                <div class="wrap">
-                    <span>{{page + 1}}</span>
-                    <span> / </span>
-                    <span>{{totalPage}}</span>
-                </div>
-                <button @click="page++" :disabled="page === totalPage - 1">
-                    <i class="fa fa-chevron-right"></i>
-                </button>
-            </div>
-        </footer>
-        <div :is="component" :init="componentData" @remove="remove" @update="update"></div>
-    </div>
+  <div class="customer">
+    <header>
+      <nav>
+        <h3>
+          <i class="fa fa-users"></i>
+          <span>{{$t('title.customerList')}}</span>
+        </h3>
+      </nav>
+      <section class="filter">
+        <div class="search">
+          <i class="fa fa-search"></i>
+          <input type="text" v-model="phone" @keypress.enter="search">
+        </div>
+        <div></div>
+        <div></div>
+      </section>
+    </header>
+    <table>
+      <thead>
+        <tr>
+          <th class="phone">{{$t('thead.phone')}}</th>
+          <th class="address">{{$t('thead.address')}}</th>
+          <th class="name">{{$t('thead.name')}}</th>
+          <th class="amount">{{$t('thead.total')}}</th>
+          <th class="amount">{{$t('thead.count')}}</th>
+          <th>{{$t('thead.lastUpdate')}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(customer,index) in customers" :key="index" @click="edit(customer)">
+          <td class="phone">{{customer.phone | phone}}</td>
+          <td class="address">{{customer.address}}</td>
+          <td class="name">{{customer.name}}</td>
+          <td class="amount">{{customer.extra.orderAmount | decimal}}</td>
+          <td class="amount">{{customer.extra.orderCount}}</td>
+          <td>{{customer.extra.lastDate | fromNow}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <footer>
+      <div>
+        <span class="text">{{$t("text.totalCustomers")}}</span>
+        <span class="value">{{totalCustomers}}</span>
+      </div>
+      <div class="svg">
+        <trend :data="customerTrend" :gradient="['#6fa8dc', '#42b983', '#2c3e50']" :height="51" auto-draw smooth></trend>
+      </div>
+      <div class="pagination">
+        <button @click="page--" :disabled="page === 0">
+          <i class="fa fa-chevron-left"></i>
+        </button>
+        <div class="wrap">
+          <span>{{page + 1}}</span>
+          <span> / </span>
+          <span>{{totalPage}}</span>
+        </div>
+        <button @click="page++" :disabled="page === totalPage - 1">
+          <i class="fa fa-chevron-right"></i>
+        </button>
+      </div>
+    </footer>
+    <div :is="component" :init="componentData" @remove="remove" @update="update" @refresh="fetchData"></div>
+  </div>
 </template>
 
 <script>

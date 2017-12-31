@@ -6,7 +6,7 @@
             <router-link tag="li" class="tab" :to="{name:'Setting.database.customer.analyze'}">{{$t('nav.analyze')}}</router-link>
         </ul>
         <transition name="slide" mode="out-in">
-            <router-view class="tab-content" :customers="customers" @update="setPage" @set="setCustomer" @reset="profile = null"></router-view>
+            <router-view class="tab-content" :customers="customers" @update="setPage" @set="setCustomer" @reset="profile = null" @refresh="fetchData"></router-view>
         </transition>
     </div>
 </template>
@@ -34,13 +34,17 @@ export default {
         setCustomer(profile) {
             this.profile = profile;
             this.$router.push({ name: "Setting.database.customer.profile", params: { profile } })
+        },
+        fetchData(page) {
+            page = page || this.page;
+            this.$socket.emit("[CUSTOMER] LIST", page, customer => {
+                this.customers = customer;
+            })
         }
     },
     watch: {
         page(n) {
-            this.$socket.emit("[CUSTOMER] LIST", n, customer => {
-                this.customers = customer;
-            })
+            this.fetchData(n);
         }
     }
 }

@@ -2,7 +2,9 @@
     <div>
         <ul class="tabs">
             <router-link tag="li" class="tab" :to="{name:'Setting.database.address'}">{{$t('nav.list')}}</router-link>
-            <router-link tag="li" class="tab" :to="{name:'Setting.database.address.detail',params:{address}}" :class="{disable:!address}">{{$t('nav.detail')}}</router-link>
+            <template v-if="address">
+                <router-link tag="li" class="tab" :to="{name:'Setting.database.address.detail',params:{address}}">{{$t('nav.detail')}}</router-link>
+            </template>
         </ul>
         <transition name="slide" mode="out-in">
             <router-view class="tab-content" :addresses="addresses" @update="setPage" @set="setAddress" @reset="address = null"></router-view>
