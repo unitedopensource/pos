@@ -6,7 +6,18 @@
       <span class="price">{{$t('text.price')}}</span>
     </header>
     <header v-else class="info">
+      <div class="content">
+
+      </div>
       <div class="bar">
+        <template v-if="!isEmptyTicket">
+          <span class="number">{{order.number}}</span>
+          <span class="type">{{$t('type.' + order.type)}}</span>
+          <span class="provider" v-show="order.source !== 'POS'">{{order.source}}</span>
+          <span class="time">{{order.time | fromNow}}</span>
+        </template>
+      </div>
+      <!-- <div class="bar">
         <span class="number">{{order.number}}</span>
         <span class="type" v-show="order.type">{{$t('type.'+order.type)}}</span>
         <span class="provider" v-show="order.source !== 'POS'">{{order.source}}</span>
@@ -31,7 +42,7 @@
         <div>
           <span class="value">{{order.customer && order.customer.address}}</span>
         </div>
-      </div>
+      </div> -->
     </header>
     <div class="order" @click.self="resetHighlight" v-if="layout === 'order'">
       <v-touch class="inner" :style="scroll" @panup="move" @pandown="move" @panstart="panStart" @panend="panEnd" tag="ul">
@@ -486,6 +497,8 @@ header.info {
   color: #555;
   position: relative;
   height: 93px;
+  display: flex;
+  flex-direction: column;
 }
 
 .number {
@@ -631,11 +644,11 @@ header i {
   padding: 2.5px 0;
 }
 
-.timePass {
-  position: absolute;
-  right: 5px;
-  text-align: center;
-  font-size: 12px;
+.time {
+  flex: 1;
+  text-align: right;
+  padding: 0 10px;
+  font-size: 14px;
 }
 
 .print .itemWrap {
@@ -706,7 +719,7 @@ header i {
 }
 
 .content {
-  padding: 3px;
+  flex: 1;
 }
 
 .content .value {
