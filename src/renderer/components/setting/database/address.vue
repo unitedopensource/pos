@@ -9,8 +9,8 @@
                 <span class="add" @click="create">{{$t('button.new')}}</span>
             </nav>
         </header>
-        <ul v-for="(address,index) in addresses" :key="index">
-            <li>
+        <ul>
+            <li v-for="(address,index) in addresses" :key="index">
                 <div class="f1">
                     <h4>{{address.street}}</h4>
                     <h5>{{address.city}}</h5>
@@ -27,23 +27,23 @@
 import editor from "./component/addressEditor";
 
 export default {
-    props: ["addresses"],
-    components: { editor },
-    data() {
-        return {
-            componentData: null,
-            component: null,
-        }
+  props: ["addresses"],
+  components: { editor },
+  data() {
+    return {
+      componentData: null,
+      component: null
+    };
+  },
+  methods: {
+    create() {
+      this.$p("editor", { address });
     },
-    methods: {
-        create() {
-            this.$p("editor", { address })
-        },
-        edit(address) {
-            this.$p("editor", { address })
-        }
+    edit(address) {
+      this.$p("editor", { address });
     }
-}
+  }
+};
 </script>
 
 <style scoped>

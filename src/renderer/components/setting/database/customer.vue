@@ -9,8 +9,8 @@
                 <span class="add" @click="create">{{$t('button.new')}}</span>
             </nav>
         </header>
-        <ul v-for="(customer,index) in customers" :key="index">
-            <li>
+        <ul>
+            <li v-for="(customer,index) in customers" :key="index">
                 <div class="f1">
                     <h4>{{customer.phone | phone}}</h4>
                     <h5>{{customer.address}}
@@ -20,6 +20,21 @@
                 <span class="time">{{customer.lastDate | fromNow}}</span>
                 <i class="fa fa-caret-right" @click="$emit('set',customer)"></i>
             </li>
+            <li v-if="total > 14" class="footer">
+                <p>
+                    <span>{{$t('text.totalCustomers')}}</span>
+                    <span>{{total}}</span>
+                </p>
+                <div class="pages">
+                    <i class="fa fa-angle-left" @click="prev"></i>
+                    <div>
+                        <span>{{page + 1}}</span>
+                        <span class="slash">/</span>
+                        <span>{{totalPage}}</span>
+                    </div>
+                    <i class="fa fa-angle-right" @click="next"></i>
+                </div>
+            </li>
         </ul>
         <div :is="component" :init="componentData"></div>
     </div>
@@ -27,26 +42,50 @@
 
 <script>
 import Preset from "../../../preset";
-import editor from "./component/customerEditor"
+import editor from "./component/customerEditor";
 export default {
-    props: ["customers"],
-    components: { editor },
-    data() {
-        return {
-            componentData: null,
-            component: null,
-        }
-    },
-    methods: {
-        create() {
-            const customer = Preset.customer();
-            this.$p("editor", { customer })
-        },
-        edit(customer) {
-            this.$p("editor", { customer })
-        }
+  props: ["total", "customers"],
+  components: { editor },
+  computed: {
+    totalPage() {
+      return Math.ceil(this.total / 14);
     }
-}
+  },
+  data() {
+    return {
+      componentData: null,
+      component: null,
+      page: 0
+    };
+  },
+  methods: {
+    create() {
+      new Promise((resolve, reject) => {
+        const customer = Preset.customer();
+
+        this.componentData = { resolve, reject, customer };
+        this.component = "editor";
+      })
+        .then(_customer => {
+          this.$socket.emit("[CUSTOMER] UPDATE", _customer, callback => {
+            this.$emit("create");
+            this.$q();
+          });
+        })
+        .catch(() => this.$q());
+    },
+    prev() {
+      if (this.page === 0) return;
+      this.page--;
+      this.$emit("update", this.page);
+    },
+    next() {
+      if (this.page === this.totalPage - 1) return;
+      this.page++;
+      this.$emit("update", this.page);
+    }
+  }
+};
 </script>
 
 <style scoped>
@@ -63,7 +102,7 @@ h5 {
   color: #656565;
 }
 
-i {
+i.fa-caret-right {
   margin: 0 10px;
   padding: 10px 25px;
   color: #555;

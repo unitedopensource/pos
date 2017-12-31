@@ -3,7 +3,7 @@
         <ul class="tabs">
             <router-link tag="li" class="tab" :to="{name:'Setting.database.address'}">{{$t('nav.list')}}</router-link>
             <template v-if="address">
-                <router-link tag="li" class="tab" :to="{name:'Setting.database.address.detail',params:{address}}">{{$t('nav.detail')}}</router-link>
+                <router-link tag="li" class="tab" :to="{name:'Setting.database.address.detail',params:{address}}">{{$t('nav.address')}}</router-link>
             </template>
         </ul>
         <transition name="slide" mode="out-in">

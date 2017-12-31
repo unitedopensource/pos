@@ -43,7 +43,7 @@
                 </h5>
                 <h5>
                     <span>{{$t('text.orderAmount')}}</span>
-                    <span>$ {{profile.orderAmount}}</span>
+                    <span>$ {{profile.orderAmount | decimal}}</span>
                 </h5>
                 <h5>
                     <span>{{$t('text.callCount')}}</span>
@@ -55,19 +55,9 @@
                 </h5>
                 <h5>
                     <span>{{$t('text.cancelAmount')}}</span>
-                    <span>$ {{profile.cancelAmount}}</span>
+                    <span>$ {{profile.cancelAmount | decimal}}</span>
                 </h5>
             </div>
-            <!-- <div class="date">
-                <p>{{$t('text.firstDate')}}</p>
-                <span>{{profile.firstDate | moment('YYYY-MM-DD HH:mm:ss')}}</span>
-            </div>
-            <div class="date">
-                <p>{{$t('text.lastDate')}}</p>
-                <span>{{profile.lastDate | moment('YYYY-MM-DD HH:mm:ss')}}
-                    <span class="from">({{profile.lastDate | fromNow}})</span>
-                </span>
-            </div> -->
         </div>
         <div :is="component" :init="componentData"></div>
     </div>

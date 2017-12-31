@@ -437,3 +437,40 @@ td.amount {
     padding-left: 10px;
     color: #656565;
 }
+
+ul li.footer{
+    height: 52px;
+    border-bottom: none;
+    background: #eee;
+}
+
+li.footer .pages{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0 10px;
+    flex: 1;
+}
+
+li.footer .pages i{
+    padding: 10px 20px;
+    background: linear-gradient(to bottom, #fff 0%, #e5e5e5 100%);
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+}
+
+li.footer .pages i:active{
+    background: #fcfcfc;
+}
+
+.pages div {
+    display: flex;
+    min-width: 80px;
+    justify-content: center;
+}
+
+.pages .slash {
+    font-weight: bold;
+    margin: 0 5px;
+}
