@@ -1060,7 +1060,11 @@ export default {
         'viewProfile': '查看备用档案',
         'firstDate': '首次日期',
         'lastDate': '最后日期',
-        'viewCustomer': '查看此地址客户'
+        'viewCustomer': '查看此地址客户',
+        'activity':'活动',
+        'callCount': '拨打次数',
+        'cancelCount': '取消订单',
+        'cancelAmount': '取消总额'
     },
     nav: {
         'store': '店面',

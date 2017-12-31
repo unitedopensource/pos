@@ -1065,7 +1065,10 @@ export default {
         'viewProfile': 'View Profiles',
         'firstDate': 'First Date',
         'lastDate': 'Last Date',
-        'viewCustomer': 'View Address Customer'
+        'viewCustomer': 'View Address Customer',
+        'callCount': 'Call Count',
+        'cancelCount': 'Cancel Count',
+        'cancelAmount': 'Cancel Amount'
     },
     nav: {
         'store': 'Store',

@@ -23,7 +23,7 @@
     <external title="setting.permission.access" @open="$router.push({name:'Setting.operator.access',params:{operator}})"></external>
     <external title="setting.permission.modify" @open="$router.push({name:'Setting.operator.modify',params:{operator}})"></external>
     <external title="setting.permission.view" @open="$router.push({name:'Setting.operator.view',params:{operator}})"></external>
-    <external title="setting.permission.permission" v-show="authorization" @open="$router.push({name:'Setting.operator.permission',params:{operator}})"></external>
+    <external title="setting.permission.permission" v-show="authorized" @open="$router.push({name:'Setting.operator.permission',params:{operator}})"></external>
     <toggle v-model="operator.restrict" title="text.restrict" true-tooltip="tip.restrictPermission" false-tooltip="tip.temporaryPermission" :conditionalTooltip="true"></toggle>
     <div :is="component" :init="componentData"></div>
   </div>
@@ -41,7 +41,7 @@ export default {
   props: ["operator"],
   components: { toggle, textList, external, textInput, dialoger },
   computed: {
-    ...mapGetters(["authorization"])
+    ...mapGetters(["authorized"])
   },
   data() {
     return {

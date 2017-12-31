@@ -22,7 +22,43 @@
             <external title="text.viewTag"></external>
             <external title="text.viewFavoriteItem"></external>
             <external title="text.viewProfile"></external>
-            <div class="date">
+            <div class="statistic">
+                <h3>{{$t('text.date')}}</h3>
+                <h5>
+                    <span>{{$t('text.firstDate')}}</span>
+                    <span>{{profile.firstDate | moment('YYYY-MM-DD HH:mm:ss')}}</span>
+                </h5>
+                <h5>
+                    <span>{{$t('text.lastDate')}}</span>
+                    <span>{{profile.lastDate | moment('YYYY-MM-DD HH:mm:ss')}}
+                        <span class="from">({{profile.lastDate | fromNow}})</span>
+                    </span>
+                </h5>
+            </div>
+            <div class="statistic">
+                <h3>{{$t('text.activity')}}</h3>
+                <h5>
+                    <span>{{$t('text.orderCount')}}</span>
+                    <span>{{profile.orderCount}}</span>
+                </h5>
+                <h5>
+                    <span>{{$t('text.orderAmount')}}</span>
+                    <span>$ {{profile.orderAmount}}</span>
+                </h5>
+                <h5>
+                    <span>{{$t('text.callCount')}}</span>
+                    <span>{{profile.callCount}}</span>
+                </h5>
+                <h5>
+                    <span>{{$t('text.cancelCount')}}</span>
+                    <span>{{profile.cancelCount}}</span>
+                </h5>
+                <h5>
+                    <span>{{$t('text.cancelAmount')}}</span>
+                    <span>$ {{profile.cancelAmount}}</span>
+                </h5>
+            </div>
+            <!-- <div class="date">
                 <p>{{$t('text.firstDate')}}</p>
                 <span>{{profile.firstDate | moment('YYYY-MM-DD HH:mm:ss')}}</span>
             </div>
@@ -31,7 +67,7 @@
                 <span>{{profile.lastDate | moment('YYYY-MM-DD HH:mm:ss')}}
                     <span class="from">({{profile.lastDate | fromNow}})</span>
                 </span>
-            </div>
+            </div> -->
         </div>
         <div :is="component" :init="componentData"></div>
     </div>
@@ -43,36 +79,40 @@ import textInput from "../common/textInput";
 import dialoger from "../../common/dialoger";
 
 export default {
-    props: ["profile"],
-    components: { dialoger, external, textInput },
-    data() {
-        return {
-            componentData: null,
-            component: null
-        }
+  props: ["profile"],
+  components: { dialoger, external, textInput },
+  data() {
+    return {
+      componentData: null,
+      component: null
+    };
+  },
+  methods: {
+    remove() {
+      const prompt = {
+        type: "question",
+        title: "dialog.removeCustomer",
+        msg: "dialog.removeCustomerConfirm"
+      };
+      this.$dialog(prompt)
+        .then(() => {
+          this.$q();
+          this.$socket.emit("[CUSTOMER] DELETE", this.profile, callback => {
+            this.$emit("reset");
+            this.$emit("refresh");
+            this.$router.push({ name: "Setting.database.customer" });
+          });
+        })
+        .catch(() => this.$q());
     },
-    methods: {
-        remove() {
-            const prompt = {
-                type: 'question',
-                title: 'dialog.removeCustomer',
-                msg: 'dialog.removeCustomerConfirm'
-            }
-            this.$dialog(prompt).then(() => {
-                this.$q();
-                this.$socket.emit("[CUSTOMER] DELETE", this.profile, callback => {
-                    this.$emit('reset');
-                    this.$emit('refresh');
-                    this.$router.push({ name: 'Setting.database.customer' });
-                });
-            }).catch(() => this.$q())
-        },
-        save() {
-            this.$emit('reset');
-            this.$socket.emit("[CUSTOMER] UPDATE", this.profile, () => this.$router.push({ name: 'Setting.database.customer' }));
-        }
+    save() {
+      this.$emit("reset");
+      this.$socket.emit("[CUSTOMER] UPDATE", this.profile, () =>
+        this.$router.push({ name: "Setting.database.customer" })
+      );
     }
-}
+  }
+};
 </script>
 
 <style scoped>

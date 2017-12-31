@@ -5,7 +5,7 @@
                 <h3>{{database.db}}</h3>
             </div>
         </header>
-        <div class="status">
+        <div class="statistic">
             <h3>{{$t('database.asserts')}}</h3>
             <h5>
                 <span>{{$t('database.warningAssert')}}</span>
@@ -20,7 +20,7 @@
                 <span class="value">{{server.asserts.msg}}</span>
             </h5>
         </div>
-        <div class="status">
+        <div class="statistic">
             <h3>{{$t('database.connection')}}</h3>
             <h5>
                 <span>{{server.connections.available}} {{$t('database.available')}} / </span>
@@ -31,7 +31,7 @@
                 <span class="value">{{server.connections.totalCreated}}</span>
             </h5>
         </div>
-        <div class="status">
+        <div class="statistic">
             <h3>{{$t('database.network')}}</h3>
             <h5>
                 <span>{{$t('database.bytesIn')}}</span>
@@ -46,7 +46,7 @@
                 <span class="value">{{server.network.numRequests}}</span>
             </h5>
         </div>
-        <div class="status">
+        <div class="statistic">
             <h3>{{$t('database.operation')}}</h3>
             <h5>
                 <span>{{$t('database.insert')}}</span>
@@ -69,7 +69,7 @@
                 <span class="value">{{server.opcounters.command}}</span>
             </h5>
         </div>
-        <div class="status">
+        <div class="statistic">
             <h3>{{$t('database.memoryUsage')}}</h3>
             <h5>
                 <span>{{$t('database.resident')}}</span>
@@ -80,7 +80,7 @@
                 <span class="value">{{server.mem.virtual}} MB</span>
             </h5>
         </div>
-        <div class="status">
+        <div class="statistic">
             <h3>{{$t('database.extraInfo')}}</h3>
             <h5>
                 <span>{{$t('database.pageFaults')}}</span>
@@ -103,16 +103,3 @@ export default {
     },
 }
 </script>
-
-<style scoped>
-.status {
-  padding: 10px 25px;
-  border-bottom: 1px solid #eee;
-}
-
-.status h5 {
-  font-weight: normal;
-  padding-left: 10px;
-  color: #656565;
-}
-</style>

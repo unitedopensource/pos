@@ -10,7 +10,7 @@
       </nav>
     </header>
     <ul>
-      <li v-for="(op,index) in operators" :key="index" :class="{disable:op.role ==='Owner' && !authorization}">
+      <li v-for="(op,index) in operators" :key="index" :class="{disable:op.role ==='Owner' && !authorized}">
         <span class="name">{{op.name}}</span>
         <span class="role">{{$t('type.' + op.role)}}</span>
         <i class="fa fa-caret-right" @click="$emit('set',op)"></i>
@@ -30,7 +30,7 @@ export default {
   components: { editor, pagination },
   data() {
     return {
-      authorization: this.$store.getters.authorization,
+      authorized: this.$store.getters.authorized,
       componentData: null,
       component: null,
       list: [],
