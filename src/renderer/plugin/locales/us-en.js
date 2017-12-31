@@ -1096,7 +1096,10 @@ export default {
         'terminal': 'Terminal',
         'promotion': 'Promo.',
         'report': 'Report',
-        'performance': 'Performance'
+        'performance': 'Performance',
+        'profile': 'Profile',
+        'analyze': 'Analyze',
+        'list': 'List'
     },
     setting: {
         'softwareSetting': 'UnitedPOS Setting',

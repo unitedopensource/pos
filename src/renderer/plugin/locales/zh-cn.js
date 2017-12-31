@@ -1091,7 +1091,10 @@ export default {
         'terminal': '终端',
         'promotion': '促销',
         'report': '报表',
-        'performance': '性能'
+        'performance': '性能',
+        'profile': '档案',
+        'analyze': '分析',
+        'list': '列表'
     },
     setting: {
         'softwareSetting': 'UnitedPOS 后台设置',

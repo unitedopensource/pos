@@ -3,7 +3,7 @@
         <header class="nav">
             <div class="title">
                 <h5></h5>
-                <h3>{{$t("title.customerList")}}</h3>
+                <h3>{{$t("title.addressList")}}</h3>
             </div>
             <nav>
                 <span class="add" @click="create">{{$t('button.new')}}</span>
@@ -16,7 +16,7 @@
                     <h5>{{address.city}}</h5>
                 </div>
                 <span class="time">{{address.zipCode}}</span>
-                <i class="fa fa-caret-right"></i>
+                <i class="fa fa-caret-right" @click="$emit('set',address)"></i>
             </li>
         </ul>
         <div :is="component" :init="componentData"></div>
@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import editor from "./component/addressEditor";
+import editor from "./component/streetEditor";
 
 export default {
     props: ["addresses"],
@@ -48,11 +48,12 @@ export default {
 
 <style scoped>
 li {
-  padding-left: 20px;
   height: 40px;
-  border-bottom: 1px solid #eee;
   display: flex;
+  padding-left: 20px;
   align-items: center;
+  text-transform: capitalize;
+  border-bottom: 1px solid #eee;
 }
 
 h5 {

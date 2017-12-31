@@ -299,9 +299,14 @@ export default [{
           name: 'Setting.database.customer',
           component: require('./components/setting/database/customer')
         }, {
+          path: 'profile:/profile',
+          props: true,
+          name: 'Setting.database.customer.profile',
+          component: require('./components/setting/database/profile')
+        }, {
           path: 'analyze',
           name: 'Setting.database.customer.analyze',
-          component: require('./components/setting/database/customerAnalyze')
+          component: require('./components/setting/database/analyze')
         }]
       }, {
         path: 'address',
@@ -311,7 +316,8 @@ export default [{
           name: 'Setting.database.address',
           component: require('./components/setting/database/address'),
         }, {
-          path: 'detail',
+          path: 'detail/:address',
+          props: true,
           name: 'Setting.database.address.detail',
           component: require('./components/setting/database/detail')
         }]

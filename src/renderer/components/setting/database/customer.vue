@@ -18,7 +18,7 @@
                     </h5>
                 </div>
                 <span class="time">{{customer.lastDate | fromNow}}</span>
-                <i class="fa fa-caret-right" @click=""></i>
+                <i class="fa fa-caret-right" @click="$emit('set',customer)"></i>
             </li>
         </ul>
         <div :is="component" :init="componentData"></div>
@@ -27,8 +27,7 @@
 
 <script>
 import Preset from "../../../preset";
-import editor from "./component/customerEditor";
-
+import editor from "./component/customerEditor"
 export default {
     props: ["customers"],
     components: { editor },
