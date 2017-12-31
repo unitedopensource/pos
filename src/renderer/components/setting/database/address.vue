@@ -24,11 +24,11 @@
 </template>
 
 <script>
-import dialoger from "../../common/dialoger";
+import editor from "./component/addressEditor";
 
 export default {
     props: ["addresses"],
-    components: { editor, dialoger },
+    components: { editor },
     data() {
         return {
             componentData: null,

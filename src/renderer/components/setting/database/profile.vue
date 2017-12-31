@@ -17,7 +17,7 @@
             <text-input title="text.city" v-model="profile.city"></text-input>
             <text-input title="text.extension" v-model="profile.extension"></text-input>
             <text-input title="text.name" v-model="profile.name"></text-input>
-            <text-input title="text.dob" v-model="profile.dob" placeholder="MM-DD"></text-input>
+            <text-input title="text.dob" v-model="profile.dob" placeholder="MM-DD" mask="##-##"></text-input>
             <text-input title="text.email" v-model="profile.email"></text-input>
             <external title="text.viewTag"></external>
             <external title="text.viewFavoriteItem"></external>
@@ -69,8 +69,7 @@ export default {
         },
         save() {
             this.$emit('reset');
-            this.$socket.emit("[CUSTOMER] UPDATE", this.profile);
-            this.$router.push({ name: 'Setting.database.customer' });
+            this.$socket.emit("[CUSTOMER] UPDATE", this.profile, () => this.$router.push({ name: 'Setting.database.customer' }));
         }
     }
 }

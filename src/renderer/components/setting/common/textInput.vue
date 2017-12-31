@@ -2,7 +2,12 @@
   <div class="input">
     <div class="wrap">
       <label>{{$t(title)}}</label>
-      <input :type="type" :value="value" :disabled="disabled" @input="$emit('input',$event.target.value)" @blur="$emit('update',$event.target.value)">
+      <template v-if="mask">
+        <input :type="type" :value="value" :disabled="disabled" :placeholder="placeholder" @input="$emit('input',$event.target.value)" @blur="$emit('update',$event.target.value)" v-mask="mask">
+      </template>
+      <template v-else>
+        <input :type="type" :value="value" :disabled="disabled" :placeholder="placeholder" @input="$emit('input',$event.target.value)" @blur="$emit('update',$event.target.value)">
+      </template>
     </div>
     <slot></slot>
   </div>
@@ -15,13 +20,15 @@ export default {
     title: String,
     value: [String, Number, Array],
     disabled: Boolean,
+    placeholder: String,
+    mask: String,
     type: {
       type: String,
       default: "text"
     }
   },
   watch: {
-    value() {}
+    value() { }
   }
 };
 </script>

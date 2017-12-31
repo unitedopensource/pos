@@ -9,7 +9,7 @@
         <h3>{{operator.name}}</h3>
       </div>
       <nav>
-        <span class="add" @click="remove">{{$t('button.remove')}}</span>
+        <span class="add" @click="remove" v-show="op._id !== operator._id">{{$t('button.remove')}}</span>
       </nav>
     </header>
     <text-input v-model="operator.pin" title="text.accessPin" :type="view">
@@ -45,6 +45,7 @@ export default {
   },
   data() {
     return {
+      op: this.$store.getters.op,
       componentData: null,
       component: null,
       view: "password",
@@ -82,8 +83,7 @@ export default {
   },
   beforeRouteLeave(to, from, next) {
     if (!this.removed) {
-      const op = this.$store.getters.op;
-      op._id === this.operator._id && this.setOp(this.operator);
+      this.op._id === this.operator._id && this.setOp(this.operator);
       this.$socket.emit("[OPERATOR] UPDATE", this.operator, () => next());
     } else {
       next();
