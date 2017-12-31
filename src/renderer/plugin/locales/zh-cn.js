@@ -546,7 +546,9 @@ export default {
         'removeCreditCard': '移除信用卡',
         'removeCreditCardConfirm': '您确定要移除这个信用卡信息吗?',
         'removeCustomer': '移除客户档案',
-        'removeCustomerConfirm': '您确定要移除这个客户的资料吗? '
+        'removeCustomerConfirm': '您确定要移除这个客户的资料吗?',
+        'removeAddress': '移除地址',
+        'removeAddressConfirm': '您确定要移除这个地址吗?'
     },
     terminal: {
         'initial': '正在初始化 {i}...',

@@ -22,21 +22,36 @@
 </template>
 
 <script>
-import toggle from "../common/toggle"
+import toggle from "../common/toggle";
 import external from "../common/external";
 import textInput from "../common/textInput";
+import dialoger from "../../common/dialoger";
 
 export default {
     props: ["address"],
-    components: { toggle, external, textInput },
+    components: { toggle, external, textInput, dialoger },
     data() {
         return {
-
+            componentData: null,
+            component: null
         }
     },
     methods: {
         remove() {
+            const prompt = {
+                type: "question",
+                title: "title.addressRemove",
+                msg: 'title.addressRemoveConfirm'
+            };
 
+            this.$dialoger(prompt).then(() => {
+                this.$q();
+                this.$socket.emit("[ADDRESS] REMOVE", this.address._id, callback => {
+                    this.$emit("reset");
+                    this.$emit("refresh");
+                    this.$router.push({ name: 'Setting.database.address' });
+                })
+            }).catch(() => this.$q())
         },
         save() {
             this.$emit("reset");

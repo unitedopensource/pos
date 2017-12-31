@@ -7,7 +7,7 @@
             </template>
         </ul>
         <transition name="slide" mode="out-in">
-            <router-view class="tab-content" :addresses="addresses" @update="setPage" @set="setAddress" @reset="address = null"></router-view>
+            <router-view class="tab-content" :addresses="addresses" @update="setPage" @set="setAddress" @reset="address = null" @refresh="fetchData"></router-view>
         </transition>
     </div>
 </template>
@@ -35,13 +35,17 @@ export default {
         },
         setPage(page) {
             this.page = page;
+        },
+        fetchData(page) {
+            page = page || this.page;
+            this.$socket.emit("[ADDRESS] LIST", page, addresses => {
+                this.addresses = addresses;
+            })
         }
     },
     watch: {
         page(n) {
-            this.$socket.emit("[ADDRESS] LIST", n, addresses => {
-                this.addresses = addresses;
-            })
+            this.fetchData(n)
         }
     }
 }

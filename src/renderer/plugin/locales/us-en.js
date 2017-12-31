@@ -634,7 +634,9 @@ export default {
         'removeCreditCard': 'Remove Credit Card',
         'removeCreditCardConfirm': 'Are you sure to remove this credit card information?',
         'removeCustomer': 'Remove Customer',
-        'removeCustomerConfirm': 'Are you sure to remove this customer profile?'
+        'removeCustomerConfirm': 'Are you sure to remove this customer profile?',
+        'removeAddress': 'Remove Address',
+        'removeAddressConfirm': 'Are you sure to remove this address?'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',
