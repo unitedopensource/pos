@@ -548,7 +548,9 @@ export default {
         'removeCustomer': '移除客户档案',
         'removeCustomerConfirm': '您确定要移除这个客户的资料吗?',
         'removeAddress': '移除地址',
-        'removeAddressConfirm': '您确定要移除这个地址吗?'
+        'removeAddressConfirm': '您确定要移除这个地址吗?',
+        'createFailed':'创建失败',
+        'duplicateProfile': '此电话号码的资料已经存在'
     },
     terminal: {
         'initial': '正在初始化 {i}...',

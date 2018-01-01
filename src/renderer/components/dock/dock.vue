@@ -225,7 +225,7 @@ export default {
       this.setApp({ database: true });
 
       this.station &&
-        this.$socket.emit("[STATION] CONNECTED", {
+        this.$socket.emit("[STATION] RECONNECTED", {
           alias: this.station.alias,
           mac: this.station.mac,
           operator: this.op.name

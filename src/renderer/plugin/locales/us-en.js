@@ -636,7 +636,9 @@ export default {
         'removeCustomer': 'Remove Customer',
         'removeCustomerConfirm': 'Are you sure to remove this customer profile?',
         'removeAddress': 'Remove Address',
-        'removeAddressConfirm': 'Are you sure to remove this address?'
+        'removeAddressConfirm': 'Are you sure to remove this address?',
+        'createFailed':'Create Failed',
+        'duplicateProfile': 'This phone number profile already exist.'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',
