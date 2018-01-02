@@ -101,7 +101,7 @@ export default {
         .then(() => {
           this.$q();
           this.removed = true;
-          this.$socket.emit("[OPERATOR] REMOVE", this.operator._id, () =>
+          this.$socket.emit("[OPERATOR] REMOVE", this.operator, () =>
             this.$router.push({ name: "Setting.operator" })
           );
         })

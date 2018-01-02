@@ -637,8 +637,9 @@ export default {
         'removeCustomerConfirm': 'Are you sure to remove this customer profile?',
         'removeAddress': 'Remove Address',
         'removeAddressConfirm': 'Are you sure to remove this address?',
-        'createFailed':'Create Failed',
-        'duplicateProfile': 'This phone number profile already exist.'
+        'createFailed': 'Create Failed',
+        'duplicateProfile': 'This phone number profile already exist.',
+        'duplicateAddress': 'This street info already exist.'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',
@@ -1020,7 +1021,8 @@ export default {
         'tenderDetail': 'Paid: $ {i}\nTendered: ${i}',
         'readyBatch': 'Ready For Batch',
         'commission': 'Commission',
-        'totalCustomers': 'Total Customers: ',
+        'totalCustomer': 'Total Customer: ',
+        'totalAddress': 'Total Address:',
         'dob': 'Date of Birth',
         'extension': 'Extension',
         'timezone': 'Time Zone',

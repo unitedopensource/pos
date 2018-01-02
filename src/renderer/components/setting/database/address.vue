@@ -1,46 +1,83 @@
 <template>
-    <div>
-        <header class="nav">
-            <div class="title">
-                <h5></h5>
-                <h3>{{$t("title.addressList")}}</h3>
-            </div>
-            <nav>
-                <span class="add" @click="create">{{$t('button.new')}}</span>
-            </nav>
-        </header>
-        <ul>
-            <li v-for="(address,index) in addresses" :key="index">
-                <div class="f1">
-                    <h4>{{address.street}}</h4>
-                    <h5>{{address.city}}</h5>
-                </div>
-                <span class="time">{{address.zipCode}}</span>
-                <i class="fa fa-caret-right" @click="$emit('set',address)"></i>
-            </li>
-        </ul>
-        <div :is="component" :init="componentData"></div>
-    </div>
+  <div>
+    <header class="nav">
+      <div class="title">
+        <h5></h5>
+        <h3>{{$t("title.addressList")}}</h3>
+      </div>
+      <nav>
+        <span class="add" @click="create">{{$t('button.new')}}</span>
+      </nav>
+    </header>
+    <ul>
+      <li v-for="(address,index) in addresses" :key="index">
+        <div class="f1">
+          <h4>{{address.street}}</h4>
+          <h5>{{address.city}}</h5>
+        </div>
+        <span class="time">{{address.zipCode}}</span>
+        <i class="fa fa-caret-right" @click="$emit('set',address)"></i>
+      </li>
+      <li v-if="total > 14" class="footer">
+        <p>
+          <span>{{$t('text.totalAddress')}}</span>
+          <span>{{total}}</span>
+        </p>
+        <div class="pages">
+          <i class="fa fa-angle-left" @click="prev"></i>
+          <div>
+            <span>{{page + 1}}</span>
+            <span class="slash">/</span>
+            <span>{{totalPage}}</span>
+          </div>
+          <i class="fa fa-angle-right" @click="next"></i>
+        </div>
+      </li>
+    </ul>
+    <div :is="component" :init="componentData"></div>
+  </div>
 </template>
 
 <script>
 import editor from "./component/addressEditor";
 
 export default {
-  props: ["addresses"],
+  props: ["total", "addresses"],
   components: { editor },
+  computed: {
+    totalPage() {
+      return Math.ceil(this.total / 14);
+    }
+  },
   data() {
     return {
       componentData: null,
-      component: null
+      component: null,
+      page: 0
     };
   },
   methods: {
     create() {
-      this.$p("editor", { address });
+      new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject };
+        this.component = "editor"
+      }).then(_address=>{
+        this.$socket.emit("[ADDRESS] SAVE",_address,callback=>{
+          this.$emit("reset");
+          this.$emit("refresh");
+          this.$q();
+        })
+      }).catch(()=>this.$q());
     },
-    edit(address) {
-      this.$p("editor", { address });
+    prev() {
+      if (this.page === 0) return;
+      this.page--;
+      this.$emit("update", this.page);
+    },
+    next() {
+      if (this.page === this.totalPage - 1) return;
+      this.page++;
+      this.$emit("update", this.page);
     }
   }
 };

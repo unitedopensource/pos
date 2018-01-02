@@ -550,7 +550,8 @@ export default {
         'removeAddress': '移除地址',
         'removeAddressConfirm': '您确定要移除这个地址吗?',
         'createFailed':'创建失败',
-        'duplicateProfile': '此电话号码的资料已经存在'
+        'duplicateProfile': '此电话号码的资料已经存在',
+        'duplicateAddress': '此街道信息已经存在'
     },
     terminal: {
         'initial': '正在初始化 {i}...',
@@ -1012,7 +1013,8 @@ export default {
         'tenderDetail': '支付: $ {i}\n找零: ${i}',
         'readyBatch': '准备过账',
         'commission': '佣金',
-        'totalCustomers': '所有用户数: ',
+        'totalCustomer': '用户统计: ',
+        'totalAddress': '地址统计: ',
         'dob': '生日',
         'extension': '分机',
         'prompt': '提示',
