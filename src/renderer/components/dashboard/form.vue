@@ -188,24 +188,32 @@ export default {
         dom.setSelectionRange(this.caret, this.caret);
       });
     },
-    calculateDistance(data) {
-      const { enable, api } = this.store.matrix;
-      if (!enable || !api) return;
-      
-      let { address, city, state, zipCode } = this.store;
+    formatAddress(data) {
+      let { address, city, state, zipCode } = data;
+
       address = this.$options.filters
         .formatAddress(address)
         .split(" ")
         .join("+");
+
       city = city.split(" ").join("+");
-      let origin = `${address},${city}+${state}+${zipCode}`;
-      let destination = this.$options.filters
-        .formatAddress(data.address)
-        .split(" ")
-        .join("+");
-      let url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${origin}&destinations=${destination},${data.city
-        .split(" ")
-        .join("+")}+${this.store.state}&key=${api}&language=en&units=imperial`;
+      state = state || this.store.state;
+      zipCode = zipCode ? `+${zipCode}` : "";
+
+      return `${address},${city}+${state}${zipCode}`;
+    },
+    calculateDistance(data) {
+      const { enable, api, coordinate } = this.store.matrix;
+      if (!enable || !api) return;
+
+      let { address, city, state, zipCode } = this.store;
+      const origin = this.formatAddress({ address, city, state, zipCode });
+      const destination = this.formatAddress({
+        address: data.address,
+        city: data.city
+      });
+
+      const url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${origin}&destinations=${destination}&key=${api}&language=en&units=imperial`;
 
       this.$socket.emit("[GOOGLE] ADDRESS", url, raw => {
         let result = JSON.parse(raw);
@@ -236,9 +244,9 @@ export default {
               city = addressArray[1].trim().toUpperCase();
             }
 
-            let matrix = result.rows[0].elements[0];
-            let distance = matrix.distance.text;
-            let duration = matrix.duration.text;
+            const matrix = result.rows[0].elements[0];
+            const distance = matrix.distance.text;
+            const duration = matrix.duration.text;
 
             if (address.indexOf(this.customer.address.trim()) !== -1) {
               this.setCustomer({ address, city, distance, duration });
@@ -253,13 +261,48 @@ export default {
                   note && this.setCustomer({ note });
                   this.$q();
                 })
-                .catch(() => {
-                  this.$q();
-                });
+                .catch(() => this.$q());
             }
           }
         }
       });
+    },
+    getCoordinate(data) {
+      const address = this.formatAddress({
+        address: data.address,
+        city: data.city
+      });
+      const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${api}&language=en&units=imperial`;
+
+      this.$socket.emit("[GOOGLE] GEOCODE", url, raw => {
+        const result = JSON.parse(raw);
+
+        if (result.status === "OK") {
+          const { geometry } = result.results[0];
+          console.log(geometry.location)
+        } else {
+          console.log(error);
+        }
+      });
+    },
+    getOrientation(end, start) {
+      const x1 = end[0];
+      const y1 = end[1];
+      const x2 = start[0];
+      const y2 = start[1];
+
+      getAtan2 = (y, x) => Math.atan2(y, x);
+
+      const radians = getAtan2(y1 - y2, x1 - x2);
+      const compassReading = radians * (180 / Math.PI);
+      const direction = ["N", "NE", "E", "SE", "S", "SW", "W", "NW", "N"];
+      let index = Math.round(compassReading / 45);
+
+      if (index < 0) {
+        index = index + 8;
+      }
+
+      return direction[index];
     },
     highlight(list) {
       const p = this.customer.address
@@ -294,7 +337,6 @@ export default {
         return;
 
       this.$socket.emit("[CUSTOMER] UPDATE", this.customer, customer => {
-        console.log(customer);
         this.setCustomer(customer);
         this.$router.push({ path: "/main/menu" });
       });
@@ -302,7 +344,12 @@ export default {
     clearInput() {
       this.customer[this.target] = "";
       this.target === "address" &&
-        this.setCustomer({ distance: "", duration: "", city: "" });
+        this.setCustomer({
+          direction: "",
+          distance: "",
+          duration: "",
+          city: ""
+        });
       this.query = false;
     },
     search() {

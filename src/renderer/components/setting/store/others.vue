@@ -1,21 +1,23 @@
 <template>
-    <div>
+  <div>
     <toggle title="setting.googleMatrix" true-tooltip="tip.matrixService" false-tooltip="tip.disableMatrix" v-model="store.matrix.enable" :conditionalTooltip="true" @update="updateMatrix">
-        <transition name="dropdown">
-            <div v-if="store.matrix.enable" class="opt">
-                <inputer title="text.api" v-model="store.matrix.api" @blur="updateAPI"></inputer>
-            </div>
-        </transition>
+      <transition name="dropdown">
+        <div v-if="store.matrix.enable" class="opt">
+          <switches title="text.autoCorrectAddress" v-model="store.matrix.autoCorrect"></switches>
+          <inputer title="text.coordinate" v-model="store.matrix.coordinate"></inputer>
+          <inputer title="text.api" v-model="store.matrix.api" @blur="updateAPI"></inputer>
+        </div>
+      </transition>
     </toggle>
     <toggle title="setting.emailService" tooltip="tip.emailService" v-model="store.email.enable" @update="updateEmail">
       <transition name="dropdown">
         <div v-if="store.email.enable" class="opt">
-            <inputer title="text.username" v-model="store.email.username" @update="updateUser"></inputer>
-            <inputer title="text.password" v-model="store.email.password" @update="updatePassword" type="password"></inputer>
-            <switches title="text.autoEmailPromotion" v-model="store.email.coupon" :disabled="true"></switches>
-            <switches title="text.emailReceipt" v-model="store.email.receipt" :disabled="true"></switches>
-            <switches title="text.autoEmailConfirmation" v-model="store.email.reservation" :disabled="true"></switches>
-            <switches title="text.emailReport" v-model="store.email.report" :disabled="true"></switches>
+          <inputer title="text.username" v-model="store.email.username" @update="updateUser"></inputer>
+          <inputer title="text.password" v-model="store.email.password" @update="updatePassword" type="password"></inputer>
+          <switches title="text.autoEmailPromotion" v-model="store.email.coupon" :disabled="true"></switches>
+          <switches title="text.emailReceipt" v-model="store.email.receipt" :disabled="true"></switches>
+          <switches title="text.autoEmailConfirmation" v-model="store.email.reservation" :disabled="true"></switches>
+          <switches title="text.emailReport" v-model="store.email.report" :disabled="true"></switches>
         </div>
       </transition>
     </toggle>
@@ -24,7 +26,7 @@
     <toggle title="text.favoriteItem" v-model="display.favorite" @update="updateFavorite"></toggle>
     <toggle title="text.autoTemplate" tooltip="tip.autoTemplate" v-model="display.autoTemplate" @update="updateTemplate"></toggle>
     <toggle title="text.alphabetical" tooltip="tip.alphabetical" v-model="display.alphabetical" @update="updateAlphabetical"></toggle>
-    </div>
+  </div>
 </template>
 
 <script>

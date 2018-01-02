@@ -324,7 +324,7 @@ export default {
         'creditVault': '信用卡储存记录',
         'operatorPin': '请输入您的密码',
         'accessPin': '请输入经理的密码',
-        'address':'地址资料'
+        'address': '地址资料'
     },
     dialog: {
         'maintenance': '维护',
@@ -550,7 +550,7 @@ export default {
         'removeCustomerConfirm': '您确定要移除这个客户的资料吗?',
         'removeAddress': '移除地址',
         'removeAddressConfirm': '您确定要移除这个地址吗?',
-        'createFailed':'创建失败',
+        'createFailed': '创建失败',
         'duplicateProfile': '此电话号码的资料已经存在',
         'duplicateAddress': '此街道信息已经存在'
     },
@@ -863,6 +863,7 @@ export default {
         'staffBank': '个人钱箱',
         'disallow': '禁止',
         'api': '授权码',
+        'coordinate': '坐标',
         'timecard': '打卡',
         'password': '密码',
         'email': '电子邮箱',
@@ -1066,10 +1067,11 @@ export default {
         'firstDate': '首次日期',
         'lastDate': '最后日期',
         'viewCustomer': '查看此地址客户',
-        'activity':'活动',
+        'activity': '活动',
         'callCount': '拨打次数',
         'cancelCount': '取消订单',
-        'cancelAmount': '取消总额'
+        'cancelAmount': '取消总额',
+        'autoCorrectAddress':'自动格式化地址'
     },
     nav: {
         'store': '店面',

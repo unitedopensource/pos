@@ -1,4 +1,5 @@
-<template></template>
+<template>
+</template>
 
 <script>
 import { mapActions, mapGetters } from "vuex";
@@ -18,14 +19,10 @@ export default {
   created() {
     this.startTick();
     this.initialEnvironment();
-
-    //testing
-    let encryptor = require("../plugin/encryptor");
-    window.encryptor = encryptor;
   },
   methods: {
     initialEnvironment() {
-      let language = navigator.language === "zh-CN" ? "zhCN" : "usEN";
+      const language = navigator.language === "zh-CN" ? "zhCN" : "usEN";
       moment.locale(language === "usEN" ? "en" : "zh-cn");
       this.$setLanguage(language);
       this.setApp({
@@ -39,7 +36,7 @@ export default {
       ipcRenderer.send("Loading", this.$t("initial.findHost"));
     },
     setEnvironment(data) {
-      let {
+      const {
         config,
         menu,
         submenu,
@@ -50,28 +47,46 @@ export default {
         reservations,
         sync
       } = data;
-
-      this.setConfig(config);
-      this.setMenu(menu);
-      this.setSubmenu(submenu);
-      this.setRequest(request);
-      ipcRenderer.send("Loading", this.$t("initial.applyConfiguration"));
-      this.setTable(table);
-      this.setTemplates(template);
-      this.setReservation({ reservations, sync });
-      this.setTodayOrder({ orders, sync });
-      this.setLastSync(sync);
-      this.setStationEnvironment()
-        .then(this.initialized)
-        .catch(this.registration);
+      
+      try {
+        this.setConfig(config);
+        this.setMenu(menu);
+        this.setSubmenu(submenu);
+        this.setRequest(request);
+        ipcRenderer.send("Loading", this.$t("initial.applyConfiguration"));
+        this.setTable(table);
+        this.setTemplates(template);
+        this.setReservation({ reservations, sync });
+        this.setTodayOrder({ orders, sync });
+        this.setLastSync(sync);
+        this.setStationEnvironment()
+          .then(this.initialized)
+          .catch(this.registration);
+      } catch (error) {
+        this.$socket.emit("[SYS] LOG", {
+          eventID: 9000,
+          type: "failure",
+          source: this.$options.name,
+          cause: error,
+          note:
+            "Application was unable to start. It's probably because the database wasn't correctly setup."
+        });
+      }
     },
     setStationEnvironment() {
       return new Promise((use, register) => {
-        Mac.getMac((err, mac) => {
-          if (err || !mac) {
+        Mac.getMac((error, mac) => {
+          if (error || !mac) {
             ipcRenderer.send("Loading", this.$t("initial.hardwareIssue"));
+            this.$socket.emit("[SYS] LOG", {
+              eventID: 9001,
+              type: "failure",
+              source: this.$options.name,
+              cause: error,
+              note: `Station registration failed. Most likely hardware issue.`
+            });
           } else {
-            let { username } = os.userInfo();
+            const { username } = os.userInfo();
 
             this.$socket.emit(
               "[INITIAL] STATION",
@@ -90,7 +105,7 @@ export default {
       this.initialDevice();
       this.initialPrinter();
 
-      let { alias, mac } = data;
+      const { alias, mac } = data;
       this.$socket.emit("[STATION] CONNECTED", { alias, mac });
       ipcRenderer.send("Initialized");
       this.$router.push("Login");
@@ -108,13 +123,24 @@ export default {
       }
     },
     initialDevice() {
-      this.station.callid.enable && this.initCallerId(this.station.callid);
-      this.station.pole.enable && this.initPoleDisplay(this.station.pole.port);
-      this.station.scale.enable && this.initScale(this.station.scale.port);
-      this.station.terminal.enable && this.setDevice({ terminal: true });
+      try {
+        this.station.callid.enable && this.initCallerId(this.station.callid);
+        this.station.pole.enable &&
+          this.initPoleDisplay(this.station.pole.port);
+        this.station.scale.enable && this.initScale(this.station.scale.port);
+        this.station.terminal.enable && this.setDevice({ terminal: true });
+      } catch (error) {
+        this.$socket.emit("[SYS] LOG", {
+          eventID: 9002,
+          type: "failure",
+          source: this.$options.name,
+          cause: error,
+          note: `Initial device failed. Please check device configuration.`
+        });
+      }
     },
     initCallerId(opt) {
-      let { command, port } = opt;
+      const { command, port } = opt;
       this.setDevice({ callid: true });
 
       let telephone = new serialport(port, {
@@ -129,7 +155,7 @@ export default {
       });
 
       telephone.on("data", data => {
-        let raw = data.toString().split("\n");
+        const raw = data.toString().split("\n");
         switch (raw.length) {
           case 3:
             let type = raw[1].replace(/[^a-zA-Z ]/g, "");
@@ -152,12 +178,12 @@ export default {
             break;
           case 6:
           case 9:
-            let name = raw.find(i => i.indexOf("NAME") !== -1).split("=")[1];
-            let number = raw
+            const name = raw.find(i => i.indexOf("NAME") !== -1).split("=")[1];
+            const number = raw
               .find(i => i.indexOf("NMBR") !== -1)
               .split("=")[1]
               .replace(/\D/g, "");
-            let time = +new Date();
+            const time = +new Date();
             this.phoneRing({ name, number, time });
             break;
         }
@@ -189,14 +215,14 @@ export default {
       CLODOP
         ? (window.Printer = new Print(CLODOP, config, station))
         : setTimeout(
-          function () {
-            window.Printer = new Print(CLODOP, config, station);
-          },
-          20000,
-          CLODOP,
-          config,
-          station
-        );
+            function() {
+              window.Printer = new Print(CLODOP, config, station);
+            },
+            20000,
+            CLODOP,
+            config,
+            station
+          );
     },
     ...mapActions([
       "setApp",

@@ -275,6 +275,12 @@ export default {
         : this.setApp({ autoLock: false });
     },
     initialFailed(error) {
+      this.$log({
+        eventID: 9101,
+        type: "failure",
+        cause: error,
+        note: `Dashboard initial has failed.`
+      });
       console.log(error);
     },
     welcomeScreen() {
@@ -305,18 +311,16 @@ export default {
         })
         .catch(() => {
           const prompt = {
-            type: 'warning',
+            type: "warning",
             title: "dialog.accessDenied",
             msg: "dialog.accessPinNotMatch",
             buttons: [{ text: "button.confirm", fn: "reject" }]
           };
           this.$accessDenied(prompt);
-          this.$socket.emit("[SYS] RECORD", {
-            type: "Software",
-            event: "access",
-            status: 0,
-            cause: "attempt access " + route,
-            data: this.op
+          this.$log({
+            eventID: 9100,
+            type: "failure",
+            note: `Attempt access ${route} failed.`
           });
         });
     },
@@ -357,28 +361,24 @@ export default {
         case "history":
           this.$checkPermission("access", route)
             .then(() => this.$router.push({ path: "/main/history" }))
-            .catch(() => {
-              this.$socket.emit("[SYS] RECORD", {
-                type: "Software",
-                event: "access",
-                status: 0,
-                cause: "attempt access " + route,
-                data: this.op
-              });
-            });
+            .catch(() =>
+              this.$log({
+                eventID: 9100,
+                type: "failure",
+                note: `Attempt access ${route} failed.`
+              })
+            );
           break;
         case "setting":
           this.$checkPermission("access", route)
             .then(() => this.$router.push({ path: "/main/setting" }))
-            .catch(() => {
-              this.$socket.emit("[SYS] RECORD", {
-                type: "Software",
-                event: "access",
-                status: 0,
-                cause: "attempt access " + route,
-                data: this.op
-              });
-            });
+            .catch(() =>
+              this.$log({
+                eventID: 9100,
+                type: "failure",
+                note: `Attempt access ${route} failed.`
+              })
+            );
           break;
         case "cashDrawer":
           this.station.cashDrawer.enable
@@ -386,13 +386,10 @@ export default {
             : this.cashDrawerUnavailable();
           break;
         case "lock":
+          const note = `${this.op.name} has locked station`;
           this.resetDashboard();
           this.setOp(null);
-          this.$socket.emit("[SYS] RECORD", {
-            type: "User",
-            event: "lockStation",
-            status: 1
-          });
+          this.$log({ eventID: 1500, note });
           this.$router.push({ path: "/main/lock" });
           break;
         default:
@@ -403,19 +400,19 @@ export default {
         case "enable":
           this.station.cashDrawer.cashFlowCtrl
             ? this.$socket.emit(
-              "[CASHFLOW] CHECK",
-              {
-                date: today(),
-                cashDrawer: this.station.cashDrawer.name,
-                close: false
-              },
-              data => {
-                let { name, initial } = data;
-                initial
-                  ? this.initialCashFlow(name)
-                  : this.recordCashFlow(name);
-              }
-            )
+                "[CASHFLOW] CHECK",
+                {
+                  date: today(),
+                  cashDrawer: this.station.cashDrawer.name,
+                  close: false
+                },
+                data => {
+                  let { name, initial } = data;
+                  initial
+                    ? this.initialCashFlow(name)
+                    : this.recordCashFlow(name);
+                }
+              )
             : Printer.openCashDrawer();
           break;
         case "staffBank":
@@ -498,7 +495,7 @@ export default {
       if (this.op.cashCtrl === "enable") {
         Printer.openCashDrawer();
 
-        let activity = {
+        const activity = {
           type: "OPEN",
           inflow: 0,
           outflow: 0,

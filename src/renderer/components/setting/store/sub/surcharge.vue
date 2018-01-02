@@ -54,6 +54,16 @@ export default {
       surcharge: Object.assign({}, this.$store.getters.dinein.surcharge)
     };
   },
+  created() {
+    //patch
+    this.surcharge = Object.assign(
+      {},
+      this.$store.getters.dinein.surcharge
+    ) || {
+      enable: false,
+      rules: []
+    };
+  },
   methods: {
     create() {
       let rule = {
@@ -74,7 +84,6 @@ export default {
         this.component = "editor";
       })
         .then(_rule => {
-            console.log(_rule)
           isNaN(index)
             ? this.surcharge.rules.push(_rule)
             : this.surcharge.rules.splice(index, 1, _rule);

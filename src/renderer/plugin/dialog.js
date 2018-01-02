@@ -7,13 +7,22 @@ const dialog = {
 
           try {
             approve = (this.op.role === 'Developer' || this.op.role === 'Owner') ? true : credential.includes(permit)
-          } catch (e) { }
+          } catch (error) {
+            this.$log({
+              eventID: 1205,
+              type: "bug",
+              cause: error,
+              note: `An error occurred when try to determine operator's permission. Most likely need to reset operator's setting.`
+            })
+          }
 
           return approve
         },
-        $log() {
-
-          this.$socket.emit("[SYS] LOG", log);
+        $log(event) {
+          const { eventID, type, note, cause, data } = event;
+          this.$socket.emit("[SYS] LOG", {
+            eventID, type, note, cause, data, source: this.$options.name
+          });
         }
       }
     });
@@ -66,18 +75,20 @@ const dialog = {
           this.component = 'unlock';
         })
       } else {
-        this.$dialog({
+        const prompt = {
           type: 'warning',
           title: 'dialog.permissionDenied',
           msg: 'dialog.permissionDeniedTip',
           timeout: { duration: 10000, fn: "reject" },
           buttons: [{ text: 'button.confirm', fn: 'reject' }]
-        }).then(() => this.$q()).catch(() => this.$q())
+        };
+
+        this.$dialog(prompt).then(() => this.$q()).catch(() => this.$q())
       }
     }
     Vue.prototype.$checkPermission = function (credential, permit) {
       let approve = false;
-      const { role, restrict } = this.op;
+      const { name, role, restrict } = this.op;
       const permission = this.op[credential];
 
       approve = (role === 'Developer' || role === 'Owner') ? true : permission.includes(permit);
@@ -100,11 +111,12 @@ const dialog = {
             if (_approve) {
               this.$q();
               authorized();
-              this.$socket.emit("[SYS] RECORD", { type: "Software", event: "grantPermission", status: 1, cause: "Authorized", data: operator.name })
+              this.$log({ eventID: 1203, type: "success", note: `${name} has granted ${permit} permission from ${operator.name}` });
             } else {
               this.$accessDenied();
               unauthorized();
-              this.$socket.emit("[SYS] RECORD", { type: "Software", event: "grantPermission", status: 0, cause: "Unauthorized", data: operator.name })
+              const note = `${name} attempted to grant ${permit} permission from ${operator.name} but neither has ${permit} permission.`;
+              this.$log({ eventID: 1204, type: "failure", note });
             }
           }).catch(() => {
             this.$accessDenied();

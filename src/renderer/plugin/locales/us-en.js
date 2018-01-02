@@ -871,6 +871,7 @@ export default {
         'staffBank': 'Staff Bank',
         'disallow': 'Disallow',
         'api': 'API',
+        'coordinate': 'Coordinate',
         'timecard': 'Timecard',
         'password': 'Password',
         'email': 'Email',
@@ -1073,7 +1074,8 @@ export default {
         'viewCustomer': 'View Address Customer',
         'callCount': 'Call Count',
         'cancelCount': 'Cancel Count',
-        'cancelAmount': 'Cancel Amount'
+        'cancelAmount': 'Cancel Amount',
+        'autoCorrectAddress':'Auto Correct Address'
     },
     nav: {
         'store': 'Store',
