@@ -323,7 +323,8 @@ export default {
         'footer': '收据页尾',
         'creditVault': '信用卡储存记录',
         'operatorPin': '请输入您的密码',
-        'accessPin': '请输入经理的密码'
+        'accessPin': '请输入经理的密码',
+        'address':'地址资料'
     },
     dialog: {
         'maintenance': '维护',

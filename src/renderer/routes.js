@@ -316,10 +316,10 @@ export default [{
           name: 'Setting.database.address',
           component: require('./components/setting/database/address'),
         }, {
-          path: 'detail/:address',
+          path: 'street/:address',
           props: true,
-          name: 'Setting.database.address.detail',
-          component: require('./components/setting/database/detail')
+          name: 'Setting.database.address.street',
+          component: require('./components/setting/database/street')
         }]
       }]
     }

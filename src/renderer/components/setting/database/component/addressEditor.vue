@@ -6,7 +6,7 @@
                 <h3>{{$t('title.address')}}</h3>
             </header>
             <div class="wrap">
-                <inputer title="text.street" v-model="street"></inputer>
+                <inputer title="text.street" v-model="street" :autoFocus="true"></inputer>
                 <inputer title="text.city" v-model="city"></inputer>
                 <inputer title="text.zipCode" v-model="zipCode" mask="#####"></inputer>
             </div>

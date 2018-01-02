@@ -22,7 +22,7 @@
             </li>
             <li v-if="total > 14" class="footer">
                 <p>
-                    <span>{{$t('text.totalCustomers')}}</span>
+                    <span>{{$t('text.totalCustomer')}}</span>
                     <span>{{total}}</span>
                 </p>
                 <div class="pages">

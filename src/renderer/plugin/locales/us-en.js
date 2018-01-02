@@ -411,7 +411,8 @@ export default {
         'footer': 'Receipt Footer',
         'creditVault': 'Credit Card Safe Vault',
         'operatorPin': 'Please Enter Your Pin ',
-        'accessPin': 'Please Enter Manager\'s Pin'
+        'accessPin': 'Please Enter Manager\'s Pin',
+        'address': 'Address Info'
     },
     dialog: {
         'maintenance': 'Maintenance',
