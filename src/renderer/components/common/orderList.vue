@@ -7,7 +7,15 @@
     </header>
     <header v-else class="info">
       <div class="content">
+        <template v-if="order.type === 'DINE_IN'">
 
+        </template>
+        <template v-else>
+          <template v-if="order.customer">
+            <h3 class="phone">{{order.customer.phone | phone}}</h3>
+            <h5 class="address">{{order.customer.address}}</h5>
+          </template>
+        </template>
       </div>
       <div class="bar">
         <template v-if="!isEmptyTicket">
@@ -501,13 +509,15 @@ header.info {
   flex-direction: column;
 }
 
-.number {
+.phone,.number {
   font-family: "Agency FB";
-  width: 30px;
-  text-align: center;
   font-weight: bold;
   font-size: 22px;
-  margin: 0 5px;
+}
+
+.number{
+  width: 40px;
+  text-align: center;
 }
 
 header i {
@@ -720,6 +730,7 @@ header i {
 
 .content {
   flex: 1;
+  padding:5px 10px;
 }
 
 .content .value {

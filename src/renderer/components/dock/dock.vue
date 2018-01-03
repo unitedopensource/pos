@@ -239,7 +239,7 @@ export default {
       this.app.mode !== "edit" && this.setTicket({ number });
     },
     UPDATE_CONFIG(update) {
-      let { target, data } = update;
+      const { target, data } = update;
       Object.assign(this.config, { [target]: data });
     },
     UPDATE_STATION(data) {
@@ -276,7 +276,7 @@ export default {
       this.updateRequestItem(data);
     },
     MENU_ITEM_UPDATE(data) {
-      let { action, item, sequence } = data;
+      const { action, item, sequence } = data;
       switch (action) {
         case "update":
           this.updateMenuItem({ item, sequence });

@@ -846,7 +846,6 @@ var Printer = function (plugin, config, station) {
     return this
 }
 
-
 /*
     Private methods
 */
@@ -863,7 +862,7 @@ function createHeader(store, setting, raw) {
 
     information += phone ? `<p><span class="value tel">${phone}</span><span class="ext">${customer.extension}</span></p>` : "";
     information += address ? `<p><span class="value addr">${address}</span></p>` : "";
-    information += (city && store.city !== city) ? `<p><span class="value">${city}</span><span class="space">${distance}</span><span class="space">${duration}</span></p>` : "";
+    information += (city && store.city.toUpperCase() !== city.toUpperCase()) ? `<p><span class="value">${city}</span><span class="space">${distance}</span><span class="space">${duration}</span></p>` : "";
     information += name ? `<p><span class="value">${name}</span></p>` : "";
     information += note ? `<p><span class="value">${note}</span></p>` : "";
 
@@ -871,16 +870,6 @@ function createHeader(store, setting, raw) {
                         <span class="text">Server:</span><span class="value">${server}</span>
                         <span class="text">Station:</span><span class="value">${station || ""}</span>
                       </span></p>`;
-
-    // let hasCashier = cashier ? `<span class="text">Cashier:</span><span class="value">${cashier}</span>` :
-    //     `<span class="text">Guest:</span><span class="value">${guest}</span>`;
-
-    // let extraInfo = type === 'DINE_IN' ? `<span class="text">Ticket:</span><span class="value">${number}</span>` :
-    //     `<span class="text">Table:</span><span class="value">${table || ""}</span>`;
-
-    // ticketInfo += (type === 'DINE_IN' || type === 'BAR' || type === 'PRE_PAYMENT' || type === 'PAYMENT') ?
-    //     `<p><span class="wrap">${hasCashier}${extraInfo}</span></p>` : "";
-
 
     return `<section class="header">
             <div class="store">

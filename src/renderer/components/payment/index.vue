@@ -546,11 +546,11 @@ import ticket from "../common/ticket";
 import creditCard from "./creditCard";
 import discount from "./discount";
 import thirdParty from "./mark";
-import tiper from "./tiper";
+import tipper from "./tiper";
 export default {
   props: ["init"],
   components: {
-    tiper,
+    tipper,
     ticket,
     capture,
     dialoger,
@@ -1535,16 +1535,16 @@ export default {
     setTip() {
       new Promise((resolve, reject) => {
         this.componentData = { resolve, reject, payment: this.payment };
-        this.component = "tiper";
+        this.component = "tipper";
       })
         .then(_tip => {
-          this.tip = _tip.toFixed(2);
-          Object.assign(this.payment, { tip: _tip.toFloat() });
-          this.recalculatePayment();
           this.paid = "0.00";
+          this.tip = _tip.toFixed(2);
+          Object.assign(this.payment, { tip: _tip });
+          this.recalculatePayment();
           this.$q();
         })
-        .catch(() => this.$q());
+        .catch(e => this.$q());
     },
     setDiscount() {
       new Promise((resolve, reject) => {

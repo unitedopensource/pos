@@ -322,6 +322,30 @@ export default [{
           component: require('./components/setting/database/street')
         }]
       }]
+    }, {
+      path: 'sales',
+      component: require('./components/setting/sales/nav'),
+      children: [{
+        path: '/',
+        component: require('./components/setting/sales/indexTab'),
+        children: [{
+          path: 'index',
+          name: 'Setting.sales',
+          component: require('./components/setting/sales/overview')
+        }]
+      }]
+    }, {
+      path: 'chart',
+      component: require('./components/setting/chart/nav'),
+      children: [{
+        path: '/',
+        component: require('./components/setting/chart/indexTab'),
+        children: [{
+          path: '/',
+          name: 'Setting.chart',
+          component: require('./components/setting/chart/overview')
+        }]
+      }]
     }
     ]
   }

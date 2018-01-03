@@ -34,7 +34,7 @@ export default {
   },
   computed: {
     invalid() {
-      return isNaN(this.rule.guest) || isNaN(this.rule.fee);
+      return !isNumber(this.rule.guest) || !isNumber(this.rule.fee);
     }
   },
   methods: {

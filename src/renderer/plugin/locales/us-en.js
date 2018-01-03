@@ -1075,7 +1075,7 @@ export default {
         'callCount': 'Call Count',
         'cancelCount': 'Cancel Count',
         'cancelAmount': 'Cancel Amount',
-        'autoCorrectAddress':'Auto Correct Address'
+        'autoCorrectAddress': 'Auto Correct Address'
     },
     nav: {
         'store': 'Store',
@@ -1139,7 +1139,9 @@ export default {
         'thirdParty': 'Third Party',
         'thirdPartyTip': 'Third Party Configuration',
         'sales': 'Sales',
-        'salesTip': 'Performance · Excel',
+        'salesTip': 'Sales Performance · Revenue',
+        'chart': 'Chart',
+        'chartTip': 'Sales Chart · Trend',
         'system': 'System',
         'systemTip': 'POS Setup',
         'exit': 'Exit',

@@ -279,7 +279,7 @@ export default {
 
         if (result.status === "OK") {
           const { geometry } = result.results[0];
-          console.log(geometry.location)
+          console.log(geometry.location);
         } else {
           console.log(error);
         }

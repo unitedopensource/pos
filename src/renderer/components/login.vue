@@ -224,9 +224,6 @@ export default {
             this.$q();
           });
           break;
-        case "notActivated":
-          //needs to input activation code before enter
-          break;
       }
     },
     entry(e) {
@@ -251,9 +248,10 @@ export default {
       this.reset = true;
       this.$socket.emit("[ACCESS] PIN", this.password.join(""));
     },
-    autoAccess: _debounce(function () {
+    autoAccess: _debounce(function() {
       if (this.$route.name === "Login") {
-        this.access();
+        const password = this.password.join("");
+        password && this.access();
         this.reset = false;
       }
     }, 300),
@@ -273,9 +271,7 @@ export default {
           this.$socket.emit("[CTRL] SHUTDOWN_ALL");
           this.$q();
         })
-        .catch(() => {
-          this.$q();
-        });
+        .catch(() => this.$q());
     },
     shutdown() {
       Electron.ipcRenderer.send("Shutdown");
