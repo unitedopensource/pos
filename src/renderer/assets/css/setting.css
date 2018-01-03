@@ -98,6 +98,12 @@ ul.tabs li.router-link-exact-active {
     margin: initial;
 }
 
+.chart.tab-content {
+    width: 100%;
+    margin: initial;
+    background: #fcfcfc;
+}
+
 table.data tbody tr td {
     text-align: center;
     height: 40px;

@@ -5,7 +5,7 @@
             <router-link tag="li" class="tab" :to="{name:'Setting.chart.source'}">{{$t('nav.source')}}</router-link>
         </ul>
         <transition name="slide" mode="out-in">
-            <router-view class="tab-content"></router-view>
+            <router-view class="tab-content chart"></router-view>
         </transition>
     </div>
 </template>

@@ -155,7 +155,7 @@ export default {
         {
           title: this.$t("report.lowestSales"),
           date: lowestSalesDate,
-          week: moment(highestSalesDate, "YYYY-MM-DD").format("ddd"),
+          week: moment(lowestSalesDate, "YYYY-MM-DD").format("ddd"),
           value: lowestSales,
           note: ""
         },
@@ -180,12 +180,6 @@ export default {
 </script>
 
 <style scoped>
-.overview {
-  width: 100%;
-  margin: initial;
-  background: #fcfcfc;
-}
-
 thead th {
   background: #607d8b;
   color: #fff;
