@@ -400,19 +400,19 @@ export default {
         case "enable":
           this.station.cashDrawer.cashFlowCtrl
             ? this.$socket.emit(
-                "[CASHFLOW] CHECK",
-                {
-                  date: today(),
-                  cashDrawer: this.station.cashDrawer.name,
-                  close: false
-                },
-                data => {
-                  let { name, initial } = data;
-                  initial
-                    ? this.initialCashFlow(name)
-                    : this.recordCashFlow(name);
-                }
-              )
+              "[CASHFLOW] CHECK",
+              {
+                date: today(),
+                cashDrawer: this.station.cashDrawer.name,
+                close: false
+              },
+              data => {
+                let { name, initial } = data;
+                initial
+                  ? this.initialCashFlow(name)
+                  : this.recordCashFlow(name);
+              }
+            )
             : Printer.openCashDrawer();
           break;
         case "staffBank":
