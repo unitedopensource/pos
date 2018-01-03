@@ -1,47 +1,47 @@
 <template>
-    <div class="popupMask center dark" @click.self="init.reject">
-      <div class="payout">
-        <header>
-          <h5>{{$t('title.payout')}}</h5>
-          <h2>{{$t('title.payoutRecord')}}</h2>
-        </header>
-        <div class="wrap">
-          <div class="textWrap">
-            <textarea v-model="note"></textarea>
-            <span class="placeholder" v-show="!note">{{$t('tip.payout')}}</span>
+  <div class="popupMask center dark" @click.self="init.reject">
+    <div class="payout">
+      <header>
+        <h5>{{$t('title.payout')}}</h5>
+        <h2>{{$t('title.payoutRecord')}}</h2>
+      </header>
+      <div class="wrap">
+        <div class="textWrap">
+          <textarea v-model="note"></textarea>
+          <span class="placeholder" v-show="!note">{{$t('tip.payout')}}</span>
+        </div>
+        <div class="detail">
+          <div>
+            <label>{{$t('text.receiver')}}</label>
+            <input type="text" v-model="receiver">
           </div>
-          <div class="detail">
-            <div>
-              <label>{{$t('text.receiver')}}</label>
-              <input type="text" v-model="receiver">
-            </div>
-            <div>
-              <label>{{$t('text.amount')}}</label>
-              <input type="text" v-model="amount" placeholder="0.00">
-            </div>
-          </div>
-          <div class="signature">
-            <span class="text">{{$t('text.signature')}}</span>
-            <i class="fa fa-times" v-show="reset" @click="clearSignature"></i>
-            <canvas width="650" height="150" ref="pad"></canvas>
+          <div>
+            <label>{{$t('text.amount')}}</label>
+            <input type="text" v-model="amount" placeholder="0.00">
           </div>
         </div>
-        <footer>
-          <div class="f1">
-            <p>
-              <span class="text">{{$t('text.cashier')}}:</span>
-              <span class="value">{{op.name}}</span>
-            </p>
-            <p>
-              <span class="text">{{$t('text.cashDrawer')}}:</span>
-              <span class="value">{{station.cashDrawer.name}}</span>
-            </p>
-          </div>
-          <button class="btn" @click="confirm">{{$t('button.confirm')}}</button>
-        </footer>
+        <div class="signature">
+          <span class="text">{{$t('text.signature')}}</span>
+          <i class="fa fa-times" v-show="reset" @click="clearSignature"></i>
+          <canvas width="650" height="150" ref="pad"></canvas>
+        </div>
       </div>
-      <div :is="component" :init="componentData"></div>
+      <footer>
+        <div class="f1">
+          <p>
+            <span class="text">{{$t('text.cashier')}}:</span>
+            <span class="value">{{op.name}}</span>
+          </p>
+          <p>
+            <span class="text">{{$t('text.cashDrawer')}}:</span>
+            <span class="value">{{station.cashDrawer.name}}</span>
+          </p>
+        </div>
+        <button class="btn" @click="confirm">{{$t('button.confirm')}}</button>
+      </footer>
     </div>
+    <div :is="component" :init="componentData"></div>
+  </div>
 </template> 
 
 <script>
@@ -76,6 +76,7 @@ export default {
       this.validation()
         .then(this.checkSignature)
         .then(this.confirmPayout)
+        .then(this.saveSignature)
         .then(this.saveToDatabase)
         .catch(this.payoutFailed);
     },
@@ -115,6 +116,7 @@ export default {
       });
     },
     payoutFailed(error) {
+      console.log(error);
       let data;
       switch (error) {
         case "receiver":
@@ -150,10 +152,21 @@ export default {
           this.$q();
       }
     },
-    saveToDatabase() {
+    saveSignature() {
+      return new Promise(next => {
+        const data = {
+          date: today(),
+          time: +new Date(),
+          for: "Payout",
+          signature: this.signaturePad.toDataURL()
+        };
+        this.$socket.emit("[SIGNATURE] SAVE", data, _id => next(_id));
+      });
+    },
+    saveToDatabase(signature) {
       Printer.openCashDrawer();
-      let cashDrawer = this.station.cashDrawer.name;
-      let transaction = {
+      const cashDrawer = this.station.cashDrawer.name;
+      const transaction = {
         _id: ObjectId(),
         date: today(),
         time: +new Date(),
@@ -169,17 +182,17 @@ export default {
         cashier: this.op.name,
         server: null,
         cashDrawer,
-        station: this.station.alies,
+        station: this.station.alias,
         receiver: this.receiver.toCapitalCase(),
         type: "CASH",
         for: "Payout",
         subType: null,
-        credential: this.signaturePad.toDataURL(),
+        credential: signature,
         lfd: null,
         note: this.note
       };
 
-      let activity = {
+      const activity = {
         type: "CASHFLOW",
         inflow: 0,
         outflow: parseFloat(this.amount),
@@ -191,7 +204,7 @@ export default {
         operator: this.op.name
       };
 
-      this.$socket.emit("[SAVE] TRANSACTION", transaction);
+      this.$socket.emit("[TRANSACTION] SAVE", transaction);
       this.$socket.emit("[CASHFLOW] ACTIVITY", { cashDrawer, activity });
       this.init.resolve();
     }
