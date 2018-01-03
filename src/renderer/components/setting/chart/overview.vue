@@ -1,7 +1,27 @@
 <template>
-  <div class="overview">
-    <line-chart :chart-data="collection"></line-chart>
-  </div>
+    <div class="overview">
+        <line-chart :chart-data="collection"></line-chart>
+        <table>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>{{$t('thead.date')}}</th>
+                    <th></th>
+                    <th>{{$t('report.salesTotal')}}</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(report,index) in reports" :key="index">
+                    <td>{{report.title}}</td>
+                    <td>{{report.date}}</td>
+                    <td>{{report.week}}</td>
+                    <td class="amount">$ {{report.value | decimal}}</td>
+                    <td>{{report.note}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </template>
 
 <script>
@@ -11,7 +31,7 @@ export default {
   data() {
     return {
       collection: null,
-      gradient: null
+      reports: []
     };
   },
 
@@ -20,24 +40,66 @@ export default {
   },
   methods: {
     initialChartData() {
-      // this.$socket.emit("[CHART] RANGE", collection => {
-      //   this.collection = collection;
-      // })
-      this.collection = {
-        labels: ["2017-12-01", "2017-12-02", "2017-12-04", "2017-12-05", "2017-12-06", "2017-12-07", "2017-12-08", "2017-12-09", "2017-12-11", "2017-12-12", "2017-12-13", "2017-12-14", "2017-12-15", "2017-12-16", "2017-12-18", "2017-12-19", "2017-12-20", "2017-12-21", "2017-12-22", "2017-12-23", "2017-12-26"],
-        datasets: [{
-          backgroundColor: "rgba(255, 99, 132, 0.1)",
-          borderColor: "rgb(255, 99, 132)",
-          data: [2940.24, 1448.02, 1619.54, 1611.24, 2062.77, 1738.52, 2356.96, 1203.83, 1431.87, 1452.6, 1278.63, 1644.79, 1638.63, 918.9, 1473.3, 1763.4, 1976.98, 1560.62, 1312.01, 694.96, 1280.5],
-          fill: "start",
-          label: "SALES",
-          cubicInterpolationMode: "monotone",
-          borderWidth: 2,
-          borderDash: [3, 3],
-          pointHoverRadius: 10,
-          pointStyle: "circle"
-        }]
-      }
+      this.$socket.emit("[CHART] RANGE", result => {
+        const { labels, data } = result;
+
+        this.collection = {
+          labels,
+          datasets: [
+            {
+              backgroundColor: "rgba(255, 99, 132, 0.1)",
+              borderColor: "rgb(255, 99, 132)",
+              data,
+              fill: "start",
+              label: this.$t("text.sales"),
+              cubicInterpolationMode: "monotone",
+              borderWidth: 2,
+              borderDash: [3, 3],
+              pointHoverRadius: 10,
+              pointStyle: "circle"
+            }
+          ]
+        };
+        this.analyzeData(result);
+      });
+    },
+    analyzeData(result) {
+      const { labels, data } = result;
+      const highestSales = Math.max(...data);
+      const hIndex = data.findIndex(sales => sales === highestSales);
+      const highestSalesDate = labels[hIndex];
+
+      const lowestSales = Math.min(...data);
+      const lIndex = data.findIndex(sales => sales === lowestSales);
+      const lowestSalesDate = labels[lIndex];
+
+      const average = data.reduce((a, b) => a + b, 0) / data.length;
+      const aboveAverage = data.filter(sales => sales >= average).length;
+      const belowAverage = data.filter(sales => sales < average).length;
+
+      this.reports = [
+        {
+          title: this.$t("report.highestSales"),
+          date: highestSalesDate,
+          week: moment(highestSalesDate, "YYYY-MM-DD").format("ddd"),
+          value: highestSales,
+          note: ""
+        },
+        {
+          title: this.$t("report.lowestSales"),
+          date: lowestSalesDate,
+          week: moment(highestSalesDate, "YYYY-MM-DD").format("ddd"),
+          value: lowestSales,
+          note: ""
+        },
+        {
+          title: this.$t("report.averageSales"),
+          date: "",
+          week: "",
+          value: average,
+          note: this.$t("report.averageDetail", aboveAverage, belowAverage)
+        }
+      ];
     }
   }
 };
@@ -47,5 +109,18 @@ export default {
 .overview {
   width: 100%;
   margin: initial;
+}
+
+thead th {
+  background: #607d8b;
+  color: #fff;
+  padding: 2px 0;
+  text-shadow: 0 1px 1px #333;
+  font-weight: normal;
+}
+
+td {
+  text-align: center;
+  padding: 10px 0;
 }
 </style>

@@ -711,7 +711,11 @@ export default {
         'provider': '提供商',
         'subtotal': '小计',
         'total': '合计',
-        'refund': '退款'
+        'refund': '退款',
+        'highestSales': '最高营业额',
+        'lowestSales': '最低营业额',
+        'averageSales': '平均营业额',
+        'averageDetail': '其中有 {i}天 是高于平均值, {i}天 是低于平均值'
     },
     thead: {
         'orderType': '订单类别',
@@ -1071,7 +1075,7 @@ export default {
         'callCount': '拨打次数',
         'cancelCount': '取消订单',
         'cancelAmount': '取消总额',
-        'autoCorrectAddress':'自动格式化地址'
+        'autoCorrectAddress': '自动格式化地址'
     },
     nav: {
         'store': '店面',
@@ -1114,7 +1118,8 @@ export default {
         'performance': '性能',
         'profile': '档案',
         'analyze': '分析',
-        'list': '列表'
+        'list': '列表',
+        'source': '来源'
     },
     setting: {
         'softwareSetting': 'UnitedPOS 后台设置',
@@ -1136,8 +1141,8 @@ export default {
         'thirdPartyTip': '第三方服务配置',
         'sales': '销售',
         'salesTip': '销售业绩 · 过账记录',
-        'chart':'图表',
-        'chartTip':'销售图表 · 趋势',
+        'chart': '图表',
+        'chartTip': '销售图表 · 趋势',
         'system': '系统',
         'systemTip': '软件设置',
         'exit': '退出',

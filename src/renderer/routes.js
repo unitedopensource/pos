@@ -344,6 +344,10 @@ export default [{
           path: '/',
           name: 'Setting.chart',
           component: require('./components/setting/chart/overview')
+        },{
+          path:'source',
+          name:'Setting.chart.source',
+          component:require('./components/setting/chart/source')
         }]
       }]
     }

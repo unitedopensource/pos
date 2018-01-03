@@ -800,7 +800,11 @@ export default {
         'provider': 'Provider',
         'subtotal': 'Subtotal',
         'total': 'Total',
-        'refund': 'Refund'
+        'refund': 'Refund',
+        'highestSales': 'Highest Sales',
+        'lowestSales': 'Lowest Sales',
+        'averageSales': 'Average Sales',
+        'averageDetail': 'There are {i} days above average and {i} days below average.'
     },
     text: {
         'starter': 'Starter',
@@ -1118,7 +1122,8 @@ export default {
         'performance': 'Performance',
         'profile': 'Profile',
         'analyze': 'Analyze',
-        'list': 'List'
+        'list': 'List',
+        'source': 'Source'
     },
     setting: {
         'softwareSetting': 'UnitedPOS Setting',

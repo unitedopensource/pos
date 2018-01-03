@@ -8,6 +8,23 @@ export default {
     this.renderChart(this.chartData, {
       responsive: true,
       maintainAspectRatio: false,
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: false
+          },
+          gridLines: {
+            display: true,
+            color: '#f3f3f3'
+          }
+        }],
+        xAxes: [{
+          gridLines: {
+            display: true,
+            color: '#f3f3f3'
+          }
+        }]
+      },
       elements: {
         line:
           {
