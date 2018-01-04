@@ -6,8 +6,8 @@
                 <h3>{{$t(action[language])}}</h3>
             </header>
             <div class="wrap">
-                <inputer title="text.primary" v-model="action.usEN"></inputer>
-                <inputer title="text.secondary" v-model="action.zhCN"></inputer>
+                <inputer title="text.primary" v-model.trim="action.usEN"></inputer>
+                <inputer title="text.secondary" v-model.trim="action.zhCN"></inputer>
                 <switches title="text.prefix" v-model="action.prefix"></switches>
                 <toggle title="text.multiplier" v-model="action.multiplier" :defaultStyle="false">
                     <transition name="dropdown">

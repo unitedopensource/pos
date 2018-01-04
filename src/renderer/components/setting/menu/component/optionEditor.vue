@@ -7,8 +7,8 @@
       </header>
       <div class="wrap" :class="{extend}">
         <aside class="setup">
-          <inputer v-model="option.usEN" title="text.primary"></inputer>
-          <inputer v-model="option.zhCN" title="text.secondary"></inputer>
+          <inputer v-model.trim="option.usEN" title="text.primary"></inputer>
+          <inputer v-model.trim="option.zhCN" title="text.secondary"></inputer>
           <inputer v-model.number="option.price" title="text.price" placeholder="0.00"></inputer>
           <inputer v-model.number="option.extra" title="text.priceExtra" placeholder="0.00"></inputer>
           <selector v-model="option.template" :opts="templates" title="text.template"></selector>

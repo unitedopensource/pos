@@ -7,8 +7,8 @@
         <h3>{{$t(item[language])}}</h3>
       </header>
       <div class="wrap">
-        <inputer title="text.primary" v-model="item.usEN"></inputer>
-        <inputer title="text.secondary" v-model="item.zhCN"></inputer>
+        <inputer title="text.primary" v-model.trim="item.usEN"></inputer>
+        <inputer title="text.secondary" v-model.trim="item.zhCN"></inputer>
         <inputer title="text.price" v-model.number="item.price"></inputer>
         <selector title="text.affix" v-model="item.affix" :opts="actions"></selector>
         <selector title="text.category" v-model="item.category" :opts="categories"></selector>

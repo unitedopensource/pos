@@ -123,7 +123,7 @@ var Printer = function (plugin, config, station) {
             if (items.length === 0) return false;
 
             const header = createHeader(this.config, setting, raw);
-            const list = createList(printer, setting, raw);
+            const list = createList(printer, setting, raw, false);
 
             if (list && list.length === 0) return false;
 
@@ -175,7 +175,7 @@ var Printer = function (plugin, config, station) {
         } = setting.control;
 
         const header = createHeader(this.config, setting, ticket);
-        const list = createList(printer, setting, ticket);
+        const list = createList(printer, setting, ticket, true);
         const style = createStyle(setting);
         const footer = createFooter(this.config, setting, printer, ticket);
         const html = header + list + footer + style;
@@ -890,14 +890,16 @@ function createHeader(store, setting, raw) {
             </section>`;
 }
 
-function createList(printer, setting, invoice) {
+function createList(printer, setting, invoice, preview) {
     const list = JSON.parse(JSON.stringify(invoice.content));
-    const { categorize, prioritize, mode } = setting.control;
+    let { categorize, prioritize, mode } = setting.control;
     const { languages } = setting.layout;
     const primary = languages.find(t => t.ref === 'usEN');
     const secondary = languages.find(t => t.ref === 'zhCN');
 
     let content = [], items = [];
+
+    if (preview) mode = "preview";
 
     switch (mode) {
         case "normal":
@@ -1021,22 +1023,30 @@ function createList(printer, setting, invoice) {
         const sideEN = item.side.usEN || "";
         const cnPrice = secondary.price ? `<span class="price">${item.total}</span>` : "";
         const enPrice = primary.price ? `<span class="price">${item.total}</span>` : "";
+        const enableChinese = secondary.enable;
+        const enableEnglish = primary.enable;
         const qty = renderQty ? `<span class="qty">${item.qty === 1 ? "" : item.qty}</span>` : "";
         const diffs = item.diffs || "";
 
-        let firstLine, secondLine, setCN = "", setEN = "";
+        let chineseItem = "", englishItem = "", chineseSub = "", englishSub = "";
 
         item.choiceSet.forEach(set => {
             if (set.hasOwnProperty(print) && !set.print.includes(printer)) return;
             const _qty = set.qty !== 1 ? set.qty + " x " : "";
             const _price = set.price > 0 ? `( ${set.price.toFixed(2)} )` : "";
 
-            setCN += `<p><span>${_qty}</span><span>${set.zhCN}</span><span>${_price}</span></p>`;
-            setEN += `<p><span>${_qty}</span><span>${set.usEN}</span><span>${_price}</span></p>`;
+            if (diffs === 'removed') {
+                chineseSub += enableChinese ? `<p><del></del><span>${_qty}</span><span>${set.zhCN}</span><span>${_price}</span></p>` : "";
+                englishSub += enableEnglish ? `<p><del></del><span>${_qty}</span><span>${set.usEN}</span><span>${_price}</span></p>` : "";
+            } else {
+                chineseSub += enableChinese ? `<p><span>${_qty}</span><span>${set.zhCN}</span><span>${_price}</span></p>` : "";
+                englishSub += enableEnglish ? `<p><span>${_qty}</span><span>${set.usEN}</span><span>${_price}</span></p>` : "";
+            }
         })
         if (diffs === 'removed') {
-            firstLine = `<div class="zhCN removed">
+            chineseItem = enableChinese ? `<div class="zhCN">
                             <div class="main">
+                                <del></del>
                                 ${qty}
                                 <div class="wrap">
                                     <span class="item">${nameCN}</span>
@@ -1044,10 +1054,11 @@ function createList(printer, setting, invoice) {
                                 </div>
                                 ${cnPrice}
                             </div>
-                            <div class="sub">${setCN}</div>
-                        </div>`;
-            secondLine = `<div class="usEN removed">
+                            <div class="sub">${chineseSub}</div>
+                        </div>`: "";
+            englishItem = enableEnglish ? `<div class="usEN">
                             <div class="main">
+                                <del></del>
                                 ${qty}
                                 <div class="wrap">
                                     <span class="item">${nameEN}</span>
@@ -1055,33 +1066,35 @@ function createList(printer, setting, invoice) {
                                 </div>
                                 ${enPrice}
                             </div>
-                            <div class="sub">${setEN}</div>
-                        </div>`;
+                            <div class="sub">${englishSub}</div>
+                        </div>`: "";
         } else {
-            firstLine = `<div class="zhCN ${diffs}">
-                            <div class="main">
-                                ${qty}
-                                <div class="wrap">
-                                    <span class="item">${nameCN}</span>
-                                    <span class="side">${sideCN}</span>
-                                </div>
-                                ${cnPrice}
-                            </div>
-                            <div class="sub">${setCN}</div>
-                        </div>`;
-            secondLine = `<div class="usEN ${diffs}">
-                            <div class="main">
-                                ${qty}
-                                <div class="wrap">
-                                    <span class="item">${nameEN}</span>
-                                    <span class="side">${sideEN}</span>
-                                </div>
-                                ${enPrice}
-                            </div>
-                        <div class="sub">${setEN}</div>
-                        </div>`;
+            chineseItem = enableChinese ?
+                `<div class="zhCN">
+                    <div class="main">
+                        ${qty}
+                        <div class="wrap">
+                            <span class="item">${nameCN}</span>
+                            <span class="side">${sideCN}</span>
+                        </div>
+                        ${cnPrice}
+                    </div>
+                    <div class="sub">${chineseSub}</div>
+                </div>`: "";
+            englishItem = enableEnglish ?
+                `<div class="usEN">
+                    <div class="main">
+                        ${qty}
+                        <div class="wrap">
+                            <span class="item">${nameEN}</span>
+                            <span class="side">${sideEN}</span>
+                        </div>
+                        ${enPrice}
+                    </div>
+                    <div class="sub">${englishSub}</div>
+                </div>`: "";
         }
-        return languages[0].ref === "zhCN" ? firstLine + secondLine : secondLine + firstLine;
+        return languages[0].ref === "zhCN" ? chineseItem + englishItem : englishItem + chineseItem;
     }
 }
 
@@ -1109,10 +1122,11 @@ function createStyle(setting) {
               .customer p:last-child{border-bottom:1px solid #000;}
               .tel{letter-spacing:2px;}.ext{margin-left:10px;}
               section.receipt{width:100%;margin:5px 0;}
-              .main{display:flex;}
+              .main{display:flex;position:relative;width:100%;}
               .main .wrap,.empty{flex:1;}
               .main .side{font-size:0.9em;margin-left:2px;}
-              .sub{padding-left:20px;font-size:0.8em;} 
+              .sub{padding-left:20px;font-size:0.8em;}
+              .sub p{position:relative;width:100%;} 
               .qty{min-width:15px;margin-right:5px;}         
               footer{font-family:'Agency FB';}
               section.column{display:flex;}
@@ -1137,9 +1151,9 @@ function createStyle(setting) {
               .printTime{${false ? '' : 'display:none;'}font-weight:bold;text-align:center;}
               .tm{text-align: center;margin:5px;}
               .tradeMark {font-weight: bold;display: inline-block;padding: 5px 7px;background: #000;color: #fff;}
-              .zhCN{font-family:'${secondary.fontFamily}';font-size:${secondary.fontSize}px;${secondary.enable ? '' : 'display:none!important;'}position:relative;}
-              .usEN{font-family:'${primary.fontFamily}';font-size:${primary.fontSize}px;${primary.enable ? '' : 'display:none!important;'}position:relative;}
-              .removed{text-decoration: line-through}
+              .zhCN{font-family:'${secondary.fontFamily}';font-size:${secondary.fontSize}px;}
+              .usEN{font-family:'${primary.fontFamily}';font-size:${primary.fontSize}px;}
+              del{display:block;position:absolute;width:inherit;height:2px;background:#000;top:40%;}
           </style>`
 }
 

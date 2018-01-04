@@ -27,8 +27,8 @@
           <div class="item">
             <inputer title="text.menuID" v-model="item.menuID"></inputer>
             <selector title="text.category" v-model="item.category" :opts="init.categories" :editable="false"></selector>
-            <inputer title="text.primary" v-model="item.usEN"></inputer>
-            <inputer title="text.secondary" v-model="item.zhCN"></inputer>
+            <inputer title="text.primary" v-model.trim="item.usEN"></inputer>
+            <inputer title="text.secondary" v-model.trim="item.zhCN"></inputer>
             <inputer title="text.price" v-model="item.price" @keydown.enter.native="save"></inputer>
             <selector title="text.taxClass" v-model="item.taxClass" :opts="taxes" :editable="false"></selector>
             <div class="options">
@@ -44,8 +44,8 @@
               <li v-for="(option,index) in item.option" :key="index" class="draggable">
                 <div class="inner">
                   <span class="index">{{index + 1}}</span>
-                  <input type="text" v-model="option.usEN" :placeholder="$t('text.primary')">
-                  <input type="text" v-model="option.zhCN" :placeholder="$t('text.secondary')">
+                  <input type="text" v-model.trim="option.usEN" :placeholder="$t('text.primary')">
+                  <input type="text" v-model.trim="option.zhCN" :placeholder="$t('text.secondary')">
                   <input type="number" v-model="option.price" :placeholder="getPlaceholder(option,index)">
                   <i class="fa fa-bars drag"></i>
                   <i class="fa fa-ellipsis-v" @click="editOption(option,index)"></i>
