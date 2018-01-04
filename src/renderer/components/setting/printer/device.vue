@@ -8,7 +8,10 @@
         <span class="add" @click="create">{{$t('button.new')}}</span>
       </nav>
     </header>
-    <external :title="printer" v-for="(printer,index) in printers" :key="index" @open="config(printer)"></external>
+    <external :title="printer" v-for="(printer,index) in printers" :key="index" @open="$emit('click',printer)"></external>
+    <div class="pages" v-if="printers.length === 12">
+      <pagination :of="list" :max="5" :contain="12" @page="setPage" class="f1"></pagination>
+    </div>
     <div :is="component" :init="componentData"></div>
   </div>
 </template>
@@ -22,10 +25,18 @@ export default {
   components: { editor, external },
   data() {
     return {
-      printers: Object.keys(this.$store.getters.config.printers),
+      list: Object.keys(this.$store.getters.config.printers),
       componentData: null,
-      component: null
+      component: null,
+      page: 0
     };
+  },
+  computed: {
+    printers() {
+      const min = this.page * 12;
+      const max = min + 12;
+      return this.list.slice(min, max);
+    }
   },
   methods: {
     create() {
@@ -36,11 +47,10 @@ export default {
         .then(result => {
           const { name, label, assign } = result;
           const printer = Preset.printer();
-          Object.assign(this.$store.getters.config.printers, {
-            [name]: printer
-          });
+          
+          Object.assign(this.$store.getters.config.printers, { [name]: printer });
 
-          this.printers = Object.keys(this.$store.getters.config.printers);
+          this.list = Object.keys(this.$store.getters.config.printers);
 
           this.$socket.emit("[CONFIG] UPDATE", {
             key: `printers.${name}`,
@@ -53,8 +63,8 @@ export default {
         })
         .catch(() => this.$q());
     },
-    config(printer) {
-      this.$emit("click", printer);
+    setPage(num) {
+      this.page = num;
     }
   }
 };

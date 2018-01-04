@@ -2,7 +2,7 @@
     <div class="popupMask setting center dark">
         <div class="editor">
             <header>
-                <h5>{{$t('title.edit')}}</h5>
+                <h5>{{$t('title.create')}}</h5>
                 <h3>{{$t('title.template')}}</h3>
             </header>
             <div class="wrap">

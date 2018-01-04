@@ -181,8 +181,16 @@ export default [{
         component: require('./components/setting/menu/submenu')
       }, {
         path: 'template',
-        name: 'Setting.template',
-        component: require('./components/setting/menu/template')
+        component: require('./components/setting/menu/templateTab'),
+        children:[{
+          path:'/',
+          name:'Setting.template',
+          component:require('./components/setting/menu/templates')
+        },{
+          path:'edit',
+          name:'Setting.template.edit',
+          component:require('./components/setting/menu/sub/template')
+        }]
       }]
     }, {
       path: 'table',

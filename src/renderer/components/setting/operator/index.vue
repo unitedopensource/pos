@@ -9,25 +9,21 @@
         <span class="add" @click="create">{{$t('button.new')}}</span>
       </nav>
     </header>
-    <ul>
-      <li v-for="(op,index) in operators" :key="index" :class="{disable:op.role ==='Owner' && !authorized}">
-        <span class="name">{{op.name}}</span>
-        <span class="role">{{$t('type.' + op.role)}}</span>
-        <i class="fa fa-caret-right" @click="$emit('set',op)"></i>
-      </li>
-      <li class="footer" v-if="list.length > 14">
-        <pagination :of="list" :max="5" :contain="14" @page="setPage" class="f1"></pagination>
-      </li>
-    </ul>
+    <external :title="op.name" :tooltip="'type.'+op.role" v-for="(op,index) in operators" :key="index" @open="$emit('set',op)"></external>
+    <div class="pages" v-if="list.length > 12">
+      <pagination :of="list" :max="5" :contain="12" @page="setPage" class="f1"></pagination>
+    </div>
     <div :is="component" :init="componentData"></div>
   </div>
 </template>
 
 <script>
+import external from "../common/external";
 import editor from "./component/operatorEditor";
 import pagination from "../../common/pagination";
+
 export default {
-  components: { editor, pagination },
+  components: { editor,external, pagination },
   data() {
     return {
       authorized: this.$store.getters.authorized,
@@ -57,8 +53,8 @@ export default {
   },
   computed: {
     operators() {
-      const min = this.page * 14;
-      const max = min + 14;
+      const min = this.page * 12;
+      const max = min + 12;
       return this.list.slice(min, max);
     }
   },
@@ -94,53 +90,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-ul {
-  height: 630px;
-  background: #fcfcfc;
-  position: relative;
-}
-
-li {
-  display: flex;
-  height: 41px;
-  align-items: center;
-  background: #fff;
-  border-bottom: 1px solid #eee;
-}
-
-li.disable {
-  pointer-events: none;
-  opacity: 0.5;
-}
-
-.name {
-  font-weight: bold;
-  padding-left: 20px;
-}
-
-.role {
-  color: #9e9e9e;
-  flex: 1;
-  text-align: right;
-}
-
-i {
-  padding: 10px 25px;
-  margin: 0 10px;
-  color: #555;
-  cursor: pointer;
-}
-
-i:hover {
-  background: #eee;
-  border-radius: 4px;
-}
-
-.footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-}
-</style>

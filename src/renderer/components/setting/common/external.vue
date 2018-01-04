@@ -1,15 +1,15 @@
 <template>
-    <div class="external" :class="{style:defaultStyle}">
-        <div class="inner">
-            <label>{{$t(title)}}</label>
-            <span class="tooltip">{{$t(tooltip)}}</span>
-        </div>
-        <slot>
-            <div class="icon" @click="$emit('open')">
-                <i class="fa fa-caret-right"></i>
-            </div>
-        </slot>
+  <div class="external" :class="{style:defaultStyle}">
+    <div class="inner">
+      <span>{{$t(title)}}</span>
+      <span class="tooltip">{{$t(tooltip)}}</span>
     </div>
+    <slot>
+      <div class="icon" @click="$emit('open')">
+        <i class="fa fa-caret-right"></i>
+      </div>
+    </slot>
+  </div>
 </template>
 
 <script>
@@ -32,7 +32,7 @@ export default {
 }
 
 .external.style {
-  min-height: 40px;
+  min-height: 39px;
   padding: 4px 0 4px 20px;
   border-bottom: 1px solid #eee;
 }
@@ -40,15 +40,20 @@ export default {
 .inner {
   flex: 1;
   display: flex;
-  flex-direction: column;
 }
 
-.style .icon{
+.tooltip {
+  color: #9e9e9e;
+  flex: 1;
+  text-align: right;
+}
+
+.style .icon {
   margin: 0 10px;
 }
 
 .icon {
-  padding: 10px 25px;
+  padding: 7px 25px;
   color: #555;
   cursor: pointer;
 }

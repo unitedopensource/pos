@@ -1,43 +1,43 @@
 <template>
-    <div>
-        <header class="nav">
-            <div class="title">
-                <h5></h5>
-                <h3>{{$t("title.customerList")}}</h3>
-            </div>
-            <nav>
-                <span class="add" @click="create">{{$t('button.new')}}</span>
-            </nav>
-        </header>
-        <ul>
-            <li v-for="(customer,index) in customers" :key="index">
-                <div class="f1">
-                    <h4>{{customer.phone | phone}}</h4>
-                    <h5>{{customer.address}}
-                        <span class="city" v-show="customer.city">, {{customer.city}}</span>
-                    </h5>
-                </div>
-                <span class="time">{{customer.lastDate | fromNow}}</span>
-                <i class="fa fa-caret-right" @click="$emit('set',customer)"></i>
-            </li>
-            <li v-if="total > 14" class="footer">
-                <p>
-                    <span>{{$t('text.totalCustomer')}}</span>
-                    <span>{{total}}</span>
-                </p>
-                <div class="pages">
-                    <i class="fa fa-angle-left" @click="prev"></i>
-                    <div>
-                        <span>{{page + 1}}</span>
-                        <span class="slash">/</span>
-                        <span>{{totalPage}}</span>
-                    </div>
-                    <i class="fa fa-angle-right" @click="next"></i>
-                </div>
-            </li>
-        </ul>
-        <div :is="component" :init="componentData"></div>
-    </div>
+  <div>
+    <header class="nav">
+      <div class="title">
+        <h5></h5>
+        <h3>{{$t("title.customerList")}}</h3>
+      </div>
+      <nav>
+        <span class="add" @click="create">{{$t('button.new')}}</span>
+      </nav>
+    </header>
+    <ul>
+      <li v-for="(customer,index) in customers" :key="index">
+        <div class="f1">
+          <h4>{{customer.phone | phone}}</h4>
+          <h5>{{customer.address}}
+            <span class="city" v-show="customer.city">, {{customer.city}}</span>
+          </h5>
+        </div>
+        <span class="time">{{customer.lastDate | fromNow}}</span>
+        <i class="fa fa-caret-right" @click="$emit('set',customer)"></i>
+      </li>
+      <li v-if="total > 14" class="footer">
+        <p>
+          <span>{{$t('text.totalCustomer')}}</span>
+          <span>{{total}}</span>
+        </p>
+        <div class="fliper">
+          <i class="fa fa-angle-left" @click="prev"></i>
+          <div>
+            <span>{{page + 1}}</span>
+            <span class="slash">/</span>
+            <span>{{totalPage}}</span>
+          </div>
+          <i class="fa fa-angle-right" @click="next"></i>
+        </div>
+      </li>
+    </ul>
+    <div :is="component" :init="componentData"></div>
+  </div>
 </template>
 
 <script>
