@@ -318,11 +318,12 @@ export const updateOrder = ({
 }, data) => {
   let {
     sync,
-    order
+    order,
+    refresh
   } = data;
   commit(types.SET_LASTSYNC, sync);
   commit(types.UPSERT_INVOICE, order);
-  commit(types.REFRESH_CURRENT_ORDER, rootState.initial.orders);
+  refresh && commit(types.REFRESH_CURRENT_ORDER, rootState.initial.orders);
 }
 export const updateMenuCategory = ({
   commit

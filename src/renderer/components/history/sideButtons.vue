@@ -40,9 +40,9 @@
       <i class="fa fa-bar-chart"></i>
       <span class="text">{{$t('button.stats')}}</span>
     </button>
-    <div class="btn" @click="search">
-      <i class="fa fa-search"></i>
-      <span class="text">{{$t('button.search')}}</span>
+    <div class="btn" @click="close">
+      <i class="fa fa-check-square-o"></i>
+      <span class="text">{{$t('button.settle')}}</span>
     </div>
     <div :is="component" :init="componentData"></div>
   </aside>
@@ -355,7 +355,7 @@ export default {
         .then(() => this.$p("Report"))
         .catch(() => this.accessFailedLog("report"));
     },
-    search() {},
+    close() {},
     accessFailedLog(component) {
       this.$socket.emit("[SYS] RECORD", {
         type: "Software",

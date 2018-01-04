@@ -856,6 +856,11 @@ function createHeader(store, setting, raw) {
     const title = setting.title[type] || type.replace('_', ' ').toCapitalCase();
     const date = moment(Number(time)).format("MM-DD-YYYY");
     const placeTime = moment(Number(time)).locale('en').format("hh:mm a");
+    const handler = `<p><span class="wrap">
+                        <span class="text">Server:</span><span class="value">${server}</span>
+                        <span class="text">Station:</span><span class="value">${station || ""}</span>
+                      </span></p>`;
+
     const { address, distance, duration, city, name, note } = customer;
 
     let information = "";
@@ -866,28 +871,23 @@ function createHeader(store, setting, raw) {
     information += name ? `<p><span class="value">${name}</span></p>` : "";
     information += note ? `<p><span class="value">${note}</span></p>` : "";
 
-    let ticketFrom = `<p><span class="wrap">
-                        <span class="text">Server:</span><span class="value">${server}</span>
-                        <span class="text">Station:</span><span class="value">${station || ""}</span>
-                      </span></p>`;
-
     return `<section class="header">
-            <div class="store">
-                <h3>${store.name}</h3>
-                <h5>${store.address}</h5>
-                <h5>${store.city} ${store.state} ${store.zipCode}</h5>
-                <h5>${store.contact}</h5>
-            </div>
-            <div class="title">${title}</div>
-            <div class="time">
-                <span>Date: ${date}</span>
-                <span>Time: ${placeTime}</span>
-                <div class="number">${number}</div>
-                <div class="table">${table || ""}</div>
-            </div>
-            <div class="server">${ticketFrom}</div>
-            <div class="customer">${information}</div>
-        </section>`;
+                <div class="store">
+                    <h3>${store.name}</h3>
+                    <h5>${store.address}</h5>
+                    <h5>${store.city} ${store.state} ${store.zipCode}</h5>
+                    <h5>${store.contact}</h5>
+                </div>
+                <h1>${title}</h1>
+                <div class="time">
+                    <span>Date: ${date}</span>
+                    <span>Time: ${placeTime}</span>
+                    <div class="number">${number}</div>
+                    <div class="table">${table || ""}</div>
+                </div>
+                <div class="server">${handler}</div>
+                <div class="customer">${information}</div>
+            </section>`;
 }
 
 function createList(printer, setting, invoice) {
@@ -981,6 +981,8 @@ function createList(printer, setting, invoice) {
 
     if (items.length === 0) return false;
 
+    const renderQty = items.filter(i => i.qty > 1).length > 0;
+
     prioritize && items.sort((p, n) => (p.priority || 0) < (n.priority || 0));
 
     if (categorize) {
@@ -1000,77 +1002,64 @@ function createList(printer, setting, invoice) {
         for (let category in sorted) {
             if (sorted.hasOwnProperty(category)) {
                 content += `<tr class="category"><td colspan="3"><span class="zhCN">${categoryMap[category]}</span><span class="usEN">${category}</span></td></tr>`;
-                content += sorted[category].map(item => mockup(item, printer, true)).join("").toString();
+                content += sorted[category].map(item => mockup(item, renderQty)).join("").toString();
             }
         }
     } else {
-        content = items.map(item => mockup(item, printer, false)).join("").toString();
+        content = items.map(item => mockup(item, renderQty)).join("").toString();
     }
 
-    return `<table class="receipt"><tbody>${content}</tbody></table>`
+    return `<section class="receipt">${content}</section>`
 
-    function mockup(item, name, sort) {
-        const { replace = false, zhCN, usEN, note } = item.printer[name];
+    function mockup(item, renderQty) {
+        const { replace = false, zhCN, usEN, note } = item.printer[printer];
         const idCN = secondary.id ? item.menuID + ' ' : '';
         const idEN = primary.id ? item.menuID + ' ' : '';
         const nameCN = replace ? idCN + zhCN : idCN + item.zhCN;
         const nameEN = replace ? idEN + usEN : idEN + item.usEN;
         const sideCN = item.side.zhCN || "";
         const sideEN = item.side.usEN || "";
-        const qty = item.qty === 1 ? `<td></td>` : `<td class="qty">${item.qty}</td>`;
+        const cnPrice = secondary.price ? `<span class="price">${item.total}</span>` : "";
+        const enPrice = primary.price ? `<span class="price">${item.total}</span>` : "";
+        const qty = renderQty ? `<span class="qty">${item.qty === 1 ? "" : item.qty}</span>` : "";
         const diffs = item.diffs || "";
-        const indent = sort ? 'indent' : '';
-
 
         let firstLine, secondLine, setCN = "", setEN = "";
 
         item.choiceSet.forEach(set => {
-            if (set.hasOwnProperty(print) && !set.print.includes(name)) return;
+            if (set.hasOwnProperty(print) && !set.print.includes(printer)) return;
+            const _qty = set.qty !== 1 ? set.qty + " x " : "";
+            const _price = set.price > 0 ? `( ${set.price.toFixed(2)} )` : "";
 
-            setCN += `<div class="sub">
-                        <span>${set.qty !== 1 ? set.qty + 'x' : ''}</span>
-                        <span>${set.zhCN}</span>
-                        <span>${parseFloat(set.price) !== 0 ? '(' + set.price.toFixed(2) + ')' : ''}</span>
-                      </div>`;
-            setEN += `<div class="sub">
-                        <span>${set.qty !== 1 ? set.qty + 'x' : ''}</span>
-                        <span>${set.usEN}</span>
-                        <span>${parseFloat(set.price) !== 0 ? '(' + set.price.toFixed(2) + ')' : ''}</span>
-                    </div>`;
+            setCN += `<p><span>${_qty}</span><span>${set.zhCN}</span><span>${_price}</span></p>`;
+            setEN += `<p><span>${_qty}</span><span>${set.usEN}</span><span>${_price}</span></p>`;
         })
         if (diffs === 'removed') {
-            firstLine = `<tr class="zhCN ${indent}">
-                            <td class="qty"><del>${item.qty !== 1 ? item.qty : ''}</del></td>
-                            <td class="item">
-                                <del><div class="main">${nameCN} <span class="side">${sideCN}</span></div></del>
-                                <del>${setCN}</del>
-                            </td>
-                            <td class="price"><del>${item.total}</del></td>
-                        </tr>`;
-            secondLine = `<tr class="usEN ${indent}">
-                            <td class="qty"><del>${item.qty !== 1 ? item.qty : ''}</del></td>
-                            <td class="item">
-                                <del><div class="main">${nameEN} <span class="side">${sideEN}</span></div></del>
-                                <del>${setEN}</del>
-                            </td>
-                            <td class="price"><del>${item.total}</del></td>
-                        </tr>`;
+            //add later
+
         } else {
-            //let comment = note ? `<tr class="zhCN"><td></td><td class="note">${note}</td><td></td></tr>` : '';
-
-
-            firstLine = `<tr class="zhCN ${indent}">
-                        ${qty}
-                        <td class="item"><div class="main">${nameCN} <span class="side">${sideCN}</span></div>${setCN}</td>
-                        <td class="price">${item.total}</td>
-                        </tr>`;
-
-            //comment = note ? `<tr class="usEN"><td></td><td class="note">${note}</td><td></td></tr>` : '';
-            secondLine = `<tr class="usEN ${indent}">
-                            ${qty}
-                            <td class="item"><div class="main">${nameEN} <span class="side">${sideEN}</span></div>${setEN}</td>
-                            <td class="price">${item.total}</td>
-                        </tr>`;
+            firstLine = `<div class="zhCN">
+                            <div class="main">
+                                ${qty}
+                                <div class="wrap">
+                                    <span class="item">${nameCN}</span>
+                                    <span class="side">${sideCN}</span>
+                                </div>
+                                ${cnPrice}
+                            </div>
+                            <div class="sub">${setCN}</div>
+                        </div>`;
+            secondLine = `<div class="usEN">
+                            <div class="main">
+                                ${qty}
+                                <div class="wrap">
+                                    <span class="item">${nameEN}</span>
+                                    <span class="side">${sideEN}</span>
+                                </div>
+                                ${enPrice}
+                            </div>
+                          <div class="sub">${setEN}</div>
+                        </div>`;
         }
 
         return languages[0].ref === "zhCN" ? firstLine + secondLine : secondLine + firstLine;
@@ -1087,42 +1076,28 @@ function createStyle(setting) {
               *{margin:0;padding:0}
               section.header{font-family:'Agency FB';text-align:center;}
               div.store{margin-bottom:10px;${contact ? '' : 'display:none;'}}
-              .header h3{font-size:1.25em;}
-              .header h5{font-size:16px;font-weight:lighter}
-              div.title{${title ? '' : 'display:none;'}font-size:1.5em;font-family:"${fontFamily}"}
-              div.number,div.table{position:absolute;bottom:12px;font-size:2em;font-weight:bold;font-family:"Agency FB"}
-              div.number{right:10px;}div.table{left:10px;}
+              h3{font-size:1.25em;}
+              h5{font-size:16px;font-weight:lighter}
+              h1{${title ? '' : 'display:none;'}font-size:1.5em;font-family:"${fontFamily}"}
+              .number,.table{position:absolute;bottom:12px;font-size:2em;font-weight:bold;}
+              .number{right:10px;}.table{left:10px;}
               div.time span{display:inline-block;margin:0 10px;font-size:1em;}
               div.time{border-bottom:1px solid #000;position:relative;margin-top:10px;}
               .server{border-bottom:1px solid #000;padding-bottom:1px;text-align:left;}
               .server .wrap{display:flex;padding:0 10px;}
               .server .text{flex:2;}.server .value{flex:3;}
-              .customer {${customer ? '' : 'display:none;'}}
-              .customer p{text-align:left;}
+              .customer {${customer ? '' : 'display:none;'}font-size:1.2em;font-family:'Tensentype RuiHeiJ-W2';text-align:left;}
               .customer p:last-child{border-bottom:1px solid #000;}
-              .customer .text{display:inline-block;min-width:32px;margin-left:5px;}
-              .customer .tel{letter-spacing:2px;}
-              .customer .ext{margin-left:10px;}
-              .customer {font-size:1.2em;font-family:'Tensentype RuiHeiJ-W2'}
-              .customer .space{ margin-left:5px; }
-              section.body{padding:10px 0px;}
-              .category td{border-bottom:1px dashed #000;font-weight:bold;}
-              .indent .item{text-indent:10px;}
-              table.receipt{width:100%;border-spacing:0;border-collapse:collapse;margin:5px 0;}
-              .receipt tbody tr{display:flex;position:relative;align-items:flex-start;vertical-align:text-top;}
-              td.item{flex:1;display:flex;flex-direction:column;margin-left:5px}
-              td.item .main{width:100%;}
+              .tel{letter-spacing:2px;}.ext{margin-left:10px;}
+              section.receipt{width:100%;margin:5px 0;}
+              .main{display:flex;}
+              .main .wrap,.empty{flex:1;}
               .main .side{font-size:0.9em;margin-left:2px;}
-              td.price{text-align:right;}
-              .sub{text-indent:20px;} 
-              td.qty{text-align:center;font-weight:bold;width:17px;padding-right:5px;}
-              td.note{font-style:italic;font-size:0.8em;text-indent:1em;}
-              .zhCN .price{${secondary.price ? 'display:initial' : 'display:none'}}
-              .usEN .price{${primary.price ? 'display:initial' : 'display:none'}}          
+              .sub{padding-left:20px;font-size:0.8em;} 
+              .qty{min-width:15px;margin-right:5px;}         
               footer{font-family:'Agency FB';}
               section.column{display:flex;}
               .payment{min-width:150px;${payment ? 'display:flex;flex-direction:column;' : 'display:none;'}}
-              .empty{flex:1}
               .payment p{display:flex;font-family:'Tensentype RuiHeiJ-W2';width:200px;}
               .payment .text{flex:1;text-align:right;}
               .payment .value{min-width:40%;text-align:right;}
@@ -1143,8 +1118,8 @@ function createStyle(setting) {
               .printTime{${false ? '' : 'display:none;'}font-weight:bold;text-align:center;}
               .tm{text-align: center;margin:5px;}
               .tradeMark {font-weight: bold;display: inline-block;padding: 5px 7px;background: #000;color: #fff;}
-              .zhCN{font-family:'${secondary.fontFamily}';font-size:${secondary.fontSize}px;${secondary.enable ? '' : 'display:none!important;'}}
-              .usEN{font-family:'${primary.fontFamily}';font-size:${primary.fontSize}px;${primary.enable ? '' : 'display:none!important;'}}
+              .zhCN{font-family:'${secondary.fontFamily}';font-size:${secondary.fontSize}px;${secondary.enable ? '' : 'display:none!important;'}position:relative;}
+              .usEN{font-family:'${primary.fontFamily}';font-size:${primary.fontSize}px;${primary.enable ? '' : 'display:none!important;'}position:relative;}
           </style>`
 }
 

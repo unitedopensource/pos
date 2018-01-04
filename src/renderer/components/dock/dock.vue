@@ -64,11 +64,11 @@ export default {
 
       return this.ticket.type === "DINE_IN"
         ? this.$t(type, this.app.language) +
-        (this.order.table
-          ? " - " +
-          this.order.table +
-          (this.order.guest > 0 ? " - " + this.order.guest : "")
-          : "")
+            (this.order.table
+              ? " - " +
+                this.order.table +
+                (this.order.guest > 0 ? " - " + this.order.guest : "")
+              : "")
         : this.$t(type, this.app.language);
     },
     ...mapGetters([
@@ -233,7 +233,9 @@ export default {
 
       this.$socket.emit("[SYNC] ORDER_LIST");
       this.$socket.emit("[SYNC] TABLE_LIST");
-      this.$socket.emit("[INQUIRY] TICKET_NUMBER", number => this.setTicket({ number }));
+      this.$socket.emit("[INQUIRY] TICKET_NUMBER", number =>
+        this.setTicket({ number })
+      );
     },
     TICKET_NUMBER(number) {
       this.app.mode !== "edit" && this.setTicket({ number });
@@ -255,6 +257,7 @@ export default {
       this.insertOrder(data);
     },
     UPDATE_ORDER(data) {
+      data.refresh = this.$route.name !== "Menu";
       this.updateOrder(data);
     },
     SYNC_ORDERS(data) {

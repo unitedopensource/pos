@@ -11,6 +11,7 @@ export default {
   created() {
     const printer = this.init.printer || "cashier";
     this.ticket = Printer.preview(printer, this.init.ticket);
+    console.log(this.ticket)
   },
   data() {
     return {
