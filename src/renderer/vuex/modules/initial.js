@@ -202,12 +202,12 @@ const mutations = {
     [types.UPDATE_REQUEST_ITEM](state, data) {
         let {
             item,
-            grp,
-            sub,
+            categoryIndex,
+            groupIndex,
             index
         } = data;
         item.clickable = true;
-        state.config.layout.request[grp]['item'][sub].splice(index, 1, item)
+        state.config.layout.request[categoryIndex]['item'][groupIndex].splice(index, 1, item)
     },
     [types.UPDATE_REQUEST_ACTION](state, data) {
         let {
@@ -218,12 +218,12 @@ const mutations = {
     },
     [types.REMOVE_REQUEST_ITEM](state, data) {
         let {
-            grp,
-            sub,
+            categoryIndex,
+            groupIndex,
             index
         } = data;
-        state.config.layout.request[grp]['item'][sub].splice(index, 1);
-        state.config.layout.request[grp]['item'][sub].push({
+        state.config.layout.request[categoryIndex]['item'][groupIndex].splice(index, 1);
+        state.config.layout.request[categoryIndex]['item'][groupIndex].push({
             zhCN: "",
             usEN: "",
             clickable: false,

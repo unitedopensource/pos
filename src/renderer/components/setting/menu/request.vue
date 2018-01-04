@@ -1,33 +1,33 @@
 <template>
-    <div class="layout">
-        <draggable v-model="request" @sort="isCategorySorted = true" :options="{animation:300,group:'category',ghostClass:'categoryGhost'}">
-            <transition-group tag="div" class="category">
-                <div v-for="(category,index) in request" @click="setCategory(index)" @contextmenu="editCategory(category,index)" :key="index">{{category[language]}}</div>
-            </transition-group>
+  <div class="layout">
+    <draggable v-model="request" @sort="isCategorySorted = true" :options="{animation:300,group:'category',ghostClass:'categoryGhost'}">
+      <transition-group tag="div" class="category">
+        <div v-for="(category,index) in request" @click="setCategory(index)" @contextmenu="editCategory(category,index)" :key="index">{{category[language]}}</div>
+      </transition-group>
+    </draggable>
+    <draggable v-model="actions" @sort="isActionSorted = true" :options="{animation:300,group:'action',ghostClass:'actionGhost'}">
+      <transition-group tag="div" class="prefix">
+        <div v-for="(action,index) in actions" @contextmenu="editAction(action,index)" :key="index">{{action[language]}}</div>
+      </transition-group>
+    </draggable>
+    <div class="itemWrap">
+      <div v-for="(group,groupIndex) in items" :key="groupIndex" class="item">
+        <draggable :list="group" @sort="isItemSorted = true" :options="{animation:300,group:group.category,ghostClass:'itemGhost',draggable:'.draggable'}">
+          <transition-group tag="section">
+            <div v-for="(item,index) in group" @contextmenu="editItem(item,groupIndex,index)" :class="{draggable:item.clickable,disable:!item.clickable}" :key="index">{{item[language]}}</div>
+          </transition-group>
         </draggable>
-        <draggable v-model="actions" @sort="isActionSorted = true" :options="{animation:300,group:'action',ghostClass:'actionGhost'}">
-            <transition-group tag="div" class="prefix">
-                <div v-for="(action,index) in actions" @contextmenu="editAction(action,index)" :key="index">{{action[language]}}</div>
-            </transition-group>
-        </draggable>
-        <div class="itemWrap">
-            <div v-for="(group,groupIndex) in items" :key="groupIndex" class="item">
-                <draggable :list="group" @sort="isItemSorted = true" :options="{animation:300,group:group.category,ghostClass:'itemGhost',draggable:'.draggable'}">
-                    <transition-group tag="section">
-                        <div v-for="(item,index) in group" @contextmenu="editItem(item,groupIndex,index)" :class="{draggable:item.clickable,disable:!item.clickable}" :key="index">{{item[language]}}</div>
-                    </transition-group>
-                </draggable>
-            </div>
-        </div>
-        <aside>
-            <div>
-                <div class="btn" @click="updateItemSort" v-if="isItemSorted">{{$t('button.update')}}</div>
-                <div class="btn" @click="updateActionSort" v-if="isActionSorted">{{$t('button.update')}}</div>
-                <div class="btn" @click="updateCategorySort" v-if="isCategorySorted">{{$t('button.update')}}</div>
-            </div>
-        </aside>
-        <div :is="component" :init="componentData"></div>
+      </div>
     </div>
+    <aside>
+      <div>
+        <div class="btn" @click="updateItemSort" v-if="isItemSorted">{{$t('button.update')}}</div>
+        <div class="btn" @click="updateActionSort" v-if="isActionSorted">{{$t('button.update')}}</div>
+        <div class="btn" @click="updateCategorySort" v-if="isCategorySorted">{{$t('button.update')}}</div>
+      </div>
+    </aside>
+    <div :is="component" :init="componentData"></div>
+  </div>
 </template>
 
 <script>
@@ -90,9 +90,7 @@ export default {
         .catch(() => this.$q());
     },
     editItem(item, groupIndex, index) {
-      let categories = this.request[
-        this.categoryIndex
-      ].contain.map(category => ({
+      let categories = this.request[this.categoryIndex].contain.map(category => ({
         label: category,
         tooltip: "",
         plainText: true,
@@ -103,7 +101,7 @@ export default {
         Object.assign(item, {
           category: this.request[this.categoryIndex].contain[groupIndex],
           price: 0,
-          affix: false
+          affix: ""
         });
       }
 
@@ -113,6 +111,7 @@ export default {
           reject,
           categories,
           item,
+          categoryIndex: this.categoryIndex,
           groupIndex,
           index
         };

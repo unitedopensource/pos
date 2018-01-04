@@ -1001,7 +1001,7 @@ function createList(printer, setting, invoice) {
         }
         for (let category in sorted) {
             if (sorted.hasOwnProperty(category)) {
-                content += `<tr class="category"><td colspan="3"><span class="zhCN">${categoryMap[category]}</span><span class="usEN">${category}</span></td></tr>`;
+                content += `<div class="category"><span class="zhCN">${categoryMap[category]}</span><span class="usEN">${category}</span></div>`;
                 content += sorted[category].map(item => mockup(item, renderQty)).join("").toString();
             }
         }
@@ -1035,10 +1035,7 @@ function createList(printer, setting, invoice) {
             setEN += `<p><span>${_qty}</span><span>${set.usEN}</span><span>${_price}</span></p>`;
         })
         if (diffs === 'removed') {
-            //add later
-
-        } else {
-            firstLine = `<div class="zhCN">
+            firstLine = `<div class="zhCN removed">
                             <div class="main">
                                 ${qty}
                                 <div class="wrap">
@@ -1049,7 +1046,7 @@ function createList(printer, setting, invoice) {
                             </div>
                             <div class="sub">${setCN}</div>
                         </div>`;
-            secondLine = `<div class="usEN">
+            secondLine = `<div class="usEN removed">
                             <div class="main">
                                 ${qty}
                                 <div class="wrap">
@@ -1058,10 +1055,32 @@ function createList(printer, setting, invoice) {
                                 </div>
                                 ${enPrice}
                             </div>
-                          <div class="sub">${setEN}</div>
+                            <div class="sub">${setEN}</div>
+                        </div>`;
+        } else {
+            firstLine = `<div class="zhCN ${diffs}">
+                            <div class="main">
+                                ${qty}
+                                <div class="wrap">
+                                    <span class="item">${nameCN}</span>
+                                    <span class="side">${sideCN}</span>
+                                </div>
+                                ${cnPrice}
+                            </div>
+                            <div class="sub">${setCN}</div>
+                        </div>`;
+            secondLine = `<div class="usEN ${diffs}">
+                            <div class="main">
+                                ${qty}
+                                <div class="wrap">
+                                    <span class="item">${nameEN}</span>
+                                    <span class="side">${sideEN}</span>
+                                </div>
+                                ${enPrice}
+                            </div>
+                        <div class="sub">${setEN}</div>
                         </div>`;
         }
-
         return languages[0].ref === "zhCN" ? firstLine + secondLine : secondLine + firstLine;
     }
 }
@@ -1120,6 +1139,7 @@ function createStyle(setting) {
               .tradeMark {font-weight: bold;display: inline-block;padding: 5px 7px;background: #000;color: #fff;}
               .zhCN{font-family:'${secondary.fontFamily}';font-size:${secondary.fontSize}px;${secondary.enable ? '' : 'display:none!important;'}position:relative;}
               .usEN{font-family:'${primary.fontFamily}';font-size:${primary.fontSize}px;${primary.enable ? '' : 'display:none!important;'}position:relative;}
+              .removed{text-decoration: line-through}
           </style>`
 }
 
