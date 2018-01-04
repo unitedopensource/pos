@@ -6,9 +6,9 @@
                 <h3>{{$t('title.address')}}</h3>
             </header>
             <div class="wrap">
-                <inputer title="text.street" v-model="street" :autoFocus="true"></inputer>
-                <inputer title="text.city" v-model="city"></inputer>
-                <inputer title="text.zipCode" v-model="zipCode" mask="#####"></inputer>
+                <inputer title="text.street" v-model.trim="street" :autoFocus="true"></inputer>
+                <inputer title="text.city" v-model.trim="city"></inputer>
+                <inputer title="text.zipCode" v-model.trim="zipCode" mask="#####"></inputer>
             </div>
             <footer>
                 <button class="btn" @click="confirm" :disabled="!street ||!city">{{$t('button.confirm')}}</button>

@@ -6,8 +6,8 @@
                 <h3>{{$t('title.registration')}}</h3>
             </header>
             <div class="wrap">
-                <inputer title="text.storeName" v-model="name"></inputer>
-                <inputer title="text.licenseKey" v-model="key"></inputer>
+                <inputer title="text.storeName" v-model.trim="name"></inputer>
+                <inputer title="text.licenseKey" v-model.trim="key"></inputer>
             </div>
             <footer>
                 <button class="btn" @click="register" :disabled="invalid">{{$t('button.register')}}</button>

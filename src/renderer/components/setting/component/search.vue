@@ -1,29 +1,29 @@
 <template>
   <div class="popupMask center dark" @click.self="init.reject">
     <div class="editor">
-        <header>
-            <h3>{{$t('title.scanner')}}</h3>
-        </header>
-        <div class="wrap">
-            <div class="search">
-                <i class="fa fa-search"></i>
-                <input type="text" v-model.number="port" @keydown.enter="scan">
-                <i class="fa fa-times" @click="reset" v-show="port"></i>
-            </div>
+      <header>
+        <h3>{{$t('title.scanner')}}</h3>
+      </header>
+      <div class="wrap">
+        <div class="search">
+          <i class="fa fa-search"></i>
+          <input type="text" v-model.number="port" @keydown.enter="scan">
+          <i class="fa fa-times" @click="reset" v-show="port"></i>
         </div>
-        <ul class="results">
-            <li v-for="(ip,index) in results" :key="index">
-                <input type="radio" name="ip" v-model="target" :id="'ip'+index" :value="ip">
-                <label :for="'ip'+index">
-                    <i class="fa fa-tablet"></i>
-                    <span>{{ip}}</span>
-                </label>
-            </li>
-        </ul>
-        <footer>
-            <div class="btn" @click="scan" v-if="results.length === 0">{{$t('button.scan')}}</div>
-            <div class="btn" @click="confirm" v-else>{{$t('button.confirm')}}</div>
-        </footer>
+      </div>
+      <ul class="results">
+        <li v-for="(ip,index) in results" :key="index">
+          <input type="radio" name="ip" v-model="target" :id="'ip'+index" :value="ip">
+          <label :for="'ip'+index">
+            <i class="fa fa-tablet"></i>
+            <span>{{ip}}</span>
+          </label>
+        </li>
+      </ul>
+      <footer>
+        <button class="btn" @click="scan" v-if="results.length === 0" :disabled="working">{{$t('button.scan')}}</button>
+        <button class="btn" @click="confirm" v-else>{{$t('button.confirm')}}</button>
+      </footer>
     </div>
   </div>
 </template>
@@ -35,16 +35,20 @@ export default {
     return {
       port: 10009,
       results: [],
-      target: null
+      target: null,
+      working: false,
     };
   },
   methods: {
     scan() {
+      this.working = true;
       this.$socket.emit("SCAN", this.port, ip => {
         this.results = ip;
+        this.working = false;
       });
     },
     confirm() {
+      const model = this.port === '10009' ? "S300" : "NX2200";
       const terminal = this.getParser()();
 
       terminal.initial(this.target, this.port).then(response => {

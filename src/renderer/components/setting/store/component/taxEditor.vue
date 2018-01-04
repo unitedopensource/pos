@@ -8,7 +8,7 @@
             </header>
             <div class="wrap">
                 <div class="input">
-                    <inputer title="text.alias" v-model="tax.alias"></inputer>
+                    <inputer title="text.alias" v-model.trim="tax.alias"></inputer>
                     <inputer title="text.taxRate" v-model.number="tax.rate"></inputer>
                 </div>
                 <div class="options">

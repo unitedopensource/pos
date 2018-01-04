@@ -6,8 +6,8 @@
         <h3>{{$t('title.interface')}}</h3>
       </header>
       <div class="wrap">
-        <inputer v-model="grid.head" title="text.title"></inputer>
-        <inputer v-model="grid.subhead" title="text.subtitle"></inputer>
+        <inputer v-model.trim="grid.head" title="text.title"></inputer>
+        <inputer v-model.trim="grid.subhead" title="text.subtitle"></inputer>
         <selector title="text.function" v-model="grid.route" :opts="routers"></selector>
         <selector title="text.icon" v-model="grid.icon" :opts="icons"></selector>
         <switches v-model="grid.password" title="text.password"></switches>

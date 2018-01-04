@@ -6,7 +6,7 @@
                 <h3>{{$t('text.printer')}}</h3>
             </header>
             <div class="wrap">
-                <inputer v-model="name" title="text.alias" :autoFocus="true" @keydown.enter.native="confirm"></inputer>
+                <inputer v-model.trim="name" title="text.alias" :autoFocus="true" @keydown.enter.native="confirm"></inputer>
                 <switches title="text.labelPrinter" v-model="label"></switches>
             </div>
             <footer>

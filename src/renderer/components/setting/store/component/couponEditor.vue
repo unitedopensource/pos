@@ -21,7 +21,7 @@
       <template v-if="tab === 'basic'">
         <div class="wrap">
           <selector title="text.type" v-model="coupon.type" :opts="opts"></selector>
-          <inputer title="text.alias" v-model="coupon.alias" :length="27"></inputer>
+          <inputer title="text.alias" v-model.trim="coupon.alias" :length="27"></inputer>
           <inputer title="text.content" v-model="coupon.description" type="textarea"></inputer>
           <inputer title="text.couponCode" v-model="coupon.code"></inputer>
           <template v-if="coupon.type === 'giveaway'">

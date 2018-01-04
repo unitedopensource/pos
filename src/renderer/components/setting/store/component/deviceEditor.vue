@@ -8,12 +8,12 @@
             </header>
             <div class="wrap">
                 <div class="input">
-                    <inputer title="text.alias" v-model="device.alias" :disabled="init.edit"></inputer>
-                    <inputer title="text.location" v-model="device.location"></inputer>
+                    <inputer title="text.alias" v-model.trim="device.alias" :disabled="init.edit"></inputer>
+                    <inputer title="text.location" v-model.trim="device.location"></inputer>
                     <inputer title="text.ip" v-model="device.ip"></inputer>
                     <inputer title="text.port" v-model="device.port"></inputer>
                     <inputer title="text.model" v-model="device.model"></inputer>
-                    <inputer title="text.S/N" v-model="device.sn"></inputer>
+                    <inputer title="text.S/N" v-model.trim="device.sn"></inputer>
                     <switches title="text.printReceipt" v-model="device.print"></switches>
                 </div>
             </div>

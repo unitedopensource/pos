@@ -7,9 +7,9 @@
       </header>
       <div class="wrap">
         <inputer title="text.phone" v-model="customer.phone" mask="(###) ### - ####" :autoFocus="true"></inputer>
-        <inputer title="text.name" v-model="customer.name"></inputer>
-        <inputer title="text.address" v-model="customer.address"></inputer>
-        <inputer title="text.city" v-model="customer.city"></inputer>
+        <inputer title="text.name" v-model.trim="customer.name"></inputer>
+        <inputer title="text.address" v-model.trim="customer.address"></inputer>
+        <inputer title="text.city" v-model.trim="customer.city"></inputer>
       </div>
       <footer>
         <button class="btn" @click="confirm" :disabled="!valid">{{$t('button.confirm')}}</button>
