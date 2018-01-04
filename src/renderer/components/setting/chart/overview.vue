@@ -132,6 +132,12 @@ export default {
     },
     analyzeData(result) {
       const { labels, data } = result;
+
+      if(data.length === 0){
+        this.reports = [];
+        return;
+      }
+
       const highestSales = Math.max(...data);
       const hIndex = data.findIndex(sales => sales === highestSales);
       const highestSalesDate = labels[hIndex];

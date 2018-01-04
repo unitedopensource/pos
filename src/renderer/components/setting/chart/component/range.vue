@@ -50,6 +50,6 @@ input:checked + label {
   background: #03a9f4;
   color: #fff;
   border-radius: 4px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 1px 2px #1652af;
 }
 </style>

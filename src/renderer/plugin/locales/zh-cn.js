@@ -324,7 +324,8 @@ export default {
         'creditVault': '信用卡储存记录',
         'operatorPin': '请输入您的密码',
         'accessPin': '请输入经理的密码',
-        'address': '地址资料'
+        'address': '地址资料',
+        'sideOption': '副菜选项'
     },
     dialog: {
         'maintenance': '维护',
@@ -552,7 +553,9 @@ export default {
         'removeAddressConfirm': '您确定要移除这个地址吗?',
         'createFailed': '创建失败',
         'duplicateProfile': '此电话号码的资料已经存在',
-        'duplicateAddress': '此街道信息已经存在'
+        'duplicateAddress': '此街道信息已经存在',
+        'removePrinter': '移除打印机',
+        'removePrinterConfirm': '您确定要移除这个打印机设定吗?'
     },
     terminal: {
         'initial': '正在初始化 {i}...',
@@ -746,6 +749,8 @@ export default {
         'lastWeek': '上周',
         'currentMonth': '本月',
         'lastMonth': '上个月',
+        'monthly': '按月份',
+        'quarterly': '按季度',
         'start': '开始',
         'end': '结束',
         'workHour': '工时',
@@ -924,7 +929,6 @@ export default {
         'street': '街道',
         'phone': '电话号码',
         'lastActivity': '最后活动',
-        'privateKey': '',
         'expirationDate': '过期日期',
         'acceptCreditCard': '接受信用卡',
         'acceptDelivery': '接受送餐订单',
@@ -1075,7 +1079,8 @@ export default {
         'callCount': '拨打次数',
         'cancelCount': '取消订单',
         'cancelAmount': '取消总额',
-        'autoCorrectAddress': '自动格式化地址'
+        'autoCorrectAddress': '自动格式化地址',
+        'noUse': '不使用'
     },
     nav: {
         'store': '店面',

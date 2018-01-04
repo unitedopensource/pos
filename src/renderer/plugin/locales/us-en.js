@@ -296,6 +296,8 @@ export default {
         'lastWeek': 'Last Week',
         'currentMonth': 'Current Month',
         'lastMonth': 'Last Month',
+        'monthly': 'Monthly',
+        'quarterly': 'Quarterly',
         'start': 'Start',
         'end': 'End',
         'workHour': 'Work Hour',
@@ -412,7 +414,8 @@ export default {
         'creditVault': 'Credit Card Safe Vault',
         'operatorPin': 'Please Enter Your Pin ',
         'accessPin': 'Please Enter Manager\'s Pin',
-        'address': 'Address Info'
+        'address': 'Address Info',
+        'sideOption': 'Side Option'
     },
     dialog: {
         'maintenance': 'Maintenance',
@@ -640,7 +643,9 @@ export default {
         'removeAddressConfirm': 'Are you sure to remove this address?',
         'createFailed': 'Create Failed',
         'duplicateProfile': 'This phone number profile already exist.',
-        'duplicateAddress': 'This street info already exist.'
+        'duplicateAddress': 'This street info already exist.',
+        'removePrinter': 'Remove Printer',
+        'removePrinterConfirm': 'Are you sure to remove this printer?'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',
@@ -1079,7 +1084,8 @@ export default {
         'callCount': 'Call Count',
         'cancelCount': 'Cancel Count',
         'cancelAmount': 'Cancel Amount',
-        'autoCorrectAddress': 'Auto Correct Address'
+        'autoCorrectAddress': 'Auto Correct Address',
+        'noUse': 'No Use'
     },
     nav: {
         'store': 'Store',
