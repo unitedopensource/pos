@@ -28,8 +28,7 @@ export default {
 <style scoped>
 ul {
   display: flex;
-  border: 1px solid #eee;
-  border-radius: 4px;
+  border-bottom: 1px solid #BDBDBD;
 }
 
 li {
