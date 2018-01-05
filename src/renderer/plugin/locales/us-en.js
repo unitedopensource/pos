@@ -265,7 +265,8 @@ export default {
         'setAll': 'Set All',
         'unset': 'Unset All',
         'default': 'Default',
-        'backup': 'Backup'
+        'backup': 'Backup',
+        'option': 'Option'
     },
     thead: {
         'orderType': 'Order Type',
@@ -925,7 +926,6 @@ export default {
         'rewardPoint': 'Reward Point',
         'manualSideOption': 'Manually Select Side Dish',
         'sideItem': 'Side Item',
-        'maxItem': 'Maximum {i}',
         'priceExtra': 'Extra',
         'template': 'Template',
         'subItem': 'Subitem',
@@ -1086,7 +1086,8 @@ export default {
         'cancelAmount': 'Cancel Amount',
         'autoCorrectAddress': 'Auto Correct Address',
         'noUse': 'No Use',
-        'autoJump': 'Auto Jump'
+        'autoJump': 'Auto Jump',
+        'startAt': 'Start At'
     },
     nav: {
         'store': 'Store',

@@ -45,9 +45,22 @@ export default {
     },
     methods: {
         confirm() {
+            if (this.source) {
+                let source = JSON.parse(JSON.stringify(this.$store.getters.templates.find(t => t.name === this.source)));
+                source.contain.forEach(page => {
+                    page.contain.forEach(item => {
+                        item.key = Math.random().toString(36).substr(2, 6);
+                    })
+                });
 
-
-            this.init.resolve(this.init.template)
+                let template = Object.assign({}, source, {
+                    name: this.init.template.name,
+                    note: this.init.template.note
+                });
+                this.init.resolve(template)
+            } else {
+                this.init.resolve(this.init.template)
+            }
         }
     }
 };

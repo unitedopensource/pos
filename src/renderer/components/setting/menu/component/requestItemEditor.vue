@@ -50,7 +50,7 @@ export default {
       label: this.$t("text.noUse"),
       tooltip: "",
       plainText: true,
-      value: false
+      value: ""
     });
   },
   methods: {

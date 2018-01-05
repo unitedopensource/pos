@@ -53,8 +53,10 @@ export default {
                 this.componentData = { resolve, reject, template },
                     this.component = "creator"
             }).then(_template => {
-
-                this.$q();
+                this.$socket.emit("[TEMPLATE] SAVE", _template, () => {
+                    this.$store.getters.templates.push(_template);
+                    this.$q();
+                })
             }).catch(() => this.$q())
         },
         setPage(num) {

@@ -258,7 +258,8 @@ export default {
         'setAll': '全选',
         'unset': '反选',
         'default': '默认',
-        'backup': '备份'
+        'backup': '备份',
+        'option': '选项'
     },
     title: {
         'markPaymentType': '标记付款方式',
@@ -917,7 +918,6 @@ export default {
         'rewardPoint': '积分数',
         'manualSideOption': '手动选择配菜',
         'sideItem': '附菜',
-        'maxItem': '最多容纳 {i} 个',
         'priceExtra': '加价',
         'template': '模板',
         'subItem': '子菜项',
@@ -1081,7 +1081,8 @@ export default {
         'cancelAmount': '取消总额',
         'autoCorrectAddress': '自动格式化地址',
         'noUse': '不使用',
-        'autoJump': '自动转跳'
+        'autoJump': '自动转跳',
+        'startAt': '(个)起'
     },
     nav: {
         'store': '店面',

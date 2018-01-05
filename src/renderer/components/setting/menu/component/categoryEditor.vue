@@ -3,7 +3,7 @@
     <div class="editor">
       <header>
         <h5>{{$t('title.edit')}}</h5>
-        <h3>{{$t('title.categoryEditor')}}</h3>
+        <h3>{{$t('title.category')}}</h3>
       </header>
       <div class="wrap">
         <inputer title="text.primary" v-model.trim="category.usEN" length="19"></inputer>

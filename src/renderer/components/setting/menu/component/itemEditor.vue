@@ -37,7 +37,7 @@
                 <checkbox v-for="(name,index) in printers" :key="index" v-model="printer" :title="name" :val="name" :multiple="true" @input="updatePrint" :translate="false"></checkbox>
               </div>
             </div>
-            <switches title="text.manualSideOption" v-model="item.disableAutoOption"></switches>
+            <switches title="text.manualSideOption" v-model="item.manual"></switches>
           </div>
           <draggable class="side" tag="div" :options="{animation: 300,ghostClass: 'ghost' ,handle:'.drag',draggable:'.draggable'}" v-model="item.option">
             <transition-group tag="ul" class="options" name="dropdown">
