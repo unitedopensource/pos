@@ -170,4 +170,9 @@ li {
 li span {
   flex: 1;
 }
+
+.items {
+  display: flex;
+  flex-wrap: wrap;
+}
 </style>

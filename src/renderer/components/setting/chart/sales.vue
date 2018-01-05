@@ -1,7 +1,7 @@
 <template>
-  <div class="overview">
-    <line-chart :chart-data="collection"></line-chart>
+  <div>
     <range-select @update="fetchData"></range-select>
+    <line-chart :chart-data="collection"></line-chart>
     <table>
       <thead>
         <tr>

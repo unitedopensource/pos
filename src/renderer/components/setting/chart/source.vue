@@ -1,7 +1,7 @@
 <template>
   <div>
-    <pie :chart-data="collection"></pie>
     <range-select @update="fetchData"></range-select>
+    <pie :chart-data="collection"></pie>
   </div>
 </template>
 

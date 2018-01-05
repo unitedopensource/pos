@@ -29,7 +29,6 @@ export default {
 ul {
   display: flex;
   border: 1px solid #eee;
-  margin: 10px 20px;
   border-radius: 4px;
 }
 
@@ -42,14 +41,13 @@ label {
   padding: 10px;
   display: block;
   cursor: pointer;
-  margin: 4px;
   color: rgba(0, 0, 0, 0.45);
+  border-bottom: 2px solid transparent;
 }
 
 input:checked + label {
-  background: #03a9f4;
-  color: #fff;
-  border-radius: 4px;
-  box-shadow: 0 1px 2px #1652af;
+  color: #333;
+  font-weight: bold;
+  border-bottom: 2px solid #ff5722;
 }
 </style>

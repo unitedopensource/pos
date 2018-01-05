@@ -351,16 +351,12 @@ export default [{
       component: require('./components/setting/chart/nav'),
       children: [{
         path: '/',
-        component: require('./components/setting/chart/indexTab'),
-        children: [{
-          path: '/',
-          name: 'Setting.chart',
-          component: require('./components/setting/chart/overview')
-        }, {
-          path: 'source',
-          name: 'Setting.chart.source',
-          component: require('./components/setting/chart/source')
-        }]
+        name: 'Setting.chart',
+        component: require('./components/setting/chart/sales')
+      }, {
+        path: 'source',
+        name: 'Setting.chart.source',
+        component: require('./components/setting/chart/source')
       }]
     }
     ]
