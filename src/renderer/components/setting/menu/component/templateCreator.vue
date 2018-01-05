@@ -22,46 +22,53 @@ import inputer from "../../common/inputer";
 import selector from "../../common/selector";
 
 export default {
-    props: ["init"],
-    components: { inputer, selector },
-    data() {
-        return {
-            templates: this.$store.getters.templates.map(t => ({
-                label: t.name,
-                tooltip: t.note,
-                plainText: true,
-                value: t.name
-            })),
-            source: ""
-        }
-    },
-    created() {
-        this.templates.unshift({
-            label: this.$t('text.noUse'),
-            tooltip: "",
-            plainText: true,
-            value: ""
-        })
-    },
-    methods: {
-        confirm() {
-            if (this.source) {
-                let source = JSON.parse(JSON.stringify(this.$store.getters.templates.find(t => t.name === this.source)));
-                source.contain.forEach(page => {
-                    page.contain.forEach(item => {
-                        item.key = Math.random().toString(36).substr(2, 6);
-                    })
-                });
+  props: ["init"],
+  components: { inputer, selector },
+  data() {
+    return {
+      templates: this.$store.getters.templates.map(t => ({
+        label: t.name,
+        tooltip: t.note,
+        plainText: true,
+        value: t.name
+      })),
+      source: ""
+    };
+  },
+  created() {
+    this.templates.unshift({
+      label: this.$t("text.noUse"),
+      tooltip: "",
+      plainText: true,
+      value: ""
+    });
+  },
+  methods: {
+    confirm() {
+      if (this.source) {
+        let source = JSON.parse(
+          JSON.stringify(
+            this.$store.getters.templates.find(t => t.name === this.source)
+          )
+        );
+        source.contain.forEach(page => {
+          page.contain.forEach(item => {
+            item.key = Math.random()
+              .toString(36)
+              .substr(2, 6);
+          });
+        });
 
-                let template = Object.assign({}, source, {
-                    name: this.init.template.name,
-                    note: this.init.template.note
-                });
-                this.init.resolve(template)
-            } else {
-                this.init.resolve(this.init.template)
-            }
-        }
+        let template = Object.assign({}, source, {
+          _id: ObjectId(),
+          name: this.init.template.name,
+          note: this.init.template.note
+        });
+        this.init.resolve(template);
+      } else {
+        this.init.resolve(this.init.template);
+      }
     }
+  }
 };
 </script>

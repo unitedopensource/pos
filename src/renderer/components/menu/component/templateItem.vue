@@ -1,394 +1,188 @@
 <template>
-  <div class="popupMask center dark" @click.self="setOption">
-    <div class="window">
-      <header class="title">
-        <span>{{$t('title.builder')}}</span>
-        <i class="fa fa-times" @click="init.reject"></i>
+  <div class="popupMask dark center" @click.self="init.reject">
+    <div class="editor">
+      <header>
+        <h5>{{template.name}}</h5>
+        <h3>{{$t('title.template')}}</h3>
       </header>
-      <div class="inner">
-        <div class="indicator">
-          <div class="step" v-for="(step,index) in template.contain" @click="jumpStep(index)" :key="index">
-            <span class="name">{{step.name}}</span>
-          </div>
-        </div>
-        <div class="content">
-          <form v-if="!edit">
-            <fieldset>
-              <legend>{{content.name}}
-                <span class="limit">{{maxItem}}</span>
-              </legend>
-              <div class="wrap">
-                <label v-for="(item,index) in content.contain" :key="index">
-                  <input type="checkbox" :id="'option'+index" :value="index" v-model="selected" @change="onChange">
-                  <label class="item" :for="'option'+index">{{item[language]}}</label>
-                  <span class="price" v-show="item.price > 0">{{item.price | decimal}}</span>
-                </label>
-              </div>
-            </fieldset>
-          </form>
-          <div v-else>
-            <fieldset>
-              <legend>{{$t('text.edit')}}</legend>
-              <ul class="editList">
-                <li v-for="(item,index) in editList" :key="index">
-                  <div class="item">
-                    <span class="name">{{item[language]}}</span>
-                    <div class="qty">
-                      <i class="fa fa-minus" @click="subQty(item)"></i>
-                      <span>{{item.qty}}</span>
-                      <i class="fa fa-plus" @click="addQty(item)"></i>
-                    </div>
-                    <span class="note" @click="addNote(item,$event)">{{$t('button.note')}}</span>
-                  </div>
-                  <div class="input" v-if="item.hasOwnProperty('note')">
-                    <input type="text" v-model="item.note">
-                  </div>
-                </li>
-              </ul>
-            </fieldset>
+      <div class="banner"></div>
+      <div class="wrap">
+        <ul>
+          <li v-for="(page,i) in template.contain" @click="index = i">
+            <span>{{page.name}}</span>
+            <i class="fa fa-caret-right"></i>
+          </li>
+        </ul>
+        <div class="items">
+          <div class="item" v-for="(item,index) in items" :key="index" @click="moreQty(item)">
+            <span>{{item[language]}}</span>
+            <span class="qty" @click.stop="resetQty(item,index)" v-show="item.qty > 0">{{item.qty}}</span>
           </div>
         </div>
       </div>
       <footer>
-        <div class="btn" @click="init.reject">{{$t('button.cancel')}}</div>
-        <div class="btn" v-if="edit" @click="edit = false">{{$t('button.done')}}</div>
-        <div class="btn" v-else @click="editItem">{{$t('button.edit')}}</div>
-        <div class="btn" @click="confirm">{{$t('button.confirm')}}</div>
+        <div class="opt">
+          <checkbox title="text.insert" v-model="insert"></checkbox>
+        </div>
+        <button class="btn" @click="confirm">{{$t('button.confirm')}}</button>
       </footer>
     </div>
   </div>
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions } from "vuex";
+import checkbox from "../../setting/common/checkbox";
+
 export default {
-  props: ['init'],
+  props: ["init"],
+  components: { checkbox },
+  computed: {
+    ...mapGetters(["templates", "language"])
+  },
   data() {
     return {
-      componentData: null,
-      component: null,
-      template: [],
-      content: {},
-      option: {},
-      selected: [],
-      step: 0,
-      edit: false,
-      editList: []
-    }
+      template: {},
+      saved: [],
+      items: [],
+      index: 0,
+      insert: false,
+      max: Infinity
+    };
   },
   created() {
-    this.template = this.templates.find(each => each.template === this.init.side.template);
-    this.content = this.template.contain[0];
-    this.content.max = this.init.side.max ? this.init.side.max : this.content.max || 0;
-    this.template.contain.forEach(obj => {
-      this.option[obj.name] = [];
-    })
-  },
-  mounted() {
-    document.querySelector('.step').classList.add("active")
+    const { template, max } = this.init.side;
+    this.template = this.templates.find(t => t.name === template);
+    this.insert = this.template.insert;
+    this.initialItems();
   },
   methods: {
-    jumpStep(index) {
-      this.step = index;
-      this.content = this.template.contain[index];
-      this.selected = [];
-      let name = this.content.name;
-
-      this.option[name].map((item, index) => {
-        this.content.contain.forEach((o, i) => {
-          o.key === item.key && this.selected.push(i)
-        })
-      })
-      this.edit && this.editItem();
-    },
-    editItem() {
-      this.edit = true;
-      let name = this.template.contain[this.step].name;
-      this.editList = this.option[name];
-    },
-    addQty(item) {
-      isNumber(item.qty) ? item.qty++ : item.qty = 2;
-    },
-    subQty(item) {
-      isNumber(item.qty) ? item.qty-- : item.qty = 0;
-      if (item.qty === 0) {
-        let index = this.editList.findIndex(target => target.key === item.key);
-        this.editList.splice(index, 1);
-
-        this.selected = [];
-        this.content = this.template.contain[this.step];
-        let name = this.template.contain[this.step].name;
-        this.option[name].map((item, index) => {
-          this.content.contain.forEach((o, i) => {
-            o.key === item.key && this.selected.push(i)
-          })
-        })
-      }
-    },
-    addNote(item, e) {
-      let newItem = Object.assign({}, item, { note: "" });
-      let index = this.editList.findIndex(target => target.key === item.key);
-      this.editList.splice(index, 1, newItem);
-
-    },
-    onChange() {
-      let target = this.content.name;
-      let max = this.content.max;
-      let length = this.selected.length;
-      let options = [];
-      (max > 0) && (this.selected = this.selected.slice(0, max));
-      this.selected.forEach(index => {
-        let item = Object.assign({}, this.content.contain[index]);
-        options.push(item);
+    initialItems(index) {
+      index = index || this.index;
+      const saved = this.saved[index];
+      this.items = this.template.contain[index].contain.map(item => {
+        if (saved) {
+          const _item = saved.find(i => i.key === item.key);
+          return _item ? _item : Object.assign({}, item, { qty: 0 });
+        } else {
+          return Object.assign({}, item, { qty: 0 });
+        }
       });
-      if (this.content.hasOwnProperty('addition') && isNumber(this.content.addition)) {
-        let p = this.content.startAt - 1;
-        options = options.map((item, index) => {
-          index >= p && (item.price = parseFloat(item.price) + parseFloat(this.content.addition));
-          item.qty = 1;
-          return item
-        })
-      }
-      this.option[target] = options;
+      this.max =
+        this.init.side.max || this.template.contain[index].max || Infinity;
     },
-    setOption() {
-      this.alterItemOption({ side: this.init.side, index: this.init.index, disableAutoAdd: true });
-      this.init.resolve();
+    saveItems(index) {
+      this.saved[index] = this.items.filter(i => i.qty > 0);
+    },
+    moreQty(item) {
+      const { autoJump } = this.template;
+      let qty = this.items.map(i => i.qty).reduce((a, b) => a + b, 0);
+
+      if (qty < this.max) item.qty++;
+
+      qty = this.items.map(i => i.qty).reduce((a, b) => a + b, 0);
+
+      if (autoJump && qty === this.max) {
+        const maxPage = this.template.contain.length - 1;
+        this.index < maxPage ? this.index++ : this.confirm();
+      }
+    },
+    resetQty(item, index) {
+      item.qty = 0;
+      this.items.splice(index, 1, item);
     },
     confirm() {
-      !this.template.insert && this.emptyChoiceSet();
-      this.alterItemOption({ side: this.init.side, index: this.init.index, disableAutoAdd: true, disableQtyAdd:true });
-      Object.keys(this.option).forEach(key => {
-        let items = this.option[key];
-        items.forEach(item => {
-          let { zhCN, usEN, qty, price, print } = item;
-          if (item.hasOwnProperty('note')) {
-            zhCN = zhCN + ` *${item.note.toCapitalCase()}*`;
-            usEN = usEN + ` *${item.note.toCapitalCase()}*`;
-          }
-          qty = qty || 1;
-          let content = {
-            qty, zhCN, usEN, print,
-            single: parseFloat(price),
-            price: (price * qty).toFixed(2)
-          }
-          this.setChoiceSet(content);
-        })
-      })
+      this.saveItems(this.index);
+      !this.insert && this.emptyChoiceSet();
+      this.alterItemOption({
+        side: this.init.side,
+        index: this.init.index,
+        disableAutoAdd: true,
+        disableQtyAdd: true
+      });
+      let items = [].concat.apply([], this.saved);
+      items.forEach(item => {
+        let { zhCN, usEN, qty, price, print } = item;
+        qty = qty || 1;
+
+        const content = {
+          qty,
+          zhCN,
+          usEN,
+          print,
+          single: parseFloat(price),
+          price: (price * qty).toFixed(2)
+        };
+
+        this.setChoiceSet(content);
+      });
+
       this.init.resolve();
     },
-    ...mapActions(['addChoiceSet', 'setChoiceSet', 'emptyChoiceSet', 'alterItemOption'])
-  },
-  computed: {
-    maxItem() {
-      return this.template.contain[this.step].max ?
-        this.$t('text.selectQty', this.template.contain[this.step].max) : this.$t('text.anyQty');
-    },
-    ...mapGetters(['templates', 'language'])
+    ...mapActions([
+      "addChoiceSet",
+      "setChoiceSet",
+      "emptyChoiceSet",
+      "alterItemOption"
+    ])
   },
   watch: {
-    step(n) {
-      let dom = document.querySelector('.step.active');
-      dom && dom.classList.remove("active");
-      document.querySelectorAll('.step')[n].classList.add("active");
+    index(n, o) {
+      this.saveItems(o);
+      this.initialItems(n);
     }
   }
-}
+};
 </script>
 
 <style scoped>
-.inner {
-  display: flex;
-  flex-direction: row;
-  min-height: 400px;
-}
-
-.indicator {
-  min-width: 140px;
-  border-right: 1px solid #ddd;
-  background: #FAFAFA;
-  padding: 10px 0 10px 20px;
-  display: flex;
-  flex-direction: column;
-}
-
-.content {
-  padding: 5px 10px;
-  width: 538px;
-}
-
-.step {
-  position: relative;
-  cursor: pointer;
-  flex: 1;
-  color: #bdbdbd;
-  transition: color 0.3s linear;
-  padding-top: 15px;
-}
-
-.step:before {
-  font-family: fontAwesome;
-  content: "\f10c";
-  position: absolute;
-  z-index: 1;
-  background: #fafafa;
-}
-
-.step.active:before {
-  content: '\f111'
-}
-
-.step:after {
-  content: ' ';
-  width: 2px;
-  background: #ddd;
-  height: 100%;
-  position: absolute;
-  left: 5px;
-  top: 23px;
-  z-index: 0;
-}
-
-.step .name {
-  padding-left: 25px;
-}
-
-.step:last-child:after {
-  content: none;
-}
-
-fieldset {
-  padding: 0.5em 1em 1em;
-  border: 1px solid #E0E0E0;
-  background: #fcfcfc;
-  border-radius: 4px;
-}
-
-.limit {
-  font-weight: lighter;
-  margin: 0 5px;
-  color: #FF9800;
-  font-size: 14px;
-}
-
-input[type="checkbox"] {
-  display: none;
-}
-
 .wrap {
   display: flex;
-  flex-wrap: wrap;
+  align-items: flex-start;
+  padding: 0px;
+  height: 400px;
 }
 
-label.item {
-  text-align: center;
-  flex-wrap: wrap;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  border: 1px solid #78909C;
-  margin: 1px;
-  background: rgba(166, 195, 201, 0.55);
-  vertical-align: top;
-  width: 122px;
-  height: 64px;
-  transition: background 0.3s linear;
-}
-
-.wrap>label {
-  display: inline-flex;
-  position: relative;
-}
-
-legend {
-  font-weight: bold;
-  padding: 0 5px;
-  font-size: 20px;
-  color: #333;
-}
-
-input[type="checkbox"]:checked+label {
-  background: #92aaaf;
-}
-
-.step.active {
-  color: #2196F3;
-}
-
-footer .btn {
-  flex: 1;
-  margin: 4px;
-}
-
-.price {
-  position: absolute;
-  top: 2px;
-  right: 2px;
-  text-align: center;
-  background: #607D8B;
-  color: #fff;
-  padding: 0 1px 0 4px;
-  border-bottom-left-radius: 6px;
-}
-
-li {
-  border-bottom: 1px dashed #E0E0E0;
-}
-
-li .item {
+.items {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 5px;
+  flex-wrap: wrap;
+  width: 496px;
 }
 
-.item .name {
-  flex: 1;
-}
-
-.qty span {
-  width: 25px;
-  display: inline-block;
-  text-align: center;
+.items .item {
+  width: 120px;
 }
 
 .item .qty {
-  width: 130px;
-}
-
-.item .note {
-  background: linear-gradient(#fefefe, #cfd0d3);
-  border-radius: 4px;
-  text-align: center;
-  padding: 5px 10px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, .7);
-  cursor: pointer;
-}
-
-.qty i {
-  padding: 5px 10px;
-  cursor: pointer;
-  border-radius: 4px;
-  color: #37474F;
-  background: linear-gradient(#fefefe, #cfd0d3);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, .7);
-}
-
-.editList {
-  border-bottom: 1px dashed #E0E0E0;
-}
-
-input[type="text"] {
-  width: 370px;
-  font-style: italic;
-  text-transform: capitalize;
-  font-size: 19px;
-  border: none;
-  background: #607D8B;
-  text-indent: 5px;
+  position: absolute;
+  top: 0px;
+  right: 0;
+  font-family: "Agency FB";
+  font-weight: bold;
+  font-size: 22px;
+  width: 35px;
+  height: 30px;
+  line-height: 30px;
+  display: block;
   color: #fff;
-  border-radius: 4px;
-  padding: 1px;
-  outline: none;
+  text-shadow: 0 1px 1px #333;
+}
+
+.qty:before {
+  content: "x";
+}
+
+ul {
+  width: 150px;
+}
+
+li {
+  padding: 15px 20px 15px 15px;
+  display: flex;
+  border-bottom: 1px solid #eee;
+}
+
+li span {
+  flex: 1;
 }
 </style>

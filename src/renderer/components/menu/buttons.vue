@@ -500,10 +500,10 @@ export default {
           return;
         }
 
-        let index = compare.findIndex(item => item.unique === prev.unique);
+        const index = compare.findIndex(item => item.unique === prev.unique);
 
         if (index !== -1) {
-          let now = compare[index];
+          const now = compare[index];
 
           //compare quantity
           if (now.qty < prev.qty) {
@@ -514,8 +514,8 @@ export default {
             compare[index].print = false;
           } else {
             //compare unchanged item find out if choiceSet is different
-            let nowSet = now.choiceSet.map(set => set.unique);
-            let prevSet = prev.choiceSet.map(set => set.unique);
+            let nowSet = now.choiceSet.map(s => s.unique);
+            let prevSet = prev.choiceSet.map(s => s.unique);
 
             let sameSet = nowSet.reduce(
               (a, b) => a && prevSet.includes(b),
@@ -534,17 +534,21 @@ export default {
               //combine printer setting
               let printer = new Set();
               compare[index].choiceSet.forEach(set => {
-                !Array.isArray(set.print) && (set.print = []);
-                set.print.forEach(name => {
-                  printer.add(name);
-                });
+                if (set.hasOwnProperty("print")) {
+                  set.print = [];
+                  set.print.forEach(name => printer.add(name));
+                }
               });
 
               //apply to item printer setting
-              compare[index].printer = {};
-              printer.forEach(name => {
-                compare[index].printer[name] = {};
-              });
+              if (Array.from(printer) > 0) {
+                compare[index].printer = {};
+                printer.forEach(name => {
+                  compare[index].printer[name] = {
+                    replace: false
+                  };
+                });
+              }
             }
           }
           compare[index].origin = prev.qty;

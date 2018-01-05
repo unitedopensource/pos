@@ -20,48 +20,50 @@
 </template>
 
 <script>
-import external from "../../common/external"
+import external from "../../common/external";
 import creator from "../component/templateCreator";
 export default {
-    components: { external, creator },
-    data() {
-        return {
-            list: this.$store.getters.templates,
-            componentData: null,
-            component: null,
-            page: 0
-        };
-    },
-    computed: {
-        templates() {
-            const min = this.page * 12;
-            const max = min + 12;
-            return this.list.slice(min, max);
-        }
-    },
-    methods: {
-        create() {
-            let template = {
-                name: "",
-                note: "",
-                insert: false,
-                autoJump: false,
-                contain: []
-            };
-
-            new Promise((resolve, reject) => {
-                this.componentData = { resolve, reject, template },
-                    this.component = "creator"
-            }).then(_template => {
-                this.$socket.emit("[TEMPLATE] SAVE", _template, () => {
-                    this.$store.getters.templates.push(_template);
-                    this.$q();
-                })
-            }).catch(() => this.$q())
-        },
-        setPage(num) {
-            this.page = num
-        }
+  components: { external, creator },
+  data() {
+    return {
+      list: this.$store.getters.templates,
+      componentData: null,
+      component: null,
+      page: 0
+    };
+  },
+  computed: {
+    templates() {
+      const min = this.page * 12;
+      const max = min + 12;
+      return this.list.slice(min, max);
     }
+  },
+  methods: {
+    create() {
+      let template = {
+        name: "",
+        note: "",
+        insert: false,
+        autoJump: false,
+        contain: []
+      };
+
+      new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject, template };
+        this.component = "creator";
+      })
+        .then(_template => {
+          this.$socket.emit("[TEMPLATE] SAVE", _template, () => {
+            this.list = this.$store.getters.templates;
+            this.$q();
+          });
+        })
+        .catch(() => this.$q());
+    },
+    setPage(num) {
+      this.page = num;
+    }
+  }
 };
 </script>

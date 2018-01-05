@@ -1,36 +1,36 @@
 <template>
-    <div class="menu">
-        <section class="category">
-            <div v-for="(category,index) in menu" @click="setCategory(index,$event)" :key="index">{{category[language]}}</div>
-        </section>
-        <section class="items sub" v-if="saveItems">
-            <div v-for="(item,index) in page" @click="pick(item)" :class="{disable:!item.clickable,like:item.like}" :key="index" :data-menuID="item.menuID">{{item[language]}}</div>
-            <div @click="page = 0" v-if="items.length >= 34" class="pageButton">{{$t("button.firstPage")}}</div>
-            <div @click="page = 1" v-if="items.length >= 34" class="pageButton">{{$t("button.secondPage")}}</div>
-            <div @click="page = 2" v-if="items.length >= 34" class="pageButton">{{$t("button.thirdPage")}}</div>
-        </section>
-        <section class="items" v-else-if="config.display.menuID">
-            <div v-for="(item,index) in page" @click="pick(item)" :class="{disable:!item.clickable,like:item.like}" :key="index" :data-menuID="item.menuID">{{item[language]}}</div>
-            <div @click="page = 0" v-if="items.length >= 34" class="pageButton">{{$t("button.firstPage")}}</div>
-            <div @click="page = 1" v-if="items.length >= 34" class="pageButton">{{$t("button.secondPage")}}</div>
-            <div @click="page = 2" v-if="items.length >= 34" class="pageButton">{{$t("button.thirdPage")}}</div>
-        </section>
-        <section class="items" v-else>
-            <div v-for="(item,index) in page" @click="pick(item)" :class="{disable:!item.clickable,like:item.like}" :key="index">{{item[language]}}</div>
-            <div @click="page = 0" v-if="items.length >= 34" class="pageButton">{{$t("button.firstPage")}}</div>
-            <div @click="page = 1" v-if="items.length >= 34" class="pageButton">{{$t("button.secondPage")}}</div>
-            <div @click="page = 2" v-if="items.length >= 34" class="pageButton">{{$t("button.thirdPage")}}</div>
-        </section>
-        <section class="sides">
-            <div v-for="(side,index) in sides" @click="setOption(side,index)" :key="index">{{side[language]}}</div>
-        </section>
-        <section class="cart">
-            <order-list layout="order" :sort="sort"></order-list>
-            <query-bar :query="queryItem" :items="queryItemResult"></query-bar>
-            <buttons :layout="ticket.type" @open="openComponent"></buttons>
-        </section>
-        <div :is="component" :init="componentData" @execute="fn"></div>
-    </div>
+  <div class="menu">
+    <section class="category">
+      <div v-for="(category,index) in menu" @click="setCategory(index,$event)" :key="index">{{category[language]}}</div>
+    </section>
+    <section class="items sub" v-if="saveItems">
+      <div v-for="(item,index) in page" @click="pick(item)" :class="{disable:!item.clickable,like:item.like}" :key="index" :data-menuID="item.menuID">{{item[language]}}</div>
+      <div @click="page = 0" v-if="items.length >= 34" class="pageButton">{{$t("button.firstPage")}}</div>
+      <div @click="page = 1" v-if="items.length >= 34" class="pageButton">{{$t("button.secondPage")}}</div>
+      <div @click="page = 2" v-if="items.length >= 34" class="pageButton">{{$t("button.thirdPage")}}</div>
+    </section>
+    <section class="items" v-else-if="config.display.menuID">
+      <div v-for="(item,index) in page" @click="pick(item)" :class="{disable:!item.clickable,like:item.like}" :key="index" :data-menuID="item.menuID">{{item[language]}}</div>
+      <div @click="page = 0" v-if="items.length >= 34" class="pageButton">{{$t("button.firstPage")}}</div>
+      <div @click="page = 1" v-if="items.length >= 34" class="pageButton">{{$t("button.secondPage")}}</div>
+      <div @click="page = 2" v-if="items.length >= 34" class="pageButton">{{$t("button.thirdPage")}}</div>
+    </section>
+    <section class="items" v-else>
+      <div v-for="(item,index) in page" @click="pick(item)" :class="{disable:!item.clickable,like:item.like}" :key="index">{{item[language]}}</div>
+      <div @click="page = 0" v-if="items.length >= 34" class="pageButton">{{$t("button.firstPage")}}</div>
+      <div @click="page = 1" v-if="items.length >= 34" class="pageButton">{{$t("button.secondPage")}}</div>
+      <div @click="page = 2" v-if="items.length >= 34" class="pageButton">{{$t("button.thirdPage")}}</div>
+    </section>
+    <section class="sides">
+      <div v-for="(side,index) in sides" @click="setOption(side,index)" :key="index">{{side[language]}}</div>
+    </section>
+    <section class="cart">
+      <order-list layout="order" :sort="sort"></order-list>
+      <query-bar :query="queryItem" :items="queryItemResult"></query-bar>
+      <buttons :layout="ticket.type" @open="openComponent"></buttons>
+    </section>
+    <div :is="component" :init="componentData" @execute="fn"></div>
+  </div>
 </template>
 
 <script>
@@ -186,21 +186,72 @@ export default {
       this.flatten(this.menuInstance[i].item);
     },
     pick(item) {
+      item = JSON.parse(JSON.stringify(item));
+      this.app.mode === "edit" && Object.assign(item, { new: true });
+
       this.checkItemAvailable(item)
-        .then(this.checkItemType.bind(item))
-        .catch(this.itemHandler.bind(item));
+        .then(this.checkOption)
+        .then(this.checkItemType)
+        .catch(this.specialItemHandler.bind(item));
     },
     checkItemAvailable(item) {
-      return new Promise((next, reject) => {
-        item.hasOwnProperty("clickable") && !item.clickable
-          ? reject()
-          : next();
+      return new Promise((next, stop) => {
+        if (item.hasOwnProperty("clickable") && !item.clickable) {
+          stop("unavailable");
+        } else {
+          next(item);
+        }
       });
     },
-    checkItemType(item){
-        return new Promise((next,reject)=>{
-            
-        })
+    checkOption(item) {
+      return new Promise((next, stop) => {
+        const manual = item.disableAutoAdd || item.manual;
+
+        if (manual) {
+          next(item);
+        } else {
+          const { option } = item;
+
+          if (option.length) {
+            const replace = option[0].hasOwnProperty("replace")
+              ? option[0].replace
+              : option[0].overWrite;
+
+            const { zhCN, usEN, ignore } = option[0];
+            if (replace) {
+              Object.assign(item, { zhCN, usEN });
+              next(item);
+            } else {
+              !ignore &&
+                Object.assign(item, {
+                  side: {
+                    zhCN: `[${zhCN}]`,
+                    usEN: `[${usEN}]`
+                  }
+                });
+
+              next(item);
+            }
+          } else {
+            next(item);
+          }
+        }
+      });
+    },
+    checkItemType(item) {
+      return new Promise((next, stop) => {});
+    },
+
+    specialItemHandler(item, type) {
+      switch (type) {
+        case "openFood":
+          break;
+        case "weightFood":
+          break;
+        case "subMenu":
+          break;
+        default:
+      }
     }
   }
 };
