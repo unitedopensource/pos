@@ -10,7 +10,7 @@
                     <span class="add" @click="create">{{$t('button.new')}}</span>
                 </nav>
             </header>
-            <external v-for="(template,index) in templates" :key="index" :title="template.alias" @open="$emit('set',template)"></external>
+            <external v-for="(template,index) in templates" :key="index" :title="template.name" :tooltip="template.note" @open="$emit('set',template)"></external>
             <div class="pages" v-if="list.length > 12">
                 <pagination :of="list" :max="5" :contain="12" @page="setPage" class="f1"></pagination>
             </div>
@@ -20,9 +20,10 @@
 </template>
 
 <script>
-import external from "../common/external"
+import external from "../../common/external"
+import creator from "../component/templateCreator";
 export default {
-    components: { external },
+    components: { external, creator },
     data() {
         return {
             list: this.$store.getters.templates,
@@ -40,7 +41,21 @@ export default {
     },
     methods: {
         create() {
+            let template = {
+                name: "",
+                note: "",
+                insert: false,
+                jumpNext: false,
+                contain: []
+            };
 
+            new Promise((resolve, reject) => {
+                this.componentData = { resolve, reject, template },
+                    this.component = "creator"
+            }).then(_template => {
+
+                this.$q();
+            }).catch(() => this.$q())
         },
         setPage(num) {
             this.page = num

@@ -182,14 +182,18 @@ export default [{
       }, {
         path: 'template',
         component: require('./components/setting/menu/templateTab'),
-        children:[{
-          path:'/',
-          name:'Setting.template',
-          component:require('./components/setting/menu/templates')
-        },{
-          path:'edit',
-          name:'Setting.template.edit',
-          component:require('./components/setting/menu/sub/template')
+        children: [{
+          path: '/',
+          name: 'Setting.template',
+          component: require('./components/setting/menu/template/index')
+        }, {
+          path: 'config',
+          name: 'Setting.template.config',
+          component: require('./components/setting/menu/template/config')
+        }, {
+          path: 'item',
+          name: 'Setting.template.item',
+          component: require('./components/setting/menu/template/item')
         }]
       }]
     }, {
@@ -352,10 +356,10 @@ export default [{
           path: '/',
           name: 'Setting.chart',
           component: require('./components/setting/chart/overview')
-        },{
-          path:'source',
-          name:'Setting.chart.source',
-          component:require('./components/setting/chart/source')
+        }, {
+          path: 'source',
+          name: 'Setting.chart.source',
+          component: require('./components/setting/chart/source')
         }]
       }]
     }

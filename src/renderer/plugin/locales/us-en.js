@@ -583,7 +583,7 @@ export default {
         'invoiceNotFound': 'Invoice Not Found',
         'actionProcess': 'How do you want to proceed?',
         'templateRemove': 'Template Remove',
-        'templateRemoveTip': 'Are you sure to remove this template?',
+        'templateRemoveConfirm': 'Are you sure to remove this template?',
         'unableAdd': 'Unable to Add',
         'maxSubItem': '{i} can only has {i} maximum subitems',
         'timeout': 'Time Out',
@@ -1085,7 +1085,8 @@ export default {
         'cancelCount': 'Cancel Count',
         'cancelAmount': 'Cancel Amount',
         'autoCorrectAddress': 'Auto Correct Address',
-        'noUse': 'No Use'
+        'noUse': 'No Use',
+        'autoJump': 'Auto Jump'
     },
     nav: {
         'store': 'Store',
@@ -1212,8 +1213,6 @@ export default {
         'taxCalculationTip': 'Please consult with your individual tax advisor',
         'menu': 'Menu',
         'request': 'Request',
-        'template': 'Template',
-        'templateTip': '',
         'display': 'Display',
         'print': 'Print',
         'codeEditor': 'Code Editor',
@@ -1373,6 +1372,8 @@ export default {
     },
     tip: {
         'autoTemplate': 'Auto popup template page',
+        'insertTemplateItem': 'Insert selected items on this template',
+        'autoJumpNext': 'Auto jump to next page when condition met',
         'alphabetical': 'Sort menu item by alphabet',
         'createSubMenuGroup': 'Create a sub menu group',
         'reportBeforeBatch': 'Print each credit card transaction before batch report',

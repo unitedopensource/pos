@@ -48,10 +48,10 @@ export default {
       option: JSON.parse(JSON.stringify(this.init.option)),
       groups: Object.keys(this.$store.getters.submenu) || [],
       templates: this.$store.getters.templates.map(t => ({
-        label: t.alias,
-        tooltip: this.$t("text.queueItem", t.contain.length),
+        label: t.name,
+        tooltip: t.note || this.$t("text.queueItem", t.contain.length),
         plainText: true,
-        value: t.alias
+        value: t.name
       })),
       maxSubItem: 0,
       overCharge: 0,

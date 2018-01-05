@@ -493,7 +493,7 @@ export default {
         'invoiceNotFound': '无法找到订单',
         'actionProcess': '您要如何处理这个情况?',
         'templateRemove': '移除模版',
-        'templateRemoveTip': '您确定要移除这个模版吗?',
+        'templateRemoveConfirm': '您确定要移除这个模版吗?',
         'unableAdd': '无法添加',
         'maxSubItem': '{i} 无法添加多于 {i} 个子菜项',
         'timeout': '操作超时',
@@ -1080,7 +1080,8 @@ export default {
         'cancelCount': '取消订单',
         'cancelAmount': '取消总额',
         'autoCorrectAddress': '自动格式化地址',
-        'noUse': '不使用'
+        'noUse': '不使用',
+        'autoJump': '自动转跳'
     },
     nav: {
         'store': '店面',
@@ -1211,7 +1212,6 @@ export default {
         'menu': '菜单',
         'request': '要求',
         'template': '模板',
-        'templateTip': '便捷的添加预先设置的物品',
         'display': '显示',
         'print': '打印设定',
         'codeEditor': '代码编辑',
@@ -1370,6 +1370,8 @@ export default {
     },
     tip: {
         'autoTemplate': '自动弹出模板选择页面',
+        'insertTemplateItem': '插入该模版选择的物品',
+        'autoJumpNext': '满足条件时自动转跳到下一页',
         'alphabetical': '按字母排序菜单 (中文则按拼音排序)',
         'createSubMenuGroup': '创建一个子菜单组',
         'reportBeforeBatch': '过账前是否详细的打印每笔交易信息',
