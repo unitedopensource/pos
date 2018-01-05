@@ -12,6 +12,7 @@ const dialog = {
               eventID: 1205,
               type: "bug",
               cause: error,
+              source: "plugin/dialog.js",
               note: `An error occurred when try to determine operator's permission. Most likely need to reset operator's setting.`
             })
           }
@@ -19,10 +20,8 @@ const dialog = {
           return approve
         },
         $log(event) {
-          const { eventID, type, note, cause, data } = event;
-          this.$socket.emit("[SYS] LOG", {
-            eventID, type, note, cause, data, source: this.$options.name
-          });
+          const { eventID, type, note, cause, data, source } = event;
+          this.$socket.emit("[SYS] LOG", { eventID, type, note, cause, data, source });
         }
       }
     });
@@ -111,12 +110,12 @@ const dialog = {
             if (_approve) {
               this.$q();
               authorized();
-              this.$log({ eventID: 1203, type: "success", note: `${name} has granted ${permit} permission from ${operator.name}` });
+              this.$log({ eventID: 1203, type: "success", source: "plugin/dialog.js", note: `${name} has granted ${permit} permission from ${operator.name}` });
             } else {
               this.$accessDenied();
               unauthorized();
               const note = `${name} attempted to grant ${permit} permission from ${operator.name} but neither has ${permit} permission.`;
-              this.$log({ eventID: 1204, type: "failure", note });
+              this.$log({ eventID: 1204, type: "failure", source: "plugin/dialog.js", note });
             }
           }).catch(() => {
             this.$accessDenied();
