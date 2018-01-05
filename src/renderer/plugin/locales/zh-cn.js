@@ -1082,7 +1082,8 @@ export default {
         'autoCorrectAddress': '自动格式化地址',
         'noUse': '不使用',
         'autoJump': '自动转跳',
-        'startAt': '(个)起'
+        'startAt': '(个)起',
+        'copy': '复制'
     },
     nav: {
         'store': '店面',

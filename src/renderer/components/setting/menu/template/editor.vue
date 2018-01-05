@@ -6,7 +6,7 @@
                 <h3>{{$t('title.template')}}</h3>
             </header>
             <div class="wrap">
-                <inputer title="text.primary" v-model="item.usEN"></inputer>
+                <inputer title="text.primary" v-model="item.usEN" :autoFocus="true" @keydown.enter.native="confirm"></inputer>
                 <inputer title="text.secondary" v-model="item.zhCN"></inputer>
                 <inputer title="text.price" v-model.number="item.price"></inputer>
                 <div class="checkboxes">
@@ -17,7 +17,7 @@
                 <div class="opt">
                     <span class="del">{{$t('button.delete')}}</span>
                 </div>
-                <button class="btn" @click="confirm">{{$t('button.confirm')}}</button>
+                <button class="btn" @click="confirm" :disabled="!item.usEN">{{$t('button.confirm')}}</button>
             </footer>
         </div>
     </div>
@@ -37,7 +37,9 @@ export default {
     },
     methods: {
         confirm() {
-
+            this.item.usEN = this.item.usEN.toCapitalCase();
+            if (!this.item.zhCN) this.item.zhCN = this.item.usEN;
+            this.init.resolve(this.item)
         }
     }
 }

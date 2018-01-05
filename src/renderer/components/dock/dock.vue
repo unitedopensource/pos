@@ -202,6 +202,7 @@ export default {
       "newPhoneCall",
       "removeSpooler",
       "setTodayOrder",
+      "setTemplates",
       "updateRequestCategory",
       "updateRequestAction",
       "updateRequestItem",
@@ -248,7 +249,6 @@ export default {
       Object.assign(this.station, data);
       Printer.initial(CLODOP, this.config, data);
     },
-
     UPDATE_TABLE_STATUS(data) {
       this.updateTable(data);
     },
@@ -289,7 +289,6 @@ export default {
           break;
       }
     },
-
     REQUEST_ITEM_REMOVE(data) {
       this.removeRequestItem(data);
     },
@@ -310,6 +309,9 @@ export default {
     },
     SYNC_RESERVATIONS(data) {
       this.setReservation(data);
+    },
+    REPLACE_TEMPLATE(data){
+      this.setTemplates(data);
     },
     SHUTDOWN() {
       ipcRenderer.send("Shutdown");

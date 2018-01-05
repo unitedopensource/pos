@@ -1087,7 +1087,8 @@ export default {
         'autoCorrectAddress': 'Auto Correct Address',
         'noUse': 'No Use',
         'autoJump': 'Auto Jump',
-        'startAt': 'Start At'
+        'startAt': 'Start At',
+        'copy': 'Copy'
     },
     nav: {
         'store': 'Store',

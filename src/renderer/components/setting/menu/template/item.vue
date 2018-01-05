@@ -6,7 +6,7 @@
                 <span>{{page.name}}</span>
                 <i class="fa fa-caret-right"></i>
             </li>
-            <li>
+            <li @click="newPage">
                 <span>{{$t('button.new')}}</span>
                 <i class="fa fa-plus"></i>
             </li>
@@ -47,6 +47,9 @@ export default {
             index: 0
         }
     },
+    beforeRouteLeave(to, from, next) {
+        this.$socket.emit("[TEMPLATE] SAVE", this.template, callback => next());
+    },
     methods: {
         create() {
             let item = {
@@ -57,7 +60,7 @@ export default {
                 key: Math.random().toString(36).substr(2, 6)
             }
             new Promise((resolve, reject) => {
-                this.componentData = { resolve, reject, item };
+                this.componentData = { resolve, reject, item, printers: this.printers };
                 this.component = "editor"
             }).then(_item => {
                 this.template.contain[this.index].contain.push(_item);
@@ -78,10 +81,30 @@ export default {
             let option = { addition, startAt, max, name };
 
             new Promise((resolve, reject) => {
-                this.componentData = { resolve, reject, option };
+                this.componentData = { resolve, reject, option, edit: true };
                 this.component = "opt"
             }).then(_option => {
+
                 Object.assign(this.template.contain[this.index], _option);
+                this.$q();
+            }).catch(del => {
+                if (del) {
+                    const index = this.index;
+                    this.index = 0;
+                    this.template.contain.splice(index, 1);
+                }
+                this.$q()
+            })
+        },
+        newPage() {
+            let option = { addition: 0, startAt: 0, max: 0, name: "" };
+
+            new Promise((resolve, reject) => {
+                this.componentData = { resolve, reject, option, edit: false };
+                this.component = "opt"
+            }).then(_option => {
+                Object.assign(_option, { contain: [] });
+                this.template.contain.push(_option);
                 this.$q();
             }).catch(() => this.$q())
         }

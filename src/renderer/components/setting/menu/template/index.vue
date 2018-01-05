@@ -10,7 +10,7 @@
                     <span class="add" @click="create">{{$t('button.new')}}</span>
                 </nav>
             </header>
-            <external v-for="(template,index) in templates" :key="index" :title="template.name" :tooltip="template.note" @open="$emit('set',template)"></external>
+            <external v-for="(template,index) in templates" :key="index" :title="template.name" :tooltip="template.note" :translate="false" @open="$emit('set',template)"></external>
             <div class="pages" v-if="list.length > 12">
                 <pagination :of="list" :max="5" :contain="12" @page="setPage" class="f1"></pagination>
             </div>
@@ -45,7 +45,7 @@ export default {
                 name: "",
                 note: "",
                 insert: false,
-                jumpNext: false,
+                autoJump: false,
                 contain: []
             };
 

@@ -1,8 +1,12 @@
 <template>
   <div class="external" :class="{style:defaultStyle}">
-    <div class="inner">
+    <div class="inner" v-if="translate">
       <span>{{$t(title)}}</span>
       <span class="tooltip">{{$t(tooltip)}}</span>
+    </div>
+    <div class="inner" v-else>
+      <span>{{title}}</span>
+      <span class="tooltip">{{tooltip}}</span>
     </div>
     <slot>
       <div class="icon" @click="$emit('open')">
@@ -17,6 +21,10 @@ export default {
   props: {
     title: String,
     tooltip: String,
+    translate: {
+      type: Boolean,
+      default: true
+    },
     defaultStyle: {
       type: Boolean,
       default: true

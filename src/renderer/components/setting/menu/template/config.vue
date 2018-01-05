@@ -14,7 +14,7 @@
         </header>
         <text-input title="text.note" v-model="template.note"></text-input>
         <toggle title="text.insert" tooltip="tip.insertTemplateItem" v-model="template.insert"></toggle>
-        <toggle title="text.autoJump" tooltip="tip.autoJumpNext" v-model="template.jumpNext"></toggle>
+        <toggle title="text.autoJump" tooltip="tip.autoJumpNext" v-model="template.autoJump"></toggle>
         <external title="text.contain"></external>
     </div>
 </template>
