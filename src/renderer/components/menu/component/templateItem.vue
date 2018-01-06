@@ -8,7 +8,7 @@
       <div class="banner"></div>
       <div class="wrap">
         <ul>
-          <li v-for="(page,i) in template.contain" @click="index = i">
+          <li v-for="(page,i) in template.contain" @click="index = i" class="page">
             <span>{{page.name}}</span>
             <i class="fa fa-caret-right"></i>
           </li>
@@ -70,6 +70,13 @@ export default {
       });
       this.max =
         this.init.side.max || this.template.contain[index].max || Infinity;
+
+      this.$nextTick(() => {
+        let dom = document.querySelector("li.page.current");
+        dom && dom.classList.remove("current");
+
+        document.querySelectorAll("li.page")[index].classList.add("current");
+      });
     },
     saveItems(index) {
       this.saved[index] = this.items.filter(i => i.qty > 0);
@@ -179,12 +186,28 @@ ul {
 }
 
 li {
-  padding: 15px 20px 15px 15px;
   display: flex;
+  color: #656565;
+  cursor: pointer;
   border-bottom: 1px solid #eee;
+  padding: 15px 20px 15px 15px;
 }
 
 li span {
   flex: 1;
+}
+
+i {
+  opacity: 0;
+  transition: opacity 0.3s ease-out;
+}
+
+li.current {
+  color: #3c3c3c;
+  font-weight: bold;
+}
+
+.current i {
+  opacity: 1;
 }
 </style>

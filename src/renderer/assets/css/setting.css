@@ -303,6 +303,30 @@ td.amount {
     flex-wrap: wrap;
 }
 
+.editor .wrap .printers{
+    padding: 5px 0;
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.editor .wrap .printers > label {
+    width: 80px;
+    display: block;
+}
+  
+.editor .wrap .printers .inner {
+    border: 1px solid #eee;
+    background: #fff;
+    flex: 1;
+    border-radius: 2px;
+    padding: 4px 2px;
+    display: flex;
+    max-width: 264px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
 .editor nav.tabs {
     display: flex;
     height: 45px;

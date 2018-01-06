@@ -5,21 +5,21 @@
     </section>
     <section class="items sub" v-if="saveItems">
       <div v-for="(item,index) in page" @click="pick(item)" :class="{disable:!item.clickable,like:item.like}" :key="index" :data-menuID="item.menuID">{{item[language]}}</div>
-      <div @click="page = 0" v-if="items.length >= 34" class="pageButton">{{$t("button.firstPage")}}</div>
-      <div @click="page = 1" v-if="items.length >= 34" class="pageButton">{{$t("button.secondPage")}}</div>
-      <div @click="page = 2" v-if="items.length >= 34" class="pageButton">{{$t("button.thirdPage")}}</div>
+      <div @click="itemPage = 0" v-if="items.length >= 34" class="pageButton">{{$t("button.firstPage")}}</div>
+      <div @click="itemPage = 1" v-if="items.length >= 34" class="pageButton">{{$t("button.secondPage")}}</div>
+      <div @click="itemPage = 2" v-if="items.length >= 34" class="pageButton">{{$t("button.thirdPage")}}</div>
     </section>
     <section class="items" v-else-if="config.display.menuID">
       <div v-for="(item,index) in page" @click="pick(item)" :class="{disable:!item.clickable,like:item.like}" :key="index" :data-menuID="item.menuID">{{item[language]}}</div>
-      <div @click="page = 0" v-if="items.length >= 34" class="pageButton">{{$t("button.firstPage")}}</div>
-      <div @click="page = 1" v-if="items.length >= 34" class="pageButton">{{$t("button.secondPage")}}</div>
-      <div @click="page = 2" v-if="items.length >= 34" class="pageButton">{{$t("button.thirdPage")}}</div>
+      <div @click="itemPage = 0" v-if="items.length >= 34" class="pageButton">{{$t("button.firstPage")}}</div>
+      <div @click="itemPage = 1" v-if="items.length >= 34" class="pageButton">{{$t("button.secondPage")}}</div>
+      <div @click="itemPage = 2" v-if="items.length >= 34" class="pageButton">{{$t("button.thirdPage")}}</div>
     </section>
     <section class="items" v-else>
       <div v-for="(item,index) in page" @click="pick(item)" :class="{disable:!item.clickable,like:item.like}" :key="index">{{item[language]}}</div>
-      <div @click="page = 0" v-if="items.length >= 34" class="pageButton">{{$t("button.firstPage")}}</div>
-      <div @click="page = 1" v-if="items.length >= 34" class="pageButton">{{$t("button.secondPage")}}</div>
-      <div @click="page = 2" v-if="items.length >= 34" class="pageButton">{{$t("button.thirdPage")}}</div>
+      <div @click="itemPage = 0" v-if="items.length >= 34" class="pageButton">{{$t("button.firstPage")}}</div>
+      <div @click="itemPage = 1" v-if="items.length >= 34" class="pageButton">{{$t("button.secondPage")}}</div>
+      <div @click="itemPage = 2" v-if="items.length >= 34" class="pageButton">{{$t("button.thirdPage")}}</div>
     </section>
     <section class="sides">
       <div v-for="(side,index) in sides" @click="setOption(side,index)" :key="index">{{side[language]}}</div>
@@ -39,11 +39,18 @@ import buttons from "./buttons";
 import dialoger from "../common/dialoger";
 import queryBar from "./component/queryBar";
 import orderList from "../common/orderList";
-import templateItem from "./component/templateItem"
-
+import templateItem from "./component/templateItem";
+import temporaryItem from "./component/temporaryItem";
 
 export default {
-  components: { buttons, dialoger, queryBar, orderList, templateItem },
+  components: {
+    buttons,
+    dialoger,
+    queryBar,
+    orderList,
+    templateItem,
+    temporaryItem
+  },
   computed: {
     page() {
       if (this.items.length > 33) {
@@ -53,7 +60,21 @@ export default {
       }
       return this.items;
     },
-    ...mapGetters(["op", "app", "menu", "item", "submenu", "device", "config", "order", "station", "ticket", "sides", "language"])
+    ...mapGetters([
+      "op",
+      "app",
+      "menu",
+      "item",
+      "submenu",
+      "device",
+      "config",
+      "order",
+      "station",
+      "ticket",
+      "sides",
+      "customer",
+      "language"
+    ])
   },
   data() {
     return {
@@ -63,9 +84,9 @@ export default {
       saveItems: null,
       queryResult: [],
       queryItem: "",
+      itemPage: 0,
       query: "",
       items: [],
-      itemPage: 0,
       sort: 0
     };
   },
@@ -159,7 +180,7 @@ export default {
       if (favorite) {
         const target = this.customer.favorite || [];
         items.forEach(item => {
-          item.like = target.include(item._id);
+          item.like = target.includes(item._id);
         });
       }
 
@@ -240,7 +261,10 @@ export default {
               Object.assign(item, { zhCN, usEN });
               next(item);
             } else {
-              !ignore && Object.assign(item, { side: { zhCN: `[${zhCN}]`, usEN: `[${usEN}]` } });
+              !ignore &&
+                Object.assign(item, {
+                  side: { zhCN: `[${zhCN}]`, usEN: `[${usEN}]` }
+                });
               next(item);
             }
           } else {
@@ -253,37 +277,40 @@ export default {
       return new Promise((next, stop) => {
         const { option, manual = false, subItem = false } = item;
 
+        console.log(item);
+        if (item.temporary) stop("openFood");
+
         if (subItem) {
           this.addSubMenuItem(item);
           stop();
-        };
+        }
 
         if (!manual && option[0]) {
-          this.addToOrder(item);
-
-          if (option[0].template) this.config.display.autoTemplate ? stop("template") : stop();
+          if (option[0].template)
+            this.config.display.autoTemplate ? stop("template") : stop();
           if (option[0].subMenu) stop("subMenu");
-
         }
+
         next(item);
       });
     },
     specialItemHandler(item, type, index) {
-      item = item || this.item;
       index = index || 0;
 
       switch (type) {
         case "openFood":
+          this.$p("temporaryItem", { item });
           break;
         case "weightFood":
           break;
         case "subMenu":
+          item ? this.addToOrder(item) : (item = this.item);
           const { subMenu, maxSubItem, overCharge } = item.option[index];
-
           Object.assign(this.item, { rules: { maxSubItem, overCharge } });
           this.getSubMenuItem(subMenu);
           break;
         case "template":
+          item ? this.addToOrder(item) : (item = this.item);
           this.$p("templateItem", { side: item.option[index], index });
           break;
         default:
@@ -306,11 +333,26 @@ export default {
         let align = 6 - subItems.length % 3;
         align === 6 && (align = 3);
 
-        index !== lastIndex && Array(align).fill().forEach(_ => subItems.push({ zhCN: "", usEN: "", clickable: false, group: null }));
+        index !== lastIndex &&
+          Array(align)
+            .fill()
+            .forEach(_ =>
+              subItems.push({
+                zhCN: "",
+                usEN: "",
+                clickable: false,
+                group: null
+              })
+            );
         items.push(...subItems);
       });
 
-      length < 33 && Array(33 - items.length).fill().forEach(_ => items.push({ zhCN: "", usEN: "", clickable: false, group: null }));
+      length < 33 &&
+        Array(33 - items.length)
+          .fill()
+          .forEach(_ =>
+            items.push({ zhCN: "", usEN: "", clickable: false, group: null })
+          );
 
       this.items = items;
     },
@@ -318,14 +360,21 @@ export default {
       const { zhCN, usEN, print, price, subItem, _id } = item;
 
       let content = {
-        qty: 1, zhCN, usEN, print, single: price, subItem,
+        qty: 1,
+        zhCN,
+        usEN,
+        print,
+        single: price,
+        subItem,
         price: price.toFixed(2),
         key: _id.slice(-4)
       };
 
-
       const itemCount = Array.isArray(this.item.choiceSet)
-        ? this.item.choiceSet.filter(i => i.subItem).map(i => i.qty).reduce((a, b) => a + b, 0)
+        ? this.item.choiceSet
+            .filter(i => i.subItem)
+            .map(i => i.qty)
+            .reduce((a, b) => a + b, 0)
         : 0;
 
       if (subItem && this.item.hasOwnProperty("rules")) {
@@ -342,7 +391,6 @@ export default {
 
           this.$dialog(prompt).then(() => $t());
           return;
-
         } else if (overCharge > 0) {
           content.single += overCharge;
           content.price = content.single.toFixed(2);
@@ -353,10 +401,17 @@ export default {
       }
 
       let printer = {};
-      print.forEach(device => printer[device] = {});
+      print.forEach(device => (printer[device] = {}));
       Object.assign(this.item.printer, printer);
     },
-    ...mapActions(["setApp", "setOrder", "setTicket", "setSides", "addToOrder", "alterItemOption"])
+    ...mapActions([
+      "setApp",
+      "setOrder",
+      "setTicket",
+      "setSides",
+      "addToOrder",
+      "alterItemOption"
+    ])
   }
 };
 </script>

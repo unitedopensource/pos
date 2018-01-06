@@ -13,20 +13,20 @@
 
 <script>
 export default {
-    data() {
-        return {
-            template: null
-        }
+  data() {
+    return {
+      template: null
+    };
+  },
+  methods: {
+    setTemplate(template) {
+      this.template = template;
+      this.$router.push({ name: "Setting.template.config" });
     },
-    methods: {
-        setTemplate(template) {
-            this.template = template;
-            this.$router.push({ name: 'Setting.template.config' });
-        },
-        resetTemplate() {
-            this.template = null;
-            this.$router.push({ name: 'Setting.template' });
-        }
+    resetTemplate() {
+      this.template = null;
+      this.$router.push({ name: "Setting.template" });
     }
-}
+  }
+};
 </script>

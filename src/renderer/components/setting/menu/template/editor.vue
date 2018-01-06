@@ -9,8 +9,11 @@
                 <inputer title="text.primary" v-model="item.usEN" :autoFocus="true" @keydown.enter.native="confirm"></inputer>
                 <inputer title="text.secondary" v-model="item.zhCN"></inputer>
                 <inputer title="text.price" v-model.number="item.price"></inputer>
-                <div class="checkboxes">
-                    <checkbox :title="name" v-model="item.print" :val="name" v-for="(name,index) in init.printers" :key="index" :multiple="true" :translate="false"></checkbox>
+                <div class="printers">
+                    <label>{{$t('text.printer')}}</label>
+                    <div class="inner">
+                        <checkbox :title="name" v-model="item.print" :val="name" v-for="(name,index) in init.printers" :key="index" :multiple="true" :translate="false"></checkbox>
+                    </div>
                 </div>
             </div>
             <footer>
@@ -28,19 +31,24 @@ import inputer from "../../common/inputer";
 import checkbox from "../../common/checkbox";
 
 export default {
-    props: ["init"],
-    components: { inputer, checkbox },
-    data() {
-        return {
-            item: JSON.parse(JSON.stringify(this.init.item))
-        }
-    },
-    methods: {
-        confirm() {
-            this.item.usEN = this.item.usEN.toCapitalCase();
-            if (!this.item.zhCN) this.item.zhCN = this.item.usEN;
-            this.init.resolve(this.item)
-        }
+  props: ["init"],
+  components: { inputer, checkbox },
+  data() {
+    return {
+      item: JSON.parse(JSON.stringify(this.init.item))
+    };
+  },
+  created() {
+    //patch
+    !this.item.hasOwnProperty("print") &&
+      Object.assign(this.item, { print: this.init.printers });
+  },
+  methods: {
+    confirm() {
+      this.item.usEN = this.item.usEN.toCapitalCase();
+      if (!this.item.zhCN) this.item.zhCN = this.item.usEN;
+      this.init.resolve(this.item);
     }
-}
+  }
+};
 </script>

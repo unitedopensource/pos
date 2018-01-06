@@ -5,6 +5,7 @@
         <h5></h5>
         <h3>{{$t('title.coupon')}}</h3>
       </header>
+      <div class="banner"></div>
       <div class="wrap">
         <offer v-for="(coupon,index) in coupons" :key="index" :promotion="coupon" :overstack="stack" @change="checkStack"></offer>
       </div>

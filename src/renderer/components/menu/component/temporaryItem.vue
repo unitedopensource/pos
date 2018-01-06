@@ -2,7 +2,7 @@
   <div class="popupMask center dark" @click.self="init.reject">
     <div class="editor">
       <header class="title">
-        <h5></h5>
+        <h5>{{$t('title.create')}}</h5>
         <h3>{{$t('text.openFood')}}</h3>
       </header>
       <div class="banner"></div>
@@ -10,7 +10,7 @@
         <inputer v-model="item" title="text.item" :autoFocus="true"></inputer>
         <inputer v-model.number="single" title="text.price" placeholder="0.00" @keydown.enter.native="confirm"></inputer>
         <inputer v-model="comment" title="text.comment" type="textarea"></inputer>
-        <div class="options">
+        <div class="printers">
           <label>{{$t('text.printer')}}</label>
           <div class="inner">
             <checkbox v-model="printer" v-for="(device,index) in printers" :val="device" :multiple="true" :key="index" :title="device"></checkbox>
@@ -50,7 +50,7 @@ export default {
     };
   },
   created() {
-    let printers = Object.keys(this.config.printers).filter(
+    const printers = Object.keys(this.config.printers).filter(
       d => !/cashier/i.test(d)
     );
 
@@ -70,9 +70,7 @@ export default {
 
       Object.keys(this.config.printers)
         .filter(d => /cashier/i.test(d))
-        .forEach(name => {
-          this.printer.push(name);
-        });
+        .forEach(name => this.printer.push(name));
 
       this.printer.forEach(name => {
         printer[name] = {
@@ -90,7 +88,22 @@ export default {
         comment: this.comment,
         temporary: true,
         printer,
-        prices: {}
+        prices: {},
+        choiceSet: []
+      });
+
+      this.comment.split(String.fromCharCode(10)).forEach(line => {
+        line &&
+          item.choiceSet.push({
+            qty: 1,
+            zhCN: line,
+            usEN: line,
+            single: 0,
+            price: "0.00",
+            key: Math.random()
+              .toString(36)
+              .substr(2, 6)
+          });
       });
 
       this.addToOrder(item);
@@ -101,27 +114,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.options {
-  padding: 5px 0;
-  align-items: center;
-}
-
-.options label {
-  width: 80px;
-  display: block;
-}
-
-.options .inner {
-  border: 1px solid #eee;
-  background: #fff;
-  flex: 1;
-  border-radius: 2px;
-  padding: 4px 2px;
-  display: flex;
-  max-width: 264px;
-  flex-wrap: wrap;
-  justify-content: space-between;
-}
-</style>

@@ -177,8 +177,16 @@ export default [{
         component: require('./components/setting/menu/request')
       }, {
         path: 'submenu',
-        name: 'Setting.submenu',
-        component: require('./components/setting/menu/submenu')
+        component: require('./components/setting/menu/submenuTab'),
+        children:[{
+          path:'/',
+          name:'Setting.submenu',
+          component:require('./components/setting/menu/submenu/index')
+        },{
+          path:'items',
+          name:'Setting.submenu.item',
+          component:require('./components/setting/menu/submenu/item')
+        }]
       }, {
         path: 'template',
         component: require('./components/setting/menu/templateTab'),
