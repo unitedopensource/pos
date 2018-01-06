@@ -278,10 +278,10 @@ export default {
       this.$log({
         eventID: 9101,
         type: "failure",
+        source: "dashboard",
         cause: error,
         note: `Dashboard initial has failed.`
       });
-      console.log(error);
     },
     welcomeScreen() {
       const { top, bot } = this.station.pole;
@@ -320,6 +320,7 @@ export default {
           this.$log({
             eventID: 9100,
             type: "failure",
+            source: "dashboard",
             note: `Attempt access ${route} failed.`
           });
         });
@@ -365,6 +366,7 @@ export default {
               this.$log({
                 eventID: 9100,
                 type: "failure",
+                source: "dashboard",
                 note: `Attempt access ${route} failed.`
               })
             );
@@ -376,6 +378,7 @@ export default {
               this.$log({
                 eventID: 9100,
                 type: "failure",
+                source: "dashboard",
                 note: `Attempt access ${route} failed.`
               })
             );
@@ -433,11 +436,13 @@ export default {
       }
     },
     cashDrawerUnavailable() {
-      this.$dialog({
+      const prompt = {
         title: "dialog.cashDrawerUnavailable",
         msg: "dialog.cashDrawerUnavailableTip",
         buttons: [{ text: "button.confirm", fn: "resolve" }]
-      }).then(() => this.$q());
+      };
+
+      this.$dialog(prompt).then(() => this.$q());
     },
     askSelfCashIn() {
       this.$dialog({ title: "dialog.selfCashIn", msg: "dialog.selfCashInTip" })
@@ -505,11 +510,13 @@ export default {
         };
         this.$socket.emit("[CASHFLOW] ACTIVITY", { cashDrawer, activity });
       } else {
-        this.$dialog({
+        const prompt = {
           title: "dialog.staffBankMode",
           msg: "dialog.staffBankModeTip",
           buttons: [{ text: "button.confirm", fn: "resolve" }]
-        }).then(() => this.$q());
+        };
+
+        this.$dialog(prompt).then(() => this.$q());
       }
     },
     initialCashFlow(name) {

@@ -11,10 +11,10 @@
           <inputer v-model.trim="option.zhCN" title="text.secondary"></inputer>
           <inputer v-model.number="option.price" title="text.price" placeholder="0.00"></inputer>
           <inputer v-model.number="option.extra" title="text.priceExtra" placeholder="0.00"></inputer>
-          <selector v-model="option.template" :opts="templates" title="text.template"></selector>
+          <selector v-model="option.template" :opts="templates" title="text.template" @update="toggleIgnore(!!option.template)"></selector>
           <switches v-model="option.replace" title="text.replaceName"></switches>
           <switches v-model="option.sub" title="text.subItem"></switches>
-          <switches v-model="extend" title="button.setSubMenu"></switches>
+          <switches v-model="extend" title="button.setSubMenu" @input="toggleIgnore(extend)"></switches>
         </aside>
         <aside class="submenu" v-if="extend">
           <inputer v-model.number="maxSubItem" title="text.maxItem"></inputer>
@@ -60,13 +60,22 @@ export default {
     };
   },
   created() {
-    this.templates.unshift({
-      label: this.$t("text.disable"),
-      tooltip: "",
-      value: ""
-    });
+    this.templates.unshift({ label: this.$t("text.disable"), tooltip: "", value: "" });
+
+    const { subMenu, maxSubItem, overCharge } = this.option;
+
+    if (Array.isArray(subMenu)) {
+      this.extend = true;
+      this.subMenu = subMenu;
+      this.maxSubItem = maxSubItem;
+      this.overCharge = overCharge;
+    }
   },
   methods: {
+    toggleIgnore(boolean) {
+      console.log(boolean)
+      this.option.ignore = boolean;
+    },
     confirm() {
       if (this.extend) {
         Object.assign(this.option, {
@@ -77,7 +86,6 @@ export default {
       } else {
         delete this.option.subMenu;
       }
-
       this.init.resolve(this.option);
     }
   }

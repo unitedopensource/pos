@@ -54,13 +54,9 @@ const mutations = {
     };
     state.item = null;
     state.choiceSetTarget = null;
-    state.diffs = null,
-      state.archivedOrder = null;
-    state.sides = Array(11).fill({
-      zhCN: "",
-      usEN: "",
-      disable: true
-    })
+    state.diffs = null;
+    state.archivedOrder = null;
+    state.sides = Array(11).fill({ zhCN: "", usEN: "", disable: true });
   },
   [types.SET_VIEW_ORDER](state, order) {
     state.order = order;
@@ -71,25 +67,13 @@ const mutations = {
   [types.SET_POINTER](state, item) {
     state.item = item;
     let sides = item.option.slice();
-    Array(11 - sides.length).fill().forEach(_ => {
-      sides.push({
-        zhCN: "",
-        usEN: "",
-        disable: true
-      })
-    });
+    Array(11 - sides.length).fill().forEach(_ => sides.push({ zhCN: "", usEN: "", disable: true }));
     state.sides = sides;
   },
   [types.RESET_POINTER](state) {
     state.item = state.order.content.last();
     let sides = state.item ? state.item.option.slice() : [];
-    Array(11 - sides.length).fill().forEach(_ => {
-      sides.push({
-        zhCN: "",
-        usEN: "",
-        disable: true
-      })
-    });
+    Array(11 - sides.length).fill().forEach(_ => sides.push({ zhCN: "", usEN: "", disable: true }));
     state.sides = sides;
     state.choiceSetTarget = null;
   },
@@ -135,57 +119,70 @@ const mutations = {
     state.item = item;
   },
   [types.ALTER_ITEM_OPTION](state, data) {
-    let item = state.item;
-    let price;
-    if (data.side.disable) return;
+    const { disable, overWrite, replace, price, extra, zhCN, usEN, skip = false, ignore = false } = data.side;
+    let { item } = state;
+
+    if (disable) return;
+
+    const _zhCN = `[${zhCN}]`;
+    const _usEN = `[${usEN}]`;
+
     if (item.qty === 1) {
-      if (item.side.zhCN === `[${data.side.zhCN}]` && item.side.usEN === `[${data.side.usEN}]` && !data.disableAutoAdd) {
+
+      if (item.side.zhCN === _zhCN && item.side.usEN === _usEN && !data.function) {
         item.total = (++item.qty * item.single).toFixed(2);
       } else {
-        item.single =
-          data.side.hasOwnProperty('price') ? parseFloat(data.side.price) :
-            data.side.hasOwnProperty('extra') ? parseFloat(item.price[0]) + parseFloat(data.side.extra) :
-              item.price[data.index] ? parseFloat(item.price[data.index]) : parseFloat(item.price[0]);
+
+        if (price > 0) {
+          item.single = parseFloat(price);
+        } else if (item.price[data.index] > 0) {
+          item.single = parseFloat(item.price[data.index]);
+        } else if (extra > 0) {
+          item.single = parseFloat(item.price[0]) + parseFloat(extra);
+        }
 
         item.total = item.single.toFixed(2);
-
-        if (data.side.overWrite) {
-          item.zhCN = data.side.zhCN;
-          item.usEN = data.side.usEN;
-        } else if (!data.side.skip) {
-          item.side = {
-            zhCN: `[${data.side.zhCN}]`,
-            usEN: `[${data.side.usEN}]`
-          }
+        if (overWrite || replace) {
+          item.zhCN = zhCN;
+          item.usEN = usEN;
         }
+
+        if (data.function) item.side = {};
+
+        const assignSide = !(skip || ignore);
+
+        if (assignSide) item.side = { zhCN: _zhCN, usEN: _usEN };
       }
     } else {
-      if (item.side.zhCN === `[${data.side.zhCN}]` && item.side.usEN === `[${data.side.usEN}]`) {
-        item.total = data.disableQtyAdd ? (item.qty * item.single).toFixed(2) : (++item.qty * item.single).toFixed(2);
+      if (item.side.zhCN === _zhCN && item.side.usEN === _usEN) {
+        item.total = data.function ? (item.qty * item.single).toFixed(2) : (++item.qty * item.single).toFixed(2);
       } else {
         item.total = (--item.qty * item.single).toFixed(2);
-        item = Object.assign({}, item);
-        item.unique = Math.random().toString(36).substr(2, 5);
-        item.qty = 1;
-        item.side = {
-          zhCN: `[${data.side.zhCN}]`,
-          usEN: `[${data.side.usEN}]`
-        };
-        if (data.side.hasOwnProperty('price')) {
-          price = parseFloat(data.side.price)
-        } else if (data.side.hasOwnProperty('extra')) {
-          price = parseFloat(item.price[0]) + parseFloat(data.side.extra)
-        } else {
-          price = item.price[data.index] ? parseFloat(item.price[data.index]) : parseFloat(item.price[0])
+
+        let _item = JSON.parse(JSON.stringify(item));
+        _item.unique = Math.random().toString(36).substr(2, 5);
+        _item.qty = 1;
+        _item.side = { zhCN: _zhCN, usEN: _usEN };
+
+        if (price > 0) {
+          _item.single = parseFloat(price);
+        } else if (item.price[data.index] > 0) {
+          _item.single = parseFloat(item.price[data.index]);
+        } else if (extra > 0) {
+          _price = parseFloat(item.price[0]) + parseFloat(data.side.extra);
         }
-        item.single = price;
-        item.total = item.single.toFixed(2);
+
+        _item.total = item.single.toFixed(2);
 
         let dom = document.querySelector('li.item.active');
         dom && dom.classList.remove('active');
-        let index = state.order.content.findIndex(i => i.unique === state.item.unique);
-        document.querySelectorAll('li.item')[index].classList.add('active');
-        state.order.content.splice(index + 1, 0, item);
+
+        const index = state.order.content.findIndex(i => i.unique === item.unique) + 1;
+
+        state.order.content.splice(index, 0, _item);
+        state.item = _item;
+
+        setTimeout(() => document.querySelectorAll('li.item')[index].classList.add('active'))
       }
     }
   },
@@ -210,8 +207,8 @@ const mutations = {
       let set = state.item.choiceSet.last();
       set && (set.qty === 1 ? state.item.choiceSet.pop() : set.price = toFixed(--set.qty * set.single, 2).toFixed(2));
     } else {
-      let currentActionTime = +new Date();
-      let diff = currentActionTime - state.lastActionTime;
+      const currentActionTime = +new Date();
+      const diff = currentActionTime - state.lastActionTime;
 
       state.item = state.item || state.order.content.last();
 
@@ -224,11 +221,7 @@ const mutations = {
         let dom = document.querySelector('.item.active');
         dom && dom.classList.remove("active");
         let sides = state.order.content.length ? state.order.content.last().option.slice() : [];
-        Array(11 - sides.length).fill().forEach(_ => sides.push({
-          zhCN: "",
-          usEN: "",
-          disable: true
-        }))
+        Array(11 - sides.length).fill().forEach(_ => sides.push({ zhCN: "", usEN: "", disable: true }));
         state.sides = sides;
       }
     }
@@ -259,10 +252,7 @@ const mutations = {
     }
   },
   [types.ALERT_CHOICE_SET](state, set) {
-    let {
-      zhCN,
-      usEN
-    } = set;
+    const { zhCN, usEN } = set;
     state.choiceSetTarget.zhCN = `${state.choiceSetTarget.zhCN} ${zhCN}`;
     state.choiceSetTarget.usEN = `${state.choiceSetTarget.usEN} ${usEN}`;
     state.choiceSetTarget.unique = Math.random().toString(36).substr(2, 5);
@@ -294,48 +284,48 @@ const mutations = {
     let dom = document.querySelector('li.item.active');
     dom && dom.classList.remove('active')
   },
-  [types.REMOVE_PAYMENT](state) {
-    delete state.order.payment.type;
-    delete state.order.settled;
+  // [types.REMOVE_PAYMENT](state) {
+  //   delete state.order.payment.type;
+  //   delete state.order.settled;
 
-    let {
-      subtotal,
-      tax,
-      discount,
-      delivery,
-      tip,
-      gratuity
-    } = state.order.payment;
+  //   let {
+  //     subtotal,
+  //     tax,
+  //     discount,
+  //     delivery,
+  //     tip,
+  //     gratuity
+  //   } = state.order.payment;
 
-    if (state.order.splitPayment) {
-      delete state.order.splitPayment;
-      delete state.order.split;
-      state.order.content.forEach(item => item.sort = 0)
-    }
+  //   if (state.order.splitPayment) {
+  //     delete state.order.splitPayment;
+  //     delete state.order.split;
+  //     state.order.content.forEach(item => item.sort = 0)
+  //   }
 
-    let surcharge = toFixed(tip + gratuity, 2);
-    let total = toFixed(subtotal + tax + delivery, 2);
-    let due = toFixed(total - discount, 2);
-    let balance = toFixed(due + surcharge, 2);
-    let remain = toFixed(balance, 2);
+  //   let surcharge = toFixed(tip + gratuity, 2);
+  //   let total = toFixed(subtotal + tax + delivery, 2);
+  //   let due = toFixed(total - discount, 2);
+  //   let balance = toFixed(due + surcharge, 2);
+  //   let remain = toFixed(balance, 2);
 
-    state.order.payment = {
-      subtotal,
-      tax,
-      delivery,
-      discount,
-      tip,
-      gratuity,
-      surcharge,
-      total,
-      due,
-      balance,
-      paid: 0,
-      remain,
-      settled: false,
-      log: []
-    }
-  },
+  //   state.order.payment = {
+  //     subtotal,
+  //     tax,
+  //     delivery,
+  //     discount,
+  //     tip,
+  //     gratuity,
+  //     surcharge,
+  //     total,
+  //     due,
+  //     balance,
+  //     paid: 0,
+  //     remain,
+  //     settled: false,
+  //     log: []
+  //   }
+  // },
   [types.REFRESH_CURRENT_ORDER](state, orders) {
     if (state.order.hasOwnProperty('status')) {
       let _id = state.order._id;

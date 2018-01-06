@@ -59,7 +59,7 @@ export default [{
   {
     path: 'menu',
     name: 'Menu',
-    component: require('./components/menu/menu')
+    component: require('./components/menu/index')
   },
   {
     path: 'history',
@@ -69,7 +69,7 @@ export default [{
   {
     path: 'lock',
     name: 'Lock',
-    component: require('./components/lock')
+    component: require('./components/login')
   },
   {
     path: 'list',

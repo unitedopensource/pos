@@ -178,30 +178,30 @@ export default {
         (!!document.querySelector("div.request") ||
           !!this.item.choiceSet.length);
 
-      if (this.app.mode === "create" || this.item.new) {
+      if (this.app.newTicket || this.item.new) {
         this.lessQty(boolean);
       } else {
         this.approval(this.op.modify, "item")
           ? this.lessQty(boolean)
           : this.requestAccess()
-              .then(op => {
-                if (this.approval(op.modify, "item")) {
-                  this.$q();
-                  this.lessQty(boolean);
-                } else {
-                  this.accessDenied();
-                }
-              })
-              .catch(() => this.accessDenied());
+            .then(op => {
+              if (this.approval(op.modify, "item")) {
+                this.$q();
+                this.lessQty(boolean);
+              } else {
+                this.accessDenied();
+              }
+            })
+            .catch(() => this.accessDenied());
       }
     },
     more() {
       let focus = document.querySelector(".item.active");
       let subItemCount = Array.isArray(this.item.choiceSet)
         ? this.item.choiceSet
-            .filter(item => item.subItem)
-            .map(item => item.qty)
-            .reduce((a, b) => a + b, 0)
+          .filter(item => item.subItem)
+          .map(item => item.qty)
+          .reduce((a, b) => a + b, 0)
         : 0;
 
       if (!focus && this.item.hasOwnProperty("rules")) {
@@ -237,13 +237,13 @@ export default {
       let target = !!document.querySelector(".sub.target");
       target
         ? this.$p("modify", {
-            item: {
-              qty: this.choiceSet ? this.choiceSet.qty : 1,
-              single: this.choiceSet ? this.choiceSet.single : 0,
-              discount: 0
-            },
-            type: "choiceSet"
-          })
+          item: {
+            qty: this.choiceSet ? this.choiceSet.qty : 1,
+            single: this.choiceSet ? this.choiceSet.single : 0,
+            discount: 0
+          },
+          type: "choiceSet"
+        })
         : this.$p("modify", { item: this.item });
     },
     course() {
@@ -340,97 +340,85 @@ export default {
       return new Promise((resolve, reject) => {
         let order = this.combineOrderInfo();
 
-        switch (this.app.mode) {
-          case "create":
-            let todo = !!document.querySelector(".item.todo");
-            if (todo) {
-              let items = [];
-              order.content.forEach(item => {
-                if (item.pending) {
-                  items.push(JSON.parse(JSON.stringify(item)));
-                  item.print = true;
-                }
-              });
-
-              if (this.ticket.type !== "DINE_IN") {
-                this.$socket.emit("[SAVE] INVOICE", order, false, content => {
-                  Printer.setTarget("Order").print(
-                    Object.assign(order, {
-                      delay: +new Date(),
-                      content: items
-                    })
-                  );
-                });
-              } else {
-                const { printOnDone } = this.dinein;
-                Object.assign(this.currentTable, { invoice: [order._id] });
-                this.$socket.emit("[TABLE] SETUP", this.currentTable);
-                this.$socket.emit("[SAVE] INVOICE", order, false, content => {
-                  if (print) {
-                    const ticket = Object.assign({}, order, {
-                      delay: +new Date(),
-                      content: items
-                    });
-
-                    printOnDone
-                      ? Printer.setTarget("All").print(ticket)
-                      : Printer.setTarget("Order").print(ticket);
-                  }
-                });
+        if (this.app.newTicket) {
+          let todo = !!document.querySelector(".item.todo");
+          if (todo) {
+            let items = [];
+            order.content.forEach(item => {
+              if (item.pending) {
+                items.push(JSON.parse(JSON.stringify(item)));
+                item.print = true;
               }
-            } else if (this.ticket.type !== "DINE_IN") {
-              //other type
-              this.$socket.emit("[SAVE] INVOICE", order, print, content => {
-                print && Printer.setTarget("All").print(content);
+            });
+
+            if (this.ticket.type !== "DINE_IN") {
+              this.$socket.emit("[SAVE] INVOICE", order, false, content => {
+                Printer.setTarget("Order").print(
+                  Object.assign(order, {
+                    delay: +new Date(),
+                    content: items
+                  })
+                );
               });
             } else {
-              //dine in needs to update table status
-              let { printOnDone } = this.dinein;
+              const { printOnDone } = this.dinein;
               Object.assign(this.currentTable, { invoice: [order._id] });
               this.$socket.emit("[TABLE] SETUP", this.currentTable);
-              this.$socket.emit("[SAVE] INVOICE", order, print, content => {
+              this.$socket.emit("[SAVE] INVOICE", order, false, content => {
                 if (print) {
+                  const ticket = Object.assign({}, order, {
+                    delay: +new Date(),
+                    content: items
+                  });
+
                   printOnDone
-                    ? Printer.setTarget("All").print(content)
-                    : Printer.setTarget("Order").print(content);
+                    ? Printer.setTarget("All").print(ticket)
+                    : Printer.setTarget("Order").print(ticket);
                 }
               });
             }
-            break;
-          case "edit":
-            if (this.ticket.type !== "TO_GO") {
-              if (print) {
-                let diffs = this.analyzeDiffs(order);
-
-                if (this.order.type !== "DINE_IN") {
-                  Printer.setTarget("All").print(diffs);
-                } else {
-                  this.dinein.printOnDone
-                    ? Printer.setTarget("All").print(diffs)
-                    : Printer.setTarget("Order").print(diffs);
-                }
-              }
-              this.$socket.emit("[UPDATE] INVOICE", order, print);
-            } else {
-              Printer.setTarget("Order").print(this.order);
-            }
-
-            this.$socket.emit("[SYS] RECORD", {
-              type: "User",
-              event: "editInvoice",
-              status: 1,
-              data: order,
-              backup: this.diffs
+          } else if (this.ticket.type !== "DINE_IN") {
+            //other type
+            this.$socket.emit("[SAVE] INVOICE", order, print, content => {
+              print && Printer.setTarget("All").print(content);
             });
-            break;
-          default:
+          } else {
+            //dine in needs to update table status
+            let { printOnDone } = this.dinein;
+            Object.assign(this.currentTable, { invoice: [order._id] });
+            this.$socket.emit("[TABLE] SETUP", this.currentTable);
+            this.$socket.emit("[SAVE] INVOICE", order, print, content => {
+              if (print) {
+                printOnDone
+                  ? Printer.setTarget("All").print(content)
+                  : Printer.setTarget("Order").print(content);
+              }
+            });
+          }
+        } else {
+          if (this.ticket.type !== "TO_GO") {
+            if (print) {
+              let diffs = this.analyzeDiffs(order);
+
+              if (this.order.type !== "DINE_IN") {
+                Printer.setTarget("All").print(diffs);
+              } else {
+                this.dinein.printOnDone
+                  ? Printer.setTarget("All").print(diffs)
+                  : Printer.setTarget("Order").print(diffs);
+              }
+            }
+            this.$socket.emit("[UPDATE] INVOICE", order, print);
+          } else {
+            Printer.setTarget("Order").print(this.order);
+          }
         }
         resolve(false);
       });
     },
     exit(quit) {
-      let { doneLock } = this.station;
-      let { lockOnDone } = this.dinein;
+      const { doneLock } = this.station;
+      const { lockOnDone } = this.dinein;
 
       this.resetAll();
       if (this.order.type === "DINE_IN") {
@@ -454,16 +442,16 @@ export default {
       this.isEmptyTicket
         ? this.exitOut()
         : this.$dialog({
-            title: "dialog.exitConfirm",
-            msg: "dialog.exitConfirmTip"
-          })
-            .then(() => this.exitOut())
-            .catch(() => this.$q());
+          title: "dialog.exitConfirm",
+          msg: "dialog.exitConfirmTip"
+        })
+          .then(() => this.exitOut())
+          .catch(() => this.$q());
     },
     combineOrderInfo(extra) {
       let customer = Object.assign({}, this.customer);
       let order = Object.assign({}, this.order);
-      if (this.app.mode === "create") {
+      if (this.app.newTicket) {
         delete customer.favorite;
         Object.assign(order, {
           customer,
@@ -575,30 +563,29 @@ export default {
     },
     exitOut() {
       this.resetAll();
-      this.setApp({ mode: "create" });
+      this.setApp({ newTicket: true });
       this.$router.push({ path: "/main" });
     },
     dineInQuit() {
       this.isEmptyTicket
         ? this.resetTableExit()
         : this.$dialog({
-            title: "dialog.exitConfirm",
-            msg: "dialog.exitConfirmTip"
+          title: "dialog.exitConfirm",
+          msg: "dialog.exitConfirmTip"
+        })
+          .then(() => {
+            this.resetTableExit();
           })
-            .then(() => {
-              this.resetTableExit();
-            })
-            .catch(() => {
-              this.$q();
-            });
+          .catch(() => {
+            this.$q();
+          });
     },
     resetTableExit() {
-      this.app.mode === "create" &&
-        this.$socket.emit("[TABLE] RESET", { _id: this.currentTable._id });
+      this.app.newTicket && this.$socket.emit("[TABLE] RESET", { _id: this.currentTable._id });
       this.exitOut();
     },
     switchLanguage() {
-      let language = this.app.language === "usEN" ? "zhCN" : "usEN";
+      const language = this.app.language === "usEN" ? "zhCN" : "usEN";
       this.$setLanguage(language);
       this.setApp({ language });
       moment.locale(language === "usEN" ? "en" : "zh-cn");

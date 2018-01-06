@@ -26,18 +26,35 @@
     </section>
     <section class="cart">
       <order-list layout="order" :sort="sort"></order-list>
-      <query-bar :query="queryItem" :items="queryItemResult"></query-bar>
-      <buttons :layout="ticket.type" @open="openComponent"></buttons>
+      <query-bar :query="queryItem" :items="queryResult"></query-bar>
+      <buttons :layout="ticket.type"></buttons>
     </section>
-    <div :is="component" :init="componentData" @execute="fn"></div>
+    <div :is="component" :init="componentData"></div>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from "vuex";
+import buttons from "./buttons";
+import dialoger from "../common/dialoger";
+import queryBar from "./component/queryBar";
+import orderList from "../common/orderList";
+import templateItem from "./component/templateItem"
+
 
 export default {
-  components: {},
+  components: { buttons, dialoger, queryBar, orderList, templateItem },
+  computed: {
+    page() {
+      if (this.items.length > 33) {
+        let min = this.itemPage * 30;
+        let max = min + 30;
+        return this.items.slice(min, max);
+      }
+      return this.items;
+    },
+    ...mapGetters(["op", "app", "menu", "item", "submenu", "device", "config", "order", "station", "ticket", "sides", "language"])
+  },
   data() {
     return {
       menuInstance: null,
@@ -45,19 +62,22 @@ export default {
       component: null,
       saveItems: null,
       queryResult: [],
+      queryItem: "",
       query: "",
       items: [],
-      page: 0,
+      itemPage: 0,
       sort: 0
     };
   },
   created() {
     this.initialData();
     window.addEventListener("keydown", this.entry, false);
+    this.$socket.emit("[INQUIRY] TICKET_NUMBER", number => {
+      this.app.newTicket ? this.setTicket({ number }) : this.resetPointer();
+    });
   },
   mounted() {
     toggleClass(".category div", "active");
-    this.app.mode === "edit" && this.resetPointer();
   },
   beforeDestroy() {
     window.removeEventListener("keydown", this.entry, false);
@@ -68,11 +88,7 @@ export default {
       this.flatten(this.menuInstance[0].item);
       this.setSides(this.fillOption([]));
 
-      this.$socket.emit("[INQUIRY] TICKET_NUMBER", number => {
-        this.app.mode === "create" && this.setTicket({ number });
-      });
-
-      if (this.app.mode === "create") {
+      if (this.app.newTicket) {
         this.ticket.type === "DINE_IN" && this.initialDineInTicket();
 
         !this.order.hasOwnProperty("source") &&
@@ -181,18 +197,19 @@ export default {
       toggleClass(".category .active", "active");
       e.currentTarget.classList.add("active");
 
-      this.page = 0;
+      this.itemPage = 0;
       this.saveItems = null;
       this.flatten(this.menuInstance[i].item);
     },
     pick(item) {
       item = JSON.parse(JSON.stringify(item));
-      this.app.mode === "edit" && Object.assign(item, { new: true });
+      !this.app.newTicket && Object.assign(item, { new: true });
 
       this.checkItemAvailable(item)
         .then(this.checkOption)
         .then(this.checkItemType)
-        .catch(this.specialItemHandler.bind(item));
+        .then(this.addToOrder)
+        .catch(this.specialItemHandler.bind(null, item));
     },
     checkItemAvailable(item) {
       return new Promise((next, stop) => {
@@ -205,31 +222,25 @@ export default {
     },
     checkOption(item) {
       return new Promise((next, stop) => {
-        const manual = item.disableAutoAdd || item.manual;
+        this.setSides(this.fillOption(item.option));
+        Object.assign(item, { side: {} });
 
-        if (manual) {
+        if (item.manual) {
           next(item);
         } else {
           const { option } = item;
 
-          if (option.length) {
+          if (option && option.length) {
+            const { zhCN = "", usEN = "", ignore } = option[0];
             const replace = option[0].hasOwnProperty("replace")
               ? option[0].replace
               : option[0].overWrite;
 
-            const { zhCN, usEN, ignore } = option[0];
             if (replace) {
               Object.assign(item, { zhCN, usEN });
               next(item);
             } else {
-              !ignore &&
-                Object.assign(item, {
-                  side: {
-                    zhCN: `[${zhCN}]`,
-                    usEN: `[${usEN}]`
-                  }
-                });
-
+              !ignore && Object.assign(item, { side: { zhCN: `[${zhCN}]`, usEN: `[${usEN}]` } });
               next(item);
             }
           } else {
@@ -239,20 +250,113 @@ export default {
       });
     },
     checkItemType(item) {
-      return new Promise((next, stop) => {});
-    },
+      return new Promise((next, stop) => {
+        const { option, manual = false, subItem = false } = item;
 
-    specialItemHandler(item, type) {
+        if (subItem) {
+          this.addSubMenuItem(item);
+          stop();
+        };
+
+        if (!manual && option[0]) {
+          this.addToOrder(item);
+
+          if (option[0].template) this.config.display.autoTemplate ? stop("template") : stop();
+          if (option[0].subMenu) stop("subMenu");
+
+        }
+        next(item);
+      });
+    },
+    specialItemHandler(item, type, index) {
+      item = item || this.item;
+      index = index || 0;
+
       switch (type) {
         case "openFood":
           break;
         case "weightFood":
           break;
         case "subMenu":
+          const { subMenu, maxSubItem, overCharge } = item.option[index];
+
+          Object.assign(this.item, { rules: { maxSubItem, overCharge } });
+          this.getSubMenuItem(subMenu);
+          break;
+        case "template":
+          this.$p("templateItem", { side: item.option[index], index });
           break;
         default:
       }
-    }
+    },
+    setOption(side, index) {
+      const { skip, ignore } = side;
+
+      side.subMenu && this.specialItemHandler(null, "subMenu", index);
+      side.template && this.specialItemHandler(null, "template", index);
+
+      (!skip || !ignore) && this.alterItemOption({ side, index });
+    },
+    getSubMenuItem(groups) {
+      const lastIndex = groups.length - 1;
+      let items = [];
+
+      groups.forEach((name, index) => {
+        let subItems = JSON.parse(JSON.stringify(this.submenu[name] || []));
+        let align = 6 - subItems.length % 3;
+        align === 6 && (align = 3);
+
+        index !== lastIndex && Array(align).fill().forEach(_ => subItems.push({ zhCN: "", usEN: "", clickable: false, group: null }));
+        items.push(...subItems);
+      });
+
+      length < 33 && Array(33 - items.length).fill().forEach(_ => items.push({ zhCN: "", usEN: "", clickable: false, group: null }));
+
+      this.items = items;
+    },
+    addSubMenuItem(item) {
+      const { zhCN, usEN, print, price, subItem, _id } = item;
+
+      let content = {
+        qty: 1, zhCN, usEN, print, single: price, subItem,
+        price: price.toFixed(2),
+        key: _id.slice(-4)
+      };
+
+
+      const itemCount = Array.isArray(this.item.choiceSet)
+        ? this.item.choiceSet.filter(i => i.subItem).map(i => i.qty).reduce((a, b) => a + b, 0)
+        : 0;
+
+      if (subItem && this.item.hasOwnProperty("rules")) {
+        const maxAllow = this.item.rules.maxSubItem * this.item.qty || Infinity;
+        const overCharge = this.item.rules.overCharge || 0;
+
+        if (itemCount >= maxAllow && overCharge === 0) {
+          const prompt = {
+            title: "dialog.unableAdd",
+            msg: ["dialog.maxSubItem", this.item[this.language], maxAllow],
+            timeout: { duration: 5000, fn: "resolve" },
+            buttons: [{ text: "button.confirm", fn: "resolve" }]
+          };
+
+          this.$dialog(prompt).then(() => $t());
+          return;
+
+        } else if (overCharge > 0) {
+          content.single += overCharge;
+          content.price = content.single.toFixed(2);
+        }
+
+        let dom = document.querySelector(".sub.target");
+        dom ? this.alertChoiceSet(content) : this.setChoiceSet(content);
+      }
+
+      let printer = {};
+      print.forEach(device => printer[device] = {});
+      Object.assign(this.item.printer, printer);
+    },
+    ...mapActions(["setApp", "setOrder", "setTicket", "setSides", "addToOrder", "alterItemOption"])
   }
 };
 </script>

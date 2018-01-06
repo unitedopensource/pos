@@ -47,7 +47,7 @@ export default {
         reservations,
         sync
       } = data;
-      
+
       try {
         this.setConfig(config);
         this.setMenu(menu);
@@ -69,7 +69,7 @@ export default {
           source: this.$options.name,
           cause: error,
           note:
-            "Application was unable to start. It's probably because the database wasn't correctly setup."
+          "Application was unable to start. It's probably because the database wasn't correctly setup."
         });
       }
     },
@@ -133,7 +133,7 @@ export default {
         this.$socket.emit("[SYS] LOG", {
           eventID: 9002,
           type: "failure",
-          source: this.$options.name,
+          source: "bootstrap",
           cause: error,
           note: `Initial device failed. Please check device configuration.`
         });
@@ -215,14 +215,14 @@ export default {
       CLODOP
         ? (window.Printer = new Print(CLODOP, config, station))
         : setTimeout(
-            function() {
-              window.Printer = new Print(CLODOP, config, station);
-            },
-            20000,
-            CLODOP,
-            config,
-            station
-          );
+          function () {
+            window.Printer = new Print(CLODOP, config, station);
+          },
+          20000,
+          CLODOP,
+          config,
+          station
+        );
     },
     ...mapActions([
       "setApp",

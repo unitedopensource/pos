@@ -1,7 +1,9 @@
 <template>
   <div class="container" @click.self="toggleKeyboard(false)">
     <dock></dock>
-    <router-view></router-view>
+    <transition mode="out-in">
+      <router-view></router-view>
+    </transition>
   </div>
 </template>
 

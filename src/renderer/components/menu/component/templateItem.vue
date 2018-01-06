@@ -94,11 +94,13 @@ export default {
     confirm() {
       this.saveItems(this.index);
       !this.insert && this.emptyChoiceSet();
+
+      const { skip, ignore } = this.init.side;
+
       this.alterItemOption({
         side: this.init.side,
         index: this.init.index,
-        disableAutoAdd: true,
-        disableQtyAdd: true
+        function: true
       });
       let items = [].concat.apply([], this.saved);
       items.forEach(item => {

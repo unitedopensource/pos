@@ -1,5 +1,5 @@
 <template>
-  <transition name="fade" appear>
+  <transition name="fade">
     <div class="container">
       <div class="accessor shadow">
         <h2>{{store.name}}</h2>
@@ -21,7 +21,7 @@
           <div @click="access" :class="{disable:disableAccess}" class="numKey">√</div>
         </section>
       </div>
-      <div class="ctrl">
+      <div class="ctrl" v-show="$route.name ==='Login'">
         <input type="checkbox" v-model="toggleMenu" id="menu">
         <label for="menu">
           <i class="fa fa-bars"></i>
@@ -187,11 +187,11 @@ export default {
   },
   methods: {
     checkVersion() {
-      return new Promise((resolve, reject) => {
+      return new Promise((next, stop) => {
         this.$socket.emit("[SYS] GET_VERSION", requireVersion => {
-          let appVersion = Electron.remote.app.getVersion();
-          let fulfilled = appVersion >= requireVersion;
-          let error = {
+          const appVersion = Electron.remote.app.getVersion();
+          const fulfilled = appVersion >= requireVersion;
+          const error = {
             reason: "outDatedVersion",
             data: {
               type: "warning",
@@ -202,21 +202,21 @@ export default {
           };
 
           process.env.NODE_ENV !== "development" && !fulfilled
-            ? reject(error)
-            : resolve();
+            ? stop(error)
+            : next();
         });
       });
     },
     checkActivation() {
-      return new Promise((resolve, reject) => {
-        resolve();
+      return new Promise((next, stop) => {
+        next();
       });
     },
     initialized() {
       this.isHost = window.isServer === true;
     },
     initialFailed(error) {
-      let { data, reason } = error;
+      const { data, reason } = error;
       switch (reason) {
         case "outDatedVersion":
           this.$dialog(data).then(() => {
@@ -248,15 +248,15 @@ export default {
       this.reset = true;
       this.$socket.emit("[ACCESS] PIN", this.password.join(""));
     },
-    autoAccess: _debounce(function() {
-      if (this.$route.name === "Login") {
+    autoAccess: _debounce(function () {
+      if (this.$route.name === "Login" || this.$route.name === "Lock") {
         const password = this.password.join("");
         password && this.access();
         this.reset = false;
       }
     }, 300),
     shutdownStations() {
-      let data = {
+      const data = {
         type: "question",
         title: "dialog.shutdownStations",
         msg: "dialog.shutdownStationsConfirm",
@@ -294,15 +294,18 @@ export default {
   },
   sockets: {
     AUTHORIZATION(data) {
-      let { auth, op } = data;
+      const { auth, op } = data;
       if (auth) {
         document.querySelector(".ctrl").classList.add("hide");
-        let language = op.language || "usEN";
+
+        const language = op.language || "usEN";
         moment.locale(language === "usEN" ? "en" : "zh-cn");
+
         this.$setLanguage(language);
-        this.setApp({ language, mode: "create" });
+        this.setApp({ language, newTicket: true, mode: "create" });
         this.setOp(op);
         this.setPin();
+
         this.$router.push({ path: "/main" });
         this.$socket.emit("[SYNC] POS", sync => {
           if (this.sync !== sync) {

@@ -113,10 +113,10 @@ export default {
         this.date === this.today
           ? resolve()
           : reject({
-              title: "dialog.unableEdit",
-              msg: "dialog.editPrevOrderTip",
-              buttons: [{ text: "button.confirm", fn: "reject" }]
-            });
+            title: "dialog.unableEdit",
+            msg: "dialog.editPrevOrderTip",
+            buttons: [{ text: "button.confirm", fn: "reject" }]
+          });
       });
     },
     checkStatus() {
@@ -124,10 +124,10 @@ export default {
         this.order.status === 1
           ? resolve()
           : reject({
-              title: "dialog.unableEdit",
-              msg: ["dialog.editVoidOrderTip", this.order.void.by],
-              buttons: [{ text: "button.confirm", fn: "reject" }]
-            });
+            title: "dialog.unableEdit",
+            msg: ["dialog.editVoidOrderTip", this.order.void.by],
+            buttons: [{ text: "button.confirm", fn: "reject" }]
+          });
       });
     },
     checkSettlement() {
@@ -159,7 +159,7 @@ export default {
     },
     edit() {
       this.setTicket({ type: this.order.type, number: this.order.number });
-      this.setApp({ mode: "edit" });
+      this.setApp({ newTicket: false });
       this.setCustomer(this.order.customer);
       this.setOrder(JSON.parse(JSON.stringify(this.order)));
       this.$router.push({ path: "/main/menu" });
@@ -170,31 +170,23 @@ export default {
         .catch(() => this.$q());
     },
     voidTicket() {
-      this.$dialog({
+      const prompt = {
         type: "warning",
-        title: [
-          "dialog.voidOrderConfirm",
-          this.order.number,
-          this.$t("type." + this.order.type)
-        ],
+        title: ["dialog.voidOrderConfirm", this.order.number, this.$t("type." + this.order.type)],
         msg: "dialog.voidOrderConfirmTip",
-        buttons: [
-          { text: "button.cancel", fn: "reject" },
-          { text: "button.void", fn: "resolve" }
-        ]
-      })
-        .then(confirm => this.$p("Reason"))
-        .catch(() => this.$q());
+        buttons: [{ text: "button.cancel", fn: "reject" }, { text: "button.void", fn: "resolve" }]
+      };
+
+      this.$dialog().then(confirm => this.$p("Reason")).catch(() => this.$q());
     },
     voidFailed(reason) {
-      this.$dialog(reason)
-        .then(this.removeRecordFromList)
-        .catch(() => this.$q());
+      this.$dialog(reason).then(this.removeRecordFromList).catch(() => this.$q());
     },
     removeRecordFromList() {
       new Promise((resolve, reject) => {
         this.$socket.emit("[PAYMENT] GET_LOG", this.order._id, logs => {
           const { number } = this.order;
+
           this.componentData = { resolve, reject, number, logs };
           this.component = "logs";
         });
@@ -205,11 +197,7 @@ export default {
       const prompt = {
         type: "question",
         title: ["dialog.recoverOrderConfirm", this.order.number],
-        msg: [
-          "dialog.recoverOrderConfirmTip",
-          this.order.void.by,
-          this.$t("reason." + this.order.void.note)
-        ]
+        msg: ["dialog.recoverOrderConfirmTip", this.order.void.by,this.$t("reason." + this.order.void.note)]
       };
 
       this.$dialog(prompt)
@@ -355,7 +343,7 @@ export default {
         .then(() => this.$p("Report"))
         .catch(() => this.accessFailedLog("report"));
     },
-    close() {},
+    close() { },
     accessFailedLog(component) {
       this.$socket.emit("[SYS] RECORD", {
         type: "Software",

@@ -189,11 +189,7 @@ export default {
       });
     },
     addOption() {
-      this.item.option.push({
-        usEN: "",
-        zhCN: "",
-        replace: false
-      });
+      this.item.option.push({ usEN: "", zhCN: "", replace: false });
     },
     removeOption(index) {
       this.item.option.splice(index, 1);
@@ -205,6 +201,7 @@ export default {
       })
         .then(_option => {
           this.item.option.splice(index, 1, _option);
+          console.log(this.item)
           this.$q();
         })
         .catch(() => this.$q());
