@@ -83,7 +83,7 @@ export default {
   methods: {
     initial() {
       this.item = JSON.parse(JSON.stringify(this.init.item));
-      if (this.init.openFood) {
+      if (this.init.marketPrice) {
         this.item = Object.assign({}, this.item, {
           single: 0,
           qty: 1,
@@ -221,7 +221,7 @@ export default {
           single: -discount,
           price: -discount
         });
-      this.init.openFood
+      this.init.marketPrice
         ? (this.addToOrder(item), this.setSides(this.fillOption(item.option)))
         : this.alterItem(item);
 
