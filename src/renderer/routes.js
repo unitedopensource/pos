@@ -270,7 +270,7 @@ export default [{
           props: true,
           name: 'Setting.operator.timecard',
           component: require('./components/setting/operator/empolyee/timecard')
-        },{
+        }, {
           path: 'schedule/:operator',
           props: true,
           name: 'Setting.operator.schedule',
@@ -368,12 +368,16 @@ export default [{
       component: require('./components/setting/sales/nav'),
       children: [{
         path: '/',
-        component: require('./components/setting/sales/indexTab'),
-        children: [{
-          path: 'index',
-          name: 'Setting.sales',
-          component: require('./components/setting/sales/overview')
-        }]
+        name: 'Setting.sales',
+        component: require('./components/setting/sales/revenue'),
+      }, {
+        path: 'giftcard',
+        name: 'Setting.giftcard',
+        component: require('./components/setting/sales/giftcard')
+      }, {
+        path: 'batch',
+        name: 'Setting.sales.batch',
+        component: require('./components/setting/sales/batch')
       }]
     }, {
       path: 'chart',

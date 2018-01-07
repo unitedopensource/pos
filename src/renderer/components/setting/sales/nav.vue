@@ -4,7 +4,15 @@
             <div class="wrap">
                 <router-link tag="li" :to="{name:'Setting.sales'}" exact>
                     <i class="fa fa-bar-chart"></i>
-                    <span class="text">{{$t('nav.overview')}}</span>
+                    <span class="text">{{$t('nav.revenue')}}</span>
+                </router-link>
+                <router-link tag="li" :to="{name:'Setting.sales.giftcard'}" exact>
+                    <i class="fa fa-gift"></i>
+                    <span class="text">{{$t('text.giftcard')}}</span>
+                </router-link>
+                <router-link tag="li" :to="{name:'Setting.sales.batch'}" exact>
+                    <i class="fa fa-file-text-o"></i>
+                    <span class="text">{{$t('nav.batch')}}</span>
                 </router-link>
             </div>
             <router-link tag="li" :to="{name:'Setting.index'}" exact>

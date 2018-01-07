@@ -1141,7 +1141,9 @@ export default {
         'schedule': 'Schedule',
         'calendar': 'Calendar',
         'sheet': 'Sheet',
-        'view': 'View'
+        'view': 'View',
+        'filter': 'Filter',
+        'revenue': 'Revenue'
     },
     setting: {
         'softwareSetting': 'UnitedPOS Setting',

@@ -1136,7 +1136,9 @@ export default {
         'schedule': '时间表',
         'calendar': '日期',
         'sheet': '表格',
-        'view': '查看'
+        'view': '查看',
+        'filter': '过滤',
+        'revenue': '营收'
     },
     setting: {
         'softwareSetting': 'UnitedPOS 后台设置',
