@@ -556,7 +556,9 @@ export default {
         'duplicateProfile': '此电话号码的资料已经存在',
         'duplicateAddress': '此街道信息已经存在',
         'removePrinter': '移除打印机',
-        'removePrinterConfirm': '您确定要移除这个打印机设定吗?'
+        'removePrinterConfirm': '您确定要移除这个打印机设定吗?',
+        'removeSpooler': '移除打印计划',
+        'removeSpoolerConfirm': '您确定要移除这个打印计划吗?'
     },
     terminal: {
         'initial': '正在初始化 {i}...',

@@ -149,7 +149,8 @@ export default {
   display: flex;
   align-items: flex-start;
   padding: 0px;
-  height: 400px;
+  height: 533px;
+  background: #F5F5F5;
 }
 
 .items {
@@ -183,6 +184,9 @@ export default {
 
 ul {
   width: 150px;
+  height: 100%;
+  border-right: 1px solid #eee;
+  background: #fff;
 }
 
 li {

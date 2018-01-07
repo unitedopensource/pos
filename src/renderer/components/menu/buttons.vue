@@ -19,7 +19,7 @@
         <i class="fa fa-users"></i>
         <span class="text">{{$t('button.switch')}}</span>
       </div>
-      <div class="btn" @click="split" v-else>
+      <div class="btn" @click="openSplit" v-else>
         <i class="fa fa-columns"></i>
         <span class="text">{{$t('button.split')}}</span>
       </div>
@@ -73,7 +73,7 @@
       <i class="fa fa-money"></i>
       <span class="text">{{$t('button.payment')}}</span>
     </button>
-    <div class="btn split" @click="split">
+    <div class="btn split" @click="openSplit">
       <i class="fa fa-columns"></i>
       <span class="text">{{$t('button.split')}}</span>
     </div>
@@ -108,7 +108,7 @@
       <i class="fa fa-money"></i>
       <span class="text">{{$t('button.payment')}}</span>
     </button>
-    <div class="btn" @click="timer">
+    <div class="btn" @click="openTimer">
       <i class="fa fa-clock-o"></i>
       <span class="text">{{$t('button.timer')}}</span>
     </div>
@@ -120,7 +120,7 @@
       <i class="fa fa-tags"></i>
       <span class="text">{{$t("button.coupon")}}</span>
     </div>
-    <div class="btn" @click="split">
+    <div class="btn" @click="openSplit">
       <i class="fa fa-columns"></i>
       <span class="text">{{$t("button.split")}}</span>
     </div>
@@ -146,14 +146,17 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import dialoger from "../common/dialoger";
-import payment from "../payment/index";
 import unlock from "../common/unlock";
+import timer from "./component/timer";
+import payment from "../payment/index";
 import modify from "./component/modify";
 import coupon from "./component/coupon";
+import splitor from "./component/split";
+import dialoger from "../common/dialoger";
+
 export default {
   props: ["layout"],
-  components: { dialoger, unlock, modify, payment, coupon },
+  components: { dialoger, unlock, modify, payment, coupon, timer, splitor },
   data() {
     return {
       isDisplayGuests: false,
@@ -181,18 +184,26 @@ export default {
       if (this.app.newTicket || this.item.new) {
         this.lessQty(boolean);
       } else {
-        this.approval(this.op.modify, "item")
-          ? this.lessQty(boolean)
-          : this.requestAccess()
-            .then(op => {
-              if (this.approval(op.modify, "item")) {
-                this.$q();
-                this.lessQty(boolean);
-              } else {
-                this.accessDenied();
-              }
-            })
-            .catch(() => this.accessDenied());
+        this.$checkPermission("modify", "item")
+          .then(() => this.lessQty(boolean))
+          .catch(() => this.$log({
+            eventID: 1210,
+            type: "failure",
+            note: `Operator attempt to delete exist item. However it was denied due to permission deny.`
+          }))
+
+        // this.approval(this.op.modify, "item")
+        //   ? this.lessQty(boolean)
+        //   : this.requestAccess()
+        //     .then(op => {
+        //       if (this.approval(op.modify, "item")) {
+        //         this.$q();
+        //         this.lessQty(boolean);
+        //       } else {
+        //         this.accessDenied();
+        //       }
+        //     })
+        //     .catch(() => this.accessDenied());
       }
     },
     more() {
@@ -219,19 +230,19 @@ export default {
       }
       this.moreQty();
     },
-    requestAccess() {
-      return new Promise((resolve, reject) => {
-        this.componentData = { resolve, reject };
-        this.component = "unlock";
-      });
-    },
-    accessDenied() {
-      this.$dialog({
-        title: "dialog.accessDenied",
-        msg: "dialog.accessDeniedTip",
-        buttons: [{ text: "button.confirm", fn: "resolve" }]
-      }).then(() => this.$q());
-    },
+    // requestAccess() {
+    //   return new Promise((resolve, reject) => {
+    //     this.componentData = { resolve, reject };
+    //     this.component = "unlock";
+    //   });
+    // },
+    // accessDenied() {
+    //   this.$dialog({
+    //     title: "dialog.accessDenied",
+    //     msg: "dialog.accessDeniedTip",
+    //     buttons: [{ text: "button.confirm", fn: "resolve" }]
+    //   }).then(() => this.$q());
+    // },
     modify() {
       if (this.isEmptyTicket) return;
       let target = !!document.querySelector(".sub.target");
@@ -268,13 +279,13 @@ export default {
         });
       });
     },
-    timer() {
+    openTimer() {
       if (this.isEmptyTicket) return;
-      this.callComponent("timer");
+      this.$p("timer")
     },
-    split() {
+    openSplit() {
       if (this.isEmptyTicket) return;
-      this.callComponent("split");
+      this.$p("splitor")
     },
     switchGuest() {
       this.callComponent("guest");

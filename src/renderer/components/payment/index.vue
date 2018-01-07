@@ -1025,14 +1025,15 @@ export default {
       });
     },
     queryGiftCard() {
-      this.swipeGiftCard(this.giftCard)
+      this.swipeGiftCard(this.giftCard.replace(/\D/g, ''))
         .then(this.checkGiftCard)
         .catch(() => this.$q());
     },
     checkGiftCard(card) {
       this.$q();
+
       return new Promise((resolve, reject) => {
-        let { number, result } = card;
+        const { number, result } = card;
 
         if (result) {
           this.giftCard = result;
@@ -1040,12 +1041,14 @@ export default {
           this.$forceUpdate();
           resolve();
         } else {
-          this.$dialog({
+          const prompt = {
             type: "error",
             title: "dialog.giftCardActivation",
             msg: ["dialog.giftCardNotActivated", number],
             buttons: [{ text: "button.confirm", fn: "resolve" }]
-          }).then(() => reject());
+          };
+
+          this.$dialog(prompt).then(() => reject());
         }
       });
     },
@@ -1080,21 +1083,15 @@ export default {
           new Promise((resolve, reject) => {
             this.componentData = { resolve, reject, callback: true };
             this.component = "thirdParty";
-          })
-            .then(type => charge(type))
-            .catch(() => this.$q());
+          }).then(charge).catch(() => this.$q());
         }
       });
     },
     saveTransaction(data) {
-      this.poleDisplay(`PAID by ${type}`, "THANK YOU");
+      const type = this.paymentType === "THIRD" ? this.thirdPartyType : this.paymentType;
+      const cashDrawer = this.op.cashCtrl === "staffBank" ? this.op.name : this.station.cashDrawer.name;
 
-      let type =
-        this.paymentType === "THIRD" ? this.thirdPartyType : this.paymentType;
-      let cashDrawer =
-        this.op.cashCtrl === "staffBank"
-          ? this.op.name
-          : this.station.cashDrawer.name;
+      this.poleDisplay(`PAID by ${type}`, "THANK YOU");
 
       let actual = Math.min(this.paid, this.payment.remain),
         change,

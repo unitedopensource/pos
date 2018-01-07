@@ -3,7 +3,7 @@
     <section class="category">
       <div v-for="(category,index) in menu" @click="categoryIndex = index" :key="index">{{category[language]}}</div>
     </section>
-    <section class="items" v-if="config.display.menuID">
+    <section class="items" v-if="config.display.menuID" :class="{sub:openSubGroup}">
       <div v-for="(item,index) in page" @click="pick(item)" :class="{disable:!item.clickable,like:item.like}" :key="index" :data-menuID="item.menuID">{{item[language]}}</div>
       <div @click="itemPage = 0" v-if="items.length >= 34" class="pageButton">{{$t("button.firstPage")}}</div>
       <div @click="itemPage = 1" v-if="items.length >= 34" class="pageButton">{{$t("button.secondPage")}}</div>
@@ -222,7 +222,7 @@ export default {
       toggleClass(".category .active", "active");
       document
         .querySelectorAll("section.category div")
-        [index].classList.add("active");
+      [index].classList.add("active");
 
       this.itemPage = 0;
       this.saveItems = null;
@@ -396,9 +396,9 @@ export default {
 
       const itemCount = Array.isArray(this.item.choiceSet)
         ? this.item.choiceSet
-            .filter(i => i.subItem)
-            .map(i => i.qty)
-            .reduce((a, b) => a + b, 0)
+          .filter(i => i.subItem)
+          .map(i => i.qty)
+          .reduce((a, b) => a + b, 0)
         : 0;
 
       if (subItem && this.item.hasOwnProperty("rules")) {

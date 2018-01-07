@@ -26,6 +26,7 @@
                     </div>
                     <span class="items" :title="invoice.content | tooltip(language)">{{$t('text.queueItem',invoice.content.length)}}</span>
                     <i class="fa fa-print print" @click="printConfirm(index)"></i>
+                    <i class="fa fa-times" @click="remove(index)"></i>
                 </li>
             </ul>
         </div>
@@ -35,8 +36,8 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-//import Printer from '../../print'
 import dialoger from '../common/dialoger'
+
 export default {
     props: ['init'],
     components: { dialoger },
@@ -52,26 +53,30 @@ export default {
     },
     methods: {
         printConfirm(i) {
-            let time = this.spooler[i].delay;
-            let schedule = moment(time).format("hh:mm");
-            let toNow = moment(time).toNow(true);
-            this.$dialog({
-                type: "question", title: "dialog.printConfirm", msg: ["dialog.printSpoolerTip", schedule, toNow],
+            const time = this.spooler[i].delay;
+            const schedule = moment(time).format("hh:mm");
+            const toNow = moment(time).toNow(true);
+            const prompt = {
+                type: "question", title: "dialog.printConfirm",
+                msg: ["dialog.printSpoolerTip", schedule, toNow],
                 buttons: [{ text: "button.cancel", fn: 'reject' }, { text: "button.print", fn: 'resolve' }]
-            }).then(() => {
-                this.printFromSpooler(i)
-                this.$q()
-            }).catch(() => { this.$q() })
+            };
+
+            this.$dialog(prompt).then(() => this.printFromSpooler(i)).catch(() => this.$q())
         },
         printFromSpooler(i) {
-            let _id = this.spooler[i]._id;
+            this.$q();
+
             let items = [];
-            this.spooler[i].content.forEach(item => { items.push(item.unique) });
-            //Printer.init(this.config).setJob("receipt").print(this.spooler[0]);
+            const _id = this.spooler[i]._id;
+
+            this.spooler[i].content.forEach(item => items.push(item.unique));
             Printer.setTarget('All').print(this.spooler[0])
             this.removeSpooler(i);
-            let index = this.history.findIndex(order => order._id === _id);
+
+            const index = this.history.findIndex(order => order._id === _id);
             let order = Object.assign({}, this.history[index]);
+
             items.forEach(unique => {
                 for (let i = 0; i < order.content.length; i++) {
                     if (order.content[i].unique === unique) {
@@ -81,13 +86,21 @@ export default {
                     }
                 }
             });
-            let isPrint = true;
-            order.content.forEach(item => {
-                delete item.new;
-                !item.print && (isPrint = false)
-            })
-            order.print = isPrint;
+
             this.$socket.emit("[UPDATE] INVOICE", order);
+        },
+        remove(i) {
+            const prompt = {
+                type: "question",
+                title: "dialog.removeSpooler",
+                msg: "dialog.removeSpoolerConfirm"
+            }
+
+            this.$dialog(prompt).then(() => {
+                this.removeSpooler(i);
+                this.$q();
+            }).catch(() => this.$q())
+
         },
         ...mapActions(['removeSpooler'])
     },
@@ -112,100 +125,100 @@ export default {
 
 <style scoped>
 .spooler {
-    min-width: 330px;
-    font-size: 16px;
-    position: absolute;
-    right: 10px;
-    top: 10px;
-    overflow: hidden;
-    background: rgba(250, 250, 250, 0.43);
-    max-height: 705px;
-    color: #424242;
-    border-radius: 2px;
-    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+  min-width: 330px;
+  font-size: 16px;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  overflow: hidden;
+  background: rgba(250, 250, 250, 0.43);
+  max-height: 705px;
+  color: #424242;
+  border-radius: 2px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
 }
 
 header {
-    display: flex;
-    background: #4FC3F7;
-    color: #fff;
-    line-height: initial;
-    padding: 10px;
+  display: flex;
+  background: #4fc3f7;
+  color: #fff;
+  line-height: initial;
+  padding: 10px;
 }
 
 nav {
-    display: flex;
-    align-items: center;
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
-    flex: 1;
+  display: flex;
+  align-items: center;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
+  flex: 1;
 }
 
 input {
-    display: none;
+  display: none;
 }
 
-header>i {
-    color: #bdebff;
-    padding: 0 5px;
-    cursor: pointer;
+header > i {
+  color: #bdebff;
+  padding: 0 5px;
+  cursor: pointer;
 }
 
 label {
-    border-bottom: 2px solid transparent;
-    padding-bottom: 9px;
-    margin-right: 10px;
-    cursor: pointer;
-    transition: all 0.3s ease;
+  border-bottom: 2px solid transparent;
+  padding-bottom: 9px;
+  margin-right: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-input:checked+label {
-    border-bottom: 2px solid #E1F5FE;
+input:checked + label {
+  border-bottom: 2px solid #e1f5fe;
 }
 
 ul {
-    padding: 7px;
+  padding: 7px;
 }
 
 li {
-    padding: 5px;
-    margin-bottom: 0px;
-    background: #fff;
-    border-bottom: 1px solid #ddd;
-    display: flex;
-    align-items: center;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  padding: 5px;
+  margin-bottom: 0px;
+  background: #fafafa;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
 }
 
 .timer {
-    background: #03A9F4;
-    color: #fff;
-    padding: 0px 3px;
-    border-radius: 4px;
-    min-width: 35px;
-    font-family: 'Agency FB';
-    font-weight: bold;
-    text-align: center;
-    height: 20px;
-    line-height: 20px;
-    text-shadow: 0 1px 1px #333;
+  background: #03a9f4;
+  color: #fff;
+  padding: 0px 3px;
+  border-radius: 4px;
+  min-width: 35px;
+  font-family: "Agency FB";
+  font-weight: bold;
+  text-align: center;
+  height: 20px;
+  line-height: 20px;
+  text-shadow: 0 1px 1px #333;
 }
 
 .f1 {
-    margin-left: 10px;
+  margin-left: 10px;
 }
 
 li.i {
-    float: right;
-    padding: 2px 5px;
+  float: right;
+  padding: 2px 5px;
 }
 
 .items {
-    font-size: 11px;
-    color: #FF9800;
-    white-space: pre;
+  font-size: 11px;
+  color: #ff9800;
+  white-space: pre;
 }
 
 i.print {
-    padding: 0 5px;
+  padding: 0 5px;
 }
 </style>

@@ -646,7 +646,9 @@ export default {
         'duplicateProfile': 'This phone number profile already exist.',
         'duplicateAddress': 'This street info already exist.',
         'removePrinter': 'Remove Printer',
-        'removePrinterConfirm': 'Are you sure to remove this printer?'
+        'removePrinterConfirm': 'Are you sure to remove this printer?',
+        'removeSpooler': 'Remove Printer Job',
+        'removeSpoolerConfirm': 'Are you sure to remove this schedule?'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',
