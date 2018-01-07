@@ -1,18 +1,18 @@
 <template>
   <div class="switches">
     <template v-if="reverse">
-        <label class="input-toggle">
-            <input type="checkbox" :checked="value" @change="$emit('input',$event.target.checked)" :disabled="disabled">
-            <span></span>
-        </label>
-        <label class="label indent">{{$t(title)}}</label>
+      <label class="input-toggle">
+        <input type="checkbox" :checked="value" @change="$emit('input',$event.target.checked),$emit('update',$event.target.checked)" :disabled="disabled">
+        <span></span>
+      </label>
+      <label class="label indent">{{$t(title)}}</label>
     </template>
     <template v-else>
       <label class="label">{{$t(title)}}</label>
-          <label class="input-toggle">
-              <input type="checkbox" :checked="value" @change="$emit('input',$event.target.checked)" :disabled="disabled">
-              <span></span>
-          </label>
+      <label class="input-toggle">
+        <input type="checkbox" :checked="value" @change="$emit('input',$event.target.checked),$emit('update',$event.target.checked)" :disabled="disabled">
+        <span></span>
+      </label>
     </template>
   </div>
 </template>
@@ -45,7 +45,7 @@ export default {
   flex: 1;
 }
 
-.indent{
+.indent {
   margin-left: 5px;
 }
 </style>

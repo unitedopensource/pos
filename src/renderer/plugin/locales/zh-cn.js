@@ -1176,6 +1176,7 @@ export default {
         'guestCount': '客人数量',
         'autoClear': '自动清除',
         'printOnDone': '完成打印',
+        'lockOnDone': '完成锁定',
         'passwordRequire': '需要密码',
         'surcharge': '自动收费',
         'seatOrder': '按位下单',

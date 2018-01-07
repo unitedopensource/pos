@@ -428,12 +428,12 @@ export default {
       });
     },
     exit(quit) {
-      const { doneLock } = this.station;
+      const { done } = this.station.autoLock;
       const { lockOnDone } = this.dinein;
 
       this.resetAll();
       if (this.order.type === "DINE_IN") {
-        if (lockOnDone && doneLock) {
+        if (lockOnDone || done) {
           this.setOp(null);
           this.$router.push({ path: "/main/lock" });
         } else {
@@ -441,7 +441,7 @@ export default {
           this.$router.push({ name: "Table" });
         }
       } else {
-        if (doneLock) {
+        if (done) {
           this.setOp(null);
           this.$router.push({ path: "/main/lock" });
         } else {

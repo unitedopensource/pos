@@ -1181,6 +1181,7 @@ export default {
         'guestCount': 'Guest Count',
         'autoClear': 'Auto Clear',
         'printOnDone': 'Print On Done',
+        'lockOnDone': 'Lock Screen On Done',
         'passwordRequire': 'Require Password',
         'surcharge': 'Auto Service Fee',
         'seatOrder': 'Seat Order',
