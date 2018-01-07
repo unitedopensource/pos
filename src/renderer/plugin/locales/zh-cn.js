@@ -1257,8 +1257,8 @@ export default {
         },
         'access': {
             'setting': '后台设定',
-            'report': '报表',
-            'terminal': '信用卡',
+            'report': '打印报表',
+            'terminal': '查看信用卡记录',
             'history': '历史订单'
         },
         'modify': {
@@ -1282,6 +1282,7 @@ export default {
             'timecard': '允许修改打卡时段',
             'giftcard': '允许发行礼物卡',
             'promotion': '允许创建促销规则',
+            'payout': '允许现金支出'
         }
     },
     reservation: {

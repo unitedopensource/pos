@@ -1259,8 +1259,8 @@ export default {
         },
         'access': {
             'setting': 'Back Office Setting',
-            'report': 'Report',
-            'terminal': 'Terminal Records',
+            'report': 'Print Report',
+            'terminal': 'View Terminal Records',
             'history': 'History Invoice'
         },
         'modify': {
@@ -1283,7 +1283,8 @@ export default {
             'database': 'Allow View Database',
             'timecard': 'Allow Modify Employee Time Card',
             'giftcard': 'Allow Issue New Gift Card',
-            'promotion': 'All Create New Promotion Rule',
+            'promotion': 'Allow Create New Promotion Rule',
+            'payout': 'Allow payout from cash drawer'
         }
     },
     reservation: {

@@ -288,7 +288,10 @@ export default {
     },
     setting() {
       this.$checkPermission("access", "setting")
-        .then(() => this.$router.push({ path: "/main/setting" }))
+        .then(() => {
+          this.init.resolve();
+          this.$router.push({ path: "/main/setting" });
+        })
         .catch(() => {
           console.log("denied")
         })

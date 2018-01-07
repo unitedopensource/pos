@@ -20,7 +20,7 @@
 <script>
 import checkbox from "../../common/checkbox";
 export default {
-  props: ["operator"],
-  components: { checkbox }
+    props: ["operator"],
+    components: { checkbox }
 };
 </script>

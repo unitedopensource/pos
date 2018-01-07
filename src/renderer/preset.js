@@ -185,7 +185,7 @@ var Preset = function () {
       note: "",
       duration: "",
       distance: "",
-      direction:"",
+      direction: "",
       coordinate: [],
       firstDate: +new Date,
       lastDate: +new Date,
@@ -210,13 +210,14 @@ var Preset = function () {
         access = ["setting", "cashdrawer", "report", "terminal", "history"];
         view = ["summary", "invoices", "tables"];
         modify = ["price", "item", "order", "table", "driver", "discount", "tip", "transaction"];
-        permission = ["giftcard"];
+        permission = ["giftcard", "payout", "timecard"];
         cashCtrl = "enable";
         break;
       case "Cashier":
         access = ["cashdrawer", "terminal", "history"];
         view = ["summary", "invoices", "tables"];
         modify = ["price", "item", "order", "table", "driver", "discount", "tip", "transaction"];
+        permission = ["payout"];
         cashCtrl = "enable";
         break;
       case "Waitstaff":
@@ -236,7 +237,6 @@ var Preset = function () {
         break;
     }
 
-
     return {
       name,
       role,
@@ -244,7 +244,7 @@ var Preset = function () {
       wage,
       language: 'usEN',
       timecard: false,
-      cashCtrl: 'disable',
+      cashCtrl,
       access,
       modify,
       view,
