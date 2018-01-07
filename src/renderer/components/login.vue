@@ -179,6 +179,25 @@ export default {
       .then(this.initialized)
       .catch(this.initialFailed);
   },
+  beforeRouteEnter(to, from, next) {
+    switch (from.name) {
+      case "Dashboard":
+        appSocket.emit("[STATION] LOCK", {
+          eventID: 1103,
+          type: "information",
+          note: `Operator manually lock the station.`
+        })
+        break;
+      case "Menu":
+        appSocket.emit("[STATION] LOCK", {
+          eventID: 1103,
+          type: "information",
+          note: `Station is auto locked due to software setting.`
+        })
+        break;
+    }
+    next();
+  },
   mounted() {
     window.addEventListener("keydown", this.entry, false);
   },

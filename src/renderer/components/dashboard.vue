@@ -389,10 +389,8 @@ export default {
             : this.cashDrawerUnavailable();
           break;
         case "lock":
-          const note = `${this.op.name} has locked station`;
           this.resetDashboard();
           this.setOp(null);
-          this.$log({ eventID: 1500, note });
           this.$router.push({ path: "/main/lock" });
           break;
         default:

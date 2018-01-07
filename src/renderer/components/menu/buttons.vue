@@ -452,10 +452,7 @@ export default {
     quit() {
       this.isEmptyTicket
         ? this.exitOut()
-        : this.$dialog({
-          title: "dialog.exitConfirm",
-          msg: "dialog.exitConfirmTip"
-        })
+        : this.$dialog({ title: "dialog.exitConfirm", msg: "dialog.exitConfirmTip" })
           .then(() => this.exitOut())
           .catch(() => this.$q());
     },
@@ -489,7 +486,6 @@ export default {
 
       let items = [];
       let compare = current.content;
-
       //push unprinted item
 
       this.diffs.forEach(prev => {

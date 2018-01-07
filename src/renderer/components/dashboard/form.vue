@@ -15,7 +15,7 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import dataInput from "./dataInput";
+import dataInput from "./component/dataInput";
 import keyboard from "../common/keyboard";
 import dialoger from "../common/dialoger";
 export default {

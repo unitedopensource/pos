@@ -1,35 +1,35 @@
 <template>
-    <section>
-        <label :for="id">
-            {{$t(label)}}
-            <transition-group name="slideUp" class="matrix" tag="div">
-                <span class="distance" v-if="distance" :key="1">{{distance}}</span>
-                <span class="duration" v-if="duration" :key="2">{{duration}}</span>
-            </transition-group>
-        </label>
-        <div class="field">
-            <input type="text" :id="id" :value="value" @input="input($event)" @click="setAnchor($event)">
-            <i :class="icon"></i>
+  <section>
+    <label :for="id">
+      {{$t(label)}}
+      <transition-group name="slideUp" class="matrix" tag="div">
+        <span class="distance" v-if="distance" :key="1">{{distance}}</span>
+        <span class="duration" v-if="duration" :key="2">{{duration}}</span>
+      </transition-group>
+    </label>
+    <div class="field">
+      <input type="text" :id="id" :value="value" @input="input($event)" @click="setAnchor($event)">
+      <i :class="icon"></i>
+    </div>
+    <dialog v-if="autoComplete">
+      <div class="predict" v-for="(data,index) in autoComplete" @click="fill(data)" :key="index">
+        <div v-if="id === 'phone'" class="column">
+          <div class="top">
+            <span class="phone">{{data.phone | tel}}</span>
+            <span class="time">{{data.lastDate | fromNow}}</span>
+          </div>
+          <span class="address">{{data.address}}</span>
         </div>
-        <dialog v-if="autoComplete">
-            <div class="predict" v-for="(data,index) in autoComplete" @click="fill(data)" :key="index">
-                <div v-if="id === 'phone'" class="column">
-                    <div class="top">
-                        <span class="phone">{{data.phone | tel}}</span>
-                        <span class="time">{{data.lastDate | fromNow}}</span>
-                    </div>
-                    <span class="address">{{data.address}}</span>
-                </div>
-                <div v-else-if="id ==='address'" class="row">
-                    <span class="street">{{data.street}}</span>
-                    <span class="city">{{data.city}}</span>
-                </div>
-                <div v-else class="row">
-                    <span class="city">{{data}}</span>
-                </div>
-            </div>
-        </dialog>
-    </section>
+        <div v-else-if="id ==='address'" class="row">
+          <span class="street">{{data.street}}</span>
+          <span class="city">{{data.city}}</span>
+        </div>
+        <div v-else class="row">
+          <span class="city">{{data}}</span>
+        </div>
+      </div>
+    </dialog>
+  </section>
 </template>
 
 <script>
