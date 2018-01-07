@@ -10,7 +10,7 @@
                     <i class="fa fa-list-alt"></i>
                     <span class="text">{{$t('nav.payroll')}}</span>
                 </router-link>
-                <router-link tag="li" :to="{name:'Setting.operator.schedule'}">
+                <router-link tag="li" :to="{name:'Setting.operator.shift'}">
                     <i class="fa fa-list-alt"></i>
                     <span class="text">{{$t('nav.schedule')}}</span>
                 </router-link>

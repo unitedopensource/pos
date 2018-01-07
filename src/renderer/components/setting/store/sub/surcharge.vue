@@ -1,45 +1,45 @@
 <template>
-    <div>
-        <header class="nav">
-            <div class="back" @click="save">
-                <i class="fa fa-chevron-left"></i>
-            </div>
-            <div class="title"></div>
-            <nav>
-                <span @click="create">{{$t('button.new')}}</span>
-            </nav>
-        </header>
-        <toggle title="setting.surcharge" v-model="surcharge.enable">
-            <transition name="dropdown">
-                <div v-if="surcharge.enable">
-                    <table class="setting">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>{{$t('thead.condition')}}</th>
-                                <th>{{$t('thead.amount')}}</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="(rule,index) in surcharge.rules" :key="index">
-                                <td class="icon">
-                                    <i class="fa fa-user-circle"></i>
-                                </td>
-                                <td class="guest">{{$t('text.chargeAbove',rule.guest)}}</td>
-                                <td class="amount" v-if="rule.percentage">{{rule.fee}} %</td>
-                                <td class="amount" v-else>$ {{rule.fee}}</td>
-                                <td @click="edit(rule,index)" class="opt">
-                                    <i class="fa fa-ellipsis-v"></i>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </transition>
-        </toggle>
-        <div :is="component" :init="componentData"></div>
-    </div>
+  <div>
+    <header class="nav">
+      <div class="back" @click="save">
+        <i class="fa fa-chevron-left"></i>
+      </div>
+      <div class="title"></div>
+      <nav>
+        <span @click="create">{{$t('button.new')}}</span>
+      </nav>
+    </header>
+    <toggle title="setting.surcharge" v-model="surcharge.enable">
+      <transition name="dropdown">
+        <div v-if="surcharge.enable">
+          <table class="setting">
+            <thead>
+              <tr>
+                <th></th>
+                <th>{{$t('thead.condition')}}</th>
+                <th>{{$t('thead.amount')}}</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(rule,index) in surcharge.rules" :key="index">
+                <td class="icon">
+                  <i class="fa fa-user-circle"></i>
+                </td>
+                <td class="guest">{{$t('text.chargeAbove',rule.guest)}}</td>
+                <td class="amount" v-if="rule.percentage">{{rule.fee}} %</td>
+                <td class="amount" v-else>$ {{rule.fee}}</td>
+                <td @click="edit(rule,index)" class="opt">
+                  <i class="fa fa-ellipsis-v"></i>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </transition>
+    </toggle>
+    <div :is="component" :init="componentData"></div>
+  </div>
 </template>
 
 <script>
@@ -54,16 +54,16 @@ export default {
       surcharge: Object.assign({}, this.$store.getters.dinein.surcharge)
     };
   },
-  created() {
-    //patch
-    this.surcharge = Object.assign(
-      {},
-      this.$store.getters.dinein.surcharge
-    ) || {
-      enable: false,
-      rules: []
-    };
-  },
+  // created() {
+  //   //patch
+  //   this.surcharge = Object.assign(
+  //     {},
+  //     this.$store.getters.dinein.surcharge
+  //   ) || {
+  //       enable: false,
+  //       rules: []
+  //     };
+  // },
   methods: {
     create() {
       let rule = {

@@ -313,9 +313,9 @@ export default [{
           component: require('./components/setting/operator/payroll/index')
         }]
       }, {
-        path: 'schedule',
-        name: 'Setting.operator.schedule',
-        component: require('./components/setting/operator/schedule')
+        path: 'shift',
+        name: 'Setting.operator.shift',
+        component: require('./components/setting/operator/shift')
       }]
     }, {
       path: 'database',

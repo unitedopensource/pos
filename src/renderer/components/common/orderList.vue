@@ -157,20 +157,19 @@ export default {
       dom && dom.classList.remove("active");
       dom = document.querySelector(".sub.target");
       dom && dom.classList.remove("target");
+
       this.resetChoiceSet();
       this.resetPointer();
     },
     openConfig() {
-      if (this.component === "config") return;
-      if (this.$route.name !== "Menu") return;
-      let taxFree = this.order.taxFree || false;
-      let deliveryFree = this.order.deliveryFree || false;
-      let menuID = this.config.display.menuID;
-      let { seatOrder } = this.dinein.seatOrder;
+      if (this.component === "config" || this.$route.name !== "Menu") return;
+
+      const taxFree = this.order.taxFree || false;
+      const deliveryFree = this.order.deliveryFree || false;
+      const { menuID } = this.config.display;
+      const { seatOrder } = this.dinein;
+
       this.$p("config", { taxFree, deliveryFree, menuID, seatOrder });
-    },
-    openMarker() {
-      if (this.isEmptyTicket) return;
     },
     addToSpooler(item) {
       if (item.print) return;
@@ -186,6 +185,7 @@ export default {
     },
     directPrint() {
       if (this.spooler.length === 0) return;
+
       let error = false;
       let sendItem = this.spooler.length;
       let order = JSON.parse(JSON.stringify(this.order));
@@ -193,7 +193,9 @@ export default {
         if (item.pending) item.print = true;
         return item;
       });
-      let remain = items.filter(item => !item.print).length;
+
+      const remain = items.filter(item => !item.print).length;
+      
       order.content = this.spooler;
       order.delay = +new Date();
       Printer.setTarget("Order").print(order);
@@ -281,8 +283,8 @@ export default {
       if (items.length === 0) {
         let delivery =
           this.ticket.type === "DELIVERY" &&
-          this.store.delivery &&
-          !this.order.deliveryFree
+            this.store.delivery &&
+            !this.order.deliveryFree
             ? parseFloat(this.store.deliveryCharge)
             : 0;
 
@@ -509,13 +511,14 @@ header.info {
   flex-direction: column;
 }
 
-.phone,.number {
+.phone,
+.number {
   font-family: "Agency FB";
   font-weight: bold;
   font-size: 22px;
 }
 
-.number{
+.number {
   width: 40px;
   text-align: center;
 }
@@ -730,7 +733,7 @@ header i {
 
 .content {
   flex: 1;
-  padding:5px 10px;
+  padding: 5px 10px;
 }
 
 .content .value {

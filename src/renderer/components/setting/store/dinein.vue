@@ -5,7 +5,7 @@
     <toggle title="setting.seatOrder" v-model="dinein.seatOrder" @update="updateSeatOrder" :disabled="!dinein.guestCount"></toggle>
     <toggle title="setting.autoClear" true-tooltip="tip.dinein.autoClearTable" false-tooltip="tip.dinein.manuallyClearTable" v-model="dinein.autoClear" :conditionalTooltip="true" @update="updateAutoClear"></toggle>
     <toggle title="setting.printOnDone" true-tooltip="tip.dinein.printReceipt" false-tooltip="tip.dinein.noReceipt" v-model="dinein.printOnDone" :conditionalTooltip="true" @update="updatePrint"></toggle>
-    <toggle title="setting.lockOnDone" tooltip="tip.dinein.done" v-model="dinein.LockOnDone" @update="updateDone"></toggle>
+    <toggle title="setting.lockOnDone" tooltip="tip.dinein.lock" v-model="dinein.LockOnDone" @update="updateDone"></toggle>
     <toggle title="setting.passwordRequire" tooltip="tip.dinein.passwordRequire" v-model="dinein.passwordRequire" @update="updatePasswordRequire"></toggle>
     <external title="setting.surcharge" tooltip="tip.dinein.surcharge" @open="$router.push({name:'Setting.store.surcharge'})"></external>
   </div>
@@ -14,7 +14,7 @@
 <script>
 import toggle from "../common/toggle";
 import external from "../common/external";
-export default {
+export default { 
   components: { toggle, external },
   data() {
     return {

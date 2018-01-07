@@ -2,35 +2,35 @@
   <div class="popupMask center dark" @click.self="init.reject">
     <div class="config" :style="offsetTop">
       <div class="option">
-        <span class="text">{{$t('text.taxFree')}}</span>
+        <span class="f1">{{$t('text.taxFree')}}</span>
         <label class="input-toggle">
           <input type="checkbox" v-model="init.taxFree" @change="toggleTax">
           <span></span>
         </label>
       </div>
       <div class="option">
-        <span class="text">{{$t('text.deliveryFree')}}</span>
+        <span class="f1">{{$t('text.deliveryFree')}}</span>
         <label class="input-toggle" @change="toggleDelivery">
           <input type="checkbox" v-model="init.deliveryFree">
           <span></span>
         </label>
       </div>
       <div class="option">
-        <span class="text">{{$t('text.displayCategory')}}</span>
+        <span class="f1">{{$t('text.displayCategory')}}</span>
         <label class="input-toggle" @change="toggleViewCategory">
           <input type="checkbox" v-model="viewCategory">
           <span></span>
         </label>
       </div>
       <div class="option">
-        <span class="text">{{$t('text.displayMenuId')}}</span>
+        <span class="f1">{{$t('text.displayMenuId')}}</span>
         <label class="input-toggle" @change="toggleMenuID">
           <input type="checkbox" v-model="init.menuID">
           <span></span>
         </label>
       </div>
       <div class="option">
-        <span class="text">{{$t('text.seatOrder')}}</span>
+        <span class="f1">{{$t('setting.seatOrder')}}</span>
         <label class="input-toggle" @change="toggleSeatOrder">
           <input type="checkbox" v-model="init.seatOrder" :disabled="true">
           <span></span>
@@ -45,13 +45,12 @@ export default {
   props: ["init"],
   mounted() {
     let dom = document.querySelector(".order.showCategory");
-    dom && (this.viewCategory = true);
-    let { top, height } = document
-      .querySelector(".middle")
-      .getBoundingClientRect();
-      console.log(top,height)
+    if (dom) this.viewCategory = true;
+
+    const { top, height } = document.querySelector(".middle").getBoundingClientRect();
+
     this.offsetTop = {
-      bottom: top - 5 + "px"
+      bottom: top + 26 + "px"
     };
   },
   data() {
@@ -108,18 +107,14 @@ export default {
 
 .option {
   display: flex;
-  justify-content: center;
   align-items: center;
   border-bottom: 1px solid #ddd;
   border-left: 3px solid #00bcd4;
+  height: 40px;
+  padding: 0 25px;
 }
 
 .option:last-child {
   border-bottom: none;
-}
-
-.text {
-  min-width: 120px;
-  text-align: right;
 }
 </style>
