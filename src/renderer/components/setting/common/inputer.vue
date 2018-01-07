@@ -34,7 +34,7 @@ export default {
       default: false
     },
     mask: String,
-    placeholder: String
+    placeholder: [String, Number]
   },
   mounted() {
     this.autoFocus && this.$refs.input.focus();

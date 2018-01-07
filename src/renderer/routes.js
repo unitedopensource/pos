@@ -178,14 +178,14 @@ export default [{
       }, {
         path: 'submenu',
         component: require('./components/setting/menu/submenuTab'),
-        children:[{
-          path:'/',
-          name:'Setting.submenu',
-          component:require('./components/setting/menu/submenu/index')
-        },{
-          path:'items',
-          name:'Setting.submenu.item',
-          component:require('./components/setting/menu/submenu/item')
+        children: [{
+          path: '/',
+          name: 'Setting.submenu',
+          component: require('./components/setting/menu/submenu/index')
+        }, {
+          path: 'items',
+          name: 'Setting.submenu.item',
+          component: require('./components/setting/menu/submenu/item')
         }]
       }, {
         path: 'template',
@@ -255,46 +255,62 @@ export default [{
       component: require('./components/setting/operator/nav'),
       children: [{
         path: '/',
-        component: require('./components/setting/operator/tab'),
+        component: require('./components/setting/operator/empolyee'),
         children: [{
           path: '/',
           name: 'Setting.operator',
-          component: require('./components/setting/operator/index')
+          component: require('./components/setting/operator/empolyee/index')
         }, {
           path: 'config/:operator',
           props: true,
           name: 'Setting.operator.config',
-          component: require('./components/setting/operator/config')
+          component: require('./components/setting/operator/empolyee/config')
         }, {
           path: 'timecard/:operator',
           props: true,
           name: 'Setting.operator.timecard',
-          component: require('./components/setting/operator/timecard')
+          component: require('./components/setting/operator/empolyee/timecard')
         }, {
           path: 'access/:operator',
           props: true,
           name: 'Setting.operator.access',
-          component: require('./components/setting/operator/sub/access')
+          component: require('./components/setting/operator/empolyee/access')
         }, {
           path: 'modify/:operator',
           props: true,
           name: 'Setting.operator.modify',
-          component: require('./components/setting/operator/sub/modify')
+          component: require('./components/setting/operator/empolyee/modify')
         }, {
           path: 'view/:operator',
           props: true,
           name: 'Setting.operator.view',
-          component: require('./components/setting/operator/sub/view')
+          component: require('./components/setting/operator/empolyee/view')
         }, {
           path: 'permission/:operator',
           props: true,
           name: 'Setting.operator.permission',
-          component: require('./components/setting/operator/sub/permission')
+          component: require('./components/setting/operator/empolyee/permission')
         }]
       }, {
-        path: 'report',
-        name: 'Setting.operator.report',
-        component: require('./components/setting/operator/report')
+        path: 'payroll',
+        component: require('./components/setting/operator/payroll'),
+        children: [{
+          path: '/',
+          name: 'Setting.operator.payroll',
+          component: require('./components/setting/operator/payroll/index')
+        }, {
+          path: 'calendar',
+          name: 'Setting.operator.payroll.calendar',
+          component: require('./components/setting/operator/payroll/calendar')
+        }, {
+          path: 'sheet',
+          name: 'Setting.operator.payroll.sheet',
+          component: require('./components/setting/operator/payroll/index')
+        }]
+      }, {
+        path: 'schedule',
+        name: 'Setting.operator.schedule',
+        component: require('./components/setting/operator/schedule')
       }]
     }, {
       path: 'database',

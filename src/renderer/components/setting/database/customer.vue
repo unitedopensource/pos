@@ -110,7 +110,7 @@ i.fa-caret-right {
   border-radius: 4px;
 }
 
-i:hover {
+i:active {
   background: #eee;
 }
 

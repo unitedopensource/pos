@@ -558,7 +558,9 @@ export default {
         'removePrinter': '移除打印机',
         'removePrinterConfirm': '您确定要移除这个打印机设定吗?',
         'removeSpooler': '移除打印计划',
-        'removeSpoolerConfirm': '您确定要移除这个打印计划吗?'
+        'removeSpoolerConfirm': '您确定要移除这个打印计划吗?',
+        'addressRemove': '移除地址',
+        'addressRemoveConfirm': '您确定要移除 {i} 地址吗?'
     },
     terminal: {
         'initial': '正在初始化 {i}...',
@@ -1129,7 +1131,9 @@ export default {
         'profile': '档案',
         'analyze': '分析',
         'list': '列表',
-        'source': '来源'
+        'source': '来源',
+        'payroll': '工资单',
+        'schedule': '时间表'
     },
     setting: {
         'softwareSetting': 'UnitedPOS 后台设置',

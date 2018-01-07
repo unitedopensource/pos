@@ -71,8 +71,8 @@
 </template>
 
 <script>
-import editor from "./component/timecardEditor";
-import dropdown from "../../history/component/dropdown";
+import editor from "../component/timecardEditor";
+import dropdown from "../../../history/component/dropdown";
 export default {
   props: ["operator"],
   components: { editor, dropdown },
@@ -261,6 +261,7 @@ export default {
 
 tbody {
   height: 600px;
+  overflow: auto;
   display: block;
 }
 

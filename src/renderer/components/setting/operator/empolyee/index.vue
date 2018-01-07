@@ -18,9 +18,9 @@
 </template>
 
 <script>
-import external from "../common/external";
-import editor from "./component/operatorEditor";
-import pagination from "../../common/pagination";
+import external from "../../common/external";
+import editor from "../component/operatorEditor";
+import pagination from "../../../common/pagination";
 
 export default {
   components: { editor,external, pagination },

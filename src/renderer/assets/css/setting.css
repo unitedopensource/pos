@@ -79,7 +79,7 @@ li.tab.disable{
 ul.tabs li.router-link-exact-active {
     color: #333;
     font-weight: bold;
-    border-bottom: 2px solid #FFC107;
+    border-bottom: 2px solid #FF5722;
 }
 
 .tab-content {

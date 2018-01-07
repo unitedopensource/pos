@@ -648,7 +648,9 @@ export default {
         'removePrinter': 'Remove Printer',
         'removePrinterConfirm': 'Are you sure to remove this printer?',
         'removeSpooler': 'Remove Printer Job',
-        'removeSpoolerConfirm': 'Are you sure to remove this schedule?'
+        'removeSpoolerConfirm': 'Are you sure to remove this schedule?',
+        'addressRemove': 'Remove Address',
+        'addressRemoveConfirm': 'Are you sure to remove {i} from the list?'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',
@@ -1134,7 +1136,9 @@ export default {
         'profile': 'Profile',
         'analyze': 'Analyze',
         'list': 'List',
-        'source': 'Source'
+        'source': 'Source',
+        'payroll': 'Payroll',
+        'schedule': 'Schedule'
     },
     setting: {
         'softwareSetting': 'UnitedPOS Setting',

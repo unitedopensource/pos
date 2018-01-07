@@ -106,7 +106,7 @@ i {
   border-radius: 4px;
 }
 
-i:hover {
+i:active {
   background: #eee;
 }
 

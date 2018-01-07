@@ -1,24 +1,25 @@
 <template>
+  <div>
+    <header class="nav">
+      <div class="back" @click="save">
+        <i class="fa fa-chevron-left"></i>
+      </div>
+      <div class="title">
+        <h5>{{$t('title.edit')}}</h5>
+        <h3>{{address.street}}</h3>
+      </div>
+      <nav>
+        <span class="add" @click="remove">{{$t('button.remove')}}</span>
+      </nav>
+    </header>
     <div>
-        <header class="nav">
-            <div class="back" @click="save">
-                <i class="fa fa-chevron-left"></i>
-            </div>
-            <div class="title">
-                <h5>{{$t('title.edit')}}</h5>
-                <h3>{{address.street}}</h3>
-            </div>
-            <nav>
-                <span class="add" @click="remove">{{$t('button.remove')}}</span>
-            </nav>
-        </header>
-        <div>
-            <text-input v-model="address.street" title="text.street"></text-input>
-            <text-input v-model="address.city" title="text.city"></text-input>
-            <text-input v-model="address.zipCode" title="text.zipCode"></text-input>
-            <external title="text.viewCustomer"></external>
-        </div>
+      <text-input v-model="address.street" title="text.street"></text-input>
+      <text-input v-model="address.city" title="text.city"></text-input>
+      <text-input v-model="address.zipCode" title="text.zipCode"></text-input>
+      <external title="text.viewCustomer"></external>
     </div>
+    <div :is="component" :init="componentData"></div>
+  </div>
 </template>
 
 <script>
@@ -41,10 +42,10 @@ export default {
       const prompt = {
         type: "question",
         title: "title.addressRemove",
-        msg: "title.addressRemoveConfirm"
+        msg: ["title.addressRemoveConfirm", this.address.street]
       };
 
-      this.$dialoger(prompt)
+      this.$dialog(prompt)
         .then(() => {
           this.$q();
           this.$socket.emit("[ADDRESS] REMOVE", this.address._id, callback => {

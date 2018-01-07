@@ -6,9 +6,13 @@
                     <i class="fa fa-users"></i>
                     <span class="text">{{$t('nav.overview')}}</span>
                 </router-link>
-                <router-link tag="li" :to="{name:'Setting.operator.report'}">
+                <router-link tag="li" :to="{name:'Setting.operator.payroll'}">
                     <i class="fa fa-list-alt"></i>
-                    <span class="text">{{$t('nav.report')}}</span>
+                    <span class="text">{{$t('nav.payroll')}}</span>
+                </router-link>
+                <router-link tag="li" :to="{name:'Setting.operator.schedule'}">
+                    <i class="fa fa-list-alt"></i>
+                    <span class="text">{{$t('nav.schedule')}}</span>
                 </router-link>
             </div>
             <router-link tag="li" :to="{name:'Setting.index'}" exact>

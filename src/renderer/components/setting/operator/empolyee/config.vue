@@ -31,11 +31,11 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-import toggle from "../common/toggle";
-import textList from "../common/textList";
-import external from "../common/external";
-import textInput from "../common/textInput";
-import dialoger from "../../common/dialoger";
+import toggle from "../../common/toggle";
+import textList from "../../common/textList";
+import external from "../../common/external";
+import textInput from "../../common/textInput";
+import dialoger from "../../../common/dialoger";
 
 export default {
   props: ["operator"],
