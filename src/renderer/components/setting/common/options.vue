@@ -1,19 +1,19 @@
 <template>
-    <div>
-        <header>
-            <span class="label">{{$t(title)}}</span>
-            <span class="tooltip">{{$t(tooltip)}}</span>
-        </header>
-        <div class="wrap">
-            <div class="select" v-for="(option,index) in opts" :key="index">
-                <input type="radio" name="id" :id="id+index" :checked="option.value === value" :value="option.value" @change="$emit('input',$event.target.value),$emit('update',$event.target.value)">
-                <label :for="id+index">
-                    <span class="label">{{$t(option.label)}}</span>
-                    <span class="tooltip">{{$t(option.tooltip)}}</span>
-                </label>
-            </div>
-        </div>
+  <div>
+    <header>
+      <span class="label">{{$t(title)}}</span>
+      <span class="tooltip">{{$t(tooltip)}}</span>
+    </header>
+    <div class="wrap">
+      <div class="select" v-for="(option,index) in opts" :key="index">
+        <input type="radio" name="id" :id="id+index" :checked="option.value === value" :value="option.value" @change="$emit('input',$event.target.value),$emit('update',$event.target.value)">
+        <label :for="id+index">
+          <span class="label">{{$t(option.label)}}</span>
+          <span class="tooltip">{{$t(option.tooltip)}}</span>
+        </label>
+      </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -56,8 +56,8 @@ header {
   background: #eee;
 }
 
-.label {
-  color: #3c3c3c;
+.tooltip {
+  color: rgba(0, 0, 0, 0.5);
 }
 
 label {

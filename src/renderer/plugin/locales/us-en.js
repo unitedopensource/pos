@@ -1138,7 +1138,10 @@ export default {
         'list': 'List',
         'source': 'Source',
         'payroll': 'Payroll',
-        'schedule': 'Schedule'
+        'schedule': 'Schedule',
+        'calendar': 'Calendar',
+        'sheet': 'Sheet',
+        'view': 'View'
     },
     setting: {
         'softwareSetting': 'UnitedPOS Setting',

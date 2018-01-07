@@ -5,6 +5,7 @@
                 <h5>{{$t('title.create')}}</h5>
                 <h3>{{$t('setting.operator')}}</h3>
             </header>
+            <div class="banner"></div>
             <div class="wrap">
                 <inputer title="text.name" v-model.trim="name" :autoFocus="true"></inputer>
                 <inputer title="text.accessPin" v-model.trim="pin"></inputer>

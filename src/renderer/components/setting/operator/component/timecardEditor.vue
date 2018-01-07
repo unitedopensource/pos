@@ -5,6 +5,7 @@
                 <h5>{{$t('title.edit')}}</h5>
                 <h3>{{$t('title.timecard')}}</h3>
             </header>
+            <div class="banner"></div>
             <div class="wrap">
                 <inputer title="text.date" v-model="log.date" placeholder="YYYY-MM-DD"></inputer>
                 <inputer title="text.clockIn" v-model="log.clockIn" placeholder="YYYY-MM-DD HH:mm:ss" mask="####-##-## ##:##:##"></inputer>

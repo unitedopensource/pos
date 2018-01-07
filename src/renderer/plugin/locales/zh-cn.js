@@ -1133,7 +1133,10 @@ export default {
         'list': '列表',
         'source': '来源',
         'payroll': '工资单',
-        'schedule': '时间表'
+        'schedule': '时间表',
+        'calendar': '日期',
+        'sheet': '表格',
+        'view': '查看'
     },
     setting: {
         'softwareSetting': 'UnitedPOS 后台设置',

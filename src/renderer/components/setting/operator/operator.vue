@@ -5,6 +5,7 @@
       <template v-if="operator">
         <router-link tag="li" class="tab" :to="{name:'Setting.operator.config',params:{operator}}">{{$t('setting.basic')}}</router-link>
         <router-link tag="li" class="tab" :to="{name:'Setting.operator.timecard',params:{operator}}">{{$t('setting.timecard')}}</router-link>
+        <router-link tag="li" class="tab" :to="{name:'Setting.operator.schedule',params:{operator}}">{{$t('setting.schedule')}}</router-link>
       </template>
     </ul>
     <transition name="slide" mode="out-in">

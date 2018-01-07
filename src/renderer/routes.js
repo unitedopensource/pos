@@ -255,7 +255,7 @@ export default [{
       component: require('./components/setting/operator/nav'),
       children: [{
         path: '/',
-        component: require('./components/setting/operator/empolyee'),
+        component: require('./components/setting/operator/operator'),
         children: [{
           path: '/',
           name: 'Setting.operator',
@@ -270,6 +270,11 @@ export default [{
           props: true,
           name: 'Setting.operator.timecard',
           component: require('./components/setting/operator/empolyee/timecard')
+        },{
+          path: 'schedule/:operator',
+          props: true,
+          name: 'Setting.operator.schedule',
+          component: require('./components/setting/operator/empolyee/schedule')
         }, {
           path: 'access/:operator',
           props: true,
