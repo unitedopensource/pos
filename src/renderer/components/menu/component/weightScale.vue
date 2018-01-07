@@ -1,43 +1,43 @@
 <template>
-    <div class="popupMask center dark" @click.self="init.reject(false)">
-        <div class="window">
-            <header class="title">
-                <span>{{$t('title.weightScale')}}</span>
-                <span>{{item[language]}}</span>
-            </header>
-            <section class="inner">
-                <div class="input">
-                    <div>
-                        <h3>{{$t('text.weight')}}</h3>
-                        <input type="text" v-model.number="scale" ref="scale" @keydown.enter="done" class="value">
-                    </div>
-                    <div>
-                        <h3>@ {{item.unitPrice.toFixed(2)}} / {{$t('text.perUnit')}}</h3>
-                        <span class="value">{{total}}</span>
-                    </div>
-                </div>
-                <div class="wrap">
-                    <section class="numpad">
-                        <div @click="input('7')">7</div>
-                        <div @click="input('8')">8</div>
-                        <div @click="input('9')">9</div>
-                        <div @click="input('4')">4</div>
-                        <div @click="input('5')">5</div>
-                        <div @click="input('6')">6</div>
-                        <div @click="input('1')">1</div>
-                        <div @click="input('2')">2</div>
-                        <div @click="input('3')">3</div>
-                        <div @click="input('0')" class="zero">0</div>
-                    </section>
-                    <aside class="numpad">
-                        <div @click="del">&#8592;</div>
-                        <div @click="scale = '0.00'">C</div>
-                        <div @click="done">&#8626;</div>
-                    </aside>
-                </div>
-            </section>
+  <div class="popupMask center dark" @click.self="init.reject(false)">
+    <div class="window">
+      <header class="title">
+        <span>{{$t('title.weightScale')}}</span>
+        <span>{{item[language]}}</span>
+      </header>
+      <section class="inner">
+        <div class="input">
+          <div>
+            <h3>{{$t('text.weight')}}</h3>
+            <input type="text" v-model.number="scale" ref="scale" @keydown.enter="done" class="value">
+          </div>
+          <div>
+            <h3>@ {{item.weightItem.value.toFixed(2)}} / {{$t('text.perUnit')}}</h3>
+            <span class="value">{{total}}</span>
+          </div>
         </div>
+        <div class="wrap">
+          <section class="numpad">
+            <div @click="input('7')" class="numKey">7</div>
+            <div @click="input('8')" class="numKey">8</div>
+            <div @click="input('9')" class="numKey">9</div>
+            <div @click="input('4')" class="numKey">4</div>
+            <div @click="input('5')" class="numKey">5</div>
+            <div @click="input('6')" class="numKey">6</div>
+            <div @click="input('1')" class="numKey">1</div>
+            <div @click="input('2')" class="numKey">2</div>
+            <div @click="input('3')" class="numKey">3</div>
+            <div @click="input('0')" class="numKey zero">0</div>
+          </section>
+          <aside class="padCtrl">
+            <div @click="del">&#8592;</div>
+            <div @click="scale = '0.00'">C</div>
+            <div @click="done">&#8626;</div>
+          </aside>
+        </div>
+      </section>
     </div>
+  </div>
 </template>
 
 <script>
@@ -70,6 +70,7 @@ export default {
     },
     done() {
       let price = parseFloat(this.total);
+      let name = `${this.scale} @ ${this.item.weightItem.value.toFixed(2)} / per ${this.item.weightItem.unit}`;
       Object.assign(this.item, {
         single: price,
         price: [price],
@@ -78,12 +79,8 @@ export default {
         choiceSet: [
           {
             qty: 1,
-            zhCN: `${this.scale} @ ${this.item.unitPrice.toFixed(
-              2
-            )} / per Unit`,
-            usEN: `${this.scale} @ ${this.item.unitPrice.toFixed(
-              2
-            )} / per Unit`,
+            zhCN: name,
+            usEN: name,
             single: 0,
             price: 0
           }
@@ -97,7 +94,7 @@ export default {
   },
   computed: {
     total() {
-      return (this.scale * this.item.unitPrice).toFixed(2);
+      return (this.scale * this.item.weightItem.value).toFixed(2);
     },
     ...mapGetters(["language"])
   }

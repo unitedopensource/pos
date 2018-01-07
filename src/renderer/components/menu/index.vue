@@ -3,12 +3,6 @@
     <section class="category">
       <div v-for="(category,index) in menu" @click="categoryIndex = index" :key="index">{{category[language]}}</div>
     </section>
-    <!-- <section class="items sub" v-if="saveItems">
-      <div v-for="(item,index) in page" @click="pick(item)" :class="{disable:!item.clickable,like:item.like}" :key="index" :data-menuID="item.menuID">{{item[language]}}</div>
-      <div @click="itemPage = 0" v-if="items.length >= 34" class="pageButton">{{$t("button.firstPage")}}</div>
-      <div @click="itemPage = 1" v-if="items.length >= 34" class="pageButton">{{$t("button.secondPage")}}</div>
-      <div @click="itemPage = 2" v-if="items.length >= 34" class="pageButton">{{$t("button.thirdPage")}}</div>
-    </section> -->
     <section class="items" v-if="config.display.menuID">
       <div v-for="(item,index) in page" @click="pick(item)" :class="{disable:!item.clickable,like:item.like}" :key="index" :data-menuID="item.menuID">{{item[language]}}</div>
       <div @click="itemPage = 0" v-if="items.length >= 34" class="pageButton">{{$t("button.firstPage")}}</div>
@@ -40,6 +34,7 @@ import modify from "./component/modify";
 import dialoger from "../common/dialoger";
 import queryBar from "./component/queryBar";
 import orderList from "../common/orderList";
+import weightItem from "./component/weightScale";
 import templateItem from "./component/templateItem";
 import temporaryItem from "./component/temporaryItem";
 
@@ -50,6 +45,7 @@ export default {
     dialoger,
     queryBar,
     orderList,
+    weightItem,
     templateItem,
     temporaryItem
   },
@@ -219,10 +215,14 @@ export default {
       }
     },
     setCategory(index) {
+      this.openSubGroup = false;
+
       index = index || this.categoryIndex;
+
       toggleClass(".category .active", "active");
-      // e.currentTarget.classList.add("active");
-      document.querySelectorAll("section.category div")[index].classList.add("active");
+      document
+        .querySelectorAll("section.category div")
+        [index].classList.add("active");
 
       this.itemPage = 0;
       this.saveItems = null;
@@ -285,8 +285,8 @@ export default {
         const { option, manual = false, subItem = false } = item;
 
         if (item.temporary) stop("openFood");
-
         if (item.marketPrice) stop("marketPrice");
+        if (item.weightItem && item.weightItem.enable) stop("weightFood");
 
         if (subItem) {
           this.addSubMenuItem(item);
@@ -294,8 +294,9 @@ export default {
         }
 
         if (!manual && option[0]) {
-          if (option[0].template)
-            this.config.display.autoTemplate ? stop("template") : stop();
+          option[0].template && this.config.display.autoTemplate
+            ? stop("template")
+            : next(item);
           if (option[0].subMenu) stop("subMenu");
         }
 
@@ -313,6 +314,7 @@ export default {
           this.$p("modify", { item, marketPrice: true });
           break;
         case "weightFood":
+          this.$p("weightItem", { item });
           break;
         case "subMenu":
           item ? this.addToOrder(item) : (item = this.item);
@@ -333,12 +335,16 @@ export default {
       side.subMenu && this.specialItemHandler(null, "subMenu", index);
       side.template && this.specialItemHandler(null, "template", index);
 
-      (!skip || !ignore) && this.alterItemOption({ side, index });
+      (!skip || !ignore) &&
+        this.alterItemOption({
+          side,
+          index,
+          function: !!side.subMenu || !!side.template
+        });
     },
     getSubMenuItem(groups) {
       if (this.openSubGroup) {
         this.setCategory();
-        this.openSubGroup = false;
         return;
       }
 
