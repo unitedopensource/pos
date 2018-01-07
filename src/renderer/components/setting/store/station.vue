@@ -11,7 +11,7 @@
     <external title="setting.callerId" @open="$router.push({name:'Setting.station.callid'})"></external>
     <external title="setting.poleDisplay" tooltip="tip.poleDisplay" @open="$router.push({name:'Setting.station.poleDisplay'})"></external>
     <external title="setting.weightScale" @open="editScale"></external>
-    <toggle title="setting.autoLock" tooltip="tip.autoLock" v-model="station.autoLock.enable">
+    <toggle title="setting.autoLock" tooltip="tip.autoLock" v-model="station.autoLock.enable" @update="updateAutoLock">
       <transition name="dropdown">
         <div v-if="station.autoLock.enable" class="opt">
           <range title="setting.timeout" :min="0" :max="600" :step="30" v-model.number="station.autoLock.timeout" @update="updateTimeout"></range>
@@ -94,8 +94,13 @@ export default {
         value
       });
     },
-    editScale() {},
-    editInterface() {},
+    editScale() { },
+    updateAutoLock(value) {
+      this.update({
+        key: "autoLock.enable",
+        value
+      });
+    },
     updateTimeout(value) {
       value = parseInt(value);
       value === 0

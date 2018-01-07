@@ -367,7 +367,7 @@ export default {
                 eventID: 9100,
                 type: "failure",
                 source: "dashboard",
-                note: `Attempt access ${route} failed.`
+                note: "Access Denied when attempt access history."
               })
             );
           break;
@@ -379,7 +379,7 @@ export default {
                 eventID: 9100,
                 type: "failure",
                 source: "dashboard",
-                note: `Attempt access ${route} failed.`
+                note: "Access Denied when attempt access back office setting."
               })
             );
           break;

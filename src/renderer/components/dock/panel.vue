@@ -1,98 +1,99 @@
 <template>
-    <div class="popupMask dark" @click.self="init.resolve">
-        <transition appear name="fadeDown">
-            <ul class="panel">
-                <div v-if="op.timecard">
-                    <li v-if="op.clockIn" @click="askClockOut">
-                        <i class="fa fa-2x fa-clock-o"></i>
-                        <div>
-                            <h3>{{$t('dock.clockOut')}}</h3>
-                            <h5 class="clock">
-                                <span class="time">{{time | moment('HH:mm:ss')}}</span>
-                                <span class="pass">{{op.clockIn | fromNow(true)}}</span>
-                            </h5>
-                        </div>
-                        <div class="extra" @click.stop="startBreakTime" v-if="!op.break">
-                          <i class="fa fa-coffee"></i>
-                          <span>{{$t('button.break')}}</span>
-                        </div>
-                        <div class="extra" @click.stop="endBreakTime" v-else>
-                          <i class="fa fa-briefcase"></i>
-                          <span>{{$t('button.work')}}</span>
-                        </div>
-                    </li>
-                    <li v-else @click="askClockIn">
-                        <i class="fa fa-2x fa-clock-o"></i>
-                        <div>
-                            <h3>{{$t('dock.clockIn')}}</h3>
-                            <h5 class="clock">
-                                <span class="time">{{time | moment('HH:mm:ss')}}</span>
-                            </h5>
-                        </div>
-                    </li>
-                </div>
-                <li @click="getTerminal" v-show="station.terminal.enable">
-                    <i class="fa fa-2x fa-credit-card"></i>
-                    <div>
-                        <h3>{{$t('dock.terminal')}}</h3>
-                        <h5>{{$t('dock.terminalTip')}}</h5>
-                    </div>
-                </li>
-                <li @click="giftCardPanel">
-                    <i class="fa fa-2x fa-gift"></i>
-                    <div>
-                        <h3>{{$t('dock.giftCard')}}</h3>
-                        <h5>{{$t('dock.giftCardTip')}}</h5>
-                    </div>
-                </li>
-                <li @click="openPayout" v-if="station.cashDrawer.enable" v-show="op.role === 'Admin' || op.role === 'Manager'">
-                    <i class="fa fa-2x fa-money"></i>
-                    <div>
-                        <h3>{{$t('dock.payout')}}</h3>
-                        <h5>{{$t('dock.payoutTip')}}</h5>
-                    </div>
-                </li>
-                <li @click="setting" v-show="op.role === 'Admin' || op.role === 'Manager'">
-                    <i class="fa fa-2x fa-cog"></i>
-                    <div>
-                        <h3>{{$t('dock.setting')}}</h3>
-                        <h5>{{$t('dock.settingTip')}}</h5>
-                    </div>
-                </li>
-                <li @click="changeLanguage">
-                    <i class="fa fa-2x fa-language"></i>
-                    <div>
-                        <h3>{{$t('dock.language')}}</h3>
-                        <h5>{{$t('dock.languageTip')}}</h5>
-                    </div>
-                </li>
-                <li @click="logout">
-                    <i class="fa fa-2x fa-sign-out"></i>
-                    <div>
-                        <h3>{{$t('dock.logout')}}</h3>
-                        <h5>{{$t('dock.logoutTip')}}</h5>
-                    </div>
-                    <div class="extra" @click.stop="askCashOut" v-if="false">
-                      <i class="fa fa-usd"></i>
-                      <span>{{$t('button.cashOut')}}</span>
-                    </div>
-                </li>
-                <div :is="component" :init="componentData"></div>
-            </ul>
-        </transition>
-    </div>
+  <div class="popupMask dark" @click.self="init.resolve">
+    <transition appear name="fadeDown">
+      <ul class="panel">
+        <div v-if="op.timecard">
+          <li v-if="op.clockIn" @click="askClockOut">
+            <i class="fa fa-2x fa-clock-o"></i>
+            <div>
+              <h3>{{$t('dock.clockOut')}}</h3>
+              <h5 class="clock">
+                <span class="time">{{time | moment('HH:mm:ss')}}</span>
+                <span class="pass">{{op.clockIn | fromNow(true)}}</span>
+              </h5>
+            </div>
+            <div class="extra" @click.stop="startBreakTime" v-if="!op.break">
+              <i class="fa fa-coffee"></i>
+              <span>{{$t('button.break')}}</span>
+            </div>
+            <div class="extra" @click.stop="endBreakTime" v-else>
+              <i class="fa fa-briefcase"></i>
+              <span>{{$t('button.work')}}</span>
+            </div>
+          </li>
+          <li v-else @click="askClockIn">
+            <i class="fa fa-2x fa-clock-o"></i>
+            <div>
+              <h3>{{$t('dock.clockIn')}}</h3>
+              <h5 class="clock">
+                <span class="time">{{time | moment('HH:mm:ss')}}</span>
+              </h5>
+            </div>
+          </li>
+        </div>
+        <li @click="getTerminal" v-show="station.terminal.enable">
+          <i class="fa fa-2x fa-credit-card"></i>
+          <div>
+            <h3>{{$t('dock.terminal')}}</h3>
+            <h5>{{$t('dock.terminalTip')}}</h5>
+          </div>
+        </li>
+        <li @click="giftCardPanel">
+          <i class="fa fa-2x fa-gift"></i>
+          <div>
+            <h3>{{$t('dock.giftCard')}}</h3>
+            <h5>{{$t('dock.giftCardTip')}}</h5>
+          </div>
+        </li>
+        <li @click="openPayout" v-if="station.cashDrawer.enable">
+          <i class="fa fa-2x fa-money"></i>
+          <div>
+            <h3>{{$t('dock.payout')}}</h3>
+            <h5>{{$t('dock.payoutTip')}}</h5>
+          </div>
+        </li>
+        <li @click="setting" v-show="op.role === 'Admin' || op.role === 'Manager'">
+          <i class="fa fa-2x fa-cog"></i>
+          <div>
+            <h3>{{$t('dock.setting')}}</h3>
+            <h5>{{$t('dock.settingTip')}}</h5>
+          </div>
+        </li>
+        <li @click="changeLanguage">
+          <i class="fa fa-2x fa-language"></i>
+          <div>
+            <h3>{{$t('dock.language')}}</h3>
+            <h5>{{$t('dock.languageTip')}}</h5>
+          </div>
+        </li>
+        <li @click="logout">
+          <i class="fa fa-2x fa-sign-out"></i>
+          <div>
+            <h3>{{$t('dock.logout')}}</h3>
+            <h5>{{$t('dock.logoutTip')}}</h5>
+          </div>
+          <div class="extra" @click.stop="askCashOut" v-if="false">
+            <i class="fa fa-usd"></i>
+            <span>{{$t('button.cashOut')}}</span>
+          </div>
+        </li>
+        <div :is="component" :init="componentData"></div>
+      </ul>
+    </transition>
+  </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from "vuex";
 import terminal from "../history/terminal";
-import giftCard from "../giftCard/task";
 import dialoger from "../common/dialoger";
+import giftCard from "../giftCard/task";
+import unlock from "../common/unlock";
 import payout from "./payout";
 
 export default {
   props: ["init"],
-  components: { dialoger, terminal, giftCard, payout },
+  components: { dialoger, terminal, giftCard, payout, unlock },
   data() {
     return {
       componentData: null,
@@ -274,7 +275,14 @@ export default {
         .catch(() => this.$q());
     },
     openPayout() {
-      this.$p("payout");
+      this.$checkPermission("permission", "payout")
+        .then(() => this.$p("payout"))
+        .catch(() => this.$log({
+          eventID: 9100,
+          type: "failure",
+          source: "panel",
+          note: `Access Denied when attempt access payout.`
+        }));
     },
     askCashOut() {
 
@@ -292,9 +300,12 @@ export default {
           this.init.resolve();
           this.$router.push({ path: "/main/setting" });
         })
-        .catch(() => {
-          console.log("denied")
-        })
+        .catch(() => this.$log({
+          eventID: 9100,
+          type: "failure",
+          source: "panel",
+          note: `Access Denied when attempt access back office setting.`
+        }))
     },
     exit() {
       this.$router.push({ name: "Login" });

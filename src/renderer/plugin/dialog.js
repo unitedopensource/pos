@@ -20,7 +20,7 @@ const dialog = {
           return approve
         },
         $log(event) {
-          const { eventID, type, note, cause, data, source } = event;
+          const { eventID, type, note, cause, data, source = "CLIENT" } = event;
           this.$socket.emit("[SYS] LOG", { eventID, type, note, cause, data, source });
         }
       }
