@@ -73,10 +73,12 @@
 
 <script>
 import editor from "../component/timecardEditor";
+import dialoger from "../../../common/dialoger";
 import dropdown from "../../../history/component/dropdown";
+
 export default {
   props: ["operator"],
-  components: { editor, dropdown },
+  components: { editor, dropdown, dialoger },
   computed: {
     validSession() {
       return this.logs.filter(log => log.valid).length;
@@ -252,6 +254,19 @@ export default {
       log.lock = false;
     },
     validAll() {
+      const prompt = {
+        title: "dialog.noDefaultWage",
+        msg: ["dialog.timecardNoWage", this.operator.name],
+        buttons: [{ text: "button.cancel", fn: "reject" }, { text: "button.proccessAnyway", fn: "resolve" }]
+      }
+
+      isNumber(this.operator.wage)
+        ? this.excute()
+        : this.$dialog(prompt).then(this.excute).catch(() => this.$q());
+
+    },
+    excute() {
+      this.$q();
       this.logs.forEach(log => {
         Object.assign(log, {
           valid: true,
@@ -324,6 +339,7 @@ p.value {
 
 .btn {
   height: 40px;
+  min-width: 120px;
   margin-bottom: initial;
 }
 
@@ -335,5 +351,10 @@ p.value {
   color: #fff;
   text-shadow: 0 1px 1px #333;
   margin-left: 5px;
+}
+
+.edit {
+  color: rgba(0, 0, 0, 0.65);
+  cursor: pointer;
 }
 </style>

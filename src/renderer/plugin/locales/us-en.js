@@ -268,7 +268,8 @@ export default {
         'backup': 'Backup',
         'option': 'Option',
         'reconc': 'Reconc.',
-        'allValid': 'Set All Valid'
+        'allValid': 'Set All Valid',
+        'proccessAnyway': 'Proccess Anyway'
     },
     thead: {
         'orderType': 'Order Type',
@@ -656,7 +657,9 @@ export default {
         'removeSpooler': 'Remove Printer Job',
         'removeSpoolerConfirm': 'Are you sure to remove this schedule?',
         'addressRemove': 'Remove Address',
-        'addressRemoveConfirm': 'Are you sure to remove {i} from the list?'
+        'addressRemoveConfirm': 'Are you sure to remove {i} from the list?',
+        'noDefaultWage': 'Default Wage Not Assign',
+        'timecardNoWage': 'The employee {i} does not have default wage. In result the salary will display $ 0.00'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',

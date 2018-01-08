@@ -261,7 +261,8 @@ export default {
         'backup': '备份',
         'option': '选项',
         'reconc': '轧账',
-        'allValid': '设全部有效'
+        'allValid': '设全部有效',
+        'proccessAnyway': '依然执行'
     },
     title: {
         'markPaymentType': '标记付款方式',
@@ -563,7 +564,9 @@ export default {
         'removeSpooler': '移除打印计划',
         'removeSpoolerConfirm': '您确定要移除这个打印计划吗?',
         'addressRemove': '移除地址',
-        'addressRemoveConfirm': '您确定要移除 {i} 地址吗?'
+        'addressRemoveConfirm': '您确定要移除 {i} 地址吗?',
+        'noDefaultWage': '没有默认时薪',
+        'timecardNoWage': '此员工 {i} 并没有设置基础时薪, 工资将会显示为 $ 0.00'
     },
     terminal: {
         'initial': '正在初始化 {i}...',
