@@ -259,7 +259,8 @@ export default {
         'unset': '反选',
         'default': '默认',
         'backup': '备份',
-        'option': '选项'
+        'option': '选项',
+        'reconc': '轧账'
     },
     title: {
         'markPaymentType': '标记付款方式',
@@ -326,7 +327,8 @@ export default {
         'operatorPin': '请输入您的密码',
         'accessPin': '请输入经理的密码',
         'address': '地址资料',
-        'sideOption': '副菜选项'
+        'sideOption': '副菜选项',
+        'reconciliation': '轧账'
     },
     dialog: {
         'maintenance': '维护',
@@ -1140,7 +1142,8 @@ export default {
         'sheet': '表格',
         'view': '查看',
         'filter': '过滤',
-        'revenue': '营收'
+        'revenue': '营收',
+        'payout': '支出'
     },
     setting: {
         'softwareSetting': 'UnitedPOS 后台设置',

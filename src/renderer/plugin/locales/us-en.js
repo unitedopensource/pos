@@ -266,7 +266,8 @@ export default {
         'unset': 'Unset All',
         'default': 'Default',
         'backup': 'Backup',
-        'option': 'Option'
+        'option': 'Option',
+        'reconc': 'Reconc.'
     },
     thead: {
         'orderType': 'Order Type',
@@ -416,7 +417,8 @@ export default {
         'operatorPin': 'Please Enter Your Pin ',
         'accessPin': 'Please Enter Manager\'s Pin',
         'address': 'Address Info',
-        'sideOption': 'Side Option'
+        'sideOption': 'Side Option',
+        'reconciliation': 'Reconciliation of Accounts'
     },
     dialog: {
         'maintenance': 'Maintenance',
@@ -1145,7 +1147,8 @@ export default {
         'sheet': 'Sheet',
         'view': 'View',
         'filter': 'Filter',
-        'revenue': 'Revenue'
+        'revenue': 'Revenue',
+        'payout': 'Payout'
     },
     setting: {
         'softwareSetting': 'UnitedPOS Setting',

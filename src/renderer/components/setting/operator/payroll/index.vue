@@ -1,27 +1,37 @@
 <template>
     <div>
-        <external title="text.from"></external>
-        <external title="text.to"></external>
+        <external title="text.from" @open="setFromDate" :tooltip="format(from)"></external>
+        <external title="text.to" @open="setToDate" :tooltip="format(to)"></external>
         <div>
             <p>{{$t('text.selectEmployee')}}</p>
             <div class="employee">
-                <checkbox v-for="(operator,index) in operators" :key="index" :title="operator.name" :val="operator.name" v-model="target" :multiple="true">
+                <checkbox v-for="(operator,index) in operators" :key="index" :title="operator.name" :val="operator._id" v-model="target" :multiple="true">
                     <span class="role">({{operator.role}})</span>
                 </checkbox>
             </div>
         </div>
-        <external title="text.generalReport"></external>
+        <external title="text.generatePayroll" @open="generate" v-show="valid"></external>
+        <div :is="component" :init="componentData"></div>
     </div>
 </template>
 
 <script>
+import calendar from "./calendar"
 import checkbox from "../../common/checkbox";
 import external from "../../common/external";
 
 export default {
-    components: { checkbox, external },
+    props: ["config"],
+    components: { checkbox, external, calendar },
+    computed: {
+        valid() {
+            return this.from && this.to && this.target.length > 0
+        }
+    },
     data() {
         return {
+            componentData: null,
+            component: null,
             operators: [],
             range: "week",
             from: "",
@@ -50,6 +60,45 @@ export default {
                     }));
             });
         });
+    },
+    created() {
+        if (this.config) {
+            const { from, to, target } = this.config;
+
+            this.from = moment(from);
+            this.to = moment(to);
+            this.target = target;
+        }
+    },
+    methods: {
+        format(date) {
+            return date ? date.format("YYYY-MM-DD") : "";
+        },
+        setFromDate() {
+            new Promise((resolve, reject) => {
+                this.componentData = { resolve, reject };
+                this.component = "calendar";
+            }).then(_date => {
+                this.from = _date;
+                this.$q();
+            }).catch(() => this.$q())
+        },
+        setToDate() {
+            new Promise((resolve, reject) => {
+                this.componentData = { resolve, reject };
+                this.component = "calendar";
+            }).then(_date => {
+                this.to = _date;
+                this.$q();
+            }).catch(() => this.$q())
+        },
+        generate() {
+            const from = +this.from.hours(4).minutes(0).seconds(0);
+            const to = +this.to.clone().add(1, "days").hours(3).minutes(59).seconds(59);
+            this.$emit("generate", {
+                from, to, target: this.target
+            })
+        }
     }
 }
 </script>
