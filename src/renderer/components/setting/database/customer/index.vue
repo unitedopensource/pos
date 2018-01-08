@@ -41,8 +41,8 @@
 </template>
 
 <script>
-import Preset from "../../../preset";
-import editor from "./component/customerEditor";
+import Preset from "../../../../preset";
+import editor from "../component/customerEditor";
 export default {
   props: ["total", "customers"],
   components: { editor },

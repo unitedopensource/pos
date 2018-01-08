@@ -14,6 +14,10 @@
                     <i class="fa fa-map-marker"></i>
                     <span class="text">{{$t('nav.address')}}</span>
                 </router-link>
+                <router-link tag="li" :to="{name:'Setting.database.payout'}">
+                    <i class="fa fa-money"></i>
+                    <span class="text">{{$t('nav.payout')}}</span>
+                </router-link>
             </div>
             <router-link tag="li" :to="{name:'Setting.index'}" exact>
                 <i class="fa fa-arrow-circle-left"></i>

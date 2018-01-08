@@ -64,44 +64,44 @@
 </template>
 
 <script>
-import external from "../common/external";
-import textInput from "../common/textInput";
-import dialoger from "../../common/dialoger";
+import external from "../../common/external";
+import textInput from "../../common/textInput";
+import dialoger from "../../../common/dialoger";
 
 export default {
-  props: ["profile"],
-  components: { dialoger, external, textInput },
-  data() {
-    return {
-      componentData: null,
-      component: null
-    };
-  },
-  methods: {
-    remove() {
-      const prompt = {
-        type: "question",
-        title: "dialog.removeCustomer",
-        msg: "dialog.removeCustomerConfirm"
-      };
-      this.$dialog(prompt)
-        .then(() => {
-          this.$q();
-          this.$socket.emit("[CUSTOMER] DELETE", this.profile, callback => {
-            this.$emit("reset");
-            this.$emit("refresh");
-            this.$router.push({ name: "Setting.database.customer" });
-          });
-        })
-        .catch(() => this.$q());
+    props: ["profile"],
+    components: { dialoger, external, textInput },
+    data() {
+        return {
+            componentData: null,
+            component: null
+        };
     },
-    save() {
-      this.$emit("reset");
-      this.$socket.emit("[CUSTOMER] UPDATE", this.profile, () =>
-        this.$router.push({ name: "Setting.database.customer" })
-      );
+    methods: {
+        remove() {
+            const prompt = {
+                type: "question",
+                title: "dialog.removeCustomer",
+                msg: "dialog.removeCustomerConfirm"
+            };
+            this.$dialog(prompt)
+                .then(() => {
+                    this.$q();
+                    this.$socket.emit("[CUSTOMER] DELETE", this.profile, callback => {
+                        this.$emit("reset");
+                        this.$emit("refresh");
+                        this.$router.push({ name: "Setting.database.customer" });
+                    });
+                })
+                .catch(() => this.$q());
+        },
+        save() {
+            this.$emit("reset");
+            this.$socket.emit("[CUSTOMER] UPDATE", this.profile, () =>
+                this.$router.push({ name: "Setting.database.customer" })
+            );
+        }
     }
-  }
 };
 </script>
 

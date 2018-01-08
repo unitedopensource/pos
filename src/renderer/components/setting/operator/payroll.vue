@@ -2,11 +2,10 @@
     <div>
         <ul class="tabs">
             <router-link tag="li" class="tab" :to="{name:'Setting.operator.payroll'}">{{$t('nav.filter')}}</router-link>
-            <router-link tag="li" class="tab" :to="{name:'Setting.operator.payroll.calendar'}">{{$t('nav.calendar')}}</router-link>
             <router-link tag="li" class="tab" :to="{name:'Setting.operator.payroll.sheet'}">{{$t('nav.sheet')}}</router-link>
         </ul>
         <transition name="slide" mode="out-in">
-            <router-view class="tab-content" @set="setOperator"></router-view>
+            <router-view class="tab-content" @setDate="setDate"></router-view>
         </transition>
     </div>
 </template>
@@ -15,16 +14,12 @@
 export default {
     data() {
         return {
-            operator: null
+            query: null
         };
     },
     methods: {
-        setOperator(operator) {
-            this.operator = operator;
-            this.$router.push({
-                name: "Setting.operator.config",
-                params: { operator }
-            });
+        setDate(range) {
+            this.$router.push({ name: "Setting.operator.payroll." });
         }
     }
 };

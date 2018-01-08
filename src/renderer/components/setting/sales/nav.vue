@@ -8,7 +8,7 @@
                 </router-link>
                 <router-link tag="li" :to="{name:'Setting.sales.giftcard'}" exact>
                     <i class="fa fa-gift"></i>
-                    <span class="text">{{$t('text.giftcard')}}</span>
+                    <span class="text">{{$t('text.giftCard')}}</span>
                 </router-link>
                 <router-link tag="li" :to="{name:'Setting.sales.batch'}" exact>
                     <i class="fa fa-file-text-o"></i>

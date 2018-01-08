@@ -10,10 +10,11 @@ import Ip from 'ip'
 import App from './App'
 import routes from './routes'
 import i18n from './plugin/dict'
-import dialog from './plugin/dialog'
+import util from "./plugin/util"
 import VueBus from './plugin/bus'
 import Trend from "vuetrend"
 import Bars from 'vuebars'
+
 
 Vue.use(Electron)
 Vue.use(VueBus)
@@ -21,7 +22,7 @@ Vue.use(Trend)
 Vue.use(Bars)
 Vue.use(VueTouch, { name: 'v-touch' })
 Vue.use(Router)
-Vue.use(dialog)
+Vue.use(util)
 Vue.use(i18n)
 
 Vue.directive('mask', VueMaskDirective);
@@ -158,64 +159,3 @@ findHost.then(ip => {
     ...App
   }).$mount('#app');
 })
-
-Array.prototype.last = function () {
-  return this[this.length - 1] || null;
-}
-Array.prototype.remove = function (object) {
-  for (let i = 0; i < this.length; i++) {
-    if (this[i] === object) {
-      this.splice(i, 1);
-      break;
-    }
-  }
-};
-Array.prototype.getLastInsertIndex = function (array) {
-  let index = 0;
-  for (let i = 0; i < this.length; i++) {
-    if (this[i].key === array.key) {
-      index = i;
-    }
-  }
-  return index + 1;
-};
-String.prototype.toFixed = function (places) {
-  return isNumber(this) ? parseFloat(this).toFixed(places) : "0.00";
-}
-String.prototype.toCapitalCase = function () {
-  return this.replace(/\w\S*/g, function (txt) {
-    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-  });
-};
-String.prototype.toFloat = function () {
-  return parseFloat(this)
-};
-window.toFixed = (number, fractionSize) => +(Math.round(+(number.toString() + 'e' + fractionSize)).toString() + 'e' + -fractionSize);
-window.ObjectId = (m = Math, d = Date, h = 16, s = s => m.floor(s).toString(h)) => s(d.now() / 1000) + ' '.repeat(h).replace(/./g, () => s(m.random() * h));
-window.isNumber = (n) => (/^-?[\d.]+(?:e-?\d+)?$/.test(n));
-window.today = function (offset = 0) {
-  let d = new Date();
-  d = d.setHours(d.getHours() - 4 + (offset * 24));
-  d = new Date(d);
-  return `${d.getFullYear()}-${("0" + (d.getMonth() + 1)).slice(-2)}-${("0" + d.getDate()).slice(-2)}`;
-}
-window.line = function (line1, line2) {
-  const f = function (data) {
-    if (typeof data === 'string') {
-      const i = Math.floor(Math.abs(20 - data.length) / 2);
-      return (' '.repeat(i) + data + ' '.repeat(i + 10)).slice(0, 20);
-    } else {
-      const string = data[0];
-      const amount = isNumber(data[1]) ? data[1] > 0 ? '$ ' + data[1] : '-$ ' + data[1] : data[1];
-
-      let i = 20 - (string + amount).length;
-      i < 0 && (i = 0);
-      return (string + ' '.repeat(i) + amount).slice(0, 20);
-    }
-  }
-  return f(line1) + f(line2);
-}
-window.toggleClass = function (target, className) {
-  let dom = target instanceof HTMLElement ? target : document.querySelector(target);
-  dom.className.includes(className) ? dom.classList.remove(className) : dom.classList.add(className)
-}

@@ -16,6 +16,7 @@
       <i class="fa fa-eye view" v-if="view === 'password'" @click="view = 'text'"></i>
       <i class="fa fa-eye-slash view" v-else @click="view = 'password'"></i>
     </text-input>
+    <text-list v-model="operator.role" title="text.role" :opts="roles" v-show="authorized"></text-list>
     <text-input v-model.number="operator.wage" title="text.salary"></text-input>
     <toggle v-model="operator.timecard" title="text.timecard" tooltip="tip.timecard"></toggle>
     <text-list v-model="operator.language" title="text.defaultLanguage" :opts="languages"></text-list>
@@ -62,23 +63,24 @@ export default {
           value: "zhCN"
         }
       ],
-      ctrl: [
-        {
-          label: "text.enable",
-          tooltip: "tip.cashdrawer.enable",
-          value: "enable"
-        },
-        {
-          label: "text.disable",
-          tooltip: "tip.cashdrawer.disable",
-          value: "disable"
-        },
-        {
-          label: "text.staffBank",
-          tooltip: "tip.cashdrawer.staffBank",
-          value: "staffBank"
-        }
-      ]
+      ctrl: ["enable", "disable", "staffBank"].map(type => ({
+        label: "text." + type,
+        tooltip: "tip.cashdrawer." + type,
+        value: type
+      })),
+      roles: [
+        "Owner",
+        "Manager",
+        "Cashier",
+        "Waitstaff",
+        "Bartender",
+        "Worker",
+        "ThirdParty"
+      ].map(role => ({
+        label: "type." + role,
+        tooltip: "",
+        value: role
+      }))
     };
   },
   beforeRouteLeave(to, from, next) {

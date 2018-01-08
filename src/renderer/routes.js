@@ -304,13 +304,9 @@ export default [{
           name: 'Setting.operator.payroll',
           component: require('./components/setting/operator/payroll/index')
         }, {
-          path: 'calendar',
-          name: 'Setting.operator.payroll.calendar',
-          component: require('./components/setting/operator/payroll/calendar')
-        }, {
           path: 'sheet',
           name: 'Setting.operator.payroll.sheet',
-          component: require('./components/setting/operator/payroll/index')
+          component: require('./components/setting/operator/payroll/sheet')
         }]
       }, {
         path: 'shift',
@@ -338,16 +334,16 @@ export default [{
         children: [{
           path: '/',
           name: 'Setting.database.customer',
-          component: require('./components/setting/database/customer')
+          component: require('./components/setting/database/customer/index')
         }, {
           path: 'profile:/profile',
           props: true,
           name: 'Setting.database.customer.profile',
-          component: require('./components/setting/database/profile')
+          component: require('./components/setting/database/customer/profile')
         }, {
           path: 'analyze',
           name: 'Setting.database.customer.analyze',
-          component: require('./components/setting/database/analyze')
+          component: require('./components/setting/database/customer/analyze')
         }]
       }, {
         path: 'address',
@@ -362,6 +358,10 @@ export default [{
           name: 'Setting.database.address.street',
           component: require('./components/setting/database/street')
         }]
+      }, {
+        path: 'payout',
+        name: 'Setting.database.payout',
+        component: require('./components/setting/database/payout')
       }]
     }, {
       path: 'sales',
@@ -372,7 +372,7 @@ export default [{
         component: require('./components/setting/sales/revenue'),
       }, {
         path: 'giftcard',
-        name: 'Setting.giftcard',
+        name: 'Setting.sales.giftcard',
         component: require('./components/setting/sales/giftcard')
       }, {
         path: 'batch',
