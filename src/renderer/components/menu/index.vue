@@ -443,7 +443,9 @@ export default {
       "setTicket",
       "setSides",
       "addToOrder",
+      "resetPointer",
       "setChoiceSet",
+      "saveForDiffs",
       "alertChoiceSet",
       "alterItemOption"
     ])

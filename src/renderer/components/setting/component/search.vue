@@ -21,8 +21,8 @@
         </li>
       </ul>
       <footer>
-        <button class="btn" @click="scan" v-if="results.length === 0" :disabled="working">{{$t('button.scan')}}</button>
-        <button class="btn" @click="confirm" v-else>{{$t('button.confirm')}}</button>
+        <button class="btn" @click="scan" v-if="results.length === 0" :disabled="scanning">{{$t('button.scan')}}</button>
+        <button class="btn" @click="confirm" v-else :disabled="initializing">{{$t('button.confirm')}}</button>
       </footer>
     </div>
   </div>
@@ -36,19 +36,22 @@ export default {
       port: 10009,
       results: [],
       target: null,
-      working: false,
+      scanning: false,
+      initializing: false
     };
   },
   methods: {
     scan() {
-      this.working = true;
+      this.scanning = true;
       this.$socket.emit("SCAN", this.port, ip => {
         this.results = ip;
-        this.working = false;
+        this.scanning = false;
       });
     },
     confirm() {
-      const model = this.port === '10009' ? "S300" : "NX2200";
+      this.initializing = true;
+
+      const model = this.port === "10009" ? "S300" : "NX2200";
       const terminal = this.getParser()();
 
       terminal.initial(this.target, this.port).then(response => {
@@ -66,6 +69,8 @@ export default {
       this.port = 10009;
       this.results = [];
       this.target = null;
+      this.scanning = false;
+      this.initializing = false;
     },
     getParser(model) {
       switch (model) {
