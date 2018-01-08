@@ -6,11 +6,8 @@ const dict = {
         Vue.locales = locales[Vue.language];
         Vue.mixin({
             methods: {
-                text(text, ...d) {
-                    return text.split('.').reduce((p, c) => p && p[c] || c, Vue.locales);
-                },
                 $t(text, ...d) {
-                    if (!text) return '';
+                    if (!text || !text.includes(".")) return text;
                     let i = 0;
                     let string = text.split('.').reduce((p, c) => p && p[c] || c, Vue.locales);
                     return d ? string.replace(/\{i\}/g, () => d[i++]) : string;

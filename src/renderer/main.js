@@ -78,8 +78,10 @@ moment.updateLocale('en', {
 });
 
 const ip = Ip.address().split(".").splice(0, 3).join(".") + ".";
-let findHost = new Promise((resolve, reject) => {
+
+new Promise((resolve, reject) => {
   const args = require('electron').remote.process.argv.slice(1);
+  
   if (process.env.NODE_ENV === 'development') {
     resolve("127.0.0.1");
     return;
@@ -90,11 +92,14 @@ let findHost = new Promise((resolve, reject) => {
     return;
   }
   let host = args.indexOf("host");
+
   if (host !== -1) {
     resolve(args[++host]);
     return;
   }
+
   let start = 0, end = 255;
+
   while (start <= end) {
     let target = ip + start;
     (function (target) {
@@ -105,18 +110,13 @@ let findHost = new Promise((resolve, reject) => {
         scanner.destroy();
         resolve(target)
       });
-      setTimeout(() => {
-        scanner.destroy()
-      }, 2000);
-      scanner.on("error", () => {
-        scanner.destroy()
-      });
+
+      setTimeout(() => { scanner.destroy() }, 2000);
+      scanner.on("error", () => scanner.destroy());
     })(target);
     start++;
   }
-});
-
-findHost.then(ip => {
+}).then(ip => {
   Vue.use(VueSocketio, `http://${ip}:8888`);
 
   let printScript = document.createElement("script");

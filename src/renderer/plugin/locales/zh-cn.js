@@ -1087,7 +1087,9 @@ export default {
         'noUse': '不使用',
         'autoJump': '自动转跳',
         'startAt': '(个)起',
-        'copy': '复制'
+        'copy': '复制',
+        'selectEmployee': '选择员工',
+        'generatePayroll': '生成工资单'
     },
     nav: {
         'store': '店面',

@@ -1092,7 +1092,9 @@ export default {
         'noUse': 'No Use',
         'autoJump': 'Auto Jump',
         'startAt': 'Start At',
-        'copy': 'Copy'
+        'copy': 'Copy',
+        'selectEmployee': 'Select Employee',
+        'generatePayroll': 'Generate Payroll'
     },
     nav: {
         'store': 'Store',

@@ -5,6 +5,7 @@
     <label :for="id" class="box"></label>
     <label class="text" :for="id" v-if="translate">{{$t(title)}}</label>
     <label class="text" :for="id" v-else>{{title}}</label>
+    <slot></slot>
   </div>
 </template>
 
