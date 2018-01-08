@@ -260,7 +260,8 @@ export default {
         'default': '默认',
         'backup': '备份',
         'option': '选项',
-        'reconc': '轧账'
+        'reconc': '轧账',
+        'allValid': '设全部有效'
     },
     title: {
         'markPaymentType': '标记付款方式',
@@ -801,7 +802,10 @@ export default {
         'default': '默认',
         'location': '位置',
         'condition': '条件',
-        'terminal': '终端'
+        'terminal': '终端',
+        'baseWage': '基础时薪',
+        'totalWorkTime': '总工时',
+        'validWorkTime': '有效工时'
     },
     flow: {
         'START': '初始金额',

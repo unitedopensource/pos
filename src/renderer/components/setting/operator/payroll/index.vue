@@ -93,8 +93,8 @@ export default {
             }).catch(() => this.$q())
         },
         generate() {
-            const from = +this.from.hours(4).minutes(0).seconds(0);
-            const to = +this.to.clone().add(1, "days").hours(3).minutes(59).seconds(59);
+            const from = this.from.hours(4).minutes(0).seconds(0);
+            const to = this.to;
             this.$emit("generate", {
                 from, to, target: this.target
             })

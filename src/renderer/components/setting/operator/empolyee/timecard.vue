@@ -59,6 +59,7 @@
                 </p>
               </div>
               <div class="option">
+                <button class="btn" @click="validAll" :disabled="validSession === this.logs.length">{{$t('button.allValid')}}</button>
                 <dropdown label="filter.period" :options="ranges" filter="period" :reverse="true"></dropdown>
               </div>
             </div>
@@ -249,6 +250,15 @@ export default {
     unlock(log) {
       if (this.op.role !== "Developer") return;
       log.lock = false;
+    },
+    validAll() {
+      this.logs.forEach(log => {
+        Object.assign(log, {
+          valid: true,
+          wage: this.operator.wage || 0
+        });
+        this.$socket.emit("[TIMECARD] UPDATE", log);
+      })
     }
   }
 };
@@ -308,7 +318,13 @@ p.value {
   flex: 2;
   display: flex;
   justify-content: flex-end;
+  align-items: center;
   color: #333;
+}
+
+.btn {
+  height: 40px;
+  margin-bottom: initial;
 }
 
 .text {

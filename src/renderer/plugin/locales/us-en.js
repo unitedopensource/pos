@@ -267,7 +267,8 @@ export default {
         'default': 'Default',
         'backup': 'Backup',
         'option': 'Option',
-        'reconc': 'Reconc.'
+        'reconc': 'Reconc.',
+        'allValid': 'Set All Valid'
     },
     thead: {
         'orderType': 'Order Type',
@@ -343,7 +344,10 @@ export default {
         'default': 'Default',
         'location': 'Location',
         'condition': 'Condition',
-        'terminal': 'Terminal'
+        'terminal': 'Terminal',
+        'baseWage': 'Base Wage',
+        'totalWorkTime': 'Total Work Time',
+        'validWorkTime': 'Valid Work Time'
     },
     flow: {
         'START': 'Deposit',

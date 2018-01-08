@@ -5,11 +5,11 @@
                 <tr>
                     <th>{{$t('thead.name')}}</th>
                     <th>{{$t('text.role')}}</th>
-                    <th>{{$t('thead.record')}}</th>
-                    <th>{{$t('thead.valid')}}</th>
+                    <th>{{$t('thead.count')}}</th>
+                    <th>{{$t('text.validRecord')}}</th>
                     <th>{{$t('thead.baseWage')}}</th>
-                    <th class="time">{{$t('thead.workHour')}}</th>
-                    <th class="time">{{$t('thead.validWorkHour')}}</th>
+                    <th class="time">{{$t('thead.totalWorkTime')}}</th>
+                    <th class="time">{{$t('thead.validWorkTime')}}</th>
                     <th>{{$t('thead.salary')}}</th>
                 </tr>
             </thead>
@@ -19,10 +19,10 @@
                     <td>{{$t('type.'+payroll.role)}}</td>
                     <td>{{payroll.count}}</td>
                     <td>{{payroll.valid}}</td>
-                    <td>{{payroll.wage}}</td>
+                    <td>$ {{payroll.wage | decimal}}</td>
                     <td class="time">{{format(payroll.totalTime)}}</td>
                     <td class="time">{{format(payroll.validTime)}}</td>
-                    <td>{{payroll.salary}}</td>
+                    <td>$ {{payroll.salary | decimal}}</td>
                 </tr>
             </tbody>
             <tfoot>
