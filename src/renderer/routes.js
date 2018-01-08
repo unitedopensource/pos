@@ -54,7 +54,7 @@ export default [{
   {
     path: 'table',
     name: "Table",
-    component: require('./components/table/table')
+    component: require('./components/table/index')
   },
   {
     path: 'menu',

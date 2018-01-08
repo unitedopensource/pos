@@ -1,8 +1,14 @@
 <template>
   <div class="popupMask center dark" @click.self="init.reject">
     <div class="accessor shadow">
-      <h2 v-if="self">{{$t('title.operatorPin')}}</h2>
-      <h2 v-else>{{$t('title.accessPin')}}</h2>
+      <template v-if="self">
+        <h5>{{op.name}}</h5>
+        <h2>{{$t('title.operatorPin')}}</h2>
+      </template>
+      <template v-else>
+        <h5>{{$t('dialog.accessDenied')}}</h5>
+        <h2>{{$t('title.accessPin')}}</h2>
+      </template>
       <div class="input">
         <span v-for="(circle,index) in pin" :key="index"></span>
       </div>
@@ -30,7 +36,8 @@ export default {
   data() {
     return {
       pin: [],
-      self: true
+      self: true,
+      op: this.$store.getters.op
     };
   },
   created() {

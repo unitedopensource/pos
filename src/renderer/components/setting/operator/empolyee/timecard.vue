@@ -284,17 +284,17 @@ export default {
         msg: ["dialog.timecardNoWage", this.operator.name],
         buttons: [
           { text: "button.cancel", fn: "reject" },
-          { text: "button.proccessAnyway", fn: "resolve" }
+          { text: "button.processAnyway", fn: "resolve" }
         ]
       };
 
       isNumber(this.operator.wage)
-        ? this.excute()
+        ? this.execute()
         : this.$dialog(prompt)
-            .then(this.excute)
+            .then(this.execute)
             .catch(() => this.$q());
     },
-    excute() {
+    execute() {
       this.$q();
       this.logs.forEach(log => {
         Object.assign(log, {

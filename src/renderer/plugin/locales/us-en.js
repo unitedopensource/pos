@@ -269,7 +269,7 @@ export default {
         'option': 'Option',
         'reconc': 'Reconc.',
         'allValid': 'Set All Valid',
-        'proccessAnyway': 'Proccess Anyway'
+        'processAnyway': 'Process Anyway'
     },
     thead: {
         'orderType': 'Order Type',
@@ -659,7 +659,8 @@ export default {
         'addressRemove': 'Remove Address',
         'addressRemoveConfirm': 'Are you sure to remove {i} from the list?',
         'noDefaultWage': 'Default Wage Not Assign',
-        'timecardNoWage': 'The employee {i} does not have default wage. In result the salary will display $ 0.00'
+        'timecardNoWage': 'The employee {i} does not have default wage. In result the salary will display $ 0.00',
+        'tableReserved': 'This table has been reserved.'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',

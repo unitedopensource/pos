@@ -262,7 +262,7 @@ export default {
         'option': '选项',
         'reconc': '轧账',
         'allValid': '设全部有效',
-        'proccessAnyway': '依然执行'
+        'processAnyway': '依然执行'
     },
     title: {
         'markPaymentType': '标记付款方式',
@@ -438,7 +438,7 @@ export default {
         'reopenSettledOrderTip': '您要先移除此单的 {i}结账 记录后才能修改订单',
         'recoverOrderConfirm': '您确定要恢复 {i}号 订单吗？',
         'recoverOrderConfirmTip': '该订单是由 {i} 取消。原因: {i}',
-        'unableAccess': '无法打开',
+        'unableAccess': '无法访问',
         'missTerminalConfig': '无法找到任何一个信用卡终端配置信息',
         'splitPayment': '分单付款',
         'splitPaymentTip': '您要如何处理这个分单订单的付款？',
@@ -566,7 +566,8 @@ export default {
         'addressRemove': '移除地址',
         'addressRemoveConfirm': '您确定要移除 {i} 地址吗?',
         'noDefaultWage': '没有默认时薪',
-        'timecardNoWage': '此员工 {i} 并没有设置基础时薪, 工资将会显示为 $ 0.00'
+        'timecardNoWage': '此员工 {i} 并没有设置时薪, 工资将会显示为 $ 0.00',
+        'tableReserved': '此座位已经被预定'
     },
     terminal: {
         'initial': '正在初始化 {i}...',
