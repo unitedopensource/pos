@@ -70,7 +70,7 @@ import { mapGetters, mapActions } from "vuex";
 import orderList from "./common/orderList";
 import dialoger from "./common/dialoger";
 import payment from "./payment/index";
-import reason from "./history/reason";
+import reason from "./history/component/reason";
 import split from "./menu/component/split";
 export default {
   components: { orderList, payment, split, reason, dialoger },

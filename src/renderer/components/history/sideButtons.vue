@@ -61,7 +61,6 @@ import unlock from "../common/unlock";
 import Report from "../report/index";
 import Calendar from "./calendar";
 import Terminal from "./terminal";
-import Search from "./search";
 
 export default {
   props: ["date"],
@@ -109,25 +108,25 @@ export default {
         .catch(this.voidFailed);
     },
     checkDate() {
-      return new Promise((resolve, reject) => {
-        this.date === this.today
-          ? resolve()
-          : reject({
-            title: "dialog.unableEdit",
-            msg: "dialog.editPrevOrderTip",
-            buttons: [{ text: "button.confirm", fn: "reject" }]
-          });
+      return new Promise((next, stop) => {
+        const prompt = {
+          title: "dialog.unableEdit",
+          msg: "dialog.editPrevOrderTip",
+          buttons: [{ text: "button.confirm", fn: "reject" }]
+        };
+
+        this.date === this.today ? next() : stop(prompt);
       });
     },
     checkStatus() {
-      return new Promise((resolve, reject) => {
-        this.order.status === 1
-          ? resolve()
-          : reject({
-            title: "dialog.unableEdit",
-            msg: ["dialog.editVoidOrderTip", this.order.void.by],
-            buttons: [{ text: "button.confirm", fn: "reject" }]
-          });
+      return new Promise((next, stop) => {
+        const prompt = {
+          title: "dialog.unableEdit",
+          msg: ["dialog.editVoidOrderTip", this.order.void.by],
+          buttons: [{ text: "button.confirm", fn: "reject" }]
+        };
+
+        this.order.status === 1 ? next() : stop(prompt);
       });
     },
     checkSettlement() {
@@ -172,15 +171,26 @@ export default {
     voidTicket() {
       const prompt = {
         type: "warning",
-        title: ["dialog.voidOrderConfirm", this.order.number, this.$t("type." + this.order.type)],
+        title: [
+          "dialog.voidOrderConfirm",
+          this.order.number,
+          this.$t("type." + this.order.type)
+        ],
         msg: "dialog.voidOrderConfirmTip",
-        buttons: [{ text: "button.cancel", fn: "reject" }, { text: "button.void", fn: "resolve" }]
+        buttons: [
+          { text: "button.cancel", fn: "reject" },
+          { text: "button.void", fn: "resolve" }
+        ]
       };
 
-      this.$dialog().then(confirm => this.$p("Reason")).catch(() => this.$q());
+      this.$dialog(prompt)
+        .then(confirm => this.$p("Reason"))
+        .catch(() => this.$q());
     },
     voidFailed(reason) {
-      this.$dialog(reason).then(this.removeRecordFromList).catch(() => this.$q());
+      this.$dialog(reason)
+        .then(this.removeRecordFromList)
+        .catch(() => this.$q());
     },
     removeRecordFromList() {
       new Promise((resolve, reject) => {
@@ -197,7 +207,11 @@ export default {
       const prompt = {
         type: "question",
         title: ["dialog.recoverOrderConfirm", this.order.number],
-        msg: ["dialog.recoverOrderConfirmTip", this.order.void.by,this.$t("reason." + this.order.void.note)]
+        msg: [
+          "dialog.recoverOrderConfirmTip",
+          this.order.void.by,
+          this.$t("reason." + this.order.void.note)
+        ]
       };
 
       this.$dialog(prompt)
@@ -343,9 +357,7 @@ export default {
         .then(() => this.$p("Report"))
         .catch(() => this.accessFailedLog("report"));
     },
-    reconciliation() { 
-
-    },
+    reconciliation() {},
     accessFailedLog(component) {
       this.$socket.emit("[SYS] RECORD", {
         type: "Software",
