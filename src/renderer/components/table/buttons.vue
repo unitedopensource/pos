@@ -1,47 +1,47 @@
 <template>
-    <div>
-        <button class="btn" @click="editOrder" :disabled="order.content.length === 0">
-            <i class="fa fa-list-alt"></i>
-            <span class="text">{{$t('button.edit')}}</span>
-        </button>
-        <button class="btn" @click="switchTable" v-if="transfer">
-            <i class="fa fa-exchange"></i>
-            <span class="text">{{$t("button.switchTable")}}</span>
-        </button>
-        <button class="btn" @click="$emit('switch',false)" v-else>
-            <i class="fa fa-ban"></i>
-            <span class="text">{{$t('button.cancel')}}</span>
-        </button>
-        <button class="btn" @click="combineTicket">
-            <i class="fa fa-link"></i>
-            <span class="text">{{$t('button.combineTicket')}}</span>
-        </button>
-        <button class="btn" @click="prePayment">
-            <i class="fa fa-print"></i>
-            <span class="text">{{$t('button.receipt')}}</span>
-        </button>
-        <button class="btn" @click="settle">
-            <i class="fa fa-money"></i>
-            <span class="text">{{$t('button.payment')}}</span>
-        </button>
-        <button class="btn" @click="switchStaff" :disabled="true">
-            <i class="fa fa-user-times"></i>
-            <span class="text">{{$t('button.switch')}}</span>
-        </button>
-        <button class="btn" @click="split">
-            <i class="fa fa-clone"></i>
-            <span class="text">{{$t('button.split')}}</span>
-        </button>
-        <button class="btn" @click="exit">
-            <i class="fa fa-times"></i>
-            <span class="text">{{$t('button.exit')}}</span>
-        </button>
-        <button class="btn" @click="clearTable">
-            <i class="fa fa-recycle"></i>
-            <span class="text">{{$t('button.clearTable')}}</span>
-        </button>
-        <div :is="component" :init="componentData"></div>
-    </div>
+  <div>
+    <button class="btn" @click="editOrder" :disabled="order.content.length === 0">
+      <i class="fa fa-list-alt"></i>
+      <span class="text">{{$t('button.edit')}}</span>
+    </button>
+    <button class="btn" @click="switchTable" v-if="transfer">
+      <i class="fa fa-exchange"></i>
+      <span class="text">{{$t("button.switchTable")}}</span>
+    </button>
+    <button class="btn" @click="$emit('switch',false)" v-else>
+      <i class="fa fa-ban"></i>
+      <span class="text">{{$t('button.cancel')}}</span>
+    </button>
+    <button class="btn" @click="combineTicket">
+      <i class="fa fa-link"></i>
+      <span class="text">{{$t('button.combineTicket')}}</span>
+    </button>
+    <button class="btn" @click="prePayment">
+      <i class="fa fa-print"></i>
+      <span class="text">{{$t('button.receipt')}}</span>
+    </button>
+    <button class="btn" @click="settle">
+      <i class="fa fa-money"></i>
+      <span class="text">{{$t('button.payment')}}</span>
+    </button>
+    <button class="btn" @click="switchStaff" :disabled="true">
+      <i class="fa fa-user-times"></i>
+      <span class="text">{{$t('button.switch')}}</span>
+    </button>
+    <button class="btn" @click="split">
+      <i class="fa fa-clone"></i>
+      <span class="text">{{$t('button.split')}}</span>
+    </button>
+    <button class="btn" @click="exit">
+      <i class="fa fa-times"></i>
+      <span class="text">{{$t('button.exit')}}</span>
+    </button>
+    <button class="btn" @click="clearTable">
+      <i class="fa fa-recycle"></i>
+      <span class="text">{{$t('button.clearTable')}}</span>
+    </button>
+    <div :is="component" :init="componentData"></div>
+  </div>
 </template>
 
 <script>
@@ -75,7 +75,7 @@ export default {
               moment.locale(language === "usEN" ? "en" : "zh-cn");
               this.$setLanguage(language);
               this.setOp(op);
-              this.setApp({ mode: "edit", language });
+              this.setApp({ newTicket: false, language });
               this.setTicket({ type: "DINE_IN", number: this.order.number });
               this.$router.push({ path: "/main/menu" });
             } else {
@@ -87,7 +87,7 @@ export default {
             this.$q();
           });
       } else {
-        this.setApp({ mode: "edit" });
+        this.setApp({ newTicket: false });
         this.setTicket({ type: "DINE_IN", number: this.order.number });
         this.$router.push({ path: "/main/menu" });
       }

@@ -375,10 +375,10 @@ export const removePrinter = ({
 }, data) => {
   commit(types.REMOVE_PRINTER, data)
 }
-export const resortMenuCategory = ({
+export const replaceMenu = ({
   commit
 }, data) => {
-  commit(types.RESORT_MENU_CATEGORY, data)
+  commit(types.REPLACE_MENU, data)
 }
 export const replaceRequestItem = ({
   commit

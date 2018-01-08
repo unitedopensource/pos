@@ -1,5 +1,5 @@
 <template>
-  <div class="external" :class="{style:defaultStyle}">
+  <div class="external" :class="{style:defaultStyle,disabled}">
     <div class="inner" v-if="translate">
       <span>{{$t(title)}}</span>
       <span class="tooltip">{{$t(tooltip)}}</span>
@@ -28,6 +28,10 @@ export default {
     defaultStyle: {
       type: Boolean,
       default: true
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   }
 };
@@ -37,6 +41,12 @@ export default {
 .external {
   display: flex;
   align-items: center;
+}
+
+.external.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  background: #f5f5f5;
 }
 
 .external.style {

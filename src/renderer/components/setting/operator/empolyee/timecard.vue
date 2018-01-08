@@ -72,13 +72,14 @@
 </template>
 
 <script>
+import calendar from "../../common/calendar";
 import editor from "../component/timecardEditor";
 import dialoger from "../../../common/dialoger";
 import dropdown from "../../../history/component/dropdown";
 
 export default {
   props: ["operator"],
-  components: { editor, dropdown, dialoger },
+  components: { editor, dropdown, dialoger, calendar },
   computed: {
     validSession() {
       return this.logs.filter(log => log.valid).length;
@@ -210,6 +211,17 @@ export default {
             .seconds(59);
           break;
         case "specified":
+          this.from = +this.from
+            .clone()
+            .hours(4)
+            .minutes(0)
+            .seconds(0);
+          this.to = +this.to
+            .clone()
+            .add(1, "days")
+            .hours(3)
+            .minutes(59)
+            .seconds(59);
           break;
       }
       this.$socket.emit(
@@ -244,7 +256,20 @@ export default {
     },
     setFilter(opt) {
       this.period = opt.value || "week";
-      this.fetchData();
+      this.period === "specified" ? this.openCalendar() : this.fetchData();
+    },
+    openCalendar() {
+      new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject, multiple: true };
+        this.component = "calendar";
+      })
+        .then(({ from, to }) => {
+          this.from = from;
+          this.to = to;
+          this.fetchData();
+          this.$q();
+        })
+        .catch(() => this.$q());
     },
     edit(log) {
       this.$p("editor", { operator: this.operator, log });
@@ -257,13 +282,17 @@ export default {
       const prompt = {
         title: "dialog.noDefaultWage",
         msg: ["dialog.timecardNoWage", this.operator.name],
-        buttons: [{ text: "button.cancel", fn: "reject" }, { text: "button.proccessAnyway", fn: "resolve" }]
-      }
+        buttons: [
+          { text: "button.cancel", fn: "reject" },
+          { text: "button.proccessAnyway", fn: "resolve" }
+        ]
+      };
 
       isNumber(this.operator.wage)
         ? this.excute()
-        : this.$dialog(prompt).then(this.excute).catch(() => this.$q());
-
+        : this.$dialog(prompt)
+            .then(this.excute)
+            .catch(() => this.$q());
     },
     excute() {
       this.$q();
@@ -273,7 +302,7 @@ export default {
           wage: this.operator.wage || 0
         });
         this.$socket.emit("[TIMECARD] UPDATE", log);
-      })
+      });
     }
   }
 };

@@ -186,11 +186,13 @@ export default {
       } else {
         this.$checkPermission("modify", "item")
           .then(() => this.lessQty(boolean))
-          .catch(() => this.$log({
-            eventID: 1210,
-            type: "failure",
-            note: `Operator attempt to delete exist item. However it was denied due to permission deny.`
-          }))
+          .catch(() =>
+            this.$log({
+              eventID: 1210,
+              type: "failure",
+              note: `Operator attempt to delete exist item. However it was denied due to permission deny.`
+            })
+          );
 
         // this.approval(this.op.modify, "item")
         //   ? this.lessQty(boolean)
@@ -210,9 +212,9 @@ export default {
       let focus = document.querySelector(".item.active");
       let subItemCount = Array.isArray(this.item.choiceSet)
         ? this.item.choiceSet
-          .filter(item => item.subItem)
-          .map(item => item.qty)
-          .reduce((a, b) => a + b, 0)
+            .filter(item => item.subItem)
+            .map(item => item.qty)
+            .reduce((a, b) => a + b, 0)
         : 0;
 
       if (!focus && this.item.hasOwnProperty("rules")) {
@@ -248,13 +250,13 @@ export default {
       let target = !!document.querySelector(".sub.target");
       target
         ? this.$p("modify", {
-          item: {
-            qty: this.choiceSet ? this.choiceSet.qty : 1,
-            single: this.choiceSet ? this.choiceSet.single : 0,
-            discount: 0
-          },
-          type: "choiceSet"
-        })
+            item: {
+              qty: this.choiceSet ? this.choiceSet.qty : 1,
+              single: this.choiceSet ? this.choiceSet.single : 0,
+              discount: 0
+            },
+            type: "choiceSet"
+          })
         : this.$p("modify", { item: this.item });
     },
     course() {
@@ -281,11 +283,11 @@ export default {
     },
     openTimer() {
       if (this.isEmptyTicket) return;
-      this.$p("timer")
+      this.$p("timer");
     },
     openSplit() {
       if (this.isEmptyTicket) return;
-      this.$p("splitor")
+      this.$p("splitor");
     },
     switchGuest() {
       this.callComponent("guest");
@@ -452,9 +454,12 @@ export default {
     quit() {
       this.isEmptyTicket
         ? this.exitOut()
-        : this.$dialog({ title: "dialog.exitConfirm", msg: "dialog.exitConfirmTip" })
-          .then(() => this.exitOut())
-          .catch(() => this.$q());
+        : this.$dialog({
+            title: "dialog.exitConfirm",
+            msg: "dialog.exitConfirmTip"
+          })
+            .then(() => this.exitOut())
+            .catch(() => this.$q());
     },
     combineOrderInfo(extra) {
       let customer = Object.assign({}, this.customer);
@@ -568,28 +573,27 @@ export default {
       Object.assign(this.ticket, { type: "TO_GO" });
       this.setOrder({ type: "TO_GO", content: [] });
     },
+    dineInQuit() {
+      const prompt = {
+        title: "dialog.exitConfirm",
+        msg: "dialog.exitConfirmTip"
+      };
+
+      this.isEmptyTicket
+        ? this.resetTableExit()
+        : this.$dialog(prompt)
+            .then(this.resetTableExit)
+            .catch(() => this.$q());
+    },
+    resetTableExit() {
+      this.app.newTicket &&
+        this.$socket.emit("[TABLE] RESET", { _id: this.currentTable._id });
+      this.exitOut();
+    },
     exitOut() {
       this.resetAll();
       this.setApp({ newTicket: true });
       this.$router.push({ path: "/main" });
-    },
-    dineInQuit() {
-      this.isEmptyTicket
-        ? this.resetTableExit()
-        : this.$dialog({
-          title: "dialog.exitConfirm",
-          msg: "dialog.exitConfirmTip"
-        })
-          .then(() => {
-            this.resetTableExit();
-          })
-          .catch(() => {
-            this.$q();
-          });
-    },
-    resetTableExit() {
-      this.app.newTicket && this.$socket.emit("[TABLE] RESET", { _id: this.currentTable._id });
-      this.exitOut();
     },
     switchLanguage() {
       const language = this.app.language === "usEN" ? "zhCN" : "usEN";

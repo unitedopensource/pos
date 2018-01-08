@@ -1103,7 +1103,8 @@ export default {
         'startAt': 'Start At',
         'copy': 'Copy',
         'selectEmployee': 'Select Employee',
-        'generatePayroll': 'Generate Payroll'
+        'generatePayroll': 'Generate Payroll',
+        'requireAccessPin': 'Access Pin Required'
     },
     nav: {
         'store': 'Store',

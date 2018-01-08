@@ -10,7 +10,7 @@
         <inputer v-model.trim="grid.subhead" title="text.subtitle"></inputer>
         <selector title="text.function" v-model="grid.route" :opts="routers"></selector>
         <selector title="text.icon" v-model="grid.icon" :opts="icons"></selector>
-        <switches v-model="grid.password" title="text.password"></switches>
+        <switches v-model="grid.password" title="text.requireAccessPin"></switches>
       </div>
       <footer>
         <div class="opt">

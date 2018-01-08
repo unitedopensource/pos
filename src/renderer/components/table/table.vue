@@ -1,39 +1,39 @@
 <template>
-    <div class="dineIn">
-        <div class="blueprint">
-            <aside>
-                <div class="sections">
-                    <div class="section btn" v-for="(section,index) in tables" @click="switchSection(index)" :key="index">
-                        <span>{{section[language]}}</span>
-                    </div>
-                </div>
-                <div class="functions">
-                    <div class="btn" @click="reservation">
-                        <i class="fa fa-user-o"></i>
-                        <span class="text">{{$t('button.reservation')}}</span>
-                    </div>
-                    <div class="btn" @click="list">
-                        <i class="fa fa-list-alt"></i>
-                        <span class="text">{{$t('button.viewList')}}</span>
-                    </div>
-                </div>
-            </aside>
-            <div class="tables">
-                <div class="table" v-for="(table,index) in viewSection" @click="selectTable(table,$event)" @contextmenu="tableOption(table,$event)" :key="index" :class="{occupy:table.status === 2,prePay:table.status === 3,paid:table.status === 4}">
-                    <span :class="[table.shape]" class="icon"></span>
-                    <span class="name">{{table.name}}</span>
-                    <span class="staff" v-show="table.server">{{table.server}}</span>
-                </div>
-            </div>
+  <div class="dineIn">
+    <div class="blueprint">
+      <aside>
+        <div class="sections">
+          <div class="section btn" v-for="(section,index) in tables" @click="switchSection(index)" :key="index">
+            <span>{{section[language]}}</span>
+          </div>
         </div>
-        <div class="side">
-            <div class="wrap">
-                <order-list layout="display" :display="true"></order-list>
-                <buttons class="grid" @switch="switchTable" :transfer="queue.length === 0"></buttons>
-            </div>
+        <div class="functions">
+          <div class="btn" @click="reservation">
+            <i class="fa fa-user-o"></i>
+            <span class="text">{{$t('button.reservation')}}</span>
+          </div>
+          <div class="btn" @click="list">
+            <i class="fa fa-list-alt"></i>
+            <span class="text">{{$t('button.viewList')}}</span>
+          </div>
         </div>
-        <div :is="component" :init="componentData" @seat="place"></div>
+      </aside>
+      <div class="tables">
+        <div class="table" v-for="(table,index) in viewSection" @click="selectTable(table,$event)" @contextmenu="tableOption(table,$event)" :key="index" :class="{occupy:table.status === 2,prePay:table.status === 3,paid:table.status === 4}">
+          <span :class="[table.shape]" class="icon"></span>
+          <span class="name">{{table.name}}</span>
+          <span class="staff" v-show="table.server">{{table.server}}</span>
+        </div>
+      </div>
     </div>
+    <div class="side">
+      <div class="wrap">
+        <order-list layout="display" :display="true"></order-list>
+        <buttons class="grid" @switch="switchTable" :transfer="queue.length === 0"></buttons>
+      </div>
+    </div>
+    <div :is="component" :init="componentData" @seat="place"></div>
+  </div>
 </template>
 
 <script>
@@ -46,7 +46,15 @@ import counter from "./counter";
 import buttons from "./buttons";
 import list from "./list";
 export default {
-  components: { buttons, counter, unlock, dialoger, orderList, list, reservation },
+  components: {
+    buttons,
+    counter,
+    unlock,
+    dialoger,
+    orderList,
+    list,
+    reservation
+  },
   data() {
     return {
       componentData: null,
@@ -181,7 +189,7 @@ export default {
                 let language = op.language || "usEN";
                 moment.locale(language === "usEN" ? "en" : "zh-cn");
                 this.$setLanguage(language);
-                this.setApp({ language, mode: "create" });
+                this.setApp({ language, newTicket: true });
                 this.setOp(op);
                 this.createTable(guest);
               })
@@ -219,7 +227,7 @@ export default {
           let language = op.language || "usEN";
           moment.locale(language === "usEN" ? "en" : "zh-cn");
           this.$setLanguage(language);
-          this.setApp({ language, mode: "create" });
+          this.setApp({ language, newTicket: true });
           this.setOp(op);
           this.createTable(1);
         })
@@ -237,29 +245,29 @@ export default {
         time: +new Date()
       });
       this.resetMenu();
-      this.setApp({ mode: "create" });
+      this.setApp({ newTicket: true });
       this.$socket.emit("[TABLE] SETUP", this.currentTable);
       this.$router.push({ path: "/main/menu" });
     },
     tableOption(table) {
-      if (this.op.role === "Manager" || this.op.role === "Admin") {
-        this.$dialog({
-          type: "alert",
-          title: "dialog.forceClearTable",
-          msg: ["dialog.forceClearTableTip", table.server, table.name],
-          buttons: [
-            { text: "button.cancel", fn: "reject" },
-            { text: "button.clear", fn: "resolve" }
-          ]
-        })
+      const { role } = this.op;
+      const prompt = {
+        title: "dialog.forceClearTable",
+        msg: ["dialog.forceClearTableTip", table.server, table.name],
+        buttons: [
+          { text: "button.cancel", fn: "reject" },
+          { text: "button.clear", fn: "resolve" }
+        ]
+      };
+
+      if (role === "Manager" || role === "Owner" || role === "Developer") {
+        this.$dialog(prompt)
           .then(() => {
             this.$socket.emit("[TABLE] RESET", { _id: table._id });
             this.resetMenu();
             this.$q();
           })
-          .catch(() => {
-            this.$q();
-          });
+          .catch(() => this.$q());
       }
     },
     switchTable(table) {
@@ -276,9 +284,7 @@ export default {
           title: "dialog.tableSwitchFailed",
           msg: "dialog.tableSwitchFailedTip",
           buttons: [{ text: "button.confirm", fn: "resolve" }]
-        }).then(() => {
-          this.$q();
-        });
+        }).then(() => this.$q());
       }
     },
     list() {

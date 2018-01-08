@@ -1,28 +1,25 @@
 <template>
-    <div class="layout">
-        <draggable v-model="categories" @sort="sortCategory" :options="{animation: 300,group: 'category',ghostClass: 'categoryGhost'}">
-            <transition-group tag="section" class="category">
-                <div v-for="(category,index) in categories" @click="setCategory(index)" @contextmenu="editCategory(category,index)" :key="index">{{category[language]}}</div>
-            </transition-group>
-            </section>
+  <div class="layout">
+    <draggable v-model="categories" @sort="isCategorySorted = true" :options="{animation: 300,group: 'category',ghostClass: 'categoryGhost'}">
+      <transition-group tag="section" class="category">
+        <div v-for="(category,index) in categories" @click="setCategory(index)" @contextmenu="editCategory(category,index)" :key="index">{{category[language]}}</div>
+      </transition-group>
+      </section>
+    </draggable>
+    <div>
+      <div v-for="(group,groupIndex) in items" :key="groupIndex">
+        <draggable :list="group" @sort="sortItem" :options="{animation:300,group:group.category,ghostClass:'itemGhost',draggable:'.draggable'}">
+          <transition-group tag="section" class="items" :name="'drag'">
+            <div v-for="(item,index) in group" @contextmenu="editItem(item,groupIndex,index)" :class="{draggable:item.clickable,disable:!item.clickable}" :key="index" :data-menuid="item.menuID">{{item[language]}}</div>
+          </transition-group>
         </draggable>
-        <div>
-            <div v-for="(group,groupIndex) in items" :key="groupIndex">
-                <draggable :list="group" @sort="sortItem" :options="{animation:300,group:group.category,ghostClass:'itemGhost',draggable:'.draggable'}">
-                    <transition-group tag="section" class="items" :name="'drag'">
-                        <div v-for="(item,index) in group" @contextmenu="editItem(item,groupIndex,index)" :class="{draggable:item.clickable,disable:!item.clickable}" :key="index" :data-menuid="item.menuID">{{item[language]}}</div>
-                    </transition-group>
-                </draggable>
-            </div>
-        </div>
-        <aside>
-            <div>
-                <div class="btn" @click="updateItemSort" v-if="isItemSorted">{{$t('button.update')}}</div>
-                <div class="btn" @click="updateCategorySort" v-if="isCategorySorted">{{$t('button.update')}}</div>
-            </div>
-        </aside>
-        <div :is="component" :init="componentData"></div>
+      </div>
     </div>
+    <aside>
+
+    </aside>
+    <div :is="component" :init="componentData"></div>
+  </div>
 </template>
 
 <script>
@@ -54,13 +51,18 @@ export default {
   },
   beforeDestroy() {
     window.removeEventListener("keydown", this.entry, false);
+
+    this.isCategorySorted && this.updateCategorySort();
+    //this.isItemSorted && this.updateItemSort();
   },
   methods: {
     entry(e) {},
     setCategory(index) {
-      this.checkItemSort()
-        .then(this.getItems.bind(null, index))
-        .catch(this.askSortItem.bind(null, index));
+      this.isItemSorted && this.updateItemSort();
+      this.getItems(index);
+      // this.checkItemSort()
+      //   .then(this.getItems.bind(null, index))
+      //   .catch(this.updateItemSort.bind(null, index));
     },
     getItems(index = 0) {
       this.categoryIndex = index;
@@ -174,39 +176,42 @@ export default {
       }
       return item;
     },
-    sortCategory() {},
-    sortItem() {
-      this.isItemSorted = true;
-    },
-    checkItemSort() {
-      return new Promise((resolve, reject) => {
-        this.isItemSorted ? reject() : resolve();
-      });
-    },
-    askSortItem(index) {
-      let data = {
-        title: "dialog.itemSorted",
-        msg: "dialog.updateSortedItem",
-        buttons: [
-          { text: "button.cancel", fn: "reject" },
-          { text: "button.update", fn: "resolve" }
-        ]
-      };
+    // checkItemSort() {
+    //   return new Promise((resolve, reject) => {
+    //     this.isItemSorted ? reject() : resolve();
+    //   });
+    // },
+    // updateSortItem(index) {
+    //   const data = {
+    //     title: "dialog.itemSorted",
+    //     msg: "dialog.updateSortedItem",
+    //     buttons: [
+    //       { text: "button.cancel", fn: "reject" },
+    //       { text: "button.update", fn: "resolve" }
+    //     ]
+    //   };
 
-      this.$dialog(data)
-        .then(() => {
-          this.updateItemSort();
-          this.getItems(index);
-          this.$q();
-        })
-        .catch(() => {
-          this.isItemSorted = false;
-          this.getItems(index);
-          this.$q();
-        });
+    //   this.$dialog(data)
+    //     .then(() => {
+    //       this.updateItemSort();
+    //       this.getItems(index);
+    //       this.$q();
+    //     })
+    //     .catch(() => {
+    //       this.isItemSorted = false;
+    //       this.getItems(index);
+    //       this.$q();
+    //     });
+    // },
+    updateCategorySort() {
+      this.$socket.emit("[CATEGORY] SORT", this.categories);
+      this.isCategorySorted = false;
     },
-    updateCategorySort() {},
-    updateItemSort() {},
+    updateItemSort() {
+      //this.$socket.emit("[MENU] SORT")
+
+      this.isItemSorted = false;
+    },
     refreshData() {
       this.$nextTick(() => {
         this.categories = JSON.parse(JSON.stringify(this.$store.getters.menu));

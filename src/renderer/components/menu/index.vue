@@ -70,8 +70,10 @@ export default {
       "station",
       "ticket",
       "sides",
+      "dinein",
       "customer",
-      "language"
+      "language",
+      "currentTable"
     ])
   },
   data() {
@@ -128,6 +130,13 @@ export default {
     },
     initialDineInTicket() {
       if (this.dinein.seatOrder) this.sort = 1;
+      this.setOrder({
+        table: this.currentTable.name,
+        tableID: this.currentTable._id,
+        guest: this.currentTable.guest,
+        session: this.currentTable.session,
+        type: this.ticket.type
+      });
     },
     entry(e) {
       const disable = document.querySelector("div.popupMask");
@@ -222,7 +231,7 @@ export default {
       toggleClass(".category .active", "active");
       document
         .querySelectorAll("section.category div")
-      [index].classList.add("active");
+        [index].classList.add("active");
 
       this.itemPage = 0;
       this.saveItems = null;
@@ -396,9 +405,9 @@ export default {
 
       const itemCount = Array.isArray(this.item.choiceSet)
         ? this.item.choiceSet
-          .filter(i => i.subItem)
-          .map(i => i.qty)
-          .reduce((a, b) => a + b, 0)
+            .filter(i => i.subItem)
+            .map(i => i.qty)
+            .reduce((a, b) => a + b, 0)
         : 0;
 
       if (subItem && this.item.hasOwnProperty("rules")) {

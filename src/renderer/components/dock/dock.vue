@@ -208,7 +208,7 @@ export default {
       "updateRequestItem",
       "removeRequestItem",
       "updateMenuCategory",
-      "resortMenuCategory",
+      "replaceMenu",
       "updateMenuItem",
       "removeMenuItem",
       "updateTableSection",
@@ -292,8 +292,8 @@ export default {
     REQUEST_ITEM_REMOVE(data) {
       this.removeRequestItem(data);
     },
-    MENU_CATEGORY_RESORT(data) {
-      this.resortMenuCategory(data);
+    REPLACE_MENU(data) {
+      this.replaceMenu(data);
     },
     UPDATE_TABLE_SECTION(data) {
       this.updateTableSection(data);

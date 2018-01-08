@@ -108,7 +108,7 @@
           <span class="del" v-show="init.edit" @click="init.reject(true)">{{$t('button.delete')}}</span>
         </div>
         <button class="btn" @click="init.reject(false)">{{$t('button.back')}}</button>
-        <button class="btn" @click="save">{{$t('button.save')}}</button>
+        <button class="btn" @click="save" :disabled="!item.category">{{$t('button.save')}}</button>
       </footer>
     </div>
     <div :is="component" :init="componentData"></div>
