@@ -22,10 +22,10 @@
         </div>
         <div class="column discount" @click="setPointer('discount',$event)" ref="discount">
           <div class="unit">
-            <input type="radio" name="unit" v-model="unit" id="cash" :value="true" @change="switchUnit">
+            <input type="radio" name="unit" v-model="unit" id="cash" :value="true" @click="switchUnit">
             <label for="cash">$</label>
             <span>/</span>
-            <input type="radio" name="unit" v-model="unit" id="pct" :value="false" @change="switchUnit">
+            <input type="radio" name="unit" v-model="unit" id="pct" :value="false" @click="switchUnit">
             <label for="pct">%</label>
           </div>
           <h5>{{$t("text.discount")}}</h5>
@@ -182,6 +182,7 @@ export default {
       this.reset = true;
     },
     switchUnit() {
+      this.unit = !this.unit;
       this.discount = this.unit ? "0.00" : "0";
     },
     confirm() {
