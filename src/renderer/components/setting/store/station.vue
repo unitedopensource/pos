@@ -96,10 +96,20 @@ export default {
     },
     editScale() { },
     updateAutoLock(value) {
-      this.update({
-        key: "autoLock.enable",
-        value
-      });
+      if (!value) {
+        this.station.autoLock.timeout = 0;
+        this.station.autoLock.done = false;
+        this.update({
+          key: "autoLock",
+          value: this.station.autoLock
+        })
+      } else {
+        this.update({
+          key: "autoLock.enable",
+          value
+        });
+      }
+
     },
     updateTimeout(value) {
       value = parseInt(value);
