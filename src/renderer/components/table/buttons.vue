@@ -4,13 +4,13 @@
       <i class="fa fa-list-alt"></i>
       <span class="text">{{$t('button.edit')}}</span>
     </button>
-    <button class="btn" @click="switchTable" v-if="transfer">
-      <i class="fa fa-exchange"></i>
-      <span class="text">{{$t("button.switchTable")}}</span>
-    </button>
-    <button class="btn" @click="$emit('switch',false)" v-else>
+    <button class="btn" @click="$emit('switch',false)" v-if="transfer">
       <i class="fa fa-ban"></i>
-      <span class="text">{{$t('button.cancel')}}</span>
+      <span class="text">{{$t("button.cancel")}}</span>
+    </button>
+    <button class="btn" @click="switchTable" v-else>
+      <i class="fa fa-exchange"></i>
+      <span class="text">{{$t('button.switchTable')}}</span>
     </button>
     <button class="btn" @click="combineTicket">
       <i class="fa fa-link"></i>
@@ -60,13 +60,15 @@ export default {
       component: null
     };
   },
+  created() {
+    console.log(this.transfer)
+  },
   methods: {
     editOrder() {
       if (this.order.settled) {
         this.handleSettledOrder();
         return;
       }
-
       if (this.currentTable.server !== this.op.name) {
         this.$denyAccess(true)
           .then(op => {

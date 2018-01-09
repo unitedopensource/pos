@@ -21,7 +21,7 @@
     <section class="cart">
       <order-list layout="order" :sort="sort"></order-list>
       <query-bar :query="queryItem" :items="queryResult"></query-bar>
-      <buttons :layout="ticket.type"></buttons>
+      <buttons :layout="ticket.type" @open="open"></buttons>
     </section>
     <div :is="component" :init="componentData"></div>
   </div>
@@ -31,6 +31,7 @@
 import { mapGetters, mapActions } from "vuex";
 import buttons from "./buttons";
 import modify from "./component/modify";
+import request from "./component/request";
 import dialoger from "../common/dialoger";
 import queryBar from "./component/queryBar";
 import orderList from "../common/orderList";
@@ -41,6 +42,7 @@ import temporaryItem from "./component/temporaryItem";
 export default {
   components: {
     modify,
+    request,
     buttons,
     dialoger,
     queryBar,
@@ -231,7 +233,7 @@ export default {
       toggleClass(".category .active", "active");
       document
         .querySelectorAll("section.category div")
-        [index].classList.add("active");
+      [index].classList.add("active");
 
       this.itemPage = 0;
       this.saveItems = null;
@@ -405,9 +407,9 @@ export default {
 
       const itemCount = Array.isArray(this.item.choiceSet)
         ? this.item.choiceSet
-            .filter(i => i.subItem)
-            .map(i => i.qty)
-            .reduce((a, b) => a + b, 0)
+          .filter(i => i.subItem)
+          .map(i => i.qty)
+          .reduce((a, b) => a + b, 0)
         : 0;
 
       if (subItem && this.item.hasOwnProperty("rules")) {
@@ -436,6 +438,16 @@ export default {
       let printer = {};
       print.forEach(device => (printer[device] = {}));
       Object.assign(this.item.printer, printer);
+    },
+    open(component) {
+      switch (component) {
+        case "request":
+          this.component =
+            this.component === "request"
+              ? null
+              : "request";
+          break;
+      }
     },
     ...mapActions([
       "setApp",

@@ -9,7 +9,7 @@
         <i class="fa fa-plus-square"></i>
         <span class="text">{{$t('button.more')}}</span>
       </div>
-      <div class="btn" @click="request">
+      <div class="btn" @click="$emit('open', 'request')">
         <i class="fa fa-commenting-o"></i>
         <span class="text">{{$t('button.request')}}</span>
       </div>
@@ -100,7 +100,7 @@
       <i class="fa fa-plus-square"></i>
       <span class="text">{{$t('button.more')}}</span>
     </div>
-    <div class="btn" @click="request">
+    <div class="btn" @click="$emit('open', 'request')">
       <i class="fa fa-commenting-o"></i>
       <span class="text">{{$t('button.request')}}</span>
     </div>
@@ -244,7 +244,7 @@ export default {
         : this.$p("payment");
     },
     request() {
-      this.callComponent("request");
+      this.$emit("open", "request");
     },
     promotion() {
       this.$socket.emit("[COUPON] LIST", coupons => {
@@ -276,21 +276,21 @@ export default {
         .catch(this.placeFailed);
     },
     placeFailed(error) {
-      console.log(error);
-      this.$socket.emit("[SYS] RECORD", {
-        type: "System",
-        event: "",
-        status: 0,
-        cause: error,
-        data: this.order
+      this.$log({
+        eventID: 9005,
+        type: "bug",
+        data: this.order._id,
+        note: `An error occurred when save the order. \n\nError Message:\n${error}`
       });
 
-      this.$dialog({
+      const prompt = {
         type: "error",
         title: "dialog.somethingWrong",
         msg: "dialog.somethingWrongTip",
         buttons: [{ text: "button.confirm", fn: "resolve" }]
-      }).then(() => this.$q());
+      };
+
+      this.$dialog(prompt).then(() => this.$q());
     },
     combineTogoItems() {
       //combine togo list to origin dineIn placed items
