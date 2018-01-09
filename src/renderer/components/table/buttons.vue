@@ -283,7 +283,7 @@ export default {
         this.$q();
       });
     },
-    switchStaff() {},
+    switchStaff() { },
     split() {
       if (this.isEmptyTicket) return;
       if (this.order.settled) {

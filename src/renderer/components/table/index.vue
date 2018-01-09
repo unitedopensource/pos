@@ -6,11 +6,11 @@
           <button class="section btn" v-for="(section,index) in tables" @click="switchSection(index)" :key="index">{{section[language]}}</button>
         </div>
         <div class="column">
-          <button class="btn" @click="openReservation">
+          <button class="btn" @click="openReservation" :disabled="true">
             <i class="fa fa-book"></i>
             <span class="text">{{$t('button.reservation')}}</span>
           </button>
-          <button class="btn" @click="viewDineInList">
+          <button class="btn" @click="viewDineInList" :disabled="true">
             <i class="fa fa-list-alt"></i>
             <span class="text">{{$t('button.viewList')}}</span>
           </button>
@@ -27,7 +27,7 @@
     <div class="ticket">
       <div class="wrap">
         <order-list layout="display" :display="true"></order-list>
-        <buttons class="grid"></buttons>
+        <buttons class="grid" :transfer="transfer"></buttons>
       </div>
     </div>
     <div :is="component" :init="componentData"></div>
@@ -64,6 +64,7 @@ export default {
     return {
       componentData: null,
       component: null,
+      transfer:false,
       view: 0
     };
   },
@@ -80,7 +81,14 @@ export default {
       this.view = index;
     },
     getTableStatus(status) {
-      return {};
+      switch (status) {
+        case 2:
+          return { occupy: true }
+        case 3:
+          return { prePay: true }
+        case 4:
+          return { recycle: true }
+      }
     },
     tap(table) {
       this.setCurrentTable(table);
@@ -334,5 +342,53 @@ aside {
 
 .ticket {
   width: 285px;
+}
+
+.prePay {
+  box-shadow: 0 1px 3px #009688;
+}
+
+.table.prePay .icon {
+  color: #009688;
+  text-shadow: 0 2px 1px rgba(0, 0, 0, 0.5);
+}
+
+.prePay .icon:after {
+  font-family: fontAwesome;
+  content: "\f298";
+  font-size: 16px;
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  color: #009688;
+}
+
+.occupy {
+  box-shadow: 0 1px 3px #ff9800;
+}
+
+.table.occupy .icon {
+  color: #ff5722;
+  text-shadow: 0 2px 1px rgba(0, 0, 0, 0.5);
+}
+
+.occupy .icon:after {
+  font-family: fontAwesome;
+  content: "\f0c0";
+  font-size: 16px;
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  color: #ff5722;
+}
+
+.recycle .icon:after {
+  font-family: fontAwesome;
+  content: "\f1b8";
+  font-size: 16px;
+  position: absolute;
+  bottom: 15px;
+  right: 5px;
+  color: #4caf50;
 }
 </style>
