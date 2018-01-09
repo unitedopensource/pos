@@ -1,33 +1,33 @@
 <template>
-    <div class="popupMask center dark" @click.self="init.reject">
-        <ul v-show="!component">
-            <li v-show="type !== 'WALK_IN'" @click="change('WALK_IN')">
-                <i class="fa fa-user"></i>
-                <span>{{$t('type.WALK_IN')}}</span>
-            </li>
-            <li v-show="type !== 'PICK_UP'" @click="change('PICK_UP')">
-                <i class="fa fa-phone"></i>
-                <span>{{$t('type.PICK_UP')}}</span>
-            </li>
-            <li v-show="type !== 'DELIVERY'" @click="change('DELIVERY')">
-                <i class="fa fa-car"></i>
-                <span>{{$t('type.DELIVERY')}}</span>
-            </li>
-            <li v-show="type !=='DINE_IN'" @click="change('DINE_IN')">
-                <i class="fa fa-cutlery"></i>
-                <span>{{$t('type.DINE_IN')}}</span>
-            </li>
-            <li v-show="type ==='DINE_IN' && app.mode === 'edit'" @click="togo">
-                <i class="fa fa-hand-o-right"></i>
-                <span>{{$t('type.TO_GO')}}</span>
-            </li>
-            <li @click="thirdParty" class="thirdParty">
-              <i class="fa fa-edge"></i>
-              <span>{{$t('type.THIRD')}}</span>
-            </li>
-        </ul>
-        <div :is="component" :init="componentData"></div>
-    </div>
+  <div class="popupMask center dark" @click.self="init.reject">
+    <ul v-show="!component">
+      <li v-show="type !== 'WALK_IN'" @click="change('WALK_IN')">
+        <i class="fa fa-user"></i>
+        <span>{{$t('type.WALK_IN')}}</span>
+      </li>
+      <li v-show="type !== 'PICK_UP'" @click="change('PICK_UP')">
+        <i class="fa fa-phone"></i>
+        <span>{{$t('type.PICK_UP')}}</span>
+      </li>
+      <li v-show="type !== 'DELIVERY'" @click="change('DELIVERY')">
+        <i class="fa fa-car"></i>
+        <span>{{$t('type.DELIVERY')}}</span>
+      </li>
+      <li v-show="type !=='DINE_IN'" @click="change('DINE_IN')">
+        <i class="fa fa-cutlery"></i>
+        <span>{{$t('type.DINE_IN')}}</span>
+      </li>
+      <li v-show="type ==='DINE_IN' && !app.newTicket" @click="togo">
+        <i class="fa fa-hand-o-right"></i>
+        <span>{{$t('type.TO_GO')}}</span>
+      </li>
+      <li @click="thirdParty" class="thirdParty">
+        <i class="fa fa-edge"></i>
+        <span>{{$t('type.THIRD')}}</span>
+      </li>
+    </ul>
+    <div :is="component" :init="componentData"></div>
+  </div>
 </template>
 
 <script>
@@ -39,7 +39,7 @@ export default {
   props: ["init"],
   components: { dialoger, tpp },
   computed: {
-    ...mapGetters(["app", "store", "ticket", "order", "currentTable"])
+    ...mapGetters(["app", "store", "ticket", "order"])
   },
   data() {
     return {
@@ -53,7 +53,7 @@ export default {
   },
   methods: {
     change(type) {
-      this.$dialog({
+      const prompt = {
         type: "question",
         title: "dialog.orderTypeSwitchConfirm",
         msg: [
@@ -61,12 +61,12 @@ export default {
           this.$t("type." + this.ticket.type),
           this.$t("type." + type)
         ]
-      })
-        .then(() => {
-          this.switchType(type);
-          this.init.resolve();
-        })
-        .catch(() => this.$q());
+      };
+
+      this.$dialog(prompt).then(() => {
+        this.switchType(type);
+        this.init.resolve();
+      }).catch(() => this.$q());
     },
     switchType(type) {
       this.ticket.type === "DINE_IN" &&
@@ -121,7 +121,7 @@ export default {
         })
         .catch(() => this.$q());
     },
-    ...mapActions(["setOrder", "setTicket", "resetTable", "resetCurrentTable"])
+    ...mapActions(["setOrder", "setTicket"])
   }
 };
 </script>
