@@ -15,7 +15,8 @@
         <text-input title="text.note" v-model="template.note"></text-input>
         <toggle title="text.insert" tooltip="tip.insertTemplateItem" v-model="template.insert"></toggle>
         <toggle title="text.autoJump" tooltip="tip.autoJumpNext" v-model="template.autoJump"></toggle>
-        <external title="text.contain"></external>
+        <external title="text.contain" @open="$router.push({name:'Setting.template.item'})"></external>
+        <div :is="component" :init="componentData"></div>
     </div>
 </template>
 
@@ -23,23 +24,34 @@
 import toggle from "../../common/toggle";
 import external from "../../common/external";
 import textInput from "../../common/textInput";
+import dialoger from "../../../common/dialoger";
+
 export default {
     props: ["template"],
-    components: { toggle, external, textInput },
+    components: { toggle, external, textInput, dialoger },
     data() {
         return {
-
+            componentData: null,
+            component: null
         }
     },
     methods: {
         save() {
 
-
-
             this.$emit("reset");
         },
         remove() {
+            const prompt = {
+                type: "question",
+                title: "removeTemplate",
+                msg: "removeTemplateConfirm",
+                buttons: [{ text: "button.cancel", fn: "reject" }, { text: "button.remove", fn: "resolve" }]
+            }
 
+            this.$dialog(prompt).then(() => {
+                this.$q();
+                this.$socket.emit("[TEMPLATE] REMOVE", this.template._id, () => this.$emit("reset"));
+            }).catch(() => this.$q())
         }
     }
 }

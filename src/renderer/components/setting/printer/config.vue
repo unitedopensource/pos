@@ -115,11 +115,12 @@ export default {
         this.componentData = { resolve, reject, footer };
         this.component = "editor";
       })
-        .then(_footer => {
-          this.config.control.footer = _footer;
+        .then(({ name, table, time, footer }) => {
+          this.config.control.footer = footer;
+          
           this.update({
             key: `printers.${this.printer}.control.footer`,
-            value: _footer
+            value: footer
           });
           this.$q();
         })

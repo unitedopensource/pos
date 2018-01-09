@@ -50,6 +50,11 @@ export default {
     beforeRouteLeave(to, from, next) {
         this.$socket.emit("[TEMPLATE] SAVE", this.template, callback => next());
     },
+    mounted() {
+        setTimeout(() => {
+            !this.template.contain[0].name && this.setOption();
+        }, 500)
+    },
     methods: {
         create() {
             let item = {
@@ -78,13 +83,12 @@ export default {
         },
         setOption() {
             const { addition, startAt, max, name } = this.template.contain[this.index];
-            let option = { addition, startAt, max, name };
+            const option = { addition, startAt, max, name };
 
             new Promise((resolve, reject) => {
                 this.componentData = { resolve, reject, option, edit: true };
                 this.component = "opt"
             }).then(_option => {
-
                 Object.assign(this.template.contain[this.index], _option);
                 this.$q();
             }).catch(del => {
