@@ -46,20 +46,16 @@ export default {
     input(value) {
       switch (this.type) {
         case "number":
+          const changeValue = this.value + value > this.max ? this.value : this.value + value;
           this.reset
-            ? this.$emit("input", value)
-            : this.$emit(
-                "input",
-                this.value + value > this.max ? this.max : this.value + value
-              );
+            ? this.$emit("input", Number(value))
+            : this.$emit("input", Number(changeValue));
           break;
         case "decimal":
-          const _value = (((this.value * 100).toFixed(0) + value) /
-            100
-          ).toFixed(2);
+          const changeDecimal = (((this.value * 100).toFixed(0) + value) / 100).toFixed(2);
           this.reset
             ? this.$emit("input", (value / 100).toFixed(2))
-            : this.$emit("input", _value);
+            : this.$emit("input", changeDecimal);
           break;
       }
       this.reset = false;
@@ -67,7 +63,12 @@ export default {
     del() {
       switch (this.type) {
         case "number":
-          this.$emit("input", this.value.slice(0, -1));
+          if (isNumber(this.value)) {
+            this.$emit("input", String(this.value).slice(0, -1) || 0);
+          } else {
+            this.$emit("input", 0);
+            this.reset = true;
+          }
           break;
         case "decimal":
           this.$emit("input", (this.value.slice(0, -1) / 10).toFixed(2));

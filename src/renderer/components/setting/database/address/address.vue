@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import editor from "./component/addressEditor";
+import editor from "../component/addressEditor";
 
 export default {
   props: ["total", "addresses"],

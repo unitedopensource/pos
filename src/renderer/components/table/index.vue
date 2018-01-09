@@ -216,7 +216,7 @@ export default {
     },
     createTableFailed(reason) {
       this.$q();
-      let prompt;
+      let prompt = null;
       switch (reason) {
         case "PASSWORD_REQUIRED":
           prompt = {
@@ -241,7 +241,7 @@ export default {
           break;
       }
 
-      this.$dialog(prompt).then(() => this.$q());
+      prompt && this.$dialog(prompt).then(() => this.$q());
     },
     exceptionHandler(error) {
       switch (error) {

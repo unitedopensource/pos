@@ -23,10 +23,10 @@
 </template>
 
 <script>
-import toggle from "../common/toggle";
-import external from "../common/external";
-import textInput from "../common/textInput";
-import dialoger from "../../common/dialoger";
+import toggle from "../../common/toggle";
+import external from "../../common/external";
+import textInput from "../../common/textInput";
+import dialoger from "../../../common/dialoger";
 
 export default {
   props: ["address"],
@@ -41,8 +41,8 @@ export default {
     remove() {
       const prompt = {
         type: "question",
-        title: "title.addressRemove",
-        msg: ["title.addressRemoveConfirm", this.address.street]
+        title: "dialog.addressRemove",
+        msg: ["dialog.addressRemoveConfirm", this.address.street]
       };
 
       this.$dialog(prompt)

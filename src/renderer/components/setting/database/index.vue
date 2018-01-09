@@ -1,11 +1,14 @@
 <template>
     <div>
         <header class="nav">
+            <nav>
+                <span @click="backup" v-show="isHost">{{$t('button.backup')}}</span>
+            </nav>
             <div class="title">
                 <h3>{{$t('title.databaseHealth')}}</h3>
             </div>
             <nav>
-                <span>{{$t('button.backup')}}</span>
+                <span>{{$t('button.restore')}}</span>
             </nav>
         </header>
         <div class="status">
@@ -55,6 +58,7 @@
 
 <script>
 import disk from "diskusage";
+
 export default {
     props: ["space", "database", "server"],
     filters: {
@@ -65,6 +69,11 @@ export default {
             return value ? (value / 1024).toFixed(2) + " KB" : value;
         }
     },
+    data() {
+        return {
+            isHost: true//window.isServer === true
+        }
+    },
     methods: {
         uptime(duration) {
             const hh = ("00" + Math.floor(duration / 3600)).slice(-2);
@@ -72,6 +81,21 @@ export default {
             const ss = ("00" + Math.floor(duration % 60)).slice(-2);
 
             return this.$t("text.hhmmss", hh, mm, ss);
+        },
+        backup() {
+            const { dialog } = require('electron').remote;
+
+            dialog.showOpenDialog({ title: "Save backup to...", properties: ["openDirectory"] },
+                directory => {
+                    // directory && dump({
+                    //     uri: "mongodb://localhost:27017/UnitedPOS",
+                    //     root: directory,
+                    //     metadata:true,
+                    //     result(e) {
+                    //         console.log("done")
+                    //     }
+                    // })
+                });
         }
     }
 }

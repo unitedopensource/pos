@@ -351,12 +351,12 @@ export default [{
         children: [{
           path: '/',
           name: 'Setting.database.address',
-          component: require('./components/setting/database/address'),
+          component: require('./components/setting/database/address/address'),
         }, {
           path: 'street/:address',
           props: true,
           name: 'Setting.database.address.street',
-          component: require('./components/setting/database/street')
+          component: require('./components/setting/database/address/street')
         }]
       }, {
         path: 'payout',
