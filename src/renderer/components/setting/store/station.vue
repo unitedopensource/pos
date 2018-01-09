@@ -99,6 +99,7 @@ export default {
       if (!value) {
         this.station.autoLock.timeout = 0;
         this.station.autoLock.done = false;
+        this.setApp({ autoLock: false });
         this.update({
           key: "autoLock",
           value: this.station.autoLock

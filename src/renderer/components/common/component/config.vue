@@ -16,6 +16,13 @@
         </label>
       </div>
       <div class="option">
+        <span class="f1">{{$t('text.gratuityFree')}}</span>
+        <label class="input-toggle" @change="toggleGratuity">
+          <input type="checkbox" v-model="init.gratuityFree">
+          <span></span>
+        </label>
+      </div>
+      <div class="option">
         <span class="f1">{{$t('text.displayCategory')}}</span>
         <label class="input-toggle" @change="toggleViewCategory">
           <input type="checkbox" v-model="viewCategory">
@@ -68,6 +75,11 @@ export default {
     toggleDelivery() {
       this.$emit("trigger", {
         deliveryFree: this.init.deliveryFree
+      });
+    },
+    toggleGratuity() {
+      this.$emit("trigger", {
+        gratuityFree: this.init.gratuityFree
       });
     },
     toggleMenuID() {

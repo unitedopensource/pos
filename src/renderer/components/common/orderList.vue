@@ -25,32 +25,6 @@
           <span class="time">{{order.time | fromNow}}</span>
         </template>
       </div>
-      <!-- <div class="bar">
-        <span class="number">{{order.number}}</span>
-        <span class="type" v-show="order.type">{{$t('type.'+order.type)}}</span>
-        <span class="provider" v-show="order.source !== 'POS'">{{order.source}}</span>
-        <span class="timePass">
-          <i class="fa fa-clock-o"></i>{{order.time | fromNow}}
-        </span>
-      </div>
-      <div class="content" v-if="order.type === 'DINE_IN'">
-        <span class="time">{{order.time | moment('YYYY-MM-DD HH:mm:ss')}}</span>
-        <span class="corner" v-if="undoneItems">{{$t('text.progressTicket',undoneItems)}}</span>
-        <span class="corner" v-else>{{$t('text.doneTicket')}}</span>
-        <div>
-          <span class="text">{{$t('text.guest')}}</span>
-          <span class="value">{{order.guest}}</span>
-        </div>
-      </div>
-      <div class="content" v-else>
-        <span class="time">{{order.time | moment('YYYY-MM-DD HH:mm:ss')}}</span>
-        <div>
-          <span class="value">{{(order.customer && order.customer.phone) | phone}}</span>
-        </div>
-        <div>
-          <span class="value">{{order.customer && order.customer.address}}</span>
-        </div>
-      </div> -->
     </header>
     <div class="order" @click.self="resetHighlight" v-if="layout === 'order'">
       <v-touch class="inner" :style="scroll" @panup="move" @pandown="move" @panstart="panStart" @panend="panEnd" tag="ul">
@@ -149,11 +123,9 @@ export default {
     };
   },
   mounted() {
-    if (this.$route.name === "Table" && this.order.content.length > 0) {
-      this.payment = this.order.payment;
-    } else {
-      this.calculator(this.order.content);
-    }
+    (this.$route.name === "Table" && this.order.content.length > 0)
+      ? this.payment = this.order.payment
+      : this.calculator(this.order.content);
   },
   methods: {
     resetHighlight() {
@@ -170,10 +142,11 @@ export default {
 
       const taxFree = this.order.taxFree || false;
       const deliveryFree = this.order.deliveryFree || false;
+      const gratuityFree = this.order.gratuityFree || false;
       const { menuID } = this.config.display;
       const { seatOrder } = this.dinein;
 
-      this.$p("config", { taxFree, deliveryFree, menuID, seatOrder });
+      this.$p("config", { taxFree, deliveryFree, gratuityFree, menuID, seatOrder });
     },
     addToSpooler(item) {
       if (item.print) return;
@@ -209,16 +182,19 @@ export default {
       if (remain === 0) {
         Object.assign(this.order, { print: true });
       } else {
-        let txt =
+        const txt =
           remain > 0
             ? this.$t("dialog.remainPrintItem", remain)
             : this.$t("dialog.noRemainItem");
-        this.$dialog({
+
+        const prompt = {
           type: "info",
           title: "dialog.itemSent",
           msg: ["dialog.printResult", sendItem, txt],
           buttons: [{ text: "button.confirm", fn: "resolve" }]
-        }).then(() => this.$q());
+        };
+
+        this.$dialog(prompt).then(() => this.$q());
       }
       this.spooler = [];
       this.$socket.emit("[UPDATE] INVOICE", this.order);
@@ -250,7 +226,7 @@ export default {
     separator() {
       if (!this.item) return;
 
-      this.setChoiceSet({
+      const content = {
         zhCN: `----------`,
         usEN: `----------`,
         qty: 1,
@@ -259,7 +235,9 @@ export default {
         key: Math.random()
           .toString(36)
           .substr(2, 5)
-      });
+      };
+
+      this.setChoiceSet(content);
     },
     openKeyboard() {
       if (this.isEmptyTicket) return;
@@ -273,9 +251,7 @@ export default {
       this.$socket.emit(
         "[CUSTOMER] GET_CREDIT_CARD",
         this.customer._id,
-        opts => {
-          this.$p("creditVault", { opts });
-        }
+        opts => this.$p("creditVault", { opts })
       );
     },
     toggleTodoList() {
@@ -311,11 +287,11 @@ export default {
         return;
       }
 
-      const { type, guest, coupons } = this.order;
+      const { type, guest, coupons, taxFree = false, deliveryFree = false, gratuityFree = false } = this.order;
       const { enable, rules } = this.dinein.surcharge;
 
       let delivery =
-        type === "DELIVERY" && this.store.delivery && !this.order.deliveryFree
+        type === "DELIVERY" && this.store.delivery && !deliveryFree
           ? parseFloat(this.store.deliveryCharge)
           : 0;
 
@@ -342,7 +318,7 @@ export default {
 
         subtotal = toFixed(subtotal + amount, 2);
 
-        if (!this.order.taxFree && taxClass.apply[type])
+        if (!taxFree && taxClass.apply[type])
           tax += taxClass.rate / 100 * amount;
       });
 
@@ -369,12 +345,14 @@ export default {
         tax += toFixed(delivery * taxRate / 100, 2);
       }
 
-      if (type === "DINE_IN" && enable) {
+      if (type === "DINE_IN" && !gratuityFree && enable) {
         //find rule
-        const rule = rules.find(condition => guest >= condition.guest);
-        const { fee, percentage } = rule;
+        try {
+          const { fee, percentage } = rules.sort((a, b) => a.guest < b.guest).find(r => guest >= r.guest);
+          gratuity = percentage ? toFixed(subtotal * fee / 100, 2) : fee;
+        } catch (e) {
 
-        gratuity = percentage ? toFixed(subtotal * fee / 100, 2) : fee;
+        }
       }
 
       if (coupons && coupons.length > 0) {
@@ -416,11 +394,11 @@ export default {
         discount += offer;
       }
 
-      let total = subtotal + tax + delivery;
-      let due = Math.max(0, total - discount);
-      let surcharge = tip + gratuity;
-      let balance = due + surcharge;
-      let remain = balance - paid;
+      const total = subtotal + tax + delivery;
+      const due = Math.max(0, total - discount);
+      const surcharge = tip + gratuity;
+      const balance = due + surcharge;
+      const remain = balance - paid;
 
       this.payment = Object.assign({}, this.payment, {
         subtotal: toFixed(subtotal, 2),
@@ -436,6 +414,7 @@ export default {
         delivery: toFixed(delivery, 2),
         surcharge: toFixed(surcharge, 2)
       });
+
       Object.assign(this.order, { payment: this.payment });
     },
     ...mapActions([
