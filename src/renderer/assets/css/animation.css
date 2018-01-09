@@ -88,6 +88,10 @@
     transform: translateY(10px);
 }
 
+.fadeUp-enter.active{
+    transition-delay:0.3s;
+}
+
 /* .switch-enter-active {
     transition-delay: .25s;
 } */

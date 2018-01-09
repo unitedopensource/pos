@@ -20,7 +20,7 @@
     </section>
     <section class="cart">
       <order-list layout="order" :sort="sort"></order-list>
-      <query-bar :query="queryItem" :items="queryResult"></query-bar>
+      <query-bar :query="buffer" :items="queriedItems"></query-bar>
       <buttons :layout="ticket.type" @open="open"></buttons>
     </section>
     <div :is="component" :init="componentData"></div>
@@ -86,20 +86,21 @@ export default {
       categoryIndex: 0,
       component: null,
       saveItems: null,
-      queryResult: [],
-      queryItem: "",
+      queriedItems: [],
+      buffer: "",
       itemPage: 0,
-      query: "",
       items: [],
       sort: 0
     };
   },
   created() {
     this.initialData();
-    window.addEventListener("keydown", this.entry, false);
+
     this.$socket.emit("[INQUIRY] TICKET_NUMBER", number => {
       this.app.newTicket ? this.setTicket({ number }) : this.resetPointer();
     });
+
+    window.addEventListener("keydown", this.entry, false);
   },
   mounted() {
     toggleClass(".category div", "active");
@@ -146,39 +147,43 @@ export default {
 
       switch (e.key) {
         case "Escape":
-          this.query = "";
-          this.queryResult = [];
+          this.buffer = "";
+          this.queriedItems = [];
           break;
         case "Enter":
-          this.query &&
-            this.$socket.emit("[QUERY] ITEM", this.query, items => {
-              items.length === 1
-                ? this.pick(items[0])
-                : (this.queryItemResult = items);
+          this.buffer &&
+            this.$socket.emit("[QUERY] ITEM", this.buffer, items => {
+              if (items.length === 1) {
+                this.pick(items[0]);
+                this.buffer = "";
+                this.queriedItems = [];
+              } else {
+                this.queriedItems = items;
+              }
             });
           break;
         case "Backspace":
         case "Delete":
-          this.query = this.queryItem.slice(0, -1);
+          this.buffer = this.buffer.slice(0, -1);
           break;
         case "+":
-          if (this.query) return;
+          if (this.buffer) return;
           this.moreQty();
           break;
         case "-":
-          if (this.query) return;
+          if (this.buffer) return;
           this.lessQty();
           break;
         default:
-          if (this.queryResult.length > 1) {
-            if (isNumber(e.key) && this.queryResult[e.key - 1]) {
-              this.pick(this.queryResult[e.key - 1]);
-              this.queryResult = [];
-              this.query = "";
+          if (this.queriedItems.length > 1) {
+            if (isNumber(e.key) && this.queriedItems[e.key - 1]) {
+              this.pick(this.queriedItems[e.key - 1]);
+              this.queriedItems = [];
+              this.buffer = "";
             }
           } else {
             if (/[a-z0-9]/i.test(e.key) && e.key.length === 1)
-              this.query += e.key;
+              this.buffer += e.key;
           }
       }
     },

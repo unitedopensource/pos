@@ -1,9 +1,9 @@
 <template>
-    <transition-group name="fadeUp" appear>
-        <div v-show="query.length !== 0" class="bar" key="0">
+    <transition-group name="fadeUp" mode="out-in">
+        <div v-if="query.length !== 0" class="bar" key="0">
             <span class="text">{{query}}</span>
         </div>
-        <ul v-show="items.length" key="1">
+        <ul v-if="items.length" key="1">
             <li v-for="(item,index) in items" :key="index" class="item">
                 <span class="index">{{index+1}}</span>
                 <span class="name">{{item[language]}}</span>
