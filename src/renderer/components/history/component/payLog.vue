@@ -73,6 +73,7 @@ export default {
       componentData: null,
       component: null,
       terminal: null,
+      printTicket: true,
       page: 0
     };
   },
@@ -127,11 +128,11 @@ export default {
           transaction
             ? resolve(transaction)
             : reject({
-                type: "warning",
-                title: "dialog.somethingWrong",
-                msg: "terminal.notFound",
-                buttons: [{ text: "button.confirm", fn: "resolve" }]
-              });
+              type: "warning",
+              title: "dialog.somethingWrong",
+              msg: "terminal.notFound",
+              buttons: [{ text: "button.confirm", fn: "resolve" }]
+            });
         });
       });
     },
@@ -139,24 +140,24 @@ export default {
       return new Promise((resolve, reject) => {
         const { alias } = this.station;
 
-        this.$socket.emit("[TERMINAL] CONFIG", record.terminal, config => {
-          const { ip, port, sn, model } = config;
-
-          this.terminal = this.getParser(model);
+        this.$socket.emit("[TERMINAL] CONFIG", record.terminal, ({ ip, port, sn, model, print = true }) => {
+          this.terminal = this.getParser(model)();
+          this.printTicket = print;
 
           this.terminal
             .initial(ip, port, sn, alias, record.terminal)
             .then(response => {
               const device = this.terminal.check(response.data);
+              const prompt = {
+                type: "error",
+                title: "terminal.connectError",
+                msg: ["terminal.initialFailed", device.code],
+                buttons: [{ text: "button.confirm", fn: "resolve" }]
+              };
 
               device.code === "000000"
                 ? resolve(record)
-                : reject({
-                    type: "error",
-                    title: "terminal.connectError",
-                    msg: ["terminal.initialFailed", device.code],
-                    buttons: [{ text: "button.confirm", fn: "resolve" }]
-                  });
+                : reject(prompt);
             });
         });
       });
@@ -171,7 +172,7 @@ export default {
           delete voidSale.order;
 
           if (voidSale.code === "000000") {
-            Printer.printCreditCard(voidSale);
+            this.printTicket && Printer.printCreditCard(voidSale);
             Object.assign(record, voidSale, { status: 0 });
             this.$socket.emit("[TERMINAL] VOID", record);
             resolve();

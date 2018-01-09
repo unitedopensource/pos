@@ -4,36 +4,38 @@
       <li class="router-link-exact-active">{{$t('title.device')}}</li>
     </ul>
     <div class="tab-content">
-        <header class="nav">
-          <div class="title">
-            <h5></h5>
-            <h3>{{$t("title.terminalDevice")}}</h3>
-          </div>
-          <nav>
-            <span class="add" @click="create">{{$t('button.new')}}</span>
-          </nav>
-        </header>
-        <table class="setting">
-            <thead>
-              <tr>
-                <th>{{$t('thead.name')}}</th>
-                <th>{{$t('thead.location')}}</th>
-                <th>{{$t('thead.IP')}}</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(device,index) in devices" :key="index">
-                <td>{{device.alias}}<span class="model">({{device.model}})</span></td>
-                <td>{{device.location}}</td>
-                <td>{{device.ip}}</td>
-                <td class="opt" @click="edit(device,index)">
-                  <i class="fa fa-ellipsis-v"></i>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <div :is="component" :init="componentData"></div>
+      <header class="nav">
+        <div class="title">
+          <h5></h5>
+          <h3>{{$t("title.terminalDevice")}}</h3>
+        </div>
+        <nav>
+          <span class="add" @click="create">{{$t('button.new')}}</span>
+        </nav>
+      </header>
+      <table class="setting">
+        <thead>
+          <tr>
+            <th>{{$t('thead.name')}}</th>
+            <th>{{$t('thead.location')}}</th>
+            <th>{{$t('thead.IP')}}</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(device,index) in devices" :key="index">
+            <td>{{device.alias}}
+              <span class="model">({{device.model}})</span>
+            </td>
+            <td>{{device.location}}</td>
+            <td>{{device.ip}}</td>
+            <td class="opt" @click="edit(device,index)">
+              <i class="fa fa-ellipsis-v"></i>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div :is="component" :init="componentData"></div>
     </div>
   </div>
 </template>
@@ -65,7 +67,8 @@ export default {
         ip: "",
         port: "",
         sn: "",
-        location: ""
+        location: "",
+        print: true
       };
 
       this.edit(device);
@@ -75,17 +78,13 @@ export default {
         this.componentData = {
           resolve,
           reject,
-          devices: this.devices,
           device,
+          devices: this.devices,
           edit: !!device._id
         };
         this.component = "editor";
       })
-        .then(_device =>
-          this.$socket.emit("[TERMINAL] UPDATE", _device, () =>
-            this.refreshData()
-          )
-        )
+        .then(_device => this.$socket.emit("[TERMINAL] UPDATE", _device, () => this.refreshData()))
         .catch(del => {
           if (del) {
             this.$socket.emit("[TERMINAL] REMOVE", device._id);
