@@ -23,7 +23,7 @@
         <i class="fa fa-columns"></i>
         <span class="text">{{$t('button.split')}}</span>
       </div>
-      <div class="btn" @click="course">
+      <div class="btn" @click="courseTime">
         <i class="fa fa-clock-o"></i>
         <span class="text">{{$t('button.timer')}}</span>
       </div>
@@ -152,11 +152,12 @@ import payment from "../payment/index";
 import modify from "./component/modify";
 import coupon from "./component/coupon";
 import splitor from "./component/split";
+import course from "./component/course";
 import dialoger from "../common/dialoger";
 
 export default {
   props: ["layout"],
-  components: { dialoger, unlock, modify, payment, coupon, timer, splitor },
+  components: { dialoger, unlock, modify, payment, coupon, timer, splitor, course },
   data() {
     return {
       isDisplayGuests: false,
@@ -190,22 +191,9 @@ export default {
             this.$log({
               eventID: 1210,
               type: "failure",
-              note: `Operator attempt to delete exist item. However it was denied due to permission deny.`
+              note: `Operator unable to delete exist item due to permission deny.`
             })
           );
-
-        // this.approval(this.op.modify, "item")
-        //   ? this.lessQty(boolean)
-        //   : this.requestAccess()
-        //     .then(op => {
-        //       if (this.approval(op.modify, "item")) {
-        //         this.$q();
-        //         this.lessQty(boolean);
-        //       } else {
-        //         this.accessDenied();
-        //       }
-        //     })
-        //     .catch(() => this.accessDenied());
       }
     },
     more() {
@@ -232,19 +220,6 @@ export default {
       }
       this.moreQty();
     },
-    // requestAccess() {
-    //   return new Promise((resolve, reject) => {
-    //     this.componentData = { resolve, reject };
-    //     this.component = "unlock";
-    //   });
-    // },
-    // accessDenied() {
-    //   this.$dialog({
-    //     title: "dialog.accessDenied",
-    //     msg: "dialog.accessDeniedTip",
-    //     buttons: [{ text: "button.confirm", fn: "resolve" }]
-    //   }).then(() => this.$q());
-    // },
     modify() {
       if (this.isEmptyTicket) return;
       let target = !!document.querySelector(".sub.target");
@@ -259,9 +234,9 @@ export default {
         })
         : this.$p("modify", { item: this.item });
     },
-    course() {
+    courseTime() {
       if (this.isEmptyTicket) return;
-      this.callComponent("course");
+      this.$p("course");
     },
     settle() {
       this.ticket.type === "TO_GO"

@@ -30,34 +30,34 @@
         <div class="timer" v-else>
           <header class="display">
             <div class="time" @click="target = 'hour'" :class="{active:target ==='hour'}">
-              <h3>{{$t('menu.hour')}}</h3>
+              <h3>{{$t('text.hour')}}</h3>
               <div class="value">{{hour}}</div>
             </div>
             <div class="time" @click="target = 'minute'" :class="{active:target === 'minute'}">
-              <h3>{{$t('menu.minute')}}</h3>
+              <h3>{{$t('text.minute')}}</h3>
               <div class="value">{{minute}}</div>
             </div>
           </header>
           <article>
             <section class="numpad">
-              <div @click="input('7')">7</div>
-              <div @click="input('8')">8</div>
-              <div @click="input('9')">9</div>
-              <div @click="input('4')">4</div>
-              <div @click="input('5')">5</div>
-              <div @click="input('6')">6</div>
-              <div @click="input('1')">1</div>
-              <div @click="input('2')">2</div>
-              <div @click="input('3')">3</div>
-              <div @click="input('0')">0</div>
-              <div @click="del" class="del">←</div>
+              <div @click="input('7')" class="numKey">7</div>
+              <div @click="input('8')" class="numKey">8</div>
+              <div @click="input('9')" class="numKey">9</div>
+              <div @click="input('4')" class="numKey">4</div>
+              <div @click="input('5')" class="numKey">5</div>
+              <div @click="input('6')" class="numKey">6</div>
+              <div @click="input('1')" class="numKey">1</div>
+              <div @click="input('2')" class="numKey">2</div>
+              <div @click="input('3')" class="numKey">3</div>
+              <div @click="input('0')" class="numKey">0</div>
+              <div @click="del" class="del numKey">←</div>
             </section>
           </article>
         </div>
       </div>
       <footer>
         <div class="btn" @click="init.reject">{{$t('button.cancel')}}</div>
-        <div class="btn" @click="confirm">{{text('button.confirm')}}</div>
+        <div class="btn" @click="confirm">{{$t('button.confirm')}}</div>
       </footer>
     </div>
     <div :is="component" :init="componentData"></div>
@@ -70,31 +70,14 @@ export default {
   props: ["init"],
   data() {
     return {
+      list: JSON.parse(JSON.stringify(this.$store.getters.order.content)),
       component: null,
       componentData: null,
-      list: JSON.parse(JSON.stringify(this.init.order.content)),
-      steps: [
-        {
-          name: "starter",
-          delay: null,
-          contain: []
-        },
-        {
-          name: "appetizer",
-          delay: null,
-          contain: []
-        },
-        {
-          name: "entree",
-          delay: null,
-          contain: []
-        },
-        {
-          name: "dessert",
-          delay: null,
-          contain: []
-        }
-      ],
+      steps: ["starter", "appetizer", "entree", "dessert"].map(name => ({
+        name,
+        delay: null,
+        contain: []
+      })),
       step: 0,
       target: "minute",
       hour: "00",
@@ -103,9 +86,9 @@ export default {
   },
   methods: {
     jumpStep(index) {
-      let current = this.step;
-      let hour = this.hour;
-      let minute = this.minute;
+      const current = this.step;
+      const hour = this.hour;
+      const minute = this.minute;
       if (this.list.length === 0 && (hour !== "00" || minute !== "00"))
         this.steps[current].delay = moment()
           .add(~~hour, "h")
@@ -149,12 +132,12 @@ export default {
         .filter(step => step.contain.length)
         .map(schedule => {
           let delay = Number(schedule.delay);
-          let order = JSON.parse(JSON.stringify(this.init.order));
+          let order = JSON.parse(JSON.stringify(this.$store.getters.order));
           delete order.payment;
+
           Object.assign(order, {
-            type: this.app.mode === "create" ? this.ticket.type : order.type,
-            number:
-            this.app.mode === "create" ? this.ticket.number : order.number,
+            type: this.app.newTicket ? this.ticket.type : order.type,
+            number: this.app.newTicket ? this.ticket.number : order.number,
             customer: this.customer,
             course: schedule.name,
             delay,
@@ -165,20 +148,17 @@ export default {
             })
           });
           return order;
-        })
-        .forEach(task => {
-          this.delayPrint(task);
-        });
+        }).forEach(task => this.delayPrint(task));
       this.exit();
     },
     exit() {
-      let order = this.init.order;
-      let customer = this.customer;
-      delete customer.extra;
+      let order = this.$store.getters.order;
+      const customer = this.customer;
+
       Object.assign(order, {
-        type: this.app.mode === "create" ? this.ticket.type : order.type,
-        number: this.app.mode === "create" ? this.ticket.number : order.number,
-        modify: this.app.mode === "create" ? 0 : order.modify++,
+        type: this.app.newTicket ? this.ticket.type : order.type,
+        number: this.app.newTicket ? this.ticket.number : order.number,
+        modify: this.app.newTicket ? 0 : order.modify++,
         source: this.op.role !== "ThirdParty" ? "POS" : this.op.name,
         status: 1,
         settle: false,
@@ -190,24 +170,36 @@ export default {
           return item;
         })
       });
-      this.app.mode === "create"
+
+      this.app.newTicket
         ? this.$socket.emit("[TABLE] INVOICE", order)
         : this.$socket.emit("[UPDATE] INVOICE", order);
-      this.init.resolve();
+
       this.resetAll();
-      this.setOrder(order);
-      this.$router.push({ path: "/main/table" });
+
+      const { done } = this.station.autoLock;
+      const { lockOnDone } = this.dinein;
+
+      if (lockOnDone || done) {
+        this.setOp(null);
+        this.$router.push({ path: "/main/lock" });
+      } else {
+        this.setOrder(order);
+        this.$router.push({ path: "/main/table" });
+      }
+
     },
-    ...mapActions(["setOrder", "resetAll", "delayPrint", "setTableInfo"])
+    ...mapActions(["setOp", "setOrder", "resetAll", "delayPrint"])
   },
   computed: {
     ...mapGetters([
       "op",
       "app",
       "ticket",
+      "dinein",
+      "station",
       "customer",
       "language",
-      "currentTable"
     ])
   }
 };
