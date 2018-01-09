@@ -79,6 +79,8 @@ export default {
       this.type === "number"
         ? this.$emit("input", "0")
         : this.$emit("input", "0.00");
+
+      this.$emit("clear", true);
       this.reset = true;
     }
   },

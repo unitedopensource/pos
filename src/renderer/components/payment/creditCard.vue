@@ -119,7 +119,6 @@ export default {
       }
     },
     transactionFailed({ error, data }) {
-      console.log(error);
       this.icon = "error";
       this.cancelable = true;
       switch (error) {

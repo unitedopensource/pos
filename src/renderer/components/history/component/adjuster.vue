@@ -43,27 +43,7 @@
           <div class="inner">
             <input type="text" v-model="tip" :placeholder="placeholder">
           </div>
-          <num-pad type="decimal" v-model="tip" @enter="enter"></num-pad>
-          <!-- <div class="pad">
-            <section class="numpad">
-              <div @click="input('7')" class="numKey">7</div>
-              <div @click="input('8')" class="numKey">8</div>
-              <div @click="input('9')" class="numKey">9</div>
-              <div @click="input('4')" class="numKey">4</div>
-              <div @click="input('5')" class="numKey">5</div>
-              <div @click="input('6')" class="numKey">6</div>
-              <div @click="input('1')" class="numKey">1</div>
-              <div @click="input('2')" class="numKey">2</div>
-              <div @click="input('3')" class="numKey">3</div>
-              <div @click="input('0')" class="numKey">0</div>
-              <div @click="input('00')" class="double numKey">00</div>
-            </section>
-            <aside class="padCtrl">
-              <div @click="del">&#8592;</div>
-              <div @click="clear">C</div>
-              <div @click="enter">&#8626;</div>
-            </aside>
-          </div> -->
+          <num-pad type="decimal" v-model="tip" @enter="enter" @clear="clear"></num-pad>
         </section>
       </div>
       <footer>
@@ -125,6 +105,9 @@ export default {
   methods: {
     entry(e) {
       switch (e.key) {
+        case "Escape":
+          this.clear();
+          break;
         case "Enter":
           this.enter();
           break;
@@ -178,20 +161,21 @@ export default {
       if (this.reset) {
         this.tip = (val / 100).toFixed(2);
       } else {
-        let value = (this.tip * 100).toFixed(0) + val;
+        const value = (this.tip * 100).toFixed(0) + val;
         this.tip = (value / 100).toFixed(2);
       }
       this.reset = false;
     },
     del() {
-      this.tip = (this.tip.slice(0, -1) / 10).toFixed(2);
+      const value = (this.tip.slice(0, -1) / 10).toFixed(2);
+      isNaN(value) || value === '0.00' ? this.clear() : this.tip = value;
     },
     clear() {
       this.tip = "";
       this.reset = true;
     },
     enter() {
-      if (!this.transaction || isNaN(this.tip)) return;
+      if (!this.transaction || !isNumber(this.tip)) return;
 
       if (this.transaction.amount.tip === this.tip || !this.tip) {
         this.next();
