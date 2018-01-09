@@ -90,7 +90,11 @@
           </div>
         </template>
         <template v-else>
-          <div :class="{hidden:parseFloat(payment.tip) === 0}">
+          <div v-if="payment.gratuity > 0">
+            <span class="text">{{$t("text.gratuity")}}:</span>
+            <span class="value">{{payment.gratuity | decimal}}</span>
+          </div>
+          <div :class="{hidden:parseFloat(payment.tip) === 0}" v-else>
             <span class="text">{{$t("text.tip")}}:</span>
             <span class="value">{{payment.tip | decimal}}</span>
           </div>
@@ -195,7 +199,7 @@ export default {
       });
 
       const remain = items.filter(item => !item.print).length;
-      
+
       order.content = this.spooler;
       order.delay = +new Date();
       Printer.setTarget("Order").print(order);
