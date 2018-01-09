@@ -1,12 +1,12 @@
 <template>
   <div class="popupMask center dark">
     <div class="creditCard">
-        <i class="fa loader" :class="[icon]"></i>
-        <h3>{{msg}}</h3>
-        <h5>{{tip}}</h5>
-        <footer>
-            <button class="btn" @click="abort" :disabled="!cancelable">{{$t('button.cancelAction')}}</button>
-        </footer>
+      <i class="fa loader" :class="[icon]"></i>
+      <h3>{{msg}}</h3>
+      <h5>{{tip}}</h5>
+      <footer>
+        <button class="btn" @click="abort" :disabled="!cancelable">{{$t('button.cancelAction')}}</button>
+      </footer>
     </div>
   </div>
 </template>
@@ -81,13 +81,13 @@ export default {
           this.msg =
             creditCard.number && creditCard.date
               ? this.$t(
-                  "terminal.transacting",
-                  this.device.model || this.config.model
-                )
+                "terminal.transacting",
+                this.device.model || this.config.model
+              )
               : this.$t(
-                  "terminal.ready",
-                  this.device.model || this.config.model
-                );
+                "terminal.ready",
+                this.device.model || this.config.model
+              );
 
           this.terminal.charge(this.init.card).then(response => {
             next(response.data);
@@ -118,24 +118,23 @@ export default {
           return require("./parser/pax.js");
       }
     },
-    transactionFailed(exception) {
-      let { error, data } = exception;
-      console.log(exception);
+    transactionFailed({ error, data }) {
+      console.log(error);
+      this.icon = "error";
+      this.cancelable = true;
       switch (error) {
         case "CONFIG_FILE_NO_FOUND":
+          this.msg = this.$t("terminal.configInvalid")
           break;
         case "TERMINAL_RETURN_ERROR":
+          this.msg = this.$t("terminal.terminalError")
           break;
         case "DEVICE_RETURN_ERROR":
-          this.icon = "error";
           this.msg = this.$t("terminal.removeTryAgain");
-          this.cancelable = true;
           break;
         case "TRANSACTION_FAILED":
-          this.icon = "error";
           this.msg = this.$t(data.msg);
           this.tip = data.error ? data.error : "";
-          this.cancelable = true;
           setTimeout(() => {
             this.init.reject();
           }, 2500);

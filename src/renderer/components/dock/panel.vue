@@ -388,7 +388,15 @@ h5 {
   display: flex;
   flex-direction: column;
   align-items: center;
-  border-left: 1px solid #eee;
   padding: 5px 10px;
+  border-width: 0 0 0 1px;
+  border-style: solid;
+  border-image: linear-gradient(
+      to bottom,
+      rgba(224, 224, 224, 0),
+      #9e9e9e,
+      rgba(224, 224, 224, 0)
+    )
+    1 100%;
 }
 </style>

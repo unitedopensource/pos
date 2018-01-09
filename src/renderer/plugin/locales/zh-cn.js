@@ -497,8 +497,8 @@ export default {
         'extraAmountSetAsTip': '您是否需要将余出的款项 ( ${i} ) 设为小费？',
         'invoiceNotFound': '无法找到订单',
         'actionProcess': '您要如何处理这个情况?',
-        'templateRemove': '移除模版',
-        'templateRemoveConfirm': '您确定要移除这个模版吗?',
+        'removeTemplate': '移除模版',
+        'removeTemplateConfirm': '您确定要移除这个模版吗?',
         'unableAdd': '无法添加',
         'maxSubItem': '{i} 无法添加多于 {i} 个子菜项',
         'timeout': '操作超时',
@@ -578,6 +578,9 @@ export default {
         'timeoutTip': '请检查刷卡终端机的IP地址是否正确 (设定IP: {i})',
         'paymentFailed': '无法支付信用卡',
         'paymentFailedTip': '此工作站没有设定信用卡终端机',
+        'configInvalid': '配置信息无效',
+        'terminalError': '终端错误',
+        'removeTryAgain': '请将信用卡拔出重新插入',
         'aborting': '正在取消操作...',
         'error': '错误代码: {i}',
         'connecting': '正在连接至终端',
@@ -1390,7 +1393,9 @@ export default {
         'normal': '正常模式',
         'difference': '差异模式',
         'new': '新增模式',
-        'todo': '列表模式'
+        'todo': '列表模式',
+        'ticketNumber': '订单号码',
+        'tableName': '座位名称'
     },
     context: {
         'sync': '同步',

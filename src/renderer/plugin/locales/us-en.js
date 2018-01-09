@@ -590,8 +590,8 @@ export default {
         'extraAmountSetAsTip': 'Are you going to set the Extra ( ${i} ) as Tip?',
         'invoiceNotFound': 'Invoice Not Found',
         'actionProcess': 'How do you want to proceed?',
-        'templateRemove': 'Template Remove',
-        'templateRemoveConfirm': 'Are you sure to remove this template?',
+        'RemoveTemplate': 'Remove Template',
+        'removeTemplateConfirm': 'Are you sure to remove this template?',
         'unableAdd': 'Unable to Add',
         'maxSubItem': '{i} can only has {i} maximum subitems',
         'timeout': 'Time Out',
@@ -671,6 +671,9 @@ export default {
         'timeoutTip': 'Please check terminal ECR configuration (Current Ip Setting: {i})',
         'paymentFailed': 'Payment Failed',
         'paymentFailedTip': 'There is no terminal device attach to current station',
+        'configInvalid': 'Config info invalid',
+        'terminalError': 'Terminal Error',
+        'removeTryAgain': 'Please reinsert credit card',
         'aborting': 'Aborting...',
         'error': 'Error Code: {i}',
         'connecting': 'Connecting to terminal',
@@ -1392,7 +1395,9 @@ export default {
         'normal': 'Normal',
         'difference': 'Difference',
         'new': 'New',
-        'todo': 'Todo'
+        'todo': 'Todo',
+        'ticketNumber': 'Ticket Number',
+        'tableName': 'Table Name'
     },
     context: {
         'sync': 'Sync',
