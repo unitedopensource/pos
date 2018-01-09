@@ -85,7 +85,7 @@ export default {
       return this.logs.filter(log => log.valid).length;
     },
     totalHours() {
-      let total = this.logs
+      const total = this.logs
         .filter(log => log.valid)
         .map(log => log.clockOut - log.clockIn)
         .reduce((a, b) => a + b, 0);
@@ -246,8 +246,7 @@ export default {
         return this.$t("text.hhmmss", hh, mm, ss);
       }
     },
-    salary(session) {
-      const { clockIn, clockOut, wage } = session;
+    salary({ clockIn, clockOut, wage }) {
       if (!clockOut) return "0.00";
 
       const hour = toFixed((clockOut - clockIn) / 3.6e6, 2);
@@ -291,8 +290,8 @@ export default {
       isNumber(this.operator.wage)
         ? this.execute()
         : this.$dialog(prompt)
-            .then(this.execute)
-            .catch(() => this.$q());
+          .then(this.execute)
+          .catch(() => this.$q());
     },
     execute() {
       this.$q();

@@ -1,37 +1,37 @@
 <template>
-    <div class="main">
-        <section class="layout">
-            <aside class="column">
-                <div class="sections column">
-                    <button class="section btn" v-for="(section,index) in tables" @click="switchSection(index)" :key="index">{{section[language]}}</button>
-                </div>
-                <div class="column">
-                    <button class="btn" @click="openReservation">
-                        <i class="fa fa-book"></i>
-                        <span class="text">{{$t('button.reservation')}}</span>
-                    </button>
-                    <button class="btn" @click="viewDineInList">
-                        <i class="fa fa-list-alt"></i>
-                        <span class="text">{{$t('button.viewList')}}</span>
-                    </button>
-                </div>
-            </aside>
-            <div class="tables">
-                <div class="table" v-for="(table,index) in viewSection" @click="tap(table)" @contextmenu="resetTable(table)" :key="index" :class="getTableStatus(table.status)">
-                    <span :class="[table.shape]" class="icon"></span>
-                    <span class="name">{{table.name}}</span>
-                    <span class="staff" v-show="table.server">{{table.server}}</span>
-                </div>
-            </div>
-        </section>
-        <div class="ticket">
-            <div class="wrap">
-                <order-list layout="display" :display="true"></order-list>
-                <buttons class="grid"></buttons>
-            </div>
+  <div class="main">
+    <section class="layout">
+      <aside class="column">
+        <div class="sections column">
+          <button class="section btn" v-for="(section,index) in tables" @click="switchSection(index)" :key="index">{{section[language]}}</button>
         </div>
-        <div :is="component" :init="componentData"></div>
+        <div class="column">
+          <button class="btn" @click="openReservation">
+            <i class="fa fa-book"></i>
+            <span class="text">{{$t('button.reservation')}}</span>
+          </button>
+          <button class="btn" @click="viewDineInList">
+            <i class="fa fa-list-alt"></i>
+            <span class="text">{{$t('button.viewList')}}</span>
+          </button>
+        </div>
+      </aside>
+      <div class="tables">
+        <div class="table" v-for="(table,index) in viewSection" @click="tap(table)" @contextmenu="resetTable(table)" :key="index" :class="getTableStatus(table.status)">
+          <span :class="[table.shape]" class="icon"></span>
+          <span class="name">{{table.name}}</span>
+          <span class="staff" v-show="table.server">{{table.server}}</span>
+        </div>
+      </div>
+    </section>
+    <div class="ticket">
+      <div class="wrap">
+        <order-list layout="display" :display="true"></order-list>
+        <buttons class="grid"></buttons>
+      </div>
     </div>
+    <div :is="component" :init="componentData"></div>
+  </div>
 </template>
 
 <script>
@@ -56,7 +56,8 @@ export default {
       "tables",
       "language",
       "history",
-      "customer"
+      "customer",
+      "currentTable"
     ])
   },
   data() {
@@ -82,24 +83,26 @@ export default {
       return {};
     },
     tap(table) {
+      this.setCurrentTable(table);
+
       table.status === 1
         ? this.checkTableStatus(table)
-            .then(this.checkReservation)
-            .then(this.checkAccessPin)
-            .then(this.countGuest)
-            .then(this.createTable.bind(null, table))
-            .catch(this.createTableFailed)
+          .then(this.checkReservation)
+          .then(this.checkAccessPin)
+          .then(this.countGuest)
+          .then(this.createTable.bind(null, table))
+          .catch(this.createTableFailed)
         : this.checkPermission(table)
-            .then(this.viewTicket)
-            .catch(this.exceptionHandler);
+          .then(this.viewTicket)
+          .catch(this.exceptionHandler);
     },
     checkPermission(table) {
       return new Promise((next, stop) => {
         table.server === this.op.name
           ? next(table)
           : this.$checkPermission("view", "tables")
-              .then(() => next(table))
-              .catch(() => stop("UNABLE_VIEW_OTHER_TABLE"));
+            .then(() => next(table))
+            .catch(() => stop("UNABLE_VIEW_OTHER_TABLE"));
       });
     },
     checkTableStatus(table) {
@@ -155,7 +158,14 @@ export default {
       });
     },
     countGuest() {
-      return new Promise((next, stop) => {});
+      return new Promise((next, stop) => {
+        this.dinein.guestCount
+          ? new Promise((resolve, reject) => {
+            this.componentData = { resolve, reject };
+            this.component = "counter"
+          }).then(guest => next(guest)).catch(() => stop())
+          : next(1);
+      });
     },
     viewTicket(table) {
       const invoice = this.history.find(i => i._id === table.invoice[0]);
@@ -171,16 +181,31 @@ export default {
       invoice
         ? this.setViewOrder(invoice)
         : this.$dialog(prompt)
-            .then(() => {
-              this.$socket.emit("[SYNC] ORDER_LIST");
-              this.$q();
-            })
-            .catch(() => {
-              this.$socket.emit("[TABLE] RESET", { _id: table._id });
-              this.$q();
-            });
+          .then(() => {
+            this.$socket.emit("[SYNC] ORDER_LIST");
+            this.$q();
+          })
+          .catch(() => {
+            this.$socket.emit("[TABLE] RESET", { _id: table._id });
+            this.$q();
+          });
     },
-    createTable(table) {},
+    createTable(table, guest) {
+      this.setTicket({ type: "DINE_IN" });
+      this.setApp({ newTicket: true });
+      this.resetMenu();
+
+      Object.assign(this.currentTable, {
+        guest,
+        status: 2,
+        session: ObjectId(),
+        server: this.op.name,
+        time: +new Date()
+      })
+
+      this.$socket.emit("[TABLE] SETUP", this.currentTable);
+      this.$router.push({ path: "/main/menu" });
+    },
     createTableFailed(reason) {
       this.$q();
       let prompt;
@@ -217,9 +242,9 @@ export default {
           break;
       }
     },
-    openReservation() {},
-    viewDineInList() {},
-    ...mapActions(["setViewOrder"])
+    openReservation() { },
+    viewDineInList() { },
+    ...mapActions(["setApp", "resetMenu", "setTicket", "setViewOrder", "setCurrentTable"])
   }
 };
 </script>

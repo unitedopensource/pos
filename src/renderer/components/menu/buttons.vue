@@ -212,9 +212,9 @@ export default {
       let focus = document.querySelector(".item.active");
       let subItemCount = Array.isArray(this.item.choiceSet)
         ? this.item.choiceSet
-            .filter(item => item.subItem)
-            .map(item => item.qty)
-            .reduce((a, b) => a + b, 0)
+          .filter(item => item.subItem)
+          .map(item => item.qty)
+          .reduce((a, b) => a + b, 0)
         : 0;
 
       if (!focus && this.item.hasOwnProperty("rules")) {
@@ -250,13 +250,13 @@ export default {
       let target = !!document.querySelector(".sub.target");
       target
         ? this.$p("modify", {
-            item: {
-              qty: this.choiceSet ? this.choiceSet.qty : 1,
-              single: this.choiceSet ? this.choiceSet.single : 0,
-              discount: 0
-            },
-            type: "choiceSet"
-          })
+          item: {
+            qty: this.choiceSet ? this.choiceSet.qty : 1,
+            single: this.choiceSet ? this.choiceSet.single : 0,
+            discount: 0
+          },
+          type: "choiceSet"
+        })
         : this.$p("modify", { item: this.item });
     },
     course() {
@@ -433,7 +433,6 @@ export default {
       const { done } = this.station.autoLock;
       const { lockOnDone } = this.dinein;
 
-      this.resetAll();
       if (this.order.type === "DINE_IN") {
         if (lockOnDone || done) {
           this.setOp(null);
@@ -450,16 +449,16 @@ export default {
           this.$router.push({ path: "/main" });
         }
       }
+      this.resetAll();
     },
     quit() {
+      const prompt = { title: "dialog.exitConfirm", msg: "dialog.exitConfirmTip" };
+
       this.isEmptyTicket
         ? this.exitOut()
-        : this.$dialog({
-            title: "dialog.exitConfirm",
-            msg: "dialog.exitConfirmTip"
-          })
-            .then(() => this.exitOut())
-            .catch(() => this.$q());
+        : this.$dialog(prompt)
+          .then(this.exitOut)
+          .catch(() => this.$q());
     },
     combineOrderInfo(extra) {
       let customer = Object.assign({}, this.customer);
@@ -582,8 +581,8 @@ export default {
       this.isEmptyTicket
         ? this.resetTableExit()
         : this.$dialog(prompt)
-            .then(this.resetTableExit)
-            .catch(() => this.$q());
+          .then(this.resetTableExit)
+          .catch(() => this.$q());
     },
     resetTableExit() {
       this.app.newTicket &&
