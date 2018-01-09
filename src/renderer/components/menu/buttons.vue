@@ -413,7 +413,7 @@ export default {
           this.setOp(null);
           this.$router.push({ path: "/main/lock" });
         } else {
-          this.setOrder(order);
+          this.setOrder(this.order);
           this.$router.push({ name: "Table" });
         }
       } else {

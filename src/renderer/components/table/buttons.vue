@@ -60,9 +60,6 @@ export default {
       component: null
     };
   },
-  created() {
-    console.log(this.transfer)
-  },
   methods: {
     editOrder() {
       if (this.order.settled) {

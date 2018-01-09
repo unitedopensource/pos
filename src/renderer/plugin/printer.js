@@ -125,7 +125,7 @@ var Printer = function (plugin, config, station) {
             const header = createHeader(this.config, setting, raw);
             const list = createList(printer, setting, raw, false);
 
-            if (list && list.length === 0) return false;
+            if (list.length === 0) return false;
 
             const style = createStyle(setting);
             const footer = createFooter(this.config, setting, printer, raw);
@@ -981,7 +981,7 @@ function createList(printer, setting, invoice, preview) {
                 list.filter(item => item.printer[printer] && item.diffs !== 'removed');
     }
 
-    if (items.length === 0) return false;
+    if (items.length === 0) return [];
 
     const renderQty = items.filter(i => i.qty > 1).length > 0;
 
