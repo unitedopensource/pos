@@ -120,13 +120,13 @@ export default {
     },
     checkStatus() {
       return new Promise((next, stop) => {
-        const prompt = {
-          title: "dialog.unableEdit",
-          msg: ["dialog.editVoidOrderTip", this.order.void.by],
-          buttons: [{ text: "button.confirm", fn: "reject" }]
-        };
-
-        this.order.status === 1 ? next() : stop(prompt);
+        this.order.status === 1
+          ? next()
+          : stop({
+              title: "dialog.unableEdit",
+              msg: ["dialog.editVoidOrderTip", this.order.void.by],
+              buttons: [{ text: "button.confirm", fn: "reject" }]
+            });
       });
     },
     checkSettlement() {
