@@ -592,6 +592,7 @@ export default {
       expiration: "",
       giftCard: "",
       anchor: "paid",
+      tipped: 0,
       evenly: 1,
       current: 0,
       reset: true,
@@ -602,7 +603,6 @@ export default {
   created() {
     this.initialData()
       .then(this.checkComponentOccupy)
-      .then(this.checkTicket)
       .then(this.checkDate)
       .then(this.checkPermission)
       .then(this.checkSplit)
@@ -624,13 +624,12 @@ export default {
   },
   methods: {
     initialData() {
-      return new Promise(resolve => {
+      return new Promise(next => {
         this.order = this.init.hasOwnProperty("order")
           ? JSON.parse(JSON.stringify(this.init.order))
           : JSON.parse(JSON.stringify(this.$store.getters.order));
 
         this.payment = this.order.payment;
-        this.tip = this.payment.tip.toFixed(2);
 
         this.isThirdPartyPayment = this.init.hasOwnProperty("regular")
           ? false
@@ -645,16 +644,24 @@ export default {
           this.expiration = date;
         }
 
-        this.$socket.emit("[PAYMENT] CHECK_PAY", this.order._id, paid => {
-          const remain = toFixed(this.payment.balance - paid, 2);
-          this.payment.remain = Math.max(0, remain);
+        this.$socket.emit("[PAYMENT] CHECK", this.order._id, ({ paid, tipped }) => {
+          this.tipped = tipped;
+          this.payment.remain = Math.max(0, this.payment.balance - paid).toPrecision(12).toFloat();
 
-          resolve();
+          if (this.payment.tip > 0 && tipped === 0) {
+            this.tip = this.payment.tip.toFixed(2);
+          } else if (this.payment.tip !== tipped) {
+            this.tip = Math.max(0, this.payment.tip - tipped).toPrecision(12).toFloat();
+          } else {
+            this.tip = "0.00";
+          }
+
+          next();
         });
       });
     },
     checkComponentOccupy() {
-      return new Promise((resolve, reject) => {
+      return new Promise((next, stop) => {
         const data = {
           component: "payment",
           operator: this.op.name,
@@ -664,7 +671,7 @@ export default {
         };
 
         this.$socket.emit("[COMPONENT] LOCK", data, lock => {
-          lock ? reject({ error: "paymentPending", data }) : resolve();
+          lock ? stop({ error: "paymentPending", data }) : next();
         });
       });
     },
@@ -674,7 +681,9 @@ export default {
       });
     },
     checkDate() {
+      console.log("trigger")
       return new Promise((next, stop) => {
+        console.log(this.order.date, today())
         this.order.date === today() ? next() : stop({ error: "expired" });
       });
     },

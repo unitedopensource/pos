@@ -548,8 +548,6 @@ export default {
         'payoutSignatureRequired': '需要经手的收银员签字确认',
         'payoutConfirm': '支付确认',
         'payoutCashConfirm': '您确定要支付 $ {i} 给 {i} 吗？',
-        'itemSorted': '物品排序',
-        'updateSortedItem': '您要更新本次物品排序吗?',
         'removeCreditCard': '移除信用卡',
         'removeCreditCardConfirm': '您确定要移除这个信用卡信息吗?',
         'removeCustomer': '移除客户档案',

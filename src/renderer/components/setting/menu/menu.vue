@@ -8,7 +8,7 @@
     </draggable>
     <div>
       <div v-for="(group,groupIndex) in items" :key="groupIndex">
-        <draggable :list="group" @sort="sortItem" :options="{animation:300,group:group.category,ghostClass:'itemGhost',draggable:'.draggable'}">
+        <draggable :list="group" @sort="isItemSorted = true" :options="{animation:300,group:group.category,ghostClass:'itemGhost',draggable:'.draggable'}">
           <transition-group tag="section" class="items" :name="'drag'">
             <div v-for="(item,index) in group" @contextmenu="editItem(item,groupIndex,index)" :class="{draggable:item.clickable,disable:!item.clickable}" :key="index" :data-menuid="item.menuID">{{item[language]}}</div>
           </transition-group>
@@ -53,16 +53,13 @@ export default {
     window.removeEventListener("keydown", this.entry, false);
 
     this.isCategorySorted && this.updateCategorySort();
-    //this.isItemSorted && this.updateItemSort();
+    this.isItemSorted && this.updateItemSort();
   },
   methods: {
-    entry(e) {},
+    entry(e) { },
     setCategory(index) {
       this.isItemSorted && this.updateItemSort();
       this.getItems(index);
-      // this.checkItemSort()
-      //   .then(this.getItems.bind(null, index))
-      //   .catch(this.updateItemSort.bind(null, index));
     },
     getItems(index = 0) {
       this.categoryIndex = index;
@@ -85,7 +82,7 @@ export default {
         .catch(() => this.$q());
     },
     editItem(item, group, index) {
-      let categories = this.categories[
+      const categories = this.categories[
         this.categoryIndex
       ].contain.map(category => ({
         label: category,
@@ -131,7 +128,7 @@ export default {
         ]
       })
         .then(() => {
-          let sequence = [this.categoryIndex, group, index];
+          const sequence = [this.categoryIndex, group, index];
 
           this.$socket.emit(
             "[MENU] REMOVE",
@@ -168,7 +165,7 @@ export default {
         });
 
         item = Preset.item();
-        let category = this.categories[this.categoryIndex].contain[group];
+        const category = this.categories[this.categoryIndex].contain[group];
         Object.assign(item, {
           taxClass: defaultTax,
           category
@@ -176,33 +173,6 @@ export default {
       }
       return item;
     },
-    // checkItemSort() {
-    //   return new Promise((resolve, reject) => {
-    //     this.isItemSorted ? reject() : resolve();
-    //   });
-    // },
-    // updateSortItem(index) {
-    //   const data = {
-    //     title: "dialog.itemSorted",
-    //     msg: "dialog.updateSortedItem",
-    //     buttons: [
-    //       { text: "button.cancel", fn: "reject" },
-    //       { text: "button.update", fn: "resolve" }
-    //     ]
-    //   };
-
-    //   this.$dialog(data)
-    //     .then(() => {
-    //       this.updateItemSort();
-    //       this.getItems(index);
-    //       this.$q();
-    //     })
-    //     .catch(() => {
-    //       this.isItemSorted = false;
-    //       this.getItems(index);
-    //       this.$q();
-    //     });
-    // },
     updateCategorySort() {
       this.$socket.emit("[CATEGORY] SORT", this.categories);
       this.isCategorySorted = false;

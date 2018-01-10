@@ -66,7 +66,7 @@
                     <div class="mask" v-show="allDay"></div>
                 </div>
                 <div class="option">
-                    <checkbox v-model="allDay" label="text.allDay"></checkbox>
+                    <checkbox v-model="allDay" title="text.allDay"></checkbox>
                 </div>
             </div>
         </main>
@@ -200,7 +200,7 @@ export default {
         msg: "INVALID_DATE_TIP",
         buttons: [{ text: "CONFIRM", fn: "resolve" }]
       }).then(() => {
-        this.$exitComponent();
+        this.$q();
       });
     },
     checkTime() {
