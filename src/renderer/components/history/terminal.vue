@@ -7,6 +7,11 @@
           <h5>{{$t('tip.foundRecords',filteredTransactions.length)}}</h5>
         </div>
         <nav class="filter">
+          <div class="picker">
+            <i class="fa fa-angle-left" @click="prev"></i>
+            <span class="date">{{date}}</span>
+            <i class="fa fa-angle-right" @click="next"></i>
+          </div>
           <dropdown label="filter.station" :options="stations" filter="filterStation"></dropdown>
         </nav>
       </header>
@@ -79,7 +84,7 @@
         <button class="btn" @click="exit">{{$t('button.exit')}}</button>
       </footer>
     </div>
-    <div :is="component" :init="componentData" @refresh="initialData"></div>
+    <div :is="component" :init="componentData" @refresh="initialTodayData"></div>
   </div>
 </template>
 
@@ -145,7 +150,7 @@ export default {
     this.checkTerminal()
       .then(this.checkOccupy)
       .then(this.initialConfig)
-      .then(this.initialData)
+      .then(this.initialTodayData)
       .catch(this.initialFailed);
     this.$bus.on("filter", this.applyFilter);
   },
@@ -192,18 +197,19 @@ export default {
         });
       });
     },
-    initialData() {
-      this.$socket.emit("[TERMINAL] TODAY", data => {
-        let stations = new Set();
-        data.map(t => t.station).forEach(name => stations.add(name));
-        this.stations = Array.from(stations).map(n => ({ text: n, value: n }));
-        let status = new Set();
-
-        this.transactions = data;
-      });
+    initialTodayData() {
+      this.$socket.emit("[TERMINAL] TODAY", data => this.initializing(data));
     },
     initialFailed(content) {
       this.$dialog(content).then(() => this.init.resolve());
+    },
+    initializing(transaction) {
+      let stations = new Set();
+      transaction.map(t => t.station).forEach(name => stations.add(name));
+      this.stations = Array.from(stations).map(n => ({ text: n, value: n }));
+      let status = new Set();
+
+      this.transactions = transaction;
     },
     getParser(model) {
       switch (model) {
@@ -248,10 +254,10 @@ export default {
       const msg =
         record.for === "Order"
           ? [
-              "dialog.voidCreditInvoice",
-              record.order.number,
-              this.$t("type." + record.order.type)
-            ]
+            "dialog.voidCreditInvoice",
+            record.order.number,
+            this.$t("type." + record.order.type)
+          ]
           : "dialog.voidCreditReload";
 
       const prompt = {
@@ -367,12 +373,14 @@ export default {
           this.$socket.emit("[TERMINAL] VOID", record);
           this.$q();
         } else {
-          this.$dialog({
+          const prompt = {
             type: "error",
             title: voidSale.msg,
             msg: ["terminal.error", voidSale.code],
             buttons: [{ text: "button.confirm", fn: "resolve" }]
-          }).then(() => this.$q());
+          };
+
+          this.$dialog(prompt).then(() => this.$q());
         }
       });
     },
@@ -414,6 +422,16 @@ export default {
         devices: this.devices,
         transactions: this.transactions
       });
+    },
+    prev() {
+      this.page = 0;
+      this.date = moment(this.date, "YYYY-MM-DD").subtract(1, "days").format("YYYY-MM-DD");
+      this.$socket.emit("[TERMINAL] DATE", this.date, data => this.initializing(data));
+    },
+    next() {
+      this.page = 0;
+      this.date = moment(this.date, "YYYY-MM-DD").add(1, "days").format("YYYY-MM-DD");
+      this.$socket.emit("[TERMINAL] DATE", this.date, data => this.initializing(data));
     },
     exit() {
       this.init.resolve();
@@ -588,7 +606,7 @@ footer {
   margin-right: 10px;
 }
 
-tr.voided {
+tbody tr.voided {
   background: #ffab91;
   filter: grayscale(0.75) opacity(0.5);
   pointer-events: none;
@@ -596,5 +614,18 @@ tr.voided {
 
 .zero {
   color: lightgray;
+}
+
+.picker {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  font-weight: bold;
+  color: #3c3c3c;
+}
+
+.picker i {
+  padding: 10px 30px;
+  cursor: pointer;
 }
 </style>

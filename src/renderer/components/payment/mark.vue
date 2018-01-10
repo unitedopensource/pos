@@ -56,12 +56,12 @@ export default {
   created() {
     this.order.split
       ? this.checkComponentUsage()
-          .then(this.checkPermission)
-          .then(this.createSplitOrder)
-          .catch(this.initialFailed)
+        .then(this.checkPermission)
+        .then(this.createSplitOrder)
+        .catch(this.initialFailed)
       : this.checkComponentUsage()
-          .then(this.checkPermission)
-          .catch(this.initialFailed);
+        .then(this.checkPermission)
+        .catch(this.initialFailed);
   },
   beforeDestroy() {
     this.releaseComponentLock &&
@@ -104,14 +104,14 @@ export default {
       });
     },
     createSplitOrder() {
-      return new Promise(resolve => {
+      return new Promise(next => {
         this.order.splitPayment.forEach(split => {
           let order = JSON.parse(JSON.stringify(this.order));
           order.payment = JSON.parse(JSON.stringify(split));
           this.orders.push(order);
         });
         //pick order to continue
-        resolve();
+        next();
       });
     },
     initialFailed(reason) {
@@ -147,13 +147,26 @@ export default {
     confirm() {
       this.init.hasOwnProperty("callback")
         ? this.init.resolve(this.type)
-        : this.saveToDatabase();
+        : this.checkTip().then(this.saveToDatabase)
     },
-    saveToDatabase() {
+    checkTip() {
+      return new Promise(next => this.$socket.emit("[PAYMENT] CHECK", this.order._id, result => next(result)))
+    },
+    saveToDatabase({ paid, tipped }) {
       const cashDrawer =
         this.op.cashCtrl === "staffBank"
           ? this.op.name
           : this.station.cashDrawer.name;
+
+      let { remain, tip } = this.order.payment;
+
+      if (this.order.payment.tip > 0 && tipped == 0) {
+        remain -= tip;
+      } else if (this.order.payment.tip !== tipped) {
+        tip = Math.max(0, this.order.payment.tip - tipped).toPrecision(12).toFloat();
+      } else {
+        tip = 0;
+      }
 
       const transaction = {
         _id: ObjectId(),
@@ -166,8 +179,8 @@ export default {
         },
         paid: this.order.payment.remain,
         change: 0,
-        actual: this.order.payment.remain,
-        tip: 0,
+        actual: remain,
+        tip,
         cashier: this.op.name,
         server: this.order.server || this.op.name,
         cashDrawer,

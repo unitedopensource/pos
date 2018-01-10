@@ -1,31 +1,31 @@
 <template>
-    <div>
-        <button class="btn" @click="settle" :disabled="disable">
-            <i class="fa fa-money"></i>
-            <span class="text">{{$t('button.payment')}}</span>
-        </button>
-        <button class="btn" @click="thirdParty" :disabled="disable || order.split">
-            <i class="fa fa-google-wallet"></i>
-            <span class="text">{{$t('button.thirdParty')}}</span>
-        </button>
-        <button class="btn" @click="split" :disabled="disable">
-            <i class="fa fa-clone"></i>
-            <span class="text">{{$t('button.split')}}</span>
-        </button>
-        <button class="btn" @click="discount" :disabled="disable || !discountable">
-            <i class="fa fa-tag"></i>
-            <span class="text">{{$t('button.discount')}}</span>
-        </button>
-        <button class="btn" @click="exit">
-            <i class="fa fa-times"></i>
-            <span class="text">{{$t('button.exit')}}</span>
-        </button>
-        <button class="btn" @click="driver" :disabled="order.type !== 'DELIVERY' || !assignable">
-            <i class="fa fa-id-card-o"></i>
-            <span class="text">{{$t('button.driver')}}</span>
-        </button>
-        <div :is="component" :init="componentData"></div>
-    </div>
+  <div>
+    <button class="btn" @click="thirdParty" :disabled="disable || order.split">
+      <i class="fa fa-google-wallet"></i>
+      <span class="text">{{$t('button.thirdParty')}}</span>
+    </button>
+    <button class="btn" @click="split" :disabled="disable">
+      <i class="fa fa-clone"></i>
+      <span class="text">{{$t('button.split')}}</span>
+    </button>
+    <button class="btn" @click="combine" :disabled="true">
+      <i class="fa fa-link"></i>
+      <span class="text">{{$t('button.combine')}}</span>
+    </button>
+    <button class="btn" @click="discount" :disabled="disable || !discountable">
+      <i class="fa fa-tag"></i>
+      <span class="text">{{$t('button.discount')}}</span>
+    </button>
+    <button class="btn" @click="exit">
+      <i class="fa fa-times"></i>
+      <span class="text">{{$t('button.exit')}}</span>
+    </button>
+    <button class="btn" @click="driver" :disabled="order.type !== 'DELIVERY' || !assignable">
+      <i class="fa fa-id-card-o"></i>
+      <span class="text">{{$t('button.driver')}}</span>
+    </button>
+    <div :is="component" :init="componentData"></div>
+  </div>
 </template>
 
 <script>
@@ -33,12 +33,12 @@ import { mapGetters, mapActions } from "vuex";
 import paymentMark from "../payment/mark";
 import discount from "../payment/discount";
 import dialoger from "../common/dialoger";
-import payment from "../payment/index";
 import driver from "./component/driver";
 import split from "../menu/component/split";
+
 export default {
   props: ["date"],
-  components: { driver, dialoger, payment, paymentMark, split, discount },
+  components: { driver, dialoger, paymentMark, split, discount },
   data() {
     return {
       componentData: null,
@@ -53,19 +53,13 @@ export default {
     this.assignable = this.approval(this.op.modify, "driver");
   },
   methods: {
-    settle() {
-      if (this.op.cashCtrl === "disable") {
-        this.$denyAccess();
-        return;
-      }
-      this.$p("payment");
-    },
     thirdParty() {
       this.$p("paymentMark");
     },
     split() {
       this.$p("split");
     },
+    combine() { },
     discount() {
       this.$socket.emit("[COUPON] LIST", coupons => {
         new Promise((resolve, reject) => {
@@ -78,9 +72,7 @@ export default {
           this.component = "discount";
         })
           .then(this.updatePayment)
-          .catch(() => {
-            this.$q();
-          });
+          .catch(() => this.$q());
       });
     },
     updatePayment(result) {

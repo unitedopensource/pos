@@ -151,7 +151,7 @@ export default {
         };
         if (this.order.settled) throw ticketSettledError;
 
-        this.$socket.emit("[PAYMENT] CHECK", this.order._id, count => {
+        this.$socket.emit("[PAYMENT] COUNT", this.order._id, count => {
           count > 0 ? reject(paymentFoundError) : resolve();
         });
       });

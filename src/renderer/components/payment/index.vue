@@ -208,7 +208,7 @@
             </template>
           </section>
           <section class="quickInput">
-            <div class="numKey" v-for="(num,index) in quickInput" @click="setQuickInput(num)" :key="index">{{num}}</div>
+            <div class="numKey" v-for="(num,i) in quickInput" @click="setQuickInput(num)" :key="i">{{num}}</div>
           </section>
         </article>
       </div>
@@ -216,6 +216,327 @@
     </transition-group>
   </div>
 </template>
+
+<style scoped>
+.window {
+  width: 918px;
+}
+
+nav {
+  display: flex;
+  margin-left: 4px;
+}
+
+.viewer {
+  display: inline-flex;
+  margin-left: 10px;
+}
+
+.viewer input:checked + label {
+  background: #3f51b5;
+}
+
+.viewer .tag {
+  width: 35px;
+  justify-content: center;
+  display: flex;
+  margin-right: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  border-radius: 4px;
+  background: #51aef5;
+}
+
+.viewer label {
+  position: relative;
+}
+
+.viewer input:checked ~ .preview {
+  animation: preview 0.5s 0.2s ease-out forwards;
+}
+
+.preview {
+  visibility: hidden;
+  position: absolute;
+  bottom: 40px;
+  left: -18px;
+  width: 75px;
+  height: 70px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  z-index: 1;
+  opacity: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.preview:after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+.preview span {
+  font-size: 16px;
+}
+
+.preview i {
+  font-size: 28px;
+  color: #eeeeee;
+  padding: 8px 2px;
+}
+
+.paymentTypes {
+  display: flex;
+  height: 60px;
+}
+
+.paymentTypes label {
+  display: block;
+  width: 97px;
+  margin: 4px 4px 4px 0;
+  background: #fff;
+  border: 2px solid #e0e0e0;
+  position: relative;
+  text-align: center;
+  line-height: 49px;
+  border-radius: 4px;
+  color: #bdbdbd;
+}
+
+.options {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.options label {
+  display: flex;
+  width: 131px;
+  height: 50px;
+  margin: 2px;
+  justify-content: center;
+  background: #fff;
+  border: 2px solid #e0e0e0;
+  position: relative;
+  text-align: center;
+  align-items: center;
+  border-radius: 4px;
+  color: #bdbdbd;
+}
+
+.options label:after {
+  bottom: 0px !important;
+}
+
+.type input:checked + label {
+  background: #66bb6a;
+  color: #fafafa;
+  border: 2px solid #009688;
+  text-shadow: 0 2px 1px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.type input:checked + label:before {
+  position: absolute;
+  content: " ";
+  width: 23px;
+  height: 15px;
+  background: #009688;
+  bottom: 0;
+  right: 0;
+  border-top-left-radius: 4px;
+}
+
+.type input:checked + label:after {
+  position: absolute;
+  content: "\f00c";
+  font-family: fontAwesome;
+  bottom: -17px;
+  right: 3px;
+}
+
+.balanceDue {
+  width: 275px;
+  height: 42px;
+  margin: 10px 0 4px;
+  border-radius: 4px;
+  border: 2px solid #607d8b;
+  color: #3c3c3c;
+  position: relative;
+}
+
+.balanceDue .for {
+  position: absolute;
+  top: -12px;
+  background: #f5f5f5;
+  font-weight: 700;
+  left: 10px;
+  padding: 0 5px;
+}
+
+.balanceDue .inner {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 0 5px;
+}
+
+.due {
+  font-family: "Agency FB";
+  font-weight: bold;
+  font-size: 36px;
+}
+
+.symbol {
+  font-size: 26px;
+  margin-right: 1px;
+  font-weight: normal;
+  color: #009688;
+  text-shadow: 0 1px 1px #ddd;
+}
+
+.addition {
+  display: flex;
+  flex-direction: column;
+  margin-left: 5px;
+  text-align: center;
+  color: #ff9800;
+  font-size: 14px;
+  text-align: center;
+}
+
+.addition .text {
+  font-size: 14px;
+}
+
+.fn {
+  margin-left: 4px;
+}
+
+.fn .btn {
+  height: 48px;
+  margin: 6px 2px;
+  width: 97px;
+}
+
+article {
+  display: flex;
+  margin-left: 4px;
+}
+
+section.numpad {
+  display: flex;
+  flex-wrap: wrap;
+  width: 315px;
+}
+
+section.field {
+  display: flex;
+  width: 386px;
+}
+
+.input {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 279px;
+  height: 83px;
+  border-radius: 2px;
+  margin-bottom: 6px;
+  color: #4c4b4b;
+  box-shadow: var(--shadow);
+}
+.input.active {
+  background: #5c6bc0;
+  color: #fff;
+  text-shadow: 0 1px 1px #444;
+}
+.input .text {
+  padding: 7px 10px;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+}
+.input input {
+  border: none;
+  background: none;
+  outline: none;
+  font-size: 28px;
+  text-align: right;
+  padding-right: 10px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  font-family: "Agency FB";
+  font-weight: bold;
+  color: #3c3c3c;
+}
+.input.active input {
+  color: #fff;
+}
+.people {
+  font-family: "Agency FB";
+  font-weight: bold;
+  font-size: 17px;
+  color: #fafafa;
+  padding: 1px 8px;
+  text-shadow: 0 1px 1px #333;
+  background: #4caf50;
+  border-radius: 4px;
+  margin-left: 10px;
+  box-shadow: 0 1px 1px #607d8b;
+}
+
+.input .value {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 10px;
+  font-size: 28px;
+  font-family: "Agency FB";
+  font-weight: bold;
+}
+
+aside.padCtrl {
+  text-align: center;
+  margin-left: 5px;
+}
+
+section.quickInput {
+  margin-left: 3px;
+  display: flex;
+  flex-wrap: wrap;
+  height: 353px;
+  width: 210px;
+}
+
+.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+@keyframes preview {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+  to {
+    opacity: 1;
+    visibility: visible;
+    transform: translate3d(0, 0, 0);
+  }
+}
+</style>
 
 <script>
 import { mapGetters, mapActions } from "vuex";
@@ -239,10 +560,10 @@ export default {
   },
   computed: {
     isNewTicket() {
-      return this.app.newTicket && this.$route.name === "Menu";
+      return this.app.mode === "create" && this.$route.name === "Menu";
     },
     cashTender() {
-      const change = toFixed(this.paid - this.payment.remain, 2);
+      let change = toFixed(this.paid - this.payment.remain, 2);
       return Math.max(0, change);
     },
     ...mapGetters([
@@ -303,7 +624,7 @@ export default {
   },
   methods: {
     initialData() {
-      return new Promise(next => {
+      return new Promise(resolve => {
         this.order = this.init.hasOwnProperty("order")
           ? JSON.parse(JSON.stringify(this.init.order))
           : JSON.parse(JSON.stringify(this.$store.getters.order));
@@ -328,28 +649,28 @@ export default {
           const remain = toFixed(this.payment.balance - paid, 2);
           this.payment.remain = Math.max(0, remain);
 
-          next();
+          resolve();
         });
       });
     },
     checkComponentOccupy() {
-      return new Promise((next, stop) => {
+      return new Promise((resolve, reject) => {
         const data = {
           component: "payment",
           operator: this.op.name,
           lock: this.order._id,
           time: +new Date(),
-          exp: +new Date() + 1.2e5
+          exp: +new Date() + 1000 * 120
         };
 
         this.$socket.emit("[COMPONENT] LOCK", data, lock => {
-          lock ? stop({ error: "paymentPending", data }) : next();
+          lock ? reject({ error: "paymentPending", data }) : resolve();
         });
       });
     },
     checkTicket() {
       return new Promise((next, stop) => {
-        next();
+        resolve();
       });
     },
     checkDate() {
@@ -414,13 +735,14 @@ export default {
         this.exceptionTicketSettled();
       }
     },
-    initialFailed({ error, data }) {
+    initialFailed(reason) {
+      let { error, data } = reason;
+
       switch (error) {
         case "paymentPending":
-          const current = +new Date();
-          const exp = data.exp;
-          const duration = exp - current;
-
+          let current = +new Date();
+          let exp = data.exp;
+          let duration = exp - current;
           this.releaseComponentLock = false;
 
           this.$dialog({
@@ -428,14 +750,17 @@ export default {
             msg: "dialog.pendingOrderAccessDenied",
             timeout: { duration, fn: "resolve" },
             buttons: [{ text: "button.confirm", fn: "resolve" }]
-          }).then(() => this.exit());
+          }).then(() => {
+            this.exit();
+          });
           break;
         case "permissionDenied":
-          this.$log({
-            eventID: 8002,
-            type: "failure",
-            data: this.order._id,
-            note: `Operator is not allow to settle ticket.`
+          this.$socket.emit("[SYS] RECORD", {
+            type: "User",
+            event: "payment",
+            status: 0,
+            cause: "permissionDenied",
+            data: this.order._id
           });
 
           this.$dialog({
@@ -444,7 +769,9 @@ export default {
             msg: "dialog.accessDeniedTip",
             timeout: { duration: 10000, fn: "resolve" },
             buttons: [{ text: "button.confirm", fn: "resolve" }]
-          }).then(() => this.exit());
+          }).then(() => {
+            this.exit();
+          });
           break;
         case "expired":
           this.$dialog({
@@ -458,7 +785,6 @@ export default {
     setAnchor(target) {
       let dom = document.querySelector(".input.active");
       dom && dom.classList.remove("active");
-
       if (target instanceof Event) {
         this.anchor = target.currentTarget.dataset.anchor;
         target.currentTarget.classList.add("active");
@@ -565,19 +891,16 @@ export default {
           break;
         case "CREDIT":
         case "THIRD":
-          this.paid = toFixed(this.payment.remain - this.payment.tip, 2).toFixed(2);
+          this.paid = this.payment.remain.toFixed(2);
           break;
         case "GIFT":
           this.giftCard = "";
-          this.paid = toFixed(this.payment.remain - this.payment.tip, 2).toFixed(2);
-
-          this.swipeGiftCard()
-            .then(this.checkGiftCard)
-            .catch(() => this.$q());
+          this.paid = this.payment.remain.toFixed(2);
+          this.swipeGiftCard().then(this.checkGiftCard).catch(() => this.$q());
           break;
       }
 
-      this.tip = this.payment.tip.toFixed(2);
+      this.tip = "0.00";
       this.thirdPartyType = null;
 
       this.setAnchor("paid");
@@ -591,7 +914,6 @@ export default {
           msg: "dialog.canNotPayZeroAmount",
           buttons: [{ text: "button.confirm", fn: "resolve" }]
         };
-
         if (this.paid === "0.00") throw paidZeroError;
         if (this.paid > this.payment.remain) {
           const extra = toFixed(this.paid - this.payment.remain, 2);
@@ -649,7 +971,7 @@ export default {
         const number = this.creditCard.replace(/[^0-9\.]+/g, "");
         const date = this.expiration.replace(/[^0-9\.]+/g, "");
         const today = moment().format("MMYY");
-        const tip = parseFloat(this.tip) || 0;
+        const tip = parseFloat(this.tip) || this.payment.tip;
 
         const cardLengthError = {
           type: "error",
@@ -665,7 +987,8 @@ export default {
         };
 
         if (number.length > 0 && number.length < 15) throw cardLengthError;
-        if (date.length > 0 && date.length !== 4 && date < today) throw expError;
+        if (date.length > 0 && date.length !== 4 && date < today)
+          throw expError;
 
         resolve({
           creditCard: { number, date },
@@ -1190,7 +1513,7 @@ export default {
       });
     },
     input(val) {
-      let { anchor, format } = document.querySelector(".input.active").dataset;
+      const { anchor, format } = document.querySelector(".input.active").dataset;
       let value = this[anchor];
 
       switch (format) {
@@ -1278,19 +1601,14 @@ export default {
 
       this.recalculatePayment();
     },
-    setQuickInput(value) {
+    setQuickInput(val) {
       const { anchor } = document.querySelector(".input.active").dataset;
-
-      if (anchor === "tip") {
-        this.tip = value.toFixed(2);
-      } else {
-        this.paid = (value - this.payment.tip).toFixed(2);
-        this.tip = this.payment.tip.toFixed(2);
-      }
+      anchor === "tip"
+        ? (this.tip = val.toFixed(2))
+        : (this.paid = val.toFixed(2));
 
       this.reset = true;
       this.setAnchor("paid");
-      this.getQuickInput(this.payment.remain);
     },
     getQuickInput(amount) {
       const preset = [
@@ -1444,17 +1762,13 @@ export default {
       }
     },
     exceptionTicketSettled() {
-      const data = {
-        type: "alert",
+      const prompt = {
         title: "dialog.ticketSettled",
         msg: "dialog.ticketSettledTip",
-        buttons: [
-          { text: "button.cancel", fn: "reject" },
-          { text: "button.markAsPaid", fn: "resolve" }
-        ]
+        buttons: [{ text: "button.cancel", fn: "reject" }, { text: "button.markAsPaid", fn: "resolve" }]
       };
 
-      this.$dialog(data)
+      this.$dialog(prompt)
         .then(() => {
           if (this.order.split) {
             let payment = this.combineSplitPayment();
@@ -1471,324 +1785,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.window {
-  width: 918px;
-}
-
-nav {
-  display: flex;
-  margin-left: 4px;
-}
-
-.viewer {
-  display: inline-flex;
-  margin-left: 10px;
-}
-
-.viewer input:checked + label {
-  background: #3f51b5;
-}
-
-.viewer .tag {
-  width: 35px;
-  justify-content: center;
-  display: flex;
-  margin-right: 5px;
-  cursor: pointer;
-  transition: background 0.3s ease;
-  border-radius: 4px;
-  background: #51aef5;
-}
-
-.viewer label {
-  position: relative;
-}
-
-.viewer input:checked ~ .preview {
-  animation: preview 0.5s 0.2s ease-out forwards;
-}
-
-.preview {
-  visibility: hidden;
-  position: absolute;
-  bottom: 40px;
-  left: -18px;
-  width: 75px;
-  height: 70px;
-  background-color: #555;
-  color: #fff;
-  text-align: center;
-  padding: 5px 0;
-  border-radius: 6px;
-  z-index: 1;
-  opacity: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.preview:after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  margin-left: -5px;
-  border-width: 5px;
-  border-style: solid;
-  border-color: #555 transparent transparent transparent;
-}
-
-.preview span {
-  font-size: 16px;
-}
-
-.preview i {
-  font-size: 28px;
-  color: #eeeeee;
-  padding: 8px 2px;
-}
-
-.paymentTypes {
-  display: flex;
-  height: 60px;
-}
-
-.paymentTypes label {
-  display: block;
-  width: 97px;
-  margin: 4px 4px 4px 0;
-  background: #fff;
-  border: 2px solid #e0e0e0;
-  position: relative;
-  text-align: center;
-  line-height: 49px;
-  border-radius: 4px;
-  color: #bdbdbd;
-}
-
-.options {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.options label {
-  display: flex;
-  width: 131px;
-  height: 50px;
-  margin: 2px;
-  justify-content: center;
-  background: #fff;
-  border: 2px solid #e0e0e0;
-  position: relative;
-  text-align: center;
-  align-items: center;
-  border-radius: 4px;
-  color: #bdbdbd;
-}
-
-.options label:after {
-  bottom: 0px !important;
-}
-
-.type input:checked + label {
-  background: #66bb6a;
-  color: #fafafa;
-  border: 2px solid #009688;
-  text-shadow: 0 2px 1px rgba(0, 0, 0, 0.5);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-}
-
-.type input:checked + label:before {
-  position: absolute;
-  content: " ";
-  width: 23px;
-  height: 15px;
-  background: #009688;
-  bottom: 0;
-  right: 0;
-  border-top-left-radius: 4px;
-}
-
-.type input:checked + label:after {
-  position: absolute;
-  content: "\f00c";
-  font-family: fontAwesome;
-  bottom: -17px;
-  right: 3px;
-}
-
-.balanceDue {
-  width: 275px;
-  height: 42px;
-  margin: 10px 0 4px;
-  border-radius: 4px;
-  border: 2px solid #607d8b;
-  color: #3c3c3c;
-  position: relative;
-}
-
-.balanceDue .for {
-  position: absolute;
-  top: -12px;
-  background: #f5f5f5;
-  font-weight: 700;
-  left: 10px;
-  padding: 0 5px;
-}
-
-.balanceDue .inner {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  padding: 0 5px;
-}
-
-.due {
-  font-family: "Agency FB";
-  font-weight: bold;
-  font-size: 36px;
-}
-
-.symbol {
-  font-size: 26px;
-  margin-right: 1px;
-  font-weight: normal;
-  color: #009688;
-  text-shadow: 0 1px 1px #ddd;
-}
-
-.addition {
-  display: flex;
-  flex-direction: column;
-  margin-left: 5px;
-  text-align: center;
-  color: #ff9800;
-  font-size: 14px;
-  text-align: center;
-}
-
-.addition .text {
-  font-size: 14px;
-}
-
-.fn {
-  margin-left: 4px;
-}
-
-.fn .btn {
-  height: 48px;
-  margin: 6px 2px;
-  width: 97px;
-}
-
-article {
-  display: flex;
-  margin-left: 4px;
-}
-
-section.numpad {
-  display: flex;
-  flex-wrap: wrap;
-  width: 315px;
-}
-
-section.field {
-  display: flex;
-  width: 386px;
-}
-
-.input {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  width: 279px;
-  height: 83px;
-  border-radius: 2px;
-  margin-bottom: 6px;
-  color: #4c4b4b;
-  box-shadow: var(--shadow);
-}
-.input.active {
-  background: #5c6bc0;
-  color: #fff;
-  text-shadow: 0 1px 1px #444;
-}
-.input .text {
-  padding: 7px 10px;
-  font-size: 22px;
-  display: flex;
-  align-items: center;
-}
-.input input {
-  border: none;
-  background: none;
-  outline: none;
-  font-size: 28px;
-  text-align: right;
-  padding-right: 10px;
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  font-family: "Agency FB";
-  font-weight: bold;
-  color: #3c3c3c;
-}
-.input.active input {
-  color: #fff;
-}
-.people {
-  font-family: "Agency FB";
-  font-weight: bold;
-  font-size: 17px;
-  color: #fafafa;
-  padding: 1px 8px;
-  text-shadow: 0 1px 1px #333;
-  background: #4caf50;
-  border-radius: 4px;
-  margin-left: 10px;
-  box-shadow: 0 1px 1px #607d8b;
-}
-
-.input .value {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  padding-right: 10px;
-  font-size: 28px;
-  font-family: "Agency FB";
-  font-weight: bold;
-}
-
-aside.padCtrl {
-  text-align: center;
-  margin-left: 5px;
-}
-
-section.quickInput {
-  margin-left: 3px;
-  display: flex;
-  flex-wrap: wrap;
-  height: 353px;
-  width: 210px;
-}
-
-.disabled {
-  opacity: 0.5;
-  pointer-events: none;
-}
-
-@keyframes preview {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 10px, 0);
-  }
-  to {
-    opacity: 1;
-    visibility: visible;
-    transform: translate3d(0, 0, 0);
-  }
-}
-</style>
