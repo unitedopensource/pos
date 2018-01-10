@@ -143,6 +143,7 @@ export default {
       devices: [],
       terminal: null,
       date: today(),
+      printTicket: true,
       page: 0
     };
   },
@@ -167,6 +168,7 @@ export default {
             timeout: { duration: 1000, fn: "resolve" },
             buttons: [{ text: "button.confirm", fn: "resolve" }]
           };
+
           devices.length > 0 ? next() : stop(reason);
         });
       });
@@ -192,6 +194,7 @@ export default {
             timeout: { duration: 1000, fn: "resolve" },
             buttons: [{ text: "button.confirm", fn: "resolve" }]
           };
+
           this.devices = devices;
           devices.length === 0 ? stop(reason) : next();
         });
@@ -240,8 +243,7 @@ export default {
     setPage(num) {
       this.page = num;
     },
-    applyFilter(data) {
-      const { value, type } = data;
+    applyFilter({ value, type }) {
       this[type] = value;
       this.page = 0;
 
@@ -254,10 +256,10 @@ export default {
       const msg =
         record.for === "Order"
           ? [
-            "dialog.voidCreditInvoice",
-            record.order.number,
-            this.$t("type." + record.order.type)
-          ]
+              "dialog.voidCreditInvoice",
+              record.order.number,
+              this.$t("type." + record.order.type)
+            ]
           : "dialog.voidCreditReload";
 
       const prompt = {
@@ -346,17 +348,28 @@ export default {
       });
     },
     initialParser(terminal) {
-      return new Promise((resolve, reject) => {
-        const config = this.devices.find(d => d.alias === terminal);
-        const { ip, port, sn, model } = config;
-
-        this.terminal = this.getParser(model)();
-        this.terminal
-          .initial(ip, port, sn, this.station.alias, terminal)
-          .then(response => {
-            this.device = this.terminal.check(response.data);
-            this.device.code === "000000" ? resolve() : reject();
+      return new Promise((next, stop) => {
+        try {
+          const { ip, port, sn, model, print } = this.devices.find(
+            d => d.alias === terminal
+          );
+          this.printTicket = print;
+          this.terminal = this.getParser(model)();
+          this.terminal
+            .initial(ip, port, sn, this.station.alias, terminal)
+            .then(response => {
+              this.device = this.terminal.check(response.data);
+              this.device.code === "000000" ? next() : stop();
+            });
+        } catch (error) {
+          this.$log({
+            eventID: 9010,
+            type: "failure",
+            note: `Can not find terminal config. \n\nError Message:\n${error}`
           });
+
+          stop();
+        }
       });
     },
     executeVoidSale(record) {
@@ -368,7 +381,7 @@ export default {
         delete voidSale.order;
 
         if (voidSale.code === "000000") {
-          Printer.printCreditCard(voidSale);
+          this.printTicket && Printer.printCreditCard(voidSale);
           Object.assign(record, voidSale, { status: 0 });
           this.$socket.emit("[TERMINAL] VOID", record);
           this.$q();
@@ -385,7 +398,14 @@ export default {
       });
     },
     executeFailed(error) {
-      console.log(error);
+      const prompt = {
+        type: "error",
+        title: "dialog.cantExecute",
+        msg: "dialog.errorOccurred",
+        buttons: [{ text: "button.confirm", fn: "resolve" }]
+      };
+
+      this.$dialog(prompt).then(() => this.$q());
     },
     accessAdjuster() {
       this.$checkPermission("modify", "transaction")
@@ -425,13 +445,21 @@ export default {
     },
     prev() {
       this.page = 0;
-      this.date = moment(this.date, "YYYY-MM-DD").subtract(1, "days").format("YYYY-MM-DD");
-      this.$socket.emit("[TERMINAL] DATE", this.date, data => this.initializing(data));
+      this.date = moment(this.date, "YYYY-MM-DD")
+        .subtract(1, "days")
+        .format("YYYY-MM-DD");
+      this.$socket.emit("[TERMINAL] DATE", this.date, data =>
+        this.initializing(data)
+      );
     },
     next() {
       this.page = 0;
-      this.date = moment(this.date, "YYYY-MM-DD").add(1, "days").format("YYYY-MM-DD");
-      this.$socket.emit("[TERMINAL] DATE", this.date, data => this.initializing(data));
+      this.date = moment(this.date, "YYYY-MM-DD")
+        .add(1, "days")
+        .format("YYYY-MM-DD");
+      this.$socket.emit("[TERMINAL] DATE", this.date, data =>
+        this.initializing(data)
+      );
     },
     exit() {
       this.init.resolve();

@@ -565,7 +565,9 @@ export default {
         'addressRemoveConfirm': '您确定要移除 {i} 地址吗?',
         'noDefaultWage': '没有默认时薪',
         'timecardNoWage': '此员工 {i} 并没有设置时薪, 工资将会显示为 $ 0.00',
-        'tableReserved': '此座位已经被预定'
+        'tableReserved': '此座位已经被预定',
+        'cantExecute': '无法执行',
+        'errorOccurred': '执行这个命令的过程发送一个错误, 命令被中止!'
     },
     terminal: {
         'initial': '正在初始化 {i}...',
@@ -653,7 +655,7 @@ export default {
     calendar: {
         'mon': '周一',
         'tue': '周二',
-        'wen': '周三',
+        'wed': '周三',
         'thu': '周四',
         'fri': '周五',
         'sat': '周六',

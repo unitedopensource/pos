@@ -128,56 +128,57 @@ export default {
           transaction
             ? resolve(transaction)
             : reject({
-              type: "warning",
-              title: "dialog.somethingWrong",
-              msg: "terminal.notFound",
-              buttons: [{ text: "button.confirm", fn: "resolve" }]
-            });
+                type: "warning",
+                title: "dialog.somethingWrong",
+                msg: "terminal.notFound",
+                buttons: [{ text: "button.confirm", fn: "resolve" }]
+              });
         });
       });
     },
     initialParser(record) {
-      return new Promise((resolve, reject) => {
+      return new Promise((next, stop) => {
         const { alias } = this.station;
 
-        this.$socket.emit("[TERMINAL] CONFIG", record.terminal, ({ ip, port, sn, model, print = true }) => {
-          this.terminal = this.getParser(model)();
-          this.printTicket = print;
+        this.$socket.emit(
+          "[TERMINAL] CONFIG",
+          record.terminal,
+          ({ ip, port, sn, model, print = true }) => {
+            this.terminal = this.getParser(model)();
+            this.printTicket = print;
 
-          this.terminal
-            .initial(ip, port, sn, alias, record.terminal)
-            .then(response => {
-              const device = this.terminal.check(response.data);
-              const prompt = {
-                type: "error",
-                title: "terminal.connectError",
-                msg: ["terminal.initialFailed", device.code],
-                buttons: [{ text: "button.confirm", fn: "resolve" }]
-              };
+            this.terminal
+              .initial(ip, port, sn, alias, record.terminal)
+              .then(response => {
+                const device = this.terminal.check(response.data);
+                const prompt = {
+                  type: "error",
+                  title: "terminal.connectError",
+                  msg: ["terminal.initialFailed", device.code],
+                  buttons: [{ text: "button.confirm", fn: "resolve" }]
+                };
 
-              device.code === "000000"
-                ? resolve(record)
-                : reject(prompt);
-            });
-        });
+                device.code === "000000" ? next(record) : stop(prompt);
+              });
+          }
+        );
       });
     },
     voidTransaction(record) {
-      return new Promise((resolve, reject) => {
+      return new Promise((next, stop) => {
         const invoice = record.order.number;
         const transaction = record.trace.trans;
 
         this.terminal.voidSale(invoice, transaction).then(response => {
           let voidSale = this.terminal.explainTransaction(response.data);
-          delete voidSale.order;
 
           if (voidSale.code === "000000") {
             this.printTicket && Printer.printCreditCard(voidSale);
             Object.assign(record, voidSale, { status: 0 });
             this.$socket.emit("[TERMINAL] VOID", record);
-            resolve();
+            next();
           } else {
-            reject({
+            stop({
               type: "error",
               title: voidSale.msg,
               msg: ["terminal.error", voidSale.code],

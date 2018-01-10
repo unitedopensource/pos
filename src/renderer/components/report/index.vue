@@ -10,9 +10,6 @@
         <section class="option">
           <div class="for">
             <span>{{$t('report.range')}}</span>
-            <!-- <span class="range">
-              <span v-if="reportRange">{{reportRange.from | moment('YYYY-MM-DD HH:mm')}} ~ {{reportRange.to | moment('YYYY-MM-DD HH:mm')}}</span>
-            </span> -->
           </div>
           <div class="rangeWrap">
             <div>
@@ -71,7 +68,8 @@
         <div class="opt">
           <checkbox v-model="daily" title="report.dailyReport"></checkbox>
         </div>
-        <div class="btn" @click="confirm">{{$t('button.confirm')}}</div>
+        <button class="btn" @click="init.reject">{{$t('button.back')}}</button>
+        <button class="btn" @click="confirm">{{$t('button.confirm')}}</button>
       </footer>
     </div>
     <div :is="component" :init="componentData"></div>

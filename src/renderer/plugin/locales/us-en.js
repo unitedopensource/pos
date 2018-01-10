@@ -658,7 +658,9 @@ export default {
         'addressRemoveConfirm': 'Are you sure to remove {i} from the list?',
         'noDefaultWage': 'Default Wage Not Assign',
         'timecardNoWage': 'The employee {i} does not have default wage. In result the salary will display $ 0.00',
-        'tableReserved': 'This table has been reserved.'
+        'tableReserved': 'This table has been reserved.',
+        'cantExecute': 'Can Not Execute',
+        'errorOccurred': 'Something is wrong! Previous action aborted.'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',
@@ -746,7 +748,7 @@ export default {
     calendar: {
         'mon': 'MON',
         'tue': 'TUE',
-        'wen': 'WEN',
+        'wed': 'WED',
         'thu': 'THU',
         'fri': 'FRI',
         'sat': 'SAT',

@@ -135,7 +135,6 @@ const Pax = function () {
           station,
           terminal,
           addition,
-          order: {},
           time: +new Date,
           status: 1
         };

@@ -208,7 +208,7 @@
             </template>
           </section>
           <section class="quickInput">
-            <div class="numKey" v-for="(num,i) in quickInput" @click="setQuickInput(num)" :key="i">{{num}}</div>
+            <div class="numKey" v-for="(num,index) in quickInput" @click="setQuickInput(num)" :key="index">{{num}}</div>
           </section>
         </article>
       </div>
@@ -560,11 +560,12 @@ export default {
   },
   computed: {
     isNewTicket() {
-      return this.app.mode === "create" && this.$route.name === "Menu";
+      return this.app.newTicket && this.$route.name === "Menu";
     },
     cashTender() {
-      let change = toFixed(this.paid - this.payment.remain, 2);
-      return Math.max(0, change);
+      return Math.max(0, this.paid - this.payment.remain)
+        .toPrecision(12)
+        .toFloat();
     },
     ...mapGetters([
       "op",
@@ -644,20 +645,28 @@ export default {
           this.expiration = date;
         }
 
-        this.$socket.emit("[PAYMENT] CHECK", this.order._id, ({ paid, tipped }) => {
-          this.tipped = tipped;
-          this.payment.remain = Math.max(0, this.payment.balance - paid).toPrecision(12).toFloat();
+        this.$socket.emit(
+          "[PAYMENT] CHECK",
+          this.order._id,
+          ({ paid, tipped }) => {
+            this.tipped = tipped;
+            this.payment.remain = Math.max(0, this.payment.balance - paid)
+              .toPrecision(12)
+              .toFloat();
 
-          if (this.payment.tip > 0 && tipped === 0) {
-            this.tip = this.payment.tip.toFixed(2);
-          } else if (this.payment.tip !== tipped) {
-            this.tip = Math.max(0, this.payment.tip - tipped).toPrecision(12).toFloat();
-          } else {
-            this.tip = "0.00";
+            if (this.payment.tip > 0 && tipped === 0) {
+              this.tip = this.payment.tip.toFixed(2);
+            } else if (this.payment.tip !== tipped) {
+              this.tip = Math.max(0, this.payment.tip - tipped)
+                .toPrecision(12)
+                .toFloat();
+            } else {
+              this.tip = "0.00";
+            }
+
+            next();
           }
-
-          next();
-        });
+        );
       });
     },
     checkComponentOccupy() {
@@ -681,9 +690,9 @@ export default {
       });
     },
     checkDate() {
-      console.log("trigger")
+      console.log("trigger");
       return new Promise((next, stop) => {
-        console.log(this.order.date, today())
+        console.log(this.order.date, today());
         this.order.date === today() ? next() : stop({ error: "expired" });
       });
     },
@@ -823,7 +832,9 @@ export default {
       this.reset = false;
     },
     clear() {
-      const { anchor, format } = document.querySelector(".input.active").dataset;
+      const { anchor, format } = document.querySelector(
+        ".input.active"
+      ).dataset;
 
       switch (format) {
         case "money":
@@ -885,7 +896,7 @@ export default {
         type: "failure",
         data: this.order._id,
         note: `Failed to pay bill.\n\nError message:\n${error}`
-      })
+      });
 
       error === Object(error)
         ? this.$dialog(error).then(() => this.$q())
@@ -905,7 +916,9 @@ export default {
         case "GIFT":
           this.giftCard = "";
           this.paid = this.payment.remain.toFixed(2);
-          this.swipeGiftCard().then(this.checkGiftCard).catch(() => this.$q());
+          this.swipeGiftCard()
+            .then(this.checkGiftCard)
+            .catch(() => this.$q());
           break;
       }
 
@@ -1034,7 +1047,7 @@ export default {
       });
     },
     queryGiftCard() {
-      this.swipeGiftCard(this.giftCard.replace(/\D/g, ''))
+      this.swipeGiftCard(this.giftCard.replace(/\D/g, ""))
         .then(this.checkGiftCard)
         .catch(() => this.$q());
     },
@@ -1092,22 +1105,28 @@ export default {
           new Promise((resolve, reject) => {
             this.componentData = { resolve, reject, callback: true };
             this.component = "thirdParty";
-          }).then(charge).catch(() => this.$q());
+          })
+            .then(charge)
+            .catch(() => this.$q());
         }
       });
     },
     saveTransaction(data) {
-      const type = this.paymentType === "THIRD" ? this.thirdPartyType : this.paymentType;
-      const cashDrawer = this.op.cashCtrl === "staffBank" ? this.op.name : this.station.cashDrawer.name;
+      const type =
+        this.paymentType === "THIRD" ? this.thirdPartyType : this.paymentType;
+      const cashDrawer =
+        this.op.cashCtrl === "staffBank"
+          ? this.op.name
+          : this.station.cashDrawer.name;
 
       this.poleDisplay(`PAID by ${type}`, "THANK YOU");
 
       let actual = Math.min(this.paid, this.payment.remain),
-        change,
         paid = parseFloat(this.paid),
         tip = parseFloat(this.tip) || this.payment.tip,
-        transaction,
         _id = ObjectId();
+
+      let change, transaction;
 
       return new Promise((resolve, reject) => {
         switch (this.paymentType) {
@@ -1272,6 +1291,7 @@ export default {
     },
     postToDatabase() {
       return new Promise((resolve, reject) => {
+        console.log(this.payment);
         let settled = this.isTicketSettled();
 
         if (this.isNewTicket) {
@@ -1522,7 +1542,9 @@ export default {
       });
     },
     input(val) {
-      const { anchor, format } = document.querySelector(".input.active").dataset;
+      const { anchor, format } = document.querySelector(
+        ".input.active"
+      ).dataset;
       let value = this[anchor];
 
       switch (format) {
@@ -1774,7 +1796,10 @@ export default {
       const prompt = {
         title: "dialog.ticketSettled",
         msg: "dialog.ticketSettledTip",
-        buttons: [{ text: "button.cancel", fn: "reject" }, { text: "button.markAsPaid", fn: "resolve" }]
+        buttons: [
+          { text: "button.cancel", fn: "reject" },
+          { text: "button.markAsPaid", fn: "resolve" }
+        ]
       };
 
       this.$dialog(prompt)
