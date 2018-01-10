@@ -117,9 +117,15 @@ var Preset = function () {
         categorize: false,
         prioritize: false,
         mode: "normal",
-        footer: [
-          "Thank You Very Much"
-        ]
+        footer: {
+          ticketNumber: false,
+          tableName: false,
+          jobTime: false,
+          tradeMark: false,
+          content: [
+            "Thank You Very Much"
+          ]
+        }
       },
       layout: {
         contact: true,

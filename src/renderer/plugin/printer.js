@@ -168,12 +168,6 @@ var Printer = function (plugin, config, station) {
         printer = printer || 'cashier';
 
         const setting = this.setting[printer];
-        const {
-            printStore,
-            printType,
-            printCustomer
-        } = setting.control;
-
         const header = createHeader(this.config, setting, ticket);
         const list = createList(printer, setting, ticket, true);
         const style = createStyle(setting);
@@ -310,14 +304,7 @@ var Printer = function (plugin, config, station) {
     }
 
     this.printGiftCard = function (title, card) {
-        let {
-            name,
-            address,
-            city,
-            state,
-            zipCode,
-            contact
-        } = this.config;
+        let { name, address, city, state, zipCode, contact } = this.config;
 
         CLODOP.PRINT_INIT('Gift Card');
         CLODOP.PRINT_INITA(0, 0, 260, 2000, "");
@@ -401,18 +388,9 @@ var Printer = function (plugin, config, station) {
             for (let title in report) {
                 if (report.hasOwnProperty(title) && report[title]) {
                     let section = "";
-                    section += report[title].map(record => {
-                        let {
-                            text,
-                            value,
-                            style
-                        } = record;
-
-                        return `<p class="${style}">
-                                <span class="text">${text}</span>
-                                <span class="value">${value}</span>
-                                </p>`;
-                    }).join("").toString();
+                    section += report[title].map(({ text, value, style }) =>
+                        `<p class="${style}"><span class="text">${text}</span><span class="value">${value}</span></p>`
+                    ).join("").toString();
                     content += `<section class="type"><h4>${title}</h4>${section}</section>`;
                 }
             }
@@ -1112,6 +1090,7 @@ function createStyle(setting) {
               h5{font-size:16px;font-weight:lighter}
               h1{${title ? '' : 'display:none;'}font-size:1.5em;font-family:"${fontFamily}"}
               .number,.table{position:absolute;bottom:12px;font-size:2em;font-weight:bold;}
+              footer .number,footer .table{top: 5px;bottom: initial;}
               .number{right:10px;}.table{left:10px;}
               div.time span{display:inline-block;margin:0 10px;font-size:1em;}
               div.time{border-bottom:1px solid #000;position:relative;margin-top:10px;}
@@ -1147,9 +1126,8 @@ function createStyle(setting) {
               .suggestion div{display:flex;justify-content: center;width:75%;margin:auto;}
               .dash{margin: 0 5px;}
               .tips{margin-left:15px;}
-              section.note{text-align:center;font-weight:lighter;margin-top:10px;border-top:1px solid #000;}
-              .printTime{${false ? '' : 'display:none;'}font-weight:bold;text-align:center;}
-              .tm{text-align: center;margin:5px;}
+              footer p{text-align:center;}
+              .slogan{font-weight:lighter;margin-top:10px;border-top:1px solid #000;position:relative;}
               .tradeMark {font-weight: bold;display: inline-block;padding: 5px 7px;background: #000;color: #fff;}
               .zhCN{font-family:'${secondary.fontFamily}';font-size:${secondary.fontSize}px;}
               .usEN{font-family:'${primary.fontFamily}';font-size:${primary.fontSize}px;}
@@ -1160,50 +1138,39 @@ function createStyle(setting) {
 function createFooter(config, setting, printer, ticket) {
     if (!ticket.hasOwnProperty('payment')) return "";
 
+    const { ticketNumber, tableName, jobTime, tradeMark, content } = setting.control.footer;
     const { enable, percentages } = config.tipSuggestion;
-    const { footer } = setting.control;
-    const { type, payment, coupons } = ticket;
+    const { type, payment, coupons, number, table } = ticket;
 
-    let suggestions = '';
+    let suggestions = "";
 
     if (enable && type === 'PRE_PAYMENT') {
-        const p = percentages.split(",");
         const { balance } = payment;
-
-        let data = [{
-            pct: p[0],
-            val: toFixed(balance * p[0] / 100, 2).toFixed(2),
-            tip: toFixed(balance * (1 + p[0] / 100), 2).toFixed(2)
-        }, {
-            pct: p[1],
-            val: toFixed(balance * p[1] / 100, 2).toFixed(2),
-            tip: toFixed(balance * (1 + p[1] / 100), 2).toFixed(2)
-        }, {
-            pct: p[2],
-            val: toFixed(balance * p[2] / 100, 2).toFixed(2),
-            tip: toFixed(balance * (1 + p[2] / 100), 2).toFixed(2)
-        }].map(tip =>
+        const p = percentages.split(",").map(pct => ({
+            pct,
+            val: (balance * pct / 100).toFixed(2),
+            tip: (balance * (1 + pct / 100)).toFixed(2)
+        })).map(tip =>
             `<div class="outer">
                 <span>${tip.pct}%<span class="dash">-</span>$ ${tip.val}</span>
                 <span class="tips">( $ ${tip.tip} )</span>
             </div>`).join("").toString();
 
-        suggestions = `<section class="suggestion">
-                        <h5>Tips Suggestion</h5>
-                        <i>These tip amounts are provided for your convenience.</i>
-                        ${data}
-                      </section>`
+        suggestions = `<section class="suggestion">\
+                            <h5>Tips Suggestion</h5>\
+                            <i>These tip amounts are provided for your convenience.</i>\
+                            ${data}\
+                        </section>`
     }
 
-    let delivery = parseFloat(payment.delivery) > 0 ? `<p><span class="text">Delivery:</span><span class="value">${payment.delivery.toFixed(2)}</span></p>` : "";
-    const note = footer ? footer.map(text => `<p>${text}</p>`).join("").toString() : "";
+    const slogan = content.map(text => `<p>${text}</p>`).join("").toString();
 
     let settle = [];
-    let applied = payment.applyCoupon || true;
+    const applied = payment.applyCoupon || true;
 
-    if (coupons && applied) {
-        coupons.forEach(coupon => settle.push(`<section class="details"><h3>${coupon.alias}</h3></section>`))
-    }
+    if (coupons && applied)
+        coupons.forEach(coupon => settle.push(`<section class="details"><h3>${coupon.alias}</h3></section>`));
+
 
     payment.log.forEach(log => {
         const { type, subType, lfd, paid, change } = log;
@@ -1244,9 +1211,9 @@ function createFooter(config, setting, printer, ticket) {
         }
     })
 
-    if (!payment.settled && payment.paid !== 0) {
-        settle.push(`<section class="details"><h3>Balance Due: $ ${payment.remain.toFixed(2)}</h3></section>`)
-    }
+    if (!payment.settled && payment.paid !== 0)
+        settle.push(`<section class="details"><h3>Balance Due: $ ${payment.remain.toFixed(2)}</h3></section>`);
+
 
     if (ticket.status === 0) {
         settle.push(`<section class="details">
@@ -1260,35 +1227,34 @@ function createFooter(config, setting, printer, ticket) {
     }
 
     let detail = [];
-    ['subtotal', 'discount', 'tax', 'delivery', 'tip', 'gratuity', 'total',].forEach(key => {
+    ['subtotal', 'discount', 'tax', 'delivery', 'tip', 'gratuity', 'total'].forEach(key => {
         if (payment[key] > 0) {
-            let cls = '';
+            let style = '';
             let value = payment[key].toFixed(2);
             let text = key.toCapitalCase();
-            key === 'discount' && (value = '- ' + value);
-            if (key === 'total') {
-                value = payment.balance.toFixed(2);
-                cls = 'bold';
+
+            switch (key) {
+                case "discount":
+                    value = `- ${value}`;
+                    break;
+                case "gratuity":
+                    text = 'Service Fee';
+                    break;
+                case "total":
+                    value = payment.balance.toFixed(2);
+                    style = 'bold';
+                    break;
             }
-            if (key === 'gratuity') {
-                text = 'Service Fee';
-            }
-            detail.push(`<p class="${cls}">
-                            <span class="text">${text}:</span>
-                            <span class="value">${value}</span>
-                        </p>`)
+
+            detail.push(`<p class="${style}"><span class="text">${text}:</span><span class="value">${value}</span></p>`)
         }
     });
 
-    let discount = parseFloat(payment.discount) !== 0 ?
-        `<p><span class="text">Disc.:</span><span class="value">- ${payment.discount.toFixed(2)}</span></p>` : "";
-    let tip = parseFloat(payment.tip) > 0 ?
-        `<p><span class="text">Tip:</span><span class="value">${payment.tip}</span></p>` : "";
-    let gratuity = parseFloat(payment.gratuity) > 0 ?
-        `<p><span class="text">Gratuity:</span><span class="value">${payment.gratuity}</span></p>` : "";
-    let tradeMark = ticket.source !== 'POS' && (/cashier/i).test(printer) ?
-        `<p class="tm"><span class="tradeMark">${ticket.source}</span></p>` : "";
-
+    const _provider = ticket.source !== 'POS' && (/cashier/i).test(printer) ? `<p class="tm"><span class="tradeMark">${ticket.source}</span></p>` : "";
+    const _time = jobTime ? `<p class="printTime">${printer} print @ ${moment().format('hh:mm:ss')}</p>` : "";
+    const _number = ticketNumber ? `<div class="number">${number}</div>` : "";
+    const _table = tableName ? `<div class="table">${table || ""}</div>` : "";
+    const extraInfo = _provider + _time + _number + _table;
 
     return `<footer>
               <section class="column">
@@ -1300,9 +1266,10 @@ function createFooter(config, setting, printer, ticket) {
               <div class="settle">
                 ${suggestions + settle.join("").toString()}
               </div>
-              <section class="note">${note}</section>
-              ${tradeMark}
-              <p class="printTime">${printer} print @ ${moment().format('hh:mm:ss')}</p>
+              <div class="slogan">
+                ${slogan}
+                ${extraInfo}
+              </div>
             </footer>`
 }
 

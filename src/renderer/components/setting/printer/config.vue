@@ -111,13 +111,13 @@ export default {
     },
     openFooterEditor() {
       new Promise((resolve, reject) => {
-        const footer = this.config.control.footer.join(String.fromCharCode(10));
+        const { footer } = this.config.control;
         this.componentData = { resolve, reject, footer };
         this.component = "editor";
       })
-        .then(({ name, table, time, footer }) => {
-          this.config.control.footer = footer;
-          
+        .then(_footer => {
+          this.config.control.footer = _footer;
+
           this.update({
             key: `printers.${this.printer}.control.footer`,
             value: footer

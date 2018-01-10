@@ -1395,7 +1395,8 @@ export default {
         'new': '新增模式',
         'todo': '列表模式',
         'ticketNumber': '订单号码',
-        'tableName': '座位名称'
+        'tableName': '座位名称',
+        'tradeMark': '打印商标'
     },
     context: {
         'sync': '同步',

@@ -1397,7 +1397,8 @@ export default {
         'new': 'New',
         'todo': 'Todo',
         'ticketNumber': 'Ticket Number',
-        'tableName': 'Table Name'
+        'tableName': 'Table Name',
+        'tradeMark': 'Print Trade Mark'
     },
     context: {
         'sync': 'Sync',

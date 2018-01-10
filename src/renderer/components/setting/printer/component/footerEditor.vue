@@ -6,10 +6,11 @@
                 <h3>{{$t('title.footer')}}</h3>
             </header>
             <div class="wrap">
-                <inputer type="textarea" v-model.trim="footer" title="text.content" :center="true"></inputer>
-                <switches title="print.ticketNumber" v-model="number"></switches>
-                <switches title="print.tableName" v-model="table"></switches>
-                <switches title="print.jobTime" v-model="time"></switches>
+                <inputer type="textarea" v-model.trim="footer.content" title="text.content" :center="true"></inputer>
+                <switches title="print.ticketNumber" v-model="footer.ticketNumber"></switches>
+                <switches title="print.tableName" v-model="footer.tableName"></switches>
+                <switches title="print.tradeMark" v-model="footer.tradeMark"></switches>
+                <switches title="print.jobTime" v-model="footer.jobTime"></switches>
             </div>
             <footer>
                 <button class="btn" @click="confirm">{{$t('button.confirm')}}</button>
@@ -27,21 +28,16 @@ export default {
     components: { inputer, switches },
     data() {
         return {
-            footer: this.init.footer,
-            number: false,
-            table: false,
-            time: false
+            footer: JSON.parse(JSON.stringify(this.init.footer))
         };
+    },
+    created() {
+        this.footer.content = this.footer.content.join(String.fromCharCode(10))
     },
     methods: {
         confirm() {
-            const config = {
-                number: this.number,
-                table: this.table,
-                time: this.time,
-                footer: this.footer.split(String.fromCharCode(10))
-            }
-            this.init.resolve(config);
+            this.footer.content = this.footer.content.split(String.fromCharCode(10));
+            this.init.resolve(this.footer);
         }
     }
 };
