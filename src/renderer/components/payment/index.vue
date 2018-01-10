@@ -690,9 +690,7 @@ export default {
       });
     },
     checkDate() {
-      console.log("trigger");
       return new Promise((next, stop) => {
-        console.log(this.order.date, today());
         this.order.date === today() ? next() : stop({ error: "expired" });
       });
     },
@@ -1291,7 +1289,6 @@ export default {
     },
     postToDatabase() {
       return new Promise((resolve, reject) => {
-        console.log(this.payment);
         let settled = this.isTicketSettled();
 
         if (this.isNewTicket) {

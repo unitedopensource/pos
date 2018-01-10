@@ -1,23 +1,29 @@
 <template>
-    <div class="popupMask center dark">
-        <div class="window">
-            <header class="title">{{$t('title.voidNote')}}</header>
-            <ul>
-                <li v-for="(reason,index) in reasons" :key="index">
-                    <input type="radio" v-model="note" :value="reason.text" :id="'reason'+index">
-                    <label :for="'reason'+index">{{$t('reason.'+reason.text)}}<i class="fa fa-flag" v-if="reason.flag"></i></label>
-                </li>
-                <li v-show="isManager" class="manager">
-                    <input type="radio" v-model="note" value="Manager Redemption" id="redemption">
-                    <label for="redemption">{{$t('reason.Manager Redemption')}}</label>
-                </li>
-        </ul>
-        <footer>
-            <button class="btn" @click="init.reject">{{$t('button.cancel')}}</button>
-            <button class="btn" :disabled="!note" @click="confirm">{{$t('button.confirm')}}</button>
-        </footer>
-        </div>
+  <div class="popupMask center dark">
+    <div class="editor">
+      <header>
+        <h5></h5>
+        <h3>{{$t('title.voidNote')}}</h3>
+      </header>
+      <div class="banner"></div>
+      <ul>
+        <li v-for="(reason,index) in reasons" :key="index">
+          <input type="radio" v-model="note" :value="reason.text" :id="'reason'+index">
+          <label :for="'reason'+index">{{$t('reason.'+reason.text)}}
+            <i class="fa fa-flag" v-if="reason.flag"></i>
+          </label>
+        </li>
+        <li v-show="isManager" class="manager">
+          <input type="radio" v-model="note" value="Manager Redemption" id="redemption">
+          <label for="redemption">{{$t('reason.Manager Redemption')}}</label>
+        </li>
+      </ul>
+      <footer>
+        <button class="btn" @click="init.reject">{{$t('button.cancel')}}</button>
+        <button class="btn" :disabled="!note" @click="confirm">{{$t('button.confirm')}}</button>
+      </footer>
     </div>
+  </div>
 </template>
 
 <script>
@@ -85,12 +91,14 @@ label i {
 
 label {
   padding: 5px 15px;
-  background: #fff;
+  background: #eeeeee;
   margin: 2px 10px;
-  height: 35px;
+  height: 40px;
   display: flex;
   align-items: center;
+  border-radius: 4px;
   width: 100%;
+  cursor: pointer;
 }
 
 input:checked + label {

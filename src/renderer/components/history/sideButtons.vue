@@ -59,7 +59,7 @@ import Payment from "../payment/index";
 import logs from "./component/payLog";
 import unlock from "../common/unlock";
 import Report from "../report/index";
-import Calendar from "./calendar";
+import Calendar from "./component/calendar";
 import Terminal from "./terminal";
 
 export default {
