@@ -284,48 +284,6 @@ const mutations = {
     let dom = document.querySelector('li.item.active');
     dom && dom.classList.remove('active')
   },
-  // [types.REMOVE_PAYMENT](state) {
-  //   delete state.order.payment.type;
-  //   delete state.order.settled;
-
-  //   let {
-  //     subtotal,
-  //     tax,
-  //     discount,
-  //     delivery,
-  //     tip,
-  //     gratuity
-  //   } = state.order.payment;
-
-  //   if (state.order.splitPayment) {
-  //     delete state.order.splitPayment;
-  //     delete state.order.split;
-  //     state.order.content.forEach(item => item.sort = 0)
-  //   }
-
-  //   let surcharge = toFixed(tip + gratuity, 2);
-  //   let total = toFixed(subtotal + tax + delivery, 2);
-  //   let due = toFixed(total - discount, 2);
-  //   let balance = toFixed(due + surcharge, 2);
-  //   let remain = toFixed(balance, 2);
-
-  //   state.order.payment = {
-  //     subtotal,
-  //     tax,
-  //     delivery,
-  //     discount,
-  //     tip,
-  //     gratuity,
-  //     surcharge,
-  //     total,
-  //     due,
-  //     balance,
-  //     paid: 0,
-  //     remain,
-  //     settled: false,
-  //     log: []
-  //   }
-  // },
   [types.REFRESH_CURRENT_ORDER](state, orders) {
     if (state.order.hasOwnProperty('status')) {
       let _id = state.order._id;

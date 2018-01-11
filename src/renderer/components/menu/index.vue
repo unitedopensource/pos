@@ -107,6 +107,7 @@ export default {
   },
   beforeDestroy() {
     window.removeEventListener("keydown", this.entry, false);
+    this.setApp({ newTicket: true });
   },
   methods: {
     initialData() {
@@ -125,7 +126,8 @@ export default {
           server: this.op.name,
           station: this.station.alias,
           type: this.ticket.type,
-          date: today()
+          date: today(),
+          customer: this.customer
         });
       } else {
         this.saveForDiffs(this.order.content);
