@@ -660,7 +660,8 @@ export default {
         'timecardNoWage': 'The employee {i} does not have default wage. In result the salary will display $ 0.00',
         'tableReserved': 'This table has been reserved.',
         'cantExecute': 'Can Not Execute',
-        'errorOccurred': 'Something is wrong! Previous action aborted.'
+        'errorOccurred': 'Something is wrong! Previous action aborted.',
+        'duplicateNotAllow': 'Name duplicated! Please consider other name.'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',

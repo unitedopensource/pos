@@ -64,7 +64,7 @@ export default {
     return {
       componentData: null,
       component: null,
-      transfer:false,
+      transfer: false,
       view: 0
     };
   },
@@ -83,11 +83,11 @@ export default {
     getTableStatus(status) {
       switch (status) {
         case 2:
-          return { occupy: true }
+          return { occupy: true };
         case 3:
-          return { prePay: true }
+          return { prePay: true };
         case 4:
-          return { recycle: true }
+          return { recycle: true };
       }
     },
     tap(table) {
@@ -95,22 +95,22 @@ export default {
 
       table.status === 1
         ? this.checkTableStatus(table)
-          .then(this.checkReservation)
-          .then(this.checkAccessPin)
-          .then(this.countGuest)
-          .then(this.createTable.bind(null, table))
-          .catch(this.createTableFailed)
+            .then(this.checkReservation)
+            .then(this.checkAccessPin)
+            .then(this.countGuest)
+            .then(this.createTable.bind(null, table))
+            .catch(this.createTableFailed)
         : this.checkPermission(table)
-          .then(this.viewTicket)
-          .catch(this.exceptionHandler);
+            .then(this.viewTicket)
+            .catch(this.exceptionHandler);
     },
     checkPermission(table) {
       return new Promise((next, stop) => {
         table.server === this.op.name
           ? next(table)
           : this.$checkPermission("view", "tables")
-            .then(() => next(table))
-            .catch(() => stop("UNABLE_VIEW_OTHER_TABLE"));
+              .then(() => next(table))
+              .catch(() => stop("UNABLE_VIEW_OTHER_TABLE"));
       });
     },
     checkTableStatus(table) {
@@ -169,9 +169,11 @@ export default {
       return new Promise((next, stop) => {
         this.dinein.guestCount
           ? new Promise((resolve, reject) => {
-            this.componentData = { resolve, reject };
-            this.component = "counter"
-          }).then(guest => next(guest)).catch(() => stop())
+              this.componentData = { resolve, reject };
+              this.component = "counter";
+            })
+              .then(guest => next(guest))
+              .catch(() => stop())
           : next(1);
       });
     },
@@ -189,14 +191,14 @@ export default {
       invoice
         ? this.setViewOrder(invoice)
         : this.$dialog(prompt)
-          .then(() => {
-            this.$socket.emit("[SYNC] ORDER_LIST");
-            this.$q();
-          })
-          .catch(() => {
-            this.$socket.emit("[TABLE] RESET", { _id: table._id });
-            this.$q();
-          });
+            .then(() => {
+              this.$socket.emit("[SYNC] ORDER_LIST");
+              this.$q();
+            })
+            .catch(() => {
+              this.$socket.emit("[TABLE] RESET", { _id: table._id });
+              this.$q();
+            });
     },
     createTable(table, guest) {
       this.setTicket({ type: "DINE_IN" });
@@ -209,7 +211,7 @@ export default {
         session: ObjectId(),
         server: this.op.name,
         time: +new Date()
-      })
+      });
 
       this.$socket.emit("[TABLE] SETUP", this.currentTable);
       this.$router.push({ path: "/main/menu" });
@@ -250,9 +252,15 @@ export default {
           break;
       }
     },
-    openReservation() { },
-    viewDineInList() { },
-    ...mapActions(["setApp", "resetMenu", "setTicket", "setViewOrder", "setCurrentTable"])
+    openReservation() {},
+    viewDineInList() {},
+    ...mapActions([
+      "setApp",
+      "resetMenu",
+      "setTicket",
+      "setViewOrder",
+      "setCurrentTable"
+    ])
   }
 };
 </script>

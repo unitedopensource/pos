@@ -366,10 +366,10 @@ td.amount {
 }
   
 .editor .banner {
-    text-align: center;
-    font-family: "Agency FB";
-    font-weight: bold;
-    border-top: 10px solid #009688;
+    height: 10px;
+    align-items: center;
+    display: flex;
+    background: #009688;
 }
   
 .editor  .display input {

@@ -27,6 +27,13 @@ export default {
             }).then(() => this.$q()).catch(() => this.$q())
         }
 
+        Vue.prototype.$open = function (component, args) {
+            return new Promise((resolve, reject) => {
+                this.componentData = Object.assign({}, { resolve, reject }, args);
+                this.component = component;
+            }).then(() => this.$q()).catch(() => this.$q())
+        }
+
         Vue.prototype.$dialog = function (args) {
             return new Promise((resolve, reject) => {
                 this.componentData = {
@@ -153,7 +160,7 @@ export default {
         String.prototype.toFloat = function () {
             return parseFloat(this)
         }
-        
+
         window.toFixed = (number, fractionSize) => +(Math.round(+(number.toString() + 'e' + fractionSize)).toString() + 'e' + -fractionSize);
         window.ObjectId = (m = Math, d = Date, h = 16, s = s => m.floor(s).toString(h)) => s(d.now() / 1000) + ' '.repeat(h).replace(/./g, () => s(m.random() * h));
         window.isNumber = (n) => (/^-?[\d.]+(?:e-?\d+)?$/.test(n));

@@ -66,39 +66,23 @@ export default {
         this.handleSettledOrder();
         return;
       }
-      if (this.currentTable.server !== this.op.name) {
-        this.$denyAccess(true)
-          .then(op => {
-            if (this.approval(op.modify, "order")) {
-              let language = op.language || "usEN";
-              moment.locale(language === "usEN" ? "en" : "zh-cn");
-              this.$setLanguage(language);
-              this.setOp(op);
-              this.setApp({ newTicket: false, language });
-              this.setTicket({ type: "DINE_IN", number: this.order.number });
-              this.$router.push({ path: "/main/menu" });
-            } else {
-              throw new Error();
-            }
-          })
-          .catch(() => {
-            this.editDenied();
-            this.$q();
-          });
-      } else {
-        this.setApp({ newTicket: false });
-        this.setTicket({ type: "DINE_IN", number: this.order.number });
-        this.$router.push({ path: "/main/menu" });
-      }
+      this.currentTable.server !== this.op.name
+        ? this.$checkPermission("modify", "order")
+            .then(this.edit)
+            .catch(() => {})
+        : this.edit();
+    },
+    edit() {
+      this.setApp({ newTicket: false });
+      this.setTicket({ type: "DINE_IN", number: this.order.number });
+      this.$router.push({ path: "/main/menu" });
     },
     editDenied() {
       this.$dialog({
         title: "dialog.cannotModify",
         msg: ["dialog.noRightToModify", this.order.server],
         buttons: [{ text: "button.confirm", fn: "resolve" }]
-      }).then(() => {
-        this.$q();
-      });
+      }).then(() => this.$q());
     },
     handleSettledOrder() {
       this.$dialog({
@@ -112,15 +96,11 @@ export default {
           { text: "button.cancel", fn: "reject" }
         ]
       })
-        .then(() => {
-          this.$q();
-          this.removeOrderPayment();
-        })
-        .catch(() => {
-          this.$q();
-        });
+        .then(() => this.removeOrderPayment())
+        .catch(() => this.$q());
     },
     removeOrderPayment() {
+      this.$q();
       this.$dialog({
         title: "dialog.paymentRemoveConfirm",
         msg: [
@@ -134,9 +114,7 @@ export default {
           this.$socket.emit("[UPDATE] INVOICE", this.order);
           this.askEditOrder();
         })
-        .catch(() => {
-          this.$q();
-        });
+        .catch(() => this.$q());
     },
     askEditOrder() {
       this.$dialog({
@@ -150,9 +128,7 @@ export default {
         .then(() => {
           this.editOrder();
         })
-        .catch(() => {
-          this.$q();
-        });
+        .catch(() => this.$q());
     },
     switchTable() {
       if (!this.currentTable) return;
@@ -194,9 +170,7 @@ export default {
                 : this.printPrePayment();
             });
           })
-          .catch(() => {
-            this.$q();
-          });
+          .catch(() => this.$q());
       } else {
         let remain = this.order.content.filter(item => !item.print).length;
         this.$dialog({
@@ -211,9 +185,7 @@ export default {
             this.$q();
             this.printPrePayment();
           })
-          .catch(() => {
-            this.$q();
-          });
+          .catch(() => this.$q());
       }
     },
     printPrePayment() {
@@ -264,7 +236,7 @@ export default {
     settle() {
       if (this.isEmptyTicket) return;
       if (this.op.cashCtrl !== "enable" && this.op.cashCtrl !== "staffBank") {
-        this.$denyAccess();
+        this.$accessDenied();
         return;
       }
       if (this.order.settled) {
@@ -274,22 +246,22 @@ export default {
       this.$p("payment");
     },
     settledOrder() {
-      this.$dialog({
+      const prompt = {
         title: "dialog.invoiceSettled",
         msg: "dialog.invoiceSettledTip",
         buttons: [{ text: "button.confirm", fn: "resolve" }]
-      }).then(() => {
-        this.$q();
-      });
+      };
+
+      this.$dialog(prompt).then(() => this.$q());
     },
-    switchStaff() { },
+    switchStaff() {},
     split() {
       if (this.isEmptyTicket) return;
       if (this.order.settled) {
         this.settledOrder();
         return;
       }
-      this.$p("split");
+      this.$open("split");
     },
     exit() {
       this.resetAll();
@@ -314,18 +286,14 @@ export default {
             this.$socket.emit("[TABLE] RESET", { _id: this.currentTable._id });
             this.$q();
           })
-          .catch(() => {
-            this.$q();
-          });
+          .catch(() => this.$q());
       } else {
         this.$dialog({
           type: "info",
           title: "dialog.tableClearFailed",
           msg: ["dialog.tableClearFailedTip", this.currentTable.name],
           buttons: [{ text: "button.confirm", fn: "resolve" }]
-        }).then(() => {
-          this.$q();
-        });
+        }).then(() => this.$q());
       }
     },
     ...mapActions([

@@ -34,7 +34,7 @@ import paymentMark from "../payment/mark";
 import discount from "../payment/discount";
 import dialoger from "../common/dialoger";
 import driver from "./component/driver";
-import split from "../menu/component/split";
+import split from "../split/index";
 
 export default {
   props: ["date"],
@@ -54,21 +54,17 @@ export default {
   },
   methods: {
     thirdParty() {
-      this.$p("paymentMark");
+      this.$open("paymentMark");
     },
     split() {
-      this.$p("split");
+      this.$open("split");
     },
-    combine() { },
+    combine() {},
     discount() {
       this.$socket.emit("[COUPON] LIST", coupons => {
         new Promise((resolve, reject) => {
-          this.componentData = {
-            payment: this.order.payment,
-            coupons,
-            resolve,
-            reject
-          };
+          const { payment } = this.order;
+          this.componentData = { payment, coupons, resolve, reject };
           this.component = "discount";
         })
           .then(this.updatePayment)
@@ -78,12 +74,12 @@ export default {
     updatePayment(result) {
       let { subtotal, tax, tip, gratuity, delivery, paid } = this.order.payment;
 
-      let total = parseFloat(subtotal) + toFixed(tax, 2) + delivery;
-      let discount = result.discount;
-      let due = Math.max(0, total - discount);
-      let surcharge = tip + gratuity;
-      let balance = due + surcharge;
-      let remain = Math.max(0, balance - paid);
+      const total = subtotal + tax + delivery;
+      const discount = result.discount;
+      const due = Math.max(0, total - discount);
+      const surcharge = tip + gratuity;
+      const balance = due + surcharge;
+      const remain = Math.max(0, balance - paid);
 
       result.coupon
         ? Object.assign(this.order, { coupon: result.coupon })
@@ -102,7 +98,7 @@ export default {
       this.$q();
     },
     driver() {
-      this.$p("driver", { ticket: this.order.number });
+      this.$open("driver", { ticket: this.order.number });
     },
     exit() {
       this.resetMenu();
