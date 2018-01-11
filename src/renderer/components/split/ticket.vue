@@ -1,5 +1,5 @@
 <template>
-  <ul @click.self="tap" v-if="enable" :class="[{remove:order.content.length === 0},unique]">
+  <ul @click.self="tap" v-if="enable" :class="[unique]">
     <li v-for="(item,index) in order.content" :key="index" @click="pick(item)" :data-unique="item.unique" v-show="!item.split">
       <div class="main">
         <span class="qty">{{item.qty}}</span>
@@ -99,21 +99,19 @@ export default {
     },
     tap() {
       this.buffer = [];
-      this.order.content.length === 0
-        ? this.$emit("destroy", this.index)
-        : this.$emit("acquire", { index: this.index, unique: this.unique });
+      this.$emit("acquire", { index: this.index, unique: this.unique });
     }
   },
   watch: {
     buffer(items) {
       const uniques = items.map(i => i.unique);
 
-      let picked = document.querySelectorAll(`ul.${this.unique} li.picked`);
+      const picked = document.querySelectorAll(`ul.${this.unique} li.picked`);
       for (let dom of picked) {
         dom.classList.remove("picked");
       }
 
-      let doms = document.querySelectorAll(`ul.${this.unique} [data-unique]`);
+      const doms = document.querySelectorAll(`ul.${this.unique} [data-unique]`);
       for (let dom of doms) {
         const { unique } = dom.dataset;
         uniques.includes(unique) && dom.classList.add("picked");
@@ -171,26 +169,5 @@ li.picked {
 li.picked .main,
 li.picked .sub {
   color: #fff;
-}
-
-ul.remove {
-  background: rgba(0, 0, 0, 0.15);
-  position: relative;
-}
-
-ul.remove:before {
-  position: absolute;
-  font-family: FontAwesome;
-  content: "\F00D";
-  font-size: 4em;
-  color: #f44336;
-  cursor: pointer;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  margin: auto;
-  width: 50px;
-  height: 70px;
 }
 </style>

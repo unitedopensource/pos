@@ -1105,7 +1105,8 @@ export default {
         'copy': '复制',
         'selectEmployee': '选择员工',
         'generatePayroll': '生成工资单',
-        'requireAccessPin': '需要登陆密码'
+        'requireAccessPin': '需要登陆密码',
+        'swipeMode': '滑动模式'
     },
     nav: {
         'store': '店面',

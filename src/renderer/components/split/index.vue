@@ -1,47 +1,66 @@
 <template>
-    <div class="popupMask dark center" @click.self="init.reject">
-        <div class="editor">
-            <header>
-                <h5>{{$t('title.create')}}</h5>
-                <h3>{{$t('title.split')}}</h3>
-            </header>
-            <div class="banner"></div>
-            <div class="wrap">
-                <div class="view">
-                    <div class="scroll">
-                        <ticket v-for="(order,index) in splits" :key="index" :index="index" :data="order" @acquire="transfer" @destroy="remove" :master="false"></ticket>
-                    </div>
-                </div>
-                <div class="more" @click="create">
-                    <div>
-                        <i class="fa fa-3x fa-plus"></i>
-                    </div>
-                </div>
-                <ticket :data="order" :master="true" @acquire="restore"></ticket>
-            </div>
-            <footer>
-                <div class="opt">
-
-                </div>
-                <button class="btn" @click="confirm">{{$t('button.confirm')}}</button>
-            </footer>
+  <div class="popupMask dark center" @click.self="init.reject">
+    <div class="editor">
+      <header>
+        <h5>{{$t('title.create')}}</h5>
+        <h3>{{$t('title.split')}}</h3>
+      </header>
+      <div class="banner"></div>
+      <div class="wrap">
+        <div class="view">
+          <div class="scroll" ref="scroll" :style="scroll">
+            <ticket v-for="(order,index) in splits" :key="index" :index="index" :data="order" @acquire="transfer" :master="false"></ticket>
+          </div>
         </div>
+        <div class="more" @click="create">
+          <div>
+            <i class="fa fa-3x fa-plus"></i>
+          </div>
+        </div>
+        <ticket :data="order" :master="true" @acquire="restore"></ticket>
+      </div>
+      <footer>
+        <div class="opt">
+          <div class="switches">
+            <label class="input-toggle">
+              <input type="checkbox" v-model="swipeMode">
+              <span></span>
+            </label>
+            <label class="label indent">{{$t("text.swipeMode")}}</label>
+          </div>
+        </div>
+        <button class="btn" @click="confirm">{{$t('button.confirm')}}</button>
+      </footer>
     </div>
+  </div>
 </template>
 
 <script>
 import ticket from "./ticket";
+import Hammer from "hammerjs";
+
 export default {
   props: ["init"],
   components: { ticket },
+  computed: {
+    scroll() {
+      return { transform: `translate3d(${this.offset}px,0,0)` };
+    }
+  },
   data() {
     return {
       order: JSON.parse(JSON.stringify(this.$store.getters.order)),
-      splits: []
+      swipeMode: false,
+      splits: [],
+      hammer: null,
+      offset: 0
     };
   },
   created() {
     this.order.splits && this.getSplitOrder();
+  },
+  mounted() {
+    this.registerSwipeEvent();
   },
   methods: {
     getSplitOrder() {
@@ -74,9 +93,34 @@ export default {
       let items = buffer.filter(item => item.parent).map(item => item.parent);
       this.$bus.emit("restore", items);
     },
-    remove(index){
-        this.splits.splice(index,1);
-        console.log(this.splits)
+    registerSwipeEvent() {
+      this.hammer = new Hammer(this.$refs.scroll);
+      this.hammer.get("swipe").set({ direction: Hammer.DIRECTION_ALL });
+      this.hammer.on("swipeleft swiperight", e => {
+        const { width, left, right } = document
+          .querySelector(".editor .scroll")
+          .getBoundingClientRect();
+
+        switch (e.type) {
+          case "swipeleft":
+            this.offset -= 250;
+
+            if (left < 0) {
+              setTimeout(() => {
+                this.offset += 250;
+              }, 300);
+            }
+            break;
+          case "swiperight":
+            this.offset += 250;
+            if (right < 0) {
+              setTimeout(() => {
+                this.offset += 250;
+              }, 300);
+            }
+            break;
+        }
+      });
     },
     confirm() {}
   }
@@ -107,7 +151,8 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
-  min-width: 1000px;
+  min-width: 780px;
+  transition: transform 0.3s ease-in-out;
 }
 
 .more {
@@ -121,5 +166,13 @@ export default {
   margin: 4px;
   color: #757575;
   cursor: pointer;
+}
+
+.switches {
+  display: flex;
+}
+
+.switches .label {
+  margin-left: 5px;
 }
 </style>

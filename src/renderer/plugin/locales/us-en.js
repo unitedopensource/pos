@@ -1110,7 +1110,8 @@ export default {
         'copy': 'Copy',
         'selectEmployee': 'Select Employee',
         'generatePayroll': 'Generate Payroll',
-        'requireAccessPin': 'Access Pin Required'
+        'requireAccessPin': 'Access Pin Required',
+        'swipeMode': 'Swipe Mode'
     },
     nav: {
         'store': 'Store',

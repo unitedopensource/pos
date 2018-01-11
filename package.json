@@ -59,6 +59,7 @@
     "diskusage": "^0.2.4",
     "file-saver": "^1.3.3",
     "getmac": "^1.2.1",
+    "hammerjs": "^2.0.8",
     "lodash.debounce": "^4.0.8",
     "md5": "^2.2.1",
     "moment": "^2.20.1",
