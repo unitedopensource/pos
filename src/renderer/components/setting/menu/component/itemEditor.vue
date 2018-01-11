@@ -29,7 +29,9 @@
             <selector title="text.category" v-model="item.category" :opts="init.categories" :editable="false"></selector>
             <inputer title="text.primary" v-model.trim="item.usEN"></inputer>
             <inputer title="text.secondary" v-model.trim="item.zhCN"></inputer>
-            <inputer title="text.price" v-model="item.price" @keydown.enter.native="save"></inputer>
+            <inputer title="text.price" v-model="item.price" @keydown.enter.native="save">
+              <i class="fa fa-ellipsis-v price"></i>
+            </inputer>
             <selector title="text.taxClass" v-model="item.taxClass" :opts="taxes" :editable="false"></selector>
             <div class="options">
               <label class="title">{{$t('setting.print')}}</label>
@@ -47,7 +49,7 @@
                   <input type="text" v-model.trim="option.usEN" :placeholder="$t('text.primary')">
                   <input type="text" v-model.trim="option.zhCN" :placeholder="$t('text.secondary')">
                   <input type="number" v-model="option.price" :placeholder="getPlaceholder(option,index)">
-                  <i class="fa fa-bars drag"></i>
+                  <i class="fa fa-sort drag"></i>
                   <i class="fa fa-ellipsis-v" @click="editOption(option,index)"></i>
                 </div>
                 <i class="fa fa-trash remove" @click="removeOption(index)"></i>
@@ -201,7 +203,7 @@ export default {
       })
         .then(_option => {
           this.item.option.splice(index, 1, _option);
-          console.log(this.item)
+          console.log(this.item);
           this.$q();
         })
         .catch(() => this.$q());
@@ -370,5 +372,13 @@ p {
 p i {
   color: #ff9800;
   margin-right: 5px;
+}
+
+i.price {
+  position: absolute;
+  right: 0;
+  color: #656565;
+  cursor: pointer;
+  padding: 5px 9px;
 }
 </style>

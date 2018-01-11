@@ -188,6 +188,7 @@ const mutations = {
   },
   [types.LESS_QTY](state, delChoiceSetFirst) {
     if (state.order.content.length === 0) return;
+    if (state.item.split) return;
     if (state.choiceSetTarget) {
       if (state.choiceSetTarget.qty === 1) {
         state.order.content.forEach(item => {
@@ -229,6 +230,7 @@ const mutations = {
   },
   [types.MORE_QTY](state) {
     if (state.order.content.length === 0) return;
+    if (state.item.split) return;
     if (state.choiceSetTarget && state.choiceSetTarget.qty < 99) {
       state.choiceSetTarget.price = (++state.choiceSetTarget.qty * state.choiceSetTarget.single).toFixed(2);
     } else {
@@ -238,6 +240,8 @@ const mutations = {
   },
   [types.SET_CHOICE_SET](state, set) {
     if (state.order.content.length === 0) return;
+    if (state.item.split) return;
+
     set.unique = Math.random().toString(36).substr(2, 5);
 
     let dom = document.querySelector(".sub.target");
@@ -265,14 +269,12 @@ const mutations = {
   },
   [types.SET_PRICE_FOR_CHOICE_SET](state, data) {
     if (!state.choiceSetTarget) return;
-    let single = data.single || data.total;
-    let qty = data.qty || 1;
-    let price = toFixed(single * qty, 2).toFixed(2);
-    Object.assign(state.choiceSetTarget, {
-      qty,
-      single,
-      price
-    })
+    if (state.item.split) return;
+
+    const single = data.single || data.total;
+    const qty = data.qty || 1;
+    const price = toFixed(single * qty, 2).toFixed(2);
+    Object.assign(state.choiceSetTarget, { qty, single, price })
   },
   [types.SET_CHOICE_SET_TARGET](state, target) {
     state.choiceSetTarget = target;

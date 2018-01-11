@@ -90,7 +90,7 @@ export default {
         surcharge: 0,
         remain: 0,
         log: []
-      }
+      };
 
       this.$children.map(vm => content.push(...vm.buffer));
       const split = Object.assign({}, order, { _id, content, payment });
@@ -117,15 +117,15 @@ export default {
       this.hammer = new Hammer(this.$refs.scroll);
       this.hammer.get("swipe").set({ direction: Hammer.DIRECTION_ALL });
       this.hammer.on("swipeleft swiperight", e => {
-        const base = Math.abs(e.velocityX) > 2.5 ? 2 : 1
+        const base = Math.abs(e.velocityX) > 2.5 ? 2 : 1;
 
         switch (e.type) {
           case "swipeleft":
-            this.offset -= 250 * base;
+            this.offset -= 260 * base;
 
             break;
           case "swiperight":
-            this.offset += 250 * base;
+            this.offset += 260 * base;
             break;
         }
 
@@ -134,34 +134,48 @@ export default {
     },
     checkBoundary(direction) {
       this.$nextTick(() => {
+        const container = 875;
         const { left, right, width } = document
           .querySelector(".editor .scroll")
           .getBoundingClientRect();
 
-        direction === 2 && left < 0 && setTimeout(() => { this.offset += 250 }, 300);
-        direction === 4 && right > width && setTimeout(() => {
-          this.offset -= right - width > 250 ? 500 : 250;
-        }, 300);
-      })
+        direction === 2 &&
+          setTimeout(() => {
+            const overflow = Math.abs(left) % 250;
+            const fixed = this.offset + overflow;
+            this.offset = fixed;
+          }, 300);
+        direction === 4 &&
+          right > width &&
+          setTimeout(() => {
+            this.offset -= right - width > 250 ? 500 : 250;
+          }, 300);
+      });
     },
     confirm() {
-      const splits = this.$children.map(vm => vm.order).filter((order, index) => index !== 0 && order.content.length !== 0);
+      const parent = this.order._id;
+      const splits = this.$children
+        .map(vm => vm.order)
+        .filter((order, index) => index !== 0 && order.content.length !== 0);
 
       if (splits.length > 1) {
-        const parent = this.order._id;
-
         splits.forEach((order, index) => {
-          order.parent = parent
-          order.number = `${order.number}-${index + 1}`
+          order.parent = parent;
+          order.number = `${order.number}-${index + 1}`;
         });
 
         this.$socket.emit("[SPLIT] SAVE", { splits, parent });
-        this.order.content.forEach(i => i.split = true);
+        this.order.content.forEach(item => (item.split = true));
         this.order.children = splits.map(i => i._id);
         this.order.split = true;
         this.$socket.emit("[UPDATE] INVOICE", this.order);
         this.init.resolve();
       } else {
+        this.$socket.emit("[SPLIT] SAVE", { splits: [], parent });
+        this.order.content.forEach(item => (item.split = false));
+        this.order.children = [];
+        this.order.split = false;
+        this.$socket.emit("[UPDATE] INVOICE", this.order);
         this.init.resolve();
       }
     }

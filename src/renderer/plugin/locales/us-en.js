@@ -942,7 +942,7 @@ export default {
         'spicy': 'Spicy',
         'priority': 'Priority',
         'inventory': 'Inventory',
-        'rewardPoint': 'Reward Point',
+        'rewardPoint': 'Rewards',
         'manualSideOption': 'Manually Select Side Dish',
         'sideItem': 'Side Item',
         'priceExtra': 'Extra',

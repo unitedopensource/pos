@@ -8,6 +8,7 @@
     <template v-else>
       <input :type="type" :value="value" :maxlength="length" :disabled="disabled" :placeholder="placeholder" @input="$emit('input',$event.target.value)" @blur="$emit('update',$event.target.value)" ref="input">
     </template>
+    <slot></slot>
   </div>
 </template>
 

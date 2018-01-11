@@ -1,24 +1,24 @@
 <template>
-    <li class="item" @click.prevent.stop="select(item,$event)" v-if="!checkbox">
-        <div class="main">
-            <span class="qty">{{item.qty}}</span>
-            <div class="wrap">
-                <span class="name">{{item[language]}}</span>
-                <span class="side">{{item.side[language]}}</span>
-            </div>
-            <span class="price" @click.stop>{{item.total | decimal}}</span>
-        </div>
-        <div class="sub" v-for="(set,index) in item.choiceSet" :key="index" @click.stop="adjustChoiceSet(set,$event)" :data-key="set.key">
-            <span class="qty" :class="{hide:set.qty === 1}">{{set.qty}}</span>
-            <span class="item">{{set[language]}}</span>
-            <span class="price" :class="{hide:parseFloat(set.price) === 0}" @click.stop>({{set.price | decimal}})</span>
-        </div>
-    </li>
-    <li class="item todo" v-else>
-        <div class="main">
-            <checkbox v-model="item.pending" :title="item[language]" :disabled="item.print"></checkbox>
-        </div>
-    </li>
+  <li class="item" :class="{disable:$route.name === 'Menu' && (item.void || item.split)}" @click.prevent.stop="select(item,$event)" v-if="!checkbox">
+    <div class="main">
+      <span class="qty">{{item.qty}}</span>
+      <div class="wrap">
+        <span class="name">{{item[language]}}</span>
+        <span class="side">{{item.side[language]}}</span>
+      </div>
+      <span class="price" @click.stop>{{item.total | decimal}}</span>
+    </div>
+    <div class="sub" v-for="(set,index) in item.choiceSet" :key="index" @click.stop="adjustChoiceSet(set,$event)" :data-key="set.key">
+      <span class="qty" :class="{hide:set.qty === 1}">{{set.qty}}</span>
+      <span class="item">{{set[language]}}</span>
+      <span class="price" :class="{hide:parseFloat(set.price) === 0}" @click.stop>({{set.price | decimal}})</span>
+    </div>
+  </li>
+  <li class="item todo" v-else>
+    <div class="main">
+      <checkbox v-model="item.pending" :title="item[language]" :disabled="item.print"></checkbox>
+    </div>
+  </li>
 </template>
 
 <script>
@@ -47,6 +47,7 @@ export default {
         dom && dom.classList.remove("active");
         dom = document.querySelector(".choiceSet.target");
         dom && dom.classList.remove("target");
+
         this.resetChoiceSet();
         e.currentTarget.classList.add("active");
         this.setPointer(item);
@@ -106,11 +107,6 @@ li {
   right: -10px;
   padding: 10px 10px 10px 20px;
   top: -10px;
-}
-
-.itemWrap {
-  /* white-space: nowrap; */
-  position: relative;
 }
 
 .sub .item {
@@ -188,5 +184,17 @@ li {
 
 .todo {
   height: 18px;
+}
+
+li.disable {
+  opacity: 0.75;
+  background: #fafafa;
+  color: #9e9e9e;
+  border-bottom: 1px dashed #ddd;
+  pointer-events: none;
+}
+
+li.disable .side {
+  color: #9e9e9e;
 }
 </style>
