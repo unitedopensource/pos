@@ -30,7 +30,7 @@
             <inputer title="text.primary" v-model.trim="item.usEN"></inputer>
             <inputer title="text.secondary" v-model.trim="item.zhCN"></inputer>
             <inputer title="text.price" v-model="item.price" @keydown.enter.native="save">
-              <i class="fa fa-ellipsis-v price"></i>
+              <i class="fa fa-ellipsis-v price" @click="openPriceEditor"></i>
             </inputer>
             <selector title="text.taxClass" v-model="item.taxClass" :opts="taxes" :editable="false"></selector>
             <div class="options">
@@ -118,6 +118,7 @@
 </template>
 
 <script>
+import prices from "./priceEditor";
 import editor from "./optionEditor";
 import draggable from "vuedraggable";
 import toggle from "../../common/toggle";
@@ -129,6 +130,7 @@ import switches from "../../common/switches";
 export default {
   props: ["init"],
   components: {
+    prices,
     editor,
     toggle,
     switches,
@@ -189,6 +191,18 @@ export default {
           });
         }
       });
+    },
+    openPriceEditor() {
+      const { prices, price } = this.item;
+      new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject, prices, price };
+        this.component = "prices";
+      })
+        .then(_prices => {
+          Object.assign(this.item, { prices: _prices });
+          this.$q();
+        })
+        .catch(() => this.$q());
     },
     addOption() {
       this.item.option.push({ usEN: "", zhCN: "", replace: false });

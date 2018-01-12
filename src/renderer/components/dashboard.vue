@@ -136,7 +136,8 @@ export default {
       "store",
       "dinein",
       "station",
-      "history"
+      "history",
+      "authorized"
     ])
   },
   data() {
@@ -163,7 +164,12 @@ export default {
     },
     checkTimecard() {
       return new Promise(next => {
-        if ((this.store.timecard || this.op.timecard) && !this.op.clockIn) {
+        if (this.authorized) {
+          next();
+        } else if (
+          (this.store.timecard || this.op.timecard) &&
+          !this.op.clockIn
+        ) {
           const prompt = {
             title: "dialog.clockInRequire",
             msg: "dialog.clockInRequireTip",
@@ -401,19 +407,19 @@ export default {
         case "enable":
           this.station.cashDrawer.cashFlowCtrl
             ? this.$socket.emit(
-              "[CASHFLOW] CHECK",
-              {
-                date: today(),
-                cashDrawer: this.station.cashDrawer.name,
-                close: false
-              },
-              data => {
-                let { name, initial } = data;
-                initial
-                  ? this.initialCashFlow(name)
-                  : this.recordCashFlow(name);
-              }
-            )
+                "[CASHFLOW] CHECK",
+                {
+                  date: today(),
+                  cashDrawer: this.station.cashDrawer.name,
+                  close: false
+                },
+                data => {
+                  let { name, initial } = data;
+                  initial
+                    ? this.initialCashFlow(name)
+                    : this.recordCashFlow(name);
+                }
+              )
             : Printer.openCashDrawer();
           break;
         case "staffBank":

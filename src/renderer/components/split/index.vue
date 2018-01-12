@@ -161,7 +161,7 @@ export default {
       if (splits.length > 1) {
         splits.forEach((order, index) => {
           order.parent = parent;
-          order.number = `${order.number}-${index + 1}`;
+          order.number = `${this.order.number}-${index + 1}`;
         });
 
         this.$socket.emit("[SPLIT] SAVE", { splits, parent });

@@ -4,8 +4,8 @@
       <div class="window" v-show="!component" :key="0">
         <header class="title">
           <span>{{$t('title.payment')}}</span>
-          <div v-if="!payInFull && order.hasOwnProperty('splitPayment')" class="viewer">
-            <label v-for="(split,index) in order.splitPayment" :key="index">
+          <div v-if="!payInFull && splits.length > 1" class="viewer">
+            <label v-for="(split,index) in splits" :key="index">
               <input type="radio" name="split" :id="'split_'+index" :value="index" v-model="current" @change="switchInvoice(index)">
               <label :for="'split_'+index" class="tag">{{index + 1}}</label>
               <div class="preview" @click="preview(index)">
@@ -86,8 +86,8 @@
                   <span class="value">{{tip}}</span>
                 </div>
                 <div class="input">
-                  <span class="text">{{$t('text.changeDue')}}</span>
-                  <span class="value">{{cashTender | decimal}}</span>
+                  <span class="text">{{$t('text.total')}}</span>
+                  <span class="value">{{paidTotal}}</span>
                 </div>
                 <div class="input" @click="setAnchor($event)" data-anchor="evenly" data-format="number">
                   <span class="text">{{$t('text.separate')}}
@@ -216,6 +216,1222 @@
     </transition-group>
   </div>
 </template>
+
+<script>
+import { mapGetters, mapActions } from "vuex";
+import dialoger from "../common/dialoger";
+import capture from "../giftCard/capture";
+import ticket from "../common/ticket";
+import creditCard from "./creditCard";
+import discount from "./discount";
+import thirdParty from "./mark";
+import tipper from "./tiper";
+
+export default {
+  props: ["init"],
+  components: {
+    tipper,
+    ticket,
+    capture,
+    dialoger,
+    discount,
+    creditCard,
+    thirdParty
+  },
+  computed: {
+    isNewTicket() {
+      return this.app.newTicket && this.$route.name === "Menu";
+    },
+    paidTotal() {
+      const total = parseFloat(this.paid) + parseFloat(this.tip);
+      return isNumber(total) ? "$ " + total.toFixed(2) : "$ 0.00";
+    },
+    ...mapGetters([
+      "op",
+      "app",
+      "store",
+      "ticket",
+      "device",
+      "station",
+      "customer"
+    ])
+  },
+  data() {
+    return {
+      releaseComponentLock: true,
+      isThirdPartyPayment: true,
+      thirdPartyType: null,
+      discountable: false,
+      componentData: null,
+      component: null,
+      order: null,
+      paymentType: "CASH",
+      payInFull: true,
+      quickInput: [],
+      creditCard: "",
+      expiration: "",
+      giftCard: "",
+      anchor: "paid",
+      splits: [],
+      tipped: 0,
+      evenly: 1,
+      current: 0,
+      reset: true,
+      paid: "0.00",
+      tip: "0.00"
+    };
+  },
+  created() {
+    this.initialData()
+      .then(this.checkComponentOccupy)
+      .then(this.checkDate)
+      .then(this.checkPermission)
+      .then(this.checkSplit)
+      .catch(this.initialFailed);
+  },
+  mounted() {
+    this.order.source === "POS"
+      ? this.setPaymentType("CASH")
+      : this.init.hasOwnProperty("regular")
+        ? this.setPaymentType("CASH")
+        : this.setPaymentType("THIRD");
+  },
+  beforeDestroy() {
+    this.releaseComponentLock &&
+      this.$socket.emit("[COMPONENT] UNLOCK", {
+        component: "payment",
+        lock: this.order._id
+      });
+  },
+  methods: {
+    initialData() {
+      return new Promise(next => {
+        this.order = this.init.hasOwnProperty("order")
+          ? JSON.parse(JSON.stringify(this.init.order))
+          : JSON.parse(JSON.stringify(this.$store.getters.order));
+
+        this.payment = this.order.payment;
+
+        this.isThirdPartyPayment = this.init.hasOwnProperty("regular")
+          ? false
+          : !this.station.terminal || this.order.source !== "POS";
+
+        if (
+          this.station.terminal &&
+          this.order.hasOwnProperty("__creditPayment__")
+        ) {
+          const { number, date, cvc } = this.order.__creditPayment__;
+          this.creditCard = number;
+          this.expiration = date;
+        }
+
+        this.$socket.emit(
+          "[PAYMENT] CHECK",
+          this.order._id,
+          ({ paid, tipped }) => {
+            this.tipped = tipped;
+            this.payment.remain = Math.max(0, this.payment.balance - paid)
+              .toPrecision(12)
+              .toFloat();
+
+            if (this.payment.tip > 0 && tipped === 0) {
+              this.tip = this.payment.tip.toFixed(2);
+            } else if (this.payment.tip !== tipped) {
+              this.tip = Math.max(0, this.payment.tip - tipped)
+                .toPrecision(12)
+                .toFloat();
+            } else {
+              this.tip = "0.00";
+            }
+            next();
+          }
+        );
+      });
+    },
+    checkComponentOccupy() {
+      return new Promise((next, stop) => {
+        const data = {
+          component: "payment",
+          operator: this.op.name,
+          lock: this.order._id,
+          time: +new Date(),
+          exp: +new Date() + 1000 * 120
+        };
+
+        this.$socket.emit("[COMPONENT] LOCK", data, lock => {
+          lock ? stop({ error: "paymentPending", data }) : next();
+        });
+      });
+    },
+    checkDate() {
+      return new Promise((next, stop) => {
+        this.order.date === today() ? next() : stop({ error: "expired" });
+      });
+    },
+    checkPermission() {
+      return new Promise((next, stop) => {
+        this.discountable = this.approval(this.op.modify, "discount");
+        this.op.cashCtrl === "disable"
+          ? stop({ error: "permissionDenied" })
+          : next();
+      });
+    },
+    checkSplit() {
+      this.order.split ? this.askPayMode() : this.initialized();
+    },
+    askPayMode() {
+      const prompt = {
+        type: "question",
+        title: "dialog.splitPayment",
+        msg: "dialog.splitPaymentTip",
+        buttons: [
+          { text: "button.payBalanceDue", fn: "reject" },
+          { text: "button.splitPay", fn: "resolve" }
+        ]
+      };
+
+      this.$dialog(prompt)
+        .then(this.payAsSplit)
+        .catch(this.payAsWhole);
+    },
+    payAsSplit() {
+      this.getSplitOrder()
+        .then(this.switchInvoice)
+        .catch(this.unableToPaySplit);
+    },
+    payAsWhole() {
+      this.$q();
+      this.payInFull = true;
+      this.initialized();
+    },
+    getSplitOrder() {
+      this.$q();
+      return new Promise((next, stop) => {
+        this.$socket.emit("[SPLIT] GET", this.order.children, splits => {
+          this.splits = splits;
+          this.payInFull = false;
+
+          const remain = this.order.content.filter(i => !i.split).length;
+          remain === 0 ? next() : stop(remain);
+        });
+      });
+    },
+    unableToPaySplit(remain) {
+      const prompt = {
+        type: "error",
+        title: "dialog.cantExecute",
+        msg: ["dialog.splitTicketItemRemain", remain],
+        buttons: [{ text: "button.confirm", fn: "resolve" }]
+      };
+
+      this.$dialog(prompt).then(() => this.init.resolve());
+    },
+    initialized() {
+      if (this.payment.remain > 0) {
+        this.getQuickInput(this.payment.remain);
+        this.poleDisplay(
+          ["Balance Due:", ""],
+          ["", this.payment.remain.toFixed(2)]
+        );
+      } else {
+        this.exceptionTicketSettled();
+      }
+    },
+    initialFailed({ error, data }) {
+      switch (error) {
+        case "paymentPending":
+          this.releaseComponentLock = false;
+
+          const current = +new Date();
+          const exp = data.exp;
+          const duration = exp - current;
+
+          this.$dialog({
+            title: "dialog.pending",
+            msg: "dialog.pendingOrderAccessDenied",
+            timeout: { duration, fn: "resolve" },
+            buttons: [{ text: "button.confirm", fn: "resolve" }]
+          }).then(() => this.exit());
+          break;
+        case "permissionDenied":
+          this.$dialog({
+            type: "warning",
+            title: "dialog.accessDenied",
+            msg: "dialog.accessDeniedTip",
+            timeout: { duration: 10000, fn: "resolve" },
+            buttons: [{ text: "button.confirm", fn: "resolve" }]
+          }).then(() => this.exit());
+          break;
+        case "expired":
+          this.$dialog({
+            type: "error",
+            title: "dialog.paymentFailed",
+            msg: "dialog.canNotPayPrevTicket",
+            buttons: [{ text: "button.confirm", fn: "resolve" }]
+          }).then(() => this.exit());
+      }
+    },
+    setAnchor(target) {
+      let dom = document.querySelector(".input.active");
+      dom && dom.classList.remove("active");
+
+      if (target instanceof Event) {
+        this.anchor = target.currentTarget.dataset.anchor;
+        target.currentTarget.classList.add("active");
+        target.currentTarget.dataset.anchor === "tip"
+          ? this.getQuickTip(this.payment.remain)
+          : this.getQuickInput(this.payment.remain);
+      } else {
+        document
+          .querySelector(`[data-anchor="${target}"]`)
+          .classList.add("active");
+      }
+
+      this.reset = true;
+    },
+    del() {
+      const { anchor, format } = document.querySelector(
+        ".input.active"
+      ).dataset;
+      let val = this[anchor];
+
+      switch (format) {
+        case "money":
+          this[anchor] = (val.slice(0, -1) / 10).toFixed(2);
+          break;
+        case "number":
+          this[anchor] = val.length > 0 ? val.slice(0, -1) : val;
+          break;
+      }
+      this.reset = false;
+    },
+    clear() {
+      const { anchor, format } = document.querySelector(
+        ".input.active"
+      ).dataset;
+
+      switch (format) {
+        case "money":
+          this[anchor] = "0.00";
+          break;
+        case "number":
+          this[anchor] = "";
+          break;
+      }
+      this.reset = true;
+    },
+    charge() {
+      switch (this.paymentType) {
+        case "CASH":
+          this.checkCashDrawer()
+            .then(this.chargeCash)
+            .then(this.saveTransaction)
+            .then(this.postToDatabase)
+            .then(this.tenderCash)
+            .then(this.checkBalance)
+            .catch(this.payFailed);
+          break;
+        case "CREDIT":
+          this.checkOverPay()
+            .then(this.checkEntryInput)
+            .then(this.chargeCreditCard)
+            .then(this.saveTransaction)
+            .then(this.postToDatabase)
+            .then(this.askReceipt)
+            .then(this.checkBalance)
+            .catch(this.payFailed);
+          break;
+        case "THIRD":
+          this.checkOverPay()
+            .then(this.chargeThirdParty)
+            .then(this.saveTransaction)
+            .then(this.postToDatabase)
+            .then(this.askReceipt)
+            .then(this.checkBalance)
+            .catch(this.payFailed);
+          break;
+        case "GIFT":
+          this.swipeGiftCard()
+            .then(this.checkGiftCard)
+            .then(this.checkGiftCardBalance)
+            .then(this.checkOverPay)
+            .then(this.chargeGiftCard)
+            .then(this.saveTransaction)
+            .then(this.postToDatabase)
+            .then(this.askReceipt)
+            .then(this.checkBalance)
+            .catch(this.payFailed);
+          break;
+      }
+    },
+    payFailed(error) {
+      this.$log({
+        eventID: 9009,
+        type: "failure",
+        data: this.order._id,
+        note: `Failed to pay bill.\n\nError message:\n${error}`
+      });
+
+      error === Object(error)
+        ? this.$dialog(error).then(() => this.$q())
+        : this.$q();
+    },
+    setPaymentType(type) {
+      this.paymentType = type;
+
+      switch (type) {
+        case "CASH":
+          this.paid = "0.00";
+          break;
+        case "CREDIT":
+        case "THIRD":
+          this.paid = this.payment.remain.toFixed(2);
+          break;
+        case "GIFT":
+          this.giftCard = "";
+          this.paid = this.payment.remain.toFixed(2);
+          this.swipeGiftCard()
+            .then(this.checkGiftCard)
+            .catch(() => this.$q());
+          break;
+      }
+
+      this.tip = "0.00";
+      this.thirdPartyType = null;
+
+      this.setAnchor("paid");
+      this.getQuickInput(this.payment.remain);
+    },
+    checkOverPay() {
+      return new Promise((resolve, reject) => {
+        const paidZeroError = {
+          type: "error",
+          title: "dialog.paymentFailed",
+          msg: "dialog.canNotPayZeroAmount",
+          buttons: [{ text: "button.confirm", fn: "resolve" }]
+        };
+        if (this.paid === "0.00") throw paidZeroError;
+        if (this.paid > this.payment.remain) {
+          const extra = toFixed(this.paid - this.payment.remain, 2);
+          const content = {
+            title: "dialog.paidAmountGreaterThanDue",
+            msg: ["dialog.extraAmountSetAsTip", extra.toFixed(2)],
+            buttons: [
+              { text: "button.cancel", fn: "reject" },
+              { text: "button.setTip", fn: "resolve" }
+            ]
+          };
+
+          this.$dialog(content)
+            .then(() => {
+              this.payment.tip = extra;
+              this.tip = extra.toFixed(2);
+
+              this.$q();
+              this.recalculatePayment();
+              resolve();
+            })
+            .catch(() => {
+              this.payment.tip = 0;
+              this.tip = "0.00";
+              this.$q();
+            });
+        } else {
+          resolve();
+        }
+      });
+    },
+    checkCashDrawer() {
+      return new Promise((resolve, reject) => {
+        const paidZeroError = {
+          type: "error",
+          title: "dialog.paymentFailed",
+          msg: "dialog.canNotPayZeroAmount",
+          buttons: [{ text: "button.confirm", fn: "resolve" }]
+        };
+        const noCashDrawerError = {
+          title: "dialog.cashDrawerUnavailable",
+          msg: "dialog.cashDrawerUnavailableTip",
+          buttons: [{ text: "button.confirm", fn: "resolve" }]
+        };
+
+        if (this.paid === "0.00") throw paidZeroError;
+
+        this.station.cashDrawer.enable || this.op.cashCtrl === "staffBank"
+          ? resolve()
+          : reject(noCashDrawerError);
+      });
+    },
+    checkEntryInput() {
+      return new Promise((resolve, reject) => {
+        const number = this.creditCard.replace(/[^0-9\.]+/g, "");
+        const date = this.expiration.replace(/[^0-9\.]+/g, "");
+        const today = moment().format("MMYY");
+        const tip = parseFloat(this.tip) || this.payment.tip;
+
+        const cardLengthError = {
+          type: "error",
+          title: "dialog.invalidCreditCard",
+          msg: "dialog.creditCardLengthIncorrect",
+          buttons: [{ text: "button.confirm", fn: "resolve" }]
+        };
+        const expError = {
+          type: "error",
+          title: "dialog.invalidCreditCard",
+          msg: "dialog.expirationDateIncorrect",
+          buttons: [{ text: "button.confirm", fn: "resolve" }]
+        };
+
+        if (number.length > 0 && number.length < 15) throw cardLengthError;
+        if (date.length > 0 && date.length !== 4 && date < today)
+          throw expError;
+
+        resolve({
+          creditCard: { number, date },
+          amount: this.paid - tip,
+          tip
+        });
+      });
+    },
+    chargeCash() {
+      return new Promise(next => {
+        this.op.cashCtrl === "enable" && Printer.openCashDrawer();
+        next();
+      });
+    },
+    chargeCreditCard(card) {
+      return new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject, card };
+        this.component = "creditCard";
+      });
+    },
+    swipeGiftCard(number) {
+      return new Promise((resolve, reject) => {
+        if (typeof this.giftCard === "string") {
+          this.componentData = number
+            ? { resolve, reject, number }
+            : { resolve, reject };
+          this.component = "capture";
+        } else {
+          resolve({
+            number: this.giftCard.number,
+            result: this.giftCard
+          });
+        }
+      });
+    },
+    queryGiftCard() {
+      this.swipeGiftCard(this.giftCard.replace(/\D/g, ""))
+        .then(this.checkGiftCard)
+        .catch(() => this.$q());
+    },
+    checkGiftCard(card) {
+      this.$q();
+
+      return new Promise((resolve, reject) => {
+        const { number, result } = card;
+
+        if (result) {
+          this.giftCard = result;
+          this.setAnchor("paid");
+          this.$forceUpdate();
+          resolve();
+        } else {
+          const prompt = {
+            type: "error",
+            title: "dialog.giftCardActivation",
+            msg: ["dialog.giftCardNotActivated", number],
+            buttons: [{ text: "button.confirm", fn: "resolve" }]
+          };
+
+          this.$dialog(prompt).then(() => reject());
+        }
+      });
+    },
+    chargeGiftCard() {
+      return new Promise((resolve, reject) => {
+        const paid = parseFloat(this.paid);
+        this.giftCard.balance = toFixed(this.giftCard.balance - paid, 2);
+
+        const log = {
+          balance: this.giftCard.balance,
+          change: -paid,
+          date: today(),
+          time: +new Date(),
+          type: "Purchase",
+          cashier: this.op.name,
+          number: this.giftCard.number.replace(/\D/g, ""),
+          order: {
+            _id: this.order._id,
+            number: this.order.number || this.ticket.number,
+            type: this.order.type || this.ticket.type
+          }
+        };
+
+        this.$socket.emit("[GIFTCARD] ACTIVITY", log, _id => resolve(_id));
+      });
+    },
+    chargeThirdParty() {
+      return new Promise(charge => {
+        if (this.thirdPartyType) {
+          charge(this.thirdPartyType);
+        } else {
+          new Promise((resolve, reject) => {
+            this.componentData = { resolve, reject, callback: true };
+            this.component = "thirdParty";
+          })
+            .then(charge)
+            .catch(() => this.$q());
+        }
+      });
+    },
+    saveTransaction(data) {
+      const type =
+        this.paymentType === "THIRD" ? this.thirdPartyType : this.paymentType;
+      const cashDrawer =
+        this.op.cashCtrl === "staffBank"
+          ? this.op.name
+          : this.station.cashDrawer.name;
+
+      this.poleDisplay(`PAID by ${type}`, "THANK YOU");
+
+      const actual = Math.min(this.paid, this.payment.remain)
+        .toPrecision(12)
+        .toFloat();
+      const paid = (parseFloat(this.paid) + parseFloat(this.tip))
+        .toPrecision(12)
+        .toFloat();
+      const tip =
+        parseFloat(this.tip) || this.tipped === this.payment.tip
+          ? 0
+          : this.payment.tip;
+      const _id = ObjectId();
+      const date = today();
+      const time = +new Date();
+      const order = this.order._id;
+      const split = this.payInFull ? null : this.splits[this.current]._id;
+      const ticket = {
+        number: this.order.number || this.ticket.number,
+        type: this.order.type || this.ticket.type
+      };
+
+      let change, transaction;
+
+      return new Promise((resolve, reject) => {
+        switch (this.paymentType) {
+          case "CASH":
+            this.currentTender = change = Math.max(
+              0,
+              toFixed(this.paid - this.payment.remain, 2)
+            );
+            transaction = {
+              _id,
+              date,
+              time,
+              order,
+              split,
+              ticket,
+              paid,
+              change,
+              tip,
+              actual,
+              cashier: this.op.name,
+              server: this.order.server || this.op.name,
+              cashDrawer,
+              station: this.station.alias,
+              type: "CASH",
+              for: "Order",
+              subType: null,
+              credential: null,
+              lfd: null
+            };
+
+            let activity = {
+              type: "CASHFLOW",
+              inflow: paid,
+              outflow: change,
+              time,
+              ticket,
+              operator: this.op.name
+            };
+
+            this.$socket.emit("[CASHFLOW] ACTIVITY", { cashDrawer, activity });
+            break;
+          case "CREDIT":
+            Object.assign(data, {
+              order: {
+                _id: order,
+                type: this.order.type || this.ticket.type,
+                number: this.order.number || this.ticket.number,
+                cashier: this.op.name,
+                server: this.order.server || this.op.name
+              },
+              for: "Order",
+              date,
+              _id: ObjectId()
+            });
+
+            transaction = {
+              _id,
+              date,
+              time,
+              order,
+              split,
+              ticket,
+              paid,
+              change: 0,
+              tip,
+              actual,
+              cashier: this.op.name,
+              server: this.order.server || this.op.name,
+              cashDrawer,
+              station: this.station.alias,
+              terminal: this.station.terminal,
+              type: "CREDIT",
+              for: "Order",
+              subType: data.account.type,
+              credential: data._id,
+              lfd: data.account.number
+            };
+
+            this.$socket.emit("[TERMINAL] SAVE", data, content =>
+              this.$socket.emit(
+                "[TERMINAL] CONFIG",
+                this.station.terminal,
+                config => {
+                  config.print && Printer.printCreditCard(content);
+                }
+              )
+            );
+            break;
+          case "THIRD":
+            transaction = {
+              _id,
+              date,
+              time,
+              order,
+              split,
+              ticket,
+              paid,
+              change: 0,
+              tip,
+              actual,
+              cashier: this.op.name,
+              server: this.order.server || this.op.name,
+              cashDrawer,
+              station: this.station.alias,
+              type: "THIRD",
+              for: "Order",
+              subType: this.thirdPartyType || data,
+              credential: null,
+              lfd: null
+            };
+            break;
+          case "GIFT":
+            transaction = {
+              _id,
+              date,
+              time,
+              order,
+              split,
+              ticket,
+              paid,
+              change: 0,
+              tip,
+              actual,
+              cashier: this.op.name,
+              server: this.order.server || this.op.name,
+              cashDrawer,
+              station: this.station.alias,
+              type: "GIFT",
+              for: "Order",
+              subType: null,
+              credential: data,
+              lfd: this.giftCard.number.replace(/\D/g, "").slice(12, 16)
+            };
+            break;
+        }
+        !this.payInFull &&
+          Object.assign(transaction, { splitPayment: this.current });
+        this.payment.log.push(transaction);
+        this.$socket.emit("[TRANSACTION] SAVE", transaction);
+
+        this.payment.paid += parseFloat(actual);
+        this.recalculatePayment();
+
+        resolve();
+      });
+    },
+    postToDatabase() {
+      return new Promise((resolve, reject) => {
+        const settled = this.isTicketSettled();
+
+        if (this.isNewTicket) {
+          const customer = JSON.parse(JSON.stringify(this.customer));
+
+          Object.assign(this.order, {
+            payment: this.payment,
+            customer,
+            type: this.ticket.type,
+            station: this.station.alias,
+            cashier: this.op.name,
+            modify: 0,
+            status: 1,
+            date: today(),
+            time: +new Date(),
+            settled
+          });
+          this.$socket.emit("[SAVE] INVOICE", this.order, false, order => {
+            this.order = order;
+            resolve();
+          });
+        } else {
+          let order = this.payInFull ? this.order : this.splits[this.current];
+          Object.assign(order, {
+            payment: this.payment,
+            cashier: this.op.name,
+            settled,
+            print: true
+          });
+
+          this.$socket.emit("[UPDATE] INVOICE", order, false);
+          resolve();
+        }
+      });
+    },
+    isTicketSettled() {
+      if (this.payInFull) {
+        return this.payment.remain === 0;
+      } else {
+        return this.splits.every(order => order.payment.remain === 0);
+      }
+    },
+    tenderCash() {
+      return new Promise(next => {
+        const paid = this.paid.toFixed(2);
+        const tender = this.currentTender.toFixed(2);
+
+        this.poleDisplay(["Paid CASH", paid], ["Change Due", tender]);
+
+        const tenderWithoutDialog = {
+          title: ["dialog.cashChange", tender],
+          msg: ["dialog.cashChangeTip", paid],
+          buttons: [{ text: "button.confirm", fn: "resolve" }]
+        };
+
+        const tenderWithDialog = {
+          title: ["dialog.cashChange", tender],
+          msg: ["dialog.cashChangeTip", paid],
+          buttons: [
+            { text: "button.noReceipt", fn: "reject" },
+            { text: "button.printReceipt", fn: "resolve" }
+          ]
+        };
+
+        if (this.currentTender > 0) {
+          switch (this.store.receipt) {
+            case "always":
+              this.printCurrentReceipt();
+              next();
+              break;
+            case "never":
+              this.$dialog(tenderWithoutDialog).then(() => {
+                this.$q();
+                next();
+              });
+              break;
+            default:
+              this.$dialog(tenderWithDialog)
+                .then(() => {
+                  this.printCurrentReceipt();
+                  next();
+                })
+                .catch(() => {
+                  this.$q();
+                  next();
+                });
+          }
+        } else {
+          this.askReceipt().then(() => next());
+        }
+      });
+    },
+    askReceipt() {
+      return new Promise(next => {
+        const prompt = {
+          type: "question",
+          title: "dialog.printReceiptConfirm",
+          msg: "dialog.printReceiptConfirmTip",
+          buttons: [
+            { text: "button.noReceipt", fn: "reject" },
+            { text: "button.printReceipt", fn: "resolve" }
+          ]
+        };
+
+        switch (this.store.receipt) {
+          case "never":
+            next();
+            break;
+          case "always":
+            this.printCurrentReceipt();
+            next();
+            break;
+          default:
+            this.$dialog(prompt)
+              .then(() => {
+                this.printCurrentReceipt();
+                next();
+              })
+              .catch(() => next());
+        }
+      });
+    },
+    printCurrentReceipt() {
+      if (this.payInFull) {
+        Printer.setTarget("Receipt").print(this.order, true);
+      } else {
+        const order = Object.assign({}, this.splits[this.current], {
+          payment: this.payment
+        });
+        Printer.setTarget("Receipt").print(order, true);
+      }
+    },
+    checkBalance() {
+      this.$q();
+      if (this.payInFull) {
+        if (toFixed(this.payment.remain.toFixed(2), 2) > 0) {
+          this.$q();
+          this.setPaymentType("CASH");
+          this.poleDisplay(
+            "Balance Due:",
+            `$ ${this.payment.remain.toFixed(2)}`
+          );
+        } else {
+          this.poleDisplay("Thank You", "Please Come Again!");
+          if (this.isNewTicket) {
+            Printer.setTarget("Order").print(this.order);
+            this.$socket.emit("[UPDATE] INVOICE", this.order, true);
+          }
+          this.exitPayment();
+        }
+      } else {
+        this.switchInvoice();
+      }
+    },
+    checkGiftCardBalance() {
+      return new Promise((resolve, reject) => {
+        const noBalanceError = {
+          type: "error",
+          title: "dialog.paymentFailed",
+          msg: "dialog.insufficientAmount",
+          buttons: [{ text: "button.confirm", fn: "resolve" }]
+        };
+        const insufficientError = {
+          type: "warning",
+          title: "dialog.paymentFailed",
+          msg: "dialog.insufficientAmount",
+          buttons: [
+            { text: "button.cancel", fn: "reject" },
+            { text: "button.chargeRemain", fn: "resolve" }
+          ]
+        };
+
+        if (toFixed(this.giftCard.balance.toFixed(2), 2) <= 0)
+          throw noBalanceError;
+        if (this.giftCard.balance < this.paid) {
+          this.$dialog(insufficientError)
+            .then(() => {
+              this.$q();
+              this.paid = this.giftCard.balance.toFixed(2);
+              resolve();
+            })
+            .catch(() => {
+              this.$q();
+              reject();
+            });
+        } else {
+          resolve();
+        }
+      });
+    },
+    switchInvoice(index) {
+      if (!isNumber(index))
+        index = this.splits.findIndex(order => order.payment.remain !== 0);
+console.log(index);
+      if (index === -1) {
+        this.settled();
+      } else {
+        this.current = index;
+        this.payment = Object.assign({}, this.splits[index].payment);
+        this.setPaymentType("CASH");
+        this.getQuickInput(this.payment.remain);
+        this.$nextTick(() => {
+          this.paid = "0.00";
+          this.tip = "0.00";
+        });
+      }
+    },
+    input(val) {
+      const { anchor, format } = document.querySelector(
+        ".input.active"
+      ).dataset;
+      let value = this[anchor];
+
+      switch (format) {
+        case "money":
+          value = this.reset ? val : (value * 100).toFixed(0) + val;
+          this[anchor] = (value / 100).toFixed(2);
+          break;
+        case "number":
+          value = this.reset ? val : value + val;
+          this[anchor] = value;
+          break;
+      }
+
+      this.reset = false;
+    },
+    setTip() {
+      new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject, payment: this.payment };
+        this.component = "tipper";
+      })
+        .then(_tip => {
+          this.paid = "0.00";
+          this.tip = _tip.toFixed(2);
+          Object.assign(this.payment, { tip: _tip });
+          this.recalculatePayment();
+          this.$q();
+        })
+        .catch(e => this.$q());
+    },
+    setDiscount() {
+      new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject, payment: this.payment };
+        this.component = "discount";
+      })
+        .then(result => {
+          const { discount, coupon } = result;
+          Object.assign(this.payment, { discount });
+
+          if (discount > 0) {
+            this.order.coupons.push(coupon);
+          } else {
+            const index = this.order.coupons.findIndex(
+              coupon => coupon.code === "UnitedPOS Inc"
+            );
+            index !== -1 && this.order.coupons.splice(index, 1);
+          }
+
+          this.recalculatePayment();
+          this.paid = "0.00";
+          this.poleDisplay(
+            ["Discount:", -discount.toFixed(2)],
+            ["Due:", this.payment.remain.toFixed(2)]
+          );
+          this.$q();
+        })
+        .catch(() => this.$q());
+    },
+    preview(index) {
+      const ticket = JSON.parse(JSON.stringify(this.splits[index]));
+
+      ticket.print = false;
+      ticket.content.forEach(item => (item.print = false));
+
+      this.$p("ticket", { ticket, exit: true });
+    },
+    roundUp() {
+      const rounded = Math.ceil(this.payment.remain);
+
+      this.payment.gratuity = toFixed(rounded - this.payment.remain, 2);
+      this.payment.tip = 0;
+      this.paid = "0.00";
+      this.tip = "0.00";
+
+      this.recalculatePayment();
+    },
+    setQuickInput(val) {
+      const { anchor } = document.querySelector(".input.active").dataset;
+
+      if (anchor === "tip") {
+        this.setAnchor("paid");
+        this.paid = "0.00";
+        this.tip = val.toFixed(2);
+        this.getQuickInput(this.payment.remain);
+      } else {
+        this.paid = val.toFixed(2);
+      }
+      this.reset = true;
+    },
+    getQuickInput(amount) {
+      const preset = [
+        1,
+        2,
+        3,
+        4,
+        5,
+        10,
+        15,
+        20,
+        25,
+        30,
+        35,
+        40,
+        45,
+        50,
+        60,
+        70,
+        80,
+        100,
+        120,
+        140,
+        150,
+        200,
+        300,
+        350,
+        400,
+        450,
+        500,
+        600,
+        700,
+        800,
+        900,
+        1000,
+        1100,
+        1500,
+        2000,
+        3000,
+        4000,
+        5000
+      ];
+      const round = Math.ceil(isNumber(amount) ? toFixed(amount, 2) : 0);
+
+      let array = [];
+
+      array.push(amount.toFixed(2));
+      amount === round ? array.push(round + 1) : array.push(round);
+
+      const index = preset.findIndex(i => i > round);
+
+      array.push(preset.slice(index, index + 6));
+      this.quickInput = [].concat.apply([], array);
+    },
+    getQuickTip(amount) {
+      const base = (Math.ceil(toFixed(amount, 2)) - amount).toFixed(2);
+
+      let preset = [];
+
+      preset.push(base);
+      preset.push((parseFloat(base) + 1).toFixed(2));
+      preset.push("1.00");
+      preset.push("2.00");
+      preset.push("3.00");
+      preset.push("5.00");
+      preset.push((amount * 0.15).toFixed(2));
+      preset.push((amount * 0.2).toFixed(2));
+      this.quickInput = preset;
+    },
+    recalculatePayment() {
+      const {
+        subtotal,
+        tax,
+        discount,
+        paid,
+        delivery,
+        tip,
+        gratuity,
+        type
+      } = this.payment;
+
+      const total = toFixed(subtotal + tax + delivery, 2);
+      const due = toFixed(total - discount, 2);
+      const surcharge = toFixed(tip + gratuity, 2);
+      const balance = toFixed(due + surcharge, 2);
+      const remain = Math.max(0, toFixed(balance - paid, 2));
+
+      this.payment = Object.assign({}, this.payment, {
+        total,
+        due,
+        tip,
+        discount,
+        surcharge,
+        balance,
+        remain
+      });
+      this.getQuickInput(remain);
+    },
+    poleDisplay(line1, line2) {
+      if (!this.device.poleDisplay) return;
+      poleDisplay.write("\f");
+      poleDisplay.write(line(line1, line2));
+    },
+    settled() {
+      this.$socket.emit("[UPDATE] INVOICE", this.order, false);
+      this.exitPayment();
+    },
+    save() {
+      if (this.isNewTicket) {
+        this.setOrder(Object.assign(this.order, { payment: this.payment }));
+        this.exit();
+      } else {
+        Object.assign(this.order, { payment: this.payment });
+        this.$socket.emit("[UPDATE] INVOICE", this.order, false);
+        this.exit();
+      }
+    },
+    exit() {
+      this.init.reject();
+    },
+    exitPayment() {
+      switch (this.$route.name) {
+        case "Menu":
+          let { done } = this.station.autoLock;
+          if (this.ticket.type === "BUFFET") {
+            this.resetMenu();
+            this.exit();
+          } else {
+            if (done) {
+              this.setOp(null);
+              this.resetAll();
+              this.$router.push({ path: "/main/lock" });
+            } else {
+              this.resetAll();
+              this.$router.push({ path: "/main" });
+            }
+          }
+          break;
+        case "Table":
+          this.resetAll();
+        case "History":
+        case "PickupList":
+          this.exit();
+          break;
+        default:
+          this.exit();
+      }
+    },
+    exceptionTicketSettled() {
+      const prompt = {
+        title: "dialog.ticketSettled",
+        msg: "dialog.ticketSettledTip",
+        buttons: [
+          { text: "button.cancel", fn: "reject" },
+          { text: "button.markAsPaid", fn: "resolve" }
+        ]
+      };
+
+      this.$dialog(prompt)
+        .then(() => {
+          this.order.settled = true;
+          this.$socket.emit("[UPDATE] INVOICE", this.order, false);
+          this.exit();
+        })
+        .catch(() => this.exit());
+    },
+    ...mapActions(["setOp", "setOrder", "resetAll", "resetMenu"])
+  }
+};
+</script>
 
 <style scoped>
 .window {
@@ -537,1282 +1753,3 @@ section.quickInput {
   }
 }
 </style>
-
-<script>
-import { mapGetters, mapActions } from "vuex";
-import dialoger from "../common/dialoger";
-import capture from "../giftCard/capture";
-import ticket from "../common/ticket";
-import creditCard from "./creditCard";
-import discount from "./discount";
-import thirdParty from "./mark";
-import tipper from "./tiper";
-export default {
-  props: ["init"],
-  components: {
-    tipper,
-    ticket,
-    capture,
-    dialoger,
-    discount,
-    creditCard,
-    thirdParty
-  },
-  computed: {
-    isNewTicket() {
-      return this.app.newTicket && this.$route.name === "Menu";
-    },
-    cashTender() {
-      return Math.max(0, this.paid - this.payment.remain)
-        .toPrecision(12)
-        .toFloat();
-    },
-    ...mapGetters([
-      "op",
-      "app",
-      "store",
-      "ticket",
-      "device",
-      "station",
-      "customer"
-    ])
-  },
-  data() {
-    return {
-      releaseComponentLock: true,
-      isThirdPartyPayment: true,
-      thirdPartyType: null,
-      discountable: false,
-      componentData: null,
-      component: null,
-      order: null,
-      paymentType: "CASH",
-      payInFull: true,
-      quickInput: [],
-      creditCard: "",
-      expiration: "",
-      giftCard: "",
-      anchor: "paid",
-      tipped: 0,
-      evenly: 1,
-      current: 0,
-      reset: true,
-      paid: "0.00",
-      tip: "0.00"
-    };
-  },
-  created() {
-    this.initialData()
-      .then(this.checkComponentOccupy)
-      .then(this.checkDate)
-      .then(this.checkPermission)
-      .then(this.checkSplit)
-      .catch(this.initialFailed);
-  },
-  mounted() {
-    this.order.source === "POS"
-      ? this.setPaymentType("CASH")
-      : this.init.hasOwnProperty("regular")
-        ? this.setPaymentType("CASH")
-        : this.setPaymentType("THIRD");
-  },
-  beforeDestroy() {
-    this.releaseComponentLock &&
-      this.$socket.emit("[COMPONENT] UNLOCK", {
-        component: "payment",
-        lock: this.order._id
-      });
-  },
-  methods: {
-    initialData() {
-      return new Promise(next => {
-        this.order = this.init.hasOwnProperty("order")
-          ? JSON.parse(JSON.stringify(this.init.order))
-          : JSON.parse(JSON.stringify(this.$store.getters.order));
-
-        this.payment = this.order.payment;
-
-        this.isThirdPartyPayment = this.init.hasOwnProperty("regular")
-          ? false
-          : !this.station.terminal || this.order.source !== "POS";
-
-        if (
-          this.station.terminal &&
-          this.order.hasOwnProperty("__creditPayment__")
-        ) {
-          const { number, date, cvc } = this.order.__creditPayment__;
-          this.creditCard = number;
-          this.expiration = date;
-        }
-
-        this.$socket.emit(
-          "[PAYMENT] CHECK",
-          this.order._id,
-          ({ paid, tipped }) => {
-            this.tipped = tipped;
-            this.payment.remain = Math.max(0, this.payment.balance - paid)
-              .toPrecision(12)
-              .toFloat();
-
-            if (this.payment.tip > 0 && tipped === 0) {
-              this.tip = this.payment.tip.toFixed(2);
-            } else if (this.payment.tip !== tipped) {
-              this.tip = Math.max(0, this.payment.tip - tipped)
-                .toPrecision(12)
-                .toFloat();
-            } else {
-              this.tip = "0.00";
-            }
-
-            next();
-          }
-        );
-      });
-    },
-    checkComponentOccupy() {
-      return new Promise((next, stop) => {
-        const data = {
-          component: "payment",
-          operator: this.op.name,
-          lock: this.order._id,
-          time: +new Date(),
-          exp: +new Date() + 1000 * 120
-        };
-
-        this.$socket.emit("[COMPONENT] LOCK", data, lock => {
-          lock ? stop({ error: "paymentPending", data }) : next();
-        });
-      });
-    },
-    checkTicket() {
-      return new Promise((next, stop) => {
-        resolve();
-      });
-    },
-    checkDate() {
-      return new Promise((next, stop) => {
-        this.order.date === today() ? next() : stop({ error: "expired" });
-      });
-    },
-    checkPermission() {
-      return new Promise((next, stop) => {
-        this.discountable = this.approval(this.op.modify, "discount");
-        this.op.cashCtrl === "disable"
-          ? stop({ error: "permissionDenied" })
-          : next();
-      });
-    },
-    checkSplit() {
-      this.order.split ? this.askPayMode() : this.initialized();
-    },
-    askPayMode() {
-      const prompt = {
-        type: "question",
-        title: "dialog.splitPayment",
-        msg: "dialog.splitPaymentTip",
-        buttons: [
-          { text: "button.payBalanceDue", fn: "reject" },
-          { text: "button.splitPay", fn: "resolve" }
-        ]
-      };
-
-      this.$dialog(prompt)
-        .then(this.paySplit)
-        .catch(this.payBalanceDue);
-    },
-    paySplit() {
-      this.$q();
-      this.payInFull = false;
-
-      const index = this.order.splitPayment.findIndex(
-        split => parseFloat(split.remain.toFixed(2)) > 0
-      );
-
-      if (index === -1) {
-        this.exceptionTicketSettled();
-      } else {
-        this.switchInvoice(index);
-        this.initialized();
-      }
-    },
-    payBalanceDue() {
-      this.$q();
-      this.payInFull = true;
-      this.initialized();
-    },
-    initialized() {
-      if (this.payment.remain > 0) {
-        this.getQuickInput(this.payment.remain);
-        this.poleDisplay(
-          ["Balance Due:", ""],
-          ["", this.payment.remain.toFixed(2)]
-        );
-      } else {
-        this.exceptionTicketSettled();
-      }
-    },
-    initialFailed(reason) {
-      let { error, data } = reason;
-
-      switch (error) {
-        case "paymentPending":
-          let current = +new Date();
-          let exp = data.exp;
-          let duration = exp - current;
-          this.releaseComponentLock = false;
-
-          this.$dialog({
-            title: "dialog.pending",
-            msg: "dialog.pendingOrderAccessDenied",
-            timeout: { duration, fn: "resolve" },
-            buttons: [{ text: "button.confirm", fn: "resolve" }]
-          }).then(() => {
-            this.exit();
-          });
-          break;
-        case "permissionDenied":
-          this.$socket.emit("[SYS] RECORD", {
-            type: "User",
-            event: "payment",
-            status: 0,
-            cause: "permissionDenied",
-            data: this.order._id
-          });
-
-          this.$dialog({
-            type: "warning",
-            title: "dialog.accessDenied",
-            msg: "dialog.accessDeniedTip",
-            timeout: { duration: 10000, fn: "resolve" },
-            buttons: [{ text: "button.confirm", fn: "resolve" }]
-          }).then(() => {
-            this.exit();
-          });
-          break;
-        case "expired":
-          this.$dialog({
-            type: "error",
-            title: "dialog.paymentFailed",
-            msg: "dialog.canNotPayPrevTicket",
-            buttons: [{ text: "button.confirm", fn: "resolve" }]
-          }).then(() => this.exit());
-      }
-    },
-    setAnchor(target) {
-      let dom = document.querySelector(".input.active");
-      dom && dom.classList.remove("active");
-      if (target instanceof Event) {
-        this.anchor = target.currentTarget.dataset.anchor;
-        target.currentTarget.classList.add("active");
-        target.currentTarget.dataset.anchor === "tip"
-          ? this.getQuickTip(this.payment.remain)
-          : this.getQuickInput(this.payment.remain);
-      } else {
-        document
-          .querySelector(`[data-anchor="${target}"]`)
-          .classList.add("active");
-      }
-
-      this.reset = true;
-    },
-    del() {
-      let { anchor, format } = document.querySelector(".input.active").dataset;
-      let val = this[anchor];
-
-      switch (format) {
-        case "money":
-          this[anchor] = (val.slice(0, -1) / 10).toFixed(2);
-          break;
-        case "number":
-          this[anchor] = val.length > 0 ? val.slice(0, -1) : val;
-          break;
-      }
-      this.reset = false;
-    },
-    clear() {
-      const { anchor, format } = document.querySelector(
-        ".input.active"
-      ).dataset;
-
-      switch (format) {
-        case "money":
-          this[anchor] = "0.00";
-          break;
-        case "number":
-          this[anchor] = "";
-          break;
-      }
-      this.reset = true;
-    },
-    charge() {
-      switch (this.paymentType) {
-        case "CASH":
-          this.checkCashDrawer()
-            .then(this.chargeCash)
-            .then(this.saveTransaction)
-            .then(this.postToDatabase)
-            .then(this.tenderCash)
-            .then(this.checkBalance)
-            .catch(this.payFailed);
-          break;
-        case "CREDIT":
-          this.checkOverPay()
-            .then(this.checkEntryInput)
-            .then(this.chargeCreditCard)
-            .then(this.saveTransaction)
-            .then(this.postToDatabase)
-            .then(this.askReceipt)
-            .then(this.checkBalance)
-            .catch(this.payFailed);
-          break;
-        case "THIRD":
-          this.checkOverPay()
-            .then(this.chargeThirdParty)
-            .then(this.saveTransaction)
-            .then(this.postToDatabase)
-            .then(this.askReceipt)
-            .then(this.checkBalance)
-            .catch(this.payFailed);
-          break;
-        case "GIFT":
-          this.swipeGiftCard()
-            .then(this.checkGiftCard)
-            .then(this.checkGiftCardBalance)
-            .then(this.checkOverPay)
-            .then(this.chargeGiftCard)
-            .then(this.saveTransaction)
-            .then(this.postToDatabase)
-            .then(this.askReceipt)
-            .then(this.checkBalance)
-            .catch(this.payFailed);
-          break;
-      }
-    },
-    payFailed(error) {
-      this.$log({
-        eventID: 9009,
-        type: "failure",
-        data: this.order._id,
-        note: `Failed to pay bill.\n\nError message:\n${error}`
-      });
-
-      error === Object(error)
-        ? this.$dialog(error).then(() => this.$q())
-        : this.$q();
-    },
-    setPaymentType(type) {
-      this.paymentType = type;
-
-      switch (type) {
-        case "CASH":
-          this.paid = "0.00";
-          break;
-        case "CREDIT":
-        case "THIRD":
-          this.paid = this.payment.remain.toFixed(2);
-          break;
-        case "GIFT":
-          this.giftCard = "";
-          this.paid = this.payment.remain.toFixed(2);
-          this.swipeGiftCard()
-            .then(this.checkGiftCard)
-            .catch(() => this.$q());
-          break;
-      }
-
-      this.tip = "0.00";
-      this.thirdPartyType = null;
-
-      this.setAnchor("paid");
-      this.getQuickInput(this.payment.remain);
-    },
-    checkOverPay() {
-      return new Promise((resolve, reject) => {
-        const paidZeroError = {
-          type: "error",
-          title: "dialog.paymentFailed",
-          msg: "dialog.canNotPayZeroAmount",
-          buttons: [{ text: "button.confirm", fn: "resolve" }]
-        };
-        if (this.paid === "0.00") throw paidZeroError;
-        if (this.paid > this.payment.remain) {
-          const extra = toFixed(this.paid - this.payment.remain, 2);
-          const content = {
-            title: "dialog.paidAmountGreaterThanDue",
-            msg: ["dialog.extraAmountSetAsTip", extra.toFixed(2)],
-            buttons: [
-              { text: "button.cancel", fn: "reject" },
-              { text: "button.setTip", fn: "resolve" }
-            ]
-          };
-
-          this.$dialog(content)
-            .then(() => {
-              this.payment.tip = extra;
-              this.tip = extra.toFixed(2);
-
-              this.$q();
-              this.recalculatePayment();
-              resolve();
-            })
-            .catch(() => {
-              this.payment.tip = 0;
-              this.tip = "0.00";
-              this.$q();
-            });
-        } else {
-          resolve();
-        }
-      });
-    },
-    checkCashDrawer() {
-      return new Promise((resolve, reject) => {
-        const paidZeroError = {
-          type: "error",
-          title: "dialog.paymentFailed",
-          msg: "dialog.canNotPayZeroAmount",
-          buttons: [{ text: "button.confirm", fn: "resolve" }]
-        };
-        const noCashDrawerError = {
-          title: "dialog.cashDrawerUnavailable",
-          msg: "dialog.cashDrawerUnavailableTip",
-          buttons: [{ text: "button.confirm", fn: "resolve" }]
-        };
-
-        if (this.paid === "0.00") throw paidZeroError;
-
-        this.station.cashDrawer.enable || this.op.cashCtrl === "staffBank"
-          ? resolve()
-          : reject(noCashDrawerError);
-      });
-    },
-    checkEntryInput() {
-      return new Promise((resolve, reject) => {
-        const number = this.creditCard.replace(/[^0-9\.]+/g, "");
-        const date = this.expiration.replace(/[^0-9\.]+/g, "");
-        const today = moment().format("MMYY");
-        const tip = parseFloat(this.tip) || this.payment.tip;
-
-        const cardLengthError = {
-          type: "error",
-          title: "dialog.invalidCreditCard",
-          msg: "dialog.creditCardLengthIncorrect",
-          buttons: [{ text: "button.confirm", fn: "resolve" }]
-        };
-        const expError = {
-          type: "error",
-          title: "dialog.invalidCreditCard",
-          msg: "dialog.expirationDateIncorrect",
-          buttons: [{ text: "button.confirm", fn: "resolve" }]
-        };
-
-        if (number.length > 0 && number.length < 15) throw cardLengthError;
-        if (date.length > 0 && date.length !== 4 && date < today)
-          throw expError;
-
-        resolve({
-          creditCard: { number, date },
-          amount: this.paid - tip,
-          tip
-        });
-      });
-    },
-    chargeCash() {
-      return new Promise(next => {
-        this.op.cashCtrl === "enable" && Printer.openCashDrawer();
-        next();
-      });
-    },
-    chargeCreditCard(card) {
-      return new Promise((resolve, reject) => {
-        this.componentData = { resolve, reject, card };
-        this.component = "creditCard";
-      });
-    },
-    swipeGiftCard(number) {
-      return new Promise((resolve, reject) => {
-        if (typeof this.giftCard === "string") {
-          this.componentData = number
-            ? { resolve, reject, number }
-            : { resolve, reject };
-          this.component = "capture";
-        } else {
-          resolve({
-            number: this.giftCard.number,
-            result: this.giftCard
-          });
-        }
-      });
-    },
-    queryGiftCard() {
-      this.swipeGiftCard(this.giftCard.replace(/\D/g, ""))
-        .then(this.checkGiftCard)
-        .catch(() => this.$q());
-    },
-    checkGiftCard(card) {
-      this.$q();
-
-      return new Promise((resolve, reject) => {
-        const { number, result } = card;
-
-        if (result) {
-          this.giftCard = result;
-          this.setAnchor("paid");
-          this.$forceUpdate();
-          resolve();
-        } else {
-          const prompt = {
-            type: "error",
-            title: "dialog.giftCardActivation",
-            msg: ["dialog.giftCardNotActivated", number],
-            buttons: [{ text: "button.confirm", fn: "resolve" }]
-          };
-
-          this.$dialog(prompt).then(() => reject());
-        }
-      });
-    },
-    chargeGiftCard() {
-      return new Promise((resolve, reject) => {
-        const paid = parseFloat(this.paid);
-        this.giftCard.balance = toFixed(this.giftCard.balance - paid, 2);
-
-        const log = {
-          balance: this.giftCard.balance,
-          change: -paid,
-          date: today(),
-          time: +new Date(),
-          type: "Purchase",
-          cashier: this.op.name,
-          number: this.giftCard.number.replace(/\D/g, ""),
-          order: {
-            _id: this.order._id,
-            number: this.order.number || this.ticket.number,
-            type: this.order.type || this.ticket.type
-          }
-        };
-
-        this.$socket.emit("[GIFTCARD] ACTIVITY", log, _id => resolve(_id));
-      });
-    },
-    chargeThirdParty() {
-      return new Promise(charge => {
-        if (this.thirdPartyType) {
-          charge(this.thirdPartyType);
-        } else {
-          new Promise((resolve, reject) => {
-            this.componentData = { resolve, reject, callback: true };
-            this.component = "thirdParty";
-          })
-            .then(charge)
-            .catch(() => this.$q());
-        }
-      });
-    },
-    saveTransaction(data) {
-      const type =
-        this.paymentType === "THIRD" ? this.thirdPartyType : this.paymentType;
-      const cashDrawer =
-        this.op.cashCtrl === "staffBank"
-          ? this.op.name
-          : this.station.cashDrawer.name;
-
-      this.poleDisplay(`PAID by ${type}`, "THANK YOU");
-
-      let actual = Math.min(this.paid, this.payment.remain),
-        paid = parseFloat(this.paid),
-        tip = parseFloat(this.tip) || this.payment.tip,
-        _id = ObjectId();
-
-      let change, transaction;
-
-      return new Promise((resolve, reject) => {
-        switch (this.paymentType) {
-          case "CASH":
-            this.currentTender = change = Math.max(
-              0,
-              toFixed(this.paid - this.payment.remain, 2)
-            );
-            transaction = {
-              _id,
-              date: today(),
-              time: +new Date(),
-              order: this.order._id,
-              ticket: {
-                number: this.order.number || this.ticket.number,
-                type: this.order.type || this.ticket.type
-              },
-              paid,
-              change,
-              actual: toFixed(parseFloat(actual) - tip, 2),
-              tip,
-              cashier: this.op.name,
-              server: this.order.server || this.op.name,
-              cashDrawer,
-              station: this.station.alias,
-              type: "CASH",
-              for: "Order",
-              subType: null,
-              credential: null,
-              lfd: null
-            };
-
-            let activity = {
-              type: "CASHFLOW",
-              inflow: paid,
-              outflow: change,
-              time: +new Date(),
-              ticket: {
-                number: this.order.number || this.ticket.number,
-                type: this.order.type || this.ticket.type
-              },
-              operator: this.op.name
-            };
-
-            this.$socket.emit("[CASHFLOW] ACTIVITY", { cashDrawer, activity });
-            break;
-          case "CREDIT":
-            Object.assign(data, {
-              order: {
-                _id: this.order._id,
-                type: this.order.type || this.ticket.type,
-                number: this.order.number || this.ticket.number,
-                cashier: this.op.name,
-                server: this.order.server || this.op.name
-              },
-              for: "Order",
-              date: today(),
-              _id: ObjectId()
-            });
-
-            transaction = {
-              _id,
-              date: today(),
-              time: +new Date(),
-              order: this.order._id,
-              ticket: {
-                number: this.order.number || this.ticket.number,
-                type: this.order.type || this.ticket.type
-              },
-              paid,
-              change: 0,
-              actual: toFixed(paid - tip, 2),
-              tip,
-              cashier: this.op.name,
-              server: this.order.server || this.op.name,
-              cashDrawer,
-              station: this.station.alias,
-              terminal: this.station.terminal,
-              type: "CREDIT",
-              for: "Order",
-              subType: data.account.type,
-              credential: data._id,
-              lfd: data.account.number
-            };
-
-            this.$socket.emit("[TERMINAL] SAVE", data, content =>
-              this.$socket.emit(
-                "[TERMINAL] CONFIG",
-                this.station.terminal,
-                config => {
-                  config.print && Printer.printCreditCard(content);
-                }
-              )
-            );
-            break;
-          case "THIRD":
-            transaction = {
-              _id,
-              date: today(),
-              time: +new Date(),
-              order: this.order._id,
-              ticket: {
-                number: this.order.number || this.ticket.number,
-                type: this.order.type || this.ticket.type
-              },
-              paid,
-              change: 0,
-              actual: toFixed(paid - tip, 2),
-              tip,
-              cashier: this.op.name,
-              server: this.order.server || this.op.name,
-              cashDrawer,
-              station: this.station.alias,
-              type: "THIRD",
-              for: "Order",
-              subType: this.thirdPartyType || data,
-              credential: null,
-              lfd: null
-            };
-            break;
-          case "GIFT":
-            transaction = {
-              _id,
-              date: today(),
-              time: +new Date(),
-              order: this.order._id,
-              ticket: {
-                number: this.order.number || this.ticket.number,
-                type: this.order.type || this.ticket.type
-              },
-              paid,
-              change: 0,
-              actual: toFixed(paid - tip, 2),
-              tip,
-              cashier: this.op.name,
-              server: this.order.server || this.op.name,
-              cashDrawer,
-              station: this.station.alias,
-              type: "GIFT",
-              for: "Order",
-              subType: null,
-              credential: data,
-              lfd: this.giftCard.number.replace(/\D/g, "").slice(12, 16)
-            };
-            break;
-        }
-
-        //if pay by split
-        !this.payInFull &&
-          Object.assign(transaction, {
-            splitPayment: this.current
-          });
-
-        this.payment.log.push(transaction);
-        this.$socket.emit("[TRANSACTION] SAVE", transaction);
-
-        this.payment.paid += parseFloat(actual);
-        this.recalculatePayment();
-
-        resolve();
-      });
-    },
-    postToDatabase() {
-      return new Promise((resolve, reject) => {
-        let settled = this.isTicketSettled();
-
-        if (this.isNewTicket) {
-          let customer = JSON.parse(JSON.stringify(this.customer));
-          delete customer.extra;
-
-          Object.assign(this.order, {
-            payment: this.payInFull ? this.payment : this.combineSplitPayment(),
-            customer,
-            type: this.ticket.type,
-            station: this.station.alias,
-            cashier: this.op.name,
-            modify: 0,
-            status: 1,
-            date: today(),
-            time: +new Date(),
-            settled
-          });
-          this.$socket.emit("[SAVE] INVOICE", this.order, false, content => {
-            this.order = content;
-            resolve();
-          });
-        } else {
-          Object.assign(this.order, {
-            payment: this.payInFull ? this.payment : this.combineSplitPayment(),
-            cashier: this.op.name,
-            settled,
-            print: true
-          });
-          this.$socket.emit("[UPDATE] INVOICE", this.order, false);
-          resolve();
-        }
-      });
-    },
-    isTicketSettled() {
-      if (this.payInFull) {
-        return this.payment.remain === 0;
-      } else {
-        return this.order.splitPayment.every(ticket => ticket.remain === 0);
-      }
-    },
-    combineSplitPayment() {
-      this.order.splitPayment[this.current] = JSON.parse(
-        JSON.stringify(this.payment)
-      );
-      let payment = {
-        subtotal: 0,
-        tax: 0,
-        total: 0,
-        due: 0,
-        balance: 0,
-        paid: 0,
-        change: 0,
-        gratuity: 0,
-        tip: 0,
-        discount: 0,
-        delivery: 0,
-        surcharge: 0,
-        remain: 0,
-        log: [],
-        settled: true
-      };
-      this.order.splitPayment.forEach(split => {
-        Object.keys(split).forEach(key => {
-          switch (typeof split[key]) {
-            case "number":
-              payment[key] = toFixed(payment[key] + split[key], 2);
-              break;
-            case "object":
-              if (Array.isArray(split[key])) {
-                payment[key].push(...split[key]);
-              }
-              break;
-            case "boolean":
-              !split[key] && (payment[key] = false);
-              break;
-          }
-        });
-      });
-      delete payment.sort;
-      return payment;
-    },
-    tenderCash() {
-      return new Promise(resolve => {
-        this.poleDisplay(
-          ["Paid CASH", this.paid.toFixed(2)],
-          ["Change Due", this.currentTender.toFixed(2)]
-        );
-
-        let tenderWithoutDialog = {
-          title: ["dialog.cashChange", this.currentTender.toFixed(2)],
-          msg: ["dialog.cashChangeTip", this.paid.toFixed(2)],
-          buttons: [{ text: "button.confirm", fn: "resolve" }]
-        };
-        let tenderWithDialog = {
-          title: ["dialog.cashChange", this.currentTender.toFixed(2)],
-          msg: ["dialog.cashChangeTip", this.paid.toFixed(2)],
-          buttons: [
-            { text: "button.noReceipt", fn: "reject" },
-            { text: "button.printReceipt", fn: "resolve" }
-          ]
-        };
-
-        if (this.currentTender > 0) {
-          switch (this.store.receipt) {
-            case "always":
-              this.printCurrentReceipt();
-              resolve();
-              break;
-            case "never":
-              this.$dialog(tenderWithoutDialog).then(() => {
-                this.$q();
-                resolve();
-              });
-              break;
-            default:
-              this.$dialog(tenderWithDialog)
-                .then(() => {
-                  this.printCurrentReceipt();
-                  resolve();
-                })
-                .catch(() => {
-                  this.$q();
-                  resolve();
-                });
-          }
-        } else {
-          this.askReceipt().then(() => resolve());
-        }
-      });
-    },
-    askReceipt() {
-      return new Promise(next => {
-        let data = {
-          type: "question",
-          title: "dialog.printReceiptConfirm",
-          msg: "dialog.printReceiptConfirmTip",
-          buttons: [
-            { text: "button.noReceipt", fn: "reject" },
-            { text: "button.printReceipt", fn: "resolve" }
-          ]
-        };
-
-        switch (this.store.receipt) {
-          case "never":
-            next();
-            break;
-          case "always":
-            this.printCurrentReceipt();
-            next();
-            break;
-          default:
-            this.$dialog(data)
-              .then(() => {
-                this.printCurrentReceipt();
-                next();
-              })
-              .catch(() => next());
-        }
-      });
-    },
-    printCurrentReceipt() {
-      if (this.payInFull) {
-        Printer.setTarget("Receipt").print(this.order, true);
-      } else {
-        let index = this.current + 1;
-        let order = JSON.parse(JSON.stringify(this.order));
-        order.payment = this.payment;
-        order.number = order.number + "-" + index;
-        order.content = this.order.content.filter(item => {
-          if (Array.isArray(item.sort)) {
-            return item.sort.includes(index);
-          } else {
-            return item.sort === index;
-          }
-        });
-        Printer.setTarget("Receipt").print(order, true);
-      }
-    },
-    checkBalance() {
-      this.$q();
-      if (this.payInFull) {
-        if (toFixed(this.payment.remain.toFixed(2), 2) > 0) {
-          this.$q();
-          this.setPaymentType("CASH");
-          this.poleDisplay(
-            "Balance Due:",
-            `$ ${this.payment.remain.toFixed(2)}`
-          );
-        } else {
-          this.poleDisplay("Thank You", "Please Come Again!");
-          if (this.isNewTicket) {
-            Printer.setTarget("Order").print(this.order);
-            this.$socket.emit("[UPDATE] INVOICE", this.order, true);
-          }
-          this.exitPayment();
-        }
-      } else {
-        let index = this.order.splitPayment.findIndex(
-          split => toFixed(split.remain.toFixed(2), 2) > 0
-        );
-        index === -1 ? this.settled() : this.switchInvoice(index);
-      }
-    },
-    checkGiftCardBalance() {
-      return new Promise((resolve, reject) => {
-        let noBalanceError = {
-          type: "error",
-          title: "dialog.paymentFailed",
-          msg: "dialog.insufficientAmount",
-          buttons: [{ text: "button.confirm", fn: "resolve" }]
-        };
-        let insufficientError = {
-          type: "warning",
-          title: "dialog.paymentFailed",
-          msg: "dialog.insufficientAmount",
-          buttons: [
-            { text: "button.cancel", fn: "reject" },
-            { text: "button.chargeRemain", fn: "resolve" }
-          ]
-        };
-
-        if (toFixed(this.giftCard.balance.toFixed(2), 2) <= 0)
-          throw noBalanceError;
-        if (this.giftCard.balance < this.paid) {
-          this.$dialog(insufficientError)
-            .then(() => {
-              this.$q();
-              this.paid = this.giftCard.balance.toFixed(2);
-              resolve();
-            })
-            .catch(() => {
-              this.$q();
-              reject();
-            });
-        } else {
-          resolve();
-        }
-      });
-    },
-    switchInvoice(index) {
-      this.current = index;
-      this.payment = Object.assign({}, this.order.splitPayment[index]);
-      this.setPaymentType("CASH");
-      this.getQuickInput(this.payment.remain);
-      this.$nextTick(() => {
-        this.paid = "0.00";
-      });
-    },
-    input(val) {
-      const { anchor, format } = document.querySelector(
-        ".input.active"
-      ).dataset;
-      let value = this[anchor];
-
-      switch (format) {
-        case "money":
-          value = this.reset ? val : (value * 100).toFixed(0) + val;
-          this[anchor] = (value / 100).toFixed(2);
-          break;
-        case "number":
-          value = this.reset ? val : value + val;
-          this[anchor] = value;
-          break;
-      }
-
-      this.reset = false;
-    },
-    setTip() {
-      new Promise((resolve, reject) => {
-        this.componentData = { resolve, reject, payment: this.payment };
-        this.component = "tipper";
-      })
-        .then(_tip => {
-          this.paid = "0.00";
-          this.tip = _tip.toFixed(2);
-          Object.assign(this.payment, { tip: _tip });
-          this.recalculatePayment();
-          this.$q();
-        })
-        .catch(e => this.$q());
-    },
-    setDiscount() {
-      new Promise((resolve, reject) => {
-        this.componentData = { resolve, reject, payment: this.payment };
-        this.component = "discount";
-      })
-        .then(result => {
-          const { discount, coupon } = result;
-          Object.assign(this.payment, { discount });
-
-          if (discount > 0) {
-            this.order.coupons.push(coupon);
-          } else {
-            const index = this.order.coupons.findIndex(
-              coupon => coupon.code === "UnitedPOS Inc"
-            );
-            index !== -1 && this.order.coupons.splice(index, 1);
-          }
-
-          this.recalculatePayment();
-          this.paid = "0.00";
-          this.poleDisplay(
-            ["Discount:", -discount.toFixed(2)],
-            ["Due:", this.payment.remain.toFixed(2)]
-          );
-          this.$q();
-        })
-        .catch(() => this.$q());
-    },
-    preview(index) {
-      const ticket = JSON.parse(JSON.stringify(this.order));
-      ticket.payment = ticket.splitPayment[index];
-      ticket.print = false;
-
-      const { sort } = ticket.payment;
-
-      ticket.content = ticket.content.filter(
-        item =>
-          Array.isArray(item.sort)
-            ? item.sort.includes(sort)
-            : item.sort === sort
-      );
-
-      ticket.content.forEach(item => {
-        item.print = false;
-      });
-
-      this.$p("ticket", { ticket, exit: true });
-    },
-    roundUp() {
-      const rounded = Math.ceil(this.payment.remain);
-
-      this.payment.gratuity = toFixed(rounded - this.payment.remain, 2);
-      this.payment.tip = 0;
-      this.paid = "0.00";
-      this.tip = "0.00";
-
-      this.recalculatePayment();
-    },
-    setQuickInput(val) {
-      const { anchor } = document.querySelector(".input.active").dataset;
-      anchor === "tip"
-        ? (this.tip = val.toFixed(2))
-        : (this.paid = val.toFixed(2));
-
-      this.reset = true;
-      this.setAnchor("paid");
-    },
-    getQuickInput(amount) {
-      const preset = [
-        1,
-        2,
-        3,
-        4,
-        5,
-        10,
-        15,
-        20,
-        25,
-        30,
-        35,
-        40,
-        45,
-        50,
-        60,
-        70,
-        80,
-        100,
-        120,
-        140,
-        150,
-        200,
-        300,
-        350,
-        400,
-        450,
-        500,
-        600,
-        700,
-        800,
-        900,
-        1000,
-        1100,
-        1500,
-        2000,
-        3000,
-        4000,
-        5000
-      ];
-      const round = Math.ceil(isNumber(amount) ? toFixed(amount, 2) : 0);
-
-      let array = [];
-
-      array.push(amount.toFixed(2));
-      amount === round ? array.push(round + 1) : array.push(round);
-
-      const index = preset.findIndex(i => i > round);
-
-      array.push(preset.slice(index, index + 6));
-      this.quickInput = [].concat.apply([], array);
-    },
-    getQuickTip(amount) {
-      const base = (Math.ceil(toFixed(amount, 2)) - amount).toFixed(2);
-
-      let preset = [];
-
-      preset.push(base);
-      preset.push((parseFloat(base) + 1).toFixed(2));
-      preset.push("1.00");
-      preset.push("2.00");
-      preset.push("3.00");
-      preset.push("5.00");
-      preset.push((amount * 0.15).toFixed(2));
-      preset.push((amount * 0.2).toFixed(2));
-      this.quickInput = preset;
-    },
-    recalculatePayment() {
-      let {
-        subtotal,
-        tax,
-        discount,
-        paid,
-        delivery,
-        tip,
-        gratuity,
-        type
-      } = this.payment;
-
-      let total = toFixed(subtotal + tax + delivery, 2);
-      let due = toFixed(total - discount, 2);
-      let surcharge = toFixed(tip + gratuity, 2);
-      let balance = toFixed(due + surcharge, 2);
-      let remain = Math.max(0, toFixed(balance - paid, 2));
-      let settled = remain === 0;
-
-      this.payment = Object.assign({}, this.payment, {
-        total,
-        due,
-        tip,
-        discount,
-        surcharge,
-        balance,
-        remain,
-        settled
-      });
-      this.getQuickInput(remain);
-    },
-    poleDisplay(line1, line2) {
-      if (!this.device.poleDisplay) return;
-      poleDisplay.write("\f");
-      poleDisplay.write(line(line1, line2));
-    },
-    settled() {
-      this.combineSplitPayment();
-      this.order.settled = true;
-      this.$socket.emit("[UPDATE] INVOICE", this.order, false);
-      this.exitPayment();
-    },
-    save() {
-      if (this.isNewTicket) {
-        this.setOrder(Object.assign(this.order, { payment: this.payment }));
-        this.exit();
-      } else {
-        Object.assign(this.order, { payment: this.payment });
-        this.$socket.emit("[UPDATE] INVOICE", this.order, false);
-        this.exit();
-      }
-    },
-    exit() {
-      this.init.reject();
-    },
-    exitPayment() {
-      switch (this.$route.name) {
-        case "Menu":
-          let { doneLock } = this.station;
-          if (this.ticket.type === "BUFFET") {
-            this.resetMenu();
-            this.exit();
-          } else {
-            if (doneLock) {
-              this.setOp(null);
-              this.resetAll();
-              this.$router.push({ path: "/main/lock" });
-            } else {
-              this.resetAll();
-              this.$router.push({ path: "/main" });
-            }
-          }
-          break;
-        case "Table":
-          this.resetAll();
-        case "History":
-        case "PickupList":
-          this.exit();
-          break;
-        default:
-          this.exit();
-      }
-    },
-    exceptionTicketSettled() {
-      const prompt = {
-        title: "dialog.ticketSettled",
-        msg: "dialog.ticketSettledTip",
-        buttons: [
-          { text: "button.cancel", fn: "reject" },
-          { text: "button.markAsPaid", fn: "resolve" }
-        ]
-      };
-
-      this.$dialog(prompt)
-        .then(() => {
-          if (this.order.split) {
-            let payment = this.combineSplitPayment();
-            Object.assign(this.order, { payment, settled: true });
-          } else {
-            Object.assign(this.order, { settled: true });
-          }
-          this.$socket.emit("[UPDATE] INVOICE", this.order, false);
-          this.exit();
-        })
-        .catch(() => this.exit());
-    },
-    ...mapActions(["setOp", "setOrder", "resetAll", "resetMenu"])
-  }
-};
-</script>

@@ -568,7 +568,8 @@ export default {
         'tableReserved': '此座位已经被预定',
         'cantExecute': '无法执行',
         'errorOccurred': '执行这个命令的过程发送一个错误, 命令被中止!',
-        'duplicateNotAllow': '已经有相同名称，请重新命名'
+        'duplicateNotAllow': '已经有相同名称，请重新命名',
+        'splitTicketItemRemain': '此订单中还有 {i} 个物品尚未被分配。请分完后再进行付款操作'
     },
     terminal: {
         'initial': '正在初始化 {i}...',

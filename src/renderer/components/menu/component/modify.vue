@@ -82,6 +82,10 @@ export default {
   },
   methods: {
     initial() {
+      if(this.item.split){
+        this.init.reject();
+        return;
+      }
       this.item = JSON.parse(JSON.stringify(this.init.item));
       if (this.init.marketPrice) {
         this.item = Object.assign({}, this.item, {

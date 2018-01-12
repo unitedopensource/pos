@@ -661,7 +661,8 @@ export default {
         'tableReserved': 'This table has been reserved.',
         'cantExecute': 'Can Not Execute',
         'errorOccurred': 'Something is wrong! Previous action aborted.',
-        'duplicateNotAllow': 'Name duplicated! Please consider other name.'
+        'duplicateNotAllow': 'Name duplicated! Please consider other name.',
+        'splitTicketItemRemain': 'This order has {i} items are not split. Please split them and try again.'
     },
     terminal: {
         'initial': 'Initializing terminal {i}...',

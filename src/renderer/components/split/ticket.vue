@@ -1,5 +1,5 @@
 <template>
-  <ul @click.self="tap" v-if="enable" :class="[unique]">
+  <ul @click.self="tap" v-if="enable" :class="[unique,{ban}]">
     <li v-for="(item,index) in order.content" :key="index" @click="pick(item)" :data-unique="item.unique" v-show="!item.split">
       <div class="main">
         <span class="qty">{{item.qty}}</span>
@@ -26,6 +26,10 @@
       </li>
     </template>
     <template v-else>
+      <li class="tooltip">
+        <i class="fa fa-warning"></i>
+        <span>{{reason}}</span>
+      </li>
       <li class="settle">
         <p class="total">$ {{order.payment.total | decimal}}
           <span class="tip">( {{order.payment.tax | decimal}} )</span>
@@ -52,12 +56,14 @@ export default {
     return {
       order: JSON.parse(JSON.stringify(this.data)),
       language: this.$store.getters.language,
+      reason: "",
+      ban: false,
       buffer: [],
       unique:
-      "s" +
-      Math.random()
-        .toString(36)
-        .substr(2, 2)
+        "s" +
+        Math.random()
+          .toString(36)
+          .substr(2, 2)
     };
   },
   created() {
@@ -67,6 +73,14 @@ export default {
     } else {
       this.$bus.on("reset", this.remove);
       this.$bus.on("transfer", this.transfer);
+
+      if (this.order.settled) {
+        this.ban = true;
+        this.reason = this.$t("dialog.ticketClosed");
+      } else if (this.order.payment.log.length) {
+        this.ban = true;
+        this.reason = this.$t("dialog.paymentFound");
+      }
     }
   },
   mounted() {
@@ -128,37 +142,17 @@ export default {
       this.$emit("acquire", { index: this.index, unique: this.unique });
     },
     selectAll() {
-      this.order.content.filter(i => !i.split).forEach(item => this.pick(item))
+      this.order.content.filter(i => !i.split).forEach(item => this.pick(item));
     },
     calculator(items) {
-      // if (items.length === 0) {
-      //   let delivery =
-      //     this.order.type === "DELIVERY" &&
-      //       this.store.delivery &&
-      //       !this.order.deliveryFree
-      //       ? parseFloat(this.store.deliveryCharge)
-      //       : 0;
-
-      //   this.payment = Object.assign(this.order.payment, {
-      //     subtotal: 0,
-      //     tax: 0,
-      //     total: 0, // subtotal + tax + delivery
-      //     discount: 0,
-      //     due: 0, // total - discount
-      //     balance: 0, // due + surcharge
-      //     paid: 0,
-      //     remain: 0, // balance - paid
-      //     change: 0, // depreciate
-      //     tip: 0,
-      //     gratuity: 0,
-      //     delivery,
-      //     surcharge: 0, // tip + gratuity
-      //     log: []
-      //   });
-      //   return;
-      // }
-
-      const { type, guest, coupons, taxFree = false, deliveryFree = false, gratuityFree = false } = this.order;
+      const {
+        type,
+        guest,
+        coupons,
+        taxFree = false,
+        deliveryFree = false,
+        gratuityFree = false
+      } = this.order;
       const { enable, rules } = this.dinein.surcharge;
 
       let delivery =
@@ -219,11 +213,11 @@ export default {
       if (type === "DINE_IN" && !gratuityFree && enable) {
         //find rule
         try {
-          const { fee, percentage } = rules.sort((a, b) => a.guest < b.guest).find(r => guest >= r.guest);
+          const { fee, percentage } = rules
+            .sort((a, b) => a.guest < b.guest)
+            .find(r => guest >= r.guest);
           gratuity = percentage ? toFixed(subtotal * fee / 100, 2) : fee;
-        } catch (e) {
-
-        }
+        } catch (e) {}
       }
 
       if (coupons && coupons.length > 0) {
@@ -290,17 +284,15 @@ export default {
   watch: {
     buffer(items) {
       const uniques = items.map(i => i.unique);
-
       const picked = document.querySelectorAll(`ul.${this.unique} li.picked`);
       for (let dom of picked) {
         dom.classList.remove("picked");
       }
 
-      const doms = document.querySelectorAll(`ul.${this.unique} [data-unique]`);
-      for (let dom of doms) {
-        const { unique } = dom.dataset;
-        uniques.includes(unique) && dom.classList.add("picked");
-      }
+      uniques.forEach(unique => {
+        const dom = document.querySelector(`[data-unique="${unique}"]`);
+        dom && dom.classList.add("picked");
+      });
     },
     "order.content": {
       handler(items) {
@@ -394,7 +386,7 @@ li.settle p {
   flex: 1;
 }
 
-.settle i{
+.settle i {
   cursor: pointer;
 }
 
@@ -407,7 +399,40 @@ li.settle p {
 .tip {
   font-weight: lighter;
   margin-left: 5px;
-  font-size:0.8em;
+  font-size: 0.8em;
   color: rgba(0, 0, 0, 0.5);
+}
+
+ul.ban {
+  pointer-events: none;
+}
+
+ul.ban:after {
+  content: " ";
+  background: rgba(0, 0, 0, 0.3);
+  width: 250px;
+  height: 449px;
+  position: absolute;
+  top: 0;
+  z-index: 0;
+}
+
+ul.ban li.tooltip {
+  display: flex;
+}
+
+li.tooltip {
+  bottom: 50%;
+  position: absolute;
+  width: 250px;
+  flex-direction: row;
+  align-items: center;
+  padding: 0;
+  color: #fafafa;
+  background: #f44336;
+  text-shadow: 0 1px 1px #333;
+  display: none;
+  z-index: 1;
+  border: none;
 }
 </style>
