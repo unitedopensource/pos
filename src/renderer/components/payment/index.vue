@@ -730,7 +730,6 @@ export default {
     checkGiftCard({ number, result }) {
       this.$q();
       return new Promise((resolve, reject) => {
-
         if (result) {
           this.giftCard = result;
           this.setAnchor("paid");
@@ -804,6 +803,8 @@ export default {
       const tip =
         parseFloat(this.tip) ||
         (this.tipped === this.payment.tip ? 0 : this.payment.tip);
+
+
       const _id = ObjectId();
       const date = today();
       const time = +new Date();
@@ -1202,7 +1203,7 @@ export default {
       })
         .then(_tip => {
           this.paid = "0.00";
-          this.tip = _tip.toFixed(2);
+          this.tip = "0.00";
           Object.assign(this.payment, { tip: _tip });
           this.recalculatePayment();
           this.$q();
@@ -1264,7 +1265,11 @@ export default {
         this.tip = val.toFixed(2);
         this.getQuickInput(this.payment.remain);
       } else {
-        this.paid = val.toFixed(2);
+        if(parseFloat(this.tip) === this.payment.tip){
+          this.paid = (val - this.payment.tip).toFixed(2)
+        }else{
+          this.paid = val.toFixed(2);
+        }
       }
       this.reset = true;
     },
@@ -1379,8 +1384,9 @@ export default {
         this.setOrder(Object.assign(this.order, { payment: this.payment }));
         this.exit();
       } else {
-        let order = this.payInFull ? order : this.splits[this.current];
+        let order = this.payInFull ? this.order : this.splits[this.current];
         Object.assign(order, { payment: this.payment });
+        console.log(order);
         this.$socket.emit("[UPDATE] INVOICE", order, false);
         this.exit();
       }
