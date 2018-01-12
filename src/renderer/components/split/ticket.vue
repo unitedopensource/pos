@@ -307,7 +307,8 @@ export default {
 <style scoped>
 ul {
   width: 250px;
-  min-height: 400px;
+  height: 490px;
+  overflow: hidden;
   margin: 5px;
   background: #fafafa;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
