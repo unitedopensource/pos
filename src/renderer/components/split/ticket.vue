@@ -3,7 +3,8 @@
     <li v-for="(item,index) in order.content" :key="index" @click="pick(item)" :data-unique="item.unique" v-show="!item.split">
       <div class="main">
         <span class="qty">{{item.qty}}</span>
-        <span>{{item[language]}}
+        <span>
+          <span class="item">{{item[language]}}</span>
           <span class="side">{{item.side[language]}}</span>
         </span>
         <span></span>

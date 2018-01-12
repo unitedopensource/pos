@@ -565,11 +565,12 @@ export default {
       }
     },
     payFailed(error) {
+
       this.$log({
         eventID: 9009,
         type: "failure",
         data: this.order._id,
-        note: `Failed to pay bill.\n\nError message:\n${error}`
+        note: `Failed to pay bill.\n\nError message:\n${JSON.stringify(error)}`
       });
 
       error === Object(error)

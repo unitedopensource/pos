@@ -160,26 +160,40 @@ export default {
         .map(vm => vm.order)
         .filter((order, index) => index !== 0 && order.content.length !== 0);
 
-      if (this.app.newTicket && this.$route.name === 'Menu') {
+      if (this.app.newTicket && this.$route.name === "Menu") {
         const { number, type } = this.ticket;
 
         this.order.number = number;
         this.order.type = type;
       }
 
+      let total = 0;
+      let due = 0;
+      let balance = 0;
+      let remain = 0;
+
       if (splits.length > 1) {
         splits.forEach((order, index) => {
           order.parent = parent;
           order.number = `${this.order.number}-${index + 1}`;
+          total += order.payment.total;
+          due += order.payment.due;
+          balance += order.payment.balance;
+          remain += order.payment.remain;
         });
 
         this.$socket.emit("[SPLIT] SAVE", { splits, parent });
+        this.order.payment.total = toFixed(total, 2);
+        this.order.payment.due = toFixed(due, 2);
+        this.order.payment.balance = toFixed(balance, 2);
+        this.order.payment.remain = toFixed(remain, 2);
         this.order.content.forEach(item => (item.split = true));
         this.order.children = splits.map(i => i._id);
+
         this.order.split = true;
         this.$socket.emit("[UPDATE] INVOICE", this.order);
 
-        if (this.$route.name === 'Menu' && this.app.newTicket) {
+        if (this.$route.name === "Menu" && this.app.newTicket) {
           this.setOrder(this.order);
           this.init.resolve();
         } else {

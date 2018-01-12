@@ -319,7 +319,7 @@ export default {
         subtotal = toFixed(subtotal + amount, 2);
 
         if (!taxFree && taxClass.apply[type])
-          tax += taxClass.rate / 100 * amount;
+          tax += (taxClass.rate / 100 * amount).toPrecision(12).toFloat();
       });
 
       if (this.tax.deliveryTax) {
