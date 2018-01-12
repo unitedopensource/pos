@@ -49,7 +49,7 @@ import { mapGetters, mapActions } from "vuex";
 import dialoger from "../common/dialoger";
 import payment from "../payment/index";
 import unlock from "../common/unlock";
-import split from "../menu/component/split";
+import split from "../split/index";
 import list from "./list";
 export default {
   props: ["transfer"],

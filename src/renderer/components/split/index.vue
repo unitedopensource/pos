@@ -37,6 +37,7 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from "vuex";
 import ticket from "./ticket";
 import Hammer from "hammerjs";
 
@@ -46,7 +47,8 @@ export default {
   computed: {
     scroll() {
       return { transform: `translate3d(${this.offset}px,0,0)` };
-    }
+    },
+    ...mapGetters(["app", "ticket"])
   },
   data() {
     return {
@@ -158,6 +160,13 @@ export default {
         .map(vm => vm.order)
         .filter((order, index) => index !== 0 && order.content.length !== 0);
 
+      if (this.app.newTicket) {
+        const { number, type } = this.ticket;
+
+        this.order.number = number;
+        this.order.type = type;
+      }
+
       if (splits.length > 1) {
         splits.forEach((order, index) => {
           order.parent = parent;
@@ -169,7 +178,13 @@ export default {
         this.order.children = splits.map(i => i._id);
         this.order.split = true;
         this.$socket.emit("[UPDATE] INVOICE", this.order);
-        this.init.resolve();
+
+        if (this.$route.name === 'Menu' && this.app.newTicket) {
+          this.setOrder(this.order);
+          this.init.resolve();
+        } else {
+          this.init.resolve();
+        }
       } else {
         this.$socket.emit("[SPLIT] SAVE", { splits: [], parent });
         this.order.content.forEach(item => (item.split = false));
@@ -178,7 +193,8 @@ export default {
         this.$socket.emit("[UPDATE] INVOICE", this.order);
         this.init.resolve();
       }
-    }
+    },
+    ...mapActions(["setOrder"])
   }
 };
 </script>

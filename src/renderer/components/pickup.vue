@@ -1,77 +1,78 @@
 <template>
-    <div class="pickup">
-        <header>
-            <div>
-                <h3>{{$t('text.pickUpList')}}</h3>
-                <h5>{{$t('text.remainTicket',invoices.length)}}</h5>
+  <div class="pickup">
+    <header>
+      <div>
+        <h3>{{$t('text.pickUpList')}}</h3>
+        <h5>{{$t('text.remainTicket',invoices.length)}}</h5>
+      </div>
+    </header>
+    <section class="wrap">
+      <article>
+        <ul class="list">
+          <li v-for="(ticket,index) in tickets" :key="index" @click="display(ticket,$event)">
+            <div class="ticket">
+              <span class="number">{{ticket.number}}</span>
+              <span class="time">{{ticket.time | moment('HH:mm')}}</span>
             </div>
-        </header>
-        <section class="wrap">
-            <article>
-                <ul class="list">
-                    <li v-for="(ticket,index) in tickets" :key="index" @click="display(ticket,$event)">
-                        <div class="ticket">
-                            <span class="number">{{ticket.number}}</span>
-                            <span class="time">{{ticket.time | moment('HH:mm')}}</span>
-                        </div>
-                        <div class="info">
-                            <span>{{ticket.customer.phone | phone}}</span>
-                            <span>{{ticket.customer.name}}</span>
-                        </div>
-                        <span class="amount">$ {{ticket.payment.due}}</span>
-                    </li>
-                </ul>
-                <div class="pagination" v-if="totalPage > 1">
-                    <div class="page" @click="page = page > 0 ? page - 1 : 0">
-                        <i class="fa fa-angle-left"></i>
-                    </div>
-                    <div class="page" v-for="i in totalPage" @click="page = (i-1)" :key="i" :class="{active:page === (i-1)}">{{i}}</div>
-                    <div class="page" @click="page = page === (totalPage-1) ? page : page + 1">
-                        <i class="fa fa-angle-right"></i>
-                    </div>
-                </div>
-            </article>
-            <aside>
-                <order-list layout="display" :display="true"></order-list>
-                <div class="function">
-                    <button class="btn" @click="edit">
-                        <i class="fa fa-list-alt"></i>
-                        <span class="text">{{$t("button.edit")}}</span>
-                    </button>
-                    <div class="btn" @click="settle">
-                        <i class="fa fa-print"></i>
-                        <span class="text">{{$t("button.payment")}}</span>
-                    </div>
-                    <div class="btn" @click="print">
-                        <i class="fa fa-print"></i>
-                        <span class="text">{{$t("button.print")}}</span>
-                    </div>
-                    <div class="btn" @click="split">
-                        <i class="fa fa-clone"></i>
-                        <span class="text">{{$t("button.split")}}</span>
-                    </div>
-                    <div class="btn" @click="exit">
-                        <i class="fa fa-times"></i>
-                        <span class="text">{{$t("button.exit")}}</span>
-                    </div>
-                    <div class="btn" @click="voidTicket">
-                        <i class="fa fa-ban"></i>
-                        <span class="text">{{$t("button.void")}}</span>
-                    </div>
-                </div>
-            </aside>
-        </section>
-        <div :is="component" :init="componentData"></div>
-    </div>
+            <div class="info">
+              <span>{{ticket.customer.phone | phone}}</span>
+              <span>{{ticket.customer.name}}</span>
+            </div>
+            <span class="amount">$ {{ticket.payment.due}}</span>
+          </li>
+        </ul>
+        <div class="pagination" v-if="totalPage > 1">
+          <div class="page" @click="page = page > 0 ? page - 1 : 0">
+            <i class="fa fa-angle-left"></i>
+          </div>
+          <div class="page" v-for="i in totalPage" @click="page = (i-1)" :key="i" :class="{active:page === (i-1)}">{{i}}</div>
+          <div class="page" @click="page = page === (totalPage-1) ? page : page + 1">
+            <i class="fa fa-angle-right"></i>
+          </div>
+        </div>
+      </article>
+      <aside>
+        <order-list layout="display" :display="true"></order-list>
+        <div class="function">
+          <button class="btn" @click="edit">
+            <i class="fa fa-list-alt"></i>
+            <span class="text">{{$t("button.edit")}}</span>
+          </button>
+          <div class="btn" @click="settle">
+            <i class="fa fa-print"></i>
+            <span class="text">{{$t("button.payment")}}</span>
+          </div>
+          <div class="btn" @click="print">
+            <i class="fa fa-print"></i>
+            <span class="text">{{$t("button.print")}}</span>
+          </div>
+          <div class="btn" @click="split">
+            <i class="fa fa-clone"></i>
+            <span class="text">{{$t("button.split")}}</span>
+          </div>
+          <div class="btn" @click="exit">
+            <i class="fa fa-times"></i>
+            <span class="text">{{$t("button.exit")}}</span>
+          </div>
+          <div class="btn" @click="voidTicket">
+            <i class="fa fa-ban"></i>
+            <span class="text">{{$t("button.void")}}</span>
+          </div>
+        </div>
+      </aside>
+    </section>
+    <div :is="component" :init="componentData"></div>
+  </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from "vuex";
+import reason from "./history/component/reason";
 import orderList from "./common/orderList";
 import dialoger from "./common/dialoger";
 import payment from "./payment/index";
-import reason from "./history/component/reason";
-import split from "./menu/component/split";
+import split from "./split/index";
+
 export default {
   components: { orderList, payment, split, reason, dialoger },
   data() {

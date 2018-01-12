@@ -727,11 +727,9 @@ export default {
         .then(this.checkGiftCard)
         .catch(() => this.$q());
     },
-    checkGiftCard(card) {
+    checkGiftCard({ number, result }) {
       this.$q();
-
       return new Promise((resolve, reject) => {
-        const { number, result } = card;
 
         if (result) {
           this.giftCard = result;

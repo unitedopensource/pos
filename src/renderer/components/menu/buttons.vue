@@ -146,12 +146,12 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
+import splitor from "../split/index";
 import unlock from "../common/unlock";
 import timer from "./component/timer";
 import payment from "../payment/index";
 import modify from "./component/modify";
 import coupon from "./component/coupon";
-import splitor from "./component/split";
 import course from "./component/course";
 import dialoger from "../common/dialoger";
 

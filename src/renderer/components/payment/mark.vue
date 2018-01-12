@@ -47,21 +47,18 @@ export default {
         "AE"
       ],
       type: "CASH",
-      orders: [],
+      order: null,
       releaseComponentLock: true,
       componentData: null,
       component: null
     };
   },
   created() {
-    this.order.split
-      ? this.checkComponentUsage()
-        .then(this.checkPermission)
-        .then(this.createSplitOrder)
-        .catch(this.initialFailed)
-      : this.checkComponentUsage()
-        .then(this.checkPermission)
-        .catch(this.initialFailed);
+    this.order = this.init.hasOwnProperty("order") ? this.init.order : this.$store.getters.order;
+
+    this.checkComponentUsage()
+      .then(this.checkPermission)
+      .catch(this.initialFailed);
   },
   beforeDestroy() {
     this.releaseComponentLock &&
@@ -71,13 +68,13 @@ export default {
       });
   },
   mounted() {
-    if (this.order.source !== "POS") {
+    if (this.order.source !== "POS")
       this.type = this.order.source;
-    }
+
   },
   methods: {
     checkComponentUsage() {
-      return new Promise((resolve, reject) => {
+      return new Promise((next, stop) => {
         let data = {
           component: "thirdParty",
           operator: this.op.name,
@@ -88,34 +85,22 @@ export default {
 
         if (this.init.hasOwnProperty("callback")) {
           this.$socket.emit("[COMPONENT] LOCK", data, lock => {
-            lock ? reject({ error: "paymentPending", data }) : resolve();
+            lock ? stop({ error: "paymentPending", data }) : next();
           });
         } else {
           this.releaseComponentLock = false;
-          resolve();
+          next();
         }
       });
     },
     checkPermission() {
-      return new Promise((resolve, reject) => {
+      return new Promise((next, stop) => {
         this.op.cashCtrl === "disable"
-          ? reject({ error: "accessDenied" })
-          : resolve();
+          ? stop({ error: "accessDenied" })
+          : next();
       });
     },
-    createSplitOrder() {
-      return new Promise(next => {
-        this.order.splitPayment.forEach(split => {
-          let order = JSON.parse(JSON.stringify(this.order));
-          order.payment = JSON.parse(JSON.stringify(split));
-          this.orders.push(order);
-        });
-        //pick order to continue
-        next();
-      });
-    },
-    initialFailed(reason) {
-      const { error, data } = reason;
+    initialFailed({ error, data }) {
       switch (error) {
         case "paymentPending":
           const current = +new Date();
@@ -138,9 +123,7 @@ export default {
             msg: "dialog.accessDeniedTip",
             timeout: { duration: 10000, fn: "resolve" },
             buttons: [{ text: "button.confirm", fn: "resolve" }]
-          }).then(() => {
-            this.exit();
-          });
+          }).then(() => this.exit());
           break;
       }
     },
@@ -168,11 +151,15 @@ export default {
         tip = 0;
       }
 
+      const parent = this.order.hasOwnProperty("parent") ? this.order.parent : this.order._id;
+      const split = this.order.hasOwnProperty("parent") ? this.order._id : null;
+
       const transaction = {
         _id: ObjectId(),
         date: today(),
         time: +new Date(),
-        order: this.order._id,
+        order: parent,
+        split,
         ticket: {
           number: this.order.number || this.ticket.number,
           type: this.order.type || this.ticket.type
@@ -192,35 +179,32 @@ export default {
         lfd: null
       };
 
-      Object.assign(this.order.payment, {
-        paid: this.order.payment.remain,
-        remain: 0,
-        type: this.type,
-        settled: true
+      this.$socket.emit("[TRANSACTION] SAVE", transaction, () => {
+        this.order.cashier = this.op.name;
+        this.order.payment.type = this.type;
+        this.order.payment.log.push(transaction);
+        this.$socket.emit("[UPDATE] INVOICE", this.order, false);
+        this.init.resolve();
       });
 
-      this.order.payment.log.push(transaction);
-      Object.assign(this.order, { settled: true, cashier: this.op.name });
 
-      this.$socket.emit("[UPDATE] INVOICE", this.order, false);
-      this.$socket.emit("[TRANSACTION] SAVE", transaction);
-      this.init.resolve();
+
     },
     exit() {
       this.init.resolve();
     }
   },
   computed: {
-    ...mapGetters(["op", "store", "order", "station"])
+    ...mapGetters(["op", "store", "station"])
   }
 };
 </script>
 
 <style scoped>
 .inner {
+  width: 540px;
   display: flex;
   flex-wrap: wrap;
-  width: 540px;
   justify-content: center;
 }
 
