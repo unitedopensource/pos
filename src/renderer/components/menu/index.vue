@@ -197,7 +197,7 @@ export default {
       const { favorite } = this.config.display;
       if (favorite) {
         const target = this.customer.favorite || [];
-        items.forEach(item => {
+        target.length > 0 && items.forEach(item => {
           item.like = target.includes(item._id);
         });
       }

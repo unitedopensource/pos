@@ -1,5 +1,4 @@
 <template>
-  <transition name="fade">
     <div class="container">
       <div class="accessor shadow">
         <h5>United POS</h5>
@@ -51,7 +50,6 @@
       <div id="drag"></div>
       <div :is="component" :init="componentData"></div>
     </div>
-  </transition>
 </template>
 
 <style scoped>
