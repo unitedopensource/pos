@@ -160,7 +160,7 @@ export default {
         .map(vm => vm.order)
         .filter((order, index) => index !== 0 && order.content.length !== 0);
 
-      if (this.app.newTicket) {
+      if (this.app.newTicket && this.$route.name === 'Menu') {
         const { number, type } = this.ticket;
 
         this.order.number = number;

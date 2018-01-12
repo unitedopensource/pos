@@ -1146,7 +1146,7 @@ function createFooter(config, setting, printer, ticket) {
 
     if (enable && type === 'PRE_PAYMENT') {
         const { balance } = payment;
-        const p = percentages.split(",").map(pct => ({
+        const data = percentages.split(",").map(pct => ({
             pct,
             val: (balance * pct / 100).toFixed(2),
             tip: (balance * (1 + pct / 100)).toFixed(2)
