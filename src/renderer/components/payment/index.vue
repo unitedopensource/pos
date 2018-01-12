@@ -87,7 +87,7 @@
                 </div>
                 <div class="input">
                   <span class="text">{{$t('text.total')}}</span>
-                  <span class="value">{{paidTotal}}</span>
+                  <span class="value">$ {{paidTotal | decimal}}</span>
                 </div>
                 <div class="input" @click="setAnchor($event)" data-anchor="evenly" data-format="number">
                   <span class="text">{{$t('text.separate')}}
@@ -99,7 +99,7 @@
               <aside class="padCtrl">
                 <div @click="del">&#8592;</div>
                 <div @click="clear">C</div>
-                <div @click="charge" :class="{disabled:payment.remain <= 0 || paid === '0.00'}">&#8626;</div>
+                <div @click="charge" :class="{disabled:payment.remain <= 0 || paidTotal === 0}">&#8626;</div>
               </aside>
             </template>
             <template v-else-if="paymentType === 'CREDIT'">
@@ -200,7 +200,7 @@
               <aside class="padCtrl">
                 <div @click="del">&#8592;</div>
                 <div @click="clear">C</div>
-                <div @click="queryGiftCard" v-if="anchor === 'giftCard' && typeof giftCard === 'string'" :class="{disabled:giftCard.length !== 19}">
+                <div @click="queryGiftCard" v-if="anchor === 'giftCard' && typeof giftCard === 'string'" :class="{disabled:giftCard.length < 19}">
                   <i class="fa fa-search"></i>
                 </div>
                 <div @click="charge" v-else>&#8626;</div>
@@ -244,7 +244,7 @@ export default {
     },
     paidTotal() {
       const total = parseFloat(this.paid) + parseFloat(this.tip);
-      return isNumber(total) ? "$ " + total.toFixed(2) : "$ 0.00";
+      return isNumber(total) ? total : 0;
     },
     ...mapGetters([
       "op",
@@ -667,7 +667,9 @@ export default {
         const number = this.creditCard.replace(/[^0-9\.]+/g, "");
         const date = this.expiration.replace(/[^0-9\.]+/g, "");
         const today = moment().format("MMYY");
-        const tip = parseFloat(this.tip) || this.payment.tip;
+        const tip =
+          parseFloat(this.tip) ||
+          (this.tipped === this.payment.tip ? 0 : this.payment.tip);
 
         const cardLengthError = {
           type: "error",
@@ -688,7 +690,7 @@ export default {
 
         resolve({
           creditCard: { number, date },
-          amount: this.paid - tip,
+          amount: this.paid,
           tip
         });
       });
@@ -802,9 +804,8 @@ export default {
         .toPrecision(12)
         .toFloat();
       const tip =
-        parseFloat(this.tip) || this.tipped === this.payment.tip
-          ? 0
-          : this.payment.tip;
+        parseFloat(this.tip) ||
+        (this.tipped === this.payment.tip ? 0 : this.payment.tip);
       const _id = ObjectId();
       const date = today();
       const time = +new Date();
@@ -1008,7 +1009,7 @@ export default {
     },
     tenderCash() {
       return new Promise(next => {
-        const paid = this.paid.toFixed(2);
+        const paid = this.paidTotal.toFixed(2);
         const tender = this.currentTender.toFixed(2);
 
         this.poleDisplay(["Paid CASH", paid], ["Change Due", tender]);
@@ -1099,21 +1100,28 @@ export default {
     checkBalance() {
       this.$q();
       if (this.payInFull) {
-        if (toFixed(this.payment.remain.toFixed(2), 2) > 0) {
-          this.$q();
-          this.setPaymentType("CASH");
-          this.poleDisplay(
-            "Balance Due:",
-            `$ ${this.payment.remain.toFixed(2)}`
-          );
-        } else {
-          this.poleDisplay("Thank You", "Please Come Again!");
-          if (this.isNewTicket) {
-            Printer.setTarget("Order").print(this.order);
-            this.$socket.emit("[UPDATE] INVOICE", this.order, true);
+        this.$socket.emit(
+          "[PAYMENT] CHECK",
+          this.order._id,
+          ({ paid, tipped }) => {
+            const remain = (this.payment.balance - paid - tipped)
+              .toPrecision(12)
+              .toFloat();
+
+            if (remain > 0) {
+              this.$q();
+              this.setPaymentType("CASH");
+              this.poleDisplay("Balance Due:", `$ ${remain.toFixed(2)}`);
+            } else {
+              this.poleDisplay("Thank You", "Please Come Again!");
+              if (this.isNewTicket) {
+                Printer.setTarget("Order").print(this.order);
+                this.$socket.emit("[UPDATE] INVOICE", this.order, true);
+              }
+              this.exitPayment();
+            }
           }
-          this.exitPayment();
-        }
+        );
       } else {
         this.switchInvoice();
       }
@@ -1156,8 +1164,7 @@ export default {
     },
     switchInvoice(index) {
       if (!isNumber(index))
-        index = this.splits.findIndex(order => order.payment.remain !== 0);
-console.log(index);
+        index = this.splits.findIndex(order => order.payment.remain > 0);
       if (index === -1) {
         this.settled();
       } else {
@@ -1374,8 +1381,9 @@ console.log(index);
         this.setOrder(Object.assign(this.order, { payment: this.payment }));
         this.exit();
       } else {
-        Object.assign(this.order, { payment: this.payment });
-        this.$socket.emit("[UPDATE] INVOICE", this.order, false);
+        let order = this.payInFull ? order : this.splits[this.current];
+        Object.assign(order, { payment: this.payment });
+        this.$socket.emit("[UPDATE] INVOICE", order, false);
         this.exit();
       }
     },

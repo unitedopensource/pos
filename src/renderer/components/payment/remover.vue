@@ -54,8 +54,8 @@
 
 <script>
 import { mapGetters } from "vuex";
-import dialoger from "../../common/dialoger";
-import pagination from "../../common/pagination";
+import dialoger from "../common/dialoger";
+import pagination from "../common/pagination";
 
 export default {
   props: ["init"],
@@ -204,11 +204,11 @@ export default {
         case "SP30":
         case "S80":
         case "S300":
-          return require("../../payment/parser/pax.js");
+          return require("./parser/pax.js");
         case "NX2200":
-          return require("../../payment/parser/exadigm.js");
+          return require("./parser/exadigm.js");
         default:
-          return require("../../payment/parser/pax.js");
+          return require("./parser/pax.js");
       }
     }
   }

@@ -56,7 +56,7 @@ import Dialoger from "../common/dialoger";
 import transaction from "./transaction";
 import Reason from "./component/reason";
 import Payment from "../payment/index";
-import logs from "./component/payLog";
+import remover from "../payment/remover";
 import unlock from "../common/unlock";
 import Report from "../report/index";
 import Calendar from "./component/calendar";
@@ -74,7 +74,7 @@ export default {
     unlock,
     Reason,
     Report,
-    logs
+    remover
   },
   data() {
     return {
@@ -198,7 +198,7 @@ export default {
           const { number } = this.order;
 
           this.componentData = { resolve, reject, number, logs };
-          this.component = "logs";
+          this.component = "remover";
         });
       }).then(() => this.$q());
     },
@@ -329,23 +329,13 @@ export default {
     splitPrint(order, receipt) {
       this.updateInvoice(order);
 
-      let split = [].concat
-        .apply([], order.content.map(item => item.sort))
-        .filter((v, i, s) => s.indexOf(v) === i).length;
-      let ticket = JSON.parse(JSON.stringify(order));
-      for (let i = 1; i < split + 1; i++) {
-        ticket.content = order.content.filter(
-          item =>
-            Array.isArray(item.sort) ? item.sort.includes(i) : item.sort === i
-        );
-        ticket.content.forEach(item => (item.diffs = "unchanged"));
-        ticket.payment = order.splitPayment[i - 1];
-        ticket.number = `${order.number}-${i}`;
-
-        receipt
-          ? Printer.setTarget("Receipt").print(ticket, true)
-          : Printer.setTarget("All").print(ticket);
-      }
+      this.$socket.emit("[SPLIT] GET", order.children, splits => {
+        splits.forEach(ticket => {
+          receipt
+            ? Printer.setTarget("Receipt").print(ticket, true)
+            : Printer.setTarget("All").print(ticket);
+        });
+      });
     },
     terminal() {
       this.$checkPermission("access", "terminal")

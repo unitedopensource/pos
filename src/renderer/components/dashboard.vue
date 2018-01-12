@@ -228,9 +228,10 @@ export default {
             cashDrawer: name,
             close: false
           },
-          data => {
-            const { name, initial } = data;
-            if (initial && enable && cashFlowCtrl) {
+          ({ name, initial }) => {
+            if (this.authorized) {
+              next();
+            } else if (initial && enable && cashFlowCtrl) {
               this.askCashIn();
               next();
             } else {
@@ -471,11 +472,11 @@ export default {
       }
     },
     acceptCashIn(amount) {
-      let cashDrawer =
+      const cashDrawer =
         this.op.cashCtrl === "enable"
           ? this.station.cashDrawer.name
           : this.op.name;
-      let record = {
+      const record = {
         date: today(),
         cashDrawer,
         operator: this.op.name,
