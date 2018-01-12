@@ -1,17 +1,17 @@
 <template>
   <aside>
-    <div class="btn" @click="editOrder">
+    <button class="btn" @click="editOrder">
       <i class="fa fa-pencil-square-o"></i>
       <span class="text">{{$t('button.edit')}}</span>
-    </div>
-    <div class="btn" @click="reOpenOrder" v-if="this.order && this.order.status !== 1">
+    </button>
+    <button class="btn" @click="reOpenOrder" v-if="this.order && this.order.status !== 1">
       <i class="fa fa-ban"></i>
       <span class="text">{{$t('button.recover')}}</span>
-    </div>
-    <div class="btn" @click="voidOrder" v-else>
+    </button>
+    <button class="btn" @click="voidOrder" v-else>
       <i class="fa fa-ban"></i>
       <span class="text">{{$t('button.void')}}</span>
-    </div>
+    </button>
     <button class="btn" @click="isSettled" :disabled="order.settled">
       <i class="fa fa-money"></i>
       <span class="text">{{$t('button.payment')}}</span>
@@ -40,10 +40,10 @@
       <i class="fa fa-bar-chart"></i>
       <span class="text">{{$t('button.stats')}}</span>
     </button>
-    <div class="btn" @click="reconciliation">
+    <button class="btn" @click="reconciliation" :disabled="true">
       <i class="fa fa-check-square-o"></i>
       <span class="text">{{$t('button.reconc')}}</span>
-    </div>
+    </button>
     <div :is="component" :init="componentData"></div>
   </aside>
 </template>

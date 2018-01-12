@@ -336,8 +336,8 @@ export default {
       if (this.ticket.type === "DELIVERY" && this.customer.phone.length !== 10)
         return;
 
-      this.$socket.emit("[CUSTOMER] UPDATE", this.customer, customer => {
-        this.setCustomer(customer);
+      this.$socket.emit("[CUSTOMER] UPDATE", this.customer, profile => {
+        this.emptyCustomerInfo(profile);
         this.$router.push({ path: "/main/menu" });
       });
     },
@@ -362,11 +362,12 @@ export default {
       this.query = true;
     },
     ...mapActions([
+      "emptyCustomerInfo",
       "toggleKeyboard",
       "resetDashboard",
-      "setApp",
       "setCustomer",
-      "resetAll"
+      "resetAll",
+      "setApp"
     ])
   },
   beforeDestroy() {

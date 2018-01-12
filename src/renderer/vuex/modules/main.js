@@ -3,7 +3,7 @@ import Preset from '../../preset'
 
 const state = {
   customer: Preset.customer(),
-  keyboard:false
+  keyboard: false
 }
 
 const mutations = {
@@ -12,6 +12,16 @@ const mutations = {
   },
   [types.SET_CUSTOMER](state, data) {
     state.customer = Object.assign({}, state.customer, data);
+  },
+  [types.EMPTY_CUSTOMER_INFO](state, data) {
+    state.customer = Object.assign({
+      phone: "",
+      extension: "",
+      address: "",
+      city: "",
+      name: "",
+      note: ""
+    }, data)
   },
   [types.RESET_DASHBOARD](state) {
     state.customer = Preset.customer();

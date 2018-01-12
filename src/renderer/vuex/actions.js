@@ -425,3 +425,8 @@ export const archiveOrder = ({
 }, data) => {
   commit(types.ARCHIVE_ORDER, data)
 }
+export const emptyCustomerInfo = ({
+  commit
+}, data) => {
+  commit(types.EMPTY_CUSTOMER_INFO, data)
+}

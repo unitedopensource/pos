@@ -335,14 +335,17 @@ export default {
     go(route) {
       switch (route) {
         case "buffet":
+          this.emptyCustomerInfo();
           this.setTicket({ type: "BUFFET" });
           this.$router.push({ path: "/main/menu" });
           break;
         case "sale":
+          this.emptyCustomerInfo();
           this.setTicket({ type: "SALES" });
           this.$router.push({ path: "/main/menu" });
           break;
         case "order":
+          this.emptyCustomerInfo();
           this.setTicket({ type: "WALK_IN" });
           this.$router.push({ path: "/main/menu" });
           break;
@@ -408,19 +411,19 @@ export default {
         case "enable":
           this.station.cashDrawer.cashFlowCtrl
             ? this.$socket.emit(
-                "[CASHFLOW] CHECK",
-                {
-                  date: today(),
-                  cashDrawer: this.station.cashDrawer.name,
-                  close: false
-                },
-                data => {
-                  let { name, initial } = data;
-                  initial
-                    ? this.initialCashFlow(name)
-                    : this.recordCashFlow(name);
-                }
-              )
+              "[CASHFLOW] CHECK",
+              {
+                date: today(),
+                cashDrawer: this.station.cashDrawer.name,
+                close: false
+              },
+              data => {
+                let { name, initial } = data;
+                initial
+                  ? this.initialCashFlow(name)
+                  : this.recordCashFlow(name);
+              }
+            )
             : Printer.openCashDrawer();
           break;
         case "staffBank":
@@ -535,7 +538,8 @@ export default {
       "setCustomer",
       "setStation",
       "setStations",
-      "resetDashboard"
+      "resetDashboard",
+      "emptyCustomerInfo"
     ])
   }
 };
