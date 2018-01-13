@@ -38,7 +38,6 @@ export default {
       let { payment } = this.init;
       let coupon;
       if (this.unit === "%") {
-        discount = toFixed(payment.subtotal * this.discount / 100, 2);
         coupon = {
           code: "UnitedPOS Inc",
           alias: `${this.discount} % OFF`,
@@ -52,6 +51,7 @@ export default {
           apply: "order"
         };
       } else {
+        discount = toFixed(payment.subtotal * this.discount / 100, 2);
         coupon = {
           code: "UnitedPOS Inc",
           alias: `$ ${this.discount} OFF`,

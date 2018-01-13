@@ -129,8 +129,9 @@ input[type='radio'] {
   background: transparent;
   position: fixed;
   z-index: 3;
-  top: 30px;
+  top: 0px;
   left: 0;
+  transform: translateZ(0) translateY(30px);
 }
 
 .popupMask.setting {

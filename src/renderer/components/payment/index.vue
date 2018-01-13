@@ -56,7 +56,7 @@
           </div>
           <div class="fn">
             <button class="btn" @click="setTip">{{$t('button.setTip')}}</button>
-            <button class="btn" @click="setDiscount" :disabled="!discountable">{{$t('button.setDiscount')}}</button>
+            <button class="btn" @click="setDiscount" :disabled="!discountable || this.order.split">{{$t('button.setDiscount')}}</button>
             <button class="btn" @click="save">{{$t('button.save')}}</button>
           </div>
         </nav>
@@ -1215,12 +1215,15 @@ export default {
         this.componentData = { resolve, reject, payment: this.payment };
         this.component = "discount";
       })
-        .then(result => {
-          const { discount, coupon } = result;
+        .then(({ discount, coupon }) => {
+          if (coupon.type === "discount")
+            discount = toFixed(this.payment.subtotal * discount / 100, 2);
+
           Object.assign(this.payment, { discount });
 
           if (discount > 0) {
             this.order.coupons.push(coupon);
+
           } else {
             const index = this.order.coupons.findIndex(
               coupon => coupon.code === "UnitedPOS Inc"
@@ -1386,7 +1389,6 @@ export default {
       } else {
         let order = this.payInFull ? this.order : this.splits[this.current];
         Object.assign(order, { payment: this.payment });
-        console.log(order);
         this.$socket.emit("[UPDATE] INVOICE", order, false);
         this.exit();
       }

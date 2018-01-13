@@ -1,60 +1,64 @@
 <template>
-  <ul @click.self="tap" v-if="enable" :class="[unique,{ban}]">
-    <li v-for="(item,index) in order.content" :key="index" @click="pick(item)" :data-unique="item.unique" v-show="!item.split">
-      <div class="main">
-        <span class="qty">{{item.qty}}</span>
-        <span>
-          <span class="item">{{item[language]}}</span>
-          <span class="side">{{item.side[language]}}</span>
-        </span>
-        <template v-if="master">
-          <i class="fa fa-lock" @click.stop="toggleLock(index)" v-if="item.lock"></i>
-          <i class="fa fa-unlock" @click.stop="toggleLock(index)" v-else></i>
-        </template>
-        <template v-else>
-          <span></span>
-        </template>
-      </div>
-      <div class="sub">
-        <p v-for="(sub,idx) in item.choiceSet" :key="idx">
+  <div class="relative">
+    <ul @click.self="tap" v-if="enable" :class="[unique,{ban}]">
+      <li v-for="(item,index) in order.content" :key="index" @click="pick(item)" :data-unique="item.unique" v-show="!item.split">
+        <div class="main">
           <span class="qty">{{item.qty}}</span>
-          <span>{{sub[language]}}</span>
-        </p>
-      </div>
-    </li>
-    <template v-if="master">
-      <li class="function" v-if="buffer.length === 0" @click="selectAll">
-        <i class="fa fa-check-square-o"></i>
-        <span>{{$t('button.selectAll')}}</span>
+          <span>
+            <span class="item">{{item[language]}}</span>
+            <span class="side">{{item.side[language]}}</span>
+          </span>
+          <template v-if="false">
+            <i class="fa fa-lock" @click.stop="toggleLock(index)" v-if="item.lock"></i>
+            <i class="fa fa-unlock" @click.stop="toggleLock(index)" v-else></i>
+          </template>
+          <template v-else>
+            <span></span>
+          </template>
+        </div>
+        <div class="sub">
+          <p v-for="(sub,idx) in item.choiceSet" :key="idx">
+            <span class="qty">{{item.qty}}</span>
+            <span>{{sub[language]}}</span>
+          </p>
+        </div>
       </li>
-      <li class="function" v-else @click="selectAll">
-        <i class="fa fa-square-o"></i>
-        <span>{{$t('button.unset')}}</span>
-      </li>
-    </template>
-    <template v-else>
-      <li class="tooltip">
-        <i class="fa fa-warning"></i>
-        <span>{{reason}}</span>
-      </li>
-      <li class="settle">
-        <p class="total">$ {{order.payment.total | decimal}}
-          <span class="tip">( {{order.payment.tax | decimal}} )</span>
-        </p>
-        <i class="fa fa-bars"></i>
-      </li>
-    </template>
-    <div :is="component" :init="componentData"></div>
-  </ul>
+      <template v-if="master">
+        <li class="function" v-if="buffer.length === 0" @click="selectAll">
+          <i class="fa fa-check-square-o"></i>
+          <span>{{$t('button.selectAll')}}</span>
+        </li>
+        <li class="function" v-else @click="selectAll">
+          <i class="fa fa-square-o"></i>
+          <span>{{$t('button.unset')}}</span>
+        </li>
+      </template>
+      <template v-else>
+        <li class="tooltip">
+          <i class="fa fa-warning"></i>
+          <span>{{reason}}</span>
+        </li>
+        <li class="settle">
+          <p class="total">$ {{order.payment.remain | decimal}}
+            <span class="tip">( {{order.payment.tax | decimal}} )</span>
+          </p>
+          <i class="fa fa-bars" @click="ticketConfig"></i>
+        </li>
+      </template>
+    </ul>
+    <div :is="component" :init="componentData" @config="applyConfig" @discount="setDiscount"></div>
+  </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
+import evener from "./component/evener";
 import options from "./component/options";
+import discount from "../payment/discount";
 
 export default {
   props: ["data", "master", "index"],
-  components: { options },
+  components: { evener, options, discount },
   computed: {
     enable() {
       return this.master
@@ -73,20 +77,20 @@ export default {
       ban: false,
       buffer: [],
       unique:
-        "s" +
-        Math.random()
-          .toString(36)
-          .substr(2, 2)
+      "s" +
+      Math.random()
+        .toString(36)
+        .substr(2, 2)
     };
   },
   created() {
     if (this.master) {
-      this.$bus.on("reset", this.hide);
+      this.$bus.on("remove", this.hide);
       this.$bus.on("restore", this.restore);
 
       this.order.content.forEach(item => (item.lock = false));
     } else {
-      this.$bus.on("reset", this.remove);
+      this.$bus.on("remove", this.remove);
       this.$bus.on("transfer", this.transfer);
 
       if (this.order.settled) {
@@ -103,10 +107,10 @@ export default {
   },
   beforeDestroy() {
     if (this.master) {
-      this.$bus.off("reset", this.hide);
+      this.$bus.off("remove", this.hide);
       this.$bus.off("restore", this.restore);
     } else {
-      this.$bus.off("reset", this.remove);
+      this.$bus.off("remove", this.remove);
       this.$bus.off("transfer", this.transfer);
     }
   },
@@ -121,8 +125,7 @@ export default {
       index !== -1 ? this.buffer.splice(index, 1) : this.buffer.push(item);
     },
     hide(item) {
-      this.buffer.filter(item=>!item.lock).forEach(item => {
-        const { unique } = item;
+      this.buffer.filter(item => !item.lock).forEach(({ unique }) => {
         const index = this.order.content.findIndex(i => i.unique === unique);
         this.order.content[index].split = true;
       });
@@ -146,26 +149,60 @@ export default {
       });
       this.buffer = [];
       this.order.content.splice();
-      this.$bus.emit("reset");
+      this.$bus.emit("remove");
     },
     transfer({ unique, items }) {
       if (this.unique === unique) {
-        const unlocks = items.filter(item => !item.lock);
-        this.order.content.push(...unlocks);
+        this.order.content.push(...items.filter(item => !item.lock));
 
-        const locks = items.filter(item => item.lock);
-        locks.length > 0 && this.showSplitOption(locks);
+        const evenSplit = items.filter(item => item.lock);
+        evenSplit.length > 0 && this.popDialogFor(evenSplit);
       }
-      this.$bus.emit("reset");
+      this.$bus.emit("remove");
     },
-    showSplitOption(items) {
+    popDialogFor(items) {
       new Promise((resolve, reject) => {
         this.componentData = { resolve, reject };
-        this.component = "options";
+        this.component = "evener";
       }).then(option => {
         console.log(option);
         this.$q();
       });
+    },
+    ticketConfig() {
+      const taxFree = this.order.taxFree || false;
+      const deliveryFree = this.order.deliveryFree || false;
+      const gratuityFree = this.order.gratuityFree || false;
+      const { type } = this.order;
+      !this.component
+        ? this.$open("options", { taxFree, deliveryFree, gratuityFree, type })
+        : this.$q()
+    },
+    applyConfig() {
+
+    },
+    setDiscount() {
+      new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject, payment: this.order.payment };
+        this.component = "discount";
+      })
+        .then(({ discount, coupon }) => {
+          console.log(discount,coupon)
+          Object.assign(this.order.payment, { discount });
+
+          if (discount > 0) {
+            this.order.coupons.push(coupon);
+          } else {
+            const index = this.order.coupons.findIndex(
+              coupon => coupon.code === "UnitedPOS Inc"
+            );
+            index !== -1 && this.order.coupons.splice(index, 1);
+          }
+          this.calculator(this.order.content);
+          this.$q();
+        })
+        .catch(() => this.$q());
+
     },
     tap() {
       this.buffer = [];
@@ -255,7 +292,7 @@ export default {
             .sort((a, b) => a.guest < b.guest)
             .find(r => guest >= r.guest);
           gratuity = percentage ? toFixed(subtotal * fee / 100, 2) : fee;
-        } catch (e) {}
+        } catch (e) { }
       }
 
       if (coupons && coupons.length > 0) {

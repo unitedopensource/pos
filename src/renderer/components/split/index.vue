@@ -97,7 +97,7 @@ export default {
       this.$children.map(vm => content.push(...vm.buffer));
       const split = Object.assign({}, order, { _id, content, payment });
       this.splits.push(split);
-      this.$bus.emit("reset");
+      this.$bus.emit("remove");
     },
     transfer({ unique, index }) {
       let buffer = [];
@@ -168,7 +168,7 @@ export default {
       }
 
       let total = 0;
-      let due = 0;
+      let discount = 0;
       let balance = 0;
       let remain = 0;
 
@@ -177,14 +177,15 @@ export default {
           order.parent = parent;
           order.number = `${this.order.number}-${index + 1}`;
           total += order.payment.total;
-          due += order.payment.due;
+          discount += order.payment.discount;
           balance += order.payment.balance;
           remain += order.payment.remain;
         });
 
         this.$socket.emit("[SPLIT] SAVE", { splits, parent });
         this.order.payment.total = toFixed(total, 2);
-        this.order.payment.due = toFixed(due, 2);
+        this.order.payment.discount = toFixed(discount, 2);
+        this.order.payment.due = toFixed(total - discount, 2);
         this.order.payment.balance = toFixed(balance, 2);
         this.order.payment.remain = toFixed(remain, 2);
         this.order.content.forEach(item => (item.split = true));
@@ -205,8 +206,11 @@ export default {
         this.$socket.emit("[SPLIT] SAVE", { splits: [], parent });
         this.order.content.forEach(item => (item.split = false));
         this.order.payment = payment;
-        this.order.children = [];
+        this.order.payment.discount = 0;
+        this.order.payment.paid = 0;
         this.order.split = false;
+        this.order.children = [];
+        this.order.coupons = [];
         this.$socket.emit("[UPDATE] INVOICE", this.order);
         this.init.resolve();
       }
