@@ -7,8 +7,8 @@
                 <span class="side">{{item.side[language]}}</span>
             </span>
             <template v-if="split">
-                <i class="fa fa-unlock" @click.stop="setLock" v-if="lock"></i>
-                <i class="fa fa-lock" @click.stop="setLock" v-else></i>
+                <i class="fa fa-lock" @click.stop="setLock" v-if="lock"></i>
+                <i class="fa fa-unlock" @click.stop="setLock" v-else></i>
             </template>
             <template v-else>
                 <span></span>

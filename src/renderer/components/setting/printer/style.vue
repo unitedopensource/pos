@@ -24,7 +24,7 @@
               <span class="gray">{{getLanguage(language.ref)}}</span>
             </div>
             <i class="fa fa-bars drag"></i>
-            <switches title="text.enable" v-model="language.enable"></switches>
+            <switches title="text.enable" v-model="language.enable" @update="doubleCheck(index)"></switches>
           </div>
           <div>
             <selector title="print.fontFamily" v-model="language.fontFamily" :opts="fonts"></selector>
@@ -107,12 +107,6 @@ export default {
           plainText: true,
           value: "Noto Sans CJK SC"
         },
-        // {
-        //   label: "细黑",
-        //   tooltip: "(中文)",
-        //   plainText: true,
-        //   value: "Cloud-XiHei"
-        // },
         {
           label: "晴圆",
           tooltip: "(中文)",
@@ -152,6 +146,11 @@ export default {
       return ref === "zhCN"
         ? this.$t("print.secondary")
         : this.$t("print.primary");
+    },
+    doubleCheck(index) {
+      const status = this.layout.languages.some(language => language.enable);
+
+      if (!status) this.layout.languages[index === 0 ? 1 : 0].enable = true;
     }
   }
 };
