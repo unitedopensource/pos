@@ -565,7 +565,6 @@ export default {
       }
     },
     payFailed(error) {
-
       this.$log({
         eventID: 9009,
         type: "failure",
@@ -604,7 +603,7 @@ export default {
       this.getQuickInput(this.payment.remain);
     },
     checkOverPay() {
-      return new Promise((resolve, reject) => {
+      return new Promise(next => {
         const paidZeroError = {
           type: "error",
           title: "dialog.paymentFailed",
@@ -626,11 +625,12 @@ export default {
           this.$dialog(content)
             .then(() => {
               this.payment.tip = extra;
+              this.paid = (this.paid - extra).toFixed(2);
               this.tip = extra.toFixed(2);
 
               this.$q();
               this.recalculatePayment();
-              resolve();
+              next(true);
             })
             .catch(() => {
               this.payment.tip = 0;
@@ -638,7 +638,7 @@ export default {
               this.$q();
             });
         } else {
-          resolve();
+          next(false);
         }
       });
     },
@@ -668,6 +668,7 @@ export default {
         const number = this.creditCard.replace(/[^0-9\.]+/g, "");
         const date = this.expiration.replace(/[^0-9\.]+/g, "");
         const today = moment().format("MMYY");
+
         const tip =
           parseFloat(this.tip) ||
           (this.tipped === this.payment.tip ? 0 : this.payment.tip);
@@ -804,7 +805,6 @@ export default {
       const tip =
         parseFloat(this.tip) ||
         (this.tipped === this.payment.tip ? 0 : this.payment.tip);
-
 
       const _id = ObjectId();
       const date = today();
@@ -1104,11 +1104,10 @@ export default {
           "[PAYMENT] CHECK",
           this.order._id,
           ({ paid, tipped }) => {
-            const remain = (this.payment.balance - paid - tipped)
-              .toPrecision(12)
-              .toFloat();
-
-            if (remain > 0) {
+            if (
+              this.payment.tip === tipped &&
+              this.payment.remain === toFixed(paid + tipped, 2)
+            ) {
               this.$q();
               this.setPaymentType("CASH");
               this.poleDisplay("Balance Due:", `$ ${remain.toFixed(2)}`);
@@ -1266,9 +1265,9 @@ export default {
         this.tip = val.toFixed(2);
         this.getQuickInput(this.payment.remain);
       } else {
-        if(parseFloat(this.tip) === this.payment.tip){
-          this.paid = (val - this.payment.tip).toFixed(2)
-        }else{
+        if (parseFloat(this.tip) === this.payment.tip) {
+          this.paid = (val - this.payment.tip).toFixed(2);
+        } else {
           this.paid = val.toFixed(2);
         }
       }

@@ -26,10 +26,10 @@ export default {
   },
   methods: {
     view(e) {
-      let dom = document.querySelector(".ticket.active");
-      dom && dom.classList.remove("active");
+      // let dom = document.querySelector(".ticket.active");
+      // dom && dom.classList.remove("active");
 
-      e.currentTarget.classList.add("active");
+      // e.currentTarget.classList.add("active");
       this.setViewOrder(this.invoice);
     },
     ...mapActions(["setViewOrder"])

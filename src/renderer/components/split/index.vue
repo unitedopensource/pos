@@ -29,7 +29,7 @@
             <label class="label indent">{{$t("text.swipeMode")}}</label>
           </div>
         </div>
-        <button class="btn" @click="init.reject">{{$t('button.cancel')}}</button>
+        <button class="btn" @click="init.reject">{{$t('button.back')}}</button>
         <button class="btn" @click="confirm" :disabled="!done">{{$t('button.confirm')}}</button>
       </footer>
     </div>
@@ -200,8 +200,11 @@ export default {
           this.init.resolve();
         }
       } else {
+        const { payment } = splits.find(order => order.content !== 0);
+
         this.$socket.emit("[SPLIT] SAVE", { splits: [], parent });
         this.order.content.forEach(item => (item.split = false));
+        this.order.payment = payment;
         this.order.children = [];
         this.order.split = false;
         this.$socket.emit("[UPDATE] INVOICE", this.order);

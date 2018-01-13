@@ -51,6 +51,7 @@ import payment from "../payment/index";
 import unlock from "../common/unlock";
 import split from "../split/index";
 import list from "./list";
+
 export default {
   props: ["transfer"],
   components: { dialoger, unlock, payment, split, list },
@@ -125,9 +126,7 @@ export default {
           { text: "button.edit", fn: "resolve" }
         ]
       })
-        .then(() => {
-          this.editOrder();
-        })
+        .then(this.editOrder)
         .catch(() => this.$q());
     },
     switchTable() {
@@ -181,14 +180,13 @@ export default {
             { text: "button.printAnyway", fn: "resolve" }
           ]
         })
-          .then(() => {
-            this.$q();
-            this.printPrePayment();
-          })
+          .then(this.printPrePayment)
           .catch(() => this.$q());
       }
     },
     printPrePayment() {
+      this.$q();
+
       let order = JSON.parse(JSON.stringify(this.order));
       Object.assign(order, {
         type: "PRE_PAYMENT",
@@ -207,27 +205,21 @@ export default {
           { text: "button.splitPrint", fn: "resolve" }
         ]
       })
-        .then(() => {
-          this.$q(), this.splitPrint();
-        })
-        .catch(() => {
-          this.$q(), this.printPrePayment();
-        });
+        .then(this.splitPrint)
+        .catch(this.printPrePayment);
     },
     splitPrint() {
-      let split = [].concat
-        .apply([], this.order.content.map(item => item.sort))
-        .filter((v, i, s) => s.indexOf(v) === i).length;
-      let ticket = JSON.parse(JSON.stringify(this.order));
-      for (let i = 1; i < split + 1; i++) {
-        ticket.content = this.order.content.filter(
-          item =>
-            Array.isArray(item.sort) ? item.sort.includes(i) : item.sort === i
-        );
-        ticket.payment = this.order.splitPayment[i - 1];
-        ticket.number = `${this.order.number}-${i}`;
-        Printer.setTarget("Receipt").print(ticket, true);
-      }
+      this.$q();
+      this.$socket.emit("[SPLIT] GET", this.order.children, splits => {
+        splits.forEach(ticket => {
+          Object.assign(ticket, {
+            type: "PRE_PAYMENT",
+            cashier: this.op.name
+          });
+          Printer.setTarget("Receipt").print(ticket, true);
+        });
+      });
+
       this.$socket.emit("[TABLE] UPDATE", {
         _id: this.order.tableID,
         status: 3

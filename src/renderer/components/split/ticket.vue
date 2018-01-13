@@ -1,20 +1,7 @@
 <template>
   <ul @click.self="tap" v-if="enable" :class="[unique,{ban}]">
     <li v-for="(item,index) in order.content" :key="index" @click="pick(item)" :data-unique="item.unique" v-show="!item.split">
-      <div class="main">
-        <span class="qty">{{item.qty}}</span>
-        <span>
-          <span class="item">{{item[language]}}</span>
-          <span class="side">{{item.side[language]}}</span>
-        </span>
-        <span></span>
-      </div>
-      <div class="sub">
-        <p v-for="(sub,idx) in item.choiceSet" :key="idx">
-          <span class="qty">{{item.qty}}</span>
-          <span>{{sub[language]}}</span>
-        </p>
-      </div>
+      <item :item="item" :split="master" :language="language"></item>
     </li>
     <template v-if="master">
       <li class="function" v-if="buffer.length === 0" @click="selectAll">
@@ -43,8 +30,11 @@
 
 <script>
 import { mapGetters } from "vuex";
+import item from "./component/item";
+
 export default {
   props: ["data", "master", "index"],
+  components: { item },
   computed: {
     enable() {
       return this.master
@@ -326,36 +316,9 @@ li {
   padding: 5px;
 }
 
-.side {
-  color: rgba(0, 0, 0, 0.5);
-  margin-left: 2px;
-}
-
-.main .qty {
-  display: inline-block;
-  min-width: 20px;
-  text-align: center;
-}
-
-.sub {
-  color: #ff9800;
-  font-size: 0.8em;
-  text-indent: 2em;
-}
-
-.sub .qty:after {
-  content: " x ";
-}
-
 li.picked {
   background: #9e9e9e;
   text-shadow: 0 1px 1px #333;
-}
-
-li.picked .main,
-li.picked .main .side,
-li.picked .sub {
-  color: #fff;
 }
 
 li.function {
