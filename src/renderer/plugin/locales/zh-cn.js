@@ -808,7 +808,6 @@ export default {
         'breakTime': '休息次数',
         'paid': '支付',
         'expire': '过期日期',
-        'taxRate': '税率',
         'default': '默认',
         'location': '位置',
         'condition': '条件',
@@ -831,10 +830,8 @@ export default {
         'dessert': '甜点',
         'driver': '司机',
         'transaction': '交易',
-        'cardInfo': '卡号信息',
         'amount': '金额',
         'action': '操作',
-        'chargeBackRisk': '此交易存在赖账的风险',
         'adjustTip': '调整小费',
         'edit': '修改',
         'single': '单价',
@@ -856,6 +853,7 @@ export default {
         'minute': '分钟',
         'second': '秒',
         'subtotal': '小计',
+        'sum': '合计',
         'delivery': '送餐',
         'deliveryFee': '送餐费',
         'total': '总数',
@@ -1109,7 +1107,10 @@ export default {
         'selectEmployee': '选择员工',
         'generatePayroll': '生成工资单',
         'requireAccessPin': '需要登陆密码',
-        'swipeMode': '滑动模式'
+        'swipeMode': '滑动模式',
+        'noRounding': '禁止',
+        'alwaysRoundUp': '向上取整',
+        'alwaysRoundDown': '向下取整'
     },
     nav: {
         'store': '店面',
@@ -1199,6 +1200,7 @@ export default {
         'deliveryCharge': '送餐费',
         'deliveryTax': '送餐税',
         'others': '其它设置',
+        'rounding': '美分取整',
         'tax': '税率',
         'taxBeforeDiscount': '折扣前征税',
         'taxBeforeCredit': '积分前征税',
@@ -1473,6 +1475,12 @@ export default {
             'difference': '只打印 新增, 更改, 删除 的物品',
             'new': '只打印新增的物品',
             'todo': '标识出 已有, 新增 的物品'
+        },
+        'rounding': {
+            'tooltip': '设置美分取整方式',
+            'disable': '不调整美分',
+            'up': '往上补齐至最近的25美分',
+            'down': '往下补齐至最近的25美分'
         },
         'coupon': {
             'rebate': '(满 30 减 5)',

@@ -1,25 +1,25 @@
 <template>
   <div>
     <external title="setting.tax" tooltip="tip.tax" @open="editTax"></external>
-    <toggle title="setting.taxBeforeDiscount" v-model="tax.beforeDiscount" @update="updateTaxDiscount"></toggle>
-    <toggle title="setting.taxBeforeCredit" v-model="tax.beforeCredit" @update="updateTaxCredit"></toggle>
+    <!-- <toggle title="setting.taxBeforeDiscount" v-model="tax.beforeDiscount" @update="updateTaxDiscount"></toggle>
+    <toggle title="setting.taxBeforeCredit" v-model="tax.beforeCredit" @update="updateTaxCredit"></toggle> -->
     <toggle title="setting.deliveryTax" tooltip="tip.deliveryTax" v-model="tax.deliveryTax" @update="updateDeliveryTax"></toggle>
     <toggle title="setting.deliveryCharge" true-tooltip="tip.deliveryCharge" false-tooltip="tip.deliveryFree" v-model="store.delivery" :conditionalTooltip="true" @update="updateDelivery">
-        <transition name="dropdown">
-          <div class="opt" v-if="store.delivery">
-            <inputer title="text.amount" v-model.number="store.deliveryCharge" @update="updateDeliveryCharge"></inputer>
-          </div>
-        </transition>
+      <transition name="dropdown">
+        <div class="opt" v-if="store.delivery">
+          <inputer title="text.amount" v-model.number="store.deliveryCharge" @update="updateDeliveryCharge"></inputer>
+        </div>
+      </transition>
     </toggle>
     <toggle title="setting.tipSuggestion" tooltip="tip.tipSuggestion" v-model="store.tipSuggestion.enable" @update="updateTipSuggestion">
       <transition name="dropdown">
-            <div v-if="store.tipSuggestion.enable" class="fees">
-              <label>{{$t('text.tipPercentage')}}</label>
-              <input type="text" v-model="store.tipSuggestion.percentages" v-mask="'##,##,##'" maxlength="10" placeholder="15,18,20" @blur="updateTipPercentages">
-            </div>
-        </transition>
+        <div v-if="store.tipSuggestion.enable" class="fees">
+          <label>{{$t('text.tipPercentage')}}</label>
+          <input type="text" v-model="store.tipSuggestion.percentages" v-mask="'##,##,##'" maxlength="10" placeholder="15,18,20" @blur="updateTipPercentages">
+        </div>
+      </transition>
     </toggle>
-    <!-- <toggle title="setting.rounding" v-model="store.rounding.enable"></toggle> -->
+    <text-list title="setting.rounding" tooltip="tip.rounding.tooltip" :opts="roundingOption" v-model="store.rounding" @update="updateRounding"></text-list>
     <options title="setting.receiptDialog" tooltip="tip.receiptDefaultAction" v-model="store.receipt" :opts="receiptOption" @update="updateReceipt"></options>
   </div>
 </template>
@@ -30,10 +30,12 @@ import toggle from "../common/toggle";
 import inputer from "../common/inputer";
 import options from "../common/options";
 import external from "../common/external";
+import textList from "../common/textList";
 import textInput from "../common/textInput";
 
+
 export default {
-  components: { options, toggle, inputer, textInput, external },
+  components: { options, toggle, inputer, textInput, textList, external },
   computed: {
     ...mapGetters(["config", "tax"])
   },
@@ -56,7 +58,20 @@ export default {
           tooltip: "tip.alwaysPrintReceipt",
           value: "always"
         }
-      ]
+      ],
+      roundingOption: [{
+        label: "text.noRounding",
+        tooltip: "tip.rounding.disable",
+        value: "disable"
+      }, {
+        label: "text.alwaysRoundUp",
+        tooltip: "tip.rounding.up",
+        value: "roundUp"
+      }, {
+        label: "text.alwaysRoundDown",
+        tooltip: "tip.rounding.down",
+        value: "roundDown"
+      }]
     };
   },
   created() {
@@ -124,6 +139,12 @@ export default {
         key: "store.receipt",
         value
       });
+    },
+    updateRounding(value){
+      this.update({
+        key:'store.rounding',
+        value
+      })
     },
     editTax() {
       this.$router.push({ name: "Setting.store.tax" });

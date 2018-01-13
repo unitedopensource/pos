@@ -138,7 +138,7 @@ export default {
                     ? parseFloat(this.store.deliveryCharge)
                     : 0;
 
-            let { tip, gratuity, paid } = this.order.payment;
+            let { tip, gratuity, paid, rounding = 0 } = this.order.payment;
             let subtotal = 0,
                 tax = 0,
                 discount = 0;
@@ -237,10 +237,9 @@ export default {
                 discount += offer;
             }
 
-            const total = subtotal + tax + delivery;
-            const due = Math.max(0, total - discount);
-            const surcharge = tip + gratuity;
-            const balance = due + surcharge;
+            const total = subtotal + tax;
+            const due = Math.max(0, total + delivery - discount);
+            const balance = due + gratuity + rounding;
             const remain = balance - paid;
 
             Object.assign(this.order.payment, {
@@ -255,7 +254,7 @@ export default {
                 tip: toFixed(tip, 2),
                 gratuity: toFixed(gratuity, 2),
                 delivery: toFixed(delivery, 2),
-                surcharge: toFixed(surcharge, 2)
+                rounding: toFixed(rounding, 2)
             });
         }
 

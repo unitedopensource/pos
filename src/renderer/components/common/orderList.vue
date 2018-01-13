@@ -45,42 +45,50 @@
         <button class="fn fa fa-keyboard-o" @click="openKeyboard" :disabled="$route.name !== 'Menu'"></button>
       </div>
       <div class="settle" @click="openConfig">
-        <div>
-          <span class="text">{{$t("text.subtotal")}}:</span>
-          <span class="value">{{payment.subtotal | decimal}}</span>
-        </div>
-        <div>
-          <span class="text">{{$t("text.tax")}}:</span>
-          <span class="value">{{payment.tax | decimal}}</span>
-        </div>
-        <template v-if="order.type === 'DELIVERY'">
-          <div :class="{hidden:parseFloat(payment.tip) === 0}">
-            <span class="text">{{$t("text.tip")}}:</span>
-            <span class="value">{{payment.tip | decimal}}</span>
-          </div>
-          <div>
-            <span class="text">{{$t("text.deliveryFee")}}:</span>
-            <span class="value">{{payment.delivery | decimal}}</span>
-          </div>
+        <template v-if="payment.discount === 0">
+          <p>
+            <span class="text">{{$t("text.subtotal")}}:</span>
+            <span class="value">{{payment.subtotal | decimal}}</span>
+          </p>
+          <p>
+            <span class="text">{{$t("text.tax")}}:</span>
+            <span class="value">{{payment.tax | decimal}}</span>
+          </p>
         </template>
         <template v-else>
-          <div v-if="payment.gratuity > 0">
-            <span class="text">{{$t("text.gratuity")}}:</span>
-            <span class="value">{{payment.gratuity | decimal}}</span>
-          </div>
-          <div :class="{hidden:parseFloat(payment.tip) === 0}" v-else>
-            <span class="text">{{$t("text.tip")}}:</span>
-            <span class="value">{{payment.tip | decimal}}</span>
-          </div>
-          <div :class="{hidden:parseFloat(payment.discount) === 0}">
+          <p>
+            <span class="text">{{$t("text.sum")}}:</span>
+            <span class="value">{{payment.total | decimal}}</span>
+          </p>
+          <p>
             <span class="text">{{$t("text.discount")}}:</span>
             <span class="value">- {{payment.discount | decimal}}</span>
-          </div>
+          </p>
         </template>
-        <div>
+        <template v-if="order.type === 'DELIVERY'">
+          <p :class="{hidden:parseFloat(payment.tip) === 0}">
+            <span class="text">{{$t("text.tip")}}:</span>
+            <span class="value">{{payment.tip | decimal}}</span>
+          </p>
+          <p>
+            <span class="text">{{$t("text.deliveryFee")}}:</span>
+            <span class="value">{{payment.delivery | decimal}}</span>
+          </p>
+        </template>
+        <template v-else>
+          <p :class="{hidden:parseFloat(payment.gratuity) === 0}">
+            <span class="text">{{$t("text.gratuity")}}:</span>
+            <span class="value">{{payment.gratuity | decimal}}</span>
+          </p>
+          <p :class="{hidden:parseFloat(payment.tip) === 0}">
+            <span class="text">{{$t("text.tip")}}:</span>
+            <span class="value">{{payment.tip | decimal}}</span>
+          </p>
+        </template>
+        <p>
           <span class="text">{{$t("text.total")}}:</span>
           <span class="value">{{payment.due | decimal}}</span>
-        </div>
+        </p>
       </div>
     </div>
     <div :is="component" :init="componentData" @trigger="update"></div>
@@ -88,11 +96,12 @@
 </template>
 <script>
 import { mapGetters, mapActions } from "vuex";
-import dialoger from "../common/dialoger";
-import entry from "../menu/component/entry";
 import creditVault from "./component/creditVault";
+import entry from "../menu/component/entry";
 import listItem from "./component/listItem";
+import dialoger from "../common/dialoger";
 import config from "./component/config";
+
 export default {
   components: { config, dialoger, listItem, entry, creditVault },
   props: ["layout", "group", "display", "sort"],
@@ -101,17 +110,16 @@ export default {
       payment: {
         subtotal: 0,
         tax: 0,
-        total: 0, // subtotal + tax + delivery
+        total: 0, // subtotal + tax
         discount: 0,
-        due: 0, // total - discount
+        due: 0, // total + delivery - discount
         balance: 0, // due + surcharge
         paid: 0,
         remain: 0, // balance - paid
-        change: 0, // depreciate
         tip: 0,
         gratuity: 0,
         delivery: 0,
-        surcharge: 0, // tip + gratuity
+        rounding: 0,
         log: []
       },
       lastDelta: 0,
@@ -274,14 +282,14 @@ export default {
           total: 0, // subtotal + tax + delivery
           discount: 0,
           due: 0, // total - discount
-          balance: 0, // due + surcharge
+          balance: 0, // due + surcharge + rounding
           paid: 0,
           remain: 0, // balance - paid
           change: 0, // depreciate
           tip: 0,
           gratuity: 0,
           delivery,
-          surcharge: 0, // tip + gratuity
+          rounding: 0,
           log: []
         });
         return;
@@ -295,7 +303,7 @@ export default {
           ? parseFloat(this.store.deliveryCharge)
           : 0;
 
-      let { tip, gratuity, paid } = this.order.payment;
+      let { tip, gratuity, paid, rounding = 0 } = this.order.payment;
       let subtotal = 0,
         tax = 0,
         discount = 0;
@@ -394,10 +402,9 @@ export default {
         discount += offer;
       }
 
-      const total = subtotal + tax + delivery;
-      const due = Math.max(0, total - discount);
-      const surcharge = tip + gratuity;
-      const balance = due + surcharge;
+      const total = subtotal + tax;
+      const due = Math.max(0, total + delivery - discount);
+      const balance = due + gratuity + rounding;
       const remain = balance - paid;
 
       this.payment = Object.assign({}, this.payment, {
@@ -412,7 +419,7 @@ export default {
         tip: toFixed(tip, 2),
         gratuity: toFixed(gratuity, 2),
         delivery: toFixed(delivery, 2),
-        surcharge: toFixed(surcharge, 2)
+        rounding: toFixed(rounding, 2)
       });
 
       Object.assign(this.order, { payment: this.payment });
@@ -610,7 +617,7 @@ header i {
   width: 155px;
 }
 
-.settle div {
+.settle p {
   border-bottom: 1px solid #eee;
   background: #fff;
   padding: 1px;
@@ -634,7 +641,7 @@ header i {
   text-align: right;
 }
 
-.settle div:last-child {
+.settle p:last-child {
   font-weight: 700;
   font-size: larger;
   padding: 2.5px 0;

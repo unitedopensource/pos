@@ -342,7 +342,6 @@ export default {
         'breakTime': 'Break Time',
         'paid': 'Paid',
         'expire': 'Expire',
-        'taxRate': 'Tax Rate',
         'default': 'Default',
         'location': 'Location',
         'condition': 'Condition',
@@ -839,10 +838,8 @@ export default {
         'dessert': 'Dessert',
         'driver': 'Driver',
         'transaction': 'Transaction',
-        'cardInfo': 'Card Information',
         'amount': 'Amount',
         'action': 'Action',
-        'chargeBackRisk': 'Potential Charge Back Issue',
         'adjustTip': 'Adjust',
         'edit': 'Edit',
         'single': 'Single',
@@ -867,6 +864,7 @@ export default {
         'minute': 'Minute',
         'second': 'Second',
         'subtotal': 'Subtotal',
+        'sum': 'Sum',
         'delivery': 'Delivery',
         'deliveryFee': 'Deli. Fee',
         'total': 'Total',
@@ -1114,7 +1112,10 @@ export default {
         'selectEmployee': 'Select Employee',
         'generatePayroll': 'Generate Payroll',
         'requireAccessPin': 'Access Pin Required',
-        'swipeMode': 'Swipe Mode'
+        'swipeMode': 'Swipe Mode',
+        'noRounding': 'No rounding',
+        'alwaysRoundUp': 'Round up',
+        'alwaysRoundDown': 'Round down'
     },
     nav: {
         'store': 'Store',
@@ -1204,6 +1205,7 @@ export default {
         'deliveryCharge': 'Delivery Charge',
         'deliveryTax': 'Delivery Tax',
         'others': 'Others',
+        'rounding': 'Penny Rounding',
         'tax': 'Tax',
         'taxBeforeDiscount': 'Tax Before Disc',
         'taxBeforeCredit': 'Tax Before Credit',
@@ -1481,6 +1483,12 @@ export default {
             'order': 'Apply to entire order',
             'category': 'Apply to certain category',
             'item': 'Apply to certain item'
+        },
+        'rounding': {
+            'tooltip': 'Penny rounding method',
+            'disable': 'No Rounding',
+            'up': 'Always round up to near quarter',
+            'down': 'Always round down to near quarter'
         },
         'coupon': {
             'rebate': '($5 rebate when $30)',

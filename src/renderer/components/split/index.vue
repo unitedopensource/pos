@@ -112,12 +112,13 @@ export default {
     restore() {
       let buffer = [];
       this.$children.map(vm => vm.buffer.forEach(item => buffer.push(item)));
-      let items = buffer.filter(item => item.parent).map(item => item.parent);
+
+      const items = buffer.filter(item => item.parent).map(item => item.parent);
       this.$bus.emit("restore", items);
     },
     registerSwipeEvent() {
       this.hammer = new Hammer(this.$refs.scroll);
-      this.hammer.get("swipe").set({ direction: Hammer.DIRECTION_ALL });
+      this.hammer.get("swipe").set({ direction: Hammer.DIRECTION_HORIZONTAL });
       this.hammer.on("swipeleft swiperight", e => {
         const base = Math.abs(e.velocityX) > 2.5 ? 2 : 1;
 
@@ -190,7 +191,6 @@ export default {
         this.order.payment.remain = toFixed(remain, 2);
         this.order.content.forEach(item => (item.split = true));
         this.order.children = splits.map(i => i._id);
-
         this.order.split = true;
         this.$socket.emit("[UPDATE] INVOICE", this.order);
 

@@ -8,7 +8,7 @@
             <span class="item">{{item[language]}}</span>
             <span class="side">{{item.side[language]}}</span>
           </span>
-          <template v-if="false">
+          <template v-if="master">
             <i class="fa fa-lock" @click.stop="toggleLock(index)" v-if="item.lock"></i>
             <i class="fa fa-unlock" @click.stop="toggleLock(index)" v-else></i>
           </template>
