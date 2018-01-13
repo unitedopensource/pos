@@ -20,10 +20,10 @@ export default {
     }
   },
   created() {
-    this.$bus.on("THREAD_OPEN_COMPONENT", this.openComponent)
+    this.$bus.on("__THREAD__OPEN", this.openComponent)
   },
   beforeDestroy() {
-    this.$bus.off("THREAD_OPEN_COMPONENT", this.openComponent)
+    this.$bus.off("__THREAD__OPEN", this.openComponent)
   },
   methods: {
     openComponent({ component, args }) {
@@ -33,7 +33,7 @@ export default {
             this.componentData = Object.assign({}, { resolve, reject }, args);
             this.component = component;
           }).then(result => {
-            this.$bus.emit("THREAD_CLOSE", result);
+            this.$bus.emit("__THREAD__CLOSE", result);
             this.$q()
           }).catch(() => this.$q());
           break;

@@ -122,6 +122,143 @@ export default {
             this.componentData = null;
         }
 
+        Vue.prototype.$calculatePayment = function (items) {
+            const {
+                type,
+                guest,
+                coupons,
+                taxFree = false,
+                deliveryFree = false,
+                gratuityFree = false
+              } = this.order;
+            const { enable, rules } = this.dinein.surcharge;
+
+            let delivery =
+                type === "DELIVERY" && this.store.delivery && !deliveryFree
+                    ? parseFloat(this.store.deliveryCharge)
+                    : 0;
+
+            let { tip, gratuity, paid } = this.order.payment;
+            let subtotal = 0,
+                tax = 0,
+                discount = 0;
+
+            items.forEach(item => {
+                if (item.void) return;
+
+                const single = parseFloat(item.single);
+                const qty = item.qty || 1;
+                const taxClass = this.tax.class[item.taxClass];
+
+                let amount = toFixed(single * qty, 2);
+
+                item.choiceSet.forEach(set => {
+                    const p = parseFloat(set.single);
+                    const s = set.qty || 1;
+                    const t = toFixed(p * s, 2);
+                    amount = toFixed(amount + t, 2);
+                });
+
+                subtotal = toFixed(subtotal + amount, 2);
+
+                if (!taxFree && taxClass.apply[type])
+                    tax += taxClass.rate / 100 * amount;
+            });
+
+            if (this.tax.deliveryTax) {
+                /*
+                    is Delivery fee taxable?
+                    Find out default tax rate and apply to delivery charge
+                */
+
+                let taxRate = 0;
+                Object.keys(this.tax.class).forEach(type => {
+                    this.tax.class[type].default === true &&
+                        (taxRate = this.tax.class[type].rate);
+                });
+                /**
+                 * Tax apply Before Discount (For Example: 10% Tax Rate, 20% Discount)
+                 *
+                 * Subtotal: 10.00
+                 * Tax:       1.00
+                 * Discount:  2.00
+                 * Total:     9.00
+                 * ------------------------------------------------------------------
+                **/
+                tax += toFixed(delivery * taxRate / 100, 2);
+            }
+
+            if (type === "DINE_IN" && !gratuityFree && enable) {
+                //find rule
+                try {
+                    const { fee, percentage } = rules
+                        .sort((a, b) => a.guest < b.guest)
+                        .find(r => guest >= r.guest);
+                    gratuity = percentage ? toFixed(subtotal * fee / 100, 2) : fee;
+                } catch (e) { }
+            }
+
+            if (coupons && coupons.length > 0) {
+                let offer = 0;
+                coupons.forEach(coupon => {
+                    const { reference } = coupon;
+
+                    switch (coupon.type) {
+                        // 'rebate':        '满减券',
+                        // 'giveaway':      '礼物券',
+                        // 'voucher':       '现金券',
+                        // 'discount':      '折扣券',
+                        case "rebate":
+                            offer += coupon.discount;
+                            break;
+                        case "voucher":
+                            offer += coupon.discount;
+                            break;
+                        case "discount":
+                            switch (coupon.apply) {
+                                case "category":
+                                    let _offer = 0;
+                                    this.order.content.forEach(item => {
+                                        if (reference.includes(item.category)) {
+                                            _offer += coupon.discount / 100 * item.single * item.qty;
+                                        }
+                                    });
+                                    offer += _offer;
+                                    break;
+                                case "item":
+                                    break;
+                                default:
+                                    offer += coupon.discount / 100 * subtotal;
+                            }
+                            break;
+                    }
+                });
+
+                discount += offer;
+            }
+
+            const total = subtotal + tax + delivery;
+            const due = Math.max(0, total - discount);
+            const surcharge = tip + gratuity;
+            const balance = due + surcharge;
+            const remain = balance - paid;
+
+            Object.assign(this.order.payment, {
+                subtotal: toFixed(subtotal, 2),
+                tax: toFixed(tax, 2),
+                total: toFixed(total, 2),
+                discount: toFixed(discount, 2),
+                due: toFixed(due, 2),
+                balance: toFixed(balance, 2),
+                paid: toFixed(paid, 2),
+                remain: toFixed(remain, 2),
+                tip: toFixed(tip, 2),
+                gratuity: toFixed(gratuity, 2),
+                delivery: toFixed(delivery, 2),
+                surcharge: toFixed(surcharge, 2)
+            });
+        }
+
         //polyfill
 
         Array.prototype.last = function () {

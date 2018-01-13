@@ -8,10 +8,10 @@
       <div class="banner"></div>
       <div class="display">
         <input type="text" v-model="discount" :placeholder="placeholder">
-        <span class="unit" v-if="unit === '%'" @click="unit = '$'">%</span>
-        <span class="unit" v-else @click="unit = '%'">$</span>
+        <span class="unit" v-if="unit === '%'" @click="switchUnit">%</span>
+        <span class="unit" v-else @click="switchUnit">$</span>
       </div>
-      <num-pad v-model="discount" @enter="confirm" :type="unit === '%' ? 'number':'decimal'"></num-pad>
+      <num-pad v-model="discount" @enter="confirm" :type="type"></num-pad>
     </div>
   </div>
 </template>
@@ -28,6 +28,7 @@ export default {
   data() {
     return {
       unit: "%",
+      type: "number",
       discount: "0",
       reset: true,
       placeholder: "0.00"
@@ -37,6 +38,10 @@ export default {
     this.placeholder = this.init.payment.discount.toFixed(2);
   },
   methods: {
+    switchUnit() {
+      this.unit = this.unit === '%' ? '$' : '%';
+      this.type = this.unit === '%' ? 'number' : 'decimal';
+    },
     confirm() {
       let discount = parseFloat(this.discount);
       let { payment } = this.init;
@@ -55,7 +60,6 @@ export default {
           apply: "order"
         };
       } else {
-        discount = toFixed(payment.subtotal * this.discount / 100, 2);
         coupon = {
           code: "UnitedPOS Inc",
           alias: `$ ${this.discount} OFF`,

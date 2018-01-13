@@ -81,29 +81,13 @@ export default {
           .catch(() => this.$q());
       });
     },
-    updatePayment(result) {
-      let { subtotal, tax, tip, gratuity, delivery, paid } = this.order.payment;
+    updatePayment({ discount, coupon }) {
+      let coupons = this.order.coupons.filter(coupon => coupon.code !== 'UnitedPOS Inc');
 
-      const total = subtotal + tax + delivery;
-      const discount = result.discount;
-      const due = Math.max(0, total - discount);
-      const surcharge = tip + gratuity;
-      const balance = due + surcharge;
-      const remain = Math.max(0, balance - paid);
+      discount > 0 && coupons.push(coupon);
+      this.order.coupons = coupons;
 
-      result.coupon
-        ? Object.assign(this.order, { coupon: result.coupon })
-        : Object.assign(this.order, { coupon: null });
-
-      Object.assign(this.order.payment, {
-        total: toFixed(total, 2),
-        discount: toFixed(discount, 2),
-        due: toFixed(due, 2),
-        balance: toFixed(balance, 2),
-        paid: toFixed(paid, 2),
-        remain: toFixed(remain, 2)
-      });
-
+      this.$calculatePayment(this.order.content)
       this.$socket.emit("[UPDATE] INVOICE", this.order);
       this.$q();
     },
@@ -124,7 +108,7 @@ export default {
         this.order.status === 0
       );
     },
-    ...mapGetters(["op", "order", "ticket", "isEmptyTicket"])
+    ...mapGetters(["op", "tax", "order", "store", "ticket", "dinein", "isEmptyTicket"])
   }
 };
 </script>

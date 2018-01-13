@@ -1,6 +1,6 @@
 <template>
   <transition appear name="fadeUp">
-    <div class="option" v-outer-click="init.resolve">
+    <div class="option">
       <switches title="text.taxFree" v-model="init.taxFree"></switches>
       <switches title="text.deliveryFree" v-model="init.deliveryFree"></switches>
       <switches title="text.gratuityFree" v-model="init.gratuityFree"></switches>
