@@ -1,7 +1,26 @@
 <template>
   <ul @click.self="tap" v-if="enable" :class="[unique,{ban}]">
     <li v-for="(item,index) in order.content" :key="index" @click="pick(item)" :data-unique="item.unique" v-show="!item.split">
-      <item :item="item" :split="master" :language="language"></item>
+      <div class="main">
+        <span class="qty">{{item.qty}}</span>
+        <span>
+          <span class="item">{{item[language]}}</span>
+          <span class="side">{{item.side[language]}}</span>
+        </span>
+        <template v-if="master">
+          <i class="fa fa-lock" @click.stop="toggleLock(index)" v-if="item.lock"></i>
+          <i class="fa fa-unlock" @click.stop="toggleLock(index)" v-else></i>
+        </template>
+        <template v-else>
+          <span></span>
+        </template>
+      </div>
+      <div class="sub">
+        <p v-for="(sub,idx) in item.choiceSet" :key="idx">
+          <span class="qty">{{item.qty}}</span>
+          <span>{{sub[language]}}</span>
+        </p>
+      </div>
     </li>
     <template v-if="master">
       <li class="function" v-if="buffer.length === 0" @click="selectAll">
@@ -25,16 +44,17 @@
         <i class="fa fa-bars"></i>
       </li>
     </template>
+    <div :is="component" :init="componentData"></div>
   </ul>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
-import item from "./component/item";
+import options from "./component/options";
 
 export default {
   props: ["data", "master", "index"],
-  components: { item },
+  components: { options },
   computed: {
     enable() {
       return this.master
@@ -47,6 +67,8 @@ export default {
     return {
       order: JSON.parse(JSON.stringify(this.data)),
       language: this.$store.getters.language,
+      componentData: null,
+      component: null,
       reason: "",
       ban: false,
       buffer: [],
@@ -61,6 +83,8 @@ export default {
     if (this.master) {
       this.$bus.on("reset", this.hide);
       this.$bus.on("restore", this.restore);
+
+      this.order.content.forEach(item => (item.lock = false));
     } else {
       this.$bus.on("reset", this.remove);
       this.$bus.on("transfer", this.transfer);
@@ -97,7 +121,7 @@ export default {
       index !== -1 ? this.buffer.splice(index, 1) : this.buffer.push(item);
     },
     hide(item) {
-      this.buffer.forEach(item => {
+      this.buffer.filter(item=>!item.lock).forEach(item => {
         const { unique } = item;
         const index = this.order.content.findIndex(i => i.unique === unique);
         this.order.content[index].split = true;
@@ -125,8 +149,23 @@ export default {
       this.$bus.emit("reset");
     },
     transfer({ unique, items }) {
-      this.unique === unique && this.order.content.push(...items);
+      if (this.unique === unique) {
+        const unlocks = items.filter(item => !item.lock);
+        this.order.content.push(...unlocks);
+
+        const locks = items.filter(item => item.lock);
+        locks.length > 0 && this.showSplitOption(locks);
+      }
       this.$bus.emit("reset");
+    },
+    showSplitOption(items) {
+      new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject };
+        this.component = "options";
+      }).then(option => {
+        console.log(option);
+        this.$q();
+      });
     },
     tap() {
       this.buffer = [];
@@ -134,6 +173,14 @@ export default {
     },
     selectAll() {
       this.order.content.filter(i => !i.split).forEach(item => this.pick(item));
+    },
+    toggleLock(index) {
+      const item = this.order.content[index];
+      item.lock = !item.lock;
+      this.order.content.splice(index, 1, item);
+
+      const target = this.buffer.find(i => i.unique === item.unique);
+      target.lock = item.lock;
     },
     calculator(items) {
       const {
@@ -399,5 +446,50 @@ li.tooltip {
   display: none;
   z-index: 1;
   border: none;
+}
+
+.main {
+  position: relative;
+}
+
+.main i {
+  display: none;
+  position: absolute;
+  right: -5px;
+  top: -5px;
+  padding: 5px 15px;
+  background: #9e9e9e;
+  cursor: pointer;
+}
+
+.picked .main i {
+  display: initial;
+}
+
+.main .qty {
+  display: inline-block;
+  min-width: 20px;
+  text-align: center;
+}
+
+.side {
+  color: rgba(0, 0, 0, 0.5);
+  margin-left: 2px;
+}
+
+.sub {
+  color: #ff9800;
+  font-size: 0.8em;
+  text-indent: 2em;
+}
+
+.sub .qty:after {
+  content: " x ";
+}
+
+li.picked .main,
+li.picked .main .side,
+li.picked .sub {
+  color: #fff;
 }
 </style>
