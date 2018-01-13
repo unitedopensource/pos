@@ -860,8 +860,8 @@ function createHeader(store, setting, raw) {
                 <div class="time">
                     <span>Date: ${date}</span>
                     <span>Time: ${placeTime}</span>
-                    <div class="number">${number}</div>
-                    <div class="table">${table || ""}</div>
+                    <div class="ticketNumber">${number}</div>
+                    <div class="tableName">${table || ""}</div>
                 </div>
                 <div class="server">${handler}</div>
                 <div class="customer">${information}</div>
@@ -1082,56 +1082,56 @@ function createStyle(setting) {
     const secondary = languages.find(t => t.ref === 'zhCN');
     const fontFamily = navigator.language === 'zh-CN' ? "微软雅黑" : "Microsoft YaHei";
 
-    return `<style>
-              *{margin:0;padding:0}
-              section.header{font-family:'Agency FB';text-align:center;}
-              div.store{margin-bottom:10px;${contact ? '' : 'display:none;'}}
-              h3{font-size:1.25em;}
-              h5{font-size:16px;font-weight:lighter}
-              h1{${title ? '' : 'display:none;'}font-size:1.5em;font-family:"${fontFamily}"}
-              .number,.table{position:absolute;bottom:12px;font-size:2em;font-weight:bold;}
-              footer .number,footer .table{top: 5px;bottom: initial;}
-              .number{right:10px;}.table{left:10px;}
-              div.time span{display:inline-block;margin:0 10px;font-size:1em;}
-              div.time{border-bottom:1px solid #000;position:relative;margin-top:10px;}
-              .server{border-bottom:1px solid #000;padding-bottom:1px;text-align:left;}
-              .server .wrap{display:flex;padding:0 10px;}
-              .server .text{flex:2;}.server .value{flex:3;}
-              .customer {${customer ? '' : 'display:none;'}font-size:1.2em;font-family:'Tensentype RuiHeiJ-W2';text-align:left;}
-              .customer p:last-child{border-bottom:1px solid #000;}
-              .tel{letter-spacing:2px;}.ext{margin-left:10px;}
-              section.receipt{width:100%;margin:5px 0;}
-              .main{display:flex;position:relative;width:100%;}
-              .main .wrap,.empty{flex:1;}
-              .main .side{font-size:0.9em;margin-left:2px;}
-              .sub{padding-left:20px;font-size:0.8em;}
-              .sub p{position:relative;width:100%;} 
-              .qty{min-width:15px;margin-right:5px;}         
-              footer{font-family:'Agency FB';}
-              section.column{display:flex;}
-              .payment{min-width:150px;${payment ? 'display:flex;flex-direction:column;' : 'display:none;'}}
-              .payment p{display:flex;font-family:'Tensentype RuiHeiJ-W2';width:200px;}
-              .payment .text{flex:1;text-align:right;}
-              .payment .value{min-width:40%;text-align:right;}
-              .settle{${payment ? '' : 'display:none;'}}
-              .payment p.bold{font-weight:bold;font-size:22px;}
-              .details{border:1px dashed #000;margin-top:5px;text-align:center;}
-              .details h3{letter-spacing:1px;}
-              .details p{display:flex;}
-              .details .text{text-align:right;padding-right:20px;flex:5;}
-              .details .value{text-align:left;flex:6}
-              .suggestion{border:1px dashed #000;padding:5px;display:flex;flex-direction:column;text-align:center;}
-              .suggestion h5{font-size:22px;}
-              .suggestion i{font-style: italic;font-size:14px;}
-              .suggestion div{display:flex;justify-content: center;width:75%;margin:auto;}
-              .dash{margin: 0 5px;}
-              .tips{margin-left:15px;}
-              footer p{text-align:center;}
-              .slogan{font-weight:lighter;margin-top:10px;border-top:1px solid #000;position:relative;}
-              .tradeMark {font-weight: bold;display: inline-block;padding: 5px 7px;background: #000;color: #fff;}
-              .zhCN{font-family:'${secondary.fontFamily}';font-size:${secondary.fontSize}px;}
-              .usEN{font-family:'${primary.fontFamily}';font-size:${primary.fontSize}px;}
-              del{display:block;position:absolute;width:inherit;height:2px;background:#000;top:40%;}
+    return `<style>\
+              *{margin:0;padding:0}\
+              section.header{font-family:'Agency FB';text-align:center;}\
+              div.store{margin-bottom:10px;${contact ? '' : 'display:none;'}}\
+              h3{font-size:1.25em;}\
+              h5{font-size:16px;font-weight:lighter}\
+              h1{${title ? '' : 'display:none;'}font-size:1.5em;font-family:"${fontFamily}"}\
+              .ticketNumber,.tableName{position:absolute;bottom:12px;font-size:2em;font-weight:bold;}\
+              footer .ticketNumber,footer .tableName{top: 5px;bottom: initial;}\
+              .ticketNumber{right:10px;}.table{left:10px;}\
+              div.time span{display:inline-block;margin:0 10px;font-size:1em;}\
+              div.time{border-bottom:1px solid #000;position:relative;margin-top:10px;}\
+              .server{border-bottom:1px solid #000;padding-bottom:1px;text-align:left;}\
+              .server .wrap{display:flex;padding:0 10px;}\
+              .server .text{flex:2;}.server .value{flex:3;}\
+              .customer {${customer ? '' : 'display:none;'}font-size:1.2em;font-family:'Tensentype RuiHeiJ-W2';text-align:left;}\
+              .customer p:last-child{border-bottom:1px solid #000;}\
+              .tel{letter-spacing:2px;}.ext{margin-left:10px;}\
+              section.receipt{width:100%;margin:5px 0;}\
+              .main{display:flex;position:relative;width:100%;}\
+              .main .wrap,.empty{flex:1;}\
+              .main .side{font-size:0.9em;margin-left:2px;}\
+              .sub{padding-left:20px;font-size:0.8em;}\
+              .sub p{position:relative;width:100%;}\
+              .qty{min-width:15px;margin-right:5px;}\     
+              footer{font-family:'Agency FB';}\
+              section.column{display:flex;}\
+              .payment{min-width:150px;${payment ? 'display:flex;flex-direction:column;' : 'display:none;'}}\
+              .payment p{display:flex;font-family:'Tensentype RuiHeiJ-W2';width:200px;}\
+              .payment .text{flex:1;text-align:right;}\
+              .payment .value{min-width:40%;text-align:right;}\
+              .settle{${payment ? '' : 'display:none;'}}\
+              .payment p.bold{font-weight:bold;font-size:22px;}\
+              .details{border:1px dashed #000;margin-top:5px;text-align:center;}\
+              .details h3{letter-spacing:1px;}\
+              .details p{display:flex;}\
+              .details .text{text-align:right;padding-right:20px;flex:5;}\
+              .details .value{text-align:left;flex:6}\
+              .suggestion{border:1px dashed #000;padding:5px;display:flex;flex-direction:column;text-align:center;}\
+              .suggestion h5{font-size:22px;}\
+              .suggestion i{font-style: italic;font-size:14px;}\
+              .suggestion div{display:flex;justify-content: center;width:75%;margin:auto;}\
+              .dash{margin: 0 5px;}\
+              .tips{margin-left:15px;}\
+              footer p{text-align:center;}\
+              .slogan{font-weight:lighter;margin-top:10px;border-top:1px solid #000;position:relative;}\
+              .tradeMark {font-weight: bold;display: inline-block;padding: 5px 7px;background: #000;color: #fff;}\
+              .zhCN{font-family:'${secondary.fontFamily}';font-size:${secondary.fontSize}px;}\
+              .usEN{font-family:'${primary.fontFamily}';font-size:${primary.fontSize}px;}\
+              del{display:block;position:absolute;width:inherit;height:2px;background:#000;top:40%;}\
           </style>`
 }
 
@@ -1252,8 +1252,8 @@ function createFooter(config, setting, printer, ticket) {
 
     const _provider = ticket.source !== 'POS' && (/cashier/i).test(printer) ? `<p class="tm"><span class="tradeMark">${ticket.source}</span></p>` : "";
     const _time = jobTime ? `<p class="printTime">${printer} print @ ${moment().format('hh:mm:ss')}</p>` : "";
-    const _number = ticketNumber ? `<div class="number">${number}</div>` : "";
-    const _table = tableName ? `<div class="table">${table || ""}</div>` : "";
+    const _number = ticketNumber ? `<div class="ticketNumber">${number}</div>` : "";
+    const _table = tableName ? `<div class="tableName">${table || ""}</div>` : "";
     const extraInfo = _provider + _time + _number + _table;
 
     return `<footer>

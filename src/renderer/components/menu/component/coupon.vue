@@ -22,15 +22,14 @@
 
 <script>
 import offer from "./offer";
-import { mapActions, mapGetters } from "vuex";
+import { mapActions } from "vuex";
 export default {
   props: ["init"],
   components: { offer },
-  computed: {
-    ...mapGetters(["order"])
-  },
   data() {
     return {
+      order: this.init.hasOwnProperty("order") ? this.init.order : this.$store.getters.order,
+      callback: this.init.hasOwnProperty("order"),
       coupons: [],
       stack: false
     };
@@ -77,9 +76,12 @@ export default {
     },
     confirm() {
       const coupons = this.coupons.filter(coupon => coupon.redeem);
-      coupons.push(
-        ...this.order.coupons.filter(coupon => coupon.code === "UnitedPOS Inc")
-      );
+      const discount = this.order.coupons.filter(coupon => coupon.code === "UnitedPOS Inc");
+      coupons.push(...discount);
+
+      this.callback ? this.init.resolve(coupons) : this.applyCoupon(coupons);
+    },
+    applyCoupon(coupons) {
       const refs = coupons
         .filter(coupon => coupon.type === "giveaway")
         .map(coupon => coupon.reference)

@@ -1,7 +1,6 @@
 <template>
   <div>
     <div v-html="ticket" class="receipt" @click="fn"></div>
-    <!-- <button class="btn print" @click="print">{{$t('button.print')}}</button> -->
   </div>
 </template>
 

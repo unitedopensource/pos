@@ -84,7 +84,6 @@ const mutations = {
       print: false,
       pending: false,
       void: false,
-      sort: item.sort || 0,
       qty: 1,
       choiceSet: item.choiceSet ? item.choiceSet : [],
       single: parseFloat(item.price[0]),

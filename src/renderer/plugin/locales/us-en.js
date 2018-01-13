@@ -181,6 +181,7 @@ export default {
         'setTip': 'Set Tip',
         'setGratuity': 'Set Gratuity',
         'setDiscount': 'Discount',
+        'setCoupon': 'Set Coupon',
         'changeDate': 'Change Date',
         'edit': 'Edit',
         'recover': 'Recover',

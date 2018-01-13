@@ -1,12 +1,13 @@
 <template>
   <transition appear name="fadeUp">
     <div class="option">
-      <switches title="text.taxFree" v-model="init.taxFree"></switches>
-      <switches title="text.deliveryFree" v-model="init.deliveryFree"></switches>
-      <switches title="text.gratuityFree" v-model="init.gratuityFree"></switches>
-      <switches title="text.discounted" v-model="init.isDiscount" :disabled="!init.isDiscount"></switches>
+      <switches title="text.taxFree" v-model="init.taxFree" @update="$emit('config',{taxFree:init.taxFree})"></switches>
+      <switches title="text.deliveryFree" v-model="init.deliveryFree" @update="$emit('config',{deliveryFree:init.deliveryFree})"></switches>
+      <switches title="text.gratuityFree" v-model="init.gratuityFree" @update="$emit('config',{gratuityFree:init.gratuityFree})"></switches>
+      <switches title="text.discounted" v-model="init.isDiscount" :disabled="!init.isDiscount" @update="$emit('resetDiscount')"></switches>
       <external title="button.setDiscount" :defaultStyle="false" @open="$emit('discount')"></external>
-      <external title="text.deliveryFee" :defaultStyle="false" v-if="init.type === 'DELIVERY'"></external>
+      <external title="button.setCoupon" :defaultStyle="false" @open="$emit('coupon')"></external>
+      <!-- <external title="text.deliveryFee" :defaultStyle="false" v-if="init.type === 'DELIVERY'"></external> -->
     </div>
   </transition>
 </template>
@@ -37,7 +38,7 @@ export default {
   bottom: 47px;
   background: rgba(255, 255, 255, 0.7);
   width: 220px;
-  height: 205px;
+  height: 448px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
