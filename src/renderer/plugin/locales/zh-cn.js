@@ -867,6 +867,7 @@ export default {
         'taxClass': '税率种类',
         'deliveryFree': '免送餐费',
         'gratuityFree': '免服务费',
+        'discounted': '已设折扣',
         'displayCategory': '显示类别',
         'displayMenuId': '显示菜单ID',
         'autoPrint': '自动打印',

@@ -54,11 +54,10 @@
 import { mapGetters } from "vuex";
 import evener from "./component/evener";
 import options from "./component/options";
-import discount from "../payment/discount";
 
 export default {
   props: ["data", "master", "index"],
-  components: { evener, options, discount },
+  components: { evener, options },
   computed: {
     enable() {
       return this.master
@@ -92,6 +91,7 @@ export default {
     } else {
       this.$bus.on("remove", this.remove);
       this.$bus.on("transfer", this.transfer);
+      this.$bus.on("THREAD_CLOSE", this.handleThreadResult)
 
       if (this.order.settled) {
         this.ban = true;
@@ -112,6 +112,7 @@ export default {
     } else {
       this.$bus.off("remove", this.remove);
       this.$bus.off("transfer", this.transfer);
+      this.$bus.off("THREAD_CLOSE", this.handleThreadResult)
     }
   },
   methods: {
@@ -173,36 +174,33 @@ export default {
       const taxFree = this.order.taxFree || false;
       const deliveryFree = this.order.deliveryFree || false;
       const gratuityFree = this.order.gratuityFree || false;
+      const isDiscount = this.order.payment.discount > 0;
       const { type } = this.order;
       !this.component
-        ? this.$open("options", { taxFree, deliveryFree, gratuityFree, type })
+        ? this.$open("options", { taxFree, deliveryFree, gratuityFree, type, isDiscount })
         : this.$q()
     },
     applyConfig() {
 
     },
     setDiscount() {
-      new Promise((resolve, reject) => {
-        this.componentData = { resolve, reject, payment: this.order.payment };
-        this.component = "discount";
+      this.$bus.emit("THREAD_OPEN_COMPONENT", {
+        component: "discount",
+        args: {
+          payment: this.order.payment
+        }
       })
-        .then(({ discount, coupon }) => {
-          console.log(discount,coupon)
-          Object.assign(this.order.payment, { discount });
+    },
+    handleThreadResult({ discount, coupon }) {
+      Object.assign(this.order.payment, { discount });
 
-          if (discount > 0) {
-            this.order.coupons.push(coupon);
-          } else {
-            const index = this.order.coupons.findIndex(
-              coupon => coupon.code === "UnitedPOS Inc"
-            );
-            index !== -1 && this.order.coupons.splice(index, 1);
-          }
-          this.calculator(this.order.content);
-          this.$q();
-        })
-        .catch(() => this.$q());
+      let coupons = this.order.coupons.filter(coupon => coupon.code !== 'UnitedPOS Inc');
 
+      discount > 0 && coupons.push(coupon);
+      this.order.coupons = coupons;
+      this.componentData.isDiscount = discount > 0;
+
+      this.calculator(this.order.content);
     },
     tap() {
       this.buffer = [];

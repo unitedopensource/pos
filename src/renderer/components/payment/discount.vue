@@ -7,7 +7,7 @@
       </header>
       <div class="banner"></div>
       <div class="display">
-        <input type="text" v-model="discount" placeholder="0.00">
+        <input type="text" v-model="discount" :placeholder="placeholder">
         <span class="unit" v-if="unit === '%'" @click="unit = '$'">%</span>
         <span class="unit" v-else @click="unit = '%'">$</span>
       </div>
@@ -29,8 +29,12 @@ export default {
     return {
       unit: "%",
       discount: "0",
-      reset: true
+      reset: true,
+      placeholder: "0.00"
     };
+  },
+  created() {
+    this.placeholder = this.init.payment.discount.toFixed(2);
   },
   methods: {
     confirm() {

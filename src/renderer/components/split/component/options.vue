@@ -1,9 +1,10 @@
 <template>
   <transition appear name="fadeUp">
-    <div class="option">
+    <div class="option" v-outer-click="init.resolve">
       <switches title="text.taxFree" v-model="init.taxFree"></switches>
       <switches title="text.deliveryFree" v-model="init.deliveryFree"></switches>
       <switches title="text.gratuityFree" v-model="init.gratuityFree"></switches>
+      <switches title="text.discounted" v-model="init.isDiscount" :disabled="!init.isDiscount"></switches>
       <external title="button.setDiscount" :defaultStyle="false" @open="$emit('discount')"></external>
       <external title="text.deliveryFee" :defaultStyle="false" v-if="init.type === 'DELIVERY'"></external>
     </div>
@@ -24,6 +25,7 @@ export default {
     };
   },
   methods: {
+
   }
 };
 </script>
@@ -32,14 +34,15 @@ export default {
 .option {
   position: absolute;
   left: 5px;
-  top: 0px;
-  background: rgba(250, 250, 250, 0.8);
+  bottom: 47px;
+  background: rgba(255, 255, 255, 0.7);
   width: 220px;
-  height: 454px;
+  height: 205px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   color: rgba(0, 0, 0, 0.75);
+  border-top: 1px solid #eee;
   padding: 0 15px;
   z-index: 1;
 }

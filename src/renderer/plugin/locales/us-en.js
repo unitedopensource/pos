@@ -875,6 +875,7 @@ export default {
         'taxClass': 'Tax Class',
         'deliveryFree': 'Free Delivery',
         'gratuityFree': 'Free Gratuity',
+        'discounted': 'Discounted',
         'displayCategory': 'Display Category',
         'displayMenuId': 'Display Menu ID',
         'autoPrint': 'Auto Print',

@@ -1221,15 +1221,10 @@ export default {
 
           Object.assign(this.payment, { discount });
 
-          if (discount > 0) {
-            this.order.coupons.push(coupon);
+          let coupons = this.order.coupons.filter(coupon => coupon.code !== 'UnitedPOS Inc');
 
-          } else {
-            const index = this.order.coupons.findIndex(
-              coupon => coupon.code === "UnitedPOS Inc"
-            );
-            index !== -1 && this.order.coupons.splice(index, 1);
-          }
+          discount > 0 && coupons.push(coupon);
+          this.order.coupons = coupons;
 
           this.recalculatePayment();
           this.paid = "0.00";
