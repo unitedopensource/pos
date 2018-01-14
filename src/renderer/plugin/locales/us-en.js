@@ -203,7 +203,6 @@ export default {
         'remove': 'Remove',
         'sort': 'Sort',
         'printAll': 'Print All',
-        'evenSplit': 'Split',
         'extend': 'Delay',
         'printDetail': 'Detail Report',
         'activation': 'Activation',
@@ -1461,6 +1460,7 @@ export default {
         'unifiedBatch': 'Batch all terminal at once',
         'restrictPermission': 'Directly deny access',
         'temporaryPermission': 'Temporary access via password',
+        'itemSplit': 'How many quantity you want to split?',
         'dinein': {
             'useTableLayout': 'Use table to place order',
             'noTableLayout': 'Skip table to place order',

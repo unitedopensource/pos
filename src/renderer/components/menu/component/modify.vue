@@ -195,7 +195,7 @@ export default {
         : this.adjustMenuItem();
     },
     adjustChoiceSetItem() {
-      let single = parseFloat(this.item.single);
+      const single = toFixed(this.item.single, 2);
       this.setPriceForChoiceSet({
         single,
         total: (single * this.item.qty).toFixed(2),
@@ -204,7 +204,7 @@ export default {
       this.init.resolve();
     },
     adjustMenuItem() {
-      let single = parseFloat(this.item.single);
+      const single = toFixed(this.item.single,2);
       let discount = this.unit
         ? this.discount
         : single * this.item.qty * (this.discount / 100);

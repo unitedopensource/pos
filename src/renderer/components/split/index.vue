@@ -12,9 +12,17 @@
             <ticket v-for="(order,index) in splits" :key="index" :index="index" :data="order" @acquire="transfer" :master="false"></ticket>
           </div>
         </div>
-        <div class="more" @click="create">
+        <div class="option" @click="create" v-if="!done">
           <div>
             <i class="fa fa-3x fa-plus"></i>
+          </div>
+        </div>
+        <div class="option" v-else>
+          <div @click="create">
+            <i class="fa fa-3x fa fa-plus"></i>
+          </div>
+          <div @click="restore">
+            <i class="fa fa-3x fa fa-minus"></i>
           </div>
         </div>
         <ticket :data="order" :master="true" @acquire="restore" @done="done = true"></ticket>
@@ -98,6 +106,8 @@ export default {
       const split = Object.assign({}, order, { _id, content, payment });
       this.splits.push(split);
       this.$bus.emit("remove");
+
+      content.length && content[0].__split__ && this.$bus.emit("release");
     },
     transfer({ unique, index }) {
       let buffer = [];
@@ -115,6 +125,8 @@ export default {
 
       const items = buffer.filter(item => item.parent).map(item => item.parent);
       this.$bus.emit("restore", items);
+      
+      if(items.length) this.done = false;
     },
     registerSwipeEvent() {
       this.hammer = new Hammer(this.$refs.scroll);
@@ -247,16 +259,22 @@ export default {
   transition: transform 0.3s ease-in-out;
 }
 
-.more {
+.option {
   display: flex;
+  flex-direction: column;
+}
+
+.option div {
+  display: flex;
+  width: 110px;
+  flex: 1;
   justify-content: center;
   align-items: center;
-  border: 2px dashed #eee;
-  background: #fff;
-  border-radius: 4px;
-  width: 110px;
-  margin: 4px;
   color: #757575;
+  border: 2px dashed #eee;
+  margin: 4px;
+  border-radius: 4px;
+  background: #fff;
   cursor: pointer;
 }
 

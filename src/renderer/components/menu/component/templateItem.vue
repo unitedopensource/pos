@@ -109,22 +109,21 @@ export default {
         index: this.init.index,
         function: true
       });
-      let items = [].concat.apply([], this.saved);
-      items.forEach(item => {
-        let { zhCN, usEN, qty, price, print } = item;
-        qty = qty || 1;
 
-        const content = {
-          qty,
-          zhCN,
-          usEN,
-          print,
-          single: parseFloat(price),
-          price: (price * qty).toFixed(2)
-        };
+      [].concat.apply([], this.saved)
+        .filter(item => item)
+        .forEach(({ zhCN, usEN, qty = 1, price, print }) => {
+          const content = {
+            qty,
+            zhCN,
+            usEN,
+            print,
+            single: parseFloat(price),
+            price: (price * qty).toFixed(2)
+          };
 
-        this.setChoiceSet(content);
-      });
+          this.setChoiceSet(content);
+        });
 
       this.init.resolve();
     },
@@ -150,7 +149,7 @@ export default {
   align-items: flex-start;
   padding: 0px;
   height: 533px;
-  background: #F5F5F5;
+  background: #f5f5f5;
 }
 
 .items {

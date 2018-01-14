@@ -80,9 +80,9 @@
             <span class="text">{{$t("text.gratuity")}}:</span>
             <span class="value">{{payment.gratuity | decimal}}</span>
           </p>
-          <p :class="{hidden:parseFloat(payment.tip) === 0}">
-            <span class="text">{{$t("text.tip")}}:</span>
-            <span class="value">{{payment.tip | decimal}}</span>
+          <p :class="{hidden:true}">
+            <span class="text">Author</span>
+            <span class="value">XueWu</span>
           </p>
         </template>
         <p>
@@ -448,8 +448,6 @@ export default {
         delivery: toFixed(delivery, 2),
         rounding: toFixed(rounding, 2)
       });
-
-      console.log(this.payment)
 
       Object.assign(this.order, { payment: this.payment });
     },

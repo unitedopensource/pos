@@ -196,7 +196,6 @@ export default {
         'remove': '移除',
         'sort': '整理',
         'printAll': '全部打印',
-        'evenSplit': '平摊',
         'extend': '延迟',
         'printDetail': '打印详细记录',
         'activation': '激活',
@@ -1112,7 +1111,8 @@ export default {
         'autoSelect': '自动选择',
         'roundToQuarter': '补齐25美分',
         'alwaysRoundUp': '向上取整',
-        'alwaysRoundDown': '向下取整'
+        'alwaysRoundDown': '向下取整',
+        'itemSplit': '物品平摊'
     },
     nav: {
         'store': '店面',
@@ -1459,6 +1459,7 @@ export default {
         'unifiedBatch': '一次性处理所有刷卡机过账信息',
         'restrictPermission': '当权限不足时直接拒绝',
         'temporaryPermission': '允许输入密码来临时提升权限',
+        'itemSplit': '您想将锁定的物品平摊成几份?',
         'dinein': {
             'useTableLayout': '使用座位下单',
             'noTableLayout': '跳过座位直接下单',

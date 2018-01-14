@@ -4,8 +4,8 @@
       <li v-for="(item,index) in order.content" :key="index" @click="pick(item)" :data-unique="item.unique" v-show="!item.split">
         <div class="main">
           <span class="qty">{{item.qty}}</span>
-          <span>
-            <span class="item">{{item[language]}}</span>
+          <span class="f1">
+            <span>{{item[language]}}</span>
             <span class="side">{{item.side[language]}}</span>
           </span>
           <template v-if="master">
@@ -13,7 +13,7 @@
             <i class="fa fa-unlock" @click.stop="toggleLock(index)" v-else></i>
           </template>
           <template v-else>
-            <span></span>
+            <span>{{item.total}}</span>
           </template>
         </div>
         <div class="sub">
@@ -46,7 +46,7 @@
         </li>
       </template>
     </ul>
-    <div :is="component" :init="componentData" @config="applyConfig" @discount="setDiscount" @coupon="setCoupon" @resetDiscount="resetDiscount"></div>
+    <div :is="component" :init="componentData" @config="applyConfig" @discount="setDiscount" @coupon="setCoupon" @resetDiscount="resetDiscount" @pick="pickGroup"></div>
   </div>
 </template>
 
@@ -54,14 +54,15 @@
 import { mapGetters } from "vuex";
 import evener from "./component/evener";
 import options from "./component/options";
+import splitor from "./component/splitor";
 
 export default {
   props: ["data", "master", "index"],
-  components: { evener, options },
+  components: { splitor, evener, options },
   computed: {
     enable() {
       return this.master
-        ? this.order.content.filter(i => !i.split).length !== 0
+        ? this.order.content.filter(i => !i.split).length !== 0 || !!this.component
         : true;
     },
     ...mapGetters(["tax", "dinein", "store"])
@@ -86,11 +87,13 @@ export default {
     if (this.master) {
       this.$bus.on("remove", this.hide);
       this.$bus.on("restore", this.restore);
+      this.$bus.on("splitOut", this.splitList);
 
       this.order.content.forEach(item => (item.lock = false));
     } else {
       this.$bus.on("remove", this.remove);
       this.$bus.on("transfer", this.transfer);
+      this.$bus.on("collect", this.recycle);
       this.$bus.on("__THREAD__CLOSE", this.handleThreadResult)
 
       if (this.order.settled) {
@@ -109,9 +112,11 @@ export default {
     if (this.master) {
       this.$bus.off("remove", this.hide);
       this.$bus.off("restore", this.restore);
+      this.$bus.off("splitOut", this.splitList);
     } else {
       this.$bus.off("remove", this.remove);
       this.$bus.off("transfer", this.transfer);
+      this.$bus.off("collect", this.recycle);
       this.$bus.off("__THREAD__CLOSE", this.handleThreadResult)
     }
   },
@@ -125,10 +130,16 @@ export default {
       const index = this.buffer.findIndex(i => i.unique === item.unique);
       index !== -1 ? this.buffer.splice(index, 1) : this.buffer.push(item);
     },
+    pickGroup(items) {
+      if (this.master) {
+        this.buffer = [];
+        items.forEach(item => this.buffer.push(item))
+      }
+    },
     hide(item) {
-      this.buffer.filter(item => !item.lock).forEach(({ unique }) => {
+      this.buffer.forEach(({ unique }) => {
         const index = this.order.content.findIndex(i => i.unique === unique);
-        this.order.content[index].split = true;
+        if (index !== -1) this.order.content[index].split = true;
       });
       this.order.content.splice();
       this.buffer = [];
@@ -140,17 +151,31 @@ export default {
       this.buffer.forEach(item => {
         const { unique } = item;
         const index = this.order.content.findIndex(i => i.unique === unique);
-        this.order.content.splice(index, 1);
+        index !== -1 && this.order.content.splice(index, 1);
       });
       this.buffer = [];
     },
+    recycle(items) {
+      items.forEach(item => {
+        const index = this.order.content.findIndex(i => i.parent === item);
+        index !== -1 && this.order.content.splice(index, 1);
+      });
+      
+      this.buffer = [];
+    },
     restore(items) {
+      let collector = [];
       this.order.content.forEach(item => {
-        if (items.includes(item.unique)) item.split = false;
+        if (items.includes(item.unique)) {
+          item.lock && collector.push(item.unique)
+          item.split = false;
+          item.lock = false;
+        };
       });
       this.buffer = [];
       this.order.content.splice();
       this.$bus.emit("remove");
+      collector.length && this.$bus.emit("collect", collector);
     },
     transfer({ unique, items }) {
       if (this.unique === unique) {
@@ -158,17 +183,73 @@ export default {
 
         const evenSplit = items.filter(item => item.lock);
         evenSplit.length > 0 && this.popDialogFor(evenSplit);
+
+        items[0] && items[0].__split__ && this.$bus.emit("release");
       }
+
       this.$bus.emit("remove");
     },
     popDialogFor(items) {
+      const qty = Math.max(2, ...items.map(i => i.qty));
+
       new Promise((resolve, reject) => {
-        this.componentData = { resolve, reject };
+        this.componentData = { resolve, reject, qty };
         this.component = "evener";
-      }).then(option => {
-        console.log(option);
+      }).then(qty => {
+        let _items = [];
+
+        items.forEach(item => {
+          item.lock = false;
+
+          if (item.qty === qty) {
+            item.__split__ = true;
+            item.qty = 1;
+            item.total = item.single.toFixed(2);
+          } else {
+            item.__split__ = true;
+            item.single = toFixed(item.single / qty, 2);
+            item.total = (item.single * item.qty).toFixed(2);
+          }
+
+          item.choiceSet.forEach(set => {
+            set.single = toFixed(set.single / qty, 2);
+            set.price = toFixed(set.single * set.qty, 2);
+          })
+        });
+
+        for (let i = 0; i < qty; i++) {
+          _items.push([...JSON.parse(JSON.stringify(items))])
+        }
+
+        _items.forEach((group, g) => {
+          group.forEach((item, i) => {
+            _items[g][i].unique = Math.random().toString(36).substr(2, 5);
+          })
+        })
+
+        _items.splice(0, 1)[0].forEach(item => this.order.content.push(item));
+
+        this.$bus.emit("splitOut", _items);
+
+        this.$q();
+      }).catch(() => {
+        this.$bus.emit("restore", items.filter(i => i.parent).map(i => i.parent));
         this.$q();
       });
+    },
+    splitList(items) {
+      new Promise((resolve) => {
+        this.componentData = { resolve, items };
+        this.component = "splitor"
+      }).then(() => {
+        const target = items.map(i => i.parent);
+
+        this.order.content.forEach(item => {
+          if (target.includes(item.unique)) item.split = true;
+        })
+        this.buffer = [];
+        this.$q()
+      })
     },
     ticketConfig() {
       const taxFree = this.order.taxFree || false;
@@ -176,6 +257,7 @@ export default {
       const gratuityFree = this.order.gratuityFree || false;
       const isDiscount = this.order.payment.discount > 0;
       const { type } = this.order;
+
       !this.component
         ? this.$open("options", { taxFree, deliveryFree, gratuityFree, type, isDiscount })
         : this.$q()
@@ -208,7 +290,7 @@ export default {
     },
     handleThreadResult({ result, component, threadID }) {
       if (threadID !== this.unique) return;
-      
+
       switch (component) {
         case "discount":
           const { discount, coupon } = result;
@@ -392,6 +474,7 @@ li.tooltip {
 
 .main {
   position: relative;
+  display: flex;
 }
 
 .main i {

@@ -54,6 +54,8 @@ export default {
       }
     },
     adjustChoiceSet(choice, e) {
+      if (this.$route.name !== 'Menu') return;
+      
       let dom = document.querySelector(".sub.target");
       dom && dom.classList.remove("target");
 

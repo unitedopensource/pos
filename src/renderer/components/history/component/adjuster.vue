@@ -252,7 +252,7 @@ export default {
           }
         });
       } else {
-        this.batch = true;
+        //this.batch = true;
       }
     },
     prev() {
