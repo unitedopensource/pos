@@ -1114,6 +1114,8 @@ export default {
         'requireAccessPin': 'Access Pin Required',
         'swipeMode': 'Swipe Mode',
         'noRounding': 'No rounding',
+        'autoSelect': 'Auto Select',
+        'roundToQuarter': 'Round To Quarter',
         'alwaysRoundUp': 'Round up',
         'alwaysRoundDown': 'Round down'
     },
@@ -1487,8 +1489,10 @@ export default {
         'rounding': {
             'tooltip': 'Penny rounding method',
             'disable': 'No Rounding',
-            'up': 'Always round up to near quarter',
-            'down': 'Always round down to near quarter'
+            'auto': 'Auto select rounding methods',
+            'quarter': 'Always round up to near quarter',
+            'up': '( $ 0.03 round up to $ 0.05 )',
+            'down': '( $ 0.07 round down to $ 0.05 )'
         },
         'coupon': {
             'rebate': '($5 rebate when $30)',

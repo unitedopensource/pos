@@ -63,7 +63,15 @@ export default {
         label: "text.noRounding",
         tooltip: "tip.rounding.disable",
         value: "disable"
+      },{
+        label:'text.autoSelect',
+        tooltip:'tip.rounding.auto',
+        value:'auto'
       }, {
+        label: "text.roundToQuarter",
+        tooltip: "tip.rounding.quarter",
+        value: "quarter"
+      },{
         label: "text.alwaysRoundUp",
         tooltip: "tip.rounding.up",
         value: "roundUp"

@@ -317,6 +317,10 @@ export default {
 </script>
 
 <style scoped>
+.popupMask {
+  margin-top: 30px;
+}
+
 ul.panel {
   font-size: initial;
   width: 260px;

@@ -295,7 +295,7 @@ export default {
         return;
       }
 
-      const { type, guest, coupons, taxFree = false, deliveryFree = false, gratuityFree = false } = this.order;
+      const { type, guest, coupons, taxFree = false, deliveryFree = false, gratuityFree = false, } = this.order;
       const { enable, rules } = this.dinein.surcharge;
 
       let delivery =
@@ -358,10 +358,10 @@ export default {
         try {
           const { fee, percentage } = rules.sort((a, b) => a.guest < b.guest).find(r => guest >= r.guest);
           gratuity = percentage ? toFixed(subtotal * fee / 100, 2) : fee;
-        } catch (e) {
-
-        }
+        } catch (e) { }
       }
+
+      gratuity = toFixed(gratuity, 2);
 
       if (coupons && coupons.length > 0) {
         let offer = 0;
@@ -398,12 +398,39 @@ export default {
               break;
           }
         });
-
         discount += offer;
       }
 
       const total = subtotal + tax;
-      const due = Math.max(0, total + delivery - discount);
+      const due = toFixed(Math.max(0, total + delivery - discount), 2);
+      const _total = toFixed((due + gratuity) * 100, 2);
+
+      switch (this.store.rounding) {
+        case "quarter":
+          rounding = toFixed((25 - _total % 25) / 100, 2);
+          rounding = rounding === 0.25 ? 0 : rounding;
+          break;
+        case "roundUp":
+          const near = Math.ceil(_total / 5) * 5;
+          rounding = toFixed((near - _total) / 100, 2);
+          rounding = rounding === 0.05 ? 0 : rounding;
+          break;
+        case "roundDown":
+          rounding = -toFixed(_total % 5 / 100, 2);
+          break;
+        case "auto":
+          if (_total % 5 < 3) {
+            rounding = _total % 5 === 0
+              ? 0
+              : -toFixed((_total - (Math.floor(_total / 5) * 5)) / 100, 2)
+          } else {
+            rounding = toFixed((Math.ceil(_total / 5) * 5 - _total) / 100, 2);
+          }
+          break;
+        default:
+          rounding = 0
+      }
+
       const balance = due + gratuity + rounding;
       const remain = balance - paid;
 

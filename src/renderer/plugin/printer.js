@@ -1227,7 +1227,7 @@ function createFooter(config, setting, printer, ticket) {
     }
 
     let detail = [];
-    ['subtotal', 'discount', 'tax', 'delivery', 'tip', 'gratuity', 'total'].forEach(key => {
+    ['subtotal', 'discount', 'tax', 'delivery', 'tip', 'gratuity', 'rounding', 'total'].forEach(key => {
         if (payment[key] > 0) {
             let style = '';
             let value = payment[key].toFixed(2);

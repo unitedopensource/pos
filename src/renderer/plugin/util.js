@@ -198,6 +198,8 @@ export default {
                 } catch (e) { }
             }
 
+            gratuity = toFixed(gratuity, 2);
+
             if (coupons && coupons.length > 0) {
                 let offer = 0;
                 coupons.forEach(coupon => {
@@ -239,6 +241,34 @@ export default {
 
             const total = subtotal + tax;
             const due = Math.max(0, total + delivery - discount);
+            const _total = toFixed((due + gratuity) * 100, 2);
+
+            switch (this.store.rounding) {
+                case "quarter":
+                    rounding = toFixed((25 - _total % 25) / 100, 2);
+                    rounding = rounding === 0.25 ? 0 : rounding;
+                    break;
+                case "roundUp":
+                    const near = Math.ceil(_total / 5) * 5;
+                    rounding = toFixed((near - _total) / 100, 2);
+                    rounding = rounding === 0.05 ? 0 : rounding;
+                    break;
+                case "roundDown":
+                    rounding = -toFixed(_total % 5 / 100, 2);
+                    break;
+                case "auto":
+                    if (_total % 5 < 3) {
+                        rounding = _total % 5 === 0
+                            ? 0
+                            : -toFixed((_total - (Math.floor(_total / 5) * 5)) / 100, 2)
+                    } else {
+                        rounding = toFixed((Math.ceil(_total / 5) * 5 - _total) / 100, 2);
+                    }
+                    break;
+                default:
+                    rounding = 0
+            }
+
             const balance = due + gratuity + rounding;
             const remain = balance - paid;
 

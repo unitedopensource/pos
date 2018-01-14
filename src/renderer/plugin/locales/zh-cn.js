@@ -1109,6 +1109,8 @@ export default {
         'requireAccessPin': '需要登陆密码',
         'swipeMode': '滑动模式',
         'noRounding': '禁止',
+        'autoSelect': '自动选择',
+        'roundToQuarter': '补齐25美分',
         'alwaysRoundUp': '向上取整',
         'alwaysRoundDown': '向下取整'
     },
@@ -1479,8 +1481,10 @@ export default {
         'rounding': {
             'tooltip': '设置美分取整方式',
             'disable': '不调整美分',
-            'up': '往上补齐至最近的25美分',
-            'down': '往下补齐至最近的25美分'
+            'auto': '自动判断补齐方式',
+            'quarter': '往上补齐至最近的25美分',
+            'up': '( $ 0.03 补齐至 $ 0.05 )',
+            'down': '( $ 0.07 对齐至 $ 0.05 )'
         },
         'coupon': {
             'rebate': '(满 30 减 5)',

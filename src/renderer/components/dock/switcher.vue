@@ -127,6 +127,10 @@ export default {
 </script>
 
 <style scoped>
+.popupMask {
+  margin-top: 30px;
+}
+
 ul {
   position: absolute;
   top: 5px;
