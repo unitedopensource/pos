@@ -55,7 +55,7 @@
             </div>
           </div>
           <div class="fn">
-            <button class="btn" @click="setTip">{{$t('button.setTip')}}</button>
+            <button class="btn" @click="setTip" :disabled="true">{{$t('button.setTip')}}</button>
             <button class="btn" @click="setDiscount" :disabled="!discountable || this.order.split">{{$t('button.setDiscount')}}</button>
             <button class="btn" @click="save">{{$t('button.save')}}</button>
           </div>
@@ -328,21 +328,13 @@ export default {
         this.$socket.emit(
           "[PAYMENT] CHECK",
           this.order._id,
-          ({ paid, tipped }) => {
-            this.tipped = tipped;
+          paid => {
             this.payment.remain = Math.max(0, this.payment.balance - paid)
               .toPrecision(12)
               .toFloat();
 
-            if (this.payment.tip > 0 && tipped === 0) {
-              this.tip = this.payment.tip.toFixed(2);
-            } else if (this.payment.tip !== tipped) {
-              this.tip = Math.max(0, this.payment.tip - tipped)
-                .toPrecision(12)
-                .toFloat();
-            } else {
-              this.tip = "0.00";
-            }
+            this.tip = "0.00";
+
             next();
           }
         );
@@ -624,7 +616,6 @@ export default {
 
           this.$dialog(content)
             .then(() => {
-              this.payment.tip = extra;
               this.paid = (this.paid - extra).toFixed(2);
               this.tip = extra.toFixed(2);
 
@@ -633,7 +624,6 @@ export default {
               next(true);
             })
             .catch(() => {
-              this.payment.tip = 0;
               this.tip = "0.00";
               this.$q();
             });
@@ -669,9 +659,7 @@ export default {
         const date = this.expiration.replace(/[^0-9\.]+/g, "");
         const today = moment().format("MMYY");
 
-        const tip =
-          parseFloat(this.tip) ||
-          (this.tipped === this.payment.tip ? 0 : this.payment.tip);
+        const tip = parseFloat(this.tip);
 
         const cardLengthError = {
           type: "error",
@@ -802,9 +790,7 @@ export default {
       const paid = (parseFloat(this.paid) + parseFloat(this.tip))
         .toPrecision(12)
         .toFloat();
-      const tip =
-        parseFloat(this.tip) ||
-        (this.tipped === this.payment.tip ? 0 : this.payment.tip);
+      const tip = parseFloat(this.tip);
 
       const _id = ObjectId();
       const date = today();
@@ -1103,11 +1089,8 @@ export default {
         this.$socket.emit(
           "[PAYMENT] CHECK",
           this.order._id,
-          ({ paid, tipped }) => {
-            if (
-              this.payment.tip === tipped &&
-              this.payment.remain === toFixed(paid + tipped, 2)
-            ) {
+          paid => {
+            if (this.payment.remain === paid) {
               this.$q();
               this.setPaymentType("CASH");
               this.poleDisplay("Balance Due:", `$ ${remain.toFixed(2)}`);
@@ -1248,7 +1231,6 @@ export default {
       const rounded = Math.ceil(this.payment.remain);
 
       this.payment.gratuity = toFixed(rounded - this.payment.remain, 2);
-      this.payment.tip = 0;
       this.paid = "0.00";
       this.tip = "0.00";
 
@@ -1263,11 +1245,7 @@ export default {
         this.tip = val.toFixed(2);
         this.getQuickInput(this.payment.remain);
       } else {
-        if (parseFloat(this.tip) === this.payment.tip) {
-          this.paid = (val - this.payment.tip).toFixed(2);
-        } else {
-          this.paid = val.toFixed(2);
-        }
+        this.paid = val.toFixed(2);
       }
       this.reset = true;
     },

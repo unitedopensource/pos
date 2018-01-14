@@ -449,6 +449,8 @@ export default {
         rounding: toFixed(rounding, 2)
       });
 
+      console.log(this.payment)
+
       Object.assign(this.order, { payment: this.payment });
     },
     ...mapActions([
