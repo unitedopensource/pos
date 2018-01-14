@@ -9,8 +9,8 @@
             <span class="side">{{item.side[language]}}</span>
           </span>
           <template v-if="master">
-            <i class="fa fa-lock" @click.stop="toggleLock(index)" v-if="item.lock"></i>
-            <i class="fa fa-unlock" @click.stop="toggleLock(index)" v-else></i>
+            <i class="fa fa-clone" @click.stop="toggleSplit(index)" v-if="item.lock"></i>
+            <i class="fa fa-square-o" @click.stop="toggleSplit(index)" v-else></i>
           </template>
           <template v-else>
             <span>{{item.total}}</span>
@@ -145,7 +145,9 @@ export default {
       this.buffer = [];
 
       const remain = this.order.content.filter(i => !i.split).length;
-      remain === 0 && this.$emit("done");
+      const done = remain === 0 && !this.component;
+
+      this.$emit("done",done);
     },
     remove() {
       this.buffer.forEach(item => {
@@ -334,7 +336,7 @@ export default {
     selectAll() {
       this.order.content.filter(i => !i.split).forEach(item => this.pick(item));
     },
-    toggleLock(index) {
+    toggleSplit(index) {
       const item = this.order.content[index];
       item.lock = !item.lock;
       this.order.content.splice(index, 1, item);
@@ -411,9 +413,9 @@ li.function {
 li.settle {
   flex-direction: row;
   align-items: center;
-  padding: 5px 15px;
+  padding: 0 0 0 15px;
   position: absolute;
-  width: 220px;
+  width: 235px;
   bottom: 0;
   border-top: 1px solid #eee;
 }
@@ -424,6 +426,7 @@ li.settle p {
 
 .settle i {
   cursor: pointer;
+  padding: 11px 25px;
 }
 
 .total {

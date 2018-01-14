@@ -122,6 +122,7 @@ const mutations = {
     let { item } = state;
 
     if (disable) return;
+    if (data.split) return;
 
     const _zhCN = `[${zhCN}]`;
     const _usEN = `[${usEN}]`;

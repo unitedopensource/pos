@@ -11,38 +11,45 @@
 
 <script>
 export default {
-    props: ["init"],
-    data() {
-        return {
-            language: this.$store.getters.language,
-            items: this.init.items,
-            index: null
-        }
-    },
-    created() {
-        this.$bus.on("release", this.remove)
-    },
-    beforeDestroy() {
-        this.$bus.off("release", this.remove)
-    },
-    methods: {
-        setIndex(index) {
-            this.index = index;
+  props: ["init"],
+  data() {
+    return {
+      language: this.$store.getters.language,
+      items: this.init.items,
+      index: null
+    };
+  },
+  created() {
+    this.$bus.on("release", this.remove);
+  },
+  beforeDestroy() {
+    this.$bus.off("release", this.remove);
+  },
+  methods: {
+    setIndex(index) {
+      this.index = index;
 
-            let dom = document.querySelector(".splitor .selected");
-            dom && dom.classList.remove("selected");
+      const dom = document.querySelector(".splitor .selected");
+      dom && dom.classList.remove("selected");
 
-            document.querySelectorAll(".splitor div")[index].classList.add("selected");
+      document
+        .querySelectorAll(".splitor div")
+        [index].classList.add("selected");
 
-            this.$emit('pick', this.items[index]);
-        },
-        remove() {
-            this.items.splice(this.index, 1);
-            this.index = null;
-            this.items.length === 0 && this.init.resolve();
-        }
+      this.$emit("pick", this.items[index]);
+    },
+    remove() {
+      const dom = document.querySelector(".splitor .selected");
+      dom && dom.classList.remove("selected");
+
+      if (isNumber(this.index)) {
+        this.items.splice(this.index, 1);
+        this.index = null;
+        this.items.length === 0 && this.init.resolve();
+      }
     }
-}
+  }
+};
 </script>
 
 <style scoped>

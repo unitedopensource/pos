@@ -25,7 +25,7 @@
             <i class="fa fa-3x fa fa-minus"></i>
           </div>
         </div>
-        <ticket :data="order" :master="true" @acquire="restore" @done="done = true"></ticket>
+        <ticket :data="order" :master="true" @acquire="restore" @done="setDone"></ticket>
       </div>
       <footer>
         <div class="opt">
@@ -125,8 +125,8 @@ export default {
 
       const items = buffer.filter(item => item.parent).map(item => item.parent);
       this.$bus.emit("restore", items);
-      
-      if(items.length) this.done = false;
+
+      if (items.length) this.done = false;
     },
     registerSwipeEvent() {
       this.hammer = new Hammer(this.$refs.scroll);
@@ -166,6 +166,9 @@ export default {
             this.offset -= right - width > 250 ? 500 : 250;
           }, 300);
       });
+    },
+    setDone(boolean) {
+      this.done = boolean;
     },
     confirm() {
       const parent = this.order._id;
