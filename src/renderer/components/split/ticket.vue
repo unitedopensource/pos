@@ -3,7 +3,8 @@
     <ul @click.self="tap" v-if="enable" :class="[unique,{ban}]" :refs="unique">
       <li v-for="(item,index) in order.content" :key="index" @click="pick(item)" :data-unique="item.unique" v-show="!item.split">
         <div class="main">
-          <span class="qty">{{item.qty}}</span>
+          <span class="qty deno" :data-deno="item.deno" v-if="item.deno">{{item.qty}}</span>
+          <span class="qty" v-else>{{item.qty}}</span>
           <span class="f1">
             <span>{{item[language]}}</span>
             <span class="side">{{item.side[language]}}</span>
@@ -93,7 +94,7 @@ export default {
       this.$bus.on("remove", this.remove);
       this.$bus.on("transfer", this.transfer);
       this.$bus.on("collect", this.recycle);
-      this.$bus.on("destroy",this.recycle);
+      this.$bus.on("destroy", this.recycle);
       this.$bus.on("__THREAD__CLOSE", this.handleThreadResult);
 
       if (this.order.settled) {
@@ -111,7 +112,6 @@ export default {
     //register scroll event
 
 
-
   },
   beforeDestroy() {
     if (this.master) {
@@ -122,15 +122,14 @@ export default {
       this.$bus.off("remove", this.remove);
       this.$bus.off("transfer", this.transfer);
       this.$bus.off("collect", this.recycle);
-      this.$bus.off("destroy",this.recycle);
+      this.$bus.off("destroy", this.recycle);
       this.$bus.off("__THREAD__CLOSE", this.handleThreadResult);
     }
   },
   methods: {
     pick(item) {
       if (this.master) {
-        item = JSON.parse(JSON.stringify(item));
-        item.parent = item.unique;
+        item = Object.assign(Object.create(Object.getPrototypeOf(item)), item, { parent: item.unique });//JSON.parse(JSON.stringify(item));
       }
 
       const index = this.buffer.findIndex(i => i.unique === item.unique);
@@ -168,7 +167,7 @@ export default {
     restore(items) {
       let collector = [];
       this.order.content.forEach(item => {
-        
+
         if (items.includes(item.unique)) {
           item.lock && collector.push(item.unique);
           item.split = false;
@@ -205,6 +204,7 @@ export default {
 
           items.forEach(item => {
             item.lock = false;
+            item.deno = qty;
 
             if (item.qty === qty) {
               item.__split__ = true;
@@ -512,6 +512,26 @@ li.tooltip {
 
 .picked .main i {
   display: initial;
+}
+
+.main .deno.qty{
+  text-align: left;
+  position: relative;
+}
+
+.deno.qty:after {
+  content: attr(data-deno);
+  position: absolute;
+  top: 8px;
+  right: 0px;
+  color: #607d8b;
+}
+
+.deno.qty:before {
+  content: "/";
+  position: absolute;
+  right: 7px;
+  top: 3px;
 }
 
 .main .qty {
