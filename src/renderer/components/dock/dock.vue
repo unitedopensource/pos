@@ -213,6 +213,7 @@ export default {
       "removeMenuItem",
       "updateTableSection",
       "replaceTable",
+      "setTemporaryTable",
       "newReservation",
       "updateReservation",
       "resetCurrentTable",
@@ -301,6 +302,9 @@ export default {
     REPLACE_TABLE(data) {
       this.replaceTable(data);
     },
+    TEMPORARY_TABLE(data) {
+      this.setTemporaryTable(data);
+    },
     NEW_RESERVATION(data) {
       this.newReservation(data);
     },
@@ -310,7 +314,7 @@ export default {
     SYNC_RESERVATIONS(data) {
       this.setReservation(data);
     },
-    REPLACE_TEMPLATE(data){
+    REPLACE_TEMPLATE(data) {
       this.setTemplates(data);
     },
     SHUTDOWN() {

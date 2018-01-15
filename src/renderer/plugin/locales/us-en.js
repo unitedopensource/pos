@@ -662,7 +662,9 @@ export default {
         cantExecute: 'Can Not Execute',
         errorOccurred: 'Something is wrong! Previous action aborted.',
         duplicateNotAllow: 'Name duplicated! Please consider other name.',
-        splitTicketItemRemain: 'This order has {i} items are not split. Please split them and try again.'
+        splitTicketItemRemain: 'This order has {i} items are not split. Please split them and try again.',
+        temporaryTable: 'Temporary Table',
+        createTemporaryTable: 'Are you sure to create a temporary table?'
     },
     terminal: {
         initial: 'Initializing terminal {i}...',
@@ -1391,7 +1393,6 @@ export default {
         fontSize: 'Font Size',
         itemPrice: 'Item Price',
         storeContact: 'Store Contact',
-        title: 'Ticket Title',
         customer: 'Customer Information',
         jobTime: 'Job Time',
         payment: 'Payment Detail',

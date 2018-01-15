@@ -17,7 +17,7 @@
         </div>
       </aside>
       <div class="tables">
-        <div class="table" v-for="(table,index) in viewSection" @click="tap(table)" @contextmenu="resetTable(table)" :key="index" :class="getTableStatus(table.status)">
+        <div class="table" v-for="(table,index) in viewSection" @click="tap(table)" @contextmenu="option(table,index)" :key="index" :class="getTableStatus(table.status)">
           <span :class="[table.shape]" class="icon"></span>
           <span class="name">{{table.name}}</span>
           <span class="staff" v-show="table.server">{{table.server}}</span>
@@ -39,12 +39,13 @@ import { mapGetters, mapActions } from "vuex";
 import orderList from "../common/orderList";
 import dialoger from "../common/dialoger";
 import counter from "./component/counter";
+import creator from "./component/creator";
 import unlock from "../common/unlock";
 import buttons from "./buttons";
 
 export default {
   props: ["reserved"],
-  components: { orderList, dialoger, counter, unlock, buttons },
+  components: { orderList, dialoger, counter, unlock, buttons, creator },
   computed: {
     viewSection() {
       return this.tables[this.view] ? this.tables[this.view].item : [];
@@ -244,6 +245,11 @@ export default {
       }
       prompt && this.$dialog(prompt).then(() => this.$q());
     },
+    option(table, index) {
+      table.hasOwnProperty("_id")
+        ? this.resetTable(table)
+        : this.temporaryTable(table, index);
+    },
     resetTable({ server, name, _id }, index) {
       const { role } = this.op;
 
@@ -268,6 +274,32 @@ export default {
           })
           .catch(() => this.$q());
       }
+    },
+    temporaryTable(table, index) {
+      const prompt = {
+        type: "question",
+        title: "dialog.temporaryTable",
+        msg: "dialog.createTemporaryTable"
+      };
+
+      this.$dialog(prompt)
+        .then(() => this.setTableName(table, index))
+        .catch(() => this.$q());
+    },
+    setTableName(table, index) {
+      new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject };
+        this.component = "creator";
+      }).then(name => {
+        this.$q();
+        Object.assign(table, {
+          temporary: true,
+          grid: index,
+          status: 1,
+          name
+        });
+        this.$socket.emit("[TABLE] CREATE", table);
+      });
     },
     exceptionHandler(error) {
       switch (error) {

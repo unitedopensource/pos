@@ -71,6 +71,11 @@ export const setTable = ({
 }, tables) => {
   commit(types.SET_TABLE, tables)
 }
+export const setTemporaryTable = ({
+  commit
+},table)=>{
+  commit(types.SET_TEMPORARY_TABLE,table)
+}
 export const setRequest = ({
   commit
 }, request) => {

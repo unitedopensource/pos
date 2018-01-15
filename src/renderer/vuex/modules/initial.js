@@ -54,12 +54,10 @@ const mutations = {
         state.app = Object.assign({}, state.app, data)
     },
     [types.SET_STATION](state, station) {
-        state.config = Object.assign({}, state.config, {
-            station
-        })
+        state.config = Object.assign({}, state.config, { station })
     },
     [types.SET_MENU](state, data) {
-        let alphabetical = state.config.display.alphabetical;
+        const { alphabetical } = state.config.display;
         state.config.layout.menu = flatten(state.config.layout.menu, data, true, alphabetical);
     },
     [types.SET_SUBMENU](state, data) {
@@ -92,20 +90,36 @@ const mutations = {
     [types.SET_TABLE](state, data) {
         let layout = state.config.layout.table;
         state.config.layout.table = layout.map(section => {
-            let zone = section.zone;
-            let space = Array(56).fill({
+            const { zone } = section;
+            let seat = Array(56).fill({
+                feature: [],
+                invoice: [],
+                name: "",
+                server: null,
+                session: null,
                 shape: "",
-                status: "",
-                name: ""
+                status: 0,
+                time: 0,
+                grid: 0,
+                zone
             });
-            let seats = data.length;
-            for (let i = 0; i < seats; i++) {
-                let table = data[i];
-                table.zone === zone && (space[table.grid] = table);
-            }
-            section.item = space;
+
+            data.forEach(table => {
+                if (table.zone === zone) seat[table.grid] = table;
+            });
+
+            section.item = seat;
+
             return section;
         });
+    },
+    [types.SET_TEMPORARY_TABLE](state, table) {
+        const { zone, grid } = table;
+        const index = state.config.layout.table.findIndex(section => section.zone === zone);
+
+        table.status === 0
+            ? state.config.layout.table[index].item.splice(grid, 1)
+            : state.config.layout.table[index].item.splice(grid, 1, table)
     },
     [types.SET_LASTSYNC](state, time) {
         state.sync = time
@@ -128,7 +142,7 @@ const mutations = {
         index === -1 ? state.orders.unshift(invoice) : state.orders.splice(index, 1, invoice);
     },
     [types.UPDATE_TABLE_STATUS](state, table) {
-        let zone = table.zone;
+        const zone = table.zone;
         let tables = state.config.layout.table;
         for (let i = 0; i < tables.length; i++) {
             if (tables[i].zone === zone) {
@@ -144,91 +158,53 @@ const mutations = {
         }
         state.config.layout.table.splice();
     },
-    [types.UPDATE_MENU_CATEGORY](state, data) {
-        let {
-            category,
-            items,
-            index
-        } = data;
+    [types.UPDATE_MENU_CATEGORY](state, { category, items, index }) {
         category = flatten(category, items)[0];
         state.config.layout.menu.splice(index, 1, category);
     },
     [types.REPLACE_MENU](state, data) {
         state.config.layout.menu = data;
     },
-    [types.UPDATE_MENU_ITEM](state, data) {
-        let {
-            item,
-            sequence
-        } = data;
-        let [g, s, i] = sequence;
-
+    [types.UPDATE_MENU_ITEM](state, { item, sequence }) {
+        const [g, s, i] = sequence;
         item.clickable = true;
         state.config.layout.menu[g]['item'][s].splice(i, 1, item);
     },
-    [types.REMOVE_MENU_ITEM](state, data) {
-        let [g, s, i] = data;
-        state.config.layout.menu[g]['item'][s].splice(i, 1);
-        state.config.layout.menu[g]['item'][s].push({
+    [types.REMOVE_MENU_ITEM](state, [g, s, i]) {
+        const item = {
             zhCN: "",
             usEN: "",
             clickable: false,
             category: ""
-        })
+        };
+
+        state.config.layout.menu[g]['item'][s].splice(i, 1);
+        state.config.layout.menu[g]['item'][s].push(item);
     },
-    // [types.REPLACE_MENU_ITEM](state, data) {
-    //     let {
-    //         index,
-    //         items
-    //     } = data;
-    //     state.config.layout.menu[index].item = items;
-    // },
-    [types.REPLACE_REQUEST_ITEM](state, data) {
-        let {
-            index,
-            items
-        } = data;
+    [types.REPLACE_REQUEST_ITEM](state, { index, items }) {
         state.config.layout.request[index].item = items;
     },
-    [types.UPDATE_REQUEST_CATEGORY](state, data) {
-        let {
-            category,
-            items,
-            index
-        } = data;
+    [types.UPDATE_REQUEST_CATEGORY](state, { category, items, index }) {
         category = flatten(category, items, false)[0];
         state.config.layout.request.splice(index, 1, category);
     },
-    [types.UPDATE_REQUEST_ITEM](state, data) {
-        let {
-            item,
-            categoryIndex,
-            groupIndex,
-            index
-        } = data;
+    [types.UPDATE_REQUEST_ITEM](state, { categoryIndex, groupIndex, index, item }) {
         item.clickable = true;
         state.config.layout.request[categoryIndex]['item'][groupIndex].splice(index, 1, item)
     },
-    [types.UPDATE_REQUEST_ACTION](state, data) {
-        let {
-            action,
-            index
-        } = data;
+    [types.UPDATE_REQUEST_ACTION](state, { action, index }) {
         state.config.layout.action.splice(index, 1, action)
     },
-    [types.REMOVE_REQUEST_ITEM](state, data) {
-        let {
-            categoryIndex,
-            groupIndex,
-            index
-        } = data;
-        state.config.layout.request[categoryIndex]['item'][groupIndex].splice(index, 1);
-        state.config.layout.request[categoryIndex]['item'][groupIndex].push({
+    [types.REMOVE_REQUEST_ITEM](state, { categoryIndex, groupIndex, index }) {
+        const item = {
             zhCN: "",
             usEN: "",
             clickable: false,
             category: "NA"
-        })
+        }
+
+        state.config.layout.request[categoryIndex]['item'][groupIndex].splice(index, 1);
+        state.config.layout.request[categoryIndex]['item'][groupIndex].push(item)
     },
     [types.NEW_PHONE_CALL](state, data) {
         state.callLog.unshift(data);
@@ -245,13 +221,10 @@ const mutations = {
         let { tables, index } = data;
         state.config.layout.table[index].item = tables;
     },
-    [types.REPLACE_TABLE](state, data) {
-        const { table, index, section } = data;
-
+    [types.REPLACE_TABLE](state, { table, index, section }) {
         state.config.layout.table[section].item.splice(index, 1, table);
     },
-    [types.REMOVE_TABLE](state, data) {
-        let { section, index } = data;
+    [types.REMOVE_TABLE](state, { section, index }) {
         let table = state.config.layout.table[section].item[index];
         Object.assign(table, {
             name: '',

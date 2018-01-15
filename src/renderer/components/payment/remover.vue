@@ -248,7 +248,7 @@ thead th {
 tbody {
   background: #fafafa;
   display: block;
-  height: 390px;
+  min-height: 390px;
 }
 
 thead,

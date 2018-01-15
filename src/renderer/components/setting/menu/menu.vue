@@ -33,7 +33,7 @@ export default {
   components: { dialoger, draggable, itemEditor, categoryEditor },
   data() {
     return {
-      categories: JSON.parse(JSON.stringify(this.$store.getters.menu)),
+      categories: this.$store.getters.menu, //JSON.parse(JSON.stringify(this.$store.getters.menu)),
       language: this.$store.getters.language,
       isCategorySorted: false,
       isItemSorted: false,
@@ -57,9 +57,7 @@ export default {
     this.isItemSorted && this.updateItemSort();
   },
   methods: {
-    entry(e) { 
-      
-    },
+    entry(e) {},
     setCategory(index) {
       this.isItemSorted && this.updateItemSort();
       this.getItems(index);

@@ -602,7 +602,7 @@ export default {
           msg: "dialog.canNotPayZeroAmount",
           buttons: [{ text: "button.confirm", fn: "resolve" }]
         };
-        if (this.paid === "0.00") throw paidZeroError;
+        if (this.paidTotal === 0) throw paidZeroError;
         if (this.paid > this.payment.remain) {
           const extra = toFixed(this.paid - this.payment.remain, 2);
           const content = {
@@ -646,7 +646,7 @@ export default {
           buttons: [{ text: "button.confirm", fn: "resolve" }]
         };
 
-        if (this.paid === "0.00") throw paidZeroError;
+        if (this.paidTotal === 0) throw paidZeroError;
 
         this.station.cashDrawer.enable || this.op.cashCtrl === "staffBank"
           ? resolve()

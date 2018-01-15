@@ -122,6 +122,27 @@ export default {
             this.componentData = null;
         }
 
+        // Vue.prototype.syncChange = function (object, onChange) {
+        //     const handler = {
+        //         get(target, property, receiver) {
+        //             try {
+        //                 return new Proxy(target[property], handler)
+        //             } catch (e) {
+        //                 return Reflect.get(target, property, receiver)
+        //             }
+        //         },
+        //         defineProperty(target, property, descriptor) {
+        //             onChange();
+        //             return Reflect.defineProperty(target, property, descriptor);
+        //         },
+        //         deleteProperty(target, property) {
+        //             onChange();
+        //             return Reflect.deleteProperty(target, property);
+        //         }
+        //     };
+        //     return new Proxy(object, handler)
+        // }
+
         Vue.prototype.$calculatePayment = function (items) {
             const {
                 type,

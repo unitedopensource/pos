@@ -1,6 +1,6 @@
 <template>
-  <div class="invoice">
-    <ul @click.self="tap" v-if="enable" :class="[unique,{ban}]" :ref="unique" :style="scroll">
+  <div class="invoice" :class="{ban}">
+    <ul @click.self="tap" v-if="enable" :class="[unique]" :ref="unique" :style="scroll">
       <li v-for="(item,index) in order.content" :key="index" @click="pick(item)" :data-unique="item.unique" v-show="!item.split">
         <div class="main">
           <span class="qty deno" :data-deno="item.deno" v-if="item.deno">{{item.qty}}</span>
@@ -63,12 +63,12 @@ export default {
   components: { splitor, evener, options },
   computed: {
     scroll() {
-      return { transform: `translate3d(0,${this.offset}px,0)` }
+      return { transform: `translate3d(0,${this.offset}px,0)` };
     },
     enable() {
       return this.master
         ? this.order.content.filter(i => !i.split).length !== 0 ||
-        !!this.component
+            !!this.component
         : true;
     },
     ...mapGetters(["tax", "dinein", "store"])
@@ -120,30 +120,28 @@ export default {
       this.hammer.get("swipe").set({ direction: Hammer.DIRECTION_VERTICAL });
       this.hammer.get("pan").set({ direction: Hammer.DIRECTION_VERTICAL });
       this.hammer.on("swipeup panstart panend panup pandown", e => {
-
-
         switch (e.type) {
           case "panstart":
             this.offset = this.lastDelta + e.deltaY;
-            console.log(e)
+            console.log(e);
             break;
           case "panend":
             this.lastDelta = this.offset;
-            console.log(e)
+            console.log(e);
             break;
           case "panup":
-            this.offset = e.deltaY
+            this.offset = e.deltaY;
             break;
           case "pandown":
-            this.offset = e.deltaY
+            this.offset = e.deltaY;
             break;
           case "swipeup":
-            this.order.content.length === 0 && this.$emit("destroy", this.index)
+            this.order.content.length === 0 &&
+              this.$emit("destroy", this.index);
             break;
         }
       });
     }
-
   },
   beforeDestroy() {
     if (this.master) {
@@ -161,7 +159,9 @@ export default {
   methods: {
     pick(item) {
       if (this.master) {
-        item = Object.assign(Object.create(Object.getPrototypeOf(item)), item, { parent: item.unique });//JSON.parse(JSON.stringify(item));
+        item = Object.assign(Object.create(Object.getPrototypeOf(item)), item, {
+          parent: item.unique
+        }); //JSON.parse(JSON.stringify(item));
       }
 
       const index = this.buffer.findIndex(i => i.unique === item.unique);
@@ -185,21 +185,24 @@ export default {
         const remain = this.order.content.filter(i => !i.split).length;
         const done = remain === 0 && !this.component;
         this.$emit("done", done);
-      })
+      });
     },
     remove() {
       const uniques = this.buffer.map(i => i.unique);
-      this.order.content = this.order.content.filter(i => !uniques.includes(i.unique));
+      this.order.content = this.order.content.filter(
+        i => !uniques.includes(i.unique)
+      );
       this.buffer = [];
     },
     recycle(items) {
-      this.order.content = this.order.content.filter(i => !items.includes(i.parent));
+      this.order.content = this.order.content.filter(
+        i => !items.includes(i.parent)
+      );
       this.buffer = [];
     },
     restore(items) {
       let collector = [];
       this.order.content.forEach(item => {
-
         if (items.includes(item.unique)) {
           item.lock && collector.push(item.unique);
           item.split = false;
@@ -303,12 +306,12 @@ export default {
 
       !this.component
         ? this.$open("options", {
-          taxFree,
-          deliveryFree,
-          gratuityFree,
-          type,
-          isDiscount
-        })
+            taxFree,
+            deliveryFree,
+            gratuityFree,
+            type,
+            isDiscount
+          })
         : this.$q();
     },
     applyConfig(params) {
@@ -503,37 +506,38 @@ li.picked {
   color: rgba(0, 0, 0, 0.5);
 }
 
-ul.ban {
+.invoice.ban {
   pointer-events: none;
 }
 
-ul.ban:after {
+.invoice.ban:after {
   content: " ";
   background: rgba(0, 0, 0, 0.3);
   width: 250px;
-  height: 449px;
+  height: 450px;
   position: absolute;
   top: 0;
   z-index: 0;
 }
 
-ul.ban li.tooltip {
+.invoice.ban .tooltip {
   display: flex;
 }
 
 .tooltip {
-  bottom: 50%;
+  top: 43%;
   position: absolute;
   width: 250px;
   flex-direction: row;
   align-items: center;
-  padding: 0;
   color: #fafafa;
   background: #f44336;
   text-shadow: 0 1px 1px #333;
   display: none;
   z-index: 1;
   border: none;
+  justify-content: center;
+  padding: 5px 0;
 }
 
 .main {

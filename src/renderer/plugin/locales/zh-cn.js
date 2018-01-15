@@ -571,7 +571,9 @@ export default {
         cantExecute: '无法执行',
         errorOccurred: '执行这个命令的过程发送一个错误, 命令被中止!',
         duplicateNotAllow: '已经有相同名称，请重新命名',
-        splitTicketItemRemain: '此订单中还有 {i} 个物品尚未被分配。请分完后再进行付款操作'
+        splitTicketItemRemain: '此订单中还有 {i} 个物品尚未被分配。请分完后再进行付款操作',
+        temporaryTable: '临时座位',
+        createTemporaryTable: '您需要创建一个临时的座位吗？'
     },
     terminal: {
         initial: '正在初始化 {i}...',
@@ -1390,7 +1392,6 @@ export default {
         fontSize: '字体大小',
         itemPrice: '打印价格',
         storeContact: '店面信息',
-        title: '订单类别',
         customer: '客人资料',
         jobTime: '打印时间',
         payment: '打印总额',

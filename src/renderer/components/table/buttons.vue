@@ -187,15 +187,10 @@ export default {
     printPrePayment() {
       this.$q();
 
-      //let order = JSON.parse(JSON.stringify(this.order));
       const type = "PRE_PAYMENT";
       const cashier = this.op.name;
       const order = Object.assign(Object.create(Object.getPrototypeOf(this.order)), this.order, { type, cashier });
 
-      // Object.assign(order, {
-      //   type: "PRE_PAYMENT",
-      //   cashier: this.op.name
-      // });
       Printer.setTarget("Receipt").print(order, true);
       this.$socket.emit("[TABLE] UPDATE", { _id: order.tableID, status: 3 });
     },

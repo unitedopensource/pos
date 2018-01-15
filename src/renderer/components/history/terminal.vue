@@ -256,10 +256,10 @@ export default {
       const msg =
         record.for === "Order"
           ? [
-            "dialog.voidCreditInvoice",
-            record.order.number,
-            this.$t("type." + record.order.type)
-          ]
+              "dialog.voidCreditInvoice",
+              record.order.number,
+              this.$t("type." + record.order.type)
+            ]
           : "dialog.voidCreditReload";
 
       const prompt = {
@@ -384,6 +384,10 @@ export default {
           this.printTicket && Printer.printCreditCard(voidSale);
           Object.assign(record, voidSale, { status: 0 });
           this.$socket.emit("[TERMINAL] VOID", record);
+          this.$socket.emit("[TRANSACTION] FIND", record._id, payment => {
+            console.log(payment);
+            //this.$socket.emit("[PAYMENT] REMOVE", payment);
+          });
           this.$q();
         } else {
           const prompt = {
