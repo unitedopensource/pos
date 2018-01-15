@@ -28,18 +28,19 @@ import draggable from "vuedraggable";
 import dialoger from "../../common/dialoger";
 import itemEditor from "./component/itemEditor";
 import categoryEditor from "./component/categoryEditor";
+
 export default {
   components: { dialoger, draggable, itemEditor, categoryEditor },
   data() {
     return {
+      categories: JSON.parse(JSON.stringify(this.$store.getters.menu)),
+      language: this.$store.getters.language,
+      isCategorySorted: false,
+      isItemSorted: false,
       componentData: null,
       component: null,
-      language: this.$store.getters.language,
-      categories: JSON.parse(JSON.stringify(this.$store.getters.menu)),
-      items: [],
-      isItemSorted: false,
-      isCategorySorted: false,
-      categoryIndex: 0
+      categoryIndex: 0,
+      items: []
     };
   },
   created() {
@@ -56,7 +57,9 @@ export default {
     this.isItemSorted && this.updateItemSort();
   },
   methods: {
-    entry(e) { },
+    entry(e) { 
+      
+    },
     setCategory(index) {
       this.isItemSorted && this.updateItemSort();
       this.getItems(index);

@@ -36,7 +36,7 @@ export default {
   position: absolute;
   left: 5px;
   bottom: 47px;
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.95);
   width: 220px;
   height: 448px;
   display: flex;

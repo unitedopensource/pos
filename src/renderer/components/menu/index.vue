@@ -111,7 +111,9 @@ export default {
   },
   methods: {
     initialData() {
-      this.menuInstance = JSON.parse(JSON.stringify(this.menu));
+      console.time("Preformance");
+      //this.menuInstance = JSON.parse(JSON.stringify(this.menu));
+      this.menuInstance = Object.assign(Object.create(Object.getPrototypeOf(this.menu)), this.menu);
       this.flatten(this.menuInstance[0].item);
       this.setSides(this.fillOption([]));
 
@@ -134,6 +136,8 @@ export default {
         this.saveForDiffs(order.content);
         this.setOrder(order);
       }
+
+      console.timeEnd("Preformance");
     },
     initialDineInTicket() {
       if (this.dinein.seatOrder) this.sort = 1;
@@ -192,8 +196,6 @@ export default {
       }
     },
     flatten(items) {
-      console.time("clone");
-
       items = [].concat.apply([], items);
 
       const { favorite } = this.config.display;
@@ -209,7 +211,6 @@ export default {
         if (item.disable) item.clickable = false;
       });
 
-      console.timeEnd("clone");
       this.items = items;
     },
     fillOption(side) {
@@ -235,15 +236,15 @@ export default {
         poleDisplay.write(line(top, bot));
       }
     },
-    setCategory(index) {
+    setCategory(index = this.categoryIndex) {
       this.openSubGroup = false;
 
-      index = index || this.categoryIndex;
+      //index = index || this.categoryIndex;
 
       toggleClass(".category .active", "active");
       document
         .querySelectorAll("section.category div")
-        [index].classList.add("active");
+      [index].classList.add("active");
 
       this.itemPage = 0;
       this.saveItems = null;
@@ -251,7 +252,9 @@ export default {
       this.flatten(this.menuInstance[index].item);
     },
     pick(item) {
-      item = JSON.parse(JSON.stringify(item));
+      item = Object.assign(Object.create(Object.getPrototypeOf(item)), item);
+
+      //item = JSON.parse(JSON.stringify(item));
       !this.app.newTicket && Object.assign(item, { new: true });
 
       this.checkItemAvailable(item)
@@ -417,9 +420,9 @@ export default {
 
       const itemCount = Array.isArray(this.item.choiceSet)
         ? this.item.choiceSet
-            .filter(i => i.subItem)
-            .map(i => i.qty)
-            .reduce((a, b) => a + b, 0)
+          .filter(i => i.subItem)
+          .map(i => i.qty)
+          .reduce((a, b) => a + b, 0)
         : 0;
 
       if (subItem && this.item.hasOwnProperty("rules")) {

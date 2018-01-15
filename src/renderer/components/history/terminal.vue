@@ -23,7 +23,7 @@
             <th>{{$t('thead.time')}}</th>
             <th>{{$t('thead.station')}}</th>
             <th>{{$t('thead.for')}}</th>
-            <th>{{$t('thead.ticket')}}</th>
+            <th class="ticket">{{$t('thead.ticket')}}</th>
             <th>{{$t('thead.card')}}</th>
             <th>{{$t('thead.auth')}}</th>
             <th>{{$t('thead.amount')}}</th>
@@ -42,7 +42,7 @@
               <span class="type">{{$t('type.'+record.order.type)}}</span>
               <span class="number">#{{record.order.number}}</span>
             </td>
-            <td v-else></td>
+            <td v-else class="ticket"></td>
             <td class="card">
               <i :class="ccType(record.account.type)"></i>
               <span class="number" :title="record.addition.CARDBIN">...{{record.account.number}}</span>
@@ -256,10 +256,10 @@ export default {
       const msg =
         record.for === "Order"
           ? [
-              "dialog.voidCreditInvoice",
-              record.order.number,
-              this.$t("type." + record.order.type)
-            ]
+            "dialog.voidCreditInvoice",
+            record.order.number,
+            this.$t("type." + record.order.type)
+          ]
           : "dialog.voidCreditReload";
 
       const prompt = {
@@ -577,6 +577,10 @@ footer {
 
 .fa-cc-amex {
   color: var(--deepBlue);
+}
+
+.ticket {
+  width: 105px;
 }
 
 .ticket .number {

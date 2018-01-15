@@ -60,12 +60,12 @@ export default {
   },
   data() {
     return {
-      order: JSON.parse(JSON.stringify(this.$store.getters.order)),
+      order: Object.assign(Object.create(Object.getPrototypeOf(this.$store.getters.order)), this.$store.getters.order),//JSON.parse(JSON.stringify(this.$store.getters.order)),
       swipeMode: false,
-      splits: [],
       hammer: null,
-      offset: 0,
-      done: false
+      done: false,
+      splits: [],
+      offset: 0
     };
   },
   created() {
@@ -83,7 +83,7 @@ export default {
     },
     create() {
       const _id = ObjectId();
-      const order = JSON.parse(JSON.stringify(this.order));
+      const order = Object.assign(Object.create(Object.getPrototypeOf(this.order)), this.order);//JSON.parse(JSON.stringify(this.order));
 
       let content = [];
       let payment = {
@@ -112,7 +112,7 @@ export default {
     transfer({ unique, index }) {
       let buffer = [];
       this.$children.map(vm =>
-        vm.buffer.forEach(item => buffer.push(JSON.parse(JSON.stringify(item))))
+        vm.buffer.forEach(item => buffer.push(Object.assign(Object.create(Object.getPrototypeOf(item)), item)))//JSON.parse(JSON.stringify(item)
       );
       this.$bus.emit("transfer", {
         unique,
@@ -127,6 +127,9 @@ export default {
       this.$bus.emit("restore", items);
 
       if (items.length) this.done = false;
+
+      const __split__ = buffer.some(item => item.__split__);
+      __split__ && this.$bus.emit("destroy", items);
     },
     registerSwipeEvent() {
       this.hammer = new Hammer(this.$refs.scroll);
@@ -183,6 +186,8 @@ export default {
         this.order.type = type;
       }
 
+      let tip = 0;
+      let subtotal = 0;
       let total = 0;
       let discount = 0;
       let balance = 0;
@@ -192,6 +197,9 @@ export default {
         splits.forEach((order, index) => {
           order.parent = parent;
           order.number = `${this.order.number}-${index + 1}`;
+
+          tip += order.payment.tip;
+          subtotal += order.payment.subtotal;
           total += order.payment.total;
           discount += order.payment.discount;
           balance += order.payment.balance;
@@ -199,6 +207,9 @@ export default {
         });
 
         this.$socket.emit("[SPLIT] SAVE", { splits, parent });
+
+        this.order.payment.tip = toFixed(tip, 2);
+        this.order.payment.subtotal = toFixed(subtotal, 2);
         this.order.payment.total = toFixed(total, 2);
         this.order.payment.discount = toFixed(discount, 2);
         this.order.payment.due = toFixed(total - discount, 2);
@@ -207,6 +218,7 @@ export default {
         this.order.content.forEach(item => (item.split = true));
         this.order.children = splits.map(i => i._id);
         this.order.split = true;
+
         this.$socket.emit("[UPDATE] INVOICE", this.order);
 
         if (this.$route.name === "Menu" && this.app.newTicket) {
@@ -216,13 +228,16 @@ export default {
           this.init.resolve();
         }
       } else {
+        this.$socket.emit("[SPLIT] SAVE", { splits: [], parent });
+
         const { payment } = splits.find(order => order.content !== 0);
 
-        this.$socket.emit("[SPLIT] SAVE", { splits: [], parent });
+        payment.discount = 0;
+        payment.paid = 0;
+
+        Object.assign(this.order, { payment });
+
         this.order.content.forEach(item => (item.split = false));
-        this.order.payment = payment;
-        this.order.payment.discount = 0;
-        this.order.payment.paid = 0;
         this.order.split = false;
         this.order.children = [];
         this.order.coupons = [];

@@ -1,6 +1,6 @@
 <template>
   <div class="relative">
-    <ul @click.self="tap" v-if="enable" :class="[unique,{ban}]">
+    <ul @click.self="tap" v-if="enable" :class="[unique,{ban}]" :refs="unique">
       <li v-for="(item,index) in order.content" :key="index" @click="pick(item)" :data-unique="item.unique" v-show="!item.split">
         <div class="main">
           <span class="qty">{{item.qty}}</span>
@@ -38,11 +38,11 @@
           <i class="fa fa-warning"></i>
           <span>{{reason}}</span>
         </li>
-        <li class="settle">
+        <li class="settle" @click="tap">
           <p class="total">$ {{order.payment.remain | decimal}}
             <span class="tip">( {{order.payment.tax | decimal}} )</span>
           </p>
-          <i class="fa fa-bars" @click="ticketConfig"></i>
+          <i class="fa fa-bars" @click.stop="ticketConfig"></i>
         </li>
       </template>
     </ul>
@@ -51,6 +51,7 @@
 </template>
 
 <script>
+import hammer from "hammerjs";
 import { mapGetters } from "vuex";
 import evener from "./component/evener";
 import options from "./component/options";
@@ -63,7 +64,7 @@ export default {
     enable() {
       return this.master
         ? this.order.content.filter(i => !i.split).length !== 0 ||
-            !!this.component
+        !!this.component
         : true;
     },
     ...mapGetters(["tax", "dinein", "store"])
@@ -72,16 +73,13 @@ export default {
     return {
       order: JSON.parse(JSON.stringify(this.data)),
       language: this.$store.getters.language,
+      unique: String().random(4),
       componentData: null,
       component: null,
+      hammer: null,
       reason: "",
       ban: false,
-      buffer: [],
-      unique:
-        "s" +
-        Math.random()
-          .toString(36)
-          .substr(2, 2)
+      buffer: []
     };
   },
   created() {
@@ -95,6 +93,7 @@ export default {
       this.$bus.on("remove", this.remove);
       this.$bus.on("transfer", this.transfer);
       this.$bus.on("collect", this.recycle);
+      this.$bus.on("destroy",this.recycle);
       this.$bus.on("__THREAD__CLOSE", this.handleThreadResult);
 
       if (this.order.settled) {
@@ -108,6 +107,11 @@ export default {
   },
   mounted() {
     this.$calculatePayment(this.order.content);
+
+    //register scroll event
+
+
+
   },
   beforeDestroy() {
     if (this.master) {
@@ -118,6 +122,7 @@ export default {
       this.$bus.off("remove", this.remove);
       this.$bus.off("transfer", this.transfer);
       this.$bus.off("collect", this.recycle);
+      this.$bus.off("destroy",this.recycle);
       this.$bus.off("__THREAD__CLOSE", this.handleThreadResult);
     }
   },
@@ -145,30 +150,25 @@ export default {
       this.order.content.splice();
       this.buffer = [];
 
-      const remain = this.order.content.filter(i => !i.split).length;
-      const done = remain === 0 && !this.component;
-
-      this.$emit("done", done);
+      this.$nextTick(() => {
+        const remain = this.order.content.filter(i => !i.split).length;
+        const done = remain === 0 && !this.component;
+        this.$emit("done", done);
+      })
     },
     remove() {
-      this.buffer.forEach(item => {
-        const { unique } = item;
-        const index = this.order.content.findIndex(i => i.unique === unique);
-        index !== -1 && this.order.content.splice(index, 1);
-      });
+      const uniques = this.buffer.map(i => i.unique);
+      this.order.content = this.order.content.filter(i => !uniques.includes(i.unique));
       this.buffer = [];
     },
     recycle(items) {
-      items.forEach(item => {
-        const index = this.order.content.findIndex(i => i.parent === item);
-        index !== -1 && this.order.content.splice(index, 1);
-      });
-
+      this.order.content = this.order.content.filter(i => !items.includes(i.parent));
       this.buffer = [];
     },
     restore(items) {
       let collector = [];
       this.order.content.forEach(item => {
+        
         if (items.includes(item.unique)) {
           item.lock && collector.push(item.unique);
           item.split = false;
@@ -178,6 +178,7 @@ export default {
       this.buffer = [];
       this.order.content.splice();
       this.$bus.emit("remove");
+
       collector.length && this.$bus.emit("collect", collector);
     },
     transfer({ unique, items }) {
@@ -270,12 +271,12 @@ export default {
 
       !this.component
         ? this.$open("options", {
-            taxFree,
-            deliveryFree,
-            gratuityFree,
-            type,
-            isDiscount
-          })
+          taxFree,
+          deliveryFree,
+          gratuityFree,
+          type,
+          isDiscount
+        })
         : this.$q();
     },
     applyConfig(params) {
@@ -435,7 +436,8 @@ li.settle {
   position: absolute;
   width: 235px;
   bottom: 0;
-  border-top: 1px solid #eee;
+  border-top: 1px solid #eceff1;
+  background: #f5f5f5;
 }
 
 li.settle p {
@@ -444,7 +446,7 @@ li.settle p {
 
 .settle i {
   cursor: pointer;
-  padding: 11px 25px;
+  padding: 11px 15px 11px 35px;
 }
 
 .total {

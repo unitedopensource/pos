@@ -49,14 +49,15 @@ export default {
       this.items = [].concat.apply([], category.item);
     },
     getPrefix(action, e) {
-      let dom = document.querySelector(".acting");
+      const dom = document.querySelector(".acting");
       dom && dom.classList.remove("acting");
+
       this.action = action;
       e.currentTarget.classList.add("acting");
     },
-    setChoice(item) {
-      if (!item.clickable) return;
-      let { zhCN, usEN, price } = item;
+    setChoice({ zhCN, usEN, price, clickable }) {
+      if (!clickable) return;
+
       if (this.action) {
         if (this.action.prefix) {
           zhCN = this.action.zhCN + zhCN;
@@ -70,13 +71,14 @@ export default {
         this.action && this.action.ignoreDefaultPrice
           ? 0
           : isNumber(price) ? parseFloat(price) : 0;
+          
       let content = {
         qty: 1,
         zhCN,
         usEN,
         single: price,
         price: price.toFixed(2),
-        key: item._id.slice(-4)
+        key: String().random()
       };
       this.action = null;
       let dom = document.querySelector(".sub.target");
@@ -88,13 +90,13 @@ export default {
       total
         ? this.setPriceForChoiceSet({ total })
         : this.$p("modify", {
-            item: {
-              qty: 1,
-              single: 0,
-              discount: 0
-            },
-            type: "choiceSet"
-          });
+          item: {
+            qty: 1,
+            single: 0,
+            discount: 0
+          },
+          type: "choiceSet"
+        });
     },
     ...mapActions([
       "setChoiceSet",

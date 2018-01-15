@@ -1,34 +1,34 @@
 <template>
-    <div class="popupMask setting dark center" @click.self="init.reject(false)">
-        <div class="editor">
-            <header>
-                <h5>{{$t('title.edit')}}</h5>
-                <h3>{{$t('title.table')}}</h3>
-            </header>
-            <div class="wrap">
-                <inputer title="table.name" v-model="init.table.name" :autoFocus="true"></inputer>
-                <inputer title="table.zone" v-model="init.table.zone" :disabled="true"></inputer>
-                <selector title="table.icon" v-model="init.table.shape" :opts="iconOpts"></selector>
-                <selector title="table.type" v-model="init.table.type" :opts="tableOpts"></selector>
-                <div class="printers">
-                    <label>{{$t('table.feature')}}</label>
-                    <div class="inner">
-                        <checkbox title="table.smoke" val="smoke" v-model="init.table.feature" :multiple="true"></checkbox>
-                        <checkbox title="table.window" val="window" v-model="init.table.feature" :multiple="true"></checkbox>
-                        <checkbox title="table.accessibility" val="accessibility" v-model="init.table.feature" :multiple="true"></checkbox>
-                        <checkbox title="table.outdoor" val="outdoor" v-model="init.table.feature" :multiple="true"></checkbox>
-                        <checkbox title="table.heightTop" val="heightTop" v-model="init.table.feature" :multiple="true"></checkbox>
-                    </div>
-                </div>
-            </div>
-            <footer>
-                <div class="opt">
-                    <span class="del" @click="init.reject(true)">{{$t('button.delete')}}</span>
-                </div>
-                <button class="btn" @click="init.resolve(init.table)">{{$t('button.confirm')}}</button>
-            </footer>
+  <div class="popupMask setting dark center" @click.self="init.reject(false)">
+    <div class="editor">
+      <header>
+        <h5>{{$t('title.edit')}}</h5>
+        <h3>{{$t('title.table')}}</h3>
+      </header>
+      <div class="wrap">
+        <inputer title="table.name" v-model="init.table.name" :autoFocus="true"></inputer>
+        <inputer title="table.zone" v-model="init.table.zone" :disabled="true"></inputer>
+        <selector title="table.icon" v-model="init.table.shape" :opts="iconOpts"></selector>
+        <selector title="table.type" v-model="init.table.type" :opts="tableOpts"></selector>
+        <div class="printers">
+          <label>{{$t('table.feature')}}</label>
+          <div class="inner">
+            <checkbox title="table.smoke" val="smoke" v-model="init.table.feature" :multiple="true"></checkbox>
+            <checkbox title="table.window" val="window" v-model="init.table.feature" :multiple="true"></checkbox>
+            <checkbox title="table.accessibility" val="accessibility" v-model="init.table.feature" :multiple="true"></checkbox>
+            <checkbox title="table.outdoor" val="outdoor" v-model="init.table.feature" :multiple="true"></checkbox>
+            <checkbox title="table.heightTop" val="heightTop" v-model="init.table.feature" :multiple="true"></checkbox>
+          </div>
         </div>
+      </div>
+      <footer>
+        <div class="opt">
+          <span class="del" @click="init.reject(true)">{{$t('button.delete')}}</span>
+        </div>
+        <button class="btn" @click="init.resolve(init.table)">{{$t('button.confirm')}}</button>
+      </footer>
     </div>
+  </div>
 </template>
 
 <script>
@@ -39,6 +39,9 @@ import checkbox from "../../common/checkbox";
 export default {
   props: ["init"],
   components: { inputer, selector, checkbox },
+  created() {
+    if (!Array.isArray(this.init.table.feature)) this.init.table.feature = [];
+  },
   data() {
     return {
       iconOpts: [

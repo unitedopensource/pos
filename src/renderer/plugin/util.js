@@ -327,6 +327,10 @@ export default {
             return parseFloat(this)
         }
 
+        String.prototype.random = function (length = 4) {
+            return Math.random().toString(36).replace(/[^a-zA-Z]+/g, '').substr(0, length)
+        }
+
         window.toFixed = (number, fractionSize) => +(Math.round(+(number.toString() + 'e' + fractionSize)).toString() + 'e' + -fractionSize);
         window.ObjectId = (m = Math, d = Date, h = 16, s = s => m.floor(s).toString(h)) => s(d.now() / 1000) + ' '.repeat(h).replace(/./g, () => s(m.random() * h));
         window.isNumber = (n) => (/^-?[\d.]+(?:e-?\d+)?$/.test(n));

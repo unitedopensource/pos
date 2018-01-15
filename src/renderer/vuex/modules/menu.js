@@ -59,7 +59,7 @@ const mutations = {
     state.sides = Array(11).fill({ zhCN: "", usEN: "", disable: true });
   },
   [types.SET_VIEW_ORDER](state, order) {
-    state.order = order;
+    state.order = Object.assign(Object.create(Object.getPrototypeOf(order)), order);
   },
   [types.SET_SIDES](state, sides) {
     state.sides = sides;

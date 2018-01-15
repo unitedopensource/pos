@@ -69,8 +69,8 @@ export default {
       }
       this.currentTable.server !== this.op.name
         ? this.$checkPermission("modify", "order")
-            .then(this.edit)
-            .catch(() => {})
+          .then(this.edit)
+          .catch(() => { })
         : this.edit();
     },
     edit() {
@@ -187,16 +187,20 @@ export default {
     printPrePayment() {
       this.$q();
 
-      let order = JSON.parse(JSON.stringify(this.order));
-      Object.assign(order, {
-        type: "PRE_PAYMENT",
-        cashier: this.op.name
-      });
+      //let order = JSON.parse(JSON.stringify(this.order));
+      const type = "PRE_PAYMENT";
+      const cashier = this.op.name;
+      const order = Object.assign(Object.create(Object.getPrototypeOf(this.order)), this.order, { type, cashier });
+
+      // Object.assign(order, {
+      //   type: "PRE_PAYMENT",
+      //   cashier: this.op.name
+      // });
       Printer.setTarget("Receipt").print(order, true);
       this.$socket.emit("[TABLE] UPDATE", { _id: order.tableID, status: 3 });
     },
     askSplitPrePayment() {
-      this.$dialog({
+      const prompt = {
         type: "question",
         title: "dialog.printSplitTicket",
         msg: "dialog.printSplitTicketTip",
@@ -204,7 +208,9 @@ export default {
           { text: "button.combinePrint", fn: "reject" },
           { text: "button.splitPrint", fn: "resolve" }
         ]
-      })
+      };
+
+      this.$dialog(prompt)
         .then(this.splitPrint)
         .catch(this.printPrePayment);
     },
@@ -246,7 +252,7 @@ export default {
 
       this.$dialog(prompt).then(() => this.$q());
     },
-    switchStaff() {},
+    switchStaff() { },
     split() {
       if (this.isEmptyTicket) return;
       if (this.order.settled) {

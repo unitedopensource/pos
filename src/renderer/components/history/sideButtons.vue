@@ -160,7 +160,7 @@ export default {
       this.setTicket({ type: this.order.type, number: this.order.number });
       this.setApp({ newTicket: false });
       this.setCustomer(this.order.customer);
-      this.setOrder(JSON.parse(JSON.stringify(this.order)));
+      //this.setOrder(JSON.parse(JSON.stringify(this.order)));
       this.$router.push({ path: "/main/menu" });
     },
     editFailed(reason) {

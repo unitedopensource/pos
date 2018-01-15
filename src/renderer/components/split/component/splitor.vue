@@ -1,12 +1,12 @@
 <template>
-    <div class="splitor">
-        <div v-for="(split,index) in items" @click="setIndex(index)">
-            <p v-for="(item,idx) in split">
-                <span class="qty">{{item.qty}}</span>
-                <span>{{item[language]}}</span>
-            </p>
-        </div>
+  <div class="splitor">
+    <div v-for="(split,index) in items" @click="setIndex(index)">
+      <p v-for="(item,idx) in split">
+        <span class="qty">{{item.qty}}</span>
+        <span>{{item[language]}}</span>
+      </p>
     </div>
+  </div>
 </template>
 
 <script>
@@ -21,9 +21,11 @@ export default {
   },
   created() {
     this.$bus.on("release", this.remove);
+    this.$bus.on("destroy", this.destroy);
   },
   beforeDestroy() {
     this.$bus.off("release", this.remove);
+    this.$bus.on("destroy", this.destroy);
   },
   methods: {
     setIndex(index) {
@@ -32,9 +34,7 @@ export default {
       const dom = document.querySelector(".splitor .selected");
       dom && dom.classList.remove("selected");
 
-      document
-        .querySelectorAll(".splitor div")
-        [index].classList.add("selected");
+      document.querySelectorAll(".splitor div")[index].classList.add("selected");
 
       this.$emit("pick", this.items[index]);
     },
@@ -45,8 +45,12 @@ export default {
       if (isNumber(this.index)) {
         this.items.splice(this.index, 1);
         this.index = null;
+
         this.items.length === 0 && this.init.resolve();
       }
+    },
+    destroy(){
+      this.init.resolve();
     }
   }
 };
