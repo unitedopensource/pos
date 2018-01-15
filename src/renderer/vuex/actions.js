@@ -395,10 +395,10 @@ export const setTableSort = ({
 }, data) => {
   commit(types.SET_TABLE_SORT, data)
 }
-export const updateTableInfo = ({
+export const replaceTable = ({
   commit
 }, data) => {
-  commit(types.UPDATE_TABLE_INFO, data);
+  commit(types.REPLACE_TABLE, data);
 }
 export const removeTable = ({
   commit

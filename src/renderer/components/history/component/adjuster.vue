@@ -6,9 +6,6 @@
           <h3>{{$t('title.setTips')}}</h3>
           <h5>{{$t('tip.foundRecords',transactions.length)}}</h5>
         </div>
-        <nav>
-
-        </nav>
       </header>
       <div class="banner"></div>
       <div class="wrap">
@@ -105,6 +102,9 @@ export default {
   methods: {
     entry(e) {
       switch (e.key) {
+        case "/":
+          this.transactions = this.transactions.reverse();
+          break;
         case "Escape":
           this.clear();
           break;
@@ -156,6 +156,8 @@ export default {
       } else if (bottom < 450) {
         this.offset = -(height - 476);
       }
+
+      this.lastDelta = this.offset;
     },
     input(val) {
       if (this.reset) {
@@ -168,7 +170,7 @@ export default {
     },
     del() {
       const value = (this.tip.slice(0, -1) / 10).toFixed(2);
-      isNaN(value) || value === '0.00' ? this.clear() : this.tip = value;
+      isNaN(value) || value === "0.00" ? this.clear() : (this.tip = value);
     },
     clear() {
       this.tip = "";

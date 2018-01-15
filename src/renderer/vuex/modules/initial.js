@@ -238,31 +238,20 @@ const mutations = {
         state.config.printer = Object.assign({}, state.config.printer, data);
     },
     [types.UPDATE_TABLE_SECTION](state, data) {
-        let {
-            section,
-            index
-        } = data;
+        let { section, index } = data;
         state.config.layout.table.splice(index, 1, section);
     },
     [types.SET_TABLE_SORT](state, data) {
-        let {
-            tables,
-            index
-        } = data;
+        let { tables, index } = data;
         state.config.layout.table[index].item = tables;
     },
-    [types.UPDATE_TABLE_INFO](state, data) {
-        let {
-            table,
-            index,
-            section
-        } = data;
+    [types.REPLACE_TABLE](state, data) {
+        const { table, index, section } = data;
+
+        state.config.layout.table[section].item.splice(index, 1, table);
     },
     [types.REMOVE_TABLE](state, data) {
-        let {
-            section,
-            index
-        } = data;
+        let { section, index } = data;
         let table = state.config.layout.table[section].item[index];
         Object.assign(table, {
             name: '',

@@ -212,7 +212,7 @@ export default {
       "updateMenuItem",
       "removeMenuItem",
       "updateTableSection",
-      "updateTableInfo",
+      "replaceTable",
       "newReservation",
       "updateReservation",
       "resetCurrentTable",
@@ -298,8 +298,8 @@ export default {
     UPDATE_TABLE_SECTION(data) {
       this.updateTableSection(data);
     },
-    UPDATE_TABLE_INFO(data) {
-      this.updateTableInfo(data);
+    REPLACE_TABLE(data) {
+      this.replaceTable(data);
     },
     NEW_RESERVATION(data) {
       this.newReservation(data);

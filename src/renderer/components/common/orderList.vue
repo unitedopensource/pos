@@ -8,7 +8,9 @@
     <header v-else class="info">
       <div class="content">
         <template v-if="order.type === 'DINE_IN'">
-
+          <p>
+            
+          </p>
         </template>
         <template v-else>
           <template v-if="order.customer">

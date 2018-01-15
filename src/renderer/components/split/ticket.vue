@@ -62,7 +62,8 @@ export default {
   computed: {
     enable() {
       return this.master
-        ? this.order.content.filter(i => !i.split).length !== 0 || !!this.component
+        ? this.order.content.filter(i => !i.split).length !== 0 ||
+            !!this.component
         : true;
     },
     ...mapGetters(["tax", "dinein", "store"])
@@ -77,10 +78,10 @@ export default {
       ban: false,
       buffer: [],
       unique:
-      "s" +
-      Math.random()
-        .toString(36)
-        .substr(2, 2)
+        "s" +
+        Math.random()
+          .toString(36)
+          .substr(2, 2)
     };
   },
   created() {
@@ -94,7 +95,7 @@ export default {
       this.$bus.on("remove", this.remove);
       this.$bus.on("transfer", this.transfer);
       this.$bus.on("collect", this.recycle);
-      this.$bus.on("__THREAD__CLOSE", this.handleThreadResult)
+      this.$bus.on("__THREAD__CLOSE", this.handleThreadResult);
 
       if (this.order.settled) {
         this.ban = true;
@@ -117,7 +118,7 @@ export default {
       this.$bus.off("remove", this.remove);
       this.$bus.off("transfer", this.transfer);
       this.$bus.off("collect", this.recycle);
-      this.$bus.off("__THREAD__CLOSE", this.handleThreadResult)
+      this.$bus.off("__THREAD__CLOSE", this.handleThreadResult);
     }
   },
   methods: {
@@ -133,7 +134,7 @@ export default {
     pickGroup(items) {
       if (this.master) {
         this.buffer = [];
-        items.forEach(item => this.buffer.push(item))
+        items.forEach(item => this.buffer.push(item));
       }
     },
     hide(item) {
@@ -147,7 +148,7 @@ export default {
       const remain = this.order.content.filter(i => !i.split).length;
       const done = remain === 0 && !this.component;
 
-      this.$emit("done",done);
+      this.$emit("done", done);
     },
     remove() {
       this.buffer.forEach(item => {
@@ -162,17 +163,17 @@ export default {
         const index = this.order.content.findIndex(i => i.parent === item);
         index !== -1 && this.order.content.splice(index, 1);
       });
-      
+
       this.buffer = [];
     },
     restore(items) {
       let collector = [];
       this.order.content.forEach(item => {
         if (items.includes(item.unique)) {
-          item.lock && collector.push(item.unique)
+          item.lock && collector.push(item.unique);
           item.split = false;
           item.lock = false;
-        };
+        }
       });
       this.buffer = [];
       this.order.content.splice();
@@ -197,61 +198,68 @@ export default {
       new Promise((resolve, reject) => {
         this.componentData = { resolve, reject, qty };
         this.component = "evener";
-      }).then(qty => {
-        let _items = [];
+      })
+        .then(qty => {
+          let _items = [];
 
-        items.forEach(item => {
-          item.lock = false;
+          items.forEach(item => {
+            item.lock = false;
 
-          if (item.qty === qty) {
-            item.__split__ = true;
-            item.qty = 1;
-            item.total = item.single.toFixed(2);
-          } else {
-            item.__split__ = true;
-            item.single = toFixed(item.single / qty, 2);
-            item.total = (item.single * item.qty).toFixed(2);
+            if (item.qty === qty) {
+              item.__split__ = true;
+              item.qty = 1;
+              item.total = item.single.toFixed(2);
+            } else {
+              item.__split__ = true;
+              item.single = toFixed(item.single / qty, 2);
+              item.total = (item.single * item.qty).toFixed(2);
+            }
+
+            item.choiceSet.forEach(set => {
+              set.single = toFixed(set.single / qty, 2);
+              set.price = toFixed(set.single * set.qty, 2);
+            });
+          });
+
+          for (let i = 0; i < qty; i++) {
+            _items.push([...JSON.parse(JSON.stringify(items))]);
           }
 
-          item.choiceSet.forEach(set => {
-            set.single = toFixed(set.single / qty, 2);
-            set.price = toFixed(set.single * set.qty, 2);
-          })
-        });
+          _items.forEach((group, g) => {
+            group.forEach((item, i) => {
+              _items[g][i].unique = Math.random()
+                .toString(36)
+                .substr(2, 5);
+            });
+          });
 
-        for (let i = 0; i < qty; i++) {
-          _items.push([...JSON.parse(JSON.stringify(items))])
-        }
+          _items.splice(0, 1)[0].forEach(item => this.order.content.push(item));
 
-        _items.forEach((group, g) => {
-          group.forEach((item, i) => {
-            _items[g][i].unique = Math.random().toString(36).substr(2, 5);
-          })
+          this.$bus.emit("splitOut", _items);
+
+          this.$q();
         })
-
-        _items.splice(0, 1)[0].forEach(item => this.order.content.push(item));
-
-        this.$bus.emit("splitOut", _items);
-
-        this.$q();
-      }).catch(() => {
-        this.$bus.emit("restore", items.filter(i => i.parent).map(i => i.parent));
-        this.$q();
-      });
+        .catch(() => {
+          this.$bus.emit(
+            "restore",
+            items.filter(i => i.parent).map(i => i.parent)
+          );
+          this.$q();
+        });
     },
     splitList(items) {
-      new Promise((resolve) => {
+      new Promise(resolve => {
         this.componentData = { resolve, items };
-        this.component = "splitor"
+        this.component = "splitor";
       }).then(() => {
         const target = items.map(i => i.parent);
 
         this.order.content.forEach(item => {
           if (target.includes(item.unique)) item.split = true;
-        })
+        });
         this.buffer = [];
-        this.$q()
-      })
+        this.$q();
+      });
     },
     ticketConfig() {
       const taxFree = this.order.taxFree || false;
@@ -261,8 +269,14 @@ export default {
       const { type } = this.order;
 
       !this.component
-        ? this.$open("options", { taxFree, deliveryFree, gratuityFree, type, isDiscount })
-        : this.$q()
+        ? this.$open("options", {
+            taxFree,
+            deliveryFree,
+            gratuityFree,
+            type,
+            isDiscount
+          })
+        : this.$q();
     },
     applyConfig(params) {
       Object.assign(this.order, params);
@@ -275,7 +289,7 @@ export default {
         args: {
           payment: this.order.payment
         }
-      })
+      });
     },
     resetDiscount() {
       this.order.coupons = [];
@@ -288,7 +302,7 @@ export default {
         args: {
           order: this.order
         }
-      })
+      });
     },
     handleThreadResult({ result, component, threadID }) {
       if (threadID !== this.unique) return;
@@ -297,7 +311,9 @@ export default {
         case "discount":
           const { discount, coupon } = result;
 
-          let coupons = this.order.coupons.filter(coupon => coupon.code !== 'UnitedPOS Inc');
+          let coupons = this.order.coupons.filter(
+            coupon => coupon.code !== "UnitedPOS Inc"
+          );
           discount > 0 && coupons.push(coupon);
 
           this.order.coupons = coupons;
@@ -311,7 +327,9 @@ export default {
 
           refs.forEach(item => {
             Object.assign(item, {
-              unique: Math.random().toString(36).substr(2, 5),
+              unique: Math.random()
+                .toString(36)
+                .substr(2, 5),
               print: false,
               pending: false,
               void: false,
@@ -480,7 +498,7 @@ li.tooltip {
   display: flex;
 }
 
-.main i {
+.main > i {
   display: none;
   position: absolute;
   right: -5px;

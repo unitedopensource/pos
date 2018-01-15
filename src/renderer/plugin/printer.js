@@ -1011,7 +1011,7 @@ function createList(printer, setting, invoice, preview) {
         item.choiceSet.forEach(set => {
             if (set.hasOwnProperty(print) && !set.print.includes(printer)) return;
             const _qty = set.qty !== 1 ? set.qty + " x " : "";
-            const _price = set.price > 0 ? `( ${set.price.toFixed(2)} )` : "";
+            const _price = Math.abs(set.price) > 0 ? `( ${set.price.toFixed(2)} )` : "";
 
             if (diffs === 'removed') {
                 chineseSub += enableChinese ? `<p><del></del><span>${_qty}</span><span>${set.zhCN}</span><span>${_price}</span></p>` : "";
@@ -1171,7 +1171,6 @@ function createFooter(config, setting, printer, ticket) {
     if (coupons && applied)
         coupons.forEach(coupon => settle.push(`<section class="details"><h3>${coupon.alias}</h3></section>`));
 
-
     payment.log.forEach(log => {
         const { type, subType, lfd, paid, change } = log;
         switch (type) {
@@ -1211,7 +1210,7 @@ function createFooter(config, setting, printer, ticket) {
         }
     })
 
-    if (!payment.settled && payment.paid !== 0)
+    if (!ticket.settled && payment.paid !== 0)
         settle.push(`<section class="details"><h3>Balance Due: $ ${payment.remain.toFixed(2)}</h3></section>`);
 
 

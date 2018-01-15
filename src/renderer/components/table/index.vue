@@ -242,8 +242,32 @@ export default {
           };
           break;
       }
-
       prompt && this.$dialog(prompt).then(() => this.$q());
+    },
+    resetTable({ server, name, _id }, index) {
+      const { role } = this.op;
+
+      let prompt = {
+        title: "dialog.forceClearTable",
+        buttons: [
+          { text: "button.cancel", fn: "reject" },
+          { text: "button.clear", fn: "resolve" }
+        ]
+      };
+
+      prompt.msg = !server
+        ? "dialog.resetTableConfirm"
+        : ["dialog.forceClearTableConfirm", server, name];
+
+      if (role === "Manager" || role === "Owner" || role === "Developer") {
+        this.$dialog(prompt)
+          .then(() => {
+            this.$socket.emit("[TABLE] RESET", { _id });
+            this.resetMenu();
+            this.$q();
+          })
+          .catch(() => this.$q());
+      }
     },
     exceptionHandler(error) {
       switch (error) {
