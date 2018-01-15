@@ -9,7 +9,7 @@
       <div class="wrap">
         <div class="view" ref="scroll">
           <div class="scroll" :style="scroll">
-            <ticket v-for="(order,index) in splits" :key="index" :index="index" :data="order" @acquire="transfer" :master="false"></ticket>
+            <ticket v-for="(order,index) in splits" :key="index" :index="index" :data="order" @acquire="transfer" :master="false" @destroy="destroy"></ticket>
           </div>
         </div>
         <div class="option" @click="create" v-if="!done">
@@ -172,6 +172,9 @@ export default {
     },
     setDone(boolean) {
       this.done = boolean;
+    },
+    destroy(index) {
+      this.splits.splice(index, 1)
     },
     confirm() {
       const parent = this.order._id;

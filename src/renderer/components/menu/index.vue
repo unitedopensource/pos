@@ -112,8 +112,7 @@ export default {
   methods: {
     initialData() {
       console.time("Preformance");
-      //this.menuInstance = JSON.parse(JSON.stringify(this.menu));
-      this.menuInstance = Object.assign(Object.create(Object.getPrototypeOf(this.menu)), this.menu);
+      this.menuInstance = clone(this.menu);
       this.flatten(this.menuInstance[0].item);
       this.setSides(this.fillOption([]));
 
@@ -196,6 +195,7 @@ export default {
       }
     },
     flatten(items) {
+      console.time("Flatten");
       items = [].concat.apply([], items);
 
       const { favorite } = this.config.display;
@@ -212,6 +212,7 @@ export default {
       });
 
       this.items = items;
+      console.timeEnd("Flatten");
     },
     fillOption(side) {
       const length = side.length;

@@ -331,6 +331,18 @@ export default {
             return Math.random().toString(36).replace(/[^a-zA-Z]+/g, '').substr(0, length)
         }
 
+        // window.flatten = (array, result = []) => {
+        //     for (let i = 0; i < array.length; i++) {
+        //         let value = array[i];
+
+        //         Array.isArray(value)
+        //             ? flatten(value, result)
+        //             : result.push(value);
+        //     }
+        //     return result;
+        // }
+
+        window.clone = (target) => Object.assign(Object.create(Object.getPrototypeOf(target)), target);
         window.toFixed = (number, fractionSize) => +(Math.round(+(number.toString() + 'e' + fractionSize)).toString() + 'e' + -fractionSize);
         window.ObjectId = (m = Math, d = Date, h = 16, s = s => m.floor(s).toString(h)) => s(d.now() / 1000) + ' '.repeat(h).replace(/./g, () => s(m.random() * h));
         window.isNumber = (n) => (/^-?[\d.]+(?:e-?\d+)?$/.test(n));

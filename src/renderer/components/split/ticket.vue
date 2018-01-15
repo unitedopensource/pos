@@ -1,6 +1,6 @@
 <template>
-  <div class="relative">
-    <ul @click.self="tap" v-if="enable" :class="[unique,{ban}]" :refs="unique">
+  <div class="invoice">
+    <ul @click.self="tap" v-if="enable" :class="[unique,{ban}]" :ref="unique" :style="scroll">
       <li v-for="(item,index) in order.content" :key="index" @click="pick(item)" :data-unique="item.unique" v-show="!item.split">
         <div class="main">
           <span class="qty deno" :data-deno="item.deno" v-if="item.deno">{{item.qty}}</span>
@@ -24,29 +24,29 @@
           </p>
         </div>
       </li>
-      <template v-if="master">
-        <li class="function" v-if="buffer.length === 0" @click="selectAll">
-          <i class="fa fa-check-square-o"></i>
-          <span>{{$t('button.selectAll')}}</span>
-        </li>
-        <li class="function" v-else @click="selectAll">
-          <i class="fa fa-square-o"></i>
-          <span>{{$t('button.unset')}}</span>
-        </li>
-      </template>
-      <template v-else>
-        <li class="tooltip">
-          <i class="fa fa-warning"></i>
-          <span>{{reason}}</span>
-        </li>
-        <li class="settle" @click="tap">
-          <p class="total">$ {{order.payment.remain | decimal}}
-            <span class="tip">( {{order.payment.tax | decimal}} )</span>
-          </p>
-          <i class="fa fa-bars" @click.stop="ticketConfig"></i>
-        </li>
-      </template>
     </ul>
+    <template v-if="master">
+      <div class="toggle" v-if="buffer.length === 0" @click="selectAll">
+        <i class="fa fa-check-square-o"></i>
+        <span>{{$t('button.selectAll')}}</span>
+      </div>
+      <div class="toggle" v-else @click="selectAll">
+        <i class="fa fa-square-o"></i>
+        <span>{{$t('button.unset')}}</span>
+      </div>
+    </template>
+    <template v-else>
+      <div class="tooltip">
+        <i class="fa fa-warning"></i>
+        <span>{{reason}}</span>
+      </div>
+      <div class="settle" @click="tap">
+        <p class="total">$ {{order.payment.remain | decimal}}
+          <span class="tip">( {{order.payment.tax | decimal}} )</span>
+        </p>
+        <i class="fa fa-bars" @click.stop="ticketConfig"></i>
+      </div>
+    </template>
     <div :is="component" :init="componentData" @config="applyConfig" @discount="setDiscount" @coupon="setCoupon" @resetDiscount="resetDiscount" @pick="pickGroup"></div>
   </div>
 </template>
@@ -62,6 +62,9 @@ export default {
   props: ["data", "master", "index"],
   components: { splitor, evener, options },
   computed: {
+    scroll() {
+      return { transform: `translate3d(0,${this.offset}px,0)` }
+    },
     enable() {
       return this.master
         ? this.order.content.filter(i => !i.split).length !== 0 ||
@@ -80,7 +83,8 @@ export default {
       hammer: null,
       reason: "",
       ban: false,
-      buffer: []
+      buffer: [],
+      offset: 0
     };
   },
   created() {
@@ -110,7 +114,35 @@ export default {
     this.$calculatePayment(this.order.content);
 
     //register scroll event
+    const dom = this.$refs[this.unique];
+    if (dom) {
+      this.hammer = new Hammer(dom);
+      this.hammer.get("swipe").set({ direction: Hammer.DIRECTION_VERTICAL });
+      this.hammer.get("pan").set({ direction: Hammer.DIRECTION_VERTICAL });
+      this.hammer.on("swipeup panstart panend panup pandown", e => {
 
+
+        switch (e.type) {
+          case "panstart":
+            this.offset = this.lastDelta + e.deltaY;
+            console.log(e)
+            break;
+          case "panend":
+            this.lastDelta = this.offset;
+            console.log(e)
+            break;
+          case "panup":
+            this.offset = e.deltaY
+            break;
+          case "pandown":
+            this.offset = e.deltaY
+            break;
+          case "swipeup":
+            this.order.content.length === 0 && this.$emit("destroy", this.index)
+            break;
+        }
+      });
+    }
 
   },
   beforeDestroy() {
@@ -388,14 +420,17 @@ export default {
 </script>
 
 <style scoped>
-ul {
-  width: 250px;
+.invoice {
+  position: relative;
   height: 490px;
   overflow: hidden;
   margin: 5px;
   background: #fafafa;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
-  position: relative;
+}
+ul {
+  width: 250px;
+  min-height: 490px;
 }
 
 li {
@@ -405,7 +440,7 @@ li {
   min-height: 30px;
   background: #fff;
   border-bottom: 1px solid #eee;
-  padding: 5px;
+  padding: 5px 5px 5px 0;
 }
 
 li.picked {
@@ -413,7 +448,7 @@ li.picked {
   text-shadow: 0 1px 1px #333;
 }
 
-li.function {
+.toggle {
   flex-direction: row;
   align-items: center;
   background: #90a4ae;
@@ -423,13 +458,18 @@ li.function {
   border: none;
   cursor: pointer;
   color: #fcfcfc;
+  display: flex;
+  height: 39px;
+  padding: 0 5px;
+  justify-content: center;
+  margin: 5px;
 }
 
-.function i {
+.toggle i {
   margin-right: 5px;
 }
 
-li.settle {
+.settle {
   flex-direction: row;
   align-items: center;
   padding: 0 0 0 15px;
@@ -438,9 +478,10 @@ li.settle {
   bottom: 0;
   border-top: 1px solid #eceff1;
   background: #f5f5f5;
+  display: flex;
 }
 
-li.settle p {
+.settle p {
   flex: 1;
 }
 
@@ -480,7 +521,7 @@ ul.ban li.tooltip {
   display: flex;
 }
 
-li.tooltip {
+.tooltip {
   bottom: 50%;
   position: absolute;
   width: 250px;
@@ -514,29 +555,29 @@ li.tooltip {
   display: initial;
 }
 
-.main .deno.qty{
+.main .deno.qty {
   text-align: left;
   position: relative;
+  text-indent: 4px;
 }
 
 .deno.qty:after {
   content: attr(data-deno);
   position: absolute;
   top: 8px;
-  right: 0px;
-  color: #607d8b;
+  right: 1px;
 }
 
 .deno.qty:before {
   content: "/";
   position: absolute;
-  right: 7px;
+  right: 8px;
   top: 3px;
 }
 
 .main .qty {
   display: inline-block;
-  min-width: 20px;
+  min-width: 25px;
   text-align: center;
 }
 
