@@ -91,7 +91,7 @@ const mutations = {
         let layout = state.config.layout.table;
         state.config.layout.table = layout.map(section => {
             const { zone } = section;
-            let seat = Array(56).fill({
+            let seat = Array(56).fill().map(() => ({
                 feature: [],
                 invoice: [],
                 name: "",
@@ -102,7 +102,7 @@ const mutations = {
                 time: 0,
                 grid: 0,
                 zone
-            });
+            }));
 
             data.forEach(table => {
                 if (table.zone === zone) seat[table.grid] = table;

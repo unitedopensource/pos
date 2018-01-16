@@ -1,27 +1,27 @@
 <template>
-    <div class="evener">
-        <i class="fa fa-2x fa-times" @click="init.reject(false)"></i>
-        <div>
-            <h3>{{$t('text.itemSplit')}}</h3>
-            <h5>{{$t('tip.itemSplit')}}</h5>
-            <div class="input">
-                <button @click="qty--" :disabled="qty==2">-</button>
-                <input type="text" v-model="qty">
-                <button @click="qty++">+</button>
-            </div>
-            <div @click="init.resolve(qty)" class="confirm">{{$t('button.confirm')}}</div>
-        </div>
+  <div class="evener">
+    <i class="fa fa-2x fa-times" @click="init.reject(false)"></i>
+    <div>
+      <h3>{{$t('text.itemSplit')}}</h3>
+      <h5>{{$t('tip.itemSplit')}}</h5>
+      <div class="input">
+        <button @click="qty--" :disabled="qty==2">-</button>
+        <input type="text" v-model="qty">
+        <button @click="qty++">+</button>
+      </div>
+      <div @click="init.resolve(qty)" class="confirm">{{$t('button.confirm')}}</div>
     </div>
+  </div>
 </template>
 
 <script>
 export default {
-    props: ["init"],
-    data() {
-        return {
-            qty: this.init.qty
-        };
-    }
+  props: ["init"],
+  data() {
+    return {
+      qty: this.init.qty
+    };
+  }
 };
 </script>
 
@@ -30,7 +30,7 @@ export default {
   position: absolute;
   left: 0px;
   top: 0;
-  background: rgba(33, 33, 33, 0.26);
+  background: #fff;
   width: 250px;
   height: 490px;
   display: flex;
@@ -60,7 +60,7 @@ i {
   top: 0;
   right: 0;
   padding: 15px 20px;
-  color: #fff;
+  color: #F44336;
 }
 
 .input {
@@ -89,5 +89,6 @@ input {
   border-top: 0 solid #dbdbdb;
   border-bottom: 0 solid #dbdbdb;
   text-align: center;
+  background: #cfd8dc;
 }
 </style>

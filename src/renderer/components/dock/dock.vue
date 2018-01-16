@@ -251,6 +251,7 @@ export default {
       Printer.initial(CLODOP, this.config, data);
     },
     UPDATE_TABLE_STATUS(data) {
+      console.log(data)
       this.updateTable(data);
     },
     INSERT_ORDER(data) {

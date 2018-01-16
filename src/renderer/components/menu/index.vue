@@ -239,9 +239,6 @@ export default {
     },
     setCategory(index = this.categoryIndex) {
       this.openSubGroup = false;
-
-      //index = index || this.categoryIndex;
-
       toggleClass(".category .active", "active");
       document
         .querySelectorAll("section.category div")
@@ -255,7 +252,6 @@ export default {
     pick(item) {
       item = Object.assign(Object.create(Object.getPrototypeOf(item)), item);
 
-      //item = JSON.parse(JSON.stringify(item));
       !this.app.newTicket && Object.assign(item, { new: true });
 
       this.checkItemAvailable(item)
@@ -398,7 +394,7 @@ export default {
       length < 33 &&
         Array(33 - items.length)
           .fill()
-          .forEach(_ =>
+          .forEach(() =>
             items.push({ zhCN: "", usEN: "", clickable: false, group: null })
           );
 

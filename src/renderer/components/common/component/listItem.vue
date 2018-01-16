@@ -104,13 +104,6 @@ li {
   margin-right: 40px;
 }
 
-.main .price {
-  position: absolute;
-  right: -10px;
-  padding: 10px 10px 10px 20px;
-  top: -10px;
-}
-
 .sub .item {
   color: #666;
   text-indent: 8px;

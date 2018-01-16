@@ -135,13 +135,14 @@ export default {
 
               const actual = this.calHeight();
               if (actual < 450) {
-                //if less than outter height
                 this.offset = 0;
                 this.lastDelta = 0;
               } else if (topDiff > 0) {
                 this.offset = 0;
                 this.lastDelta = 0;
               } else if (botDiff > 0) {
+                this.lastDelta = topDiff;
+              } else {
                 this.offset = -actual + 450;
                 this.lastDelta = this.offset;
               }

@@ -101,26 +101,27 @@ export default {
       }
     },
     tap(table) {
+      if (!table.hasOwnProperty("_id")) return;
       this.setCurrentTable(table);
 
       table.status === 1
         ? this.checkReservation(table)
-            .then(this.checkAccessPin)
-            .then(this.countGuest.bind(null, table))
-            .then(this.checkTableType)
-            .then(this.createTable)
-        : //.catch(this.createTableFailed)
-          this.checkPermission(table)
-            .then(this.viewTicket)
-            .catch(this.exceptionHandler);
+          .then(this.checkAccessPin)
+          .then(this.countGuest.bind(null, table))
+          .then(this.checkTableType)
+          .then(this.createTable)
+          .catch(this.createTableFailed)
+        : this.checkPermission(table)
+          .then(this.viewTicket)
+          .catch(this.exceptionHandler);
     },
     checkPermission(table) {
       return new Promise((next, stop) => {
         table.server === this.op.name
           ? next(table)
           : this.$checkPermission("view", "tables")
-              .then(() => next(table))
-              .catch(() => stop("UNABLE_VIEW_OTHER_TABLE"));
+            .then(() => next(table))
+            .catch(() => stop("UNABLE_VIEW_OTHER_TABLE"));
       });
     },
     checkTableType(table) {
@@ -192,11 +193,11 @@ export default {
       return new Promise((next, stop) => {
         this.dinein.guestCount
           ? new Promise((resolve, reject) => {
-              this.componentData = { resolve, reject };
-              this.component = "counter";
-            })
-              .then(guest => next(Object.assign(table, { guest })))
-              .catch(() => stop())
+            this.componentData = { resolve, reject };
+            this.component = "counter";
+          })
+            .then(guest => next(Object.assign(table, { guest })))
+            .catch(() => stop())
           : next(Object.assign(table, { guest: 1 }));
       });
     },
@@ -214,14 +215,14 @@ export default {
       invoice
         ? this.setViewOrder(invoice)
         : this.$dialog(prompt)
-            .then(() => {
-              this.$socket.emit("[SYNC] ORDER_LIST");
-              this.$q();
-            })
-            .catch(() => {
-              this.$socket.emit("[TABLE] RESET", { _id: table._id });
-              this.$q();
-            });
+          .then(() => {
+            this.$socket.emit("[SYNC] ORDER_LIST");
+            this.$q();
+          })
+          .catch(() => {
+            this.$socket.emit("[TABLE] RESET", { _id: table._id });
+            this.$q();
+          });
     },
     selectHibachiTable(guest) {
       return new Promise((resolve, reject) => {
@@ -281,9 +282,9 @@ export default {
       prompt && this.$dialog(prompt).then(() => this.$q());
     },
     option(table, index) {
-      table.hasOwnProperty("_id")
+      (table._id && !table.temporary)
         ? this.resetTable(table)
-        : this.temporaryTable(table, index);
+        : table.temporary ? this.collapseTable(table, index) : this.temporaryTable(table, index);
     },
     resetTable({ server, name, _id }, index) {
       const { role } = this.op;
@@ -310,7 +311,19 @@ export default {
           .catch(() => this.$q());
       }
     },
+    collapseTable(table, index) {
+      const prompt = {
+        type: "question",
+        title: "dialog.removeTemporaryTable",
+        msg: "dialog.removeTemporaryTableConfirm"
+      }
+
+      this.$dialog(prompt).then(() => {
+        this.$q();
+      }).catch(() => this.$q())
+    },
     temporaryTable(table, index) {
+      return;
       const prompt = {
         type: "question",
         title: "dialog.temporaryTable",
@@ -328,6 +341,7 @@ export default {
       }).then(name => {
         this.$q();
         Object.assign(table, {
+          _id: String().random(),
           temporary: true,
           grid: index,
           status: 1,
@@ -343,8 +357,8 @@ export default {
           break;
       }
     },
-    openReservation() {},
-    viewDineInList() {},
+    openReservation() { },
+    viewDineInList() { },
     ...mapActions([
       "setApp",
       "resetMenu",

@@ -70,7 +70,6 @@ export default {
   },
   created() {
     this.order.split && this.getSplitOrder();
-    this.done = this.order.content.every(item => item.split)
   },
   mounted() {
     this.registerSwipeEvent();
@@ -78,8 +77,14 @@ export default {
   methods: {
     getSplitOrder() {
       this.$socket.emit("[SPLIT] GET", this.order.children, splits => {
-        this.splits = splits;
-        this.done = this.order.content.filter(i => !i.split).length === 0;
+        const orders = splits.filter(order => order);
+        if (orders.length) {
+          this.splits = orders;
+          this.done = this.order.content.every(item => item.split)
+        } else {
+          this.order.content.forEach(item => item.split = false);
+          this.done = false;
+        }
       });
     },
     create() {
