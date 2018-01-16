@@ -355,20 +355,10 @@ export const syncTables = ({
   commit(types.SET_LASTSYNC, sync);
   commit(types.SET_TABLE, tables)
 }
-export const setCurrentTable = ({
-  commit
-}, table) => {
-  commit(types.CURRENT_TABLE, table)
-}
 export const newPhoneCall = ({
   commit
 }, data) => {
   commit(types.NEW_PHONE_CALL, data)
-}
-export const removePayment = ({
-  commit
-}) => {
-  commit(types.REMOVE_PAYMENT)
 }
 export const setPrinter = ({
   commit

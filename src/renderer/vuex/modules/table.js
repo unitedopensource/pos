@@ -1,14 +1,10 @@
 import * as types from '../mutation-types'
 
 const state = {
-  selectedTables: [],
   currentTable: null
 }
 
 const mutations = {
-  [types.CURRENT_TABLE](state, table) {
-    state.currentTable = table;
-  },
   [types.SET_CURRENT_TABLE](state, info) {
     state.currentTable = Object.assign({}, state.currentTable, info);
   },
@@ -29,7 +25,6 @@ const mutations = {
     })
   },
   [types.RESET_TABLE](state) {
-    state.selectedTables = [];
     state.currentTable = null;
   }
 }

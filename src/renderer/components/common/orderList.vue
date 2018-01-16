@@ -9,7 +9,7 @@
       <div class="content">
         <template v-if="order.type === 'DINE_IN'">
           <p>
-            
+
           </p>
         </template>
         <template v-else>
@@ -215,6 +215,8 @@ export default {
     panStart(e) {
       let dom = document.querySelector(".order .scrollable");
       dom && dom.classList.remove("scrollable");
+
+      document.querySelector("div.order").classList.add("block");
     },
     panEnd() {
       const dom = document.querySelector(".order .inner");
@@ -232,6 +234,11 @@ export default {
         this.offset = -(height - 329);
       }
       this.lastDelta = this.offset;
+
+      setTimeout(() => {
+        const dom = document.querySelector("div.order");
+        dom && dom.classList.remove("block");
+      }, 150)
     },
     separator() {
       if (!this.item) return;
@@ -580,6 +587,7 @@ header i {
   width: 285px;
   background: hsla(0, 9%, 66%, 0.15);
   overflow: hidden;
+  position: relative;
 }
 
 .scrollable {
@@ -765,5 +773,14 @@ header i {
 
 .provider {
   margin-left: 10px;
+}
+
+.block:after {
+  content: " ";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 329px;
+  width: 285px;
 }
 </style>

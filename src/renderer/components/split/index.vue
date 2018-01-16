@@ -60,7 +60,7 @@ export default {
   },
   data() {
     return {
-      order: Object.assign(Object.create(Object.getPrototypeOf(this.$store.getters.order)), this.$store.getters.order),//JSON.parse(JSON.stringify(this.$store.getters.order)),
+      order: Object.assign(Object.create(Object.getPrototypeOf(this.$store.getters.order)), this.$store.getters.order),
       swipeMode: false,
       hammer: null,
       done: false,
@@ -70,6 +70,7 @@ export default {
   },
   created() {
     this.order.split && this.getSplitOrder();
+    this.done = this.order.content.every(item => item.split)
   },
   mounted() {
     this.registerSwipeEvent();
@@ -83,7 +84,7 @@ export default {
     },
     create() {
       const _id = ObjectId();
-      const order = Object.assign(Object.create(Object.getPrototypeOf(this.order)), this.order);//JSON.parse(JSON.stringify(this.order));
+      const order = Object.assign(Object.create(Object.getPrototypeOf(this.order)), this.order);
 
       let content = [];
       let payment = {
@@ -112,7 +113,7 @@ export default {
     transfer({ unique, index }) {
       let buffer = [];
       this.$children.map(vm =>
-        vm.buffer.forEach(item => buffer.push(Object.assign(Object.create(Object.getPrototypeOf(item)), item)))//JSON.parse(JSON.stringify(item)
+        vm.buffer.forEach(item => buffer.push(Object.assign(Object.create(Object.getPrototypeOf(item)), item)))
       );
       this.$bus.emit("transfer", {
         unique,
@@ -173,8 +174,9 @@ export default {
     setDone(boolean) {
       this.done = boolean;
     },
-    destroy(index) {
-      this.splits.splice(index, 1)
+    destroy({ _id, index }) {
+      //const orders = this.$children.filter((vm, index) => index !== 0).map(vm => vm.order).filter((order, index) => order._id !== _id);
+      return;
     },
     confirm() {
       const parent = this.order._id;
@@ -262,7 +264,7 @@ export default {
   display: flex;
   min-height: 500px;
   padding: initial;
-  background: url(../../assets/image/grid.png) #fcfcfc;
+  background: url(../../assets/image/slid.jpg) #fcfcfc;
 }
 
 .view {

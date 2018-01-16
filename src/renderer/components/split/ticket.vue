@@ -1,7 +1,7 @@
 <template>
   <div class="invoice" :class="{ban}">
     <ul @click.self="tap" v-if="enable" :class="[unique]" :ref="unique" :style="scroll">
-      <li v-for="(item,index) in order.content" :key="index" @click="pick(item)" :data-unique="item.unique" v-show="!item.split">
+      <li v-for="(item,index) in order.content" :key="index" @click.prevent.stop="pick(item)" :data-unique="item.unique" v-show="!item.split">
         <div class="main">
           <span class="qty deno" :data-deno="item.deno" v-if="item.deno">{{item.qty}}</span>
           <span class="qty" v-else>{{item.qty}}</span>
@@ -68,7 +68,7 @@ export default {
     enable() {
       return this.master
         ? this.order.content.filter(i => !i.split).length !== 0 ||
-            !!this.component
+        !!this.component
         : true;
     },
     ...mapGetters(["tax", "dinein", "store"])
@@ -84,7 +84,8 @@ export default {
       reason: "",
       ban: false,
       buffer: [],
-      offset: 0
+      offset: 0,
+      lastDelta: 0
     };
   },
   created() {
@@ -112,7 +113,6 @@ export default {
   },
   mounted() {
     this.$calculatePayment(this.order.content);
-
     //register scroll event
     const dom = this.$refs[this.unique];
     if (dom) {
@@ -122,24 +122,48 @@ export default {
       this.hammer.on("swipeup panstart panend panup pandown", e => {
         switch (e.type) {
           case "panstart":
-            this.offset = this.lastDelta + e.deltaY;
-            console.log(e);
+            dom.classList.remove("reverse");
+            dom.classList.add("block");
             break;
           case "panend":
-            this.lastDelta = this.offset;
-            console.log(e);
+            setTimeout(() => {
+              dom.classList.add("reverse");
+              const parent = document.querySelector(".invoice").getBoundingClientRect();
+              const { height, top, bottom } = dom.getBoundingClientRect();
+              const topDiff = top - parent.top;
+              const botDiff = bottom - parent.bottom;
+
+              const actual = this.calHeight();
+              if (actual < 450) {
+                //if less than outter height
+                this.offset = 0;
+                this.lastDelta = 0;
+              } else if (topDiff > 0) {
+                this.offset = 0;
+                this.lastDelta = 0;
+              } else if (botDiff > 0) {
+                this.offset = -actual + 450;
+                this.lastDelta = this.offset;
+              }
+            })
+
+            setTimeout(() => {
+              dom.classList.remove("block")
+            }, 150)
             break;
           case "panup":
-            this.offset = e.deltaY;
+            this.offset = e.deltaY + this.lastDelta;
             break;
           case "pandown":
-            this.offset = e.deltaY;
+            this.offset = this.lastDelta + e.deltaY;
             break;
           case "swipeup":
             this.order.content.length === 0 &&
-              this.$emit("destroy", this.index);
+              this.$emit("destroy", { _id: this.order._id, index: this.index });
             break;
         }
+
+        return false;
       });
     }
   },
@@ -161,7 +185,7 @@ export default {
       if (this.master) {
         item = Object.assign(Object.create(Object.getPrototypeOf(item)), item, {
           parent: item.unique
-        }); //JSON.parse(JSON.stringify(item));
+        });
       }
 
       const index = this.buffer.findIndex(i => i.unique === item.unique);
@@ -224,6 +248,13 @@ export default {
 
         items[0] && items[0].__split__ && this.$bus.emit("release");
       }
+      items.length && this.$nextTick(() => {
+        const height = this.calHeight();
+        if (height - 450 > 0) {
+          this.$refs[this.unique].classList.add("reverse");
+          this.offset = 450 - height;
+        }
+      })
 
       this.$bus.emit("remove");
     },
@@ -306,12 +337,12 @@ export default {
 
       !this.component
         ? this.$open("options", {
-            taxFree,
-            deliveryFree,
-            gratuityFree,
-            type,
-            isDiscount
-          })
+          taxFree,
+          deliveryFree,
+          gratuityFree,
+          type,
+          isDiscount
+        })
         : this.$q();
     },
     applyConfig(params) {
@@ -390,6 +421,16 @@ export default {
     selectAll() {
       this.order.content.filter(i => !i.split).forEach(item => this.pick(item));
     },
+    calHeight() {
+      const doms = document.querySelectorAll(`ul.${this.unique} li`);
+      let height = 0;
+
+      for (let dom of doms) {
+        height += dom.getBoundingClientRect().height;
+      }
+
+      return height;
+    },
     toggleSplit(index) {
       const item = this.order.content[index];
       item.lock = !item.lock;
@@ -428,12 +469,14 @@ export default {
   height: 490px;
   overflow: hidden;
   margin: 5px;
-  background: #fafafa;
+  background: url(../../assets/image/outer.jpg);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
+
 ul {
   width: 250px;
-  min-height: 490px;
+  height: 200%;
+  background: #fafafa;
 }
 
 li {
@@ -465,7 +508,6 @@ li.picked {
   height: 39px;
   padding: 0 5px;
   justify-content: center;
-  margin: 5px;
 }
 
 .toggle i {
@@ -478,6 +520,7 @@ li.picked {
   padding: 0 0 0 15px;
   position: absolute;
   width: 235px;
+  height: 40px;
   bottom: 0;
   border-top: 1px solid #eceff1;
   background: #f5f5f5;
@@ -604,5 +647,21 @@ li.picked .main,
 li.picked .main .side,
 li.picked .sub {
   color: #fff;
+}
+
+.reverse {
+  transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.block:after {
+  content: " ";
+  background: transparent;
+  top: 0;
+  left: 0;
+  width: 250px;
+  height: 100%;
+  z-index: 2;
+  display: block;
+  position: absolute;
 }
 </style>

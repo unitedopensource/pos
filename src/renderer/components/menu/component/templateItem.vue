@@ -164,21 +164,24 @@ export default {
 
 .item .qty {
   position: absolute;
-  top: 0px;
-  right: 0;
+  top: -2px;
+  right: 1px;
   font-family: "Agency FB";
   font-weight: bold;
-  font-size: 22px;
+  font-size: 20px;
   width: 35px;
-  height: 30px;
-  line-height: 30px;
+  height: 23px;
+  text-align: right;
   display: block;
   color: #fff;
+  padding: 0 0 10px 5px;
   text-shadow: 0 1px 1px #333;
 }
 
 .qty:before {
   content: "x";
+  padding-right: 2px;
+  font-size: 18px;
 }
 
 ul {
