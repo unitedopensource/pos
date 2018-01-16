@@ -111,10 +111,10 @@ export const setSides = ({
 }, sides) => {
   commit(types.SET_SIDES, sides)
 }
-export const setTableInfo = ({
+export const setCurrentTable = ({
   commit
 }, info) => {
-  commit(types.SET_TABLE_INFO, info)
+  commit(types.SET_CURRENT_TABLE, info)
 }
 export const resetCurrentTable = ({
   commit

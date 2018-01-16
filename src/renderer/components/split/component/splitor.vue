@@ -34,7 +34,9 @@ export default {
       const dom = document.querySelector(".splitor .selected");
       dom && dom.classList.remove("selected");
 
-      document.querySelectorAll(".splitor div")[index].classList.add("selected");
+      document
+        .querySelectorAll(".splitor div")
+        [index].classList.add("selected");
 
       this.$emit("pick", this.items[index]);
     },
@@ -49,7 +51,7 @@ export default {
         this.items.length === 0 && this.init.resolve();
       }
     },
-    destroy(){
+    destroy() {
       this.init.resolve();
     }
   }
@@ -59,8 +61,8 @@ export default {
 <style scoped>
 .splitor {
   position: absolute;
-  top: 5px;
-  left: 5px;
+  top: 0;
+  left: 0;
   background: rgba(0, 0, 0, 0.5);
   width: 250px;
   height: 490px;

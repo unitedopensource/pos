@@ -38,6 +38,7 @@
 import { mapGetters, mapActions } from "vuex";
 import orderList from "../common/orderList";
 import dialoger from "../common/dialoger";
+import hibachi from "./component/hibachi";
 import counter from "./component/counter";
 import creator from "./component/creator";
 import unlock from "../common/unlock";
@@ -45,7 +46,15 @@ import buttons from "./buttons";
 
 export default {
   props: ["reserved"],
-  components: { orderList, dialoger, counter, unlock, buttons, creator },
+  components: {
+    orderList,
+    dialoger,
+    counter,
+    unlock,
+    buttons,
+    creator,
+    hibachi
+  },
   computed: {
     viewSection() {
       return this.tables[this.view] ? this.tables[this.view].item : [];
@@ -95,13 +104,13 @@ export default {
       this.setCurrentTable(table);
 
       table.status === 1
-        ? this.checkTableStatus(table)
-            .then(this.checkReservation)
+        ? this.checkReservation(table)
             .then(this.checkAccessPin)
-            .then(this.countGuest)
-            .then(this.createTable.bind(null, table))
-            .catch(this.createTableFailed)
-        : this.checkPermission(table)
+            .then(this.countGuest.bind(null, table))
+            .then(this.checkTableType)
+            .then(this.createTable)
+        : //.catch(this.createTableFailed)
+          this.checkPermission(table)
             .then(this.viewTicket)
             .catch(this.exceptionHandler);
     },
@@ -114,14 +123,27 @@ export default {
               .catch(() => stop("UNABLE_VIEW_OTHER_TABLE"));
       });
     },
-    checkTableStatus(table) {
+    checkTableType(table) {
       return new Promise((next, stop) => {
-        next(table);
+        switch (table.type) {
+          case "hibachi":
+            this.selectHibachiTable(table.guest)
+              .then(seats => next(Object.assign(table, { seats })))
+              .catch(() => stop());
+            break;
+          case "bar":
+            this.selectBarTab()
+              .then(seats => next(Object.assign(table, { seats })))
+              .catch(() => stop());
+            break;
+          default:
+            next(table);
+        }
       });
     },
     checkReservation(table) {
       return new Promise((next, stop) => {
-        next(table);
+        next();
       });
     },
     checkAccessPin() {
@@ -166,16 +188,16 @@ export default {
         }
       });
     },
-    countGuest() {
+    countGuest(table) {
       return new Promise((next, stop) => {
         this.dinein.guestCount
           ? new Promise((resolve, reject) => {
               this.componentData = { resolve, reject };
               this.component = "counter";
             })
-              .then(guest => next(guest))
+              .then(guest => next(Object.assign(table, { guest })))
               .catch(() => stop())
-          : next(1);
+          : next(Object.assign(table, { guest: 1 }));
       });
     },
     viewTicket(table) {
@@ -201,18 +223,31 @@ export default {
               this.$q();
             });
     },
-    createTable(table, guest) {
+    selectHibachiTable(guest) {
+      return new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject, guest };
+        this.component = "hibachi";
+      });
+    },
+    selectBarTab() {
+      return new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject };
+        this.component = "barTab";
+      });
+    },
+    createTable(table) {
       this.setTicket({ type: "DINE_IN" });
       this.setApp({ newTicket: true });
       this.resetMenu();
 
-      Object.assign(this.currentTable, {
-        guest,
-        status: 2,
-        session: ObjectId(),
-        server: this.op.name,
-        time: +new Date()
-      });
+      this.setCurrentTable(
+        Object.assign(table, {
+          status: 2,
+          session: ObjectId(),
+          server: this.op.name,
+          time: +new Date()
+        })
+      );
 
       this.$socket.emit("[TABLE] SETUP", this.currentTable);
       this.$router.push({ path: "/main/menu" });
