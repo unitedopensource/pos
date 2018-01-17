@@ -19,6 +19,7 @@
             </header>
             <div class="wrap">
 
+
             </div>
             <footer>
                 <button class="btn" @click="confirm">{{$t('button.done')}}</button>
@@ -41,9 +42,12 @@ export default {
     };
   },
   created() {
-      setTimeout(()=>{
-          this.loading= false;
-      },5000)
+      
+
+
+    setTimeout(() => {
+      this.loading = false;
+    }, 5000);
   },
   methods: {
     confirm() {
