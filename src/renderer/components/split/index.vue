@@ -138,43 +138,44 @@ export default {
       __split__ && this.$bus.emit("destroy", items);
     },
     registerSwipeEvent() {
-      this.hammer = new Hammer(this.$refs.scroll);
+      const dom = this.$refs.scroll
+      this.hammer = new Hammer(dom);
       this.hammer.get("swipe").set({ direction: Hammer.DIRECTION_HORIZONTAL });
       this.hammer.on("swipeleft swiperight", e => {
-        const base = Math.abs(e.velocityX) > 2.5 ? 2 : 1;
 
         switch (e.type) {
           case "swipeleft":
-            this.offset -= 260 * base;
-
+            this.checkBoundary(-1)
             break;
           case "swiperight":
-            this.offset += 260 * base;
+            this.checkBoundary(+1)
             break;
         }
-
-        this.checkBoundary(e.direction);
       });
     },
     checkBoundary(direction) {
       this.$nextTick(() => {
-        const container = 875;
-        const { left, right, width } = document
-          .querySelector(".editor .scroll")
-          .getBoundingClientRect();
+        const parent = document.querySelector(".view").getBoundingClientRect();
+        const child = document.querySelector(".scroll").getBoundingClientRect();
+        const leftDiff = child.left - parent.left;
+        const rightDiff = child.right - parent.right;
+        const actualWidth = this.calWidth();
+        const fixedWidth = 260;
 
-        direction === 2 &&
-          setTimeout(() => {
-            const overflow = Math.abs(left) % 250;
-            const fixed = this.offset + overflow;
-            this.offset = fixed;
-          }, 300);
-        direction === 4 &&
-          right > width &&
-          setTimeout(() => {
-            this.offset -= right - width > 250 ? 500 : 250;
-          }, 300);
-      });
+        let offset = this.offset + 260 * direction;
+        offset = offset === -260 ? -98 : offset;
+        offset = offset === 162 ? 0 : offset;
+        this.offset = offset;
+      })
+    },
+    calWidth() {
+      let width = 0;
+      const doms = document.querySelectorAll(".view .invoice");
+
+      for (let dom of doms) {
+        width += dom.getBoundingClientRect().width;
+      }
+      return width;
     },
     setDone(boolean) {
       this.done = boolean;
@@ -278,13 +279,14 @@ export default {
   flex-direction: row-reverse;
   width: 618px;
   overflow: hidden;
+  position: relative;
 }
 
 .view .scroll {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
-  transition: transform 0.3s ease-in-out;
+  transition: transform 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .option {
