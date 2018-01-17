@@ -198,6 +198,7 @@ export default {
       }
 
       let tip = 0;
+      let tax = 0;
       let subtotal = 0;
       let total = 0;
       let discount = 0;
@@ -210,6 +211,7 @@ export default {
           order.number = `${this.order.number}-${index + 1}`;
 
           tip += order.payment.tip;
+          tax += order.payment.tax;
           subtotal += order.payment.subtotal;
           total += order.payment.total;
           discount += order.payment.discount;
@@ -220,6 +222,7 @@ export default {
         this.$socket.emit("[SPLIT] SAVE", { splits, parent });
 
         this.order.payment.tip = toFixed(tip, 2);
+        this.order.payment.tax = toFixed(tax, 2);
         this.order.payment.subtotal = toFixed(subtotal, 2);
         this.order.payment.total = toFixed(total, 2);
         this.order.payment.discount = toFixed(discount, 2);

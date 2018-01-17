@@ -193,9 +193,9 @@ export default {
       this.daily
         ? this.printDailyReport()
         : this.fetchData()
-            .then(this.dataAnalysis.bind(null, this.reportRange))
-            .then(this.printReport.bind(null, true))
-            .catch(this.reportError);
+          .then(this.dataAnalysis.bind(null, this.reportRange))
+          .then(this.printReport.bind(null, true))
+          .catch(this.reportError);
     },
     printDailyReport() {
       let { from, to } = this.reportRange;
@@ -265,9 +265,9 @@ export default {
     },
     salesAnalysis(range, data) {
       let report = [];
-      let { invoices, transactions, giftcards } = data;
-      let validInvoices = invoices.filter(invoice => invoice.status === 1);
-      let sum = (a, b) => a + b;
+      const { invoices, transactions, giftcards } = data;
+      const validInvoices = invoices.filter(invoice => invoice.status === 1);
+      const sum = (a, b) => a + b;
 
       if (this.range === "today") {
         report.push({
@@ -289,7 +289,7 @@ export default {
         });
       }
 
-      let foodSales = validInvoices
+      const foodSales = validInvoices
         .map(invoice => parseFloat(invoice.payment.subtotal))
         .reduce(sum, 0);
 
@@ -299,7 +299,7 @@ export default {
         value: foodSales.toFixed(2)
       });
 
-      let tax = validInvoices
+      const tax = validInvoices
         .map(invoice => parseFloat(invoice.payment.tax))
         .reduce(sum, 0);
 
@@ -309,7 +309,7 @@ export default {
         value: tax.toFixed(2)
       });
 
-      let discount = validInvoices
+      const discount = validInvoices
         .map(invoice => parseFloat(invoice.payment.discount))
         .reduce(sum, 0);
 
@@ -320,7 +320,7 @@ export default {
       });
       //add discount detail here
 
-      let salesTotal = foodSales + tax - discount;
+      const salesTotal = foodSales + tax - discount;
 
       report.push({
         text: this.$t("report.salesTotal"),
@@ -328,11 +328,11 @@ export default {
         value: salesTotal.toFixed(2)
       });
 
-      let deliveryFee = validInvoices
+      const deliveryFee = validInvoices
         .map(i => i.payment.delivery)
         .reduce(sum, 0);
 
-      let gratuity = validInvoices.map(t => t.payment.gratuity).reduce(sum, 0);
+      const gratuity = validInvoices.map(t => t.payment.gratuity).reduce(sum, 0);
 
       if (this.reportDetail === "simple") return report;
 
@@ -380,7 +380,7 @@ export default {
             .toFixed(2)
       });
 
-      let cashTotal = orderPayment
+      const cashTotal = orderPayment
         .filter(t => t.type === "CASH")
         .map(t => t.actual - t.tip)
         .reduce(sum, 0);
@@ -391,8 +391,8 @@ export default {
         value: cashTotal.toFixed(2)
       });
 
-      let creditTransactions = orderPayment.filter(t => t.type === "CREDIT");
-      let creditTotal = creditTransactions.map(t => t.actual).reduce(sum, 0);
+      const creditTransactions = orderPayment.filter(t => t.type === "CREDIT");
+      const creditTotal = creditTransactions.map(t => t.actual).reduce(sum, 0);
 
       if (this.detailPayment) {
         let creditType = new Set();
@@ -406,8 +406,8 @@ export default {
         });
 
         Array.from(creditType).forEach(type => {
-          let tmp = creditTransactions.filter(t => t.subType === type);
-          let total = tmp.map(t => t.actual).reduce(sum, 0);
+          const tmp = creditTransactions.filter(t => t.subType === type);
+          const total = tmp.map(t => t.actual).reduce(sum, 0);
 
           report.push({
             text: type + ` ( ${tmp.length} )`,
@@ -432,8 +432,8 @@ export default {
       //release memory
       creditTransactions = null;
 
-      let thirdPartyTransactions = orderPayment.filter(t => t.type === "THIRD");
-      let thirdPartyTotal = thirdPartyTransactions
+      const thirdPartyTransactions = orderPayment.filter(t => t.type === "THIRD");
+      const thirdPartyTotal = thirdPartyTransactions
         .map(t => t.actual)
         .reduce(sum, 0);
 
@@ -478,7 +478,7 @@ export default {
       //release memory
       thirdPartyTransactions = null;
 
-      let settledTotal = orderPayment
+      const settledTotal = orderPayment
         .map(transaction => transaction.actual)
         .reduce(sum, 0);
 
@@ -488,7 +488,7 @@ export default {
         value: settledTotal.toFixed(2)
       });
 
-      let unsettled = validInvoices.filter(invoice => !invoice.settled);
+      const unsettled = validInvoices.filter(invoice => !invoice.settled);
 
       report.push({
         text: this.$t("report.unsettled") + ` ( ${unsettled.length} )`,
@@ -499,7 +499,7 @@ export default {
           .toFixed(2)
       });
 
-      let tipTotal = orderPayment.map(t => t.tip).reduce(sum, 0);
+      const tipTotal = orderPayment.map(t => t.tip).reduce(sum, 0);
 
       if (this.detailPayment) {
         let tipFrom = new Set();
@@ -711,7 +711,7 @@ export default {
       return report;
     },
     cashierReport(data) {
-      let { invoices, transactions } = data;
+      const { invoices, transactions } = data;
       let cashiers = new Set();
       invoices
         .filter(invoice => invoice.status === 1 && invoice.cashier)
@@ -722,7 +722,7 @@ export default {
       let report = [];
 
       Array.from(cashiers).forEach(cashier => {
-        let handledInvoice = invoices.filter(
+        const handledInvoice = invoices.filter(
           invoice => invoice.status === 1 && invoice.cashier === cashier
         );
         report.push({
@@ -746,7 +746,7 @@ export default {
             .toFixed(2)
         });
 
-        let handledTrans = transactions.filter(t => t.cashier === cashier);
+        const handledTrans = transactions.filter(t => t.cashier === cashier);
 
         let types = new Set();
         let actualAmount = 0;
@@ -755,7 +755,7 @@ export default {
         });
 
         Array.from(types).forEach(type => {
-          let amount = handledTrans
+          const amount = handledTrans
             .filter(t => t.subType === type || t.type === type)
             .map(t => t.actual)
             .reduce((a, b) => a + b, 0);
@@ -784,7 +784,6 @@ export default {
             .toFixed(2)
         });
       });
-
       return report;
     },
     waitStaffReport(transactions) {
@@ -965,7 +964,7 @@ export default {
           value: unsettled.toFixed(2)
         });
 
-        let accountsPayable = fees + tips;
+        const accountsPayable = fees + tips;
 
         report.push({
           text: this.$t("report.accountsPayable"),
@@ -973,7 +972,7 @@ export default {
           value: "- " + accountsPayable.toFixed(2)
         });
 
-        let expectTotal = Math.max(0, unsettled - accountsPayable);
+        const expectTotal = Math.max(0, unsettled - accountsPayable);
         report.push({
           text: this.$t("report.expectTotal"),
           style: "total bold",
@@ -984,7 +983,7 @@ export default {
       return report;
     },
     thirdPartyReport(invoices) {
-      let validInvoices = invoices.filter(
+      const validInvoices = invoices.filter(
         i => i.source !== "POS" && i.status === 1
       );
       let providers = {};
@@ -1015,7 +1014,7 @@ export default {
 
       let report = [];
       Object.keys(providers).forEach(provider => {
-        let data = providers[provider];
+        const data = providers[provider];
         report.push({
           text: this.$t("report.provider") + ` ( ${data.count} )`,
           style: "bold",
@@ -1069,7 +1068,7 @@ export default {
         }
       });
     },
-    getTransactionsFromInvoices() {},
+    getTransactionsFromInvoices() { },
     reportError(error) {
       console.log(error);
       this.$q();
