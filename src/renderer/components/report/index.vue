@@ -429,9 +429,6 @@ export default {
         });
       }
 
-      //release memory
-      creditTransactions = null;
-
       const thirdPartyTransactions = orderPayment.filter(t => t.type === "THIRD");
       const thirdPartyTotal = thirdPartyTransactions
         .map(t => t.actual)
@@ -474,9 +471,6 @@ export default {
           value: thirdPartyTotal.toFixed(2)
         });
       }
-
-      //release memory
-      thirdPartyTransactions = null;
 
       const settledTotal = orderPayment
         .map(transaction => transaction.actual)

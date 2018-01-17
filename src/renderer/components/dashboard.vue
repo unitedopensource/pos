@@ -118,13 +118,13 @@ h1 {
 
 <script>
 import { mapActions, mapGetters } from "vuex";
+import collector from "./component/collector";
 import dialoger from "./common/dialoger";
-import counter from "./common/counter";
 import toast from "./dashboard/toast";
 import unlock from "./common/unlock";
 
 export default {
-  components: { dialoger, counter, toast, unlock },
+  components: { dialoger, collector, toast, unlock },
   computed: {
     ...mapGetters([
       "op",
@@ -267,7 +267,7 @@ export default {
       } else {
         new Promise((resolve, reject) => {
           this.componentData = { resolve, reject };
-          this.component = "counter";
+          this.component = "collector";
         })
           .then(this.countInitialCash)
           .catch(() => this.$q());
@@ -285,9 +285,9 @@ export default {
       this.$log({
         eventID: 9101,
         type: "failure",
-        source: "dashboard",
-        cause: error,
-        note: `Dashboard initial has failed.`
+        note: `Dashboard initial has failed.\n\nError Message:\n${JSON.stringify(
+          error
+        )}`
       });
     },
     welcomeScreen() {
@@ -327,7 +327,6 @@ export default {
           this.$log({
             eventID: 9100,
             type: "failure",
-            source: "dashboard",
             note: `Attempt access ${route} failed.`
           });
         });
@@ -411,19 +410,19 @@ export default {
         case "enable":
           this.station.cashDrawer.cashFlowCtrl
             ? this.$socket.emit(
-              "[CASHFLOW] CHECK",
-              {
-                date: today(),
-                cashDrawer: this.station.cashDrawer.name,
-                close: false
-              },
-              data => {
-                let { name, initial } = data;
-                initial
-                  ? this.initialCashFlow(name)
-                  : this.recordCashFlow(name);
-              }
-            )
+                "[CASHFLOW] CHECK",
+                {
+                  date: today(),
+                  cashDrawer: this.station.cashDrawer.name,
+                  close: false
+                },
+                data => {
+                  let { name, initial } = data;
+                  initial
+                    ? this.initialCashFlow(name)
+                    : this.recordCashFlow(name);
+                }
+              )
             : Printer.openCashDrawer();
           break;
         case "staffBank":
@@ -468,7 +467,7 @@ export default {
       } else {
         new Promise((resolve, reject) => {
           this.componentData = { resolve, reject };
-          this.component = "counter";
+          this.component = "collector";
         })
           .then(this.countSelfCash)
           .catch(() => this.$q());

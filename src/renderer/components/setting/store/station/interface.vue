@@ -20,7 +20,7 @@ export default {
   components: { editor, draggable },
   data() {
     return {
-      station: JSON.parse(JSON.stringify(this.$store.getters.station)),
+      station: clone(this.$store.getters.station),
       componentData: null,
       component: null
     };

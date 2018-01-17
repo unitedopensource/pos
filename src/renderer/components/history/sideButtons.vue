@@ -355,7 +355,7 @@ export default {
     accessFailedLog(component) {
       this.$log({
         eventID: 9101,
-        note: `Permission Denied.\nFailed to access ${component}`
+        note: `Permission Denied.Failed to access ${component}.`
       });
     },
     updateInvoice(ticket) {
