@@ -16,14 +16,14 @@
     transition:0;
 }
 
-.payment-enter-active {
+.fadeIn-enter-active {
     opacity: 1;
     transition: opacity 0.3s ease;
 }
 
 .fade-enter,
-.payment-enter,
-.payment-leave {
+.fadeIn-enter,
+.fadeIn-leave {
     opacity: 0;
 }
 

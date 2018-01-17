@@ -119,7 +119,7 @@ export default {
       this.hammer = new Hammer(dom);
       this.hammer.get("swipe").set({ direction: Hammer.DIRECTION_VERTICAL });
       this.hammer.get("pan").set({ direction: Hammer.DIRECTION_VERTICAL });
-      this.hammer.on("swipeup panstart panend panup pandown", e => {
+      this.hammer.on("panstart panend panup pandown", e => {
         switch (e.type) {
           case "panstart":
             dom.classList.remove("reverse");
@@ -153,8 +153,6 @@ export default {
             }, 150)
             break;
           case "panup":
-            this.offset = e.deltaY + this.lastDelta;
-            break;
           case "pandown":
             this.offset = this.lastDelta + e.deltaY;
             break;

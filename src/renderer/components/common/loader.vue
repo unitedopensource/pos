@@ -1,11 +1,13 @@
 <template>
-  <div class="circularLoader" v-if="display">
-    <div class="spinner">
-      <svg viewBox="25 25 50 50" class="circular">
-        <circle cx="50" cy="50" r="20" fill="none" class="path"></circle>
-      </svg>
+  <transition name="fadeIn">
+    <div class="circularLoader" v-if="display">
+      <div class="spinner">
+        <svg viewBox="25 25 50 50" class="circular">
+          <circle cx="50" cy="50" r="20" fill="none" class="path"></circle>
+        </svg>
+      </div>
     </div>
-  </div>
+  </transition>
 </template>
 
 <script>
@@ -15,7 +17,7 @@ export default {
       type: Boolean,
       default: false
     },
-    tooltip:String
+    tooltip: String
   }
 };
 </script>

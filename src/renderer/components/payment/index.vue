@@ -1,6 +1,6 @@
 <template>
   <div class="popupMask center dark">
-    <transition-group name="payment" mode="out-in" appear>
+    <transition-group name="fadeIn" mode="out-in" appear>
       <div class="window" v-show="!component" :key="0">
         <header class="title">
           <span>{{$t('title.payment')}}</span>

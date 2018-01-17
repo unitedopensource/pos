@@ -1294,9 +1294,9 @@ export default {
         employeeCardRegistration: 'Register employee card',
         settledReceipt: 'Settle Payment Receipt',
         permission: {
-            access: 'Access permission',
-            modify: 'Modify permission',
-            view: 'View permission',
+            access: 'Access Permission',
+            modify: 'Modify Permission',
+            view: 'View Permission',
             permission: 'Admin Control'
         },
         access: {
