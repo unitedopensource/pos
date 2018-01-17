@@ -15,7 +15,7 @@
 
 <script>
 import draggable from "vuedraggable";
-import editor from "./component/interfaceEditor";
+import editor from "../component/interfaceEditor";
 export default {
   components: { editor, draggable },
   data() {

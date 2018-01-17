@@ -16,13 +16,14 @@
         <checkbox title="setting.privilege.giftcard" v-model="operator.permission" val="giftcard" :multiple="true" class="list"></checkbox>
         <checkbox title="setting.privilege.promotion" v-model="operator.permission" val="promotion" :multiple="true" class="list"></checkbox>
         <checkbox title="setting.privilege.payout" v-model="operator.permission" val="payout" :multiple="true" class="list"></checkbox>
+        <checkbox title="setting.privilege.ledger" v-model="operator.permission" val="ledger" :multiple="true" class="list"></checkbox>
     </div>
 </template>
 
 <script>
 import checkbox from "../../common/checkbox";
 export default {
-    props: ["operator"],
-    components: { checkbox }
+  props: ["operator"],
+  components: { checkbox }
 };
 </script>

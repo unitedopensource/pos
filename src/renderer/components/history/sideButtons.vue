@@ -36,13 +36,13 @@
       <i class="fa fa-file-text"></i>
       <span class="text">{{$t('button.report')}}</span>
     </button>
-    <button class="btn" @click="paymentTransaction" :disabled="!reportable">
+    <button class="btn" @click="getTransaction" :disabled="!reportable">
       <i class="fa fa-bar-chart"></i>
       <span class="text">{{$t('button.stats')}}</span>
     </button>
-    <button class="btn" @click="reconciliation" :disabled="true">
+    <button class="btn" @click="getLedger">
       <i class="fa fa-check-square-o"></i>
-      <span class="text">{{$t('button.reconc')}}</span>
+      <span class="text">{{$t('button.ledger')}}</span>
     </button>
     <div :is="component" :init="componentData"></div>
   </aside>
@@ -51,15 +51,16 @@
 <script>
 import { mapGetters, mapActions } from "vuex";
 
+import Calendar from "./component/calendar";
 import paymentMark from "../payment/mark";
 import Dialoger from "../common/dialoger";
+import remover from "../payment/remover";
 import transaction from "./transaction";
 import Reason from "./component/reason";
 import Payment from "../payment/index";
-import remover from "../payment/remover";
+import reporter from "../report/index";
 import unlock from "../common/unlock";
-import Report from "../report/index";
-import Calendar from "./component/calendar";
+import ledger from "../ledger/index";
 import Terminal from "./terminal";
 
 export default {
@@ -67,13 +68,14 @@ export default {
   components: {
     paymentMark,
     transaction,
+    ledger,
     Calendar,
     Dialoger,
     Terminal,
     Payment,
     unlock,
     Reason,
-    Report,
+    reporter,
     remover
   },
   data() {
@@ -160,7 +162,7 @@ export default {
       this.setTicket({ type: this.order.type, number: this.order.number });
       this.setApp({ newTicket: false });
       this.setCustomer(this.order.customer);
-      //this.setOrder(JSON.parse(JSON.stringify(this.order)));
+
       this.$router.push({ path: "/main/menu" });
     },
     editFailed(reason) {
@@ -312,14 +314,11 @@ export default {
           { text: "button.splitPrint", fn: "resolve" }
         ]
       })
-        .then(() => {
-          this.$q(), this.splitPrint(order, true);
-        })
-        .catch(() => {
-          this.$q(), this.printTicket(order, true);
-        });
+        .then(() => this.splitPrint(order, true))
+        .catch(() => this.printTicket(order, true));
     },
     printTicket(order, receipt) {
+      this.$q();
       this.updateInvoice(order);
       order.content.forEach(item => (item.diffs = "unchanged"));
       receipt
@@ -327,6 +326,7 @@ export default {
         : Printer.setTarget("All").print(order);
     },
     splitPrint(order, receipt) {
+      this.$q();
       this.updateInvoice(order);
 
       this.$socket.emit("[SPLIT] GET", order.children, splits => {
@@ -339,29 +339,30 @@ export default {
     },
     terminal() {
       this.$checkPermission("access", "terminal")
-        .then(() => this.$p("Terminal"))
+        .then(() => this.$open("Terminal"))
         .catch(() => this.accessFailedLog("terminal"));
     },
     report() {
       this.$checkPermission("access", "report")
-        .then(() => this.$p("Report"))
+        .then(() => this.$open("reporter"))
         .catch(() => this.accessFailedLog("report"));
     },
-    reconciliation() {},
+    getLedger() {
+      this.$checkPermission("permission", "ledger")
+        .then(() => this.$open("ledger"))
+        .catch(() => this.accessFailedLog("ledger"));
+    },
     accessFailedLog(component) {
-      this.$socket.emit("[SYS] RECORD", {
-        type: "Software",
-        event: "access",
-        status: 0,
-        cause: "attempt access " + component,
-        data: this.op
+      this.$log({
+        eventID: 9101,
+        note: `Permission Denied.\nFailed to access ${component}`
       });
     },
     updateInvoice(ticket) {
       this.$socket.emit("[UPDATE] INVOICE", ticket, true);
     },
-    paymentTransaction() {
-      let date = document.querySelector("#calendar .text").innerText;
+    getTransaction() {
+      const date = document.querySelector("#calendar .text").innerText;
 
       this.$socket.emit("[PAYMENT] VIEW_TRANSACTIONS", date, data => {
         this.$p("transaction", {

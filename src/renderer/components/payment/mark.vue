@@ -54,7 +54,9 @@ export default {
     };
   },
   created() {
-    this.order = this.init.hasOwnProperty("order") ? this.init.order : this.$store.getters.order;
+    this.order = this.init.hasOwnProperty("order")
+      ? this.init.order
+      : this.$store.getters.order;
 
     this.checkComponentUsage()
       .then(this.checkPermission)
@@ -68,9 +70,7 @@ export default {
       });
   },
   mounted() {
-    if (this.order.source !== "POS")
-      this.type = this.order.source;
-
+    if (this.order.source !== "POS") this.type = this.order.source;
   },
   methods: {
     checkComponentUsage() {
@@ -130,28 +130,27 @@ export default {
     confirm() {
       this.init.hasOwnProperty("callback")
         ? this.init.resolve(this.type)
-        : this.checkTip().then(this.saveToDatabase)
+        : this.checkTip().then(this.saveToDatabase);
     },
     checkTip() {
-      return new Promise(next => this.$socket.emit("[PAYMENT] CHECK", this.order._id, result => next(result)))
+      return new Promise(next =>
+        this.$socket.emit("[PAYMENT] CHECK", this.order._id, result =>
+          next(result)
+        )
+      );
     },
-    saveToDatabase({ paid, tipped }) {
+    saveToDatabase(paid) {
       const cashDrawer =
         this.op.cashCtrl === "staffBank"
           ? this.op.name
           : this.station.cashDrawer.name;
 
-      let { remain, tip } = this.order.payment;
+      let { remain } = this.order.payment;
+      let tip = 0;
 
-      if (this.order.payment.tip > 0 && tipped == 0) {
-        remain -= tip;
-      } else if (this.order.payment.tip !== tipped) {
-        tip = Math.max(0, this.order.payment.tip - tipped).toPrecision(12).toFloat();
-      } else {
-        tip = 0;
-      }
-
-      const parent = this.order.hasOwnProperty("parent") ? this.order.parent : this.order._id;
+      const parent = this.order.hasOwnProperty("parent")
+        ? this.order.parent
+        : this.order._id;
       const split = this.order.hasOwnProperty("parent") ? this.order._id : null;
 
       const transaction = {
@@ -186,9 +185,6 @@ export default {
         this.$socket.emit("[UPDATE] INVOICE", this.order, false);
         this.init.resolve();
       });
-
-
-
     },
     exit() {
       this.init.resolve();

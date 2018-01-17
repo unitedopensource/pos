@@ -267,7 +267,7 @@ export default {
         default: 'Default',
         backup: 'Backup',
         option: 'Option',
-        reconc: 'Reconc.',
+        ledger: 'Ledger',
         allValid: 'Set All Valid',
         processAnyway: 'Process Anyway'
     },
@@ -409,7 +409,7 @@ export default {
         printerList: 'Printer List',
         couponList: 'Coupon List',
         taxList: 'Tax List',
-        setTitle: 'Receipt Title',
+        receiptTitle: 'Receipt Title',
         discount: 'Set Discount',
         tip: 'Set Tip',
         modify: 'Modify',
@@ -422,7 +422,8 @@ export default {
         accessPin: 'Please Enter Manager\'s Pin',
         address: 'Address Info',
         sideOption: 'Side Option',
-        reconciliation: 'Reconciliation of Accounts'
+        ledger: 'Sales Ledger',
+        department: 'Department'
     },
     dialog: {
         maintenance: 'Maintenance',
@@ -1196,6 +1197,7 @@ export default {
         salesTip: 'Sales Performance · Revenue',
         chart: 'Chart',
         chartTip: 'Sales Chart · Trend',
+        department: 'Department',
         system: 'System',
         systemTip: 'POS Setup',
         exit: 'Exit',
@@ -1324,7 +1326,8 @@ export default {
             timecard: 'Allow Modify Employee Time Card',
             giftcard: 'Allow Issue New Gift Card',
             promotion: 'Allow Create New Promotion Rule',
-            payout: 'Allow payout from cash drawer'
+            payout: 'Allow payout from cash drawer',
+            ledger: 'Allow review ledger summary'
         }
     },
     reservation: {

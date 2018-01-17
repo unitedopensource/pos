@@ -260,7 +260,7 @@ export default {
         default: '默认',
         backup: '备份',
         option: '选项',
-        reconc: '轧账',
+        ledger: '轧账',
         allValid: '设全部有效',
         processAnyway: '依然执行'
     },
@@ -317,7 +317,7 @@ export default {
         printerList: '打印机列表',
         couponList: '折扣卷列表',
         taxList: '税种列表',
-        setTitle: '收据抬头',
+        receiptTitle: '收据抬头',
         discount: '设折扣',
         tip: '设小费',
         modify: '修改',
@@ -330,8 +330,9 @@ export default {
         accessPin: '请输入经理的密码',
         address: '地址资料',
         sideOption: '副菜选项',
-        reconciliation: '轧账',
-        table: '桌位'
+        ledger: '轧账',
+        table: '桌位',
+        departments: '部门分类'
     },
     dialog: {
         maintenance: '维护',
@@ -1192,6 +1193,7 @@ export default {
         salesTip: '销售业绩 · 过账记录',
         chart: '图表',
         chartTip: '销售图表 · 趋势',
+        department: '部门划分',
         system: '系统',
         systemTip: '软件设置',
         exit: '退出',
@@ -1298,24 +1300,23 @@ export default {
         },
         access: {
             setting: '后台设定',
-            report: '打印报表',
-            terminal: '查看信用卡记录',
+            report: '报表打印',
+            terminal: '刷卡历史记录',
             history: '历史订单'
         },
         modify: {
             discount: '订单折扣',
             price: '修改物品价格',
-            item: '移除物品',
+            item: '移除已下单的物品',
             order: '修改订单',
             table: '修改座位',
-            driver: '修改订单派送司机',
-            tip: '修改订单小费',
+            driver: '修改订单的派送司机',
             transaction: '修改信用卡交易记录'
         },
         view: {
             summary: '允许查看当前销售总金额',
             invoices: '允许查看所有订单',
-            tables: '允许查看所有座位',
+            tables: '允许查看所有座位订单',
         },
         privilege: {
             employee: '允许管理员工信息',
@@ -1323,7 +1324,8 @@ export default {
             timecard: '允许修改打卡时段',
             giftcard: '允许发行礼物卡',
             promotion: '允许创建促销规则',
-            payout: '允许现金支出'
+            payout: '允许现金支出',
+            ledger: '允许核对销售账目'
         }
     },
     reservation: {
@@ -1340,7 +1342,7 @@ export default {
         reprint: '重新打印',
         cancel: '取消预约',
         remove: '移除',
-        inactive: 'Inactive',
+        inactive: '不活动',
         checkIn: '登记',
         timeline: '时间表',
         list: '列表'

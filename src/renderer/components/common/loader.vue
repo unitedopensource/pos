@@ -1,21 +1,29 @@
 <template>
-    <div class="circularLoader">
-        <div class="spinner">
-            <svg viewBox="25 25 50 50" class="circular">
-            <circle cx="50" cy="50" r="20" fill="none" class="path"></circle>
-            </svg>
-        </div>
+  <div class="circularLoader" v-if="display">
+    <div class="spinner">
+      <svg viewBox="25 25 50 50" class="circular">
+        <circle cx="50" cy="50" r="20" fill="none" class="path"></circle>
+      </svg>
     </div>
+  </div>
 </template>
 
 <script>
-export default {};
+export default {
+  props: {
+    display: {
+      type: Boolean,
+      default: false
+    },
+    tooltip:String
+  }
+};
 </script>
 
 <style scoped>
 .circularLoader {
   position: absolute;
-  z-index: 10000;
+  z-index: 1000;
   background-color: hsla(0, 0%, 100%, 0.9);
   margin: 0;
   top: 0;
@@ -23,6 +31,7 @@ export default {};
   bottom: 0;
   left: 0;
   transition: opacity 0.3s;
+  border-radius: 4px;
 }
 
 .spinner {

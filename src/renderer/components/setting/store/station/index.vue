@@ -24,12 +24,12 @@
 
 <script>
 import { mapActions } from "vuex";
-import range from "../common/range";
-import toggle from "../common/toggle";
-import external from "../common/external";
-import switches from "../common/switches";
-import textList from "../common/textList";
-import textInput from "../common/textInput";
+import range from "../../common/range";
+import toggle from "../../common/toggle";
+import external from "../../common/external";
+import switches from "../../common/switches";
+import textList from "../../common/textList";
+import textInput from "../../common/textInput";
 
 export default {
   components: { range, toggle, textInput, textList, external, switches },

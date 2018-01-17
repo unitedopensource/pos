@@ -33,8 +33,8 @@ export default {
   components: { dialoger, draggable, itemEditor, categoryEditor },
   data() {
     return {
-      categories: this.$store.getters.menu, //JSON.parse(JSON.stringify(this.$store.getters.menu)),
       language: this.$store.getters.language,
+      categories: this.$store.getters.menu,
       isCategorySorted: false,
       isItemSorted: false,
       componentData: null,

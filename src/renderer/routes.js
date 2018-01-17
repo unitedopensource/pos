@@ -110,13 +110,13 @@ export default [{
           name: 'Setting.store.surcharge',
           component: require('./components/setting/store/sub/surcharge')
         }, {
-          path: 'security',
-          name: 'Setting.store.security',
-          component: require('./components/setting/store/security')
-        }, {
           path: 'others',
           name: 'Setting.store.others',
           component: require('./components/setting/store/others')
+        }, {
+          path: 'department',
+          name: 'Setting.store.department',
+          component: require('./components/setting/store/department')
         }]
       }, {
         path: 'station',
@@ -124,27 +124,27 @@ export default [{
         children: [{
           path: '/',
           name: 'Setting.station',
-          component: require('./components/setting/store/station')
+          component: require('./components/setting/store/station/index')
         }, {
           path: 'device',
           name: 'Setting.station.interface',
-          component: require('./components/setting/store/interface')
+          component: require('./components/setting/store/station/interface')
         }, {
           path: 'cashdrawer',
           name: 'Setting.station.cashdrawer',
-          component: require('./components/setting/store/sub/cashdrawer')
+          component: require('./components/setting/store/station/cashdrawer')
         }, {
           path: 'printers',
           name: 'Setting.station.printers',
-          component: require('./components/setting/store/sub/printers')
+          component: require('./components/setting/store/station/printers')
         }, {
           path: 'callid',
           name: 'Setting.station.callid',
-          component: require('./components/setting/store/sub/callid')
+          component: require('./components/setting/store/station/callid')
         }, {
           path: 'poleDisplay',
           name: 'Setting.station.poleDisplay',
-          component: require('./components/setting/store/sub/poleDisplay')
+          component: require('./components/setting/store/station/poleDisplay')
         }]
       }, {
         path: 'promotion',

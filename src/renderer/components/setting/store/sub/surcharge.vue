@@ -54,19 +54,9 @@ export default {
       surcharge: Object.assign({}, this.$store.getters.dinein.surcharge)
     };
   },
-  // created() {
-  //   //patch
-  //   this.surcharge = Object.assign(
-  //     {},
-  //     this.$store.getters.dinein.surcharge
-  //   ) || {
-  //       enable: false,
-  //       rules: []
-  //     };
-  // },
   methods: {
     create() {
-      let rule = {
+      const rule = {
         guest: null,
         fee: null,
         percentage: false,
