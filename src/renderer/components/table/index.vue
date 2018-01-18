@@ -106,29 +106,29 @@ export default {
 
       table.status === 1
         ? this.checkReservation(table)
-          .then(this.checkAccessPin)
-          .then(this.countGuest.bind(null, table))
-          .then(this.checkTableType)
-          .then(this.createTable)
-          .catch(this.createTableFailed)
+            .then(this.checkAccessPin)
+            .then(this.countGuest.bind(null, table))
+            .then(this.checkTableType)
+            .then(this.createTable)
+            .catch(this.createTableFailed)
         : this.checkPermission(table)
-          .then(this.viewTicket)
-          .catch(this.exceptionHandler);
+            .then(this.viewTicket)
+            .catch(this.exceptionHandler);
     },
     checkPermission(table) {
       return new Promise((next, stop) => {
         table.server === this.op.name
           ? next(table)
           : this.$checkPermission("view", "tables")
-            .then(() => next(table))
-            .catch(() => stop("UNABLE_VIEW_OTHER_TABLE"));
+              .then(() => next(table))
+              .catch(() => stop("UNABLE_VIEW_OTHER_TABLE"));
       });
     },
     checkTableType(table) {
       return new Promise((next, stop) => {
         switch (table.type) {
           case "hibachi":
-            this.selectHibachiTable(table.guest)
+            this.selectHibachiTable(table)
               .then(seats => next(Object.assign(table, { seats })))
               .catch(() => stop());
             break;
@@ -193,11 +193,11 @@ export default {
       return new Promise((next, stop) => {
         this.dinein.guestCount
           ? new Promise((resolve, reject) => {
-            this.componentData = { resolve, reject };
-            this.component = "counter";
-          })
-            .then(guest => next(Object.assign(table, { guest })))
-            .catch(() => stop())
+              this.componentData = { resolve, reject };
+              this.component = "counter";
+            })
+              .then(guest => next(Object.assign(table, { guest })))
+              .catch(() => stop())
           : next(Object.assign(table, { guest: 1 }));
       });
     },
@@ -215,19 +215,21 @@ export default {
       invoice
         ? this.setViewOrder(invoice)
         : this.$dialog(prompt)
-          .then(() => {
-            this.$socket.emit("[SYNC] ORDER_LIST");
-            this.$q();
-          })
-          .catch(() => {
-            this.$socket.emit("[TABLE] RESET", { _id: table._id });
-            this.$q();
-          });
+            .then(() => {
+              this.$socket.emit("[SYNC] ORDER_LIST");
+              this.$q();
+            })
+            .catch(() => {
+              this.$socket.emit("[TABLE] RESET", { _id: table._id });
+              this.$q();
+            });
     },
-    selectHibachiTable(guest) {
-      return new Promise((resolve, reject) => {
-        this.componentData = { resolve, reject, guest };
-        this.component = "hibachi";
+    selectHibachiTable(table) {
+      this.$socket.emit("[HIBACHI] SEATS", this.table.contain, seats => {
+        return new Promise((resolve, reject) => {
+          this.componentData = { resolve, reject, seats, guest: table.seat };
+          this.component = "hibachi";
+        });
       });
     },
     selectBarTab() {
@@ -282,9 +284,11 @@ export default {
       prompt && this.$dialog(prompt).then(() => this.$q());
     },
     option(table, index) {
-      (table._id && !table.temporary)
+      table._id && !table.temporary
         ? this.resetTable(table)
-        : table.temporary ? this.collapseTable(table, index) : this.temporaryTable(table, index);
+        : table.temporary
+          ? this.collapseTable(table, index)
+          : this.temporaryTable(table, index);
     },
     resetTable({ server, name, _id }, index) {
       const { role } = this.op;
@@ -316,11 +320,13 @@ export default {
         type: "question",
         title: "dialog.removeTemporaryTable",
         msg: "dialog.removeTemporaryTableConfirm"
-      }
+      };
 
-      this.$dialog(prompt).then(() => {
-        this.$q();
-      }).catch(() => this.$q())
+      this.$dialog(prompt)
+        .then(() => {
+          this.$q();
+        })
+        .catch(() => this.$q());
     },
     temporaryTable(table, index) {
       return;
@@ -357,9 +363,10 @@ export default {
           break;
       }
     },
-    openReservation() { },
-    viewDineInList() { },
+    openReservation() {},
+    viewDineInList() {},
     ...mapActions([
+      "setOp",
       "setApp",
       "resetMenu",
       "setTicket",

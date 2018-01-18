@@ -332,7 +332,8 @@ export default {
         sideOption: '副菜选项',
         ledger: '轧账',
         table: '桌位',
-        departments: '部门分类'
+        departments: '部门分类',
+        hibachiTable:'铁板座位'
     },
     dialog: {
         maintenance: '维护',
@@ -1235,6 +1236,7 @@ export default {
         saveLog: '保存记录',
         timecard: '打卡',
         unifiedBatch: '统一过账',
+        unifiedOrder:'统一分单',
         basic: '基本设置',
         style: '样式设置',
         other: '其它设置',

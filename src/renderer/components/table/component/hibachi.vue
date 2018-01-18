@@ -2,15 +2,14 @@
     <div class="popupMask dark center" @click.stop="init.reject">
         <div class="editor">
             <header>
-                <h5>{{$t('title.create')}}</h5>
-                <h3>{{$t('text.selectHibachiTable')}}</h3>
+                <h5>{{$t('button.select')}}</h5>
+                <h3>{{$t('title.hibachiTable')}}</h3>
             </header>
             <div class="banner"></div>
             <div class="wrap">
                 <div class="layout">
-                    <div class="left"></div>
-                    <div class="middle"></div>
-                    <div class="right"></div>
+                    
+                    
                 </div>
             </div>
             <footer>

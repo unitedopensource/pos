@@ -423,7 +423,8 @@ export default {
         address: 'Address Info',
         sideOption: 'Side Option',
         ledger: 'Sales Ledger',
-        department: 'Department'
+        department: 'Department',
+        hibachiTable: 'Hibachi Table'
     },
     dialog: {
         maintenance: 'Maintenance',
@@ -1242,6 +1243,7 @@ export default {
         saveLog: 'Save Log',
         timecard: 'Timecard',
         unifiedBatch: 'Unified Batch',
+        unifiedOrder: 'Unified Order',
         basic: 'Basic',
         style: 'Style',
         other: 'Other',

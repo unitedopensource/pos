@@ -8,6 +8,7 @@ export default {
     this.renderChart(this.chartData, {
       responsive: true,
       maintainAspectRatio: false,
+      height:250,
       // legend: {
       //   display: false
       // },

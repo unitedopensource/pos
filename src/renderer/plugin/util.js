@@ -352,16 +352,31 @@ export default {
             return Math.random().toString(36).replace(/[^a-zA-Z]+/g, '').substr(0, length)
         }
 
-        // window.flatten = (array, result = []) => {
-        //     for (let i = 0; i < array.length; i++) {
-        //         let value = array[i];
 
-        //         Array.isArray(value)
-        //             ? flatten(value, result)
-        //             : result.push(value);
-        //     }
-        //     return result;
-        // }
+        window.util = {
+            chunk(collection, size = 2) {
+                let result = [];
+                const length = Math.ceil(collection.length / size);
+
+                for (let x = 0; x < length; x++) {
+                    const start = x * size;
+                    const end = start + size;
+                    result.push(collection.slice(start, end));
+                }
+                return result;
+            },
+            flatten(array, result = []) {
+                const length = array.length;
+                for (let i = 0; i < length; i++) {
+                    let value = array[i];
+
+                    Array.isArray(value)
+                        ? util.flatten(value, result)
+                        : result.push(value);
+                }
+                return result;
+            }
+        }
 
         window.clone = (target) => Object.assign(Object.create(Object.getPrototypeOf(target)), target);
         window.toFixed = (number, fractionSize) => +(Math.round(+(number.toString() + 'e' + fractionSize)).toString() + 'e' + -fractionSize);
