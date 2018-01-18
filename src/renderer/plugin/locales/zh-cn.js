@@ -1015,7 +1015,6 @@ export default {
         content: '内容',
         coupon: '优惠',
         tipPercentage: '小费百分比',
-        autoTemplate: '自动开启模板',
         openFood: '临时物品',
         alphabetical: '按字母排列',
         maxItem: '选择上限',
@@ -1440,7 +1439,6 @@ export default {
         heightTop: '高脚椅'
     },
     tip: {
-        autoTemplate: '自动弹出模板选择页面',
         insertTemplateItem: '插入该模版选择的物品',
         autoJumpNext: '满足条件时自动转跳到下一页',
         alphabetical: '按字母排序菜单 (中文则按拼音排序)',
@@ -1483,6 +1481,7 @@ export default {
         replaceItemName: '替换物品名字',
         noReplaceItemName: '正常打印',
         unifiedBatch: '一次性处理所有刷卡机过账信息',
+        unifiedOrder: '统一处理分单内的子订单',
         restrictPermission: '当权限不足时直接拒绝',
         temporaryPermission: '允许输入密码来临时提升权限',
         itemSplit: '您想将锁定的物品平摊成几份?',

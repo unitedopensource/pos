@@ -452,11 +452,8 @@ export default {
         dom && dom.classList.add("picked");
       });
     },
-    "order.content": {
-      handler(items) {
-        this.$calculatePayment(items);
-      },
-      deep: true
+    "order.content"(items) {
+      this.$calculatePayment(items);
     }
   }
 };

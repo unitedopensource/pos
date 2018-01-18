@@ -1023,7 +1023,6 @@ export default {
         content: 'Content',
         coupon: 'Coupon',
         tipPercentage: 'Tip Percentage',
-        autoTemplate: 'Auto Template',
         openFood: 'Open Food',
         alphabetical: 'Alphabetical',
         maxItem: 'Max Item',
@@ -1059,6 +1058,9 @@ export default {
         totalAddress: 'Total Address:',
         dob: 'Date of Birth',
         extension: 'Extension',
+        prompt: 'Prompt',
+        always: 'Always',
+        never: 'Never',
         timezone: 'Time Zone',
         alias: 'Alias',
         username: 'Username',
@@ -1442,7 +1444,6 @@ export default {
         heightTop: 'Height Top'
     },
     tip: {
-        autoTemplate: 'Auto popup template page',
         insertTemplateItem: 'Insert selected items on this template',
         autoJumpNext: 'Auto jump to next page when condition met',
         alphabetical: 'Sort menu item by alphabet',
@@ -1485,6 +1486,7 @@ export default {
         replaceItemName: 'Will replace item name',
         noReplaceItemName: 'Print item name',
         unifiedBatch: 'Batch all terminal at once',
+        unifiedOrder: 'Handle split order at once',
         restrictPermission: 'Directly deny access',
         temporaryPermission: 'Temporary access via password',
         itemSplit: 'How many quantity you want to split?',
