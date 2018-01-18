@@ -10,11 +10,8 @@
             <div class="wrap">
                 <inputer title="text.primary" v-model.trim="department.usEN" :autoFocus="true"></inputer>
                 <inputer title="text.secondary" v-model.trim="department.zhCN"></inputer>
-                <div class="printers">
-                    <label>{{$t('text.category')}}</label>
-                    <div class="inner">
-                        <checkbox v-model="department.contain" v-for="(category,index) in categories" :title="category" :key="index" :val="category" :multiple="true"></checkbox>
-                    </div>
+                <div class="checkboxes">
+                    <checkbox v-model="department.contain" v-for="(category,index) in categories" :title="category" :key="index" :val="category" :multiple="true"></checkbox>
                 </div>
             </div>
             <footer>
@@ -32,19 +29,19 @@ import inputer from "../../common/inputer";
 import checkbox from "../../common/checkbox";
 
 export default {
-  props: ["init"],
-  components: { inputer, checkbox },
-  data() {
-    return {
-      department: clone(this.init.department),
-      categories: this.init.categories.sort()
-    };
-  },
-  methods: {
-    confirm() {
-      this.init.resolve(this.department);
+    props: ["init"],
+    components: { inputer, checkbox },
+    data() {
+        return {
+            department: clone(this.init.department),
+            categories: this.init.categories.sort()
+        };
+    },
+    methods: {
+        confirm() {
+            this.init.resolve(this.department);
+        }
     }
-  }
 };
 </script>
 

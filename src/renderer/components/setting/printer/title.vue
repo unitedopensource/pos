@@ -5,7 +5,7 @@
         <i class="fa fa-chevron-left"></i>
       </router-link>
       <div class="title">
-        <h3>{{$t('title.setTitle')}}</h3>
+        <h3>{{$t('title.receiptTitle')}}</h3>
       </div>
       <nav>
         <span @click="reset">{{$t('button.default')}}</span>

@@ -1412,7 +1412,13 @@ export default {
         todo: 'Todo',
         ticketNumber: 'Ticket Number',
         tableName: 'Table Name',
-        tradeMark: 'Print Trade Mark'
+        tradeMark: 'Print Trade Mark',
+        layout: 'Layout',
+        type: {
+            regular: 'Regular Layout',
+            label: 'Label Layout',
+            hibachi: 'Hibachi Layout'
+        }
     },
     context: {
         sync: 'Sync',
@@ -1464,7 +1470,7 @@ export default {
         tax: 'Store tax setting',
         tipSuggestion: 'Print tip suggestion on pre-payment ticket',
         terminal: 'SEMI-Integrated terminal setup',
-        poleDisplay: 'Setup pole display default text',
+        poleDisplay: 'Setup display text',
         interface: 'Station interface setup',
         autoLock: 'Auto lock setup',
         couponList: 'List all available coupon',

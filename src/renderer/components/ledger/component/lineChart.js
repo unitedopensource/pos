@@ -6,11 +6,14 @@ export default {
   mixins: [reactiveProp],
   mounted() {
     this.renderChart(this.chartData, {
-      responsive: false,
+      responsive: true,
       maintainAspectRatio: false,
       // legend: {
       //   display: false
       // },
+      tooltips: {
+        yAlign: 'bottom'
+      },
       scales: {
         yAxes: [{
           ticks: {

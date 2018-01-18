@@ -40,7 +40,8 @@ export default {
     this.fetchData();
   },
   methods: {
-    initialChartData({ labels, data }) {
+    initialChartData(result) {
+      const { labels, data } = result;
       this.collection = {
         labels,
         datasets: [
@@ -131,7 +132,7 @@ export default {
     analyzeData(result) {
       const { labels, data } = result;
 
-      if(data.length === 0){
+      if (data.length === 0) {
         this.reports = [];
         return;
       }

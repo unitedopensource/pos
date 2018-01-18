@@ -7,7 +7,7 @@
             </header>
             <div class="wrap">
                 <inputer v-model.trim="name" title="text.alias" :autoFocus="true" @keydown.enter.native="confirm"></inputer>
-                <switches title="text.labelPrinter" v-model="label"></switches>
+                <selector title="text.type" v-model="label" :opts="printerOpts"></selector>
             </div>
             <footer>
                 <div class="opt">
@@ -22,29 +22,35 @@
 <script>
 import inputer from "../../common/inputer";
 import checkbox from "../../common/checkbox";
-import switches from "../../common/switches";
-export default {
-  props: ["init"],
-  components: { inputer, switches, checkbox },
-  data() {
-    return {
-      name: "",
-      label: false,
-      assign: true
-    };
-  },
-  methods: {
-    confirm() {
-      if (!this.name) return;
-      if (this.init.printers.includes(this.name)) return;
-      this.assign && this.$socket.emit("[PRINTER] ASSIGN",this.name);
+import selector from "../../common/selector";
 
-      this.init.resolve({
-        name: this.name,
-        label: this.label,
-        assign: this.assign
-      });
+export default {
+    props: ["init"],
+    components: { inputer, selector, checkbox },
+    data() {
+        return {
+            name: "",
+            type: false,
+            assign: true,
+            printerOpts: ["regular", "label", "hibachi"].map(type => ({
+                label: this.$t('print.type.' + type),
+                tooltip: "",
+                value: type
+            }))
+        };
+    },
+    methods: {
+        confirm() {
+            if (!this.name) return;
+            if (this.init.printers.includes(this.name)) return;
+            this.assign && this.$socket.emit("[PRINTER] ASSIGN", this.name);
+
+            this.init.resolve({
+                name: this.name,
+                type: this.label,
+                assign: this.assign
+            });
+        }
     }
-  }
 };
 </script>

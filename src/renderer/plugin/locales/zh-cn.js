@@ -1410,7 +1410,13 @@ export default {
         todo: '列表模式',
         ticketNumber: '订单号码',
         tableName: '座位名称',
-        tradeMark: '打印商标'
+        tradeMark: '打印商标',
+        layout: '打印布局',
+        type: {
+            regular: '常规格式',
+            label: '贴纸格式',
+            hibachi: '铁板格式'
+        }
     },
     context: {
         sync: '同步',
