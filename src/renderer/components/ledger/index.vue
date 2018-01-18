@@ -21,46 +21,57 @@
                     </div>
                 </nav>
             </header>
-            <template v-if="tab === 'overview'">
-                <div class="wrap">
+            <transition name="slide" mode="out-in">
+                <template v-if="tab === 'overview'">
+                    <div class="wrap" :key="0">
+                        <div class="statistics">
+                            <div class="total"></div>
+                            <div class="chart">
+                                <line-chart :chart-data="collection"></line-chart>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+                <template v-else-if="tab === 'department'">
+                    <div class="wrap" :key="1">
+                        <table class="department">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>{{$t('type.WALK_IN')}}</th>
+                                    <th>{{$t('type.PICK_UP')}}</th>
+                                    <th>{{$t('type.DELIVERY')}}</th>
+                                    <th>{{$t('type.DINE_IN')}}</th>
+                                    <th>{{$t('type.HIBACHI')}}</th>
+                                    <th>{{$t('text.subtotal')}}</th>
+                                    <th>{{$t('text.tax')}}</th>
+                                    <th>{{$t('text.total')}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(department,index) in departments" :key="index">
+                                    <td>{{department[language]}}</td>
+                                    <td>{{department.WALK_IN.subtotal | decimal}}</td>
+                                    <td>{{department.PICK_UP.subtotal | decimal}}</td>
+                                    <td>{{department.DELIVERY.subtotal | decimal}}</td>
+                                    <td>{{department.DINE_IN.subtotal | decimal}}</td>
+                                    <td>{{department.HIBACHI.subtotal | decimal}}</td>
+                                    <td>{{department.subtotal | decimal}}</td>
+                                    <td>{{department.tax | decimal}}</td>
+                                    <td>{{department.total | decimal}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </template>
+                <template v-else>
+                    <div class="wrap" :key="2">
 
-                </div>
-            </template>
-            <template v-else-if="tab === 'department'">
-                <div class="wrap">
-                    <table class="department">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>{{$t('type.WALK_IN')}}</th>
-                                <th>{{$t('type.PICK_UP')}}</th>
-                                <th>{{$t('type.DELIVERY')}}</th>
-                                <th>{{$t('type.DINE_IN')}}</th>
-                                <th>{{$t('type.HIBACHI')}}</th>
-                                <th>{{$t('text.subtotal')}}</th>
-                                <th>{{$t('text.tax')}}</th>
-                                <th>{{$t('text.total')}}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="(department,index) in departments" :key="index">
-                                <td>{{department[language]}}</td>
-                                <td>{{department.WALK_IN.subtotal | decimal}}</td>
-                                <td>{{department.PICK_UP.subtotal | decimal}}</td>
-                                <td>{{department.DELIVERY.subtotal | decimal}}</td>
-                                <td>{{department.DINE_IN.subtotal | decimal}}</td>
-                                <td>{{department.HIBACHI.subtotal | decimal}}</td>
-                                <td>{{department.subtotal | decimal}}</td>
-                                <td>{{department.tax | decimal}}</td>
-                                <td>{{department.total | decimal}}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </template>
-
+                    </div>
+                </template>
+            </transition>
             <footer>
-                <button class="btn" @click="confirm">{{$t('button.done')}}</button>
+                <button class="btn" @click="init.resolve">{{$t('button.done')}}</button>
             </footer>
             <loader :display="loading"></loader>
         </div>
@@ -69,10 +80,11 @@
 
 <script>
 import loader from "../common/loader";
+import lineChart from "./component/lineChart";
 
 export default {
   props: ["init"],
-  components: { loader },
+  components: { loader, lineChart },
   data() {
     return {
       language: this.$store.getters.language,
@@ -89,7 +101,7 @@ export default {
           .add(1, "days")
       },
       summary: {},
-      hourlySales: [],
+      collection: [],
       loading: true,
       tab: "overview"
     };
@@ -167,10 +179,9 @@ export default {
 
           return department;
         });
-        console.log(this.$store.getters.config);
 
         this.departments.push({
-          zhCN: this.$t("text.other"),
+          zhCN: this.$t("type.other"),
           usEN: "Other",
           contain: [],
 
@@ -318,6 +329,32 @@ export default {
 
         Object.assign(department, { subtotal, tax, total });
       });
+
+      this.departments.push({
+        zhCN: this.$t("report.overallTotal"),
+        usEN: "Overall",
+        WALK_IN: {
+          subtotal: this.departments.reduce((a, c) => a + c.WALK_IN.subtotal, 0)
+        },
+        PICK_UP: {
+          subtotal: this.departments.reduce((a, c) => a + c.PICK_UP.subtotal, 0)
+        },
+        DELIVERY: {
+          subtotal: this.departments.reduce(
+            (a, c) => a + c.DELIVERY.subtotal,
+            0
+          )
+        },
+        DINE_IN: {
+          subtotal: this.departments.reduce((a, c) => a + c.DINE_IN.subtotal, 0)
+        },
+        HIBACHI: {
+          subtotal: this.departments.reduce((a, c) => a + c.HIBACHI.subtotal, 0)
+        },
+        subtotal: this.departments.reduce((a, c) => a + c.subtotal, 0),
+        tax: this.departments.reduce((a, c) => a + c.tax, 0),
+        total: this.departments.reduce((a, c) => a + c.total, 0)
+      });
     },
     hourlySalesAnalysis(invoices) {
       let hours = {};
@@ -326,6 +363,7 @@ export default {
         if (invoice.status === 1) {
           const hour = new Date(invoice.time).getHours();
           const { due } = invoice.payment;
+
           if (hours.hasOwnProperty(hour)) {
             hours[hour].value += due;
             hours[hour].count++;
@@ -338,16 +376,29 @@ export default {
         }
       });
 
-      let report = [];
+      let data = [];
+      const labels = Object.keys(hours).map(
+        hour => `${("0" + hour).slice(-2)}:00`
+      );
 
-      Object.keys(hours).forEach(hour => {
-        report.push({
-          text: `${hour}:00 (${hours[hour].count})`,
-          value: hours[hour].value.toFixed(2)
-        });
-      });
+      Object.keys(hours).forEach(hour => data.push(hours[hour].value));
 
-      this.hourlySales = report;
+      this.collection = {
+        labels,
+        datasets: [
+          {
+            backgroundColor: "rgba(255, 99, 132, 0.1)",
+            borderColor: "rgb(255, 99, 132)",
+            data,
+            fill: "start",
+            label: this.$t("report.hourlyReport"),
+            cubicInterpolationMode: "monotone",
+            borderWidth: 4,
+            pointHoverRadius: 10,
+            pointStyle: "none"
+          }
+        ]
+      };
     },
     confirm() {}
   }
@@ -357,6 +408,7 @@ export default {
 <style scoped>
 .editor {
   width: 900px;
+  overflow: hidden;
   position: relative;
 }
 
@@ -366,7 +418,7 @@ header {
 }
 .wrap {
   min-height: 500px;
-  background: #f5f5f5;
+  /* background: #f5f5f5; */
 }
 
 .department {
@@ -384,6 +436,5 @@ tr th {
   border-bottom: 1px solid #eceff1;
   padding: 5px 0;
   color: rgba(0, 0, 0, 0.75);
-  background: linear-gradient(#fafafa, #eeeeee);
 }
 </style>

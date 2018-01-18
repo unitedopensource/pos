@@ -40,9 +40,7 @@ export default {
     this.fetchData();
   },
   methods: {
-    initialChartData(result) {
-      const { labels, data } = result;
-
+    initialChartData({ labels, data }) {
       this.collection = {
         labels,
         datasets: [
