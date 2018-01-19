@@ -279,7 +279,8 @@ export default {
         this.component = "barTab";
       });
     },
-    createTable({ name, _id, guest }) {
+    createTable(table) {
+      const { name, _id, guest } = table;
       const session = ObjectId();
 
       this.resetMenu();

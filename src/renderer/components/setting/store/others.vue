@@ -24,7 +24,7 @@
     <toggle title="text.menuID" v-model="display.menuID" @update="updateMenuID"></toggle>
     <toggle title="text.favoriteItem" v-model="display.favorite" @update="updateFavorite"></toggle>
     <toggle title="text.alphabetical" tooltip="tip.alphabetical" v-model="display.alphabetical" @update="updateAlphabetical"></toggle>
-    <toggle title="text.unifiedOrder" tooltip="tip.unifiedOrder" v-model="store.unifiedOrder" @update="updateSplitOrder"></toggle>
+    <toggle title="setting.unifiedOrder" tooltip="tip.unifiedOrder" v-model="store.unifiedOrder" @update="updateSplitOrder"></toggle>
     <toggle title="setting.unifiedBatch" tooltip="tip.unifiedBatch" v-model="store.unifiedBatch" @update="updateBatch"></toggle>
   </div>
 </template>
