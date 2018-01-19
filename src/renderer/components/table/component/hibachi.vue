@@ -7,7 +7,7 @@
       </header>
       <div class="banner"></div>
       <div class="wrap">
-        <div class="layout">
+        <div class="hibachi">
           <div class="left">
             <div class="seat" v-for="(seat,index) in left" @click="select(seat)" :data-id="seat._id">
               <span>{{seat.name}}</span>
@@ -71,7 +71,7 @@ export default {
   width: 800px;
 }
 
-.layout {
+.hibachi {
   display: grid;
   grid-template-columns: 1fr 100px 1fr;
   grid-template-rows: 1fr;

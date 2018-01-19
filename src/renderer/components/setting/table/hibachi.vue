@@ -45,9 +45,43 @@ export default {
     };
   },
   methods: {
-    create() {},
+    create() {
+      new Promise((resolve, reject) => {
+        this.componentData = {
+          resolve,
+          reject,
+          edit: false,
+          group: "",
+          tables: []
+        };
+        this.component = "editor";
+      }).then(_tables => {
+
+          this.$q();
+      }).catch(()=>this.$q());
+    },
     edit(table) {
-      console.log(table);
+      this.$socket.emit("[HIBACHI] TABLES", table, tables => {
+        new Promise((resolve, reject) => {
+          this.componentData = {
+            resolve,
+            reject,
+            tables,
+            edit: true,
+            group: table
+          };
+          this.component = "editor";
+        }).then(_tables => {
+
+
+            this.$q();
+        }).catch((del)=>{
+            if(del){
+
+            }
+            this.$q();
+        });
+      });
     },
     setPage(num) {
       this.page = num;
