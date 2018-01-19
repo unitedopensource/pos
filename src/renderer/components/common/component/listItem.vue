@@ -6,12 +6,12 @@
         <span class="name">{{item[language]}}</span>
         <span class="side">{{item.side[language]}}</span>
       </div>
-      <span class="price" @click.stop>{{item.total | decimal}}</span>
+      <span class="price">{{item.total | decimal}}</span>
     </div>
     <div class="sub" v-for="(set,index) in item.choiceSet" :key="index" @click.stop="adjustChoiceSet(set,$event)" :data-key="set.key">
       <span class="qty" :class="{hide:set.qty === 1}">{{set.qty}}</span>
       <span class="item">{{set[language]}}</span>
-      <span class="price" :class="{hide:parseFloat(set.price) === 0}" @click.stop>({{set.price | decimal}})</span>
+      <span class="price" :class="{hide:parseFloat(set.price) === 0}">({{set.price | decimal}})</span>
     </div>
   </li>
   <li class="item todo" v-else>
