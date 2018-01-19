@@ -6,16 +6,15 @@
         <h3>{{$t('title.reload')}}</h3>
       </header>
       <div class="banner"></div>
-      <div class="header">
+      <div class="display">
+        <input type="text" v-model="reload">
+        <span class="unit" v-if="payment === 'CASH'" @click="payment = 'CREDIT'">CASH</span>
+        <span class="unit" v-else @click="payment = 'CASH'">CREDIT</span>
+
         <span class="due">
           <span class="symbol">$</span>
           <span class="balance">{{balance}}</span>
         </span>
-      </div>
-      <div class="display">
-        <input type="text" v-model="reload">
-        <span class="unit" v-if="payment === 'CASH'">CASH</span>
-        <span class="unit" v-else>CREDIT</span>
       </div>
       <num-pad v-model="reload" type="number" @enter="enter"></num-pad>
     </div>
@@ -88,12 +87,8 @@ export default {
           title: "dialog.giftCardReload",
           msg: ["dialog.confirmEntryValue", this.reload]
         })
-          .then(() => {
-            resolve();
-          })
-          .catch(() => {
-            this.$q();
-          });
+          .then(() => resolve())
+          .catch(() => this.$q());
       });
     },
     reloadFailed(error) {
@@ -210,7 +205,7 @@ export default {
         });
     },
     activation() {
-      let activation = {
+      const activation = {
         number: this.init.number,
         date: today(),
         time: +new Date(),
@@ -225,7 +220,7 @@ export default {
       });
     },
     reloadBalance() {
-      let reload = {
+      const reload = {
         date: today(),
         time: +new Date(),
         type: "Reload",
@@ -270,6 +265,11 @@ export default {
   text-align: left;
 }
 .due {
-  margin-left: 20px;
+  position: absolute;
+  left: 110px;
+  font-size: 2em;
+  font-weight: bold;
+  font-family: "Agency FB";
+  color: #9e9e9e;
 }
 </style>

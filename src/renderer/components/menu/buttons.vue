@@ -1,5 +1,5 @@
 <template>
-  <div class="function" v-if="layout ==='DINE_IN'">
+  <div class="function" v-if="layout ==='DINE_IN' || layout === 'HIBACHI'">
     <div class="top">
       <div class="btn" @click="less">
         <i class="fa fa-minus-square"></i>
@@ -15,7 +15,7 @@
       </div>
     </div>
     <div class="bottomLeft">
-      <div class="btn" @click="switchGuest" v-if="dinein.seatOrder">
+      <div class="btn" @click="switchGuest" v-if="dinein.seatOrder || order.type === 'HIBACHI'">
         <i class="fa fa-users"></i>
         <span class="text">{{$t('button.switch')}}</span>
       </div>

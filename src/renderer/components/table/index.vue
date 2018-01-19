@@ -129,7 +129,29 @@ export default {
         switch (table.type) {
           case "hibachi":
             this.selectHibachiTable(table)
-              .then(seats => next(Object.assign(table, { seats })))
+              .then(seats => {
+                const session = ObjectId();
+                seats.forEach(seat =>
+                  Object.assign(seat, {
+                    session,
+                    server: this.op.name,
+                    time: +new Date()
+                  })
+                );
+
+                this.setTicket({ type: "HIBACHI" });
+                this.setApp({ newTicket: true });
+                this.setOrder({
+                  seats,
+                  session,
+                  type: "HIBACHI",
+                  server: this.op.name
+                });
+                this.resetMenu();
+
+                this.$router.push({ path: "/main/menu" });
+                stop();
+              })
               .catch(() => stop());
             break;
           case "bar":
@@ -225,12 +247,31 @@ export default {
             });
     },
     selectHibachiTable(table) {
-      this.$socket.emit("[HIBACHI] SEATS", this.table.contain, seats => {
-        return new Promise((resolve, reject) => {
-          this.componentData = { resolve, reject, seats, guest: table.seat };
+      return new Promise((resolve, reject) => {
+        this.$socket.emit("[HIBACHI] SEATS", table.contain, data => {
+          const seats = this.initialHibachiTable(data);
+          this.componentData = { resolve, reject, table, seats };
           this.component = "hibachi";
         });
       });
+    },
+    initialHibachiTable(data) {
+      let layout = [];
+
+      data.forEach(group => {
+        let seats = Array(11)
+          .fill()
+          .map((seat, index) => ({
+            group: "",
+            grid: index,
+            name: "",
+            session: ""
+          }));
+        group.forEach(table => Object.assign(seats[table.grid], table));
+        layout.push(seats);
+      });
+
+      return layout;
     },
     selectBarTab() {
       return new Promise((resolve, reject) => {
@@ -238,10 +279,19 @@ export default {
         this.component = "barTab";
       });
     },
-    createTable(table) {
+    createTable({ name, _id, guest }) {
+      const session = ObjectId();
+
+      this.resetMenu();
       this.setTicket({ type: "DINE_IN" });
       this.setApp({ newTicket: true });
-      this.resetMenu();
+      this.setOrder({
+        guest,
+        session,
+        table: name,
+        tableID: _id,
+        type: "DINE_IN"
+      });
 
       this.setCurrentTable(
         Object.assign(table, {
@@ -368,6 +418,7 @@ export default {
     ...mapActions([
       "setOp",
       "setApp",
+      "setOrder",
       "resetMenu",
       "setTicket",
       "setViewOrder",

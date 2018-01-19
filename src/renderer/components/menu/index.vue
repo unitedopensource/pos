@@ -19,7 +19,7 @@
       <div v-for="(side,index) in sides" @click="setOption(side,index)" :key="index">{{side[language]}}</div>
     </section>
     <section class="cart">
-      <order-list layout="order" :sort="sort"></order-list>
+      <order-list layout="order" :seat="seat"></order-list>
       <query-bar :query="buffer" :items="queriedItems"></query-bar>
       <buttons :layout="ticket.type" @open="open"></buttons>
     </section>
@@ -90,7 +90,7 @@ export default {
       buffer: "",
       itemPage: 0,
       items: [],
-      sort: 0
+      seat: 0
     };
   },
   created() {
@@ -117,8 +117,6 @@ export default {
       this.setSides(this.fillOption([]));
 
       if (this.app.newTicket) {
-        this.ticket.type === "DINE_IN" && this.initialDineInTicket();
-
         !this.order.hasOwnProperty("source") &&
           Object.assign(this.order, { source: "POS" });
 
@@ -137,16 +135,6 @@ export default {
       }
 
       console.timeEnd("Preformance");
-    },
-    initialDineInTicket() {
-      if (this.dinein.seatOrder) this.sort = 1;
-      this.setOrder({
-        table: this.currentTable.name,
-        tableID: this.currentTable._id,
-        guest: this.currentTable.guest,
-        session: this.currentTable.session,
-        type: this.ticket.type
-      });
     },
     entry(e) {
       const disable = document.querySelector("div.popupMask");
@@ -242,7 +230,7 @@ export default {
       toggleClass(".category .active", "active");
       document
         .querySelectorAll("section.category div")
-      [index].classList.add("active");
+        [index].classList.add("active");
 
       this.itemPage = 0;
       this.saveItems = null;
@@ -417,9 +405,9 @@ export default {
 
       const itemCount = Array.isArray(this.item.choiceSet)
         ? this.item.choiceSet
-          .filter(i => i.subItem)
-          .map(i => i.qty)
-          .reduce((a, b) => a + b, 0)
+            .filter(i => i.subItem)
+            .map(i => i.qty)
+            .reduce((a, b) => a + b, 0)
         : 0;
 
       if (subItem && this.item.hasOwnProperty("rules")) {

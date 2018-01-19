@@ -28,7 +28,12 @@
         </template>
       </div>
     </header>
-    <div class="order" @click.self="resetHighlight" v-if="layout === 'order'">
+    <div class="order" v-if="order.type === 'HIBACHI'">
+      <v-touch class="inner" :style="scroll" @panup="move" @pandown="move" @panstart="panStart" @panend="panEnd">
+        <group-item :items="order.content" :seat="seat"></group-item>
+      </v-touch>
+    </div>
+    <div class="order" @click.self="resetHighlight" v-else-if="layout === 'order'">
       <v-touch class="inner" :style="scroll" @panup="move" @pandown="move" @panstart="panStart" @panend="panEnd" tag="ul">
         <list-item v-for="(item,index) in order.content" :data-category="item.category" :key="index" :item="item" :checkbox="todo"></list-item>
       </v-touch>
@@ -43,7 +48,7 @@
         <button class="fn fa fa-credit-card-alt" @click="openVault" :disabled="!customer._id"></button>
         <button class="fn" @click="separator" :disabled="$route.name !== 'Menu'">-----</button>
         <button class="fn fa fa-print" @click="directPrint" v-if="$route.name !=='Menu'"></button>
-        <button class="fn fa fa-check-square-o" v-else @click="toggleTodoList" :disabled="app.mode ==='edit'"></button>
+        <button class="fn fa fa-check-square-o" v-else @click="toggleTodoList" :disabled="app.mode ==='edit' || order.type === 'HIBACHI'"></button>
         <button class="fn fa fa-keyboard-o" @click="openKeyboard" :disabled="$route.name !== 'Menu'"></button>
       </div>
       <div class="settle" @click="openConfig">
@@ -99,14 +104,15 @@
 <script>
 import { mapGetters, mapActions } from "vuex";
 import creditVault from "./component/creditVault";
-import entry from "../menu/component/entry";
+import groupItem from "./component/groupItem";
 import listItem from "./component/listItem";
+import entry from "../menu/component/entry";
 import dialoger from "../common/dialoger";
 import config from "./component/config";
 
 export default {
-  components: { config, dialoger, listItem, entry, creditVault },
-  props: ["layout", "group", "display", "sort"],
+  components: { config, dialoger, listItem, groupItem, entry, creditVault },
+  props: ["layout", "group", "display", "seat"],
   data() {
     return {
       payment: {
@@ -133,8 +139,8 @@ export default {
     };
   },
   mounted() {
-    (this.$route.name === "Table" && this.order.content.length > 0)
-      ? this.payment = this.order.payment
+    this.$route.name === "Table" && this.order.content.length > 0
+      ? (this.payment = this.order.payment)
       : this.calculator(this.order.content);
   },
   methods: {
@@ -156,7 +162,13 @@ export default {
       const { menuID } = this.config.display;
       const { seatOrder } = this.dinein;
 
-      this.$p("config", { taxFree, deliveryFree, gratuityFree, menuID, seatOrder });
+      this.$p("config", {
+        taxFree,
+        deliveryFree,
+        gratuityFree,
+        menuID,
+        seatOrder
+      });
     },
     addToSpooler(item) {
       if (item.print) return;
@@ -238,7 +250,7 @@ export default {
       setTimeout(() => {
         const dom = document.querySelector("div.order");
         dom && dom.classList.remove("block");
-      }, 150)
+      }, 150);
     },
     separator() {
       if (!this.item) return;
@@ -265,10 +277,8 @@ export default {
       this.calculator(this.order.content);
     },
     openVault() {
-      this.$socket.emit(
-        "[CUSTOMER] GET_CREDIT_CARD",
-        this.customer._id,
-        opts => this.$p("creditVault", { opts })
+      this.$socket.emit("[CUSTOMER] GET_CREDIT_CARD", this.customer._id, opts =>
+        this.$p("creditVault", { opts })
       );
     },
     toggleTodoList() {
@@ -280,8 +290,8 @@ export default {
       if (items.length === 0) {
         let delivery =
           this.ticket.type === "DELIVERY" &&
-            this.store.delivery &&
-            !this.order.deliveryFree
+          this.store.delivery &&
+          !this.order.deliveryFree
             ? parseFloat(this.store.deliveryCharge)
             : 0;
 
@@ -304,7 +314,14 @@ export default {
         return;
       }
 
-      const { type, guest, coupons, taxFree = false, deliveryFree = false, gratuityFree = false, } = this.order;
+      const {
+        type,
+        guest,
+        coupons,
+        taxFree = false,
+        deliveryFree = false,
+        gratuityFree = false
+      } = this.order;
       const { enable, rules } = this.dinein.surcharge;
 
       let delivery =
@@ -327,16 +344,19 @@ export default {
         let amount = toFixed(single * qty, 2);
 
         item.choiceSet.forEach(set => {
-          const p = parseFloat(set.single);
-          const s = set.qty || 1;
-          const t = toFixed(p * s, 2);
-          amount = toFixed(amount + t, 2);
+          const _price = parseFloat(set.single);
+
+          if (_price > 0) {
+            const _qty = set.qty || 1;
+            const _total = toFixed(_qty * _price, 2);
+            amount = toFixed(amount + _total, 2);
+          }
         });
 
         subtotal = toFixed(subtotal + amount, 2);
 
         if (!taxFree && taxClass.apply[type])
-          tax += toFixed(taxClass.rate / 100 * amount,2);
+          tax += taxClass.rate / 100 * amount;
       });
 
       if (this.tax.deliveryTax) {
@@ -358,16 +378,18 @@ export default {
          * Discount:  2.00
          * Total:     9.00
          * ------------------------------------------------------------------
-        **/
-        tax += toFixed(delivery * taxRate / 100, 2);
+         **/
+        tax += delivery * taxRate / 100;
       }
 
       if (type === "DINE_IN" && !gratuityFree && enable) {
         //find rule
         try {
-          const { fee, percentage } = rules.sort((a, b) => a.guest < b.guest).find(r => guest >= r.guest);
+          const { fee, percentage } = rules
+            .sort((a, b) => a.guest < b.guest)
+            .find(r => guest >= r.guest);
           gratuity = percentage ? toFixed(subtotal * fee / 100, 2) : fee;
-        } catch (e) { }
+        } catch (e) {}
       }
 
       gratuity = toFixed(gratuity, 2);
@@ -425,19 +447,20 @@ export default {
           rounding = rounding === 0.05 ? 0 : rounding;
           break;
         case "roundDown":
-          rounding = -toFixed(_total % 5 / 100, 2);
+          rounding = -toFixed((_total % 5) / 100, 2);
           break;
         case "auto":
           if (_total % 5 < 3) {
-            rounding = _total % 5 === 0
-              ? 0
-              : -toFixed((_total - (Math.floor(_total / 5) * 5)) / 100, 2)
+            rounding =
+              _total % 5 === 0
+                ? 0
+                : -toFixed((_total - Math.floor(_total / 5) * 5) / 100, 2);
           } else {
             rounding = toFixed((Math.ceil(_total / 5) * 5 - _total) / 100, 2);
           }
           break;
         default:
-          rounding = 0
+          rounding = 0;
       }
 
       const balance = due + gratuity + rounding;
@@ -506,7 +529,7 @@ export default {
         const { height } = dom.getBoundingClientRect();
 
         height > 329 && dom.classList.add("scrollable");
-        
+
         if (this.todo) return;
         if (target && height > 329) {
           this.offset -= target.getBoundingClientRect().height;

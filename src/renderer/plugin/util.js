@@ -174,16 +174,19 @@ export default {
                 let amount = toFixed(single * qty, 2);
 
                 item.choiceSet.forEach(set => {
-                    const p = parseFloat(set.single);
-                    const s = set.qty || 1;
-                    const t = toFixed(p * s, 2);
-                    amount = toFixed(amount + t, 2);
+                    const _price = parseFloat(set.single);
+
+                    if (_price > 0) {
+                        const _qty = set.qty || 1;
+                        const _total = _qty * _price;
+                        amount = toFixed(amount + _total, 2);
+                    }
                 });
 
                 subtotal = toFixed(subtotal + amount, 2);
 
                 if (!taxFree && taxClass.apply[type])
-                    tax += toFixed(taxClass.rate / 100 * amount, 2);
+                    tax += taxClass.rate / 100 * amount, 2;
             });
 
             if (this.tax.deliveryTax) {
@@ -206,7 +209,7 @@ export default {
                  * Total:     9.00
                  * ------------------------------------------------------------------
                 **/
-                tax += toFixed(delivery * taxRate / 100, 2);
+                tax += delivery * taxRate / 100;
             }
 
             if (type === "DINE_IN" && !gratuityFree && enable) {
