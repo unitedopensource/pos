@@ -1169,7 +1169,8 @@ export default {
         view: '查看',
         filter: '过滤',
         revenue: '营收',
-        payout: '支出'
+        payout: '支出',
+        hibachi:'铁板'
     },
     setting: {
         softwareSetting: 'UnitedPOS 后台设置',

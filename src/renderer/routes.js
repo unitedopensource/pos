@@ -211,6 +211,10 @@ export default [{
         path: '/',
         name: 'Setting.table',
         component: require('./components/setting/table/table')
+      }, {
+        path: 'hibachi',
+        name: 'Setting.hibachi',
+        component: require('./components/setting/table/hibachi')
       }]
     }, {
       path: 'printer',

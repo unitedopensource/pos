@@ -3,8 +3,12 @@
         <ul class="nav">
             <div class="wrap">
                 <router-link tag="li" :to="{name:'Setting.table'}" exact>
-                    <i class="fa fa-square"></i>
+                    <i class="fa fa-braille"></i>
                     <span class="text">{{$t('nav.seat')}}</span>
+                </router-link>
+                <router-link tag="li" :to="{name:'Setting.hibachi'}">
+                    <i class="fa fa-square"></i>
+                    <span class="text">{{$t('nav.hibachi')}}</span>
                 </router-link>
             </div>
             <router-link tag="li" :to="{name:'Setting.index'}" exact>
