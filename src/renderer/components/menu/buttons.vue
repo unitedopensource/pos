@@ -334,7 +334,8 @@ export default {
             let items = [];
             order.content.forEach(item => {
               if (item.pending) {
-                items.push(JSON.parse(JSON.stringify(item)));
+                //items.push(JSON.parse(JSON.stringify(item)));
+                items.push(clone(item));
                 item.print = true;
               }
             });
@@ -460,7 +461,8 @@ export default {
       return Object.assign({}, order, extra);
     },
     analyzeDiffs(current) {
-      current = JSON.parse(JSON.stringify(current));
+      //current = JSON.parse(JSON.stringify(current));
+      current = clone(current);
       current.print = true;
 
       let items = [];

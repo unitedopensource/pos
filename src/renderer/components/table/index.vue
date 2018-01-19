@@ -130,6 +130,8 @@ export default {
           case "hibachi":
             this.selectHibachiTable(table)
               .then(seats => {
+                this.resetMenu();
+
                 const session = ObjectId();
                 seats.forEach(seat =>
                   Object.assign(seat, {
@@ -147,7 +149,6 @@ export default {
                   type: "HIBACHI",
                   server: this.op.name
                 });
-                this.resetMenu();
 
                 this.$router.push({ path: "/main/menu" });
                 stop();
@@ -297,7 +298,7 @@ export default {
       this.setCurrentTable(
         Object.assign(table, {
           status: 2,
-          session: ObjectId(),
+          session,
           server: this.op.name,
           time: +new Date()
         })

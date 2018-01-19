@@ -19,7 +19,7 @@
       <div v-for="(side,index) in sides" @click="setOption(side,index)" :key="index">{{side[language]}}</div>
     </section>
     <section class="cart">
-      <order-list layout="order" :seat="seat"></order-list>
+      <order-list layout="order" :seats="seats" @update="setSeat"></order-list>
       <query-bar :query="buffer" :items="queriedItems"></query-bar>
       <buttons :layout="ticket.type" @open="open"></buttons>
     </section>
@@ -90,6 +90,7 @@ export default {
       buffer: "",
       itemPage: 0,
       items: [],
+      seats: [],
       seat: 0
     };
   },
@@ -115,6 +116,11 @@ export default {
       this.menuInstance = clone(this.menu);
       this.flatten(this.menuInstance[0].item);
       this.setSides(this.fillOption([]));
+
+      if (this.order.hasOwnProperty("seats")) {
+        this.seats = this.order.seats.map(seat => seat.name);
+        this.seat = this.seats[0];
+      }
 
       if (this.app.newTicket) {
         !this.order.hasOwnProperty("source") &&
@@ -239,7 +245,6 @@ export default {
     },
     pick(item) {
       item = Object.assign(Object.create(Object.getPrototypeOf(item)), item);
-
       !this.app.newTicket && Object.assign(item, { new: true });
 
       this.checkItemAvailable(item)
@@ -259,6 +264,8 @@ export default {
     },
     checkOption(item) {
       return new Promise((next, stop) => {
+        this.seats.length > 0 && Object.assign(item, { seat: this.seat });
+
         item.option && this.setSides(this.fillOption(item.option));
         Object.assign(item, { side: {} });
 
@@ -436,6 +443,9 @@ export default {
       let printer = {};
       print.forEach(device => (printer[device] = {}));
       Object.assign(this.item.printer, printer);
+    },
+    setSeat(seat){
+      this.seat = seat;
     },
     open(component) {
       switch (component) {

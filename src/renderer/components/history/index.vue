@@ -209,8 +209,8 @@ export default {
       }
     },
     invoices() {
-      let min = this.page * 30;
-      let max = min + 30;
+      const min = this.page * 30;
+      const max = min + 30;
       return this.orders.slice(min, max);
     },
     ...mapGetters(["op", "sync", "ticket", "order", "history", "store"])

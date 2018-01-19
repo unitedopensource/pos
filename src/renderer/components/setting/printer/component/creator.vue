@@ -7,7 +7,7 @@
             </header>
             <div class="wrap">
                 <inputer v-model.trim="name" title="text.alias" :autoFocus="true" @keydown.enter.native="confirm"></inputer>
-                <selector title="text.type" v-model="label" :opts="printerOpts"></selector>
+                <selector title="text.type" v-model="type" :opts="printerOpts"></selector>
             </div>
             <footer>
                 <div class="opt">
@@ -30,7 +30,7 @@ export default {
     data() {
         return {
             name: "",
-            type: false,
+            type: "",
             assign: true,
             printerOpts: ["regular", "label", "hibachi"].map(type => ({
                 label: this.$t('print.type.' + type),
@@ -47,7 +47,7 @@ export default {
 
             this.init.resolve({
                 name: this.name,
-                type: this.label,
+                type: this.type,
                 assign: this.assign
             });
         }

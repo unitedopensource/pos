@@ -28,9 +28,9 @@
         </template>
       </div>
     </header>
-    <div class="order" v-if="order.type === 'HIBACHI'">
+    <div class="order" v-if="order.type === 'HIBACHI' && $route.name === 'Menu'">
       <v-touch class="inner" :style="scroll" @panup="move" @pandown="move" @panstart="panStart" @panend="panEnd">
-        <group-item :items="order.content" :seat="seat"></group-item>
+        <group-item :items="order.content" :seats="seats" @update="setSeat"></group-item>
       </v-touch>
     </div>
     <div class="order" @click.self="resetHighlight" v-else-if="layout === 'order'">
@@ -112,7 +112,7 @@ import config from "./component/config";
 
 export default {
   components: { config, dialoger, listItem, groupItem, entry, creditVault },
-  props: ["layout", "group", "display", "seat"],
+  props: ["layout", "group", "display", "seats", "seat"],
   data() {
     return {
       payment: {
@@ -482,6 +482,9 @@ export default {
       });
 
       Object.assign(this.order, { payment: this.payment });
+    },
+    setSeat(seat) {
+      this.$emit("update", seat);
     },
     ...mapActions([
       "setChoiceSet",

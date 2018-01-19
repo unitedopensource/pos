@@ -869,7 +869,8 @@ function createHeader(store, setting, raw) {
 }
 
 function createList(printer, setting, invoice, preview) {
-    const list = JSON.parse(JSON.stringify(invoice.content));
+    //const list = JSON.parse(JSON.stringify(invoice.content));
+    const list = clone(invoice.content);
     let { categorize, prioritize, mode } = setting.control;
     const { languages } = setting.layout;
     const primary = languages.find(t => t.ref === 'usEN');

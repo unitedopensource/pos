@@ -1,34 +1,35 @@
 <template>
-    <div class="popupMask dark center" @click.self="init.reject(false)">
-        <div class="editor">
-            <header>
-                <h5>{{$t('title.create')}}</h5>
-                <h3>{{$t('title.hibachiTable')}}</h3>
-            </header>
-            <div class="wrap">
-                <inputer title="text.alias" v-model="init.group"></inputer>
-                <div class="layout">
-                    <div class="left" @click="setLayout('left')">
-                        <div class="seat" v-for="(seat,index) in left">
-                            <span>{{seat.name}}</span>
-                        </div>
-                    </div>
-                    <div class="middle"></div>
-                    <div class="right" @click="setLayout('right')">
-                        <div class="seat" v-for="(seat,index) in right">
-                            <span>{{seat.name}}</span>
-                        </div>
-                    </div>
-                </div>
+  <div class="popupMask dark center" @click.self="init.reject(false)">
+    <div class="editor">
+      <header>
+        <h5 v-if="init.edit">{{$t('title.create')}}</h5>
+        <h5 v-else>{{$t('title.modify')}}</h5>
+        <h3>{{$t('title.hibachiTable')}}</h3>
+      </header>
+      <div class="wrap">
+        <inputer title="text.alias" v-model="init.group"></inputer>
+        <div class="layout">
+          <div class="left" @click="setLayout('left')">
+            <div class="seat" v-for="(seat,index) in left">
+              <span>{{seat.name}}</span>
             </div>
-            <footer>
-                <div class="opt">
-                    <span class="del" @click="init.reject(true)">{{$t('button.delete')}}</span>
-                </div>
-                <button class="btn" @click="confirm">{{$t("button.confirm")}}</button>
-            </footer>
+          </div>
+          <div class="middle"></div>
+          <div class="right" @click="setLayout('right')">
+            <div class="seat" v-for="(seat,index) in right">
+              <span>{{seat.name}}</span>
+            </div>
+          </div>
         </div>
+      </div>
+      <footer>
+        <div class="opt">
+          <span class="del" @click="init.reject(true)" v-show="init.edit">{{$t('button.delete')}}</span>
+        </div>
+        <button class="btn" @click="confirm" :disabled="!init.group">{{$t("button.confirm")}}</button>
+      </footer>
     </div>
+  </div>
 </template>
 
 <script>
@@ -42,12 +43,14 @@ export default {
       direction: "left",
       left: [8, 9, 10, 7, 6, 5, 4, 3, 2, 1, null].map((seat, index) => ({
         group: "",
+        direction: "left",
         grid: index,
         name: seat,
         session: ""
       })),
       right: [10, 9, 8, 7, 6, 5, 4, 1, 2, 3, null].map((seat, index) => ({
         group: "",
+        direction: "right",
         grid: index,
         name: seat,
         session: ""
@@ -61,11 +64,20 @@ export default {
   methods: {
     setLayout(direction) {
       this.direction = direction;
-      document.querySelector(".selected").classList.remove("selected");
+      const dom = document.querySelector(".selected");
+      dom && dom.classList.remove("selected");
+
       document.querySelector(`.${direction}`).classList.add("selected");
     },
-    select() {},
-    confirm() {}
+    confirm() {
+      const { group } = this.init;
+      const tables = this[this.direction].filter(t => t.name).map(table => {
+        Object.assign(table, { group });
+        return table;
+      });
+
+      this.init.resolve(tables);
+    }
   }
 };
 </script>
@@ -127,6 +139,7 @@ export default {
 }
 
 .selected {
+  border: 2px solid #607d8b;
   background: #607d8b;
 }
 </style>
