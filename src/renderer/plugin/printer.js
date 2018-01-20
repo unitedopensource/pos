@@ -113,12 +113,17 @@ var Printer = function (plugin, config, station) {
 
             if (!setting) return false;
             if (!receipt && !setting.print.includes(ticket)) return false;
-            if (setting.labelPrinter) {
+            if (setting.type === 'label') {
                 this.printLabel(printer, raw);
                 return false;
             }
 
             const items = raw.content.filter(item => item.printer[printer]);
+
+            if (setting.type === 'hibachi') {
+                this.printHibachi(printer, raw, items);
+                return false;
+            }
 
             if (items.length === 0) return false;
 
@@ -137,22 +142,6 @@ var Printer = function (plugin, config, station) {
             this.plugin.ADD_PRINT_HTM(0, 0, "100%", "100%", html);
             this.plugin.SET_PRINTER_INDEX(printer);
             this.plugin.PRINT();
-
-            // if (raw.carryNote && (/cashier/i).test(printer)) {
-            //     this.plugin.PRINT_INIT('Ticket carry note');
-            //     this.plugin.SET_PRINTER_INDEX(printer);
-            //     this.plugin.PRINT_INITA(0, 0, 270, 500, "");
-            //     let cursor = 0;
-            //     raw.carryNote.content.forEach(line => {
-            //         this.plugin.ADD_PRINT_TEXT(cursor, 10, 260, 20, line);
-            //         this.plugin.SET_PRINT_STYLEA(0, "FontName", "Tensentype RuiHeiJ-W2");
-            //         this.plugin.SET_PRINT_STYLEA(0, "FontSize", 16);
-            //         this.plugin.SET_PRINT_STYLEA(0, "Alignment", 2);
-            //         this.plugin.SET_PRINT_STYLEA(0, "LetterSpacing", 1);
-            //         cursor += 22
-            //     })
-            //     this.plugin.PRINT()
-            // }
 
             if (Array.isArray(setting.reprint) && setting.reprint.includes(ticket)) {
                 this.plugin.PRINT_INIT(`Reprint ticket ${raw.number}`)
@@ -186,7 +175,8 @@ var Printer = function (plugin, config, station) {
             primaryFontSize,
             secondaryFontSize
         } = this.config.printers[name]['control'];
-        let style = `<style>
+
+        const style = `<style>
                     .item{text-align:center;display:inline-block;}
                     .number{float:right;}
                     .option{text-align:center;}
@@ -212,6 +202,21 @@ var Printer = function (plugin, config, station) {
                 this.plugin.SET_PRINTER_INDEX(name);
                 this.plugin.PRINT();
             })
+    }
+
+    this.printHibachi = function (printer, order, items) {
+
+        this.plugin.PRINT_INITA(0,0,562,914,"");
+        this.plugin.ADD_PRINT_RECT(196,8,62,140,0,1);
+        this.plugin.ADD_PRINT_RECT(196,70,62,140,0,1);
+        this.plugin.ADD_PRINT_RECT(196,131,62,140,0,1);
+        this.plugin.ADD_PRINT_RECT(196,193,62,140,0,1);
+        this.plugin.ADD_PRINT_RECT(335,8,62,140,0,1);
+        this.plugin.ADD_PRINT_RECT(474,8,62,140,0,1);
+        this.plugin.ADD_PRINT_RECT(613,8,62,140,0,1);
+        this.plugin.ADD_PRINT_RECT(613,70,62,140,0,1);
+        this.plugin.ADD_PRINT_RECT(613,131,62,140,0,1);
+        this.plugin.ADD_PRINT_RECT(613,193,62,140,0,1);
     }
 
     this.printCreditCard = function (trans, reprint) {
@@ -869,8 +874,7 @@ function createHeader(store, setting, raw) {
 }
 
 function createList(printer, setting, invoice, preview) {
-    //const list = JSON.parse(JSON.stringify(invoice.content));
-    const list = clone(invoice.content);
+    const list = JSON.parse(JSON.stringify(invoice.content));
     let { categorize, prioritize, mode } = setting.control;
     const { languages } = setting.layout;
     const primary = languages.find(t => t.ref === 'usEN');
