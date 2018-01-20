@@ -36,6 +36,7 @@ import dialoger from "../../common/dialoger";
 import categoryEditor from "./component/requestCategoryEditor";
 import actionEditor from "./component/requestActionEditor";
 import itemEditor from "./component/requestItemEditor";
+
 export default {
   components: { dialoger, draggable, categoryEditor, actionEditor, itemEditor },
   data() {

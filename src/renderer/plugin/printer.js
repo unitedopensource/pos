@@ -121,6 +121,7 @@ var Printer = function (plugin, config, station) {
             const items = raw.content.filter(item => item.printer[printer]);
 
             if (setting.type === 'hibachi') {
+                //handle items logic here;
                 this.printHibachi(printer, raw, items);
                 return false;
             }
@@ -205,18 +206,201 @@ var Printer = function (plugin, config, station) {
     }
 
     this.printHibachi = function (printer, order, items) {
+        const { name, address, city, state, zipCode, contact } = this.config;
 
-        this.plugin.PRINT_INITA(0,0,562,914,"");
-        this.plugin.ADD_PRINT_RECT(196,8,62,140,0,1);
-        this.plugin.ADD_PRINT_RECT(196,70,62,140,0,1);
-        this.plugin.ADD_PRINT_RECT(196,131,62,140,0,1);
-        this.plugin.ADD_PRINT_RECT(196,193,62,140,0,1);
-        this.plugin.ADD_PRINT_RECT(335,8,62,140,0,1);
-        this.plugin.ADD_PRINT_RECT(474,8,62,140,0,1);
-        this.plugin.ADD_PRINT_RECT(613,8,62,140,0,1);
-        this.plugin.ADD_PRINT_RECT(613,70,62,140,0,1);
-        this.plugin.ADD_PRINT_RECT(613,131,62,140,0,1);
-        this.plugin.ADD_PRINT_RECT(613,193,62,140,0,1);
+        CLODOP.PRINT_INIT('Ticket Hibachi');
+        CLODOP.PRINT_INITA(0, 0, 260, 2000, "");
+
+        CLODOP.ADD_PRINT_TEXT(3, 2, 262, 23, name);
+        CLODOP.SET_PRINT_STYLEA(0, "FontName", "Agency FB");
+        CLODOP.SET_PRINT_STYLEA(0, "FontSize", 14);
+        CLODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
+        CLODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+        CLODOP.SET_PRINT_STYLEA(0, "ItemType", 1);
+        CLODOP.SET_PRINT_STYLEA(0, "Horient", 2);
+        CLODOP.ADD_PRINT_TEXT(30, 2, 262, 20, address);
+        CLODOP.SET_PRINT_STYLEA(0, "FontName", "Yuanti-SC Regular");
+        CLODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+        CLODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
+        CLODOP.SET_PRINT_STYLEA(0, "ItemType", 1);
+        CLODOP.SET_PRINT_STYLEA(0, "Horient", 2);
+        CLODOP.ADD_PRINT_TEXT(42, 2, 262, 20, `${city}, ${state} ${zipCode}`);
+        CLODOP.SET_PRINT_STYLEA(0, "FontName", "Yuanti-SC Regular");
+        CLODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+        CLODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
+        CLODOP.SET_PRINT_STYLEA(0, "ItemType", 1);
+        CLODOP.SET_PRINT_STYLEA(0, "Horient", 2);
+        CLODOP.ADD_PRINT_TEXT(60, 2, 262, 20, contact);
+        CLODOP.SET_PRINT_STYLEA(0, "FontName", "Yuanti-SC Regular");
+        CLODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+        CLODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
+        CLODOP.SET_PRINT_STYLEA(0, "ItemType", 1);
+        CLODOP.SET_PRINT_STYLEA(0, "Horient", 2);
+        CLODOP.ADD_PRINT_TEXT(76, 88, 100, 21, "HIBACHI");
+        CLODOP.SET_PRINT_STYLEA(0, "FontName", "Agency FB");
+        CLODOP.SET_PRINT_STYLEA(0, "FontSize", 14);
+        CLODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
+        CLODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+        CLODOP.SET_PRINT_STYLEA(0, "ItemType", 1);
+        CLODOP.SET_PRINT_STYLEA(0, "Horient", 2);
+        CLODOP.SET_PRINT_STYLEA(0, "LetterSpacing", 1);
+        CLODOP.ADD_PRINT_TEXT(96, 88, 100, 21, order.table);
+        CLODOP.SET_PRINT_STYLEA(0, "FontName", "Agency FB");
+        CLODOP.SET_PRINT_STYLEA(0, "FontSize", 14);
+        CLODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
+        CLODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+        CLODOP.SET_PRINT_STYLEA(0, "ItemType", 1);
+        CLODOP.SET_PRINT_STYLEA(0, "Horient", 2);
+        CLODOP.SET_PRINT_STYLEA(0, "LetterSpacing", 1);
+        CLODOP.ADD_PRINT_TEXT(96, 188, 250, 21, order.number);
+        CLODOP.SET_PRINT_STYLEA(0, "FontName", "Agency FB");
+        CLODOP.SET_PRINT_STYLEA(0, "FontSize", 18);
+        CLODOP.SET_PRINT_STYLEA(0, "Alignment", 3);
+        CLODOP.SET_PRINT_STYLEA(0, "Bold", 1);
+        CLODOP.SET_PRINT_STYLEA(0, "ItemType", 1);
+        CLODOP.SET_PRINT_STYLEA(0, "Horient", 2);
+        CLODOP.SET_PRINT_STYLEA(0, "LetterSpacing", 1);
+        CLODOP.ADD_PRINT_TEXT(120, 42, 110, 20, "Date: " + moment(order.time).format('MM-DD-YYYY'));
+        CLODOP.SET_PRINT_STYLEA(0, "FontName", "Agency FB");
+        CLODOP.SET_PRINT_STYLEA(0, "FontSize", 11);
+        CLODOP.SET_PRINT_STYLEA(0, "LetterSpacing", 1);
+        CLODOP.ADD_PRINT_TEXT(120, 145, 110, 20, "Time: " + moment(order.time).format('HH:mm:ss'));
+        CLODOP.SET_PRINT_STYLEA(0, "FontName", "Agency FB");
+        CLODOP.SET_PRINT_STYLEA(0, "FontSize", 11);
+        CLODOP.SET_PRINT_STYLEA(0, "LetterSpacing", 1);
+        CLODOP.ADD_PRINT_LINE(138, 6, 138, 266, 0, 1);
+
+        //placeholder
+        //7
+        CLODOP.ADD_PRINT_RECT(196, 8, 62, 140, 0, 1);
+        CLODOP.ADD_PRINT_TEXT(395, 55, 130, 34, "7");
+        CLODOP.SET_PRINT_STYLEA(0, "Angle", 90);
+        CLODOP.SET_PRINT_STYLEA(0, "FontName", "Yuanti-SC Regular");
+        CLODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+        CLODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
+        CLODOP.ADD_PRINT_TEXT(330, 20, 130, 34, "Fried Lo Mein \n Spicy");
+        CLODOP.SET_PRINT_STYLEA(0, "Angle", 90);
+        CLODOP.SET_PRINT_STYLEA(0, "FontName", "Yuanti-SC Regular");
+        CLODOP.SET_PRINT_STYLEA(0, "FontSize", 12);
+        CLODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
+
+        //8
+        CLODOP.ADD_PRINT_RECT(196, 70, 62, 140, 0, 1);
+        CLODOP.ADD_PRINT_TEXT(395, 117, 130, 34, "8");
+        CLODOP.SET_PRINT_STYLEA(0, "Angle", 90);
+        CLODOP.SET_PRINT_STYLEA(0, "FontName", "Yuanti-SC Regular");
+        CLODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+        CLODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
+        CLODOP.ADD_PRINT_TEXT(330, 80, 130, 34, "Habachi Beef \n Medium Cook");
+        CLODOP.SET_PRINT_STYLEA(0, "Angle", 90);
+        CLODOP.SET_PRINT_STYLEA(0, "FontName", "Yuanti-SC Regular");
+        CLODOP.SET_PRINT_STYLEA(0, "FontSize", 12);
+        CLODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
+
+        //9
+        CLODOP.ADD_PRINT_RECT(196, 131, 62, 140, 0, 1);
+        CLODOP.ADD_PRINT_TEXT(395, 178, 130, 34, "9");
+        CLODOP.SET_PRINT_STYLEA(0, "Angle", 90);
+        CLODOP.SET_PRINT_STYLEA(0, "FontName", "Yuanti-SC Regular");
+        CLODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+        CLODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
+        CLODOP.ADD_PRINT_TEXT(330, 142, 130, 34, "Fried Rice");
+        CLODOP.SET_PRINT_STYLEA(0, "Angle", 90);
+        CLODOP.SET_PRINT_STYLEA(0, "Angle", 90);
+        CLODOP.SET_PRINT_STYLEA(0, "FontName", "Yuanti-SC Regular");
+        CLODOP.SET_PRINT_STYLEA(0, "FontSize", 12);
+        CLODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
+
+        //10
+        CLODOP.ADD_PRINT_RECT(196, 193, 62, 140, 0, 1);
+        CLODOP.ADD_PRINT_TEXT(395, 241, 130, 34, "10");
+        CLODOP.SET_PRINT_STYLEA(0, "Angle", 90);
+        CLODOP.SET_PRINT_STYLEA(0, "FontName", "Yuanti-SC Regular");
+        CLODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+        CLODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
+        CLODOP.ADD_PRINT_TEXT(330, 205, 130, 34, "Teryiyaki Beef\n Hot");
+        CLODOP.SET_PRINT_STYLEA(0, "Angle", 90);
+        CLODOP.SET_PRINT_STYLEA(0, "FontName", "Yuanti-SC Regular");
+        CLODOP.SET_PRINT_STYLEA(0, "FontSize", 12);
+        CLODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
+
+        //6
+        CLODOP.ADD_PRINT_RECT(335, 8, 62, 140, 0, 1);
+        CLODOP.ADD_PRINT_TEXT(533, 55, 130, 34, "6");
+        CLODOP.SET_PRINT_STYLEA(0, "Angle", 90);
+        CLODOP.SET_PRINT_STYLEA(0, "FontName", "Yuanti-SC Regular");
+        CLODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+        CLODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
+        CLODOP.ADD_PRINT_TEXT(470, 20, 130, 34, "Teryiyaki Beef\n Hot");
+        CLODOP.SET_PRINT_STYLEA(0, "Angle", 90);
+        CLODOP.SET_PRINT_STYLEA(0, "FontName", "Yuanti-SC Regular");
+        CLODOP.SET_PRINT_STYLEA(0, "FontSize", 12);
+        CLODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
+
+        //5
+        CLODOP.ADD_PRINT_RECT(474, 8, 62, 140, 0, 1);
+        CLODOP.ADD_PRINT_TEXT(673, 55, 130, 34, "5");
+        CLODOP.SET_PRINT_STYLEA(0, "Angle", 90);
+        CLODOP.SET_PRINT_STYLEA(0, "FontName", "Yuanti-SC Regular");
+        CLODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+        CLODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
+        CLODOP.ADD_PRINT_TEXT(610, 20, 130, 34, "Teryiyaki Beef\n Hot");
+        CLODOP.SET_PRINT_STYLEA(0, "Angle", 90);
+        CLODOP.SET_PRINT_STYLEA(0, "FontName", "Yuanti-SC Regular");
+        CLODOP.SET_PRINT_STYLEA(0, "FontSize", 12);
+        CLODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
+
+        //4
+        CLODOP.ADD_PRINT_RECT(613, 8, 62, 140, 0, 1);
+        CLODOP.ADD_PRINT_TEXT(812, 55, 130, 34, "4");
+        CLODOP.SET_PRINT_STYLEA(0, "Angle", 90);
+        CLODOP.SET_PRINT_STYLEA(0, "FontName", "Yuanti-SC Regular");
+        CLODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+        CLODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
+        CLODOP.ADD_PRINT_TEXT(750, 20, 130, 34, "Shrimp Tempora\n Med");
+        CLODOP.SET_PRINT_STYLEA(0, "Angle", 90);
+        CLODOP.SET_PRINT_STYLEA(0, "FontName", "Yuanti-SC Regular");
+        CLODOP.SET_PRINT_STYLEA(0, "FontSize", 12);
+        CLODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
+
+        //3
+        CLODOP.ADD_PRINT_RECT(613, 70, 62, 140, 0, 1);
+        CLODOP.ADD_PRINT_TEXT(812, 117, 130, 34, "3");
+        CLODOP.SET_PRINT_STYLEA(0, "Angle", 90);
+        CLODOP.SET_PRINT_STYLEA(0, "FontName", "Yuanti-SC Regular");
+        CLODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+        CLODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
+        CLODOP.ADD_PRINT_TEXT(750, 80, 130, 34, "Beef Tempora\n Med");
+        CLODOP.SET_PRINT_STYLEA(0, "Angle", 90);
+        CLODOP.SET_PRINT_STYLEA(0, "FontName", "Yuanti-SC Regular");
+        CLODOP.SET_PRINT_STYLEA(0, "FontSize", 12);
+        CLODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
+        //2
+        CLODOP.ADD_PRINT_RECT(613, 131, 62, 140, 0, 1);
+        CLODOP.ADD_PRINT_TEXT(812, 178, 130, 34, "2");
+        CLODOP.SET_PRINT_STYLEA(0, "Angle", 90);
+        CLODOP.SET_PRINT_STYLEA(0, "FontName", "Yuanti-SC Regular");
+        CLODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+        CLODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
+        CLODOP.ADD_PRINT_TEXT(750, 142, 130, 34, "Beef Tempora\n Med");
+        CLODOP.SET_PRINT_STYLEA(0, "Angle", 90);
+        CLODOP.SET_PRINT_STYLEA(0, "FontName", "Yuanti-SC Regular");
+        CLODOP.SET_PRINT_STYLEA(0, "FontSize", 12);
+        CLODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
+        //1
+        CLODOP.ADD_PRINT_RECT(613, 193, 62, 140, 0, 1);
+        CLODOP.ADD_PRINT_TEXT(812, 241, 130, 34, "1");
+        CLODOP.SET_PRINT_STYLEA(0, "Angle", 90);
+        CLODOP.SET_PRINT_STYLEA(0, "FontName", "Yuanti-SC Regular");
+        CLODOP.SET_PRINT_STYLEA(0, "FontSize", 10);
+        CLODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
+        CLODOP.ADD_PRINT_TEXT(750, 205, 130, 34, "Beef Tempora\n Med");
+        CLODOP.SET_PRINT_STYLEA(0, "Angle", 90);
+        CLODOP.SET_PRINT_STYLEA(0, "FontName", "Yuanti-SC Regular");
+        CLODOP.SET_PRINT_STYLEA(0, "FontSize", 12);
+        CLODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
+        CLODOP.PREVIEW();
+
     }
 
     this.printCreditCard = function (trans, reprint) {

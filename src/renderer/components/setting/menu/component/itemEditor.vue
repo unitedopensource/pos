@@ -27,7 +27,7 @@
           <div class="item">
             <inputer title="text.menuID" v-model="item.menuID"></inputer>
             <selector title="text.category" v-model="item.category" :opts="init.categories" :editable="false"></selector>
-            <inputer title="text.primary" v-model.trim="item.usEN"></inputer>
+            <inputer title="text.primary" v-model.trim="item.usEN" :autoFocus="true" @keydown.enter.native="save"></inputer>
             <inputer title="text.secondary" v-model.trim="item.zhCN"></inputer>
             <inputer title="text.price" v-model="item.price" @keydown.enter.native="save">
               <i class="fa fa-ellipsis-v price" @click="openPriceEditor"></i>
@@ -48,7 +48,7 @@
                   <span class="index">{{index + 1}}</span>
                   <input type="text" v-model.trim="option.usEN" :placeholder="$t('text.primary')">
                   <input type="text" v-model.trim="option.zhCN" :placeholder="$t('text.secondary')">
-                  <input type="number" v-model="option.price" :placeholder="getPlaceholder(option,index)">
+                  <input type="number" v-model="option.price" :placeholder="getPlaceholder(option,index)" @keydown.tab.native="addOption">
                   <i class="fa fa-sort drag"></i>
                   <i class="fa fa-ellipsis-v" @click="editOption(option,index)"></i>
                 </div>
@@ -205,6 +205,8 @@ export default {
         .catch(() => this.$q());
     },
     addOption() {
+      if (this.item.option.length > 11) return;
+
       this.item.option.push({ usEN: "", zhCN: "", replace: false });
     },
     removeOption(index) {
@@ -226,6 +228,7 @@ export default {
       this.$forceUpdate();
     },
     save() {
+      this.item.zhCN = this.item.zhCN || this.item.usEN;
       this.item.price = Array.isArray(this.item.price)
         ? this.item.price
         : this.item.price.toString().split(",");
@@ -323,7 +326,7 @@ ul.options li {
 li i.remove {
   display: none;
   position: absolute;
-  right: -25px;
+  right: -23px;
   top: 0;
   color: #ff5722;
   cursor: pointer;

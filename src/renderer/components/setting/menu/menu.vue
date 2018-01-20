@@ -57,7 +57,7 @@ export default {
     this.isItemSorted && this.updateItemSort();
   },
   methods: {
-    entry(e) {},
+    entry(e) { },
     setCategory(index) {
       this.isItemSorted && this.updateItemSort();
       this.getItems(index);
@@ -185,7 +185,7 @@ export default {
     },
     refreshData() {
       this.$nextTick(() => {
-        this.categories = JSON.parse(JSON.stringify(this.$store.getters.menu));
+        this.categories = clone(this.$store.getters.menu);
         this.getItems(this.categoryIndex);
         this.$q();
       });
