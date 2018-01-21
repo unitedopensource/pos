@@ -162,6 +162,7 @@ export default {
                   layout,
                   table,
                   session,
+                  guest: seats.length,
                   type: "HIBACHI",
                   server: this.op.name
                 });

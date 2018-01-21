@@ -7,10 +7,11 @@
     </header>
     <header v-else class="info">
       <div class="content">
-        <template v-if="order.type === 'DINE_IN'">
-          <p>
-            <span>{{order.server}}</span>
-          </p>
+        <template v-if="order.type === 'DINE_IN' || order.type === 'HIBACHI'">
+          <span class="table">{{order.table}} - {{order.guest}} - {{order.server}}</span>
+          <span class="time">{{order.time | moment('YYYY-MM-DD HH:mm:ss')}}</span>
+          <span class="corner" v-if="undoneItems">{{$t('text.progressTicket',undoneItems)}}</span>
+          <span class="corner" v-else>{{$t('text.doneTicket')}}</span>
         </template>
         <template v-else>
           <template v-if="order.customer">
@@ -290,8 +291,8 @@ export default {
       if (items.length === 0) {
         let delivery =
           this.ticket.type === "DELIVERY" &&
-          this.store.delivery &&
-          !this.order.deliveryFree
+            this.store.delivery &&
+            !this.order.deliveryFree
             ? parseFloat(this.store.deliveryCharge)
             : 0;
 
@@ -389,7 +390,7 @@ export default {
             .sort((a, b) => a.guest < b.guest)
             .find(r => guest >= r.guest);
           gratuity = percentage ? toFixed(subtotal * fee / 100, 2) : fee;
-        } catch (e) {}
+        } catch (e) { }
       }
 
       gratuity = toFixed(gratuity, 2);
@@ -764,8 +765,9 @@ header i {
 
 .content .time {
   position: absolute;
-  right: 5px;
-  color: #607d8b;
+  right: 0px;
+  bottom: 40px;
+  color: #9e9e9e;
   font-family: "Agency FB";
   font-weight: bold;
 }
@@ -773,7 +775,7 @@ header i {
 .content .corner {
   position: absolute;
   right: 5px;
-  bottom: 2px;
+  bottom: 26px;
   color: #e06d40;
   font-size: 14px;
   font-style: italic;
@@ -789,7 +791,7 @@ header i {
 
 .content {
   flex: 1;
-  padding: 5px 10px;
+  padding: 5px 0px;
 }
 
 .content .value {
@@ -811,5 +813,11 @@ header i {
   left: 0;
   height: 329px;
   width: 285px;
+}
+
+.table {
+  font-weight: bold;
+  font-family: "Agency FB";
+  font-size: 1.5em;
 }
 </style>
