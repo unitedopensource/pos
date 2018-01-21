@@ -60,7 +60,7 @@ export default {
   },
   data() {
     return {
-      order: Object.assign(Object.create(Object.getPrototypeOf(this.$store.getters.order)), this.$store.getters.order),
+      order: clone(this.$store.getters.order), //Object.assign(Object.create(Object.getPrototypeOf(this.$store.getters.order)), this.$store.getters.order),
       swipeMode: false,
       hammer: null,
       done: false,
@@ -80,16 +80,16 @@ export default {
         const orders = splits.filter(order => order);
         if (orders.length) {
           this.splits = orders;
-          this.done = this.order.content.every(item => item.split)
+          this.done = this.order.content.every(item => item.split);
         } else {
-          this.order.content.forEach(item => item.split = false);
+          this.order.content.forEach(item => (item.split = false));
           this.done = false;
         }
       });
     },
     create() {
       const _id = ObjectId();
-      const order = Object.assign(Object.create(Object.getPrototypeOf(this.order)), this.order);
+      const order = clone(this.order);
 
       let content = [];
       let payment = {
@@ -118,7 +118,7 @@ export default {
     transfer({ unique, index }) {
       let buffer = [];
       this.$children.map(vm =>
-        vm.buffer.forEach(item => buffer.push(Object.assign(Object.create(Object.getPrototypeOf(item)), item)))
+        vm.buffer.forEach(item => buffer.push(clone(item)))
       );
       this.$bus.emit("transfer", {
         unique,
@@ -138,17 +138,16 @@ export default {
       __split__ && this.$bus.emit("destroy", items);
     },
     registerSwipeEvent() {
-      const dom = this.$refs.scroll
+      const dom = this.$refs.scroll;
       this.hammer = new Hammer(dom);
       this.hammer.get("swipe").set({ direction: Hammer.DIRECTION_HORIZONTAL });
       this.hammer.on("swipeleft swiperight", e => {
-
         switch (e.type) {
           case "swipeleft":
-            this.checkBoundary(-1)
+            this.checkBoundary(-1);
             break;
           case "swiperight":
-            this.checkBoundary(+1)
+            this.checkBoundary(+1);
             break;
         }
       });
@@ -166,7 +165,7 @@ export default {
         offset = offset === -260 ? -98 : offset;
         offset = offset === 162 ? 0 : offset;
         this.offset = offset;
-      })
+      });
     },
     calWidth() {
       let width = 0;

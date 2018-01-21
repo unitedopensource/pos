@@ -133,6 +133,7 @@ export default {
                 this.resetMenu();
 
                 const session = ObjectId();
+                const layout = seats[0].direction;
                 seats.forEach(seat =>
                   Object.assign(seat, {
                     session,
@@ -145,7 +146,9 @@ export default {
                 this.setApp({ newTicket: true });
                 this.setOrder({
                   seats,
+                  layout,
                   session,
+                  table:table.name,
                   type: "HIBACHI",
                   server: this.op.name
                 });
@@ -250,16 +253,16 @@ export default {
     selectHibachiTable(table) {
       return new Promise((resolve, reject) => {
         this.$socket.emit("[HIBACHI] SEATS", table.contain, data => {
-          const seats = this.initialHibachiTable(data);
+          const seats = this.initialHibachiTable(table.contain, data);
           this.componentData = { resolve, reject, table, seats };
           this.component = "hibachi";
         });
       });
     },
-    initialHibachiTable(data) {
+    initialHibachiTable(table, data) {
       let layout = [];
 
-      data.forEach(group => {
+      data.forEach((group, index) => {
         let seats = Array(11)
           .fill()
           .map((seat, index) => ({
@@ -269,6 +272,7 @@ export default {
             session: ""
           }));
         group.forEach(table => Object.assign(seats[table.grid], table));
+        seats[10].name = table[index] || "";
         layout.push(seats);
       });
 

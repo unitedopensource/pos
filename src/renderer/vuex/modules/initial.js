@@ -142,6 +142,8 @@ const mutations = {
         index === -1 ? state.orders.unshift(invoice) : state.orders.splice(index, 1, invoice);
     },
     [types.UPDATE_TABLE_STATUS](state, table) {
+        if(!table) return;
+        
         const zone = table.zone;
         let tables = state.config.layout.table;
         for (let i = 0; i < tables.length; i++) {

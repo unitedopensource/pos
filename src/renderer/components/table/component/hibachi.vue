@@ -9,20 +9,22 @@
       <div class="wrap">
         <div class="hibachi">
           <div class="left">
-            <div class="seat" v-for="(seat,index) in left" @click="select(seat)" :data-id="seat._id">
+            <div class="seat" v-for="(seat,index) in left" @click="select('left',seat)" :data-id="seat._id">
               <span>{{seat.name}}</span>
+              <span v-if="seat.session" class="server">{{seat.server}}</span>
             </div>
           </div>
           <div class="middle"></div>
           <div class="right">
-            <div class="seat" v-for="(seat,index) in right" @click="select(seat)" :data-id="seat._id">
+            <div class="seat" v-for="(seat,index) in right" @click="select('right',seat)" :data-id="seat._id">
               <span>{{seat.name}}</span>
+              <span v-if="seat.session" class="server">{{seat.server}}</span>
             </div>
           </div>
         </div>
       </div>
       <footer>
-        <button class="btn" @click="confirm">{{$t('button.confirm')}}</button>
+        <button class="btn" @click="confirm" :disabled="seats.length===0">{{$t('button.confirm')}}</button>
       </footer>
     </div>
   </div>
@@ -39,7 +41,11 @@ export default {
     };
   },
   methods: {
-    select(seat) {
+    select(side, seat) {
+      if (!seat._id) return;
+
+      document.querySelector(`.${side}`).classList.add("active");
+
       const index = this.seats.findIndex(table => table._id === seat._id);
       index === -1 ? this.seats.push(seat) : this.seats.splice(index, 1);
 
@@ -81,11 +87,17 @@ export default {
 .left,
 .right {
   display: grid;
-  height: 500px;
+  height: 330px;
   padding: 1px;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr;
   padding: 1px;
+  filter: grayscale(1) opacity(0.3);
+}
+
+.left.active,
+.right.active {
+  filter: initial;
 }
 
 .left {
@@ -113,20 +125,31 @@ export default {
   font-weight: bold;
   color: #b0bec5;
   border-radius: 4px;
+  position: relative;
 }
 
 .left .seat:last-child {
-  grid-column: 2/4;
-  grid-row: 2/6;
+  grid-column: 2/5;
+  grid-row: 2/4;
 }
 
 .right .seat:last-child {
-  grid-column: 1/3;
-  grid-row: 2/6;
+  grid-column: 1/4;
+  grid-row: 2/4;
 }
 
 div.selected {
   background: #ffe0b2;
   color: #3c3c3c;
+}
+
+.server {
+  position: absolute;
+  font-size: 14px;
+  z-index: 1;
+  background: #ff5722;
+  color: #fff;
+  width: 77px;
+  text-align: center;
 }
 </style>

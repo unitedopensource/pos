@@ -44,8 +44,8 @@ export default {
         this.componentData = { resolve, reject, printers: this.printers };
         this.component = "editor";
       })
-        .then(({ name, label, assign }) => {
-          const printer = Preset.printer();
+        .then(({ name, type, assign }) => {
+          const printer = Preset.printer(type);
 
           Object.assign(this.$store.getters.config.printers, { [name]: printer });
 

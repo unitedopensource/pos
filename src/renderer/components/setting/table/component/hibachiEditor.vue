@@ -41,19 +41,21 @@ export default {
   data() {
     return {
       direction: "left",
-      left: [8, 9, 10, 7, 6, 5, 4, 3, 2, 1, null].map((seat, index) => ({
+      left: [7, 8, 9, 10, 6, 5, 4, 3, 2, 1, null].map((seat, index) => ({
         group: "",
         direction: "left",
         grid: index,
         name: seat,
-        session: ""
+        session: "",
+        status: 1
       })),
-      right: [10, 9, 8, 7, 6, 5, 4, 1, 2, 3, null].map((seat, index) => ({
+      right: [10, 9, 8, 7, 6, 5, 1, 2, 3, 4, null].map((seat, index) => ({
         group: "",
         direction: "right",
         grid: index,
         name: seat,
-        session: ""
+        session: "",
+        status: 1
       }))
     };
   },
@@ -106,10 +108,10 @@ export default {
 .left,
 .right {
   display: grid;
-  height: 235px;
+  height: 170px;
   padding: 1px;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr;
   padding: 1px;
   border: 2px solid #eee;
   border-radius: 4px;
@@ -129,13 +131,13 @@ export default {
 }
 
 .left .seat:last-child {
-  grid-column: 2/4;
-  grid-row: 2/6;
+  grid-column: 2/5;
+  grid-row: 2/4;
 }
 
 .right .seat:last-child {
-  grid-column: 1/3;
-  grid-row: 2/6;
+  grid-column: 1/4;
+  grid-row: 2/4;
 }
 
 .selected {

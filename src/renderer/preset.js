@@ -95,8 +95,9 @@ var Preset = function () {
       }]
     }
   };
-  this.printer = function () {
+  this.printer = function (type) {
     return {
+      type:type || 'regular',
       print: ["WALK_IN", "PICK_UP", "DELIVERY", "DINE_IN", "BAR", "BUFFET", "HIBACHI", "SALES", "TO_GO"],
       reprint: [],
       title: {

@@ -57,7 +57,7 @@ export default {
     this.isItemSorted && this.updateItemSort();
   },
   methods: {
-    entry(e) { },
+    entry(e) {},
     setCategory(index) {
       this.isItemSorted && this.updateItemSort();
       this.getItems(index);
@@ -83,14 +83,14 @@ export default {
         .catch(() => this.$q());
     },
     editItem(item, group, index) {
-      const categories = this.categories[
-        this.categoryIndex
-      ].contain.map(category => ({
-        label: category,
-        tooltip: "",
-        plainText: true,
-        value: category
-      }));
+      const categories = this.categories[this.categoryIndex].contain.map(
+        category => ({
+          label: category,
+          tooltip: "",
+          plainText: true,
+          value: category
+        })
+      );
 
       if (!item.clickable) item = this.copyLastItem(group, index);
 
@@ -185,7 +185,7 @@ export default {
     },
     refreshData() {
       this.$nextTick(() => {
-        this.categories = clone(this.$store.getters.menu);
+        this.categories = this.$store.getters.menu;
         this.getItems(this.categoryIndex);
         this.$q();
       });
