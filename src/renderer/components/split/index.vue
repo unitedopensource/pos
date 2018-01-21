@@ -60,7 +60,7 @@ export default {
   },
   data() {
     return {
-      order: clone(this.$store.getters.order), //Object.assign(Object.create(Object.getPrototypeOf(this.$store.getters.order)), this.$store.getters.order),
+      order: JSON.parse(JSON.stringify(this.$store.getters.order)),
       swipeMode: false,
       hammer: null,
       done: false,
@@ -82,7 +82,7 @@ export default {
           this.splits = orders;
           this.done = this.order.content.every(item => item.split);
         } else {
-          this.order.content.forEach(item => (item.split = false));
+          this.order.content = this.order.content.map(item => Object.assign(item, { split: false }));
           this.done = false;
         }
       });

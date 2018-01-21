@@ -1,6 +1,6 @@
 <template>
   <div class="invoice" :class="{ban}">
-    <ul @click.self="tap" v-if="enable" :class="[unique]" :ref="unique" :style="scroll">
+    <ul @click.self="tap" @dblclick.self="pickAll" v-if="enable" :class="[unique]" :ref="unique" :style="scroll">
       <li v-for="(item,index) in order.content" :key="index" @click.prevent.stop="pick(item)" :data-unique="item.unique" v-show="!item.split">
         <div class="main">
           <span class="qty deno" :data-deno="item.deno" v-if="item.deno">{{item.qty}}</span>
@@ -10,8 +10,8 @@
             <span class="side">{{item.side[language]}}</span>
           </span>
           <template v-if="master">
-            <i class="fa fa-clone" @click.stop="toggleSplit(index)" v-if="item.lock"></i>
-            <i class="fa fa-square-o" @click.stop="toggleSplit(index)" v-else></i>
+            <i class="fa fa-clone" @click.stop="unsplit(index)" v-if="item.lock"></i>
+            <i class="fa fa-square-o" @click.stop="setSplit(index)" v-else></i>
           </template>
           <template v-else>
             <span>{{item.total}}</span>
@@ -75,7 +75,7 @@ export default {
   },
   data() {
     return {
-      order: JSON.parse(JSON.stringify(this.data)),
+      order: this.data,
       language: this.$store.getters.language,
       unique: String().random(4),
       componentData: null,
@@ -189,6 +189,12 @@ export default {
 
       const index = this.buffer.findIndex(i => i.unique === item.unique);
       index !== -1 ? this.buffer.splice(index, 1) : this.buffer.push(item);
+    },
+    pickAll(){
+      if(!this.master){
+        this.buffer = [];
+        this.order.content.forEach(item=>this.buffer.push(item));
+      }
     },
     pickGroup(items) {
       if (this.master) {
@@ -416,6 +422,7 @@ export default {
     tap() {
       this.buffer = [];
       this.$emit("acquire", { index: this.index, unique: this.unique });
+      this.order.content.forEach(item => Object.assign(item, { lock: false }));
     },
     selectAll() {
       this.order.content.filter(i => !i.split).forEach(item => this.pick(item));
@@ -430,14 +437,22 @@ export default {
 
       return height;
     },
-    toggleSplit(index) {
+    setSplit(index) {
+      this.buffer.forEach(item => Object.assign(item, { lock: true }));
+      const uniques = this.buffer.map(item => item.unique);
+      this.order.content.forEach(item => {
+        uniques.includes(item.unique) && Object.assign(item, { lock: true });
+      });
+      this.order.content.splice();
+    },
+    unsplit(index) {
       const item = this.order.content[index];
-      item.lock = !item.lock;
+      item.lock = false;
       this.order.content.splice(index, 1, item);
 
       const target = this.buffer.find(i => i.unique === item.unique);
       target.lock = item.lock;
-    }
+    },
   },
   watch: {
     buffer(items) {
