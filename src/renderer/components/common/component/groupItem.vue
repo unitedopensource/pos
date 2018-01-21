@@ -115,6 +115,7 @@ export default {
   grid-template-columns: 20px 1fr;
   grid-template-areas: "seat list";
   margin: 1px;
+  min-height: 39px;
 }
 
 .seat {

@@ -37,14 +37,23 @@ export default {
     return {
       left: this.init.seats[0],
       right: this.init.seats[1],
+      layout: null,
       seats: []
     };
   },
   methods: {
     select(side, seat) {
-      if (!seat._id) return;
+      if (!seat._id) {
+        this.layout = side;
+        this.seats = [];
+        const dom = document.querySelector(".hibachi .active");
+        dom && dom.classList.remove("active");
 
-      document.querySelector(`.${side}`).classList.add("active");
+        document.querySelector(`.${side}`).classList.add("active");
+        return;
+      }
+
+      if (!this.layout) return;
 
       const index = this.seats.findIndex(table => table._id === seat._id);
       index === -1 ? this.seats.push(seat) : this.seats.splice(index, 1);
