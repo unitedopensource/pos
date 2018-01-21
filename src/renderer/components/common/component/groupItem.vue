@@ -75,7 +75,7 @@ export default {
 
         document
           .querySelectorAll(".group")
-          [g].children[1].children[i].classList.add("active");
+        [g].children[1].children[i].classList.add("active");
         this.setPointer(item);
       }
     },
@@ -114,7 +114,6 @@ export default {
   display: grid;
   grid-template-columns: 20px 1fr;
   grid-template-areas: "seat list";
-  margin: 1px;
   min-height: 39px;
 }
 
@@ -125,6 +124,10 @@ export default {
   background: #b0bec5;
   color: #fff;
   margin-left: 1px;
+}
+.list {
+  background: #eee;
+  border-bottom: 1px dashed #ccc;
 }
 
 .list > div {

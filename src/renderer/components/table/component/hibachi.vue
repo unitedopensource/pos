@@ -30,20 +30,31 @@
         </div>
       </div>
       <footer>
-        <button class="btn" @click="confirm" :disabled="seats.length===0">{{$t('button.confirm')}}</button>
+        <template v-if="modify">
+          <button class="btn" @click="view">{{$t('nav.view')}}</button>
+          <button class="btn" @click="edit">{{$t('button.modify')}}</button>
+        </template>
+        <button class="btn" @click="confirm" :disabled="seats.length===0" v-else>{{$t('button.create')}}</button>
       </footer>
     </div>
+    <div :is="component" :init="componentData"></div>
   </div>
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 export default {
   props: ["init"],
+  computed: {
+    ...mapGetters(["history"])
+  },
   data() {
     return {
+      componentData: null,
+      component: null,
       left: this.init.seats[0],
       right: this.init.seats[1],
+      modify: false,
       layout: null,
       table: null,
       seats: []
@@ -55,6 +66,7 @@ export default {
         this.table = seat.name;
         this.layout = side;
         this.seats = [];
+        this.modify = false;
         const dom = document.querySelector(".hibachi .active");
         dom && dom.classList.remove("active");
 
@@ -64,9 +76,18 @@ export default {
 
       if (!this.layout) return;
 
-      const index = this.seats.findIndex(table => table._id === seat._id);
-      index === -1 ? this.seats.push(seat) : this.seats.splice(index, 1);
+      if (seat.session) {
+        this.seats = this[this.layout].filter(s => s.session === seat.session);
+        this.modify = true;
+      } else {
+        const index = this.seats.findIndex(table => table._id === seat._id);
+        index === -1 ? this.seats.push(seat) : this.seats.splice(index, 1);
 
+        if (this.modify) {
+          this.seats = this.seats.filter(s => !s.session);
+          this.modify = false;
+        }
+      }
       this.update();
     },
     update() {
@@ -85,7 +106,25 @@ export default {
     },
     confirm() {
       this.init.resolve({ seats: this.seats, table: this.table });
-    }
+    },
+    view() {
+      const _id = this.seats[0].invoice;
+      const invoice = this.history.find(i => i._id === _id);
+      invoice && this.setViewOrder(invoice);
+      this.init.resolve();
+    },
+    edit() {
+      const _id = this.seats[0].invoice;
+      const invoice = this.history.find(i => i._id === _id);
+
+      if (invoice) {
+        this.setViewOrder(invoice);
+        this.setApp({ newTicket: false });
+        this.setTicket({ type: invoice.type, number: invoice.number });
+        this.$router.push({ path: "/main/menu" });
+      }
+    },
+    ...mapActions(["setApp", "setTicket", "setViewOrder"])
   }
 };
 </script>

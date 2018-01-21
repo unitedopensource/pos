@@ -9,7 +9,7 @@
       <div class="content">
         <template v-if="order.type === 'DINE_IN'">
           <p>
-
+            <span>{{order.server}}</span>
           </p>
         </template>
         <template v-else>

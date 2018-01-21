@@ -10,7 +10,10 @@
         <inputer title="table.zone" v-model="init.table.zone" :disabled="true"></inputer>
         <selector title="table.icon" v-model="init.table.shape" :opts="iconOpts"></selector>
         <selector title="table.type" v-model="init.table.type" :opts="tableOpts"></selector>
-        <div class="printers">
+        <div class="checkboxes" v-if="init.table.type === 'hibachi'">
+          <checkbox :title="hibachi" v-model="init.table.contain" :val="hibachi" v-for="(hibachi,index) in tables" :key="index" :multiple="true"></checkbox>
+        </div>
+        <div class="printers" v-else>
           <label>{{$t('table.feature')}}</label>
           <div class="inner">
             <checkbox title="table.smoke" val="smoke" v-model="init.table.feature" :multiple="true"></checkbox>
@@ -41,9 +44,13 @@ export default {
   components: { inputer, selector, checkbox },
   created() {
     if (!Array.isArray(this.init.table.feature)) this.init.table.feature = [];
+    if (!Array.isArray(this.init.table.contain)) this.init.table.contain = [];
+
+    this.$socket.emit("[HIBACHI] GROUP", data => { this.tables = data });
   },
   data() {
     return {
+      tables: [],
       iconOpts: [
         {
           label: this.$t("text.noUse"),
@@ -75,3 +82,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.checkboxes {
+  width: 360px;
+}
+</style>

@@ -15,6 +15,7 @@
                     <inputer title="text.model" v-model="device.model"></inputer>
                     <inputer title="text.S/N" v-model.trim="device.sn"></inputer>
                     <switches title="text.printReceipt" v-model="device.print"></switches>
+                    <switches title="setting.tipSuggestion" v-model="device.tipSuggestion"></switches>
                 </div>
             </div>
             <footer>

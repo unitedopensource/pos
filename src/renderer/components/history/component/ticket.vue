@@ -1,19 +1,21 @@
 <template>
-    <div class="ticket" :data-number="invoice.number" @click="view($event)" :class="{void:invoice.status === 0,settled:invoice.settled,split:invoice.split}">
-        <span class="type" v-if="invoice.type ==='DELIVERY'">{{$t('type.'+invoice.type)}}<span class="bold">{{invoice.driver}}</span></span>
-        <span class="type" v-else>{{$t('type.'+invoice.type)}}</span>
-        <div class="info customer" v-if="invoice.type ==='DELIVERY'">
-            <span>{{invoice.customer.address}}</span>
-            <span>{{invoice.customer.phone | phone}}</span>
-        </div>
-        <span class="info" v-else-if="invoice.type === 'DINE_IN'">{{invoice.table}}</span>
-        <div class="info" v-else>
-          <span>{{invoice.customer.name}}</span>
-          <span>{{invoice.customer.phone | phone}}</span>
-        </div>
-        <span class="note" v-if="invoice.status === 0">{{$t('reason.'+invoice.void.note)}}</span>
-        <span class="price">$ {{invoice.payment.due | decimal}}</span>
+  <div class="ticket" :data-number="invoice.number" @click="view($event)" :class="{void:invoice.status === 0,settled:invoice.settled,split:invoice.split}">
+    <span class="type" v-if="invoice.type ==='DELIVERY'">{{$t('type.'+invoice.type)}}
+      <span class="bold">{{invoice.driver}}</span>
+    </span>
+    <span class="type" v-else>{{$t('type.'+invoice.type)}}</span>
+    <div class="info customer" v-if="invoice.type ==='DELIVERY'">
+      <span>{{invoice.customer.address}}</span>
+      <span>{{invoice.customer.phone | phone}}</span>
     </div>
+    <span class="info" v-else-if="invoice.type === 'DINE_IN' || invoice.type === 'HIBACHI'">{{invoice.table}}</span>
+    <div class="info" v-else>
+      <span>{{invoice.customer.name}}</span>
+      <span>{{invoice.customer.phone | phone}}</span>
+    </div>
+    <span class="note" v-if="invoice.status === 0">{{$t('reason.'+invoice.void.note)}}</span>
+    <span class="price">$ {{invoice.payment.due | decimal}}</span>
+  </div>
 </template>
 
 
@@ -21,15 +23,8 @@
 import { mapGetters, mapActions } from "vuex";
 export default {
   props: ["invoice"],
-  data() {
-    return {};
-  },
   methods: {
     view(e) {
-      // let dom = document.querySelector(".ticket.active");
-      // dom && dom.classList.remove("active");
-
-      // e.currentTarget.classList.add("active");
       this.setViewOrder(this.invoice);
     },
     ...mapActions(["setViewOrder"])
