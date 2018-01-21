@@ -38,7 +38,7 @@ export default {
       component: null,
       tabs: [],
       language: this.$store.getters.language,
-      sections: JSON.parse(JSON.stringify(this.$store.getters.tables)),
+      sections: this.$store.getters.tables,
       sectionIndex: 0,
       isSectionSorted: false,
       isTableSorted: false
@@ -57,16 +57,35 @@ export default {
           ? section.item
           : Array(56).fill({ name: "", shape: "", zone: section.zone });
     },
-    newSection() {},
-    editSection(section, index) {
+    newSection() {
+      const section = {
+        usEN: "",
+        zhCN: "",
+        zone: "",
+        item: []
+      };
       new Promise((resolve, reject) => {
-        this.componentData = { resolve, reject };
+        this.componentData = { resolve, reject, section, edit: false };
         this.component = "sectionEditor";
       })
         .then(() => {
           this.$q();
         })
-        .catch(() => {
+        .catch(() => this.$q());
+    },
+    editSection(section, index) {
+      new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject, section, edit: true };
+        this.component = "sectionEditor";
+      })
+        .then(() => {
+          this.$q();
+        })
+        .catch(del => {
+          if (del) {
+            this.$socket.emit("[TABLE] REMOVE_ZONE", index);
+            this.$store.getters.tables.splice(index, 1);
+          }
           this.$q();
         });
     },

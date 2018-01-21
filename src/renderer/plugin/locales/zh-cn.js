@@ -333,7 +333,7 @@ export default {
         ledger: '轧账',
         table: '桌位',
         departments: '部门分类',
-        hibachiTable:'铁板座位'
+        hibachiTable: '铁板座位'
     },
     dialog: {
         maintenance: '维护',
@@ -403,7 +403,7 @@ export default {
         removeAllPaymentConfirmTip: '您确定要移除所有的付款记录吗？',
         paymentRemoved: '付款记录已移除',
         paymentRemovedTip: '#{i} 订单的付款记录已经移除',
-        switchTable: '换桌',
+        switchTable: '{i} 换座位',
         switchTableTip: '请选择一个空的座位',
         tableSwitchConfirm: '确认换桌',
         tableSwitchConfirmTip: '您确定要将 {i} 座位 转移到 {i} 座位吗?',
@@ -1170,7 +1170,8 @@ export default {
         filter: '过滤',
         revenue: '营收',
         payout: '支出',
-        hibachi:'铁板'
+        hibachi: '铁板',
+        item: '物品'
     },
     setting: {
         softwareSetting: 'UnitedPOS 后台设置',
@@ -1237,7 +1238,7 @@ export default {
         saveLog: '保存记录',
         timecard: '打卡',
         unifiedBatch: '统一过账',
-        unifiedOrder:'统一分单',
+        unifiedOrder: '统一分单',
         basic: '基本设置',
         style: '样式设置',
         other: '其它设置',

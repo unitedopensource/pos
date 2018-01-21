@@ -80,6 +80,7 @@
             <inputer title="text.priority" v-model.number="item.priority"></inputer>
             <inputer title="text.inventory" v-model.number="item.inventory"></inputer>
             <inputer title="text.rewardPoint" v-model.number="item.rewardPoint"></inputer>
+            <external title="text.preset" @open="setPreset" :defaultStyle="false"></external>
           </div>
           <div class="side">
             <switches title="text.openFood" v-model="item.temporary"></switches>
@@ -126,6 +127,7 @@ import inputer from "../../common/inputer";
 import selector from "../../common/selector";
 import checkbox from "../../common/checkbox";
 import switches from "../../common/switches";
+import external from "../../common/external";
 
 export default {
   props: ["init"],
@@ -133,6 +135,7 @@ export default {
     prices,
     editor,
     toggle,
+    external,
     switches,
     inputer,
     selector,
@@ -226,6 +229,9 @@ export default {
     },
     render() {
       this.$forceUpdate();
+    },
+    setPreset(){
+      console.log("trigger")
     },
     save() {
       this.item.zhCN = this.item.zhCN || this.item.usEN;

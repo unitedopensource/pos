@@ -179,6 +179,7 @@ var Preset = function () {
         unit: "lbs",
         value: 0
       },
+      preset:[],
       printer: {}
     }
   };

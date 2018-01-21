@@ -30,14 +30,12 @@ export default {
   },
   data() {
     return {
-      id: Math.random()
-        .toString(36)
-        .substring(3, 6)
+      id: String().random()
     };
   },
   methods: {
     has(value) {
-      return this.value.includes(value);
+      return this.value ? this.value.includes(value) : false;
     },
     toggle(e) {
       let value = this.value || [];

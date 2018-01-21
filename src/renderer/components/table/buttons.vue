@@ -132,7 +132,7 @@ export default {
     switchTable() {
       if (!this.currentTable) return;
       this.$dialog({
-        title: "dialog.switchTable",
+        title: ["dialog.switchTable",this.currentTable.name],
         msg: "dialog.switchTableTip"
       })
         .then(() => {

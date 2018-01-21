@@ -179,8 +179,7 @@ export default {
       this.isCategorySorted = false;
     },
     updateItemSort() {
-      //this.$socket.emit("[MENU] SORT")
-
+      this.$socket.emit("[MENU] SORT", this.items);
       this.isItemSorted = false;
     },
     refreshData() {

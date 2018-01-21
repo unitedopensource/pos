@@ -494,7 +494,7 @@ export default {
         removeAllPaymentConfirmTip: 'Are you sure to remove all payment records?',
         paymentRemoved: 'Payment Removed',
         paymentRemovedTip: "#{i} invoice 's payment record has been removed.",
-        switchTable: 'Select Table',
+        switchTable: 'Switch {i} Table',
         switchTableTip: 'Please select an empty table to perform switch',
         tableSwitchConfirm: 'Table Switch Confirm',
         tableSwitchConfirmTip: 'Are you sure to transfer table from {i} to {i} ?',
@@ -1176,7 +1176,9 @@ export default {
         view: 'View',
         filter: 'Filter',
         revenue: 'Revenue',
-        payout: 'Payout'
+        payout: 'Payout',
+        hibachi: 'Hibachi',
+        item: 'Item'
     },
     setting: {
         softwareSetting: 'UnitedPOS Setting',
