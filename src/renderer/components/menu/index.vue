@@ -316,11 +316,10 @@ export default {
           if (option[0].subMenu) stop("subMenu");
         }
 
-        if(item.preset){
-          item.choiceSet = item.preset.map(set=>({
-            zhCN:
-          }))
-        }
+        // if(item.preset){
+        //   item.choiceSet = item.preset.map(set=>({
+        //   }))
+        // }
 
         next(item);
       });
