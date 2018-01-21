@@ -11,14 +11,20 @@
           <div class="left">
             <div class="seat" v-for="(seat,index) in left" @click="select('left',seat)" :data-id="seat._id">
               <span>{{seat.name}}</span>
-              <span v-if="seat.session" class="server">{{seat.server}}</span>
+              <template v-if="seat.session">
+                <span class="server">{{seat.server}}</span>
+                <span class="ticket">#{{seat.ticket}}</span>
+              </template>
             </div>
           </div>
           <div class="middle"></div>
           <div class="right">
             <div class="seat" v-for="(seat,index) in right" @click="select('right',seat)" :data-id="seat._id">
               <span>{{seat.name}}</span>
-              <span v-if="seat.session" class="server">{{seat.server}}</span>
+              <template v-if="seat.session">
+                <span class="server">{{seat.server}}</span>
+                <span class="ticket">#{{seat.ticket}}</span>
+              </template>
             </div>
           </div>
         </div>
@@ -31,6 +37,7 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
 export default {
   props: ["init"],
   data() {
@@ -38,12 +45,14 @@ export default {
       left: this.init.seats[0],
       right: this.init.seats[1],
       layout: null,
+      table: null,
       seats: []
     };
   },
   methods: {
     select(side, seat) {
       if (!seat._id) {
+        this.table = seat.name;
         this.layout = side;
         this.seats = [];
         const dom = document.querySelector(".hibachi .active");
@@ -75,7 +84,7 @@ export default {
       });
     },
     confirm() {
-      this.init.resolve(this.seats);
+      this.init.resolve({ seats: this.seats, table: this.table });
     }
   }
 };
@@ -160,5 +169,13 @@ div.selected {
   color: #fff;
   width: 77px;
   text-align: center;
+}
+
+.ticket {
+  position: absolute;
+  bottom: 0;
+  right: 3px;
+  font-size: 14px;
+  color: #607d8b;
 }
 </style>

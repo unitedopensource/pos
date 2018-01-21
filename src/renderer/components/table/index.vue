@@ -129,7 +129,7 @@ export default {
         switch (table.type) {
           case "hibachi":
             this.selectHibachiTable(table)
-              .then(seats => {
+              .then(({seats,table}) => {
                 this.resetMenu();
 
                 const session = ObjectId();
@@ -147,8 +147,8 @@ export default {
                 this.setOrder({
                   seats,
                   layout,
+                  table,
                   session,
-                  table:table.name,
                   type: "HIBACHI",
                   server: this.op.name
                 });
