@@ -139,15 +139,16 @@ export default {
         });
       });
     },
-    finalizing() {},
+    finalizing() { },
 
-    next() {},
+    next() { },
     batchAlone(device, index) {
       this.batch(device).then(response => {
         const result = device.terminal.explainBatch(response.data);
         if (result.code === "000000") {
           device.status = 5;
-          Printer.printBatchReport(result);
+          this.print(result);
+
 
           this.tasks[index].report = result;
           this.$socket.emit("[TERMINAL] CLOSED", result, done =>
@@ -164,7 +165,16 @@ export default {
     },
     reprint(index) {
       const { report } = this.tasks[index];
-      Printer.printBatchReport(report);
+      this.print(report);
+    },
+    print(report) {
+      if (this.detail) {
+        const detail = "";
+        Printer.printBatchReport(report, detail);
+      } else {
+        Printer.printBatchReport(report, false);
+      }
+
     },
     getParser(model) {
       switch (model) {

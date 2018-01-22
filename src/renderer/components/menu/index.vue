@@ -98,9 +98,22 @@ export default {
     this.initialData();
 
     this.$socket.emit("[INQUIRY] TICKET_NUMBER", number => {
-      this.app.newTicket ? this.setTicket({ number }) : this.resetPointer();
+      if (this.app.newTicket) {
+        this.setTicket({ number });
+        this.$log({
+          eventID: 4000,
+          data: this.order._id,
+          note: `Initial create #${number} invoice for ${this.ticket.type.replace('_', ' ').toCapitalCase()}.`
+        })
+      } else {
+        this.$log({
+          eventID: 4005,
+          data: this.order._id,
+          note: `Edit #${this.order.number} invoice.`
+        })
+      }
     });
-
+    this.resetPointer();
     window.addEventListener("keydown", this.entry, false);
   },
   mounted() {

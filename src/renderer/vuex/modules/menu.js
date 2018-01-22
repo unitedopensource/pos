@@ -191,7 +191,7 @@ const mutations = {
     if (state.item.split) return;
 
     if (state.choiceSetTarget) {
-      const { qty, single } = state.choiceSetTarget;
+      let { qty, single } = state.choiceSetTarget;
 
       if (qty === 1) {
         state.order.content.forEach(item => {

@@ -431,9 +431,9 @@ export default {
       const prompt = { title: "dialog.exitConfirm", msg: "dialog.exitConfirmTip" };
 
       this.isEmptyTicket
-        ? this.exitOut()
+        ? this.abandon()
         : this.$dialog(prompt)
-          .then(this.exitOut)
+          .then(this.abandon)
           .catch(() => this.$q());
     },
     combineOrderInfo(extra) {
@@ -564,9 +564,14 @@ export default {
     resetTableExit() {
       this.app.newTicket &&
         this.$socket.emit("[TABLE] RESET", { _id: this.currentTable._id });
-      this.exitOut();
+      this.abandon();
     },
-    exitOut() {
+    abandon() {
+      this.$log({
+        eventID: 4001,
+        data: this.order._id,
+        note: `#${this.ticket.number} Invoice was abandoned.`
+      });
       this.resetAll();
       this.setApp({ newTicket: true });
       this.$router.push({ path: "/main" });
