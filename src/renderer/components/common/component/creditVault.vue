@@ -25,8 +25,10 @@
           </template>
           <template v-else>
             <div class="dialog">
-              <h3>{{$t('button.newRecord')}}</h3>
-              <div class="banner"></div>
+              <header>
+                <h5>{{$t('title.create')}}</h5>
+                <h3>{{$t('button.newRecord')}}</h3>
+              </header>
               <div class="inner">
                 <p>{{$t('card.number')}}</p>
                 <input type="text" v-model="card" @click="setCursor('card')">
@@ -35,8 +37,10 @@
                 <p>{{$t('card.securityCode')}}</p>
                 <input type="text" v-model="cvc" @click="setCursor('cvc')">
               </div>
-              <button class="btn" @click="view = true">{{$t('button.cancel')}}</button>
-              <button class="btn" @click="save">{{$t('button.save')}}</button>
+              <footer>
+                <button class="btn" @click="view = true">{{$t('button.cancel')}}</button>
+                <button class="btn" @click="save">{{$t('button.save')}}</button>
+              </footer>
             </div>
           </template>
         </div>
@@ -44,7 +48,7 @@
           <div class="inner">
             <input type="text" v-model="entry">
           </div>
-          <num-pad v-model="entry" @enter="unlock" type="number"></num-pad>
+          <num-pad v-model="entry" @enter="unlock" type="string"></num-pad>
         </div>
       </div>
       <footer>
@@ -216,7 +220,7 @@ export default {
         case "card":
           if (n.length > 16) return;
 
-          this[this.cursor] = n
+          this[this.cursor] = String(n)
             .replace(" ", "")
             .replace(/(.{4})/g, "$1 ")
             .trim();
@@ -224,13 +228,13 @@ export default {
         case "exp":
           if (n.length > 4) return;
 
-          this[this.cursor] = n
+          this[this.cursor] = String(n)
             .replace("/", "")
             .replace(/(.{2})/, "$1/")
             .trim();
           break;
         case "cvc":
-          this[this.cursor] = n;
+          this[this.cursor] = String(n);
       }
     }
   }
@@ -240,7 +244,7 @@ export default {
 <style scoped>
 .wrap {
   display: flex;
-  padding: 15px;
+  padding: 15px 5px 5px 15px;
 }
 
 .profiles {
@@ -297,15 +301,14 @@ i.trash {
 }
 
 .dialog {
-  height: 100%;
   text-align: center;
   border-radius: 4px;
   background: #fafafa;
   box-shadow: var(--shadow);
 }
 
-.dialog h3 {
-  padding: 15px 0;
+.dialog header {
+  text-align: left;
 }
 
 p {
@@ -317,6 +320,7 @@ p {
 .dialog .inner {
   margin: auto;
   padding: 15px 35px 30px;
+  background: #f5f5f5;
 }
 
 .dialog input {

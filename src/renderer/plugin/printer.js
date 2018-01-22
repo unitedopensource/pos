@@ -1190,8 +1190,8 @@ function createList(printer, setting, invoice, preview) {
         const { replace = false, zhCN, usEN, note } = item.printer[printer];
         const idCN = secondary.id ? item.menuID + ' ' : '';
         const idEN = primary.id ? item.menuID + ' ' : '';
-        const nameCN = replace ? idCN + zhCN : idCN + item.zhCN;
-        const nameEN = replace ? idEN + usEN : idEN + item.usEN;
+        const nameCN = replace ? idCN + zhCN : idCN + (item.zhCN || "");
+        const nameEN = replace ? idEN + usEN : idEN + (item.usEN || "");
         const sideCN = item.side.zhCN || "";
         const sideEN = item.side.usEN || "";
         const cnPrice = secondary.price ? `<span class="price">${item.total}</span>` : "";

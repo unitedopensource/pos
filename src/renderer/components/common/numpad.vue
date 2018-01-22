@@ -46,17 +46,27 @@ export default {
     input(value) {
       switch (this.type) {
         case "number":
-          const changeValue = this.value + value > this.max ? this.value : this.value + value;
+          const changeValue =
+            this.value + value > this.max ? this.value : this.value + value;
           this.reset
             ? this.$emit("input", Number(value))
             : this.$emit("input", Number(changeValue));
           break;
         case "decimal":
-          const changeDecimal = (((this.value * 100).toFixed(0) + value) / 100).toFixed(2);
+          const changeDecimal = (
+            ((this.value * 100).toFixed(0) + value) /
+            100
+          ).toFixed(2);
           this.reset
             ? this.$emit("input", (value / 100).toFixed(2))
             : this.$emit("input", changeDecimal);
           break;
+        case "string":
+          const changeString =
+            this.value + value > this.max ? this.value : this.value + value;
+          this.reset
+            ? this.$emit("input", String(value))
+            : this.$emit("input", String(changeString));
       }
       this.reset = false;
     },
@@ -73,12 +83,28 @@ export default {
         case "decimal":
           this.$emit("input", (this.value.slice(0, -1) / 10).toFixed(2));
           break;
+        case "string":
+        if (this.value) {
+            this.$emit("input", String(this.value).slice(0, -1) || 0);
+          } else {
+            this.$emit("input", "");
+            this.reset = true;
+          }
+          break;
       }
     },
     clear() {
-      this.type === "number"
-        ? this.$emit("input", "0")
-        : this.$emit("input", "0.00");
+      switch (this.type) {
+        case "number":
+          this.$emit("input", 0);
+          break;
+        case "decimal":
+          this.$emit("input", "0.00");
+          break;
+        case "string":
+          this.$emit("input", "");
+          break;
+      }
 
       this.$emit("clear", true);
       this.reset = true;
