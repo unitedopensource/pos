@@ -343,11 +343,10 @@ export default {
         const taxClass = this.tax.class[item.taxClass];
 
         let amount = toFixed(single * qty, 2);
-
         item.choiceSet.forEach(set => {
           const _price = parseFloat(set.single);
 
-          if (_price > 0) {
+          if (_price !== 0) {
             const _qty = set.qty || 1;
             const _total = toFixed(_qty * _price, 2);
             amount = toFixed(amount + _total, 2);

@@ -176,7 +176,7 @@ export default {
                 item.choiceSet.forEach(set => {
                     const _price = parseFloat(set.single);
 
-                    if (_price > 0) {
+                    if (_price !== 0) {
                         const _qty = set.qty || 1;
                         const _total = _qty * _price;
                         amount = toFixed(amount + _total, 2);
