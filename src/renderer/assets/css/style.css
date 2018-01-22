@@ -152,6 +152,10 @@ input[type='radio'] {
   background: rgba(0, 0, 0, 0.7);
 }
 
+.popupMask.darker{
+  background:#171718;
+}
+
 .logo {
   width: 55px;
   height: 50px;

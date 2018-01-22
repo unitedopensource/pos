@@ -68,7 +68,24 @@ export default {
         this.componentData = { resolve, reject, section, edit: false };
         this.component = "sectionEditor";
       })
-        .then(() => {
+        .then(_section => {
+          const { zone, usEN, zhCN } = _section;
+          const item = Array(55).fill().map((_, index) => ({
+            feature: [],
+            invoice: [],
+            name: "",
+            server: null,
+            session: null,
+            shape: "",
+            status: 1,
+            time: 0,
+            grid: index,
+            zone
+          }));
+
+          this.sections.push({ usEN, zhCN, zone, item });
+          console.log(this.sections)
+          this.viewSection(this.sections.length - 1);
           this.$q();
         })
         .catch(() => this.$q());
@@ -90,14 +107,17 @@ export default {
         });
     },
     editTable(table, index) {
-      Object.assign(table, {
-        zone: this.sections[this.sectionIndex].zone
-      });
+      const { zone } = this.sections[this.sectionIndex];
+
+      table = JSON.parse(JSON.stringify(table));
+      Object.assign(table, { zone });
+
       new Promise((resolve, reject) => {
         this.componentData = { resolve, reject, table };
         this.component = "tableEditor";
       })
         .then(_table => {
+          console.log(_table)
           this.tabs.splice(index, 1, _table);
           this.$socket.emit("[TABLE] SAVE", {
             index,
@@ -114,7 +134,7 @@ export default {
     removeTable(table, index) {
       table._id && this.$socket.emit("[TABLE] REMOVE", table._id);
 
-      this.$store.getters.tables[this.sectionIndex].splice(index, 1, {
+      this.$store.getters.tables[this.sectionIndex].item.splice(index, 1, {
         _id: null,
         feature: [],
         grid: index,
@@ -123,9 +143,11 @@ export default {
         status: 1,
         zone: ""
       });
+
+      this.$q();
     },
-    updateSortedSection() {},
-    updateSortedTable() {},
+    updateSortedSection() { },
+    updateSortedTable() { },
     refreshData() {
       this.sections = JSON.parse(JSON.stringify(this.$store.getters.tables));
       this.viewSection(this.sectionIndex);

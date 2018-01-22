@@ -80,7 +80,7 @@ const mutations = {
   [types.ADD_TO_ORDER](state, item) {
     delete item.clickable;
     Object.assign(item, {
-      unique: Math.random().toString(36).substr(2, 5),
+      unique: String().random(),
       print: false,
       pending: false,
       void: false,
@@ -160,7 +160,7 @@ const mutations = {
         item.total = (--item.qty * item.single).toFixed(2);
 
         let _item = JSON.parse(JSON.stringify(item));
-        _item.unique = Math.random().toString(36).substr(2, 5);
+        _item.unique = String().random();
         _item.qty = 1;
         _item.side = { zhCN: _zhCN, usEN: _usEN };
 
@@ -174,7 +174,7 @@ const mutations = {
 
         _item.total = item.single.toFixed(2);
 
-        let dom = document.querySelector('li.item.active');
+        const dom = document.querySelector('li.item.active');
         dom && dom.classList.remove('active');
 
         const index = state.order.content.findIndex(i => i.unique === item.unique) + 1;
@@ -189,8 +189,11 @@ const mutations = {
   [types.LESS_QTY](state, delChoiceSetFirst) {
     if (state.order.content.length === 0) return;
     if (state.item.split) return;
+
     if (state.choiceSetTarget) {
-      if (state.choiceSetTarget.qty === 1) {
+      const { qty, single } = state.choiceSetTarget;
+
+      if (qty === 1) {
         state.order.content.forEach(item => {
           item.choiceSet.forEach((set, index) => {
             if (set === state.choiceSetTarget) {
@@ -202,7 +205,7 @@ const mutations = {
           })
         })
       } else {
-        state.choiceSetTarget.price = toFixed(--state.choiceSetTarget.qty * state.choiceSetTarget.single, 2).toFixed(2)
+        state.choiceSetTarget.price = toFixed(--qty * single, 2).toFixed(2)
       }
     } else if (delChoiceSetFirst) {
       let set = state.item.choiceSet.last();
@@ -231,6 +234,7 @@ const mutations = {
   [types.MORE_QTY](state) {
     if (state.order.content.length === 0) return;
     if (state.item.split) return;
+    
     if (state.choiceSetTarget && state.choiceSetTarget.qty < 99) {
       state.choiceSetTarget.price = (++state.choiceSetTarget.qty * state.choiceSetTarget.single).toFixed(2);
     } else {
@@ -242,12 +246,13 @@ const mutations = {
     if (state.order.content.length === 0) return;
     if (state.item.split) return;
 
-    set.unique = Math.random().toString(36).substr(2, 5);
+    set.unique = String().random();
 
-    let dom = document.querySelector(".sub.target");
+    const dom = document.querySelector(".sub.target");
     if (dom) {
-      let key = dom.dataset.key;
-      let index = state.item.choiceSet.findIndex(s => s.key === key) + 1;
+      const { key } = dom.dataset;
+      const index = state.item.choiceSet.findIndex(s => s.key === key) + 1;
+
       state.item.choiceSet.splice(index, 0, set)
       dom.classList.remove("target");
     } else {
@@ -257,9 +262,10 @@ const mutations = {
   },
   [types.ALERT_CHOICE_SET](state, set) {
     const { zhCN, usEN } = set;
+
     state.choiceSetTarget.zhCN = `${state.choiceSetTarget.zhCN} ${zhCN}`;
     state.choiceSetTarget.usEN = `${state.choiceSetTarget.usEN} ${usEN}`;
-    state.choiceSetTarget.unique = Math.random().toString(36).substr(2, 5);
+    state.choiceSetTarget.unique = String().random();
   },
   [types.RESET_CHOICE_SET](state) {
     state.choiceSetTarget = null;
@@ -283,13 +289,13 @@ const mutations = {
     state.order = Object.assign({}, state.order, data);
     state.item = state.order.content.last();
 
-    let dom = document.querySelector('li.item.active');
+    const dom = document.querySelector('li.item.active');
     dom && dom.classList.remove('active')
   },
   [types.REFRESH_CURRENT_ORDER](state, orders) {
     if (state.order.hasOwnProperty('status')) {
-      let _id = state.order._id;
-      let length = orders.length;
+      const _id = state.order._id;
+      const length = orders.length;
 
       for (let i = 0; i < length; i++) {
         if (orders[i]._id === _id) {

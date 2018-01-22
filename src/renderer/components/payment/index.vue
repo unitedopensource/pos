@@ -1090,7 +1090,8 @@ export default {
           "[PAYMENT] CHECK",
           this.order._id,
           paid => {
-            const remain = Math.max(0, this.payment.remain - paid).toPrecision(12).toFloat();
+            const remain = Math.max(0, this.payment.balance - paid).toPrecision(12).toFloat();
+            
             if (remain > 0) {
               this.$q();
               this.setPaymentType("CASH");

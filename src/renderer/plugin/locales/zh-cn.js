@@ -337,10 +337,11 @@ export default {
     },
     dialog: {
         maintenance: '维护',
-        maintenanceTip: '系统正在维护中...',
-        communicationInterrupted: '失去与服务器的连接，正在尝试重连...',
-        communicationInterruptedTip: '如果问题依然存在，请拨打技术部门热线',
-        technicalSupportNumber: '(888)299-0524',
+        debugOngoing: '系统正在维护中...',
+        criticalError: '发生了一个严重的系统错误',
+        attempRecover: '正在尝试自动修复这个错误...',
+        attempFailed: '无法自动修复系统错误，请立即拨打技术部门热线',
+        supportHotLine: '(888)299-0524',
         exitConfirm: '您确定要退出吗？',
         exitConfirmTip: '未保存的订单将会被删除',
         systemProcessing: '系统处理中...',
@@ -1117,7 +1118,8 @@ export default {
         roundToQuarter: '补齐25美分',
         alwaysRoundUp: '向上取整',
         alwaysRoundDown: '向下取整',
-        itemSplit: '物品平摊'
+        itemSplit: '物品平摊',
+        presetItem: '预设物品'
     },
     nav: {
         store: '店面',

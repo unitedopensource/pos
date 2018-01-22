@@ -428,10 +428,11 @@ export default {
     },
     dialog: {
         maintenance: 'Maintenance',
-        maintenanceTip: 'POS is under maintenance...',
-        communicationInterrupted: 'Communication interrupted',
-        communicationInterruptedTip: 'Trying to reconnect to host... If problem persist, please contact UnitedPOS technical support team',
-        technicalSupportNumber: '(888)299-0524',
+        debugOngoing: 'Men At Work...',
+        criticalError: 'System has Encountered A Critical Problem',
+        attempRecover: 'Attempting To Recovery...',
+        attempFailed: 'Recovery has failed. Please call Support for troubleshooting.',
+        supportHotLine: '(888)299-0524',
         exitConfirm: 'Are you sure you want to exit?',
         exitConfirmTip: 'Unsaved order will be removed.',
         systemProcessing: 'System Processing...',
@@ -1124,7 +1125,8 @@ export default {
         roundToQuarter: 'Round To Quarter',
         alwaysRoundUp: 'Round up',
         alwaysRoundDown: 'Round down',
-        itemSplit: 'Item Split'
+        itemSplit: 'Item Split',
+        presetItem: 'Preset Items'
     },
     nav: {
         store: 'Store',

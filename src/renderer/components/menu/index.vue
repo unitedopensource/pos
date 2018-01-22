@@ -236,7 +236,7 @@ export default {
       toggleClass(".category .active", "active");
       document
         .querySelectorAll("section.category div")
-        [index].classList.add("active");
+      [index].classList.add("active");
 
       this.itemPage = 0;
       this.saveItems = null;
@@ -316,10 +316,15 @@ export default {
           if (option[0].subMenu) stop("subMenu");
         }
 
-        // if(item.preset){
-        //   item.choiceSet = item.preset.map(set=>({
-        //   }))
-        // }
+        if (item.preset) {
+          item.choiceSet = item.preset.map(set => ({
+            qty: set.qty,
+            zhCN: set.zhCN,
+            usEN: set.usEN,
+            single: set.price,
+            price: set.price
+          }))
+        }
 
         next(item);
       });
@@ -417,9 +422,9 @@ export default {
 
       const itemCount = Array.isArray(this.item.choiceSet)
         ? this.item.choiceSet
-            .filter(i => i.subItem)
-            .map(i => i.qty)
-            .reduce((a, b) => a + b, 0)
+          .filter(i => i.subItem)
+          .map(i => i.qty)
+          .reduce((a, b) => a + b, 0)
         : 0;
 
       if (subItem && this.item.hasOwnProperty("rules")) {
@@ -449,7 +454,7 @@ export default {
       print.forEach(device => (printer[device] = {}));
       Object.assign(this.item.printer, printer);
     },
-    setSeat(seat){
+    setSeat(seat) {
       this.seat = seat;
     },
     open(component) {

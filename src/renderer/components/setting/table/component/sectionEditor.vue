@@ -20,7 +20,7 @@
                 <div class="opt">
                     <span class="del" @click="init.reject(true)">{{$t('button.delete')}}</span>
                 </div>
-                <button class="btn" @click="init.resolve(init.section)">{{$t('button.confirm')}}</button>
+                <button class="btn" @click="init.resolve(init.section)" :disabled="!init.section.zone">{{$t('button.confirm')}}</button>
             </footer>
         </div>
     </div>
@@ -29,14 +29,7 @@
 <script>
 import inputer from "../../common/inputer";
 export default {
-  props: ["init"],
-  components: { inputer },
-  data() {
-    return {};
-  }
+    props: ["init"],
+    components: { inputer }
 };
 </script>
-
-<style scoped>
-
-</style>

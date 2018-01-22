@@ -1,17 +1,19 @@
 <template>
-    <div class="popupMask center dark">
+    <div class="popupMask center darker">
         <div class="wrap">
-            <i class="fa fa-warning icon"></i>
-            <h3>{{$t("dialog.communicationInterrupted")}}</h3>
+            <i class="fa fa-exclamation-circle icon"></i>
+            <h3>{{$t("dialog.somethingWrong")}}</h3>
             <h5>
                 <span>{{pass.minute}}</span>
                 <span>:</span>
                 <span>{{pass.second}}</span>
             </h5>
             <footer>
-                <div>
-                    <i class="fa fa-commenting"></i>{{$t('dialog.communicationInterruptedTip')}}</div>
-                <span class="phone">{{$t('dialog.technicalSupportNumber')}}</span>
+                <p v-if="autoFix">{{$t('dialog.attempRecover')}}</p>
+                <template v-else>
+                    <p>{{$t('dialog.attempFailed')}}</p>
+                    <p>{{$t('dialog.supportHotLine')}}</p>
+                </template>
             </footer>
         </div>
     </div>
@@ -23,14 +25,18 @@ export default {
     props: ['init'],
     data() {
         return {
-            happened: +new Date() - 1000
+            happened: +new Date() - 1000,
+            autoFix: true
         }
     },
     computed: {
         pass() {
-            let diff = this.time - this.happened;
-            let minute = Math.floor(diff / 1000 / 60);
-            let second = Math.floor(diff / 1000 % 60);
+            const diff = this.time - this.happened;
+
+            this.autoFix = diff < 60000;
+
+            const minute = Math.floor(diff / 1000 / 60);
+            const second = Math.floor(diff / 1000 % 60);
             return {
                 minute: ("0" + minute).slice(-2),
                 second: ("0" + second).slice(-2)
@@ -43,47 +49,28 @@ export default {
 
 <style scoped>
 .wrap {
-    text-align: center;
-    color: #fff;
+  text-align: center;
+  color: #fff;
+  margin-top: 7em;
 }
 
-.icon {
-    color: #E53935;
-    text-shadow: 0 1px 3px #920707;
-    font-size: 5em;
-    position: relative;
-}
-
-.icon:after {
-    content: ' ';
-    position: absolute;
-    left: 41px;
-    top: 10px;
-    width: 18px;
-    height: 70px;
-    background: #FFEB3B;
-    z-index: -1;
+i {
+  color: #ffeb3b;
+  font-size: 5em;
+  position: relative;
 }
 
 h3 {
-    font-family: 'Microsoft YaHei';
+  font-family: "Microsoft YaHei";
+  margin-top: 10px;
 }
 
 h5 {
-    padding: 5px;
-    font-family: 'Agency FB';
+  padding: 5px;
+  font-family: "Agency FB";
 }
-
-footer i {
-    margin-right: 5px;
-}
-
-footer div,
-footer span {
-    background: #FF5722;
-    border-radius: 4px;
-    padding: 1px 20px;
-    margin: 5px;
-    text-shadow: 0 1px 1px #333;
+footer {
+  margin-top: 245px;
+  font-size: 16px;
 }
 </style>

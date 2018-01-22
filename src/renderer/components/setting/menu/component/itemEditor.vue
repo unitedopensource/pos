@@ -80,7 +80,7 @@
             <inputer title="text.priority" v-model.number="item.priority"></inputer>
             <inputer title="text.inventory" v-model.number="item.inventory"></inputer>
             <inputer title="text.rewardPoint" v-model.number="item.rewardPoint"></inputer>
-            <external title="text.preset" @open="setPreset" :defaultStyle="false"></external>
+            <external title="text.presetItem" @open="setPreset" :defaultStyle="false"></external>
           </div>
           <div class="side">
             <switches title="text.openFood" v-model="item.temporary"></switches>
@@ -122,12 +122,14 @@
 import prices from "./priceEditor";
 import editor from "./optionEditor";
 import draggable from "vuedraggable";
+import presetor from "./presetEditor";
 import toggle from "../../common/toggle";
 import inputer from "../../common/inputer";
 import selector from "../../common/selector";
 import checkbox from "../../common/checkbox";
 import switches from "../../common/switches";
 import external from "../../common/external";
+
 
 export default {
   props: ["init"],
@@ -140,6 +142,7 @@ export default {
     inputer,
     selector,
     checkbox,
+    presetor,
     draggable
   },
   data() {
@@ -230,8 +233,15 @@ export default {
     render() {
       this.$forceUpdate();
     },
-    setPreset(){
-      console.log("trigger")
+    setPreset() {
+      new Promise((resolve, reject) => {
+        const { preset = [] } = this.item;
+        this.componentData = { resolve, reject, preset };
+        this.component = "presetor"
+      }).then(_preset => {
+        Object.assign(this.item, { preset: _preset })
+        this.$q();
+      }).catch(() => this.$q())
     },
     save() {
       this.item.zhCN = this.item.zhCN || this.item.usEN;

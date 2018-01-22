@@ -1,19 +1,27 @@
 <template>
   <div class="summary" :class="{hide:!viewable}">
     <div class="filter active" @click="setFilter('',$event)">
-      <div class="text">{{$t('type.allInvoice')}}<span class="count">{{summary.totalCount}}</span></div>
+      <div class="text">{{$t('type.allInvoice')}}
+        <span class="count">{{summary.totalCount}}</span>
+      </div>
       <div class="value">$ {{summary.totalAmount | decimal}}</div>
     </div>
     <div class="filter" @click="setFilter('WALK_IN',$event)" v-show="summary.walkInCount">
-      <div class="text">{{$t('type.walkInInvoice')}}<span class="count">{{summary.walkInCount}}</span></div>
+      <div class="text">{{$t('type.walkInInvoice')}}
+        <span class="count">{{summary.walkInCount}}</span>
+      </div>
       <div class="value">$ {{summary.walkInAmount | decimal}}</div>
     </div>
     <div class="filter" @click="setFilter('PICK_UP',$event)" v-show="summary.pickUpCount">
-      <div class="text">{{$t('type.pickUpInvoice')}}<span class="count">{{summary.pickUpCount}}</span></div>
+      <div class="text">{{$t('type.pickUpInvoice')}}
+        <span class="count">{{summary.pickUpCount}}</span>
+      </div>
       <div class="value">$ {{summary.pickUpAmount | decimal}}</div>
     </div>
     <div class="filter dropDown" @click="setFilter('DELIVERY',$event)" v-show="summary.deliveryCount">
-      <div class="text">{{$t('type.deliveryInvoice')}}<span class="count">{{summary.deliveryCount}}</span></div>
+      <div class="text">{{$t('type.deliveryInvoice')}}
+        <span class="count">{{summary.deliveryCount}}</span>
+      </div>
       <div class="value">$ {{summary.deliveryAmount | decimal}}</div>
       <div class="drivers" v-show="!driver">
         <div class="driver" v-for="(value,key,index) in summary.driver" :key="index" @click.stop="setDriver(key)">
@@ -23,11 +31,15 @@
       </div>
     </div>
     <div class="filter" @click="setFilter('DINE_IN',$event)" v-show="summary.dineInCount">
-      <div class="text">{{$t('type.dineInInvoice')}}<span class="count">{{summary.dineInCount}}</span></div>
+      <div class="text">{{$t('type.dineInInvoice')}}
+        <span class="count">{{summary.dineInCount}}</span>
+      </div>
       <div class="value">$ {{summary.dineInAmount | decimal}}</div>
     </div>
     <div class="filter" @click="setFilter('UNSETTLE',$event)" v-show="summary.unsettledCount">
-      <div class="text">{{$t('type.unpaidInvoice')}}<span class="count">{{summary.unsettledCount}}</span></div>
+      <div class="text">{{$t('type.unpaidInvoice')}}
+        <span class="count">{{summary.unsettledCount}}</span>
+      </div>
       <div class="value">$ {{summary.unsettledAmount |decimal}}</div>
     </div>
     <transition name="fadeDown" appear>
@@ -72,13 +84,13 @@ export default {
       this.$emit("filter", "DRIVER", id);
     },
     prev() {
-      let date = moment(this.date, "YYYY-MM-DD")
+      const date = moment(this.date, "YYYY-MM-DD")
         .subtract(1, "d")
         .format("YYYY-MM-DD");
       this.$bus.emit("CALENDAR", date);
     },
     next() {
-      let date = moment(this.date, "YYYY-MM-DD")
+      const date = moment(this.date, "YYYY-MM-DD")
         .add(1, "d")
         .format("YYYY-MM-DD");
       this.$bus.emit("CALENDAR", date);
@@ -86,7 +98,7 @@ export default {
   },
   computed: {
     summary() {
-      let sum = (a, b) => a + b;
+      const sum = (a, b) => a + b;
       let driver = {};
       let totalCount = 0,
         walkInCount = 0,
@@ -104,12 +116,12 @@ export default {
         buffetAmount = 0,
         unsettledAmount = 0;
 
-      let invoices = this.allInvoices
+      const invoices = this.allInvoices
         ? this.data
         : this.data.filter(t => t.server === this.op.name);
 
       invoices.forEach(invoice => {
-        let { tip, delivery, discount, due } = invoice.payment;
+        const { tip, delivery, due } = invoice.payment;
 
         if (invoice.status === 1) {
           totalCount++;
@@ -130,7 +142,8 @@ export default {
 
               if (invoice.driver) {
                 if (driver.hasOwnProperty(invoice.driver)) {
-                  let name = invoice.driver;
+                  const name = invoice.driver;
+
                   driver[name].count++;
                   driver[name].total += due;
                   driver[name].tip += tip;
@@ -248,7 +261,7 @@ export default {
 .date {
   position: absolute;
   right: 0px;
-  min-width: 250px;
+  min-width: 235px;
   text-align: center;
 }
 
