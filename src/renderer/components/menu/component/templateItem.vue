@@ -69,10 +69,12 @@ export default {
         }
       });
       this.max =
-        this.init.side.max || this.template.contain[index].max || Infinity;
+        index === 0
+          ? this.init.side.max || this.template.contain[index].max || Infinity
+          : this.template.contain[index].max || Infinity;
 
       this.$nextTick(() => {
-        let dom = document.querySelector("li.page.current");
+        const dom = document.querySelector("li.page.current");
         dom && dom.classList.remove("current");
 
         document.querySelectorAll("li.page")[index].classList.add("current");
@@ -110,7 +112,8 @@ export default {
         function: true
       });
 
-      [].concat.apply([], this.saved)
+      [].concat
+        .apply([], this.saved)
         .filter(item => item)
         .forEach(({ zhCN, usEN, qty = 1, price, print }) => {
           const content = {
