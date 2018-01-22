@@ -1,13 +1,13 @@
 <template>
-    <div>
-        <div class="items">
-            <div v-for="(item,index) in items" @click="edit(item)">{{item[language]}}</div>
-            <div class="add" @click="create">
-                <i class="fa fa-plus"></i>
-            </div>
-        </div>
-        <div :is="component" :init="componentData"></div>
+  <div>
+    <div class="items">
+      <div v-for="(item,index) in items" @click="edit(item)">{{item[language]}}</div>
+      <div class="add" @click="create">
+        <i class="fa fa-plus"></i>
+      </div>
     </div>
+    <div :is="component" :init="componentData"></div>
+  </div>
 </template>
 
 <script>
@@ -33,6 +33,7 @@ export default {
         zhCN: "",
         usEN: "",
         subItem: true,
+        price: 0,
         print: Object.keys(this.$store.getters.config.printers)
       };
       new Promise((resolve, reject) => {

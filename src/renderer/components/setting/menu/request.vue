@@ -20,11 +20,11 @@
       </div>
     </div>
     <aside>
-      <div>
+      <!-- <div>
         <div class="btn" @click="updateItemSort" v-if="isItemSorted">{{$t('button.update')}}</div>
         <div class="btn" @click="updateActionSort" v-if="isActionSorted">{{$t('button.update')}}</div>
         <div class="btn" @click="updateCategorySort" v-if="isCategorySorted">{{$t('button.update')}}</div>
-      </div>
+      </div> -->
     </aside>
     <div :is="component" :init="componentData"></div>
   </div>
@@ -41,23 +41,29 @@ export default {
   components: { dialoger, draggable, categoryEditor, actionEditor, itemEditor },
   data() {
     return {
-      componentData: null,
-      component: null,
       language: this.$store.getters.language,
-      items: [],
-      request: JSON.parse(JSON.stringify(this.$store.getters.request)),
-      actions: JSON.parse(JSON.stringify(this.$store.getters.actions)),
-      categoryIndex: 0,
+      request: this.$store.getters.request,
+      actions: this.$store.getters.actions,
       isCategorySorted: false,
       isActionSorted: false,
-      isItemSorted: false
+      isItemSorted: false,
+      categoryIndex: 0,
+      componentData: null,
+      component: null,
+      items: []
     };
   },
   created() {
     this.getItems();
   },
+  beforeDestroy() {
+    this.isItemSorted && this.updateSortedItem();
+    this.isActionSorted && this.updateSortedAction();
+    this.isCategorySorted && this.updateSortedCategory();
+  },
   methods: {
     setCategory(index) {
+      this.isItemSorted && this.updateSortedItem();
       this.getItems(index);
     },
     getItems(index = this.categoryIndex) {
@@ -75,13 +81,11 @@ export default {
         .catch(() => this.$q());
     },
     editAction(action, index) {
-      //patch
-      if (!action.multiplier) {
+      !action.multiplier &&
         Object.assign(action, {
           multiplier: false,
           multiply: 0
         });
-      }
 
       new Promise((resolve, reject) => {
         this.componentData = { resolve, reject, action, index };
@@ -91,7 +95,8 @@ export default {
         .catch(() => this.$q());
     },
     editItem(item, groupIndex, index) {
-      let categories = this.request[this.categoryIndex].contain.map(category => ({
+      const categoryIndex = this.categoryIndex;
+      const categories = this.request[categoryIndex].contain.map(category => ({
         label: category,
         tooltip: "",
         plainText: true,
@@ -100,7 +105,7 @@ export default {
 
       if (!item.clickable) {
         Object.assign(item, {
-          category: this.request[this.categoryIndex].contain[groupIndex],
+          category: this.request[categoryIndex].contain[groupIndex],
           price: 0,
           affix: ""
         });
@@ -110,22 +115,43 @@ export default {
         this.componentData = {
           resolve,
           reject,
+          categoryIndex,
           categories,
-          item,
-          categoryIndex: this.categoryIndex,
           groupIndex,
+          item,
           index
         };
         this.component = "itemEditor";
       })
         .then(this.refreshData)
-        .catch(del => {
-          this.$q();
-        });
+        .catch(del => this.$q());
+    },
+    updateSortedItem() {
+      const items = [];
+      this.items.forEach(group => {
+        const item = group.filter(item => item._id).map(item => item._id);
+        items.push(item);
+      });
+
+      this.$socket.emit("[REQUEST] SORT_ITEM", items);
+      this.isItemSorted = false;
+    },
+    updateSortedAction() {
+      this.$socket.emit("[REQUEST] SORT_ACTION", this.action);
+      this.isActionSorted = false;
+    },
+    updateSortedCategory() {
+      Object.assign(this.$store.getters.request, this.request);
+
+      const categories = this.request.map(category =>
+        Object.assign({}, category, { item: [] })
+      );
+      this.$socket.emit("[REQUEST] SORT_CATEGORY", categories);
+      this.isCategorySorted = false;
     },
     refreshData() {
-      this.request = JSON.parse(JSON.stringify(this.$store.getters.request));
-      this.actions = JSON.parse(JSON.stringify(this.$store.getters.actions));
+      this.request = this.$store.getters.request;
+      this.actions = this.$store.getters.actions;
       this.getItems();
       this.$q();
     }

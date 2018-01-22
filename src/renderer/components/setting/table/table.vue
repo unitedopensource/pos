@@ -70,22 +70,29 @@ export default {
       })
         .then(_section => {
           const { zone, usEN, zhCN } = _section;
-          const item = Array(55).fill().map((_, index) => ({
-            feature: [],
-            invoice: [],
-            name: "",
-            server: null,
-            session: null,
-            shape: "",
-            status: 1,
-            time: 0,
-            grid: index,
-            zone
-          }));
+          const item = Array(56)
+            .fill()
+            .map((_, index) => ({
+              feature: [],
+              invoice: [],
+              name: "",
+              server: null,
+              session: null,
+              shape: "",
+              status: 1,
+              time: 0,
+              grid: index,
+              zone
+            }));
 
           this.sections.push({ usEN, zhCN, zone, item });
-          console.log(this.sections)
           this.viewSection(this.sections.length - 1);
+
+          const sections = this.sections.map(section => {
+            Object.assign(section, { item: [] });
+            return section;
+          });
+          this.$socket.emit("[TABLE] SAVE_SECTION",sections);
           this.$q();
         })
         .catch(() => this.$q());
@@ -96,6 +103,7 @@ export default {
         this.component = "sectionEditor";
       })
         .then(() => {
+
           this.$q();
         })
         .catch(del => {
@@ -117,7 +125,6 @@ export default {
         this.component = "tableEditor";
       })
         .then(_table => {
-          console.log(_table)
           this.tabs.splice(index, 1, _table);
           this.$socket.emit("[TABLE] SAVE", {
             index,
@@ -146,8 +153,8 @@ export default {
 
       this.$q();
     },
-    updateSortedSection() { },
-    updateSortedTable() { },
+    updateSortedSection() {},
+    updateSortedTable() {},
     refreshData() {
       this.sections = JSON.parse(JSON.stringify(this.$store.getters.tables));
       this.viewSection(this.sectionIndex);

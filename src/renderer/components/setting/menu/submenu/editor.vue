@@ -7,9 +7,9 @@
                 <h3>{{$t('nav.item')}}</h3>
             </header>
             <div class="wrap">
-                <inputer title="text.primary" v-model="init.item.usEN" :autoFocus="true"></inputer>
-                <inputer title="text.secondary" v-model="init.item.zhCN"></inputer>
-                <inputer title="text.price" v-model.number="init.item.price"></inputer>
+                <inputer title="text.primary" v-model="init.item.usEN" :autoFocus="true" @keydown.enter="confirm"></inputer>
+                <inputer title="text.secondary" v-model="init.item.zhCN" @keydown.enter="confirm"></inputer>
+                <inputer title="text.price" v-model.number="init.item.price" @keydown.enter="confirm"></inputer>
                 <div class="printers">
                     <label>{{$t('text.printer')}}</label>
                     <div class="inner">
@@ -20,7 +20,7 @@
             </div>
             <footer>
                 <div class="opt">
-                    <span class="del" @click="init.reject(false)">{{$t('button.delete')}}</span>
+                    <span class="del" @click="init.reject(false)" v-show="init.edit">{{$t('button.delete')}}</span>
                 </div>
                 <button class="btn" @click="confirm">{{$t('button.confirm')}}</button>
             </footer>
@@ -43,6 +43,8 @@ export default {
   },
   methods: {
     confirm() {
+      if (!this.init.item.usEN) return;
+
       this.init.item.zhCN = this.init.item.zhCN || this.init.item.usEN;
       this.init.item.price = isNumber(this.init.item.price)
         ? this.init.item.price

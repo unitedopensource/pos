@@ -1315,8 +1315,9 @@ export default {
             item: '移除已下单的物品',
             order: '修改订单',
             table: '修改座位',
+            tip: '修改小费',
             driver: '修改订单的派送司机',
-            transaction: '修改信用卡交易记录'
+            transaction: '修改信用卡交易'
         },
         view: {
             summary: '允许查看当前销售总金额',

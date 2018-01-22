@@ -1319,8 +1319,8 @@ export default {
             item: 'Remove Placed Item',
             order: 'Modify Exist Ticket',
             table: 'Modify Table Ticket',
-            driver: 'Assign Ticket Driver',
-            tip: 'Modify Bill Tip',
+            tip: 'Adjust Tips',
+            driver: 'Assign Driver To Ticket ',
             transaction: 'Modify Credit Card Transaction'
         },
         view: {

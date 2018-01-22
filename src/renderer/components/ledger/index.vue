@@ -113,10 +113,9 @@ export default {
   },
   methods: {
     initialDepartment() {
+      const departments = this.$store.getters.config.departments.slice() || [];
       return new Promise(next => {
-        this.departments = JSON.parse(
-          JSON.stringify(this.$store.getters.config.departments)
-        ).map(department => {
+        this.departments = departments.map(department => {
           Object.assign(department, {
             WALK_IN: {
               count: 0,
@@ -311,7 +310,7 @@ export default {
             subtotal = toFixed(subtotal + amount, 2);
 
             if (!taxFree && Tax.apply[type])
-              tax += toFixed(Tax.rate / 100 * amount,2);
+              tax += toFixed(Tax.rate / 100 * amount, 2);
 
             if (index !== -1) {
               let pointer = this.departments[index][type];
@@ -329,7 +328,7 @@ export default {
           });
         }
       });
-      console.log(this.departments)
+      console.log(this.departments);
 
       this.departments.forEach(department => {
         let subtotal = 0;
@@ -401,7 +400,9 @@ export default {
         hour => `${("0" + hour).slice(-2)}:00`
       );
 
-      Object.keys(hours).forEach(hour => data.push(toFixed(hours[hour].value, 2)));
+      Object.keys(hours).forEach(hour =>
+        data.push(toFixed(hours[hour].value, 2))
+      );
 
       this.collection = {
         labels,
@@ -420,7 +421,7 @@ export default {
         ]
       };
     },
-    confirm() { }
+    confirm() {}
   }
 };
 </script>
