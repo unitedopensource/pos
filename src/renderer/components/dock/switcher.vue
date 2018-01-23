@@ -78,6 +78,7 @@ export default {
           ? parseFloat(this.store.deliveryCharge)
           : 0;
       Object.assign(this.order, { type });
+      this.setTicket({type});
       this.applyPrice(type);
 
       switch (type) {

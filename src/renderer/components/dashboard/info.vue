@@ -26,7 +26,7 @@
     </nav>
     <router-view></router-view>
   </main>
-</template>
+</template> 
 
 <script>
 import { mapGetters, mapActions } from "vuex";

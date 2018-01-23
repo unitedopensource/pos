@@ -1,31 +1,35 @@
 <template>
-    <div class="profile">
-        <section class="info">
-            <div class="general">
-                <p>
-                    <span class="since">Member Since: <span class="value">{{customer.extra.firstDate | moment("YYYY-MM-DD")}}</span></span>
-                    <span class="last">Last Activity: <span class="value">{{customer.extra.lastDate | fromNow}}</span></span>
-                </p>
-                <div class="phone">{{customer.phone | phone}}</div>
-                <div class="name">{{customer.name}}</div>
-            </div>
-            <div class="summary">
-                
-            </div>
-        </section>
-        <section class="tags">
-            <span class="text">{{$t('dashboard.tag')}}</span>
-            <ul class="wrap">
-                <li v-for="(tag,index) in tags" :key="index">
-                    <input type="checkbox" v-model="customer.extra.tags" :value="tag" :id="'tag'+index">
-                    <label :for="'tag'+index">{{$t('tag.'+tag)}}</label>
-                </li>
-            </ul>
-        </section>
-        <section class="map">
-            <img :src="url">
-        </section>
-    </div>
+  <div class="profile">
+    <section class="info">
+      <div class="general">
+        <p>
+          <span class="since">{{$t('text.firstDate')}}:
+            <span class="value">{{customer.firstDate | moment("YYYY-MM-DD")}}</span>
+          </span>
+          <span class="last">{{$t('text.lastDate')}}:
+            <span class="value">{{customer.lastDate | fromNow}}</span>
+          </span>
+        </p>
+        <div class="phone">{{customer.phone | phone}}</div>
+        <div class="name">{{customer.name}}</div>
+      </div>
+      <div class="summary">
+
+      </div>
+    </section>
+    <section class="tags">
+      <span class="text">{{$t('dashboard.tag')}}</span>
+      <ul class="wrap">
+        <li v-for="(tag,index) in tags" :key="index">
+          <input type="checkbox" v-model="customer.tags" :value="tag" :id="'tag'+index">
+          <label :for="'tag'+index">{{$t('tag.'+tag)}}</label>
+        </li>
+      </ul>
+    </section>
+    <section class="map">
+      <img :src="url">
+    </section>
+  </div>
 </template>
 
 <script>
@@ -65,26 +69,18 @@ export default {
   },
   methods: {
     getPolyline() {
-      let { mapAPI, zipCode } = this.store;
-      this.origin = `${this.store.address
-        .split(" ")
-        .join("+")},${this.store.city.split(" ").join("+")}+${this.store
-        .state}+${zipCode}`;
-      this.destination = this.$options.filters
-        .formatAddress(this.customer.address)
-        .split(" ")
-        .join("+");
-      let url = `https://maps.googleapis.com/maps/api/directions/json?origin=${this
-        .origin}&destination=${this.destination},${this.customer.city
-        .split(" ")
-        .join("+")}+${this.store
-        .state}+${zipCode}&mode=driving&key=${mapAPI}&language=en&units=imperial`;
+      const { matrix, zipCode } = this.store;
+      const { api } = matrix;
+
+      this.origin = `${this.store.address.split(" ").join("+")},${this.store.city.split(" ").join("+")}+${this.store.state}+${zipCode}`;
+      this.destination = this.$options.filters.formatAddress(this.customer.address).split(" ").join("+");
+      const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${this.origin}&destination=${this.destination},${this.customer.city.split(" ").join("+")}+${this.store.state}+${zipCode}&mode=driving&key=${api}&language=en&units=imperial`;
+
       this.$socket.emit("[GOOGLE] GET_POLYLINE", url, response => {
         if (response.statusCode === 200) {
           this.route = JSON.parse(response.body);
           this.polyline = this.route.routes[0].overview_polyline.points;
-          this.url = `https://maps.googleapis.com/maps/api/staticmap?scale=1&size=650x250&maptype=roadmap&format=png&path=enc:${this
-            .polyline}`;
+          this.url = `https://maps.googleapis.com/maps/api/staticmap?scale=1&size=650x250&maptype=roadmap&format=png&path=enc:${this.polyline}`;
         }
       });
     }
@@ -94,8 +90,8 @@ export default {
   },
   filters: {
     formatAddress(address) {
-      let reg = /\d+(\s+\w+){1,}\s+(?:st(?:\.|reet)?|dr(?:\.|ive)?|pl(?:\.|ace)?|ave(?:\.|nue)?|rd|road|lane|drive|way|court|plaza|square|run|parkway|point|pike|square|driveway|trace|park|terrace|blvd)/i;
-      let match = address.match(reg);
+      const reg = /\d+(\s+\w+){1,}\s+(?:st(?:\.|reet)?|dr(?:\.|ive)?|pl(?:\.|ace)?|ave(?:\.|nue)?|rd|road|lane|drive|way|court|plaza|square|run|parkway|point|pike|square|driveway|trace|park|terrace|blvd)/i;
+      const match = address.match(reg);
       return match ? match[0] : address;
     }
   }
