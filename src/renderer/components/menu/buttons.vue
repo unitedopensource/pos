@@ -157,7 +157,16 @@ import dialoger from "../common/dialoger";
 
 export default {
   props: ["layout"],
-  components: { dialoger, unlock, modify, payment, coupon, timer, splitor, course },
+  components: {
+    dialoger,
+    unlock,
+    modify,
+    payment,
+    coupon,
+    timer,
+    splitor,
+    course
+  },
   data() {
     return {
       isDisplayGuests: false,
@@ -200,9 +209,9 @@ export default {
       let focus = document.querySelector(".item.active");
       let subItemCount = Array.isArray(this.item.choiceSet)
         ? this.item.choiceSet
-          .filter(item => item.subItem)
-          .map(item => item.qty)
-          .reduce((a, b) => a + b, 0)
+            .filter(item => item.subItem)
+            .map(item => item.qty)
+            .reduce((a, b) => a + b, 0)
         : 0;
 
       if (!focus && this.item.hasOwnProperty("rules")) {
@@ -225,13 +234,13 @@ export default {
       let target = !!document.querySelector(".sub.target");
       target
         ? this.$p("modify", {
-          item: {
-            qty: this.choiceSet ? this.choiceSet.qty : 1,
-            single: this.choiceSet ? this.choiceSet.single : 0,
-            discount: 0
-          },
-          type: "choiceSet"
-        })
+            item: {
+              qty: this.choiceSet ? this.choiceSet.qty : 1,
+              single: this.choiceSet ? this.choiceSet.single : 0,
+              discount: 0
+            },
+            type: "choiceSet"
+          })
         : this.$p("modify", { item: this.item });
     },
     courseTime() {
@@ -334,7 +343,6 @@ export default {
             let items = [];
             order.content.forEach(item => {
               if (item.pending) {
-                //items.push(JSON.parse(JSON.stringify(item)));
                 items.push(clone(item));
                 item.print = true;
               }
@@ -428,13 +436,16 @@ export default {
       this.resetAll();
     },
     quit() {
-      const prompt = { title: "dialog.exitConfirm", msg: "dialog.exitConfirmTip" };
+      const prompt = {
+        title: "dialog.exitConfirm",
+        msg: "dialog.exitConfirmTip"
+      };
 
       this.isEmptyTicket
         ? this.abandon()
         : this.$dialog(prompt)
-          .then(this.abandon)
-          .catch(() => this.$q());
+            .then(this.abandon)
+            .catch(() => this.$q());
     },
     combineOrderInfo(extra) {
       let customer = Object.assign({}, this.customer);
@@ -558,12 +569,12 @@ export default {
       this.isEmptyTicket
         ? this.resetTableExit()
         : this.$dialog(prompt)
-          .then(this.resetTableExit)
-          .catch(() => this.$q());
+            .then(this.resetTableExit)
+            .catch(() => this.$q());
     },
     resetTableExit() {
-      this.app.newTicket &&
-        this.$socket.emit("[TABLE] RESET", { _id: this.currentTable._id });
+      const { _id } = this.currentTable;
+      this.app.newTicket && this.$socket.emit("[TABLE] RESET", { _id });
       this.abandon();
     },
     abandon() {

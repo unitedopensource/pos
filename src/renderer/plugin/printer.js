@@ -1404,10 +1404,9 @@ function createFooter(config, setting, printer, ticket) {
                 settle.push(`<section class="details"><h3>Paid by ${subType} - Thank You</h3></section>`)
         }
     })
-
+    
     if (!ticket.settled && payment.paid !== 0)
         settle.push(`<section class="details"><h3>Balance Due: $ ${payment.remain.toFixed(2)}</h3></section>`);
-
 
     if (ticket.status === 0) {
         settle.push(`<section class="details">
@@ -1444,11 +1443,11 @@ function createFooter(config, setting, printer, ticket) {
         }
     });
 
-    const _provider = ticket.source !== 'POS' && (/cashier/i).test(printer) ? `<p class="tm"><span class="tradeMark">${ticket.source}</span></p>` : "";
+    const _waterMark = tradeMark && ticket.tradeMark ? `<p class="tm"><span class="tradeMark">${ticket.tradeMark}</span></p>` : "";
     const _time = jobTime ? `<p class="printTime">${printer} print @ ${moment().format('hh:mm:ss')}</p>` : "";
     const _number = ticketNumber ? `<div class="ticketNumber">${number}</div>` : "";
     const _table = tableName ? `<div class="tableName">${table || ""}</div>` : "";
-    const extraInfo = _provider + _time + _number + _table;
+    const extraInfo = _waterMark + _time + _number + _table;
 
     return `<footer>
               <section class="column">

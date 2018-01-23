@@ -9,7 +9,7 @@
       <div class="wrap">
         <div class="profiles">
           <template v-if="view">
-            <div class="profile" v-for="(opt,index) in opts" :key="opt">
+            <div class="profile" v-for="(opt,index) in opts" :key="index">
               <input type="radio" name="opt" v-model="select" :value="opt" :id="'opt'+index" @change="blur">
               <label :for="'opt'+index">
                 <i class="fa fa-unlock" v-if="opt.unlock"></i>
@@ -128,7 +128,10 @@ export default {
         .then(card => {
           Object.assign(this.select, {
             unlock: true,
-            number: card[0].replace(/(.{4})/g, "$1 ").trim(),
+            number: card[0]
+              .replace(/\s/g, "")
+              .replace(/(.{4})/g, "$1 ")
+              .trim(),
             exp: card[1],
             cvc: card[2]
           });
@@ -201,15 +204,24 @@ export default {
         .catch(() => this.$q());
     },
     confirm() {
-      this.select.unlock &&
+      const { unlock, number, exp, cvc } = this.select;
+      const card = number.replace(/\s/g, "");
+
+      let tradeMark = "CREDIT";
+      if (/^5[1-5]/.test(card)) tradeMark = "Master";
+      if (/^4/.test(card)) tradeMark = "Visa";
+      if (/^3[47]/.test(card)) tradeMark = "Amex";
+
+      if (unlock) {
         this.setOrder({
           __creditPayment__: {
-            number: this.select.number,
-            date: this.select.exp,
-            cvc: this.select.cvc
-          }
+            number,
+            cvc,
+            date: exp
+          },
+          tradeMark
         });
-
+      }
       this.init.resolve();
     },
     ...mapActions(["setOrder"])

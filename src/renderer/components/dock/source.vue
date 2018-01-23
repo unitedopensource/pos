@@ -1,20 +1,20 @@
 <template>
-    <div class="source">
-        <header>
-            <h3>{{$t('title.thirdPartyOrder')}}</h3>
-            <h5>{{$t('tip.thirdPartyProvider')}}</h5>
-        </header>
-        <ul>
-            <li v-for="(provider,index) in providers" :key="index">
-                <input type="radio" name="provider" v-model="service" :id="'provider'+index" :value="provider.name">
-                <label :for="'provider'+index"><img :src="provider.img"></label>
-            </li>
-        </ul>
-        <footer>
-            <button class="btn" @click="init.reject">{{$t('button.cancel')}}</button>
-            <button class="btn" :disabled="!service" @click="confirm">{{$t('button.confirm')}}</button>
-        </footer>
-    </div>
+  <div class="source">
+    <header>
+      <h3>{{$t('title.thirdPartyOrder')}}</h3>
+      <h5>{{$t('tip.thirdPartyProvider')}}</h5>
+    </header>
+    <ul>
+      <li v-for="(provider,index) in providers" :key="index">
+        <input type="radio" name="provider" v-model="service" :id="'provider'+index" :value="provider.name">
+        <label :for="'provider'+index"><img :src="provider.img"></label>
+      </li>
+    </ul>
+    <footer>
+      <button class="btn" @click="init.reject">{{$t('button.cancel')}}</button>
+      <button class="btn" :disabled="!service" @click="confirm">{{$t('button.confirm')}}</button>
+    </footer>
+  </div>
 </template>
 
 <script>

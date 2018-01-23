@@ -63,10 +63,12 @@ export default {
         ]
       };
 
-      this.$dialog(prompt).then(() => {
-        this.switchType(type);
-        this.init.resolve();
-      }).catch(() => this.$q());
+      this.$dialog(prompt)
+        .then(() => {
+          this.switchType(type);
+          this.init.resolve();
+        })
+        .catch(() => this.$q());
     },
     switchType(type) {
       this.ticket.type === "DINE_IN" &&
@@ -116,7 +118,7 @@ export default {
         this.component = "tpp";
       })
         .then(type => {
-          this.setOrder({ source: type });
+          this.setOrder({ source: type, tradeMark: type });
           this.init.resolve();
         })
         .catch(() => this.$q());

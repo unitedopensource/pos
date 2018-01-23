@@ -120,7 +120,7 @@ export default {
 
           this.update({
             key: `printers.${this.printer}.control.footer`,
-            value: footer
+            value: _footer
           });
           this.$q();
         })
