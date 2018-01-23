@@ -225,12 +225,10 @@ import ticket from "../common/ticket";
 import creditCard from "./creditCard";
 import discount from "./discount";
 import thirdParty from "./mark";
-import tipper from "./tiper";
 
 export default {
   props: ["init"],
   components: {
-    tipper,
     ticket,
     capture,
     dialoger,
@@ -1091,7 +1089,7 @@ export default {
           this.order._id,
           paid => {
             const remain = Math.max(0, this.payment.balance - paid).toPrecision(12).toFloat();
-            
+
             if (remain > 0) {
               this.$q();
               this.setPaymentType("CASH");
@@ -1181,20 +1179,20 @@ export default {
 
       this.reset = false;
     },
-    setTip() {
-      new Promise((resolve, reject) => {
-        this.componentData = { resolve, reject, payment: this.payment };
-        this.component = "tipper";
-      })
-        .then(_tip => {
-          this.paid = "0.00";
-          this.tip = "0.00";
-          Object.assign(this.payment, { tip: _tip });
-          this.recalculatePayment();
-          this.$q();
-        })
-        .catch(e => this.$q());
-    },
+    // setTip() {
+    //   new Promise((resolve, reject) => {
+    //     this.componentData = { resolve, reject, payment: this.payment };
+    //     this.component = "tipper";
+    //   })
+    //     .then(_tip => {
+    //       this.paid = "0.00";
+    //       this.tip = "0.00";
+    //       Object.assign(this.payment, { tip: _tip });
+    //       this.recalculatePayment();
+    //       this.$q();
+    //     })
+    //     .catch(e => this.$q());
+    // },
     setDiscount() {
       new Promise((resolve, reject) => {
         this.componentData = { resolve, reject, payment: this.payment };

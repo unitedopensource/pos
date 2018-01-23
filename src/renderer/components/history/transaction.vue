@@ -1,74 +1,75 @@
 <template>
-    <div class="popupMask center dark">
-        <div class="wrap" v-show="!component">
-        <header>
-            <div>
-                <h3>{{$t('title.paymentHistory')}}</h3>
-                <h5>{{$t('tip.foundRecords',transactions.length)}}</h5>
-            </div>
-            <nav class="filter">
-              <dropdown label="filter.cashier" :options="cashiers" filter="cashier"></dropdown>
-              <dropdown label="filter.server" :options="servers" filter="server"></dropdown>
-              <dropdown label="filter.order" :options="types" filter="type"></dropdown>
-              <dropdown label="filter.payment" :options="payments" filter="payment"></dropdown>
-            </nav>
-        </header>
-        <table>
-            <thead>
-                <tr>
-                    <th class="num">{{$t('thead.ticket')}}</th>
-                    <th class="type">{{$t('thead.orderType')}}</th>
-                    <th>{{$t('thead.time')}}</th>
-                    <th>{{$t('thead.cashier')}}</th>
-                    <th>{{$t('thead.server')}}</th>
-                    <th class="settlement">{{$t('thead.paymentType')}}</th>
-                    <th>{{$t('thead.tip')}}</th>
-                    <th @click="togglePaid" v-if="!showPaid">{{$t('thead.amount')}}</th>
-                    <th @click="togglePaid" v-else>{{$t('thead.paid')}}</th>
-                    <th class="split"></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(record,index) in records" :key="index">
-                    <td class="num">{{record.ticket.number}}</td>
-                    <td class="type">{{$t('type.'+record.ticket.type)}}</td>
-                    <td>{{record.time | moment("HH:mm:ss")}}</td>
-                    <td>{{record.cashier}}</td>
-                    <td>{{record.server}}</td>
-                    <td class="settlement">
-                        <span class="main">{{$t('type.'+record.type)}}</span><span class="sub">{{record.subType}}</span>
-                    </td>
-                    <td class="amount adjustable" :class="{zero:record.tip === 0}" v-if="record.type ==='THIRD' && editable" @click="setTip(record)">$ {{record.tip | decimal}}</td>
-                    <td class="amount" :class="{zero:record.tip === 0}" v-else>$ {{record.tip | decimal}}</td>
-                    <td class="amount" v-if="!showPaid">$ {{record.actual | decimal}}</td>
-                    <td class="amount" v-else>$ {{record.paid | decimal}}</td>
-                    <td class="split" v-if="!isNaN(record.splitPayment)">#{{record.splitPayment + 1}}</td>
-                    <td class="split" v-else></td>
-                </tr>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td class="num">{{totalCount}}</td>
-                    <td class="type"></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td class="settlement"></td>
-                    <td class="amount">$ {{totalTip | decimal}}</td>
-                    <td class="amount">$ {{totalAmount | decimal}}</td>
-                    <td class="split"></td>
-                </tr>
-            </tfoot>
-        </table>
-        <footer>
-            <div class="f1">
-                <pagination :of="filteredTransactions" :max="12" :contain="13" @page="setPage"></pagination>
-            </div>
-            <div class="btn" @click="init.resolve">{{$t('button.exit')}}</div>
-        </footer>
+  <div class="popupMask center dark">
+    <div class="wrap" v-show="!component">
+      <header>
+        <div>
+          <h3>{{$t('title.paymentHistory')}}</h3>
+          <h5>{{$t('tip.foundRecords',transactions.length)}}</h5>
         </div>
-        <div :is="component" :init="componentData"></div>
+        <nav class="filter">
+          <dropdown label="filter.cashier" :options="cashiers" filter="cashier"></dropdown>
+          <dropdown label="filter.server" :options="servers" filter="server"></dropdown>
+          <dropdown label="filter.order" :options="types" filter="type"></dropdown>
+          <dropdown label="filter.payment" :options="payments" filter="payment"></dropdown>
+        </nav>
+      </header>
+      <table>
+        <thead>
+          <tr>
+            <th class="num">{{$t('thead.ticket')}}</th>
+            <th class="type">{{$t('thead.orderType')}}</th>
+            <th>{{$t('thead.time')}}</th>
+            <th>{{$t('thead.cashier')}}</th>
+            <th>{{$t('thead.server')}}</th>
+            <th class="settlement">{{$t('thead.paymentType')}}</th>
+            <th>{{$t('thead.tip')}}</th>
+            <th @click="togglePaid" v-if="!showPaid">{{$t('thead.amount')}}</th>
+            <th @click="togglePaid" v-else>{{$t('thead.paid')}}</th>
+            <th class="split"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(record,index) in records" :key="index">
+            <td class="num">{{record.ticket.number}}</td>
+            <td class="type">{{$t('type.'+record.ticket.type)}}</td>
+            <td>{{record.time | moment("HH:mm:ss")}}</td>
+            <td>{{record.cashier}}</td>
+            <td>{{record.server}}</td>
+            <td class="settlement">
+              <span class="main">{{$t('type.'+record.type)}}</span>
+              <span class="sub">{{record.subType}}</span>
+            </td>
+            <td class="amount adjustable" :class="{zero:record.tip === 0}" v-if="record.type ==='THIRD' && editable" @click="setTip(record)">$ {{record.tip | decimal}}</td>
+            <td class="amount" :class="{zero:record.tip === 0}" v-else>$ {{record.tip | decimal}}</td>
+            <td class="amount" v-if="!showPaid">$ {{record.actual | decimal}}</td>
+            <td class="amount" v-else>$ {{record.paid | decimal}}</td>
+            <td class="split" v-if="!isNaN(record.splitPayment)">#{{record.splitPayment + 1}}</td>
+            <td class="split" v-else></td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td class="num">{{totalCount}}</td>
+            <td class="type"></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="settlement"></td>
+            <td class="amount">$ {{totalTip | decimal}}</td>
+            <td class="amount">$ {{totalAmount | decimal}}</td>
+            <td class="split"></td>
+          </tr>
+        </tfoot>
+      </table>
+      <footer>
+        <div class="f1">
+          <pagination :of="filteredTransactions" :max="12" :contain="13" @page="setPage"></pagination>
+        </div>
+        <div class="btn" @click="init.resolve">{{$t('button.exit')}}</div>
+      </footer>
     </div>
+    <div :is="component" :init="componentData"></div>
+  </div>
 </template>
 
 <script>
@@ -186,31 +187,26 @@ export default {
       });
     },
     applyFilter(data) {
-      let { value, type } = data;
+      const { value, type } = data;
+
       this[type] = value;
       this.page = 0;
 
-      this.$nextTick(() => {
-        this.$bus.emit("applied");
-      });
+      this.$nextTick(() => this.$bus.emit("applied"));
     },
-    initialFailed() {},
+    initialFailed() { },
     setTip(record) {
       new Promise((resolve, reject) => {
         this.componentData = { resolve, reject, approve: record.tip };
         this.component = "tip";
       })
-        .then(result => {
-          let { tip } = result;
-          let actual = record.actual - record.tip + tip;
-          let paid = actual;
-          Object.assign(record, { tip, actual, paid });
+        .then(tip => {
+          let paid = record.actual + tip;
+          Object.assign(record, { tip, paid });
           this.$socket.emit("[UPDATE] TRANSACTION_TIP", record);
           this.$q();
         })
-        .catch(() => {
-          this.$q();
-        });
+        .catch(() => this.$q());
     },
     setPage(number) {
       this.page = number;
