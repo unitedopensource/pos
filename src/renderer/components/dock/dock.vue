@@ -91,7 +91,10 @@ export default {
   watch: {
     ring(caller) {
       caller
-        ? this.$socket.emit("[RING] CALLER_ID", String(caller.number))
+        ? this.$socket.emit("[PHONE] RING", caller, customer => {
+            this.newPhoneCall(customer);
+            this.$p("caller", { customer });
+          })
         : this.$q();
     },
     time(tick) {
@@ -251,7 +254,7 @@ export default {
       Printer.initial(CLODOP, this.config, data);
     },
     UPDATE_TABLE_STATUS(data) {
-      console.log(data)
+      console.log(data);
       this.updateTable(data);
     },
     INSERT_ORDER(data) {
@@ -320,10 +323,6 @@ export default {
     },
     SHUTDOWN() {
       ipcRenderer.send("Shutdown");
-    },
-    CALLER_ID(customer) {
-      this.newPhoneCall(customer);
-      this.$p("caller", { customer });
     },
     disconnect() {
       this.setApp({ database: false });

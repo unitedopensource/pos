@@ -1,25 +1,18 @@
 <template>
-    <transition name="pop">
-        <div class="caller" v-show="this.$route.name === 'Dashboard'" @click="go">
-            <header>
-                <span class="f1">{{$t('title.incomingCall')}}</span>
-                <span class="lastUpdate">{{customer.extra.lastDate | fromNow}}</span>
-            </header>
-            <div class="wrap">
-                <i class="fa fa-3x fa-phone icon"></i>
-                <div class="info">
-                    <div class="phone">{{customer.phone | tel}}</div>
-                    <div class="address">
-                        <span>{{customer.address}}</span>
-                        <span class="city">{{customer.city}}</span>
-                    </div>
-                </div>
-            </div>
-            <div class="tags">
-                <span class="tag" v-for="(tag,index) in customer.extra.tags" :key="index">{{$t('tag.'+tag)}}</span>
-            </div>
-        </div>
-    </transition>
+  <transition name="pop">
+    <div class="frame" v-show="this.$route.name === 'Dashboard'" @click="go">
+      <i class="fa fa-3x fa-phone"></i>
+      <div class="caller">
+        <h3>{{customer.phone | tel}}</h3>
+        <h5>{{customer.address}}
+          <span class="city" v-show="customer.city">{{customer.city}}</span>
+        </h5>
+      </div>
+      <div class="tags">
+        <span class="tag" v-for="(tag,index) in customer.tags" :key="index">{{$t('tag.'+tag)}}</span>
+      </div>
+    </div>
+  </transition>
 </template>
 
 <script>
@@ -47,52 +40,44 @@ export default {
 </script>
 
 <style scoped>
-.caller {
-  min-width: 290px;
+.frame {
+  min-width: 250px;
   max-width: 330px;
   position: fixed;
   top: 65px;
   left: 100px;
-  background: #fff;
-  color: #555;
+  background: #fafafa;
+  color: #3c3c3c;
+  font-size: initial;
+  border-radius: 4px;
+  display: flex;
+  padding: 10px 15px;
+  align-items: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-header {
-  padding: 5px 10px;
-  border-bottom: 1px solid #eeeeee;
-  background: #03a9f4;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  font-size: 14px;
-  text-shadow: 0 1px 1px #333;
-}
-
-.wrap {
-  display: flex;
-  padding: 5px;
-}
-
-.address {
-  display: flex;
-  padding: 2px 0px;
-}
-
-.city {
-  margin-left: 5px;
-  color: #9e9e9e;
-}
-
 i {
-  padding: 0 10px 0 5px;
-  color: #009688;
-  text-shadow: 0 1px 1px #607d8b;
+  border-right: 1px solid #eee;
+  padding-right: 15px;
+  color: #03a9f4;
+  text-shadow: 0 1px 1px #3f51b5;
+}
+
+.caller {
+  flex: 1;
+  margin-left: 15px;
+}
+
+h5 {
+  color: rgba(0, 0, 0, 0.75);
+  font-weight: normal;
 }
 
 .tags {
+  position: absolute;
   display: flex;
-  background: #eceff1;
+  top: -20px;
+  background: transparent;
   align-items: center;
   flex-wrap: wrap;
 }

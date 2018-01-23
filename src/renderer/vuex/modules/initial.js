@@ -135,15 +135,23 @@ const mutations = {
         state.spooler.splice(index, 1)
     },
     [types.PHONE_RING](state, data) {
-        state.ring = data;
+        if (data) {
+            let { phone, name } = data;
+            phone = /^1/.test(phone) ? String(phone).slice(1) : String(phone);
+            name = name && name.length > 3 ? name : "";
+
+            state.ring = { phone, name };
+        } else {
+            state.ring = null;
+        }
     },
     [types.UPSERT_INVOICE](state, invoice) {
         let index = state.orders.findIndex(ticket => ticket._id === invoice._id);
         index === -1 ? state.orders.unshift(invoice) : state.orders.splice(index, 1, invoice);
     },
     [types.UPDATE_TABLE_STATUS](state, table) {
-        if(!table) return;
-        
+        if (!table) return;
+
         const zone = table.zone;
         let tables = state.config.layout.table;
         for (let i = 0; i < tables.length; i++) {

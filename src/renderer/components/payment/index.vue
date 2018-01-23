@@ -55,7 +55,7 @@
             </div>
           </div>
           <div class="fn">
-            <button class="btn" @click="setTip" :disabled="true">{{$t('button.setTip')}}</button>
+            <button class="btn" :disabled="true">{{$t('button.setTip')}}</button>
             <button class="btn" @click="setDiscount" :disabled="!discountable || this.order.split">{{$t('button.setDiscount')}}</button>
             <button class="btn" @click="save">{{$t('button.save')}}</button>
           </div>

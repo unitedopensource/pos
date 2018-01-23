@@ -64,23 +64,38 @@ export default {
   },
   created() {
     this.getPolyline();
-    !this.customer.extra.hasOwnProperty("tags") &&
-      Object.assign(this.customer.extra, { tags: [] });
+    !this.customer.hasOwnProperty("tags") &&
+      Object.assign(this.customer, { tags: [] });
   },
   methods: {
     getPolyline() {
       const { matrix, zipCode } = this.store;
       const { api } = matrix;
 
-      this.origin = `${this.store.address.split(" ").join("+")},${this.store.city.split(" ").join("+")}+${this.store.state}+${zipCode}`;
-      this.destination = this.$options.filters.formatAddress(this.customer.address).split(" ").join("+");
-      const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${this.origin}&destination=${this.destination},${this.customer.city.split(" ").join("+")}+${this.store.state}+${zipCode}&mode=driving&key=${api}&language=en&units=imperial`;
+      this.origin = `${this.store.address
+        .split(" ")
+        .join("+")},${this.store.city.split(" ").join("+")}+${
+        this.store.state
+      }+${zipCode}`;
+      this.destination = this.$options.filters
+        .formatAddress(this.customer.address)
+        .split(" ")
+        .join("+");
+      const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${
+        this.origin
+      }&destination=${this.destination},${this.customer.city
+        .split(" ")
+        .join("+")}+${
+        this.store.state
+      }+${zipCode}&mode=driving&key=${api}&language=en&units=imperial`;
 
       this.$socket.emit("[GOOGLE] GET_POLYLINE", url, response => {
         if (response.statusCode === 200) {
           this.route = JSON.parse(response.body);
           this.polyline = this.route.routes[0].overview_polyline.points;
-          this.url = `https://maps.googleapis.com/maps/api/staticmap?scale=1&size=650x250&maptype=roadmap&format=png&path=enc:${this.polyline}`;
+          this.url = `https://maps.googleapis.com/maps/api/staticmap?scale=1&size=650x250&maptype=roadmap&format=png&path=enc:${
+            this.polyline
+          }`;
         }
       });
     }

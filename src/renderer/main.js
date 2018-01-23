@@ -131,9 +131,11 @@ new Promise((resolve, reject) => {
     return parseFloat(value).toFixed(2);
   });
   Vue.filter('tel', phone => {
+    if(!phone) return "";
+
     switch (phone.length) {
       case 10:
-        return phone.replace(/^\D?(\d{3})\D?\D?(\d{3})\D?(\d{4})/, "($1)$2-$3")
+        return phone.replace(/^\D?(\d{3})\D?\D?(\d{3})\D?(\d{4})/, "($1) $2-$3")
       case 0:
         return 'PRIVATE NUMBER'
       default:

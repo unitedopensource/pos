@@ -69,7 +69,7 @@ export default {
           source: this.$options.name,
           cause: error,
           note:
-          "Application was unable to start. It's probably because the database wasn't correctly setup."
+            "Application was unable to start. It's probably because the database wasn't correctly setup."
         });
       }
     },
@@ -130,12 +130,10 @@ export default {
         this.station.scale.enable && this.initScale(this.station.scale.port);
         this.station.terminal.enable && this.setDevice({ terminal: true });
       } catch (error) {
-        this.$socket.emit("[SYS] LOG", {
+        this.$log({
           eventID: 9002,
           type: "failure",
-          source: "bootstrap",
-          cause: error,
-          note: `Initial device failed. Please check device configuration.`
+          note: `Initial device failed. Please check device configuration.\n\nError Message:\n${error.toString()}`
         });
       }
     },
@@ -179,12 +177,11 @@ export default {
           case 6:
           case 9:
             const name = raw.find(i => i.indexOf("NAME") !== -1).split("=")[1];
-            const number = raw
+            const phone = raw
               .find(i => i.indexOf("NMBR") !== -1)
               .split("=")[1]
               .replace(/\D/g, "");
-            const time = +new Date();
-            this.phoneRing({ name, number, time });
+            this.phoneRing({ phone, name });
             break;
         }
       });
@@ -215,14 +212,14 @@ export default {
       CLODOP
         ? (window.Printer = new Print(CLODOP, config, station))
         : setTimeout(
-          function () {
-            window.Printer = new Print(CLODOP, config, station);
-          },
-          20000,
-          CLODOP,
-          config,
-          station
-        );
+            function() {
+              window.Printer = new Print(CLODOP, config, station);
+            },
+            20000,
+            CLODOP,
+            config,
+            station
+          );
     },
     ...mapActions([
       "setApp",
