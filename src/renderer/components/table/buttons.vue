@@ -24,7 +24,7 @@
       <i class="fa fa-money"></i>
       <span class="text">{{$t('button.payment')}}</span>
     </button>
-    <button class="btn" @click="switchStaff" :disabled="true">
+    <button class="btn" @click="switchStaff">
       <i class="fa fa-user-times"></i>
       <span class="text">{{$t('button.switch')}}</span>
     </button>
@@ -47,6 +47,7 @@
 <script>
 import { mapGetters, mapActions } from "vuex";
 import dialoger from "../common/dialoger";
+import staff from "./component/staffs";
 import payment from "../payment/index";
 import unlock from "../common/unlock";
 import split from "../split/index";
@@ -54,7 +55,7 @@ import list from "./list";
 
 export default {
   props: ["transfer"],
-  components: { dialoger, unlock, payment, split, list },
+  components: { dialoger, unlock, payment, split, list, staff },
   data() {
     return {
       componentData: null,
@@ -69,8 +70,8 @@ export default {
       }
       this.currentTable.server !== this.op.name
         ? this.$checkPermission("modify", "order")
-          .then(this.edit)
-          .catch(() => { })
+            .then(this.edit)
+            .catch(() => {})
         : this.edit();
     },
     edit() {
@@ -132,7 +133,7 @@ export default {
     switchTable() {
       if (!this.currentTable) return;
       this.$dialog({
-        title: ["dialog.switchTable",this.currentTable.name],
+        title: ["dialog.switchTable", this.currentTable.name],
         msg: "dialog.switchTableTip"
       })
         .then(() => {
@@ -189,7 +190,11 @@ export default {
 
       const type = "PRE_PAYMENT";
       const cashier = this.op.name;
-      const order = Object.assign(Object.create(Object.getPrototypeOf(this.order)), this.order, { type, cashier });
+      const order = Object.assign(
+        Object.create(Object.getPrototypeOf(this.order)),
+        this.order,
+        { type, cashier }
+      );
 
       Printer.setTarget("Receipt").print(order, true);
       this.$socket.emit("[TABLE] UPDATE", { _id: order.tableID, status: 3 });
@@ -247,7 +252,12 @@ export default {
 
       this.$dialog(prompt).then(() => this.$q());
     },
-    switchStaff() { },
+    switchStaff() {
+      if (this.isEmptyTicket) return;
+      this.$socket.emit("[OPERATOR] LIST", operators =>
+        this.$open("staff", { operators })
+      );
+    },
     split() {
       if (this.isEmptyTicket) return;
       if (this.order.settled) {

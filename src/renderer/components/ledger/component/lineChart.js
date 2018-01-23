@@ -9,9 +9,10 @@ export default {
       responsive: true,
       maintainAspectRatio: false,
       height:250,
-      // legend: {
-      //   display: false
-      // },
+      width:450,
+      legend: {
+        display: false
+      },
       tooltips: {
         yAlign: 'bottom'
       },

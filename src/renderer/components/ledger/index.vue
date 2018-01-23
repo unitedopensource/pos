@@ -16,6 +16,10 @@
             <label for="department">{{$t('nav.department')}}</label>
           </div>
           <div>
+            <input type="radio" v-model="tab" value="transaction" name="tab" id="transaction">
+            <label for="transaction">{{$t('text.income')}}</label>
+          </div>
+          <div>
             <input type="radio" v-model="tab" value="invoice" name="tab" id="invoice">
             <label for="invoice">{{$t('text.invoice')}}</label>
           </div>
@@ -33,7 +37,7 @@
         </template>
         <template v-else-if="tab === 'department'">
           <div class="wrap" :key="1">
-            <table class="department">
+            <table>
               <thead>
                 <tr>
                   <th></th>
@@ -63,6 +67,74 @@
             </table>
           </div>
         </template>
+        <template v-else-if="tab === 'transaction'">
+          <div class="wrap">
+            <div class="vertical">
+              <table>
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>{{$t('text.count')}}</th>
+                    <th>{{$t('text.tip')}}</th>
+                    <th>{{$t('text.amount')}}</th>
+                    <th>{{$t('text.total')}}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(payment,index) in payments" :key="index">
+                    <td>{{payment.type}}</td>
+                    <td>{{payment.count}}</td>
+                    <td>{{payment.tip | decimal}}</td>
+                    <td>{{payment.amount | decimal}}</td>
+                    <td>{{payment.total | decimal}}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <table>
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>{{$t('text.count')}}</th>
+                    <th>{{$t('text.tip')}}</th>
+                    <th>{{$t('text.amount')}}</th>
+                    <th>{{$t('text.total')}}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(creditcard,index) in creditcards" :key="index">
+                    <td>{{creditcard.type}}</td>
+                    <td>{{creditcard.count}}</td>
+                    <td>{{creditcard.tip | decimal}}</td>
+                    <td>{{creditcard.amount | decimal}}</td>
+                    <td>{{creditcard.total | decimal}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="vertical">
+              <!-- <table>
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>{{$t('text.count')}}</th>
+                    <th>{{$t('text.tip')}}</th>
+                    <th>{{$t('text.amount')}}</th>
+                    <th>{{$t('text.total')}}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(creditcard,index) in creditcards" :key="index">
+                    <td>{{creditcard.type}}</td>
+                    <td>{{creditcard.count}}</td>
+                    <td>{{creditcard.tip | decimal}}</td>
+                    <td>{{creditcard.amount | decimal}}</td>
+                    <td>{{creditcard.total | decimal}}</td>
+                  </tr>
+                </tbody>
+              </table> -->
+            </div>
+          </div>
+        </template>
         <template v-else>
           <div class="wrap" :key="2">
 
@@ -90,6 +162,8 @@ export default {
       tax: this.$store.getters.tax,
       today: today(),
       departments: [],
+      creditcards: [],
+      payments: [],
       dateRange: {
         from: +moment()
           .subtract(4, "hours")
@@ -255,6 +329,8 @@ export default {
       //console.log(invoices, transactions);
       this.departmentAnalysis(invoices);
       this.dataSummerize(invoices);
+      this.transactionDetail(transactions);
+      this.paymentDetail(transactions);
       this.hourlySalesAnalysis(invoices);
 
       this.loading = false;
@@ -328,7 +404,6 @@ export default {
           });
         }
       });
-      console.log(this.departments);
 
       this.departments.forEach(department => {
         let subtotal = 0;
@@ -421,6 +496,68 @@ export default {
         ]
       };
     },
+    transactionDetail(transactions) {
+      let creditcards = [];
+      let types = new Set();
+
+      transactions
+        .filter(t => t.type === "CREDIT")
+        .map(t => t.subType)
+        .forEach(type => types.add(type));
+      Array.from(types).forEach(type => {
+        const _transaction = transactions
+          .filter(t => t.type === "CREDIT")
+          .filter(t => t.subType === type);
+        const content = {
+          type,
+          count: _transaction.length,
+          amount: _transaction.reduce((a, c) => a + c.actual, 0),
+          tip: _transaction.reduce((a, c) => a + c.tip, 0),
+          total: _transaction.reduce((a, c) => a + c.actual + c.tip, 0)
+        };
+        creditcards.push(content);
+      });
+
+      const total = {
+        type: this.$t("text.total"),
+        count: creditcards.reduce((a, c) => a + c.count, 0),
+        amount: creditcards.reduce((a, c) => a + c.amount, 0),
+        tip: creditcards.reduce((a, c) => a + c.tip, 0),
+        total: creditcards.reduce((a, c) => a + c.total, 0)
+      };
+
+      creditcards.push(total);
+      this.creditcards = creditcards;
+    },
+    paymentDetail(transactions) {
+      let payments = [];
+      let types = new Set();
+
+      transactions
+        .filter(t => t.for === "Order")
+        .map(t => t.type)
+        .forEach(type => types.add(type));
+      Array.from(types).forEach(type => {
+        const _transaction = transactions.filter(t => t.type === type);
+        const content = {
+          type: this.$t("type." + type),
+          count: _transaction.length,
+          amount: _transaction.reduce((a, c) => a + c.actual, 0),
+          tip: _transaction.reduce((a, c) => a + c.tip, 0),
+          total: _transaction.reduce((a, c) => a + c.actual + c.tip, 0)
+        };
+        payments.push(content);
+      });
+      const total = {
+        type: this.$t("text.total"),
+        count: payments.reduce((a, c) => a + c.count, 0),
+        amount: payments.reduce((a, c) => a + c.amount, 0),
+        tip: payments.reduce((a, c) => a + c.tip, 0),
+        total: payments.reduce((a, c) => a + c.total, 0)
+      };
+      payments.push(total);
+      this.payments = payments;
+    },
     confirm() {}
   }
 };
@@ -438,11 +575,10 @@ header {
   justify-content: flex-start;
 }
 .wrap {
-  min-height: 490px;
-  /* background: #f5f5f5; */
+  min-height: 410px;
 }
 
-.department {
+table {
   box-shadow: var(--shadow);
   border-radius: 4px;
   overflow: hidden;
@@ -457,5 +593,18 @@ tr th {
   border-bottom: 1px solid #eceff1;
   padding: 5px 0;
   color: rgba(0, 0, 0, 0.75);
+}
+
+.vertical table {
+  width: calc(50% - 5px);
+  margin: 10px 0 0;
+}
+
+.vertical {
+  display: flex;
+}
+
+.vertical table:first-child {
+  margin-right: 10px;
 }
 </style>
