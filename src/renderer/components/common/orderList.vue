@@ -534,8 +534,11 @@ export default {
         height > 329 && dom.classList.add("scrollable");
 
         if (this.todo) return;
+
         if (target && height > 329) {
-          this.offset -= target.getBoundingClientRect().height;
+          const topDiff = target.getBoundingClientRect().top - dom.getBoundingClientRect().top;
+          const offset = target.getBoundingClientRect().height - 329;
+          this.offset = -(topDiff + offset);
         } else {
           this.offset = height > 329 ? 329 - height : 0;
         }
