@@ -1,6 +1,6 @@
 <template>
   <div>
-    <range-select @update="fetchData"></range-select>
+    <range-tab @update="fetchData" initial="currentWeek"></range-tab>
     <line-chart :chart-data="collection"></line-chart>
     <table>
       <thead>
@@ -26,10 +26,11 @@
 </template>
 
 <script>
+import rangeTab from "../common/rangeTab";
 import lineChart from "./component/lineChart";
-import rangeSelect from "./component/range";
+
 export default {
-  components: { lineChart, rangeSelect },
+  components: { lineChart, rangeTab },
   data() {
     return {
       collection: null,
@@ -62,71 +63,20 @@ export default {
       this.analyzeData(result);
     },
     fetchData(range) {
-      let from, to;
-      switch (range) {
-        case "currentWeek":
-          from = +moment()
-            .startOf("w")
-            .hours(4);
-          to = +moment()
-            .endOf("w")
-            .add(4, "h");
-          this.$socket.emit("[CHART] RANGE", { from, to }, result =>
-            this.initialChartData(result)
-          );
-          break;
-        case "lastWeek":
-          from = +moment()
-            .subtract(1, "w")
-            .startOf("w")
-            .hours(4);
-          to = +moment()
-            .subtract(1, "w")
-            .endOf("w")
-            .add(4, "h");
+      if(!range){
+        const from = +moment().startOf("w").hours(4);
+        const to = +moment().endOf("w").add(4, "h");
 
-          this.$socket.emit("[CHART] RANGE", { from, to }, result =>
-            this.initialChartData(result)
-          );
-          break;
-        case "lastMonth":
-          from = +moment()
-            .subtract(1, "M")
-            .startOf("M")
-            .hours(4);
-          to = +moment()
-            .subtract(1, "M")
-            .endOf("M")
-            .add(4, "h");
-          this.$socket.emit("[CHART] RANGE", { from, to }, result =>
-            this.initialChartData(result)
-          );
-          break;
-        case "monthly":
-          from = +moment()
-            .subtract(12, "M")
-            .startOf("M")
-            .hours(4);
-          to = +moment()
-            .subtract(1, "M")
-            .endOf("M")
-            .add(4, "h");
-          this.$socket.emit("[CHART] MONTHLY", { from, to }, result =>
-            this.initialChartData(result)
-          );
-          break;
-        case "quarterly":
-          break;
-        default:
-          from = +moment()
-            .startOf("M")
-            .hours(4);
-          to = +moment()
-            .endOf("M")
-            .add(4, "h");
-          this.$socket.emit("[CHART] RANGE", { from, to }, result =>
-            this.initialChartData(result)
-          );
+        this.$socket.emit("[CHART] RANGE", { from, to }, result =>this.initialChartData(result));
+      }
+      else if(range.select === 'monthly'){
+        const {from,to} = range;
+        
+        this.$socket.emit("[CHART] MONTHLY", { from, to }, result =>this.initialChartData(result));
+      }else{
+        const {from,to} = range;
+
+        this.$socket.emit("[CHART] RANGE", { from, to }, result =>this.initialChartData(result));
       }
     },
     analyzeData(result) {

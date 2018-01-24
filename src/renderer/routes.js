@@ -382,6 +382,10 @@ export default [{
         path: 'batch',
         name: 'Setting.sales.batch',
         component: require('./components/setting/sales/batch')
+      }, {
+        path: 'cashflow',
+        name: 'Setting.sales.cashflow',
+        component: require('./components/setting/sales/cashflow')
       }]
     }, {
       path: 'chart',

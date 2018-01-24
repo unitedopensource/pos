@@ -1,16 +1,16 @@
 <template>
   <div>
-    <range-select @update="fetchData"></range-select>
+    <range-tab @update="fetchData" initial="currentMonth"></range-tab>
     <pie :chart-data="collection"></pie>
   </div>
 </template>
 
 <script>
 import pie from "./component/pie";
-import rangeSelect from "./component/range";
+import rangeTab from "../common/rangeTab";
 
 export default {
-  components: { pie, rangeSelect },
+  components: { pie, rangeTab },
   data() {
     return {
       collection: [],
@@ -22,57 +22,15 @@ export default {
   },
   methods: {
     fetchData(range) {
-      let from, to;
-      switch (range) {
-        case "currentWeek":
-          from = +moment()
-            .startOf("w")
-            .hours(4);
-          to = +moment()
-            .endOf("w")
-            .add(4, "h");
-          this.$socket.emit("[CHART] SOURCE", { from, to }, result =>
-            this.initialChartData(result)
-          );
-          break;
-        case "lastWeek":
-          from = +moment()
-            .subtract(1, "w")
-            .startOf("w")
-            .hours(4);
-          to = +moment()
-            .subtract(1, "w")
-            .endOf("w")
-            .add(4, "h");
+      if (!range) {
+        const from = +moment().startOf("M").hours(4);
+        const to = +moment().endOf("M").add(4, "h");
 
-          this.$socket.emit("[CHART] SOURCE", { from, to }, result =>
-            this.initialChartData(result)
-          );
-          break;
-        case "lastMonth":
-          from = +moment()
-            .subtract(1, "M")
-            .startOf("M")
-            .hours(4);
-          to = +moment()
-            .subtract(1, "M")
-            .endOf("M")
-            .add(4, "h");
-          this.$socket.emit("[CHART] SOURCE", { from, to }, result =>
-            this.initialChartData(result)
-          );
-          break;
-        default:
-          from = +moment()
-            .startOf("M")
-            .hours(4);
-          to = +moment()
-            .endOf("M")
-            .add(4, "h");
+        this.$socket.emit("[CHART] SOURCE", { from, to }, result => this.initialChartData(result) );
+      } else {
+        const { from,to } = range;
 
-          this.$socket.emit("[CHART] SOURCE", { from, to }, result =>
-            this.initialChartData(result)
-          );
+        this.$socket.emit("[CHART] SOURCE", { from, to }, result =>this.initialChartData(result));
       }
     },
     initialChartData(result) {

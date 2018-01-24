@@ -30,7 +30,7 @@ export default {
     data() {
         return {
             name: "",
-            type: "",
+            type: "regular",
             assign: true,
             printerOpts: ["regular", "label", "hibachi"].map(type => ({
                 label: this.$t('print.type.' + type),

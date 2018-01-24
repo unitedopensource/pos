@@ -10,10 +10,10 @@ const batch = function (data) {
                 <section class="data">
                 <h3>Batch Report</h3>
                   <p class="time"><span class="text">${date}</span><span class="value">${time}</span></p>
-                  <p><span class="text">MID</span><span class="value">${data.mid}</span></p>
-                  <p><span class="text">Device</span><span class="value">${data.tid}</span></p>
+                  <p><span class="text">Merchant ID</span><span class="value">${data.mid}</span></p>
+                  <p><span class="text">Terminal ID</span><span class="value">${data.tid}</span></p>
                   <p><span class="text">Terminal</span><span class="value">${data.terminal}</span></p>
-                  <p><span class="text">Batch #</span><span class="value">${data.batch}</span></p>
+                  <p><span class="text">Batch #</span><span class="value">${data.batchNumber}</span></p>
                   <p><span class="text">Result</span><span class="value">${data.resMsg}</span></p>
                   <p><span class="text">Total</span><span class="value">$ ${total}</span></p>
                 </section>
