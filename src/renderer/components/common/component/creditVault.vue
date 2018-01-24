@@ -62,8 +62,7 @@
   </div>
 </template>
 
-<script>
-import crypto from "crypto";
+<script>    
 import numPad from "../numpad";
 import dialoger from "../dialoger";
 import { mapActions } from "vuex";
@@ -93,35 +92,12 @@ export default {
   },
   methods: {
     encrypt(plaintext, key) {
-      return new Promise((resolve, reject) => {
-        const cryptoKey = crypto
-          .createHash("sha256")
-          .update(key)
-          .digest();
-        const json = JSON.stringify(plaintext);
-        const iv = crypto.randomBytes(16);
-        const cipher = crypto.createCipheriv("aes256", cryptoKey, iv);
-        const encryptedJSON =
-          cipher.update(json, "utf8", "base64") + cipher.final("base64");
-        const result = iv.toString("hex") + encryptedJSON;
-        resolve(result);
-      });
+      return new Promise(next => this.$socket.emit("[CRYPT] ENCRYPT", { plaintext, key }, result => next(result)));
     },
     decrypt(ciphertext, key) {
-      const cryptoKey = crypto
-        .createHash("sha256")
-        .update(key)
-        .digest();
-      return new Promise((resolve, reject) => {
-        const iv = new Buffer(ciphertext.substring(0, 32), "hex");
-        const encryptedJSON = ciphertext.substring(32);
-        const decryptor = crypto.createDecipheriv("aes256", cryptoKey, iv);
-        const json =
-          decryptor.update(encryptedJSON, "base64", "utf8") +
-          decryptor.final("utf8");
-
-        resolve(JSON.parse(json));
-      });
+      return new Promise((next,stop) => this.$socket.emit("[CRYPT] DECRYPT", { ciphertext, key }, json => {
+        json ? next(JSON.parse(json)) : stop()
+      }));
     },
     unlock() {
       this.decrypt(this.select.cipher, this.entry)

@@ -888,6 +888,8 @@ export default {
                 }
               )
             );
+
+            delete this.order.__creditPayment__;
             break;
           case "THIRD":
             transaction = {

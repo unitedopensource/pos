@@ -153,6 +153,48 @@ var Printer = function (plugin, config, station) {
             this.plugin.SET_PRINTER_INDEX(printer);
             this.plugin.PRINT();
 
+            if (raw.hasOwnProperty('__creditPayment__') && (/cashier/i.test(printer))) {
+
+                this.plugin.PRINT_INIT('Ticket Credit Payment');
+                this.plugin.SET_PRINTER_INDEX(printer);
+                this.plugin.PRINT_INITA(0, 0, 270, 500, "");
+                this.plugin.ADD_PRINT_TEXT(0, 35, 100, 21, "# " + raw.number);
+                this.plugin.SET_PRINT_STYLEA(0, "FontName", "Agency FB");
+                this.plugin.SET_PRINT_STYLEA(0, "FontSize", 18);
+                this.plugin.SET_PRINT_STYLEA(0, "Alignment", 1);
+                this.plugin.SET_PRINT_STYLEA(0, "Bold", 1);
+                this.plugin.SET_PRINT_STYLEA(0, "ItemType", 1);
+                this.plugin.SET_PRINT_STYLEA(0, "Horient", 2);
+                this.plugin.SET_PRINT_STYLEA(0, "LetterSpacing", 1);
+                this.plugin.ADD_PRINT_TEXT(0, 50, 165, 21, setting.title[raw.type]);
+                this.plugin.SET_PRINT_STYLEA(0, "FontName", "Agency FB");
+                this.plugin.SET_PRINT_STYLEA(0, "FontSize", 18);
+                this.plugin.SET_PRINT_STYLEA(0, "Alignment", 3);
+                this.plugin.SET_PRINT_STYLEA(0, "LetterSpacing", 1);
+
+                this.plugin.ADD_PRINT_TEXT(30, 0, 250, 34, raw.__creditPayment__.number);
+                this.plugin.SET_PRINT_STYLEA(0, "Alignment", 2);
+                this.plugin.SET_PRINT_STYLEA(0, "FontName", "Agency FB");
+                this.plugin.SET_PRINT_STYLEA(0, "FontSize", 17);
+                this.plugin.SET_PRINT_STYLEA(0, "Bold", 1);
+                this.plugin.SET_PRINT_STYLEA(0, "LetterSpacing", 1);
+                this.plugin.ADD_PRINT_TEXT(68, 40, 60, 20, raw.__creditPayment__.date);
+                this.plugin.SET_PRINT_STYLEA(0, "FontName", "Agency FB");
+                this.plugin.SET_PRINT_STYLEA(0, "FontSize", 11);
+                this.plugin.SET_PRINT_STYLEA(0, "LetterSpacing", 1);
+                this.plugin.ADD_PRINT_TEXT(68, 90, 60, 20, raw.__creditPayment__.cvc);
+                this.plugin.SET_PRINT_STYLEA(0, "FontName", "Agency FB");
+                this.plugin.SET_PRINT_STYLEA(0, "FontSize", 12);
+                this.plugin.SET_PRINT_STYLEA(0, "LetterSpacing", 1);
+                this.plugin.ADD_PRINT_TEXT(68, 115, 100, 20, raw.payment.due.toFixed(2));
+                this.plugin.SET_PRINT_STYLEA(0, "FontName", "Agency FB");
+                this.plugin.SET_PRINT_STYLEA(0, "FontSize", 14);
+                this.plugin.SET_PRINT_STYLEA(0, "Alignment", 3);
+                this.plugin.SET_PRINT_STYLEA(0, "LetterSpacing", 1);
+
+                this.plugin.PRINT()
+            }
+
             if (Array.isArray(setting.reprint) && setting.reprint.includes(ticket)) {
                 this.plugin.PRINT_INIT(`Reprint ticket ${raw.number}`)
                 this.plugin.ADD_PRINT_HTM(0, 0, "100%", "100%", html)
@@ -1404,7 +1446,7 @@ function createFooter(config, setting, printer, ticket) {
                 settle.push(`<section class="details"><h3>Paid by ${subType} - Thank You</h3></section>`)
         }
     })
-    
+
     if (!ticket.settled && payment.paid !== 0)
         settle.push(`<section class="details"><h3>Balance Due: $ ${payment.remain.toFixed(2)}</h3></section>`);
 
