@@ -29,7 +29,13 @@
         </template>
       </div>
     </header>
-    <div class="order" v-if="order.type === 'HIBACHI' && $route.name === 'Menu'">
+    <div class="order" v-if="viewHistory">
+      <div class="inner search">
+        <i class="fa fa-3x fa-search"></i>
+        <h3>{{$t('text.searchInvoice')}}</h3>
+      </div>
+    </div>
+    <div class="order" v-else-if="order.type === 'HIBACHI' && $route.name === 'Menu'">
       <v-touch class="inner" :style="scroll" @panup="move" @pandown="move" @panstart="panStart" @panend="panEnd">
         <group-item :items="order.content" :seats="seats" @update="setSeat"></group-item>
       </v-touch>
@@ -291,8 +297,8 @@ export default {
       if (items.length === 0) {
         let delivery =
           this.ticket.type === "DELIVERY" &&
-            this.store.delivery &&
-            !this.order.deliveryFree
+          this.store.delivery &&
+          !this.order.deliveryFree
             ? parseFloat(this.store.deliveryCharge)
             : 0;
 
@@ -389,7 +395,7 @@ export default {
             .sort((a, b) => a.guest < b.guest)
             .find(r => guest >= r.guest);
           gratuity = percentage ? toFixed(subtotal * fee / 100, 2) : fee;
-        } catch (e) { }
+        } catch (e) {}
       }
 
       gratuity = toFixed(gratuity, 2);
@@ -502,6 +508,14 @@ export default {
     undoneItems() {
       return this.order.content.map(i => !i.print).reduce((a, b) => a + b, 0);
     },
+    viewHistory() {
+      return (
+        this.$route.name === "Menu" &&
+        this.order.content.length === 0 &&
+        this.app.newTicket &&
+        this.customer._id
+      );
+    },
     ...mapGetters([
       "app",
       "tax",
@@ -536,7 +550,9 @@ export default {
         if (this.todo) return;
 
         if (target && height > 329) {
-          const topDiff = target.getBoundingClientRect().top - dom.getBoundingClientRect().top;
+          const topDiff =
+            target.getBoundingClientRect().top -
+            dom.getBoundingClientRect().top;
           const offset = target.getBoundingClientRect().height - 329;
           this.offset = -(topDiff + offset);
         } else {
@@ -821,5 +837,21 @@ header i {
   font-weight: bold;
   font-family: "Agency FB";
   font-size: 1.5em;
+}
+
+.inner.search {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  height: inherit;
+  cursor: pointer;
+  color: #3c3c3c;
+  text-shadow: 0 1px 3px #fff;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.inner.search h3 {
+  margin-top: 15px;
 }
 </style>

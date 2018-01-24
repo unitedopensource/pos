@@ -1126,7 +1126,8 @@ export default {
         alwaysRoundUp: 'Round up',
         alwaysRoundDown: 'Round down',
         itemSplit: 'Item Split',
-        presetItem: 'Preset Items'
+        presetItem: 'Preset Items',
+        viewInvoice: 'View History Invoice'
     },
     nav: {
         store: 'Store',

@@ -38,16 +38,17 @@ export default {
   },
   methods: {
     initialData() {
-      return new Promise((next, reject) => {
+      return new Promise((next, stop) => {
         this.timeout = setTimeout(() => {
           this.cancelable = true;
         }, 30000);
 
         this.$socket.emit("[TERMINAL] CONFIG", this.attached, config => {
           if (!config) {
-            reject({ error: "CONFIG_FILE_NO_FOUND" });
+            stop({ error: "CONFIG_FILE_NO_FOUND" });
           } else {
             this.config = config;
+            console.log(this.getParser(config.model))
             this.terminal = this.getParser(config.model)();
             next();
           }
@@ -71,7 +72,6 @@ export default {
     initTransaction(initial) {
       return new Promise((next, reject) => {
         this.device = this.terminal.check(initial);
-        console.log(this.device);
 
         if (this.device.code !== "000000") {
           reject({ error: "DEVICE_RETURN_ERROR" });
@@ -96,11 +96,11 @@ export default {
       });
     },
     parseData(data) {
-      return new Promise((next, reject) => {
+      return new Promise((next, stop) => {
         const result = this.terminal.explainTransaction(data);
 
         if (result.code !== "000000") {
-          reject({ error: "TRANSACTION_FAILED", data: result });
+          stop({ error: "TRANSACTION_FAILED", data: result });
         } else {
           this.init.resolve(result);
         }

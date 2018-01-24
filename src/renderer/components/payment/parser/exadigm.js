@@ -1,5 +1,4 @@
 const net = require('net');
-const socket = new net.Socket();
 
 const Exadigm = function () {
     let host = null;
@@ -8,57 +7,61 @@ const Exadigm = function () {
 
     this.initial = function (host, port, authCode) {
         host = host;
-        prot = port || 8765;
-        auth = authCode;
+        port = port || 8765;
+        auth = authCode || "987pjasd4687";
 
         return new Promise((resolve) => {
-            resolve({
-                text() {
-                    return {
-                        code: "000000", model: "NX2200"
-                    }
-                }
-            })
+            resolve({ code: "000000", model: "NX2200" })
         });
     };
+
     this.check = function (device) {
         return { code: "000000", model: "NX2200" }
     };
+
     this.charge = function (card) {
         console.log(card);
+        const command = {
+            "packetID": "XCRP",
+            "packetData": {
+                "packetAuthorization": auth,
+                "requestID": 0,
+                "baseAmount": 0,
+                "receiptCount": 0,
+                "transactionType": 0,
+                "taxAmount": 0
+            }
+        };
+
+        this.sent(command).then(result => {
+            console.log(result)
+        }).catch(error => {
+            console.log(error)
+        })
     };
+
     this.explainTransaction = function (data) {
 
     };
-    this.connect = function () {
-        if (!host || !port) throw Error("Please Initial first");
 
-        socket.connect(host, port, () => {
+    this.sent = function (command) {
+        return new Promise((resolve, reject) => {
+            const socket = new net.Socket();
+            let results = [];
 
-            socket.write(JSON.stringify(
-                {
-                    "packetID": "XCRP",
-                    "packetData": {
-                        "packetAuthorization": "987pjasd4687",
-                        "requestID": 0,
-                        "baseAmount": 0,
-                        "receiptCount": 0,
-                        "transactionType": 0,
-                        "taxAmount": 0
-                    }
-                }
-            ))
-        });
+            socket.connect(host, port, () => socket.write(JSON.stringify(command)));
 
-        socket.on('data', (data) => {
-            console.log(data);
-            socket.destroy();
-        });
+            socket.on('data', (data) => {
+                results.push(data);
+                socket.destroy();
+            });
 
-        socket.on('close', () => {
-            console.log("connection closed")
+            socket.on('error', (error) => reject(error));
+            socket.on('close', () => resolve(results));
         })
     }
 };
 
-module.exports = new Exadigm();
+module.exports = function () {
+    return new Exadigm()
+};

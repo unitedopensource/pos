@@ -1181,20 +1181,6 @@ export default {
 
       this.reset = false;
     },
-    // setTip() {
-    //   new Promise((resolve, reject) => {
-    //     this.componentData = { resolve, reject, payment: this.payment };
-    //     this.component = "tipper";
-    //   })
-    //     .then(_tip => {
-    //       this.paid = "0.00";
-    //       this.tip = "0.00";
-    //       Object.assign(this.payment, { tip: _tip });
-    //       this.recalculatePayment();
-    //       this.$q();
-    //     })
-    //     .catch(e => this.$q());
-    // },
     setDiscount() {
       new Promise((resolve, reject) => {
         this.componentData = { resolve, reject, payment: this.payment };

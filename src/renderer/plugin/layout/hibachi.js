@@ -168,9 +168,10 @@ const hibachi = function (printer, order, items) {
     this.plugin.ADD_PRINT_LINE(138, 6, 138, 266, 0, 1);
 
     layout[order.layout].forEach((table) => {
-        let item = items.find(i => i.seat === table.seat);
+        const item = items.find(i => i.seat === table.seat);
+        
         if (item) {
-            let food = item.usEN + (item.side.usEN || "") + "\n";
+            let food = item.usEN + "\n" + (item.side.usEN || "") + "\n";
             item.choiceSet.forEach(set => {
                 food += set.usEN + " "
             })

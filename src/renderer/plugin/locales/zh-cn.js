@@ -1119,7 +1119,8 @@ export default {
         alwaysRoundUp: '向上取整',
         alwaysRoundDown: '向下取整',
         itemSplit: '物品平摊',
-        presetItem: '预设物品'
+        presetItem: '预设物品',
+        viewInvoice: '查看以往订单'
     },
     nav: {
         store: '店面',
