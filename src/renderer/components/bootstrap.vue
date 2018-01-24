@@ -5,7 +5,7 @@
 import { mapActions, mapGetters } from "vuex";
 import { ipcRenderer } from "electron";
 import serialport from "serialport";
-import Print from "../plugin/printer";
+import Print from "../plugin/print";
 import Magic from "wake_on_lan";
 import Mac from "getmac";
 import os from "os";

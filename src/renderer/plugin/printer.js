@@ -448,6 +448,7 @@ var Printer = function (plugin, config, station) {
             CLODOP.SET_PRINT_STYLEA(0, "Alignment", 2);
         });
 
+        CLODOP.SET_PRINTER_INDEX(printer);
         CLODOP.PRINT();
     }
 
@@ -541,7 +542,7 @@ var Printer = function (plugin, config, station) {
     }
 
     this.printGiftCard = function (title, card) {
-        let { name, address, city, state, zipCode, contact } = this.config;
+        const { name, address, city, state, zipCode, contact } = this.config;
 
         CLODOP.PRINT_INIT('Gift Card');
         CLODOP.PRINT_INITA(0, 0, 260, 2000, "");
@@ -1016,10 +1017,7 @@ var Printer = function (plugin, config, station) {
 
     this.printReservationTicket = function (data) {
         const store = this.config;
-        const {
-            queue,
-            name
-        } = data;
+        const { queue, name } = data;
         const date = moment().format("MM/DD/YYYY");
         const time = moment().format("hh:mm:ss");
         let html = `<section class="header">
