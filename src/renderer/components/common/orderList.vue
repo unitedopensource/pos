@@ -32,7 +32,7 @@
     <div class="order" v-if="viewHistory">
       <div class="inner search">
         <i class="fa fa-3x fa-search"></i>
-        <h3>{{$t('text.searchInvoice')}}</h3>
+        <h3>{{$t('text.viewInvoice')}}</h3>
       </div>
     </div>
     <div class="order" v-else-if="order.type === 'HIBACHI' && $route.name === 'Menu'">

@@ -43,9 +43,10 @@
 </template>
 
 <script>
+import viewer from "./component/viewer";
 import rangeTab from "../common/rangeTab";
 export default {
-  components: { rangeTab },
+  components: { rangeTab, viewer },
   data() {
     return {
       componentData: null,
