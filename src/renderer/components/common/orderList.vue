@@ -15,7 +15,9 @@
         </template>
         <template v-else>
           <template v-if="order.customer">
-            <h3 class="phone">{{order.customer.phone | phone}}<span class="name">{{order.customer.name}}</span></h3>
+            <h3 class="phone">{{order.customer.phone | phone}}
+              <span class="name">{{order.customer.name}}</span>
+            </h3>
             <div class="detail">
               <p>
                 <i class="fa fa-map-marker"></i>
@@ -39,7 +41,7 @@
       </div>
     </header>
     <div class="order" v-if="viewHistory">
-      <div class="inner search">
+      <div class="inner search" @click="openHistory">
         <i class="fa fa-3x fa-search"></i>
         <h3>{{$t('text.viewInvoice')}}</h3>
       </div>
@@ -123,11 +125,20 @@ import creditVault from "./component/creditVault";
 import groupItem from "./component/groupItem";
 import listItem from "./component/listItem";
 import entry from "../menu/component/entry";
+import history from "./component/history";
 import dialoger from "../common/dialoger";
 import config from "./component/config";
 
 export default {
-  components: { config, dialoger, listItem, groupItem, entry, creditVault },
+  components: {
+    entry,
+    config,
+    history,
+    dialoger,
+    listItem,
+    groupItem,
+    creditVault
+  },
   props: ["layout", "group", "display", "seats", "seat"],
   data() {
     return {
@@ -301,6 +312,11 @@ export default {
       this.todo = !this.todo;
 
       !this.todo && this.order.content.forEach(item => (item.pending = false));
+    },
+    openHistory() {
+      this.$socket.emit("[CUSTOMER] HISTORY", this.customer._id, invoices =>
+        this.$open("history", { invoices })
+      );
     },
     calculator(items) {
       if (items.length === 0) {
@@ -789,9 +805,9 @@ header.info {
 }
 
 .detail i {
-    color: #607D8B;
-    width: 15px;
-    text-align: center;
+  color: #607d8b;
+  width: 15px;
+  text-align: center;
 }
 
 .content .time {
@@ -826,8 +842,8 @@ header.info {
 }
 
 .phone .name {
-    margin-left: 10px;
-    font-size: 18px;
+  margin-left: 10px;
+  font-size: 18px;
 }
 
 .content .value {

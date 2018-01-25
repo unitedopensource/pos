@@ -146,14 +146,11 @@ export default {
       }
     },
     doubleCheck() {
-      if (
-        this.$route.name === "Menu" &&
-        this.app.mode === "create" &&
-        this.order.type === "DINE_IN"
-      ) {
-        this.resetCurrentTable();
-        this.$socket.emit("TABLE_MODIFIED", this.currentTable);
+      if (this.$route.name === "Menu" && this.order.type === "DINE_IN") {
+        const { _id } = this.currentTable;
+        this.app.newTicket && this.$socket.emit("[TABLE] RESET", { _id });
       }
+
       if (this.order.pending) {
         Object.assign(this.order, { pending: false });
         this.$socket.emit("[UPDATE] INVOICE", this.order);
@@ -178,12 +175,7 @@ export default {
           }
         }
       });
-      let isPrint = true;
-      order.content.forEach(item => {
-        delete item.new;
-        !item.print && (isPrint = false);
-      });
-      order.print = isPrint;
+
       this.$socket.emit("[UPDATE] INVOICE", order);
     },
     editCustomer() {

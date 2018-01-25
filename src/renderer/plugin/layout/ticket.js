@@ -370,8 +370,8 @@ function createStyle(setting) {
               *{margin:0;padding:0}\
               section.header{font-family:'Agency FB';text-align:center;}\
               div.store{margin-bottom:10px;${contact ? '' : 'display:none;'}}\
-              h3{font-size:1.25em;}\
-              h5{font-size:16px;font-weight:lighter}\
+              .store h3{font-size:1.25em;}\
+              .store h5{font-size:16px;font-weight:lighter}\
               h1{${title ? '' : 'display:none;'}font-size:1.5em;font-family:"${fontFamily}"}\
               .ticketNumber,.tableName{position:absolute;bottom:12px;font-size:2em;font-weight:bold;}\
               footer .ticketNumber,footer .tableName{top: 5px;bottom: initial;}\
