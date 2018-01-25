@@ -827,7 +827,8 @@ export default {
         OPEN: '开钱箱',
         CREDITFLOW: '信用卡',
         CASHFLOW: '现金',
-        GIFTFLOW: '礼物卡'
+        GIFTFLOW: '礼物卡',
+        REFUND: '退款'
     },
     text: {
         starter: '起始',

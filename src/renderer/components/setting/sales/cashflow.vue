@@ -91,11 +91,12 @@ export default {
     view(log) {
       new Promise((resolve, reject) => {
         this.componentData = { resolve, reject, log };
-        this.component = "viewer"
-      }).then(() => {
-
-        this.$q()
-      }).catch(() => this.$q())
+        this.component = "viewer";
+      })
+        .then(() => {
+          this.$q();
+        })
+        .catch(() => this.$q());
     }
   }
 };

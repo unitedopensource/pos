@@ -50,12 +50,15 @@ export default {
     };
   },
   created() {
-    const printers = Object.keys(this.config.printers).filter(
+    this.printers = Object.keys(this.config.printers).filter(
       d => !/cashier/i.test(d)
     );
 
-    this.printers = printers.slice();
-    this.printer = printers.slice();
+    const preset = Object.keys(this.init.item.printer).filter(
+      d => !/cashier/i.test(d)
+    );
+
+    this.printer = preset.length > 0 ? preset : this.printers.slice();
   },
   methods: {
     confirm() {

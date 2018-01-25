@@ -5,7 +5,7 @@
         <h3>{{$t('title.payLog')}}</h3>
         <h5>{{$t('tip.paidRecords',init.number,init.logs.length)}}</h5>
       </header>
-      <table>
+      <table class="event">
         <thead>
           <tr>
             <th>{{$t('thead.time')}}</th>
@@ -102,6 +102,10 @@ export default {
       this.$dialog(data)
         .then(() => {
           switch (payment.type) {
+            case "CASH":
+              this.remove(payment,index);
+              Printer.openCashDrawer();
+              break;
             case "CREDIT":
               this.getDetail(payment.credential)
                 .then(this.initialParser)
@@ -144,7 +148,7 @@ export default {
           "[TERMINAL] CONFIG",
           record.terminal,
           ({ ip, port, sn, model, print = true }) => {
-            this.terminal = this.getParser(model)();
+            this.terminal = this.getParser(model).default();
             this.printTicket = print;
 
             this.terminal
@@ -238,47 +242,6 @@ h5 {
   margin-top: 3px;
 }
 
-thead th {
-  padding: 5px 0;
-  background: #009688;
-  color: #fff;
-  text-shadow: 0 1px 1px #333;
-}
-
-tbody {
-  background: #fafafa;
-  display: block;
-  min-height: 390px;
-}
-
-thead,
-tbody tr {
-  text-align: center;
-  display: table;
-  width: 100%;
-  table-layout: fixed;
-}
-
-tbody td {
-  text-align: center;
-  padding: 5px 0;
-}
-
-td button {
-  border: none;
-  background: #ff5722;
-  color: #fff;
-  padding: 7px 10px;
-  font-family: Yuanti-SC;
-  border-radius: 3px;
-  cursor: pointer;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-}
-
-tbody tr:nth-child(odd) {
-  background: #eeeeee;
-}
-
 .amount {
   font-weight: bold;
   font-family: "Agency FB";
@@ -300,16 +263,6 @@ footer {
   font-size: 14px;
   margin-left: 5px;
   color: #ff5722;
-}
-
-.warning {
-  color: #ff9800;
-  font-style: italic;
-  float: right;
-}
-
-.warning i {
-  margin: 0 2px;
 }
 
 .info {

@@ -354,7 +354,8 @@ export default {
         OPEN: 'No Sale',
         CREDITFLOW: 'Credit Card',
         CASHFLOW: 'Cash',
-        GIFTFLOW: 'Gift Card'
+        GIFTFLOW: 'Gift Card',
+        REFUND: 'Refund'
     },
     title: {
         markPaymentType: 'Mark Payment Type',

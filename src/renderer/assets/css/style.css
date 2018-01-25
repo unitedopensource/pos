@@ -393,6 +393,7 @@ input[type="text"]:disabled {
   border-top: 1px solid #e6e6e6;
   display: flex;
   justify-content: flex-end;
+  align-items: center;
 }
 
 footer .opt {
