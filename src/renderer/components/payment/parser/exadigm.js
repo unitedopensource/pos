@@ -46,15 +46,14 @@ const Exadigm = function () {
     };
 
     this.sent = function (command) {
-        console.log(host, port)
         return new Promise((resolve, reject) => {
             const socket = new net.Socket();
+
             socket.setEncoding("utf8");
-
-            let buffer = null;
-
             socket.connect(port, host, () => socket.write(JSON.stringify(command)));
 
+            let buffer = null;
+            
             socket.on('data', (data) => {
                 buffer = data;
                 socket.destroy();
