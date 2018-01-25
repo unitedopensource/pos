@@ -169,12 +169,13 @@ const hibachi = function (printer, order, items) {
 
     layout[order.layout].forEach((table) => {
         const item = items.find(i => i.seat === table.seat);
-        
+
         if (item) {
-            let food = item.usEN + "\n" + (item.side.usEN || "") + "\n";
-            item.choiceSet.forEach(set => {
-                food += set.usEN + " "
-            })
+            const { replace = false, zhCN, usEN } = item.printer[printer];
+            const name = replace ? usEN : item.usEN;
+            let food = name + "\n" + (item.side.usEN || "") + "\n";
+
+            item.choiceSet.forEach(set => { food += set.usEN + " " });
             table.text.push(food);
         }
 

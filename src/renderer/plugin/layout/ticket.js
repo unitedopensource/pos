@@ -277,7 +277,7 @@ function createList(printer, setting, invoice, preview) {
 
     function mockup(item, renderQty) {
         const { replace = false, zhCN, usEN, note } = item.printer[printer];
-        const idCN = secondary.id ? item.menuID + ' ' : '';
+        const idCN = secondary.id ? item.menuID + ' ' : ''; 
         const idEN = primary.id ? item.menuID + ' ' : '';
         const nameCN = replace ? idCN + zhCN : idCN + (item.zhCN || "");
         const nameEN = replace ? idEN + usEN : idEN + (item.usEN || "");

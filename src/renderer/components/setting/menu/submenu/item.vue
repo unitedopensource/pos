@@ -1,10 +1,19 @@
 <template>
   <div>
+    <header class="nav">
+      <nav>
+        <span class="add" @click="option">{{$t('button.option')}}</span>
+      </nav>
+      <div class="title">
+        <h5>{{$t('items',items.length)}}</h5>
+        <h3>{{$t("title.item")}}</h3>
+      </div>
+      <nav>
+        <span class="add" @click="create">{{$t('button.new')}}</span>
+      </nav>
+    </header>
     <div class="items">
       <div v-for="(item,index) in items" @click="edit(item)">{{item[language]}}</div>
-      <div class="add" @click="create">
-        <i class="fa fa-plus"></i>
-      </div>
     </div>
     <div :is="component" :init="componentData"></div>
   </div>
@@ -55,11 +64,10 @@ export default {
           this.$q();
         })
         .catch(() => this.$q());
+    },
+    option(){
+      
     }
   }
 };
 </script>
-
-<style scoped>
-
-</style>

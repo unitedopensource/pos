@@ -992,7 +992,7 @@ export default {
         report: 'Report',
         order: 'Order',
         insert: 'Insert',
-        queueItem: '{i} Items',
+        items: '{i} Items',
         cashInCount: 'Cash In Count',
         recordDetail: 'Record Detail',
         date: 'Date',

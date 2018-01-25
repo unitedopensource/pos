@@ -984,7 +984,7 @@ export default {
         report: '报表',
         order: '订单',
         insert: '插入',
-        queueItem: '{i} 个物品',
+        items: '{i} 个物品',
         cashInCount: '起始现金',
         recordDetail: '详细记录',
         date: '日期',
