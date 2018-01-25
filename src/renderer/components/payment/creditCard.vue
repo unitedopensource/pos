@@ -48,8 +48,7 @@ export default {
             stop({ error: "CONFIG_FILE_NO_FOUND" });
           } else {
             this.config = config;
-            console.log(this.getParser(config.model))
-            this.terminal = this.getParser(config.model)();
+            this.terminal = this.getParser(config.model).default();
             next();
           }
         });

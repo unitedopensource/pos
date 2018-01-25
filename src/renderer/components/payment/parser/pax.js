@@ -389,6 +389,10 @@ const Draw = function (path) {
   }
 };
 
-module.exports = function () {
-  return new Pax()
-};
+// module.exports = function () {
+//   return new Pax()
+// };
+
+export default function(){
+  return new Pax();
+}

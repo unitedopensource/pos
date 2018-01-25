@@ -128,7 +128,7 @@ export default {
       return new Promise((resolve, reject) => {
         this.tasks.forEach(task => {
           const { ip, port, model, alias } = task;
-          task.terminal = this.getParser(task.model)();
+          task.terminal = this.getParser(task.model).default();
           task.terminal
             .initial(ip, port, model, this.stationAlias, alias)
             .then(response => {

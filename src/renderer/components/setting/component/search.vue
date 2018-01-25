@@ -52,7 +52,7 @@ export default {
       this.initializing = true;
 
       const model = this.port === "10009" ? "S300" : "NX2200";
-      const terminal = this.getParser()();
+      const terminal = this.getParser().default();
 
       terminal.initial(this.target, this.port).then(response => {
         const device = terminal.check(response.data);

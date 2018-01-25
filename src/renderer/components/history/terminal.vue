@@ -354,7 +354,7 @@ export default {
             d => d.alias === terminal
           );
           this.printTicket = print;
-          this.terminal = this.getParser(model)();
+          this.terminal = this.getParser(model).default();
           this.terminal
             .initial(ip, port, sn, this.station.alias, terminal)
             .then(response => {
