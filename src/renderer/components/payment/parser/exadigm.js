@@ -25,7 +25,7 @@ const Exadigm = function () {
             "packetID": "XCRP",
             "packetData": {
                 "packetAuthorization": auth,
-                "requestID": 0,
+                "requestID": 4,
                 "baseAmount": amount * 100,
                 "receiptCount": 0,
                 "transactionType": 0,
