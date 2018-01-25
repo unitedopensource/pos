@@ -1,68 +1,69 @@
 <template>
-    <div class="popupMask center dark" @click.self="init.reject">
-        <div class="window">
-            <header class="title">
-                <span>{{$t('title.orderList')}}</span>
-                <i class="fa fa-times" @click="init.reject"></i>
-            </header>
-            <div class="innner">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>{{$t('thead.table')}}</th>
-                            <th>{{$t('thead.server')}}</th>
-                            <th>{{$t('thead.placeTime')}}</th>
-                            <th>{{$t('thead.lapse')}}</th>
-                            <th>{{$t('thead.total')}}</th>
-                            <th>{{$t('thead.todo')}}</th>
-                            <th>{{$t('thead.action')}}</th>
-                            <th>{{$t('thead.view')}}</th>
-                        </tr>
-                    </thead>
-                    <tbody v-if="!combineMode">
-                        <tr v-for="(invoice,index) in invoices" :key="index">
-                            <td>{{invoice.number}}</td>
-                            <td>{{invoice.table}}</td>
-                            <td>{{invoice.server}}</td>
-                            <td>{{invoice.time | moment('HH:mm')}}</td>
-                            <td>{{invoice.time | fromNow}}</td>
-                            <td>$ {{invoice.payment.due | decimal}}</td>
-                            <td>{{todo(invoice.content)}} / {{invoice.content.length}}</td>
-                            <td class="action">
-                                <span class="paid" @click="settle(invoice)">{{$t('button.payment')}}</span>
-                            </td>
-                            <td>
-                                <i class="fa fa-file-text-o" @click="view(invoice)"></i>
-                            </td>
-                        </tr>
-                    </tbody>
-                    <tbody v-else>
-                        <tr v-for="(invoice,index) in invoices" :key="index">
-                            <td>{{invoice.number}}</td>
-                            <td>{{invoice.table}}</td>
-                            <td>{{invoice.server}}</td>
-                            <td>{{invoice.time | moment('HH:mm')}}</td>
-                            <td>{{invoice.time | fromNow}}</td>
-                            <td>$ {{invoice.payment.due | decimal}}</td>
-                            <td>{{todo(invoice.content)}} / {{invoice.content.length}}</td>
-                            <td class="action">
-                                <span class="combine" @click="addToCombine(invoice.number)" v-show="!queued(invoice.number)">{{$t('button.select')}}</span>
-                                <span class="cancel" @click="addToCombine(invoice.number)" v-show="queued(invoice.number)">{{$t('button.cancel')}}</span>
-                                <span class="join" v-if="queued(invoice.number)" @click="join(invoice.number)">{{$t('button.combine')}}</span>
-                            </td>
-                            <td>
-                                <i class="fa fa-file-text-o" @click="view(invoice)"></i>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="popupMask center dark" v-show="component">
-            <div :is="component" :init="componentData"></div>
-        </div>
+  <div class="popupMask center dark" @click.self="init.reject">
+    <div class="editor">
+      <header>
+        <h5></h5>
+        <h3>{{$t('title.orderList')}}</h3>
+      </header>
+      <table class="event">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>{{$t('thead.table')}}</th>
+            <th>{{$t('thead.server')}}</th>
+            <th>{{$t('thead.placeTime')}}</th>
+            <th>{{$t('thead.lapse')}}</th>
+            <th>{{$t('thead.total')}}</th>
+            <th>{{$t('thead.todo')}}</th>
+            <th class="action">{{$t('thead.action')}}</th>
+            <th>{{$t('thead.view')}}</th>
+          </tr>
+        </thead>
+        <tbody v-if="!combineMode">
+          <tr v-for="(invoice,index) in invoices" :key="index">
+            <td>{{invoice.number}}</td>
+            <td>{{invoice.table}}</td>
+            <td>{{invoice.server}}</td>
+            <td>{{invoice.time | moment('HH:mm')}}</td>
+            <td>{{invoice.time | fromNow}}</td>
+            <td>$ {{invoice.payment.due | decimal}}</td>
+            <td>{{todo(invoice.content)}} / {{invoice.content.length}}</td>
+            <td class="action">
+              <span class="paid" @click="settle(invoice)">{{$t('button.payment')}}</span>
+            </td>
+            <td>
+              <i class="fa fa-file-text-o" @click="view(invoice)"></i>
+            </td>
+          </tr>
+        </tbody>
+        <tbody v-else>
+          <tr v-for="(invoice,index) in invoices" :key="index">
+            <td>{{invoice.number}}</td>
+            <td>{{invoice.table}}</td>
+            <td>{{invoice.server}}</td>
+            <td>{{invoice.time | moment('HH:mm')}}</td>
+            <td>{{invoice.time | fromNow}}</td>
+            <td>$ {{invoice.payment.due | decimal}}</td>
+            <td>{{todo(invoice.content)}} / {{invoice.content.length}}</td>
+            <td class="action">
+              <span class="combine" @click="addToCombine(invoice.number)" v-show="!queued(invoice.number)">{{$t('button.select')}}</span>
+              <span class="cancel" @click="addToCombine(invoice.number)" v-show="queued(invoice.number)">{{$t('button.cancel')}}</span>
+              <span class="join" v-if="queued(invoice.number)" @click="join(invoice.number)">{{$t('button.combine')}}</span>
+            </td>
+            <td>
+              <i class="fa fa-file-text-o" @click="view(invoice)"></i>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <footer>
+        <button class="btn" @click="init.resolve">{{$t('button.done')}}</button>
+      </footer>
     </div>
+    <div class="popupMask center dark" v-show="component">
+      <div :is="component" :init="componentData"></div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -210,33 +211,8 @@ export default {
 </script>
 
 <style scoped>
-.innner {
-  height: 670px;
-}
-
-table {
+table{
   width: 825px;
-  border-spacing: 0;
-  table-layout: auto;
-}
-
-tbody tr {
-  background: #fff;
-}
-
-th {
-  padding: 7px 5px;
-  text-align: center;
-}
-
-tbody tr:nth-child(even) {
-  background: #f5f5f5;
-  border-bottom: 1px solid #f1f1f1;
-}
-
-td {
-  padding: 10px 5px;
-  text-align: center;
 }
 .action {
   width: 200px;

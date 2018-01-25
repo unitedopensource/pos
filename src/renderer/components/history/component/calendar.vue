@@ -1,241 +1,189 @@
 <template>
-  <div class="popupMask center dark" @click.self="exit">
-    <div class="calendar window">
-      <header class="title">
-        <i class="fa fa-chevron-left" @click="prev"></i>
-        <div class="display">
-          <span class="month target" @click="setTarget('M',$event)">{{calendarDay | moment('MMM')}}</span>
-          <span class="year" @click="setTarget('Y',$event)">{{calendarDay | moment('YYYY')}}</span>
+    <div class="popupMask dark center" @click.self="init.reject">
+        <div class="editor">
+            <header>
+                <div>
+                    <h5>{{date | moment('YYYY-MM')}}</h5>
+                    <h3>{{$t('nav.calendar')}}</h3>
+                </div>
+                <nav>
+                    <i class="fa fa-angle-left" @click="prev" @contextmenu="prevYear"></i>
+                    <i class="fa fa-angle-right" @click="next" @contextmenu="nextYear"></i>
+                </nav>
+            </header>
+            <div class="wrap">
+                <div class="title">
+                    <span>{{$t('calendar.mon')}}</span>
+                    <span>{{$t('calendar.tue')}}</span>
+                    <span>{{$t('calendar.wed')}}</span>
+                    <span>{{$t('calendar.thu')}}</span>
+                    <span>{{$t('calendar.fri')}}</span>
+                    <span>{{$t('calendar.sat')}}</span>
+                    <span>{{$t('calendar.sun')}}</span>
+                </div>
+                <div class="calendar">
+                    <div class="week" v-for="(week,index) in calendar" :key="index">
+                        <div class="day" v-for="(day,idx) in week.days" :key="idx" :class="{diff:isDiff(day),today:isToday(day)}" @click="select(day)">{{day | moment('D')}}</div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <i class="fa fa-chevron-right" @click="next"></i>
-      </header>
-      <div>
-        <div class="wk">
-          <span>{{$t('calendar.mon')}}</span>
-          <span>{{$t('calendar.tue')}}</span>
-          <span>{{$t('calendar.wed')}}</span>
-          <span>{{$t('calendar.thu')}}</span>
-          <span>{{$t('calendar.fri')}}</span>
-          <span>{{$t('calendar.sat')}}</span>
-          <span>{{$t('calendar.sun')}}</span>
-        </div>
-        <div class="dayWrap">
-          <div class="day" v-for="(calendar,index) in days" :class="{current:calendar.current}" :data-day="calendar.day" @click="setCalendar(calendar.date)" :key="index">{{calendar.day}}</div>
-        </div>
-      </div>
     </div>
-  </div>
 </template>
 
 <script>
 export default {
   props: ["init"],
-  created() {
-    this.initial();
-  },
   data() {
     return {
-      calendarDay: +moment().subtract(4, "hours"),
-      today: +moment().subtract(4, "hours"),
-      loading: false,
-      flip: "M",
-      days: null
+      today: moment().subtract(4, "hours"),
+      date: moment(),
+      calendar: [],
+      dates: []
     };
   },
-  methods: {
-    initial() {
-      let dom = document.getElementById("calendar");
-      let calendar = dom.innerText;
+  created() {
+    this.initialCalendar();
 
-      this.calendarDay = +moment(calendar, "YYYY-MM-DD");
-      this.generateCalendar();
-    },
-    setTarget(flip, e) {
-      document.querySelector(".target").classList.remove("target");
-      e.currentTarget.classList.add("target");
-      this.flip = flip;
+    if (moment.isMoment(this.init.picked)) this.picked = this.init.picked;
+  },
+  methods: {
+    initialCalendar() {
+      let calendar = [];
+
+      const startDay = this.date
+        .clone()
+        .startOf("month")
+        .startOf("week");
+      const endDay = this.date
+        .clone()
+        .endOf("month")
+        .endOf("week");
+
+      let date = startDay.clone().subtract(1, "day");
+
+      while (date.isBefore(endDay, "day")) {
+        calendar.push({
+          days: Array(7)
+            .fill(0)
+            .map(() => date.add(1, "day").clone())
+        });
+      }
+
+      calendar.length === 5 &&
+        calendar.push({
+          days: Array(7)
+            .fill(0)
+            .map((n, i) =>
+              date
+                .clone()
+                .add(1, "week")
+                .startOf("week")
+                .add(n + i, "day")
+            )
+        });
+
+      this.calendar = calendar;
+      this.$forceUpdate();
     },
     prev() {
-      this.calendarDay = +moment(this.calendarDay)
-        .subtract(1, this.flip)
-        .format("x");
-      this.generateCalendar();
+      this.date.subtract(1, "M");
+      this.initialCalendar();
+    },
+    prevYear() {
+      this.date.subtract(1, "Y");
+      this.initialCalendar();
     },
     next() {
-      this.calendarDay = +moment(this.calendarDay)
-        .add(1, this.flip)
-        .format("x");
-      this.generateCalendar();
+      this.date.add(1, "M");
+      this.initialCalendar();
     },
-    setCalendar(date) {
-      this.init.resolve(date);
+    nextYear() {
+      this.date.add(1, "Y");
+      this.initialCalendar();
     },
-    generateCalendar() {
-      let time = this.calendarDay;
-      let isCurrentMonth =
-        moment(this.today).format("YYYY-MM-DD") ===
-        moment(time).format("YYYY-MM-DD");
-
-      let days = moment(time).daysInMonth();
-      let start = +moment(time)
-        .startOf("month")
-        .format("d");
-      start = start === 0 ? 6 : start - 1;
-      let lastMonthDay =
-        +moment(time)
-          .subtract(1, "M")
-          .endOf("month")
-          .format("D") - start;
-      let calendar = [];
-      let date = moment(time)
-        .subtract(1, "M")
-        .format("YYYY-MM-");
-      for (let i = 1; i <= start; i++) {
-        calendar.push({
-          current: false,
-          day: lastMonthDay + i,
-          date: date + ("0" + (lastMonthDay + i)).slice(-2)
-        });
-      }
-      date = moment(time).format("YYYY-MM-");
-      for (let i = 0; i < days; i++) {
-        calendar.push({
-          current: true,
-          day: i + 1,
-          date: date + ("0" + (i + 1)).slice(-2)
-        });
-      }
-      date = moment(time)
-        .add(1, "M")
-        .format("YYYY-MM-");
-      for (let i = 1; calendar.length < 42; i++) {
-        calendar.push({
-          current: false,
-          day: i,
-          date: date + ("0" + i).slice(-2)
-        });
-      }
-      this.days = calendar;
-
-      this.$nextTick(() => {
-        let dom = document.querySelector(".currentMonth");
-        dom && dom.classList.remove("currentMonth");
-        dom = document.querySelector(".day.today");
-        dom && dom.classList.remove("today");
-        if (isCurrentMonth) {
-          document.querySelector(".dayWrap").classList.add("currentMonth");
-          let today = moment().format("D") - 1;
-          today = document.querySelectorAll("[data-day]")[start + today];
-          today.classList.add("today");
-        }
-      });
+    isDiff(day) {
+      return this.date.format("M") !== day.format("M");
     },
-    exit() {
-      this.init.reject();
+    isToday(day) {
+      return this.today.format("YYYY-MM-DD") === day.format("YYYY-MM-DD");
+    },
+    select(day) {
+      this.init.resolve(day);
     }
   }
 };
 </script>
 
 <style scoped>
+.wrap {
+  width: 665px;
+  padding: initial;
+}
+
 .calendar {
-  width: 650px;
-}
-
-.calendar > header {
-  text-align: center;
   display: flex;
-  border-bottom: 1px solid #bdbdbd;
+  flex-direction: column;
 }
 
-.calendar header i {
+header {
+  flex-direction: row;
+}
+
+nav {
   flex: 1;
-  text-align: center;
-  color: #1780d0;
-  padding: 15px 25px;
-  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3);
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
 
-i.fa-chevron-left {
-  left: 0;
-  right: inherit;
-}
-
-.calendar header i:active {
-  color: #0b6892;
-}
-
-.calendar span.target {
-  color: #deedf9;
-  text-shadow: 0 1px 1px #333;
-}
-
-.display {
-  flex: 1;
-}
-
-.display span {
-  color: #214b6b;
-  text-shadow: 0 1px 1px #64b5f6;
+nav i {
+  padding: 10px 25px;
   cursor: pointer;
+  margin: 0 5px;
 }
 
-.dayWrap {
+.title,
+.calendar .week {
   display: flex;
-  flex-wrap: wrap;
 }
 
-.day {
-  padding: 25px 18px;
-  width: 55px;
-  font-size: 1.5em;
+.title span {
+  flex: 1;
   text-align: center;
-  background: #f9f9f9;
-  color: lightgray;
-  border: 1px solid transparent;
-  border-right: 1px solid #fff;
-  border-bottom: 1px solid #fff;
-  position: relative;
+  padding: 5px 0;
+  background: #009688;
+  color: #e8f5e9;
 }
 
-.day.current {
-  background: #eee;
-  color: #555;
-  font-weight: bold;
-}
-
-.today:before {
-  content: attr(data-day);
-  top: 2px;
-  left: 4px;
-  width: 82px;
-  height: 70px;
-  position: absolute;
-  background: linear-gradient(#299efb, #047fe0);
-  color: #fff;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+.week .day {
+  flex: 1;
+  height: 75px;
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 8px;
-  box-shadow: 0 2px 3px -1px #607d8b;
+  cursor: pointer;
+  background: #eceff1;
+  position: relative;
+  z-index: 1;
+  border: 1px solid #fff;
+  font-family: "Agency FB";
+  font-weight: bold;
+  font-size: 32px;
+  opacity: 0.75;
 }
 
-.dayWrap .day:nth-child(7n) {
-  border-right: none;
+.day.diff {
+  color: rgba(0, 0, 0, 0.4);
+  background: #fff;
 }
 
-.wk {
-  display: flex;
-  padding: 5px 0;
-  background: #cfd8dc;
-  color: #455a64;
-  border-bottom: 1px solid #c9d5da;
+.day.set {
+  color: #fff;
 }
 
-.wk span {
-  flex: 1;
-  text-align: center;
-  font-size: 20px;
+.week .day.today {
+  background: #009688;
+  color: #fff;
 }
 </style>

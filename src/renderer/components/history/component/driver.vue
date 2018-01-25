@@ -29,7 +29,7 @@
       </div>
       <footer>
         <div class="f1">
-          <checkbox v-model="loop" label="text.autoNext"></checkbox>
+          <checkbox v-model="loop" title="text.autoNext"></checkbox>
         </div>
         <div class="btn" @click="setTip">{{$t('button.setTip')}}</div>
         <div class="btn" @click="init.resolve">{{$t('button.done')}}</div>

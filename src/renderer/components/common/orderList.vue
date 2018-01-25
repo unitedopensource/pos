@@ -15,8 +15,17 @@
         </template>
         <template v-else>
           <template v-if="order.customer">
-            <h3 class="phone">{{order.customer.phone | phone}}</h3>
-            <h5 class="address">{{order.customer.address}}</h5>
+            <h3 class="phone">{{order.customer.phone | phone}}<span class="name">{{order.customer.name}}</span></h3>
+            <div class="detail">
+              <p>
+                <i class="fa fa-map-marker"></i>
+                <span>{{order.customer.address}}</span>
+              </p>
+              <p>
+                <i class="fa fa-sticky-note-o"></i>
+                <span>{{order.customer.note}}</span>
+              </p>
+            </div>
           </template>
         </template>
       </div>
@@ -597,10 +606,6 @@ header.info {
   text-align: center;
 }
 
-header i {
-  margin-right: 5px;
-}
-
 .bar {
   height: 26px;
   background: #03a9f4;
@@ -779,6 +784,14 @@ header i {
 
 .content > div {
   display: flex;
+  flex-direction: column;
+  margin-left: 15px;
+}
+
+.detail i {
+    color: #607D8B;
+    width: 15px;
+    text-align: center;
 }
 
 .content .time {
@@ -809,7 +822,12 @@ header i {
 
 .content {
   flex: 1;
-  padding: 5px 0px;
+  padding: 5px 5px 0;
+}
+
+.phone .name {
+    margin-left: 10px;
+    font-size: 18px;
 }
 
 .content .value {
