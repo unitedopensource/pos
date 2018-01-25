@@ -1,11 +1,22 @@
 <template>
     <div>
-        
+        <range-tab @update="fetchData" initial="currentWeek"></range-tab>
     </div>
 </template>
 
 <script>
-export default{
-    
-}
+import rangeTab from "../common/rangeTab";
+export default {
+    components:{ rangeTab },
+    data() {
+        return {
+
+        }
+    },
+    methods: {
+        fetchData(range) {
+
+        }
+    }
+}   
 </script>
