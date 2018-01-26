@@ -6,10 +6,6 @@
         <div class="btn add" @click="newSection" :key="-1">
           <i class="fa fa-plus"></i>
         </div>
-        <div class="apply" :key="-2">
-          <div class="btn" @click="updateSortedSection" v-show="isSectionSorted">{{$t('button.update')}}</div>
-          <div class="btn" @click="updateSortedTable" v-show="isTableSorted">{{$t('button.update')}}</div>
-        </div>
       </transition-group>
     </draggable>
     <draggable v-model="tabs" @sort="isTableSorted = true" :options="{animation: 300,group: 'table',ghostClass: 'tableGhost'}" class="f1">
@@ -46,6 +42,10 @@ export default {
   },
   created() {
     this.viewSection(0);
+  },
+  beforeDestroy() {
+    this.isSectionSorted && this.updateSortedSection();
+    this.isTableSorted && this.updateSortedTable();
   },
   methods: {
     viewSection(index) {
@@ -122,7 +122,7 @@ export default {
       const { zone } = this.sections[this.sectionIndex];
 
       table = JSON.parse(JSON.stringify(table));
-      Object.assign(table, { zone });
+      Object.assign(table, { zone, grid: index });
 
       new Promise((resolve, reject) => {
         this.componentData = { resolve, reject, table };
@@ -167,8 +167,9 @@ export default {
       this.isSectionSorted = false;
     },
     updateSortedTable() {
-      const tables = this.tabs.map(table=>table._id);
-      this.$socket.emit("[TABLE] SORT",tables);
+      Object.assign(this.$store.getters.tables[this.sectionIndex], { item: this.tabs });
+      const tables = this.tabs.map(table => table._id);
+      this.$socket.emit("[TABLE] SORT", tables);
       this.isTableSorted = false;
     },
     refreshData() {
