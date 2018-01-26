@@ -34,14 +34,14 @@ export default {
   components: { draggable, dialoger, tableEditor, sectionEditor },
   data() {
     return {
-      componentData: null,
-      component: null,
-      tabs: [],
       language: this.$store.getters.language,
       sections: this.$store.getters.tables,
-      sectionIndex: 0,
       isSectionSorted: false,
-      isTableSorted: false
+      isTableSorted: false,
+      componentData: null,
+      component: null,
+      sectionIndex: 0,
+      tabs: []
     };
   },
   created() {
@@ -92,7 +92,7 @@ export default {
             Object.assign(section, { item: [] });
             return section;
           });
-          this.$socket.emit("[TABLE] SAVE_SECTION",sections);
+          this.$socket.emit("[TABLE] SAVE_SECTION", sections);
           this.$q();
         })
         .catch(() => this.$q());
@@ -103,7 +103,11 @@ export default {
         this.component = "sectionEditor";
       })
         .then(() => {
-
+          const sections = this.sections.map(section => {
+            Object.assign(section, { item: [] });
+            return section;
+          });
+          this.$socket.emit("[TABLE] SAVE_SECTION", sections);
           this.$q();
         })
         .catch(del => {
@@ -143,6 +147,7 @@ export default {
 
       this.$store.getters.tables[this.sectionIndex].item.splice(index, 1, {
         _id: null,
+        contain: [],
         feature: [],
         grid: index,
         name: "",
@@ -153,10 +158,21 @@ export default {
 
       this.$q();
     },
-    updateSortedSection() {},
-    updateSortedTable() {},
+    updateSortedSection() {
+      const sections = this.sections.map(section => {
+        Object.assign(section, { item: [] });
+        return section;
+      });
+      this.$socket.emit("[TABLE] SAVE_SECTION", sections);
+      this.isSectionSorted = false;
+    },
+    updateSortedTable() {
+      const tables = this.tabs.map(table=>table._id);
+      this.$socket.emit("[TABLE] SORT",tables);
+      this.isTableSorted = false;
+    },
     refreshData() {
-      this.sections = JSON.parse(JSON.stringify(this.$store.getters.tables));
+      this.sections = this.$store.getters.tables;
       this.viewSection(this.sectionIndex);
     }
   }

@@ -43,10 +43,14 @@ export default {
   props: ["init"],
   components: { inputer, selector, checkbox },
   created() {
-    if (!Array.isArray(this.init.table.feature)) this.init.table.feature = [];
-    if (!Array.isArray(this.init.table.contain)) this.init.table.contain = [];
+    !Array.isArray(this.init.table.feature) &&
+      Object.assign(this.init.table, { feature: [] });
+    !Array.isArray(this.init.table.contain) &&
+      Object.assign(this.init.table, { contain: [] });
 
-    this.$socket.emit("[HIBACHI] GROUP", data => { this.tables = data });
+    this.$socket.emit("[HIBACHI] GROUP", data => {
+      this.tables = data;
+    });
   },
   data() {
     return {
