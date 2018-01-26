@@ -339,8 +339,8 @@ export default {
         maintenance: '维护',
         debugOngoing: '系统正在维护中...',
         criticalError: '发生了一个严重的系统错误',
-        attempRecover: '正在尝试自动修复这个错误...',
-        attempFailed: '无法自动修复系统错误，请立即拨打技术部门热线',
+        attemptRecover: '正在尝试自动修复这个错误...',
+        attemptFailed: '无法自动修复系统错误，请立即拨打技术部门热线',
         supportHotLine: '(888)299-0524',
         exitConfirm: '您确定要退出吗？',
         exitConfirmTip: '未保存的订单将会被删除',
@@ -1421,9 +1421,9 @@ export default {
         tradeMark: '打印商标',
         layout: '打印布局',
         type: {
-            regular: '常规格式',
-            label: '贴纸格式',
-            hibachi: '铁板格式'
+            regular: '常规打印',
+            label: '贴纸打印',
+            hibachi: '铁板打印'
         }
     },
     context: {

@@ -9,9 +9,9 @@
                 <span>{{pass.second}}</span>
             </h5>
             <footer>
-                <p v-if="autoFix">{{$t('dialog.attempRecover')}}</p>
+                <p v-if="autoFix">{{$t('dialog.attemptRecover')}}</p>
                 <template v-else>
-                    <p>{{$t('dialog.attempFailed')}}</p>
+                    <p>{{$t('dialog.attemptFailed')}}</p>
                     <p>{{$t('dialog.supportHotLine')}}</p>
                 </template>
             </footer>

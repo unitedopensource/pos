@@ -13,7 +13,7 @@
             <thead>
               <tr>
                 <th>{{$t('thead.name')}}</th>
-                <th>{{$t('thead.taxRate')}}</th>
+                <th>{{$t('text.taxRate')}}</th>
                 <th>{{$t('thead.default')}}</th>
                 <th></th>
               </tr>

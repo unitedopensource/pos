@@ -3,7 +3,7 @@
         <div class="editor">
             <header>
                 <h5>{{$t('title.edit')}}</h5>
-                <h3>{{$t('title.price')}}</h3>
+                <h3>{{$t('text.price')}}</h3>
             </header>
             <div class="wrap">
                 <inputer title="type.WALK_IN" v-model="prices.WALK_IN" :placeholder="placeholder"></inputer>
