@@ -109,7 +109,7 @@ export default {
       return this.today.format("YYYY-MM-DD") === day.format("YYYY-MM-DD");
     },
     select(day) {
-      this.init.resolve(day);
+      this.init.resolve(day.format('YYYY-MM-DD'));
     }
   }
 };
