@@ -6,12 +6,13 @@
             </div>
             <div class="title">
                 <h5>{{$t('title.template')}}</h5>
-                <h3>{{template.name}}</h3>
+                <h3 @click="disabled = false">{{template.name}}</h3>
             </div>
             <nav>
                 <span @click="remove">{{$t('button.remove')}}</span>
             </nav>
         </header>
+        <text-input title="text.alias" v-model="template.name" :disabled="disabled"></text-input>
         <text-input title="text.note" v-model="template.note"></text-input>
         <toggle title="text.insert" tooltip="tip.insertTemplateItem" v-model="template.insert"></toggle>
         <toggle title="text.autoJump" tooltip="tip.autoJumpNext" v-model="template.autoJump"></toggle>
@@ -27,34 +28,41 @@ import textInput from "../../common/textInput";
 import dialoger from "../../../common/dialoger";
 
 export default {
-    props: ["template"],
-    components: { toggle, external, textInput, dialoger },
-    data() {
-        return {
-            componentData: null,
-            component: null
-        }
+  props: ["template"],
+  components: { toggle, external, textInput, dialoger },
+  data() {
+    return {
+      componentData: null,
+      component: null,
+      disabled:true
+    };
+  },
+  methods: {
+    save() {
+      this.$emit("reset");
     },
-    methods: {
-        save() {
+    remove() {
+      const prompt = {
+        type: "question",
+        title: "removeTemplate",
+        msg: "removeTemplateConfirm",
+        buttons: [
+          { text: "button.cancel", fn: "reject" },
+          { text: "button.remove", fn: "resolve" }
+        ]
+      };
 
-            this.$emit("reset");
-        },
-        remove() {
-            const prompt = {
-                type: "question",
-                title: "removeTemplate",
-                msg: "removeTemplateConfirm",
-                buttons: [{ text: "button.cancel", fn: "reject" }, { text: "button.remove", fn: "resolve" }]
-            }
-
-            this.$dialog(prompt).then(() => {
-                this.$q();
-                this.$socket.emit("[TEMPLATE] REMOVE", this.template._id, () => this.$emit("reset"));
-            }).catch(() => this.$q())
-        }
+      this.$dialog(prompt)
+        .then(() => {
+          this.$q();
+          this.$socket.emit("[TEMPLATE] REMOVE", this.template._id, () =>
+            this.$emit("reset")
+          );
+        })
+        .catch(() => this.$q());
     }
-}
+  }
+};
 </script>
 
 <style scoped>

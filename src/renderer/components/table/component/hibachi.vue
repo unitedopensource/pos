@@ -9,7 +9,7 @@
       <div class="wrap">
         <div class="hibachi">
           <div class="left">
-            <div class="seat" v-for="(seat,index) in left" @click="select('left',seat)" :data-id="seat._id">
+            <div class="seat" v-for="(seat,index) in left" @click="select('left',seat)" @contextmenu="reset(seat)" :data-id="seat._id">
               <span>{{seat.name}}</span>
               <template v-if="seat.session">
                 <span class="server">{{seat.server}}</span>
@@ -19,7 +19,7 @@
           </div>
           <div class="middle"></div>
           <div class="right">
-            <div class="seat" v-for="(seat,index) in right" @click="select('right',seat)" :data-id="seat._id">
+            <div class="seat" v-for="(seat,index) in right" @click="select('right',seat)" @contextmenu="reset(seat)" :data-id="seat._id">
               <span>{{seat.name}}</span>
               <template v-if="seat.session">
                 <span class="server">{{seat.server}}</span>
@@ -43,8 +43,11 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
+import dialoger from "../../common/dialoger";
+
 export default {
   props: ["init"],
+  components: { dialoger },
   computed: {
     ...mapGetters(["history"])
   },
@@ -123,6 +126,28 @@ export default {
         this.setTicket({ type: invoice.type, number: invoice.number });
         this.$router.push({ path: "/main/menu" });
       }
+    },
+    reset(table) {
+      const prompt = {
+        title: "dialog.forceClearTable",
+        msg: "dialog.resetTableConfirm",
+        buttons: [
+          { text: "button.cancel", fn: "reject" },
+          { text: "button.clear", fn: "resolve" }
+        ]
+      };
+
+      this.$dialog(prompt)
+        .then(() => {
+          this.$socket.emit(
+            "[HIBACHI] RESET",
+            { session: table.session },
+            () => {
+              this.$q();
+            }
+          );
+        })
+        .catch(() => this.$q());
     },
     ...mapActions(["setApp", "setTicket", "setViewOrder"])
   }
