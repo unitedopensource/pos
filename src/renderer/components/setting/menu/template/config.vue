@@ -4,9 +4,9 @@
             <div class="back" @click="save">
                 <i class="fa fa-chevron-left"></i>
             </div>
-            <div class="title">
+            <div class="title" @click="disabled = false">
                 <h5>{{$t('title.template')}}</h5>
-                <h3 @click="disabled = false">{{template.name}}</h3>
+                <h3>{{template.name}}</h3>
             </div>
             <nav>
                 <span @click="remove">{{$t('button.remove')}}</span>

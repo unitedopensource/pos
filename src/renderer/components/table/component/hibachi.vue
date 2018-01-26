@@ -139,13 +139,9 @@ export default {
 
       this.$dialog(prompt)
         .then(() => {
-          this.$socket.emit(
-            "[HIBACHI] RESET",
-            { session: table.session },
-            () => {
-              this.$q();
-            }
-          );
+          this.$socket.emit("[HIBACHI] RESET", table.session, () => {
+            this.$q();
+          });
         })
         .catch(() => this.$q());
     },
