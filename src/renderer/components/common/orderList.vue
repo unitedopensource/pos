@@ -288,9 +288,7 @@ export default {
         qty: 1,
         single: 0,
         price: "0.00",
-        key: Math.random()
-          .toString(36)
-          .substr(2, 5)
+        key: String().random()
       };
 
       this.setChoiceSet(content);
@@ -356,10 +354,13 @@ export default {
       } = this.order;
       const { enable, rules } = this.dinein.surcharge;
 
-      let delivery =
-        type === "DELIVERY" && this.store.delivery && !deliveryFree
-          ? parseFloat(this.store.deliveryCharge)
-          : 0;
+      let delivery = 0;
+
+      if (type === "DELIVERY") {
+        if (this.store.delivery.charge && !deliveryFree) {
+          delivery = parseFloat(this.store.delivery.baseFee);
+        }
+      }
 
       let { tip, gratuity, paid, rounding = 0 } = this.order.payment;
       let subtotal = 0,

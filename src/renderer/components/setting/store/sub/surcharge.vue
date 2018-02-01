@@ -15,22 +15,19 @@
           <table class="setting">
             <thead>
               <tr>
-                <th></th>
                 <th>{{$t('thead.condition')}}</th>
                 <th>{{$t('thead.amount')}}</th>
+                <th></th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(rule,index) in surcharge.rules" :key="index">
-                <td class="icon">
-                  <i class="fa fa-user-circle"></i>
-                </td>
                 <td class="guest">{{$t('text.chargeAbove',rule.guest)}}</td>
                 <td class="amount" v-if="rule.percentage">{{rule.fee}} %</td>
                 <td class="amount" v-else>$ {{rule.fee}}</td>
-                <td @click="edit(rule,index)" class="opt">
-                  <i class="fa fa-ellipsis-v"></i>
+                <td @click="edit(rule,index)" class="opt" colspan="2">
+                  <i class="fa fa-pencil-square"></i>
                 </td>
               </tr>
             </tbody>

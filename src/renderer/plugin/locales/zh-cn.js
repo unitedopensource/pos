@@ -1301,6 +1301,7 @@ export default {
         employeeCard: '员工卡',
         employeeCardRegistration: '注册员工卡',
         settledReceipt: '结账收据',
+        deliverySurcharge: '额外送餐费用',
         permission: {
             access: '开启权限',
             modify: '修改权限',

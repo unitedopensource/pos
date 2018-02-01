@@ -28,7 +28,7 @@
             </div>
             <footer>
                 <div class="opt">
-                    <span class="del" @click="init.reject(true)">{{$t('button.delete')}}</span>
+                    <span class="del" @click="init.reject(true)" v-show="init.edit">{{$t('button.delete')}}</span>
                 </div>
                 <button class="btn" @click="confirm" :disabled="invalid">{{$t('button.confirm')}}</button>
             </footer>
@@ -49,7 +49,7 @@ export default {
   },
   computed: {
     invalid() {
-      return  isNaN(this.tax.rate);
+      return isNaN(this.tax.rate);
     }
   },
   methods: {

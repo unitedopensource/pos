@@ -102,6 +102,10 @@ export default [{
           name: 'Setting.store.tax',
           component: require('./components/setting/store/sub/tax')
         }, {
+          path: 'delivery',
+          name: 'Setting.store.delivery',
+          component: require('./components/setting/store/sub/delivery')
+        }, {
           path: 'dinein',
           name: 'Setting.store.dinein',
           component: require('./components/setting/store/dinein')

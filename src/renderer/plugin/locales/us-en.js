@@ -1305,6 +1305,7 @@ export default {
         employeeCard: 'Employee Card',
         employeeCardRegistration: 'Register employee card',
         settledReceipt: 'Settle Payment Receipt',
+        deliverySurcharge: 'Delivery Surcharge',
         permission: {
             access: 'Access Permission',
             modify: 'Modify Permission',

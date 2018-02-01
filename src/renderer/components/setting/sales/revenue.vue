@@ -7,13 +7,9 @@
                     <tr>
                         <th class="date">{{$t('thead.date')}}</th>
                         <th>{{$t('thead.weeks')}}</th>
-                        <th>{{$t('type.WALK_IN')}}</th>
-                        <th>{{$t('type.PICK_UP')}}</th>
-                        <th>{{$t('type.DELIVERY')}}</th>
-                        <th>{{$t('type.DINE_IN')}}</th>
-                        <th>{{$t('type.HIBACHI')}}</th>
-                        <th>{{$t('type.BUFFET')}}</th>
-                        <th>{{$t('type.SALES')}}</th>
+                        <th>{{$t('thead.subtotal')}}</th>
+                        <th>{{$t('thead.tax')}}</th>
+                        <th>{{$t('thead.salesTotal')}}</th>
                     </tr>
                 </thead>
                 <tbody>

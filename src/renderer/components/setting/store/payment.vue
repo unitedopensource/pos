@@ -1,16 +1,8 @@
 <template>
   <div>
     <external title="setting.tax" tooltip="tip.tax" @open="editTax"></external>
-    <!-- <toggle title="setting.taxBeforeDiscount" v-model="tax.beforeDiscount" @update="updateTaxDiscount"></toggle>
-    <toggle title="setting.taxBeforeCredit" v-model="tax.beforeCredit" @update="updateTaxCredit"></toggle> -->
-    <toggle title="setting.deliveryTax" tooltip="tip.deliveryTax" v-model="tax.deliveryTax" @update="updateDeliveryTax"></toggle>
-    <toggle title="setting.deliveryCharge" true-tooltip="tip.deliveryCharge" false-tooltip="tip.deliveryFree" v-model="store.delivery" :conditionalTooltip="true" @update="updateDelivery">
-      <transition name="dropdown">
-        <div class="opt" v-if="store.delivery">
-          <inputer title="text.amount" v-model.number="store.deliveryCharge" @update="updateDeliveryCharge"></inputer>
-        </div>
-      </transition>
-    </toggle>
+    <external title="setting.deliveryCharge" tooltip="tip.deliveryCharge" @open="editDelivery"></external>
+    <text-list title="setting.rounding" tooltip="tip.rounding.tooltip" :opts="roundingOption" v-model="store.rounding" @update="updateRounding"></text-list>
     <toggle title="setting.tipSuggestion" tooltip="tip.tipSuggestion" v-model="store.tipSuggestion.enable" @update="updateTipSuggestion">
       <transition name="dropdown">
         <div v-if="store.tipSuggestion.enable" class="fees">
@@ -19,7 +11,6 @@
         </div>
       </transition>
     </toggle>
-    <text-list title="setting.rounding" tooltip="tip.rounding.tooltip" :opts="roundingOption" v-model="store.rounding" @update="updateRounding"></text-list>
     <options title="setting.receiptDialog" tooltip="tip.receiptDefaultAction" v-model="store.receipt" :opts="receiptOption" @update="updateReceipt"></options>
   </div>
 </template>
@@ -83,9 +74,8 @@ export default {
     };
   },
   created() {
-    this.store = Object.assign({}, this.config.store);
-
     //patch
+    this.store = Object.assign({}, this.config.store);
     !this.store.hasOwnProperty('tipSuggestion') && Object.assign(this.store, {
       tipSuggestion: {
         enable: false,
@@ -96,36 +86,6 @@ export default {
   methods: {
     update(data) {
       this.$socket.emit("[CONFIG] UPDATE", data);
-    },
-    updateTaxDiscount(value) {
-      this.update({
-        key: "tax.beforeDiscount",
-        value
-      });
-    },
-    updateTaxCredit(value) {
-      this.update({
-        key: "tax.beforeCredit",
-        value
-      });
-    },
-    updateDeliveryTax(value) {
-      this.update({
-        key: "tax.deliveryTax",
-        value
-      });
-    },
-    updateDelivery(value) {
-      this.update({
-        key: "store.delivery",
-        value
-      });
-    },
-    updateDeliveryCharge(value) {
-      this.update({
-        key: "store.deliveryCharge",
-        value
-      });
     },
     updateTipSuggestion(value) {
       this.update({
@@ -156,6 +116,9 @@ export default {
     },
     editTax() {
       this.$router.push({ name: "Setting.store.tax" });
+    },
+    editDelivery(){
+      this.$router.push({ name: 'Setting.store.delivery'});
     }
   }
 };
