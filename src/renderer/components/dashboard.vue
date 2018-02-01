@@ -362,7 +362,8 @@ export default {
           if (this.dinein.table) {
             this.$router.push({ path: "/main/table" });
           } else {
-            //set up table without
+            this.setTicket({type:"DINE_IN"});
+            this.$router.push({path:'/main/menu'});
           }
           break;
         case "pickupList":

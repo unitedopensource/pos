@@ -359,8 +359,12 @@ export default {
               });
             } else {
               const { printOnDone } = this.dinein;
-              Object.assign(this.currentTable, { invoice: [order._id] });
-              this.$socket.emit("[TABLE] SETUP", this.currentTable);
+
+              if (this.dinein.table) {
+                Object.assign(this.currentTable, { invoice: [order._id] });
+                this.$socket.emit("[TABLE] SETUP", this.currentTable);
+              }
+
               this.$socket.emit("[SAVE] INVOICE", order, false, content => {
                 if (print) {
                   const ticket = Object.assign({}, order, {
@@ -375,15 +379,16 @@ export default {
               });
             }
           } else if (this.ticket.type !== "DINE_IN") {
-            //other type
             this.$socket.emit("[SAVE] INVOICE", order, print, content => {
               print && Printer.setTarget("All").print(content);
             });
           } else {
-            //dine in needs to update table status
             let { printOnDone } = this.dinein;
-            Object.assign(this.currentTable, { invoice: [order._id] });
-            this.$socket.emit("[TABLE] SETUP", this.currentTable);
+            if (this.dinein.table) {
+              Object.assign(this.currentTable, { invoice: [order._id] });
+              this.$socket.emit("[TABLE] SETUP", this.currentTable);
+            }
+
             this.$socket.emit("[SAVE] INVOICE", order, print, content => {
               if (print) {
                 printOnDone
@@ -415,9 +420,9 @@ export default {
     },
     exit(quit) {
       const { done } = this.station.autoLock;
-      const { lockOnDone } = this.dinein;
+      const { lockOnDone, table } = this.dinein;
 
-      if (this.order.type === "DINE_IN") {
+      if (this.order.type === "DINE_IN" && table) {
         if (lockOnDone || done) {
           this.setOp(null);
           this.$router.push({ path: "/main/lock" });
@@ -573,8 +578,10 @@ export default {
             .catch(() => this.$q());
     },
     resetTableExit() {
-      const { _id } = this.currentTable;
-      this.app.newTicket && this.$socket.emit("[TABLE] RESET", { _id });
+      if (this.currentTable) {
+        const { _id } = this.currentTable;
+        this.app.newTicket && this.$socket.emit("[TABLE] RESET", { _id });
+      }
       this.abandon();
     },
     abandon() {
@@ -583,6 +590,7 @@ export default {
         data: this.order._id,
         note: `#${this.ticket.number} Invoice was abandoned.`
       });
+
       this.resetAll();
       this.setApp({ newTicket: true });
       this.$router.push({ path: "/main" });
