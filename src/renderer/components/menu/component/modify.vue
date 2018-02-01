@@ -215,8 +215,8 @@ export default {
         total: (single * this.item.qty).toFixed(2)
       });
 
-      const zhCN = this.unit ? "$ " + this.discount.toFixed(2) : this.discount + " % " + this.$t('text.discount');
-      const usEN = this.unit ? "$ " + this.discount.toFixed(2) : this.discount + " % Discount";
+      const zhCN = this.unit ? "$ " + this.discount.toFixed(2) + " OFF": this.discount + " % " + this.$t('text.discount');
+      const usEN = this.unit ? "$ " + this.discount.toFixed(2) + " OFF" : this.discount + " % Discount";
 
       discount > 0 &&
         item.choiceSet.push({

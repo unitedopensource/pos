@@ -330,9 +330,9 @@ export default {
         this.payment = Object.assign(this.order.payment, {
           subtotal: 0,
           tax: 0,
-          total: 0, // subtotal + tax + delivery
+          total: 0, // subtotal + tax
           discount: 0,
-          due: 0, // total - discount
+          due: 0, // total + delivery - discount
           balance: 0, // due + surcharge + rounding
           paid: 0,
           remain: 0, // balance - paid

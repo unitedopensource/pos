@@ -82,7 +82,9 @@ export default {
           this.splits = orders;
           this.done = this.order.content.every(item => item.split);
         } else {
-          this.order.content = this.order.content.map(item => Object.assign(item, { split: false }));
+          this.order.content = this.order.content.map(item =>
+            Object.assign(item, { split: false })
+          );
           this.done = false;
         }
       });
@@ -199,9 +201,11 @@ export default {
       let tip = 0;
       let tax = 0;
       let subtotal = 0;
+      let delivery = 0;
       let total = 0;
       let discount = 0;
       let balance = 0;
+      let due = 0;
       let remain = 0;
 
       if (splits.length > 1) {
@@ -212,7 +216,9 @@ export default {
           tip += order.payment.tip;
           tax += order.payment.tax;
           subtotal += order.payment.subtotal;
+          delivery += order.payment.delivery;
           total += order.payment.total;
+          due += order.payment.due;
           discount += order.payment.discount;
           balance += order.payment.balance;
           remain += order.payment.remain;
@@ -225,21 +231,17 @@ export default {
         this.order.payment.subtotal = toFixed(subtotal, 2);
         this.order.payment.total = toFixed(total, 2);
         this.order.payment.discount = toFixed(discount, 2);
-        this.order.payment.due = toFixed(total - discount, 2);
+        this.order.payment.delivery = toFixed(delivery, 2);
+        this.order.payment.due = toFixed(due, 2);
         this.order.payment.balance = toFixed(balance, 2);
         this.order.payment.remain = toFixed(remain, 2);
         this.order.content.forEach(item => (item.split = true));
         this.order.children = splits.map(i => i._id);
         this.order.split = true;
 
+        this.setOrder(this.order);
         this.$socket.emit("[UPDATE] INVOICE", this.order);
-
-        if (this.$route.name === "Menu" && this.app.newTicket) {
-          this.setOrder(this.order);
-          this.init.resolve();
-        } else {
-          this.init.resolve();
-        }
+        this.init.resolve();
       } else {
         this.$socket.emit("[SPLIT] SAVE", { splits: [], parent });
 
@@ -254,6 +256,8 @@ export default {
         this.order.split = false;
         this.order.children = [];
         this.order.coupons = [];
+        
+        this.setOrder(this.order);
         this.$socket.emit("[UPDATE] INVOICE", this.order);
         this.init.resolve();
       }

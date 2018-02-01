@@ -254,6 +254,7 @@ export default {
       this.insertOrder(data);
     },
     UPDATE_ORDER(data) {
+      console.log(data)
       data.refresh = this.$route.name !== "Menu";
       this.updateOrder(data);
     },
