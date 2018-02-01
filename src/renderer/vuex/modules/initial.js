@@ -146,7 +146,7 @@ const mutations = {
         }
     },
     [types.UPSERT_INVOICE](state, invoice) {
-        let index = state.orders.findIndex(ticket => ticket._id === invoice._id);
+        const index = state.orders.findIndex(ticket => ticket._id === invoice._id);
         index === -1 ? state.orders.unshift(invoice) : state.orders.splice(index, 1, invoice);
     },
     [types.UPDATE_TABLE_STATUS](state, table) {
@@ -181,12 +181,7 @@ const mutations = {
         state.config.layout.menu[g]['item'][s].splice(i, 1, item);
     },
     [types.REMOVE_MENU_ITEM](state, [g, s, i]) {
-        const item = {
-            zhCN: "",
-            usEN: "",
-            clickable: false,
-            category: ""
-        };
+        const item = {zhCN: "", usEN: "",clickable: false, category: "" };
 
         state.config.layout.menu[g]['item'][s].splice(i, 1);
         state.config.layout.menu[g]['item'][s].push(item);
@@ -206,12 +201,7 @@ const mutations = {
         state.config.layout.action.splice(index, 1, action)
     },
     [types.REMOVE_REQUEST_ITEM](state, { categoryIndex, groupIndex, index }) {
-        const item = {
-            zhCN: "",
-            usEN: "",
-            clickable: false,
-            category: "NA"
-        }
+        const item = { zhCN: "", usEN: "", clickable: false, category: "NA" }
 
         state.config.layout.request[categoryIndex]['item'][groupIndex].splice(index, 1);
         state.config.layout.request[categoryIndex]['item'][groupIndex].push(item)
@@ -236,19 +226,15 @@ const mutations = {
     },
     [types.REMOVE_TABLE](state, { section, index }) {
         let table = state.config.layout.table[section].item[index];
-        Object.assign(table, {
-            name: '',
-            shape: ''
-        })
+
+        Object.assign(table, { name: '', shape: '' });
         state.config.layout.table[section].item.splice(index, 1, table);
     },
     [types.NEW_RESERVATION](state, data) {
         state.reservation.push(data)
     },
     [types.UPDATE_RESERVATION](state, data) {
-        let {
-            _id
-        } = data;
+        let { _id } = data;
         let index = state.reservation.findIndex(reservation => reservation._id === _id);
         state.reservation.splice(index, 1, data)
 

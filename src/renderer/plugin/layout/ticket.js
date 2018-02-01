@@ -494,7 +494,7 @@ function createFooter(config, setting, printer, ticket) {
         }
     })
 
-    if (!ticket.settled && payment.paid !== 0)
+    if (payment.remain > 0)
         settle.push(`<section class="details"><h3>Balance Due: $ ${payment.remain.toFixed(2)}</h3></section>`);
 
     if (ticket.status === 0) {

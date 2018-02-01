@@ -1,24 +1,25 @@
 <template>
-    <div class="popupMask dark center" @click.self="init.reject">
-        <div class="editor">
-            <header>
-                <h5>{{$t('button.select')}}</h5>
-                <h3>{{$t('dialog.switchOperator')}}</h3>
-            </header>
-            <div class="banner"></div>
-            <div class="wrap">
-                <div class="operators">
-                    <div class="operator" v-for="(operator,index) in operators" :key="index" @click="select(operator)" :data-id="operator._id">
-                        <span class="name">{{operator.name}}</span>
-                        <span class="role">{{$t('type.'+operator.role)}}</span>
-                    </div>
-                </div>
-            </div>
-            <footer>
-                <button class="btn" @click="confirm" :disabled="!operator">{{$t('button.confirm')}}</button>
-            </footer>
+  <div class="popupMask dark center" @click.self="init.reject">
+    <div class="editor">
+      <header>
+        <h5>{{$t('button.select')}}</h5>
+        <h3>{{$t('dialog.switchOperator')}}</h3>
+      </header>
+      <div class="banner"></div>
+      <div class="wrap">
+        <div class="operators">
+          <div class="operator" v-for="(operator,index) in operators" :key="index" @click="select(operator)" :data-id="operator._id">
+            <span class="name">{{operator.name}}</span>
+            <span class="role">{{$t('type.'+operator.role)}}</span>
+          </div>
         </div>
+      </div>
+      <footer>
+        <button class="btn" @click="confirm" :disabled="!operator">{{$t('button.confirm')}}</button>
+      </footer>
     </div>
+    <div :is="component" :init="componentData"></div>
+  </div>
 </template>
 
 <script>
@@ -56,9 +57,22 @@ export default {
         .classList.add("select");
     },
     confirm() {
-      Object.assign(this.order, { server: this.operator.name });
-      this.$socket.emit("[STAFF] SWITCH",this.order);
-      this.init.resolve();
+      const prompt = {
+        title: "dialog.switchServer",
+        msg: [
+          "dialog.switchServerConfirm",
+          this.order.server,
+          this.operator.name
+        ]
+      };
+
+      this.$dialog(prompt)
+        .then(() => {
+          Object.assign(this.order, { server: this.operator.name });
+          this.$socket.emit("[STAFF] SWITCH", this.order);
+          this.init.resolve();
+        })
+        .catch(() => this.$q());
     }
   }
 };

@@ -205,7 +205,7 @@ const mutations = {
           })
         })
       } else {
-        state.choiceSetTarget.price = toFixed(--qty * single, 2).toFixed(2)
+        state.choiceSetTarget.price = toFixed(--state.choiceSetTarget.qty * single, 2).toFixed(2)
       }
     } else if (delChoiceSetFirst) {
       let set = state.item.choiceSet.last();

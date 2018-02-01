@@ -576,7 +576,9 @@ export default {
         duplicateNotAllow: '已经有相同名称，请重新命名',
         splitTicketItemRemain: '此订单中还有 {i} 个物品尚未被分配。请分完后再进行付款操作',
         temporaryTable: '临时座位',
-        createTemporaryTable: '您需要创建一个临时的座位吗？'
+        createTemporaryTable: '您需要创建一个临时的座位吗？',
+        switchServer:'切换服务员',
+        switchServerConfirm:'您确定要将此座位的服务员由 {i} 换成 {i} 吗？'
     },
     terminal: {
         initial: '正在初始化 {i}...',

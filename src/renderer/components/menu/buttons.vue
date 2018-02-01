@@ -506,8 +506,8 @@ export default {
             compare[index].print = false;
           } else {
             //compare unchanged item find out if choiceSet is different
-            let nowSet = now.choiceSet.map(s => s.unique);
-            let prevSet = prev.choiceSet.map(s => s.unique);
+            const nowSet = now.choiceSet.map(s => s.unique);
+            const prevSet = prev.choiceSet.map(s => s.unique);
 
             let sameSet = nowSet.reduce(
               (a, b) => a && prevSet.includes(b),
@@ -558,6 +558,7 @@ export default {
           return item;
         })
       );
+
       return Object.assign(current, { content: items });
     },
     createTogo() {

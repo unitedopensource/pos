@@ -668,7 +668,9 @@ export default {
         duplicateNotAllow: 'Name duplicated! Please consider other name.',
         splitTicketItemRemain: 'This order has {i} items are not split. Please split them and try again.',
         temporaryTable: 'Temporary Table',
-        createTemporaryTable: 'Are you sure to create a temporary table?'
+        createTemporaryTable: 'Are you sure to create a temporary table?',
+        switchServer:'Switch Server',
+        switchServerConfirm:'Are you sure to switch server from {i} to {i}?'
     },
     terminal: {
         initial: 'Initializing terminal {i}...',

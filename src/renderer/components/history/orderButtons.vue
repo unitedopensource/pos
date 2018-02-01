@@ -69,7 +69,9 @@ export default {
     split() {
       this.$open("split");
     },
-    combine() { },
+    combine() { 
+      
+    },
     discount() {
       this.$socket.emit("[COUPON] LIST", coupons => {
         new Promise((resolve, reject) => {
