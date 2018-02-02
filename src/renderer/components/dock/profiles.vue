@@ -2,8 +2,11 @@
   <div class="popupMask dark center" @click.self="init.reject">
     <div class="profiles">
       <div class="profile" v-for="(profile,index) in init.customer.profiles" :key="index" @click="select(profile)">
-        <h3 class="name">{{profile.name}}</h3>
-        <h5 class="address">{{profile.address}}</h5>
+        <div>
+          <h3 class="name">{{profile.name}}</h3>
+          <h5 class="address">{{profile.address}}</h5>
+        </div>
+        <i class="fa fa-trash" @click.stop="remove(index)"></i>
       </div>
       <div class="profile new" @click="create">
         <i class="fa fa-plus"></i>
@@ -28,22 +31,30 @@ export default {
       });
     },
     create() {
-      this.setCustomer({
-        address: "",
-        extension: "",
-        city: "",
-        name: "",
-        note: "",
-        duration: "",
-        distance: "",
-        coordinate: [],
-        direction: ""
-      });
+      this.emptyCustomerInfo(
+        Object.assign({}, this.init.customer, {
+          address: "",
+          extension: "",
+          city: "",
+          name: "",
+          note: "",
+          duration: "",
+          distance: "",
+          coordinate: [],
+          direction: ""
+        })
+      );
 
       this.$router.push({ path: "/main/info" });
       this.init.resolve();
     },
-    ...mapActions(["setCustomer"])
+    remove(index){
+      this.init.customer.profiles.splice(index,1);
+      this.$socket.emit("[CUSTOMER] UPDATE", this.init.customer, data => {
+        this.setCustomer(data);
+      });
+    },
+    ...mapActions(["setCustomer", "emptyCustomerInfo"])
   }
 };
 </script>
@@ -71,10 +82,21 @@ export default {
   border-radius: 4px;
   margin-bottom: 4px;
   height: 50px;
+  padding: 0 0 0 10px;
+  display: flex;
+  align-items: center;
+}
+
+.profile div {
+  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 0 10px;
+}
+
+.profile i {
+  padding: 15px;
+  cursor: pointer;
 }
 
 h5 {
@@ -87,6 +109,7 @@ h3 {
 }
 
 .new {
-  text-align: center;
+  justify-content: center;
+  padding: initial;
 }
 </style>

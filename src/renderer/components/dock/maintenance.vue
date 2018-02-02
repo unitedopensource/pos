@@ -57,8 +57,6 @@ export default {
         case "unban":
           this.$socket.emit("MAINT_REQUEST_UNBAN");
           break;
-        case "relistorder":
-          break;
         case "see":
           console.log("check invoice #", arg);
           break;

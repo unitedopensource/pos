@@ -625,13 +625,12 @@ header.info {
 
 .bar {
   height: 26px;
-  background: #03a9f4;
+  background: #607d8b;
   display: flex;
   align-items: center;
-  color: #fff;
+  color: #fafafa;
   position: relative;
   text-shadow: 0 1px 1px #333;
-  box-shadow: inset 0px -1px 3px -1px rgb(17, 116, 160);
 }
 
 .table {
@@ -655,7 +654,7 @@ header.info {
 .order {
   height: 329px;
   width: 285px;
-  background: hsla(0, 9%, 66%, 0.15);
+  background: rgba(238, 238, 238, 0.5);
   overflow: hidden;
   position: relative;
 }
