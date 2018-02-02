@@ -9,7 +9,7 @@
         <div class="reward">
 
         </div>
-        <div class="customer" v-if="$route.name === 'Menu'" @click="editCustomer">
+        <div class="customer" v-if="$route.name === 'Menu'" @click="editProfile">
           <span v-show="customer.phone">{{customer.phone | phone}}</span>
           <span v-show="customer.address">{{customer.address}}</span>
           <span v-show="customer.name">{{customer.name}}</span>
@@ -178,7 +178,7 @@ export default {
 
       this.$socket.emit("[UPDATE] INVOICE", order);
     },
-    editCustomer() {
+    editProfile() {
       this.$route.name === "Menu" &&
         this.$socket.emit("[CUSTOMER] PROFILE", this.customer._id, customer =>
           this.$p("profiles", { customer })
@@ -254,7 +254,7 @@ export default {
       this.insertOrder(data);
     },
     UPDATE_ORDER(data) {
-      console.log(data)
+      console.log(data);
       data.refresh = this.$route.name !== "Menu";
       this.updateOrder(data);
     },

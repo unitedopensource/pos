@@ -615,7 +615,7 @@ header.info {
 .number {
   font-family: "Agency FB";
   font-weight: bold;
-  font-size: 22px;
+  font-size: 18px;
 }
 
 .number {
@@ -806,9 +806,14 @@ header.info {
 }
 
 .detail i {
-  color: #607d8b;
+  color: #ccc;
   width: 15px;
   text-align: center;
+}
+
+.detail p {
+  color: #888;
+  font-size: 14px;
 }
 
 .content .time {
@@ -840,11 +845,12 @@ header.info {
 .content {
   flex: 1;
   padding: 5px 5px 0;
+  background: #fff;
 }
 
 .phone .name {
   margin-left: 10px;
-  font-size: 18px;
+  font-size: 14px;
 }
 
 .content .value {

@@ -266,6 +266,7 @@ export default {
         unset: 'Unset All',
         default: 'Default',
         backup: 'Backup',
+        restore: 'Restore',
         option: 'Option',
         ledger: 'Ledger',
         allValid: 'Set All Valid',

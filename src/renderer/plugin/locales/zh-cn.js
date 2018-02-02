@@ -259,6 +259,7 @@ export default {
         unset: '反选',
         default: '默认',
         backup: '备份',
+        restore: '还原',
         option: '选项',
         ledger: '轧账',
         allValid: '设全部有效',

@@ -206,7 +206,7 @@ var Preset = function () {
       cancelCount: 0,
       cancelAmount: 0,
       favorite: [],
-      tag: [],
+      tags: [],
       profiles: [],
       creditCard: []
     }
