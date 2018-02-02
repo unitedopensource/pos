@@ -578,8 +578,8 @@ export default {
         splitTicketItemRemain: '此订单中还有 {i} 个物品尚未被分配。请分完后再进行付款操作',
         temporaryTable: '临时座位',
         createTemporaryTable: '您需要创建一个临时的座位吗？',
-        switchServer:'切换服务员',
-        switchServerConfirm:'您确定要将此座位的服务员由 {i} 换成 {i} 吗？'
+        switchServer: '切换服务员',
+        switchServerConfirm: '您确定要将此座位的服务员由 {i} 换成 {i} 吗？'
     },
     terminal: {
         initial: '正在初始化 {i}...',
@@ -639,6 +639,8 @@ export default {
         creditCard: '信用卡',
         giftCard: '礼物卡',
         debitCard: '借记卡',
+        periodYears: '{i} 年之后',
+        lifetime: '终身',
         number: '卡号',
         giftCardNumber: '礼物卡号 ({i})',
         securityCode: '安全号',
@@ -1218,6 +1220,7 @@ export default {
         deliveryTax: '送餐税',
         others: '其它设置',
         rounding: '美分取整',
+        defaultPaymentType: '默认付款类型',
         tax: '税率',
         taxBeforeDiscount: '折扣前征税',
         taxBeforeCredit: '积分前征税',
@@ -1338,6 +1341,11 @@ export default {
             promotion: '允许创建促销规则',
             payout: '允许现金支出',
             ledger: '允许核对销售账目'
+        },
+        giftcard: {
+            expire: '礼物卡过期',
+            period: '过期年限',
+            bonus: '充值奖励'
         }
     },
     reservation: {

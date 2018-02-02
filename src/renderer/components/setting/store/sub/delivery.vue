@@ -10,14 +10,14 @@
             </nav>
         </header>
         <toggle title="setting.deliveryTax" tooltip="tip.deliveryTax" v-model="tax.deliveryTax" @update="updateDeliveryTax"></toggle>
-        <toggle title="setting.deliveryCharge" true-tooltip="tip.deliveryCharge" false-tooltip="tip.deliveryFree" v-model="store.delivery.charge" :conditionalTooltip="true" @update="updateDelivery">
+        <toggle title="setting.deliveryCharge" true-tooltip="tip.deliveryCharge" false-tooltip="tip.deliveryFree" v-model="store.deliver.charge" :conditionalTooltip="true" @update="updateDelivery">
             <transition name="dropdown">
-                <div class="opt" v-if="store.delivery.charge">
-                    <inputer title="text.amount" v-model.number="store.delivery.baseFee" @update="updateDeliveryFee"></inputer>
+                <div class="opt" v-if="store.deliver.charge">
+                    <inputer title="text.amount" v-model.number="store.deliver.baseFee" @update="updateDeliveryFee"></inputer>
                 </div>
             </transition>
         </toggle>
-        <toggle title="setting.deliverySurcharge" v-model="store.delivery.surcharge" :disabled="true">
+        <toggle title="setting.deliverySurcharge" v-model="store.deliver.surcharge" :disabled="true">
             <transition name="dropdown">
                 <div v-if="store.delivery.surcharge">
                     <table class="setting">
@@ -30,7 +30,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(rule,index) in store.delivery.rules" :key="index">
+                            <tr v-for="(rule,index) in store.deliver.rules" :key="index">
                                 <td class="guest">{{$t('text.distance',rule.distance)}}</td>
                                 <td class="amount">$ {{rule.fee | decimal}}</td>
                                 <td @click="edit(rule,index)" class="opt" colspan="2">
@@ -72,17 +72,16 @@ export default {
     },
     updateDelivery(value) {
       this.update({
-        key: "store.delivery.charge",
+        key: "store.deliver.charge",
         value
       });
     },
     updateDeliveryFee(value) {
       this.update({
-        key: "store.delivery.baseFee",
-        value
+        key: "store.deliver.baseFee",
+        value:parseFloat(value)
       });
     },
-
     updateDeliveryTax(value) {
       this.update({
         key: "tax.deliveryTax",

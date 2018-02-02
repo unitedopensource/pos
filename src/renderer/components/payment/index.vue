@@ -220,7 +220,7 @@
 <script>
 import { mapGetters, mapActions } from "vuex";
 import dialoger from "../common/dialoger";
-import capture from "../giftCard/capture";
+import capture from "../giftcard/capture";
 import ticket from "../common/ticket";
 import creditCard from "./creditCard";
 import discount from "./discount";

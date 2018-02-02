@@ -13,7 +13,7 @@
       </nav>
     </header>
     <div class="items">
-      <div v-for="(item,index) in items" @click="edit(item)">{{item[language]}}</div>
+      <div v-for="(item,index) in items" @contextmenu="edit(item)">{{item[language]}}</div>
     </div>
     <div :is="component" :init="componentData"></div>
   </div>

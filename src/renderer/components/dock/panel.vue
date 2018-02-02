@@ -52,7 +52,7 @@
             <h5>{{$t('dock.payoutTip')}}</h5>
           </div>
         </li>
-        <li @click="setting" v-show="op.role === 'Admin' || op.role === 'Manager'">
+        <li @click="setting" v-show="authorized || op.role === 'Manager'">
           <i class="fa fa-2x fa-cog"></i>
           <div>
             <h3>{{$t('dock.setting')}}</h3>
@@ -87,13 +87,13 @@
 import { mapGetters, mapActions } from "vuex";
 import terminal from "../history/terminal";
 import dialoger from "../common/dialoger";
-import giftCard from "../giftCard/task";
+import giftcard from "../giftcard/index";
 import unlock from "../common/unlock";
 import payout from "./payout";
 
 export default {
   props: ["init"],
-  components: { dialoger, terminal, giftCard, payout, unlock },
+  components: { dialoger, terminal, giftcard, payout, unlock },
   data() {
     return {
       componentData: null,
@@ -101,7 +101,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["op", "app", "config", "time", "station"])
+    ...mapGetters(["op", "app", "config", "time", "station","authorized"])
   },
   methods: {
     askClockIn() {
@@ -119,12 +119,18 @@ export default {
     },
     askClockOut() {
       const diff = moment().diff(moment(this.op.clockIn));
-      const h = ("0" + Math.floor(diff / 36e5)).slice(-2) + " " + this.$t("text.hour");
-      const m = ("0" + Math.floor(diff / 6e4)).slice(-2) + " " + this.$t("text.minute");
+      const h =
+        ("0" + Math.floor(diff / 36e5)).slice(-2) + " " + this.$t("text.hour");
+      const m =
+        ("0" + Math.floor(diff / 6e4)).slice(-2) + " " + this.$t("text.minute");
       const prompt = {
         type: "question",
         title: "dialog.clockOutConfirm",
-        msg: ["dialog.clockOutTip", moment(this.op.clockIn).format("hh:mm:ss a"), h + " " + m]
+        msg: [
+          "dialog.clockOutTip",
+          moment(this.op.clockIn).format("hh:mm:ss a"),
+          h + " " + m
+        ]
       };
 
       this.$dialog(prompt)
@@ -184,11 +190,15 @@ export default {
     },
     cashOut(cashDrawer) {
       this.$q();
-      this.$socket.emit("[CASHFLOW] SETTLE", cashDrawer, cashFlow => this.reconciliation(cashFlow));
+      this.$socket.emit("[CASHFLOW] SETTLE", cashDrawer, cashFlow =>
+        this.reconciliation(cashFlow)
+      );
     },
     reconciliation(cashflow) {
       this.recordCashDrawerAction();
-      const diff = (parseFloat(cashflow.end) - parseFloat(cashflow.begin)).toFixed(2);
+      const diff = (
+        parseFloat(cashflow.end) - parseFloat(cashflow.begin)
+      ).toFixed(2);
 
       cashflow.activity = cashflow.activity.filter(
         log =>
@@ -219,9 +229,10 @@ export default {
     },
     recordCashDrawerAction() {
       this.op.cashCtrl === "enable" && Printer.openCashDrawer();
-      const cashDrawer = this.op.cashCtrl === "enable"
-        ? this.station.cashDrawer.name
-        : this.op.name;
+      const cashDrawer =
+        this.op.cashCtrl === "enable"
+          ? this.station.cashDrawer.name
+          : this.op.name;
       const activity = {
         type: "END",
         inflow: 0,
@@ -234,10 +245,10 @@ export default {
       this.$socket.emit("[CASHFLOW] ACTIVITY", { cashDrawer, activity });
     },
     getTerminal() {
-      this.$p("terminal");
+      this.$open("terminal");
     },
     giftCardPanel() {
-      this.$p("giftCard");
+      this.$open("giftcard");
     },
     startBreakTime() {
       const prompt = {
@@ -277,16 +288,16 @@ export default {
     openPayout() {
       this.$checkPermission("permission", "payout")
         .then(() => this.$p("payout"))
-        .catch(() => this.$log({
-          eventID: 9100,
-          type: "failure",
-          source: "panel",
-          note: `Access Denied when attempt access payout.`
-        }));
+        .catch(() =>
+          this.$log({
+            eventID: 9100,
+            type: "failure",
+            source: "panel",
+            note: `Access Denied when attempt access payout.`
+          })
+        );
     },
-    askCashOut() {
-
-    },
+    askCashOut() {},
     changeLanguage() {
       const language = this.app.language === "usEN" ? "zhCN" : "usEN";
       this.$setLanguage(language);
@@ -300,16 +311,22 @@ export default {
           this.init.resolve();
           this.$router.push({ path: "/main/setting" });
         })
-        .catch(() => this.$log({
-          eventID: 9100,
-          type: "failure",
-          source: "panel",
-          note: `Access Denied when attempt access back office setting.`
-        }))
+        .catch(() =>
+          this.$log({
+            eventID: 9100,
+            type: "failure",
+            source: "panel",
+            note: `Access Denied when attempt access back office setting.`
+          })
+        );
     },
     exit() {
       this.$router.push({ name: "Login" });
-      this.$socket.emit("[SYS] RECORD", { type: "User", event: "logOut", status: 1 });
+      this.$socket.emit("[SYS] RECORD", {
+        type: "User",
+        event: "logOut",
+        status: 1
+      });
     },
     ...mapActions(["setOp", "setApp"])
   }

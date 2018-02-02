@@ -731,6 +731,8 @@ export default {
         creditCard: 'Credit Card',
         giftCard: 'Gift Card',
         debitCard: 'Debit Card',
+        periodYears: 'In {i} years',
+        lifetime: 'Lifetime',
         number: 'Card Number',
         giftCardNumber: 'Gift card number ({i})',
         securityCode: 'Security',
@@ -1225,6 +1227,7 @@ export default {
         deliveryTax: 'Delivery Tax',
         others: 'Others',
         rounding: 'Penny Rounding',
+        defaultPaymentType: 'Default Payment Type',
         tax: 'Tax',
         taxBeforeDiscount: 'Tax Before Disc',
         taxBeforeCredit: 'Tax Before Credit',
@@ -1342,6 +1345,11 @@ export default {
             promotion: 'Allow Create New Promotion Rule',
             payout: 'Allow payout from cash drawer',
             ledger: 'Allow review ledger summary'
+        },
+        giftcard: {
+            expire: 'Gift Card Expire',
+            period: 'Expire Period',
+            bonus: 'Reload Bonus'
         }
     },
     reservation: {

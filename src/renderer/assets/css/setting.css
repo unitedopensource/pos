@@ -291,9 +291,14 @@ td.amount {
     height: 40px;
 }
 
+header.tab{
+    flex-direction: row;
+}
+
 .editor header h5 {
     font-weight: normal;
     color: #666;
+    height: 15px;
 }
 
 .editor .wrap {

@@ -110,6 +110,10 @@ export default [{
           name: 'Setting.store.dinein',
           component: require('./components/setting/store/dinein')
         }, {
+          path: 'giftcard',
+          name: 'Setting.store.giftcard',
+          component: require('./components/setting/store/giftcard')
+        }, {
           path: 'surcharge',
           name: 'Setting.store.surcharge',
           component: require('./components/setting/store/sub/surcharge')

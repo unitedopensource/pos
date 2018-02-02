@@ -357,8 +357,8 @@ export default {
       let delivery = 0;
 
       if (type === "DELIVERY") {
-        if (this.store.delivery.charge && !deliveryFree) {
-          delivery = parseFloat(this.store.delivery.baseFee);
+        if (this.store.deliver.charge && !deliveryFree) {
+          delivery = parseFloat(this.store.deliver.baseFee);
         }
       }
 
