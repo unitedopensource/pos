@@ -153,7 +153,6 @@ ul {
 li {
   background: linear-gradient(to bottom, #fff 0%, #e5e5e5 100%);
   padding: 18px 10px 18px 15px;
-  color: #3c3c3c;
   width: 170px;
   text-shadow: none;
   border-radius: 4px;

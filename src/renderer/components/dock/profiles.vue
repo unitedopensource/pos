@@ -51,9 +51,9 @@ export default {
     },
     edit(index) {
       this.init.customer.profiles.splice(index, 1);
-      this.$socket.emit("[CUSTOMER] UPDATE", this.init.customer, data => {
-        this.init.resolve();
-        this.emptyCustomerInfo(data);
+      this.init.resolve();
+      this.$socket.emit("[CUSTOMER] UPDATE", this.init.customer, () => {
+        this.emptyCustomerInfo(this.init.customer);
         this.$router.push({ name: "Information" });
       });
     },
