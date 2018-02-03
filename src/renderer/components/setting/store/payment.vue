@@ -3,7 +3,7 @@
     <external title="setting.tax" tooltip="tip.tax" @open="editTax"></external>
     <external title="setting.deliveryCharge" tooltip="tip.deliveryCharge" @open="editDelivery"></external>
     <text-list title="setting.rounding" tooltip="tip.rounding.tooltip" :opts="roundingOption" v-model="store.rounding" @update="updateRounding"></text-list>
-    <text-list title="setting.defaultPayment" :opts="paymentTypes" v-model="store.defaultPaymentType" @update="updatePaymentType"></text-list>
+    <text-list title="setting.defaultPaymentType" :opts="paymentTypes" v-model="store.defaultPaymentType" @update="updatePaymentType"></text-list>
     <toggle title="setting.tipSuggestion" tooltip="tip.tipSuggestion" v-model="store.tipSuggestion.enable" @update="updateTipSuggestion">
       <transition name="dropdown">
         <div v-if="store.tipSuggestion.enable" class="fees">

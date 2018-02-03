@@ -15,7 +15,7 @@
             <header class="nav">
                 <div>
                     <h3>{{template.contain[index].name}}</h3>
-                    <h5>{{$t("text.queueItem",template.contain[index].contain.length)}}</h5>
+                    <h5>{{$t("text.items",template.contain[index].contain.length)}}</h5>
                 </div>
                 <nav>
                     <span @click="setOption">{{$t('button.option')}}</span>

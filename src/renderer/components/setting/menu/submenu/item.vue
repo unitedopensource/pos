@@ -5,7 +5,7 @@
         <span class="add" @click="option">{{$t('button.option')}}</span>
       </nav>
       <div class="title">
-        <h5>{{$t('items',items.length)}}</h5>
+        <h5>{{$t('text.items',items.length)}}</h5>
         <h3>{{$t("title.item")}}</h3>
       </div>
       <nav>

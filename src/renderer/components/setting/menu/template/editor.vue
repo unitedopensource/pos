@@ -7,8 +7,8 @@
             </header>
             <div class="wrap">
                 <inputer title="text.primary" v-model="item.usEN" :autoFocus="true" @keydown.enter.native="confirm"></inputer>
-                <inputer title="text.secondary" v-model="item.zhCN"></inputer>
-                <inputer title="text.price" v-model.number="item.price"></inputer>
+                <inputer title="text.secondary" v-model="item.zhCN" @keydown.enter.native="confirm"></inputer>
+                <inputer title="text.price" v-model.number="item.price" @keydown.enter.native="confirm"></inputer>
                 <div class="printers">
                     <label>{{$t('text.printer')}}</label>
                     <div class="inner">
@@ -45,7 +45,6 @@ export default {
   },
   methods: {
     confirm() {
-      this.item.usEN = this.item.usEN.toCapitalCase();
       if (!this.item.zhCN) this.item.zhCN = this.item.usEN;
       this.init.resolve(this.item);
     }

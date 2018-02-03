@@ -1474,7 +1474,7 @@ export default {
         taxOnDeliveryCharge: 'Tax on delivery charge',
         thirdPartyProvider: 'Select your third party service provider',
         paidRecords: '#{i} ticket has {i} payment records',
-        foundRecords: 'Found {i} transaction records',
+        foundRecords: 'Found {i} transactions',
         forGiftCard: 'Gift Card ( {i} )',
         payout: 'Detail note on purchasing',
         receiptDefaultAction: 'Default action for receipt dialog after each settlement',
