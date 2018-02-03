@@ -2,6 +2,7 @@
   <div class="popupMask dark center" @click.self="init.reject">
     <div class="profiles">
       <div class="profile" v-for="(profile,index) in init.customer.profiles" :key="index" @click="select(profile)">
+        <i class="fa fa-pencil-square" @click.stop="edit(index)"></i>
         <div>
           <h3 class="name">{{profile.name}}</h3>
           <h5 class="address">{{profile.address}}</h5>
@@ -48,8 +49,16 @@ export default {
       this.$router.push({ path: "/main/info" });
       this.init.resolve();
     },
-    remove(index){
-      this.init.customer.profiles.splice(index,1);
+    edit(index) {
+      this.init.customer.profiles.splice(index, 1);
+      this.$socket.emit("[CUSTOMER] UPDATE", this.init.customer, data => {
+        this.init.resolve();
+        this.emptyCustomerInfo(data);
+        this.$router.push({ name: "Information" });
+      });
+    },
+    remove(index) {
+      this.init.customer.profiles.splice(index, 1);
       this.$socket.emit("[CUSTOMER] UPDATE", this.init.customer, data => {
         this.setCustomer(data);
       });
@@ -82,7 +91,6 @@ export default {
   border-radius: 4px;
   margin-bottom: 4px;
   height: 50px;
-  padding: 0 0 0 10px;
   display: flex;
   align-items: center;
 }
@@ -97,6 +105,7 @@ export default {
 .profile i {
   padding: 15px;
   cursor: pointer;
+  color: #666;
 }
 
 h5 {

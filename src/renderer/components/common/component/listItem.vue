@@ -101,7 +101,7 @@ li {
   flex: 1;
   display: flex;
   max-width: 215px;
-  margin-right: 40px;
+  margin-right:5px;
 }
 
 .sub .item {

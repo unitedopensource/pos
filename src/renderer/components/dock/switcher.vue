@@ -53,14 +53,16 @@ export default {
   },
   methods: {
     change(type) {
+      const msg = [
+        "dialog.orderTypeSwitchTip",
+        this.$t("type." + this.ticket.type),
+        this.$t("type." + type)
+      ];
+
       const prompt = {
         type: "question",
         title: "dialog.orderTypeSwitchConfirm",
-        msg: [
-          "dialog.orderTypeSwitchTip",
-          this.$t("type." + this.ticket.type),
-          this.$t("type." + type)
-        ]
+        msg
       };
 
       this.$dialog(prompt)
@@ -74,11 +76,13 @@ export default {
       this.ticket.type === "DINE_IN" &&
         this.$socket.emit("[TABLE] RESET", { session: this.order.session });
       this.order.payment.delivery =
-        type === "DELIVERY" && this.store.delivery && !this.order.deliveryFree
-          ? parseFloat(this.store.deliveryCharge)
+        type === "DELIVERY" &&
+        this.store.deliver.charge &&
+        !this.order.deliveryFree
+          ? parseFloat(this.store.deliver.baseFee)
           : 0;
       Object.assign(this.order, { type });
-      this.setTicket({type});
+      this.setTicket({ type });
       this.applyPrice(type);
 
       switch (type) {
