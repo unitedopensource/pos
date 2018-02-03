@@ -670,8 +670,8 @@ export default {
         splitTicketItemRemain: 'This order has {i} items are not split. Please split them and try again.',
         temporaryTable: 'Temporary Table',
         createTemporaryTable: 'Are you sure to create a temporary table?',
-        switchServer:'Switch Server',
-        switchServerConfirm:'Are you sure to switch server from {i} to {i}?'
+        switchServer: 'Switch Server',
+        switchServerConfirm: 'Are you sure to switch server from {i} to {i}?'
     },
     terminal: {
         initial: 'Initializing terminal {i}...',
@@ -1133,7 +1133,8 @@ export default {
         alwaysRoundDown: 'Round down',
         itemSplit: 'Item Split',
         presetItem: 'Preset Items',
-        viewInvoice: 'View History Invoice'
+        viewInvoice: 'View History Invoice',
+        rename: 'Rename'
     },
     nav: {
         store: 'Store',

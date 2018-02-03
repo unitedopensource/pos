@@ -1126,7 +1126,8 @@ export default {
         alwaysRoundDown: '向下取整',
         itemSplit: '物品平摊',
         presetItem: '预设物品',
-        viewInvoice: '查看以往订单'
+        viewInvoice: '查看以往订单',
+        rename: '重命名'
     },
     nav: {
         store: '店面',

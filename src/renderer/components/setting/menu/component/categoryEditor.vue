@@ -1,5 +1,5 @@
 <template>
-  <div class="popupMask setting dark center" @click.self="init.reject(false)">
+  <div class="popupMask setting dark center" @click.self="exit">
     <div class="editor">
       <header>
         <div>
@@ -15,6 +15,10 @@
             <input type="radio" v-model="tab" value="print" name="tab" id="print" :disabled="!Array.isArray(category.contain)">
             <label for="print">{{$t('setting.print')}}</label>
           </div>
+          <div>
+            <input type="radio" v-model="tab" value="rename" name="tab" id="rename" :disabled="!Array.isArray(category.contain)">
+            <label for="rename">{{$t('text.rename')}}</label>
+          </div>
         </nav>
       </header>
       <template v-if="tab === 'basic'">
@@ -27,7 +31,7 @@
           </div>
         </div>
       </template>
-      <template v-else>
+      <template v-else-if="tab === 'print'">
         <div class="wrap">
           <div v-for="(category,index) in category.contain" :key="index">
             <h3>{{category}}</h3>
@@ -37,12 +41,21 @@
           </div>
         </div>
       </template>
+      <template v-else>
+        <div class="wrap">
+          <div v-for="(category,index) in category.contain" :key="index">
+            <h3>{{category}}</h3>
+            <inputer title="text.alias" v-model="rename[index]" :placeholder="category"></inputer>
+          </div>
+        </div>
+      </template>
       <footer>
         <div class="opt">
           <switches title="text.manualInput" v-model="manual" :reverse="true"></switches>
         </div>
         <button class="btn" @click="confirm" v-if="tab === 'basic'">{{$t('button.done')}}</button>
-        <button class="btn" @click="update" v-else>{{$t('button.apply')}}</button>
+        <button class="btn" @click="update" v-else-if="tab === 'print'">{{$t('button.apply')}}</button>
+        <button class="btn" @click="modify" v-else>{{$t('button.update')}}</button>
       </footer>
     </div>
   </div>
@@ -63,6 +76,8 @@ export default {
       categories: this.init.categories,
       category: JSON.parse(JSON.stringify(this.init.category)),
       printers: Object.keys(this.$store.getters.config.printers),
+      allowExit: true,
+      rename: [],
       print: []
     };
   },
@@ -80,6 +95,26 @@ export default {
       const categories = this.category.contain;
 
       this.$socket.emit("[CATEGORY] PRINTER", { categories, printers });
+      this.allowExit = false;
+    },
+    modify() {
+      let update = {};
+
+      this.category.contain.forEach((category, index) => {
+        if (this.rename[index]) {
+          this.category.contain.splice(index, 1, this.rename[index]);
+          update[category] = this.rename[index];
+        }
+      });
+
+      this.$socket.emit("[CATEGORY] RENAME", update, categories => {
+        this.allowExit = false;
+        this.categories = categories;
+        this.tab = "basic";
+      });
+    },
+    exit() {
+      if (this.allowExit) this.init.reject(false);
     }
   }
 };
