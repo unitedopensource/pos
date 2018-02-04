@@ -1,24 +1,27 @@
 <template>
-    <ul>
-        <li class="head">
-            <h3 class="f1">{{$t('text.itemTrend')}}</h3>
-            <i class="fa fa-sort" @click="reverse"></i>
-        </li>
-        <li class="stats" v-for="(item,index) in items" :key="index" @click="$emit('edit',item)">
-            <h5 class="name">{{item[language] || item.usEN}}</h5>
-            <div>
-                <progress :max="max" :value="item.count"></progress>
-                <span class="count">{{item.count}}</span>
-            </div>
-        </li>
-        <li class="footer">
-            <span class="total">{{$t('text.items',trend.length)}}</span>
-            <div class="wrap">
-                <i class="fa fa-angle-left page" @click="prev"></i>
-                <i class="fa fa-angle-right page" @click="next"></i>
-            </div>
-        </li>
-    </ul>
+    <transition class="fadeIn">
+        <ul v-show="trend.length > 0">
+            <li class="head">
+                <h3 class="f1">{{$t('text.itemTrend')}}</h3>
+                <i class="fa fa-sort" @click="reverse"></i>
+            </li>
+            <li class="stats" v-for="(item,index) in items" :key="index" @click="$emit('edit',item)">
+                <h5 class="name">{{item[language] || item.usEN}}</h5>
+                <div>
+                    <progress :max="max" :value="item.count"></progress>
+                    <span class="count">{{item.count}}</span>
+                </div>
+            </li>
+            <li class="footer">
+                <span class="total">{{$t('text.items',trend.length)}}</span>
+                <div class="wrap">
+                    <i class="fa fa-angle-left page" @click="prev"></i>
+                    <i class="fa fa-angle-right page" @click="next"></i>
+                </div>
+            </li>
+        </ul>
+    </transition>
+
 </template>
 
 <script>
