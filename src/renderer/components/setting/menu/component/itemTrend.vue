@@ -40,27 +40,31 @@ export default {
     }
   },
   created() {
-    const date = {
-      from: +moment()
-        .subtract(4, "hours")
-        .startOf("month")
-        .hours(4),
-      to: +moment()
-        .subtract(4, "hours")
-        .endOf("month")
-        .add(1, "days")
-        .hours(3)
-        .minutes(59)
-        .seconds(59)
-    };
-
-    this.$socket.emit("[TREND] ITEM", date, results => {
-      this.max = results.reduce((a, c) => Math.max(a, c.count), 0);
-      this.trend = results;
-    });
+    this.fetchData();
   },
   methods: {
+    fetchData() {
+      const date = {
+        from: +moment()
+          .subtract(4, "hours")
+          .startOf("month")
+          .hours(4),
+        to: +moment()
+          .subtract(4, "hours")
+          .endOf("month")
+          .add(1, "days")
+          .hours(3)
+          .minutes(59)
+          .seconds(59)
+      };
+
+      this.$socket.emit("[TREND] ITEM", date, results => {
+        this.max = results.reduce((a, c) => Math.max(a, c.count), 0);
+        this.trend = results;
+      });
+    },
     reverse() {
+      this.page = 0;
       this.trend.reverse();
     },
     prev() {
