@@ -15,8 +15,8 @@
         </draggable>
       </div>
     </div>
-    <aside> 
-      <item-trend></item-trend>
+    <aside>
+      <item-trend @edit="search"></item-trend>
     </aside>
     <div :is="component" :init="componentData"></div>
   </div>
@@ -31,7 +31,7 @@ import categoryEditor from "./component/categoryEditor";
 import itemTrend from "./component/itemTrend";
 
 export default {
-  components: { dialoger, draggable, itemEditor, categoryEditor,itemTrend },
+  components: { dialoger, draggable, itemEditor, categoryEditor, itemTrend },
   data() {
     return {
       language: this.$store.getters.language,
@@ -174,6 +174,24 @@ export default {
         });
       }
       return item;
+    },
+    search({ category, _id }) {
+      const categoryIndex = this.categories.findIndex(group =>
+        group.contain.includes(category)
+      );
+
+      if (categoryIndex !== -1) {
+        this.setCategory(categoryIndex);
+
+        this.items.forEach((group, index) => {
+          const _index = group.findIndex(i => i._id === _id);
+
+          if (_index !== -1) {
+            const item = this.items[index][_index];
+            this.editItem(item, index, _index);
+          }
+        });
+      }
     },
     updateCategorySort() {
       this.$socket.emit("[CATEGORY] SORT", this.categories);

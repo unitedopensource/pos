@@ -4,7 +4,7 @@
             <h3 class="f1">{{$t('text.itemTrend')}}</h3>
             <i class="fa fa-sort" @click="reverse"></i>
         </li>
-        <li class="stats" v-for="(item,index) in items" :key="index">
+        <li class="stats" v-for="(item,index) in items" :key="index" @click="$emit('edit',item)">
             <h5 class="name">{{item[language] || item.usEN}}</h5>
             <div>
                 <progress :max="max" :value="item.count"></progress>
@@ -56,9 +56,7 @@ export default {
 
     this.$socket.emit("[TREND] ITEM", date, results => {
       this.max = results.reduce((a, c) => Math.max(a, c.count), 0);
-
-      const guidelines = this.max / 10
-      this.trend = results.map();
+      this.trend = results;
     });
   },
   methods: {
@@ -138,7 +136,7 @@ progress {
 li.footer {
   display: flex;
   align-items: center;
-  height: 42px;
+  height: 43px;
 }
 
 .page {
