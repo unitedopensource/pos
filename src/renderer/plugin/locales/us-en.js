@@ -1134,7 +1134,8 @@ export default {
         itemSplit: 'Item Split',
         presetItem: 'Preset Items',
         viewInvoice: 'View History Invoice',
-        rename: 'Rename'
+        rename: 'Rename',
+        itemTrend: 'Item Trend'
     },
     nav: {
         store: 'Store',

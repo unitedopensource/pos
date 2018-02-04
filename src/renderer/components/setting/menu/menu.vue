@@ -15,8 +15,8 @@
         </draggable>
       </div>
     </div>
-    <aside>
-
+    <aside> 
+      <item-trend></item-trend>
     </aside>
     <div :is="component" :init="componentData"></div>
   </div>
@@ -28,9 +28,10 @@ import draggable from "vuedraggable";
 import dialoger from "../../common/dialoger";
 import itemEditor from "./component/itemEditor";
 import categoryEditor from "./component/categoryEditor";
+import itemTrend from "./component/itemTrend";
 
 export default {
-  components: { dialoger, draggable, itemEditor, categoryEditor },
+  components: { dialoger, draggable, itemEditor, categoryEditor,itemTrend },
   data() {
     return {
       language: this.$store.getters.language,
@@ -222,5 +223,9 @@ export default {
 .categoryGhost {
   background: rgba(33, 150, 243, 0.5);
   border: 1px dashed #607d8b;
+}
+
+aside {
+  flex: 1;
 }
 </style>

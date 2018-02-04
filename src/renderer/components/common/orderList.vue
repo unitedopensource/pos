@@ -811,7 +811,7 @@ header.info {
 }
 
 .detail p {
-  color: #888;
+  color: #757575;
   font-size: 14px;
 }
 

@@ -1127,7 +1127,8 @@ export default {
         itemSplit: '物品平摊',
         presetItem: '预设物品',
         viewInvoice: '查看以往订单',
-        rename: '重命名'
+        rename: '重命名',
+        itemTrend: '物品热度'
     },
     nav: {
         store: '店面',
