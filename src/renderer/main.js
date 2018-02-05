@@ -81,7 +81,7 @@ const ip = Ip.address().split(".").splice(0, 3).join(".") + ".";
 
 new Promise((resolve, reject) => {
   const args = require('electron').remote.process.argv.slice(1);
-  
+
   if (process.env.NODE_ENV === 'development') {
     resolve("127.0.0.1");
     return;
@@ -131,7 +131,7 @@ new Promise((resolve, reject) => {
     return parseFloat(value).toFixed(2);
   });
   Vue.filter('tel', phone => {
-    if(!phone) return "";
+    if (!phone) return "";
 
     switch (phone.length) {
       case 10:
@@ -144,6 +144,9 @@ new Promise((resolve, reject) => {
   });
   Vue.filter('phone', number => {
     return (number && number.length === 10) ? number.replace(/^\D?(\d{3})\D?\D?(\d{3})\D?(\d{4})/, "($1) $2-$3") : number;
+  });
+  Vue.filter('card', number => {
+    return number ? number.replace(/^\D?(\d{4})\D?(\d{4})\D?(\d{4})\D?(\d{4})/, "$1 $2 $3 $4") : number;
   });
   Vue.filter('fromNow', (time, pass) => {
     return time ? moment(Number(time)).fromNow(pass) : "";

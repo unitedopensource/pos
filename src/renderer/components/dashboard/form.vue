@@ -15,9 +15,10 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import dataInput from "./component/dataInput";
-import keyboard from "../common/keyboard";
+import keyboard from "./keyboard";
 import dialoger from "../common/dialoger";
+import dataInput from "./component/dataInput";
+
 export default {
   created() {
     this.resetAutoComplete();

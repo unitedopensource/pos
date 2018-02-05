@@ -1,12 +1,12 @@
 <template>
   <div class="input">
     <label>{{$t(title)}}</label>
-    <textarea v-if="type === 'textarea'" :class="{center}" :value="value" :maxlength="length" :disabled="disabled" :placeholder="placeholder" @input="$emit('input',$event.target.value)" @blur="$emit('update',$event.target.value)"></textarea>
+    <textarea v-if="type === 'textarea'" :class="{center}" :value="value" :maxlength="length" :disabled="disabled" :placeholder="placeholder" @input="$emit('input',$event.target.value)" @blur="$emit('update',$event.target.value)" :data-model="model"></textarea>
     <template v-else-if="mask">
-      <input :type="type" :value="value" :maxlength="length" :disabled="disabled" :placeholder="placeholder" @input="$emit('input',$event.target.value)" @blur="$emit('update',$event.target.value)" ref="input" v-mask="mask">
+      <input :type="type" :value="value" :maxlength="length" :disabled="disabled" :placeholder="placeholder" @input="$emit('input',$event.target.value)" @blur="$emit('update',$event.target.value)" ref="input" v-mask="mask" :data-model="model" @click="$emit('focus',$event.currentTarget.selectionStart)">
     </template>
     <template v-else>
-      <input :type="type" :value="value" :maxlength="length" :disabled="disabled" :placeholder="placeholder" @input="$emit('input',$event.target.value)" @blur="$emit('update',$event.target.value)" ref="input">
+      <input :type="type" :value="value" :maxlength="length" :disabled="disabled" :placeholder="placeholder" @input="$emit('input',$event.target.value)" @blur="$emit('update',$event.target.value)" ref="input" :data-model="model" @click="$emit('focus',$event.currentTarget.selectionStart)">
     </template>
     <slot></slot>
   </div>
@@ -35,6 +35,10 @@ export default {
       default: false
     },
     mask: String,
+    model: {
+      type: String,
+      default: Math.random().toString(36).substring(3,7)
+    },
     placeholder: [String, Number]
   },
   mounted() {

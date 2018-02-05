@@ -94,20 +94,26 @@ export default {
       if (this.isEmptyTicket) return;
 
       this.$checkPermission("modify", "order")
-        .then(this.checkDate)
-        .then(this.checkStatus)
-        .then(this.checkSettlement)
-        .then(this.edit)
-        .catch(this.editFailed);
+        .then(() => {
+          this.checkDate()
+            .then(this.checkStatus)
+            .then(this.checkSettlement)
+            .then(this.edit)
+            .catch(this.editFailed);
+        })
+        .catch(() => {});
     },
     voidOrder() {
       if (this.isEmptyTicket) return;
 
       this.$checkPermission("modify", "order")
-        .then(this.checkDate)
-        .then(this.checkSettlement)
-        .then(this.voidTicket)
-        .catch(this.voidFailed);
+        .then(() => {
+          this.checkDate()
+            .then(this.checkSettlement)
+            .then(this.voidTicket)
+            .catch(this.voidFailed);
+        })
+        .catch(() => {});
     },
     checkDate() {
       return new Promise((next, stop) => {
@@ -185,9 +191,13 @@ export default {
         ]
       };
 
-      this.$dialog(prompt)
-        .then(confirm => this.$p("Reason"))
-        .catch(() => this.$q());
+      this.$checkPermission("modify", "void")
+        .then(() => {
+          this.$dialog(prompt)
+            .then(confirm => this.$p("Reason"))
+            .catch(() => this.$q());
+        })
+        .catch(() => {});
     },
     voidFailed(reason) {
       this.$dialog(reason)
@@ -206,6 +216,7 @@ export default {
     },
     reOpenOrder() {
       if (this.isEmptyTicket) return;
+
       const prompt = {
         type: "question",
         title: ["dialog.recoverOrderConfirm", this.order.number],
@@ -216,15 +227,19 @@ export default {
         ]
       };
 
-      this.$dialog(prompt)
+      this.$checkPermission("modify", "void")
         .then(() => {
-          let order = JSON.parse(JSON.stringify(this.order));
-          order.status = 1;
-          delete order.void;
-          this.updateInvoice(order);
-          this.$q();
+          this.$dialog(prompt)
+            .then(() => {
+              let order = JSON.parse(JSON.stringify(this.order));
+              order.status = 1;
+              delete order.void;
+              this.updateInvoice(order);
+              this.$q();
+            })
+            .catch(() => this.$q());
         })
-        .catch(() => this.$q());
+        .catch(() => {});
     },
     calendar() {
       new Promise((resolve, reject) => {

@@ -3,7 +3,7 @@
         <div class="editor" v-show="!component">
             <header class="tab">
                 <div>
-                    <h5></h5>
+                    <h5>{{giftcard.number | card}}</h5>
                     <h3>{{$t('card.giftCard')}}</h3>
                 </div>
                 <nav class="tabs">
@@ -44,27 +44,67 @@
 </template>
 
 <script>
+import search from "./search";
 import capture from "./capture";
 
 export default {
   props: ["init"],
-  components: { capture },
+  components: { search, capture },
   data() {
     return {
       activated: false,
       tab: "activation",
       component: null,
-      componentData: null
+      componentData: null,
+      giftcard: {}
     };
   },
+  mounted() {
+    this.swipeCard()
+      .then(this.initialData)
+      .catch(this.initialFailed);
+  },
   methods: {
+    swipeCard() {
+      return new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject };
+        this.component = "capture";
+      });
+    },
+    inputCard() {
+      return new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject };
+        this.component = "search";
+      });
+    },
+    initialData(card) {
+      this.$q();
+      console.log(card);
+      this.giftcard = card;
+    },
+    initialFailed(exception) {
+      if (typeof exception === "boolean") this.$q();
 
+      switch (exception) {
+        case "manual":
+          this.inputCard()
+            .then(this.initialData)
+            .catch(this.initialFailed);
+          break;
+        case "":
+          break;
+      }
+    }
   }
 };
 </script>
 
 <style scoped>
-.editor{
-    width: 550px;
+.editor {
+  width: 550px;
+}
+.tab > div {
+  display: flex;
+  align-items: center;
 }
 </style>

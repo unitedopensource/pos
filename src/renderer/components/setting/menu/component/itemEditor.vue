@@ -289,7 +289,7 @@ header {
 
 .wrap {
   display: flex;
-  min-height: 460px;
+  height: 462px;
 }
 
 .wrap.info {
