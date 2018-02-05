@@ -277,7 +277,7 @@ function createList(printer, setting, invoice, preview) {
 
     function mockup(item, renderQty) {
         const { replace = false, zhCN, usEN, note } = item.printer[printer];
-        const idCN = secondary.id ? item.menuID + ' ' : ''; 
+        const idCN = secondary.id ? item.menuID + ' ' : '';
         const idEN = primary.id ? item.menuID + ' ' : '';
         const nameCN = replace ? idCN + zhCN : idCN + (item.zhCN || "");
         const nameEN = replace ? idEN + usEN : idEN + (item.usEN || "");
@@ -494,7 +494,7 @@ function createFooter(config, setting, printer, ticket) {
         }
     })
 
-    if (payment.remain > 0)
+    if (payment.paid > 0 && payment.remain > 0)
         settle.push(`<section class="details"><h3>Balance Due: $ ${payment.remain.toFixed(2)}</h3></section>`);
 
     if (ticket.status === 0) {

@@ -320,7 +320,7 @@ export default {
         });
     },
     askSplitPrintReceipt(order) {
-      this.$dialog({
+      const prompt = {
         type: "question",
         title: "dialog.printSplitTicket",
         msg: "dialog.printSplitTicketTip",
@@ -328,7 +328,9 @@ export default {
           { text: "button.combinePrint", fn: "reject" },
           { text: "button.splitPrint", fn: "resolve" }
         ]
-      })
+      };
+
+      this.$dialog(prompt)
         .then(() => this.splitPrint(order, true))
         .catch(() => this.printTicket(order, true));
     },
@@ -380,15 +382,13 @@ export default {
       const date = document.querySelector("#calendar .text").innerText;
 
       this.$socket.emit("[PAYMENT] VIEW_TRANSACTIONS", date, data => {
-        this.$p("transaction", {
-          data: data
-            .filter(t => t.for === "Order")
-            .sort((a, b) =>
-              String(b.ticket.number).localeCompare(a.ticket.number, undefined, {
-                numeric: true,
-                sensitivity: "base"
-              })
-            )
+        this.$open("transaction", {
+          data: data.filter(t => t.for === "Order").sort((a, b) =>
+            String(b.ticket.number).localeCompare(a.ticket.number, undefined, {
+              numeric: true,
+              sensitivity: "base"
+            })
+          )
         });
       });
     },
