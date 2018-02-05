@@ -1,5 +1,5 @@
 <template>
-  <div class="popupMask center dark" @click.self="init.reject">
+  <div class="popupMask center dark" @click.self="exit">
     <div class="editor">
       <header class="title">
         <h5>{{$t('title.create')}}</h5>
@@ -7,9 +7,9 @@
       </header>
       <div class="banner"></div>
       <div class="wrap">
-        <inputer v-model="item" title="text.item" :autoFocus="true"></inputer>
-        <inputer v-model.number="single" title="text.price" placeholder="0.00" @keydown.enter.native="confirm"></inputer>
-        <inputer v-model="comment" title="text.comment" type="textarea"></inputer>
+        <inputer v-model="item" title="text.item" :autoFocus="true" model="item" @click.native="setInput(true)" @focus="setCaret"></inputer>
+        <inputer v-model.number="single" title="text.price" placeholder="0.00" @keydown.enter.native="confirm" model="single" @click.native="setInput(false)" @focus="setCaret"></inputer>
+        <inputer v-model="comment" title="text.comment" type="textarea" @click.native="setInput(true)" @focus="setCaret" model="comment"></inputer>
         <div class="printers">
           <label>{{$t('text.printer')}}</label>
           <div class="inner">
@@ -19,34 +19,39 @@
       </div>
       <footer>
         <div class="opt">
-          <switches title="text.osk" v-model="keyboard" :disabled="true" :reverse="true"></switches>
+          <switches title="text.osk" v-model="keyboard" :reverse="true"></switches>
         </div>
         <button class="btn" @click="confirm" :disabled="!item">{{$t('button.confirm')}}</button>
       </footer>
     </div>
+    <keyboard :display="keyboard" :alphabet.sync="alphabet" v-model="entry" @input="input" @enter="confirm" @backspace="remove" :executeText="$t('button.done')"></keyboard>
   </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from "vuex";
+import keyboard from "../../common/keyboard";
 import inputer from "../../setting/common/inputer";
 import switches from "../../setting/common/switches";
 import checkbox from "../../setting/common/checkbox";
 
 export default {
   props: ["init"],
-  components: { inputer, switches, checkbox },
+  components: { inputer, switches, checkbox, keyboard },
   computed: {
     ...mapGetters(["config"])
   },
   data() {
     return {
       item: "",
-      single: null,
+      single: "",
       keyboard: false,
       printers: [],
       printer: [],
-      comment: ""
+      alphabet: true,
+      entry: "",
+      comment: "",
+      caret: 0
     };
   },
   created() {
@@ -61,6 +66,44 @@ export default {
     this.printer = preset.length > 0 ? preset : this.printers.slice();
   },
   methods: {
+    setInput(boolean) {
+      this.alphabet = boolean;
+    },
+    input(string) {
+      const { model } = document.activeElement.dataset;
+
+      if (model) {
+        const value = this[model];
+
+        this[model] =
+          value.substr(0, this.caret) + string + value.substr(this.caret);
+        this.caret++;
+
+        if (this[model][this.caret] === " ") this.caret++;
+
+        this.$nextTick(() => {
+          document.activeElement.setSelectionRange(this.caret, this.caret);
+        });
+      }
+    },
+    remove() {
+      const { model } = document.activeElement.dataset;
+
+      if (model) {
+        const value = this[model];
+
+        this[model] =
+          value.substr(0, this.caret - 1) + value.substr(this.caret);
+        this.caret--;
+
+        this.$nextTick(() => {
+          document.activeElement.setSelectionRange(this.caret, this.caret);
+        });
+      }
+    },
+    setCaret(value) {
+      this.caret = value;
+    },
     confirm() {
       let item = JSON.parse(JSON.stringify(this.init.item));
 
@@ -112,6 +155,9 @@ export default {
       this.addToOrder(item);
       this.setSides(Array(11).fill({ zhCN: "", usEN: "", disable: true }));
       this.init.resolve();
+    },
+    exit() {
+      this.keyboard ? (this.keyboard = false) : this.init.reject();
     },
     ...mapActions(["addToOrder", "setSides"])
   }

@@ -67,17 +67,17 @@
                     <div @mousedown.prevent="input('$')">$</div>
                     <div @mousedown.prevent="doubleQuote">"</div>
                     <div @mousedown.prevent="singleQuote">'</div>
-                    <div @mousedown.prevent="input(':') ">:</div>
-                    <div @mousedown.prevent="input(';') ">;</div>
-                    <div @mousedown.prevent="input('/') ">/</div>
+                    <div @mousedown.prevent="input(':')">:</div>
+                    <div @mousedown.prevent="input(';')">;</div>
+                    <div @mousedown.prevent="input('/')">/</div>
                     <div class="fn" @mousedown.prevent="$emit('backspace')">delete</div>
                 </section>
             </template>
             <section class="alphabetic ">
                 <div class="fn" @mousedown.prevent="$emit('update:alphabet',!alphabet)">{{alphabet ? '123' : 'abc'}}</div>
-                <div>,</div>
-                <div class="space"></div>
-                <div>.</div>
+                <div @mousedown.prevent="input(',')">,</div>
+                <div class="space" @mousedown.prevent="space"></div>
+                <div @mousedown.prevent="input('.')">.</div>
                 <div class="fn" @mousedown.prevent="$emit('enter')">{{executeText}}</div>
             </section>
         </div>
@@ -117,6 +117,10 @@ export default {
     },
     singleQuote() {
       this.$emit("input", "'");
+    },
+    space(){
+      this.$emit("input"," ");
+      this.shift = true;
     }
   }
 };

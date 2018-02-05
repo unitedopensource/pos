@@ -289,9 +289,9 @@ export default {
   },
   mounted() {
     this.order.source === "POS"
-      ? this.setPaymentType("CASH")
+      ? this.setPaymentType(this.store.defaultPaymentType || 'CASH')
       : this.init.hasOwnProperty("regular")
-        ? this.setPaymentType("CASH")
+        ? this.setPaymentType(this.store.defaultPaymentType || 'CASH')
         : this.setPaymentType("THIRD");
   },
   beforeDestroy() {

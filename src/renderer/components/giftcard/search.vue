@@ -43,7 +43,7 @@
         </footer>
       </div>
     </template>
-    <keyboard :display="keyboard" :alphabet.sync="alphabet" v-model="entry" @input="input" @enter="search" @backspace="remove" executeText="search"></keyboard>
+    <keyboard :display="keyboard" :alphabet.sync="alphabet" v-model="entry" @input="input" @enter="search" @backspace="remove" :executeText="$t('button.search')"></keyboard>
   </div>
 </template>
 
@@ -123,11 +123,7 @@ export default {
       this.card = card;
     },
     exit() {
-      if (this.keyboard) {
-        this.keyboard = false;
-      } else {
-        this.init.reject(false);
-      }
+      this.keyboard ? (this.keyboard = false) : this.init.reject(false);
     }
   }
 };
