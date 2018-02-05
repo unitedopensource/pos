@@ -383,7 +383,12 @@ export default {
         this.$p("transaction", {
           data: data
             .filter(t => t.for === "Order")
-            .sort((a, b) => (a.ticket.number > b.ticket.number ? -1 : 1))
+            .sort((a, b) =>
+              String(b.ticket.number).localeCompare(a.ticket.number, undefined, {
+                numeric: true,
+                sensitivity: "base"
+              })
+            )
         });
       });
     },
