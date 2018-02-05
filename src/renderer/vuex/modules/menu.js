@@ -84,7 +84,7 @@ const mutations = {
       print: false,
       pending: false,
       void: false,
-      qty: 1,
+      qty: item.qty || 1,
       choiceSet: item.choiceSet ? item.choiceSet : [],
       single: parseFloat(item.price[0]),
       total: item.hasOwnProperty('total') ? item.total : item.price[0].toFixed(2)

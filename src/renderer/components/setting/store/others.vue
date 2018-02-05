@@ -4,7 +4,7 @@
       <transition name="dropdown">
         <div v-if="store.matrix.enable" class="opt">
           <switches title="text.autoCorrectAddress" v-model="store.matrix.autoCorrect"></switches>
-          <inputer title="text.coordinate" v-model="store.matrix.coordinate"></inputer>
+          <inputer title="text.coordinate" v-model="store.matrix.coordinate" @update="updateStoreCoordinate"></inputer>
           <inputer title="text.api" v-model="store.matrix.api" @blur="updateAPI"></inputer>
         </div>
       </transition>
@@ -111,6 +111,12 @@ export default {
     updateSplitOrder(value){
       this.update({
         key:'store.unifiedOrder',
+        value
+      })
+    },
+    updateStoreCoordinate(value){
+      this.update({
+        key:'store.matrix.coordinate',
         value
       })
     }

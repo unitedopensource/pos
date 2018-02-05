@@ -97,7 +97,7 @@ var Preset = function () {
   };
   this.printer = function (type) {
     return {
-      type:type || 'regular',
+      type: type || 'regular',
       print: ["WALK_IN", "PICK_UP", "DELIVERY", "DINE_IN", "BAR", "BUFFET", "HIBACHI", "SALES", "TO_GO"],
       reprint: [],
       title: {
@@ -123,6 +123,7 @@ var Preset = function () {
           tableName: false,
           jobTime: false,
           tradeMark: false,
+          geo:false,
           content: [
             "Thank You Very Much"
           ]
@@ -179,7 +180,7 @@ var Preset = function () {
         unit: "lbs",
         value: 0
       },
-      preset:[],
+      preset: [],
       printer: {}
     }
   };
@@ -217,14 +218,14 @@ var Preset = function () {
       case "Manager":
         access = ["setting", "cashdrawer", "report", "terminal", "history"];
         view = ["summary", "invoices", "tables"];
-        modify = ["price", "item", "order", "table", "driver", "discount", "tip", "transaction"];
+        modify = ["price", "item", "order", "table", "driver", "discount", "tip", "void", "transaction"];
         permission = ["giftcard", "payout", "timecard"];
         cashCtrl = "enable";
         break;
       case "Cashier":
         access = ["cashdrawer", "terminal", "history"];
         view = ["summary", "invoices", "tables"];
-        modify = ["price", "item", "order", "table", "driver", "discount", "tip", "transaction"];
+        modify = ["price", "item", "order", "table", "driver", "discount", "tip", "void", "transaction"];
         permission = ["payout"];
         cashCtrl = "enable";
         break;

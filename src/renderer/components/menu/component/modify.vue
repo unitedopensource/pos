@@ -95,9 +95,7 @@ export default {
           choiceSet: [],
           mark: [[], []],
           sort: 0,
-          unique: Math.random()
-            .toString(36)
-            .substr(2, 5),
+          unique: String().random(4),
           print: false,
           pending: false,
           void: false,
@@ -230,13 +228,13 @@ export default {
         ? (this.addToOrder(item), this.setSides(this.fillOption(item.option)))
         : this.alterItem(item);
 
-      this.$socket.emit("[SYS] RECORD", {
-        type: "User",
-        event: "modifyItem",
-        status: 1,
-        data: this.item,
-        backup: this.init.item
-      });
+      // this.$socket.emit("[SYS] RECORD", {
+      //   type: "User",
+      //   event: "modifyItem",
+      //   status: 1,
+      //   data: this.item,
+      //   backup: this.init.item
+      // });
 
       this.init.resolve();
     },

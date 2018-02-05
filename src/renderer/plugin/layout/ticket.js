@@ -129,7 +129,7 @@ function createHeader(store, setting, raw) {
 
     information += phone ? `<p><span class="value tel">${phone}</span><span class="ext">${customer.extension}</span></p>` : "";
     information += address ? `<p><span class="value addr">${address}</span></p>` : "";
-    information += (city && store.city.toUpperCase() !== city.toUpperCase()) ? `<p><span class="value">${city}</span><span class="space">${distance}</span><span class="space">${duration}</span></p>` : "";
+    information += (city && store.city.toUpperCase() !== city.toUpperCase()) ? `<p><span class="value">${city}</span></p>` : "";
     information += name ? `<p><span class="value">${name}</span></p>` : "";
     information += note ? `<p><span class="value">${note}</span></p>` : "";
 
@@ -410,7 +410,7 @@ function createStyle(setting) {
               .suggestion div{display:flex;justify-content: center;width:75%;margin:auto;}\
               .dash{margin: 0 5px;}\
               .tips{margin-left:15px;}\
-              footer p{text-align:center;}\
+              footer p,.geo h1{text-align:center;}\
               .slogan{font-weight:lighter;margin-top:10px;border-top:1px solid #000;position:relative;}\
               .tradeMark {font-weight: bold;display: inline-block;padding: 5px 7px;background: #000;color: #fff;}\
               .zhCN{font-family:'${secondary.fontFamily}';font-size:${secondary.fontSize}px;}\
@@ -422,9 +422,9 @@ function createStyle(setting) {
 function createFooter(config, setting, printer, ticket) {
     if (!ticket.hasOwnProperty('payment')) return "";
 
-    const { ticketNumber, tableName, jobTime, tradeMark, content } = setting.control.footer;
+    const { ticketNumber, tableName, jobTime, tradeMark, geo, content } = setting.control.footer;
     const { enable, percentages } = config.tipSuggestion;
-    const { type, payment, coupons, number, table } = ticket;
+    const { type, payment, coupons, number, table, customer } = ticket;
 
     let suggestions = "";
 
@@ -537,10 +537,15 @@ function createFooter(config, setting, printer, ticket) {
     const _number = ticketNumber ? `<div class="ticketNumber">${number}</div>` : "";
     const _table = tableName ? `<div class="tableName">${table || ""}</div>` : "";
     const extraInfo = _waterMark + _time + _number + _table;
+    const _geo = geo ? `<div class="geo">\
+                            <p>${customer.duration}</p>\
+                            <p>${customer.distance}</p>\
+                            <h1>${customer.direction}</h1>
+                        </div>` : "";
 
     return `<footer>
               <section class="column">
-                <div class="empty"></div>
+                <div class="empty">${_geo}</div>
                 <div class="payment">
                   ${detail.join("").toString()}
                 </div>

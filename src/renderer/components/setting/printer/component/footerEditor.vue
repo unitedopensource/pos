@@ -7,6 +7,7 @@
             </header>
             <div class="wrap">
                 <inputer type="textarea" v-model.trim="footer.content" title="text.content" :center="true"></inputer>
+                <switches title="print.geographic" v-model="footer.geo"></switches>
                 <switches title="print.ticketNumber" v-model="footer.ticketNumber"></switches>
                 <switches title="print.tableName" v-model="footer.tableName"></switches>
                 <switches title="print.tradeMark" v-model="footer.tradeMark"></switches>

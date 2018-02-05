@@ -27,7 +27,7 @@ export default {
   components: { toggle, switches, inputer,selector },
   data() {
     return {
-      giftcard: this.$store.getters.config.giftcard,
+      giftcard: this.$store.getters.store.giftcard,
       periodOpts:[{
         label:this.$t('card.lifetime'),
         tooltip:'',

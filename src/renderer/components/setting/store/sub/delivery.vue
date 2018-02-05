@@ -6,7 +6,7 @@
             </div>
             <div class="title">{{$t('title.deliveryRelated')}}</div>
             <nav>
-                <span>{{$t('button.create')}}</span>
+                <span @click="create">{{$t('button.create')}}</span>
             </nav>
         </header>
         <toggle title="setting.deliveryTax" tooltip="tip.deliveryTax" v-model="tax.deliveryTax" @update="updateDeliveryTax"></toggle>
@@ -17,9 +17,9 @@
                 </div>
             </transition>
         </toggle>
-        <toggle title="setting.deliverySurcharge" v-model="store.deliver.surcharge" :disabled="true">
+        <toggle title="setting.deliverySurcharge" v-model="store.deliver.surcharge">
             <transition name="dropdown">
-                <div v-if="store.delivery.surcharge">
+                <div v-if="store.deliver.surcharge">
                     <table class="setting">
                         <thead>
                             <tr>
@@ -31,7 +31,7 @@
                         </thead>
                         <tbody>
                             <tr v-for="(rule,index) in store.deliver.rules" :key="index">
-                                <td class="guest">{{$t('text.distance',rule.distance)}}</td>
+                                <td class="guest">{{$t('text.withInMile',rule.distance)}}</td>
                                 <td class="amount">$ {{rule.fee | decimal}}</td>
                                 <td @click="edit(rule,index)" class="opt" colspan="2">
                                     <i class="fa fa-pencil-square"></i>
@@ -50,9 +50,10 @@
 import { mapGetters } from "vuex";
 import toggle from "../../common/toggle";
 import inputer from "../../common/inputer";
+import editor from "../component/deliveryEditor";
 
 export default {
-  components: { toggle, inputer },
+  components: { toggle, inputer, editor },
   computed: {
     ...mapGetters(["config", "tax"])
   },
@@ -79,7 +80,7 @@ export default {
     updateDeliveryFee(value) {
       this.update({
         key: "store.deliver.baseFee",
-        value:parseFloat(value)
+        value: parseFloat(value)
       });
     },
     updateDeliveryTax(value) {
@@ -88,8 +89,47 @@ export default {
         value
       });
     },
-    create() {},
-    edit() {}
+    updateChargeRules() {
+      this.update({
+        key: "store.deliver.rules",
+        value: this.store.deliver.rules
+      });
+    },
+    create() {
+      const rule = {
+        distance: "",
+        fee: 0
+      };
+
+      new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject, rule, edit: false };
+        this.component = "editor";
+      })
+        .then(_rule => {
+          this.store.deliver.rules.push(_rule);
+          this.updateChargeRules();
+          this.$q();
+        })
+        .catch(() => this.$q());
+    },
+    edit(rule, index) {
+      new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject, rule, edit: true };
+        this.component = "editor";
+      })
+        .then(_rule => {
+          this.store.deliver.rules.splice(index, 1, _rule);
+          this.updateChargeRules();
+          this.$q();
+        })
+        .catch(del => {
+          if (del) {
+            this.store.deliver.rules.splice(index, 1);
+            this.updateChargeRules();
+          }
+          this.$q();
+        });
+    }
   }
 };
 </script>

@@ -39,90 +39,91 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import ticket from '../common/ticket'
+import ticket from "../common/ticket";
 export default {
-    components: { ticket },
-    created() {
-        this.$socket.emit("[HISTORY] CUSTOMER_ORDERS", { phone: this.customer.phone, page: this.page }, (data) => { this.invoices = data })
+  components: { ticket },
+  created() {
+    const { phone } = this.customer;
+    const page = this.page;
+    this.$socket.emit("[HISTORY] CUSTOMER_ORDERS", { phone, page }, data => {
+      this.invoices = data;
+    });
+  },
+  data() {
+    return {
+      customer: this.$store.getters.customer,
+      componentData: null,
+      component: null,
+      invoices: [],
+      page: 0
+    };
+  },
+  methods: {
+    status(code) {
+      switch (code) {
+        case 0:
+          return "fa fa-times-circle-o red";
+        case 1:
+          return "fa fa-check-circle-o green";
+        default:
+          return "fa fa-question-circle-o";
+      }
     },
-    data() {
-        return {
-            componentData: null,
-            component: null,
-            invoices: [],
-            page: 0
-        }
-    },
-    methods: {
-        status(code) {
-            switch (code) {
-                case 0:
-                    return "fa fa-times-circle-o red";
-                case 1:
-                    return "fa fa-check-circle-o green"
-                default:
-                    return "fa fa-question-circle-o"
-            }
-        },
-        view(ticket) {
-            this.$p('ticket', { ticket })
-        }
-    },
-    computed: {
-        ...mapGetters(['customer'])
+    view(ticket) {
+      this.$p("ticket", { ticket });
     }
-}
+  }
+};
 </script>
 
 <style scoped>
 .viewer {
-    height: 500px;
-    min-width: 800px;
+  height: 500px;
+  min-width: 800px;
 }
 
 table {
-    border-collapse: collapse;
-    width: 100%;
+  border-collapse: collapse;
+  width: 100%;
 }
 
 th {
-    padding: 7px 5px;
-    text-align: center;
+  padding: 7px 5px;
+  text-align: center;
 }
 
 tr:not(:first-child) {
-    background: #fff;
+  background: #fff;
 }
 
 tr:nth-child(odd) {
-    background: #f5f5f5;
-    border-bottom: 1px solid #f1f1f1;
+  background: #f5f5f5;
+  border-bottom: 1px solid #f1f1f1;
 }
 
 td {
-    padding: 10px 5px;
-    text-align: center;
+  padding: 10px 5px;
+  text-align: center;
 }
 
 .icon {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 th.note {
-    min-width: 200px;
+  min-width: 200px;
 }
 
 tr.void {
-    background: #FBE9E7;
-    color: #FF5722;
+  background: #fbe9e7;
+  color: #ff5722;
 }
 
 i.green {
-    color: var(--green);
+  color: var(--green);
 }
 
 i.red {
-    color: var(--red);
+  color: var(--red);
 }
 </style>

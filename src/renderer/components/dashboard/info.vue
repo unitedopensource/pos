@@ -21,7 +21,6 @@
       <div class="tab active" @click="tap('form',$event)">{{$t('dashboard.customerInfo')}}</div>
       <div class="tab" @click="tap('note',$event)">{{$t('dashboard.note')}}</div>
       <div class="tab" @click="tap('history',$event)">{{$t('dashboard.history')}}</div>
-      <div class="tab" @click="tap('log',$event)">{{$t('dashboard.callLog')}}</div>
       <div class="tab" @click="tap('giftCard',$event)">{{$t('dashboard.giftCard')}}</div>
     </nav>
     <router-view></router-view>

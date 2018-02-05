@@ -30,10 +30,6 @@ export default [{
       name: 'Information',
       component: require('./components/dashboard/form')
     }, {
-      path: 'note',
-      name: 'Note',
-      component: require('./components/dashboard/notes')
-    }, {
       path: 'profile',
       name: 'Profile',
       component: require('./components/dashboard/profile')
@@ -41,10 +37,6 @@ export default [{
       path: 'history',
       name: 'OrderHistory',
       component: require('./components/dashboard/history')
-    }, {
-      path: 'call',
-      name: 'CallList',
-      component: require('./components/dashboard/call')
     }, {
       path: 'giftCard',
       name: 'customerGiftCard',

@@ -1127,7 +1127,8 @@ export default {
         presetItem: '预设物品',
         viewInvoice: '查看以往订单',
         rename: '重命名',
-        itemTrend: '物品热度'
+        itemTrend: '物品热度',
+        withInMile:'{i} 哩航程内'
     },
     nav: {
         store: '店面',
@@ -1430,6 +1431,7 @@ export default {
         difference: '差异模式',
         new: '新增模式',
         todo: '列表模式',
+        geographic: '地址信息',
         ticketNumber: '订单号码',
         tableName: '座位名称',
         tradeMark: '打印商标',

@@ -1134,7 +1134,8 @@ export default {
         presetItem: 'Preset Items',
         viewInvoice: 'View History Invoice',
         rename: 'Rename',
-        itemTrend: 'Item Trend'
+        itemTrend: 'Item Trend',
+        withInMile:'Within {i} miles'
     },
     nav: {
         store: 'Store',
@@ -1434,6 +1435,7 @@ export default {
         difference: 'Difference',
         new: 'New',
         todo: 'Todo',
+        geographic: 'Address Info',
         ticketNumber: 'Ticket Number',
         tableName: 'Table Name',
         tradeMark: 'Print Trade Mark',

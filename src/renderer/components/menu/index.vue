@@ -103,14 +103,16 @@ export default {
         this.$log({
           eventID: 4000,
           data: this.order._id,
-          note: `Initial create #${number} invoice for ${this.ticket.type.replace('_', ' ').toCapitalCase()}.`
-        })
+          note: `Initial create #${number} invoice for ${this.ticket.type
+            .replace("_", " ")
+            .toCapitalCase()}.`
+        });
       } else {
         this.$log({
           eventID: 4005,
           data: this.order._id,
           note: `Edit #${this.order.number} invoice.`
-        })
+        });
       }
     });
     this.resetPointer();
@@ -249,7 +251,7 @@ export default {
       toggleClass(".category .active", "active");
       document
         .querySelectorAll("section.category div")
-      [index].classList.add("active");
+        [index].classList.add("active");
 
       this.itemPage = 0;
       this.saveItems = null;
@@ -257,7 +259,7 @@ export default {
       this.flatten(this.menuInstance[index].item);
     },
     pick(item) {
-      item = Object.assign(Object.create(Object.getPrototypeOf(item)), item);
+      item = JSON.parse(JSON.stringify(item));
       !this.app.newTicket && Object.assign(item, { new: true });
 
       this.checkItemAvailable(item)
@@ -336,7 +338,7 @@ export default {
             usEN: set.usEN,
             single: set.price,
             price: set.price
-          }))
+          }));
         }
 
         next(item);
@@ -435,9 +437,9 @@ export default {
 
       const itemCount = Array.isArray(this.item.choiceSet)
         ? this.item.choiceSet
-          .filter(i => i.subItem)
-          .map(i => i.qty)
-          .reduce((a, b) => a + b, 0)
+            .filter(i => i.subItem)
+            .map(i => i.qty)
+            .reduce((a, b) => a + b, 0)
         : 0;
 
       if (subItem && this.item.hasOwnProperty("rules")) {

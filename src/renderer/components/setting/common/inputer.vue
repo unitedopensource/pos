@@ -1,7 +1,7 @@
 <template>
   <div class="input">
     <label>{{$t(title)}}</label>
-    <textarea v-if="type === 'textarea'" :class="{center}" :value="value" :maxlength="length" :disabled="disabled" :placeholder="placeholder" @input="$emit('input',$event.target.value)" @blur="$emit('update',$event.target.value)" :data-model="model"></textarea>
+    <textarea v-if="type === 'textarea'" :class="{center}" :value="value" :maxlength="length" :disabled="disabled" :placeholder="placeholder" @input="$emit('input',$event.target.value)" @blur="$emit('update',$event.target.value)" :data-model="model" @click="$emit('focus',$event.currentTarget.selectionStart)"></textarea>
     <template v-else-if="mask">
       <input :type="type" :value="value" :maxlength="length" :disabled="disabled" :placeholder="placeholder" @input="$emit('input',$event.target.value)" @blur="$emit('update',$event.target.value)" ref="input" v-mask="mask" :data-model="model" @click="$emit('focus',$event.currentTarget.selectionStart)">
     </template>

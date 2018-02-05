@@ -204,6 +204,7 @@ export default {
       return `${address},${city}+${state}${zipCode}`;
     },
     calculateDistance(data) {
+      this.getCoordinate(data);
       const { enable, api, coordinate } = this.store.matrix;
       if (!enable || !api) return;
 
@@ -268,32 +269,32 @@ export default {
         }
       });
     },
-    getCoordinate(data) {
-      const address = this.formatAddress({
-        address: data.address,
-        city: data.city
-      });
-      const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${api}&language=en&units=imperial`;
+    getCoordinate({ address, city }) {
+      const street = this.formatAddress({ address, city });
+      const { enable, api, coordinate } = this.store.matrix;
+      if (!enable || !api || !coordinate) return;
 
-      this.$socket.emit("[GOOGLE] GEOCODE", url, raw => {
-        const result = JSON.parse(raw);
+      const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${street}&key=${api}&language=en&units=imperial`;
 
-        if (result.status === "OK") {
-          const { geometry } = result.results[0];
-          console.log(geometry.location);
-        } else {
-          console.log(error);
-        }
-      });
+      fetch(url)
+        .then(response => response.json())
+        .then(result => {
+          if (result.status === "OK") {
+            const { geometry } = result.results[0];
+            const store = coordinate.split(",");
+            const { lat, lng } = geometry.location;
+            const direction = this.getOrientation([lat, lng], store);
+
+            this.setCustomer({ direction });
+          }
+        });
     },
     getOrientation(end, start) {
       const x1 = end[0];
       const y1 = end[1];
       const x2 = start[0];
       const y2 = start[1];
-
-      getAtan2 = (y, x) => Math.atan2(y, x);
-
+      const getAtan2 = (y, x) => Math.atan2(y, x);
       const radians = getAtan2(y1 - y2, x1 - x2);
       const compassReading = radians * (180 / Math.PI);
       const direction = ["N", "NE", "E", "SE", "S", "SW", "W", "NW", "N"];
