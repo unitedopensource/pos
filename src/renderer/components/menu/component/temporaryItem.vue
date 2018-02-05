@@ -21,7 +21,7 @@
         <div class="opt">
           <switches title="text.osk" v-model="keyboard" :reverse="true"></switches>
         </div>
-        <button class="btn" @click="confirm" :disabled="!item">{{$t('button.confirm')}}</button>
+        <button class="btn" @click="confirm">{{$t('button.confirm')}}</button>
       </footer>
     </div>
     <keyboard :display="keyboard" :alphabet.sync="alphabet" v-model="entry" @input="input" @enter="confirm" @backspace="remove" :executeText="$t('button.done')"></keyboard>
@@ -107,7 +107,7 @@ export default {
     confirm() {
       let item = JSON.parse(JSON.stringify(this.init.item));
 
-      const single = isNumber(this.single) ? this.single : 0;
+      const single = isNumber(this.single) ? parseFloat(this.single) : 0;
       const name = this.item
         ? this.item.replace(/\b[a-z]/g, t => t.toUpperCase())
         : "Open Food";
