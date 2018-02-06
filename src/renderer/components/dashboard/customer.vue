@@ -86,11 +86,14 @@ export default {
             return this.applied.indexOf(tag) === -1 ? "" : "yes";
         },
         getPolyline() {
-            let { mapAPI, zipCode } = this.store;
+            const { mapAPI, zipCode } = this.store;
             this.origin = `${this.store.address.split(' ').join('+')},${this.store.city.split(' ').join('+')}+${this.store.state}+${zipCode}`;
             this.destination = this.$options.filters.formatAddress(this.customer.address).split(' ').join('+');
-            let url = `https://maps.googleapis.com/maps/api/directions/json?origin=${this.origin}&destination=${this.destination},${this.customer.city.split(' ').join('+')}+${this.store.state}+${zipCode}&mode=driving&key=${mapAPI}&language=en&units=imperial`;
+            const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${this.origin}&destination=${this.destination},${this.customer.city.split(' ').join('+')}+${this.store.state}+${zipCode}&mode=driving&key=${mapAPI}&language=en&units=imperial`;
             this.$socket.emit("[INQUIRY] GOOGLE_POLYLINE", url);
+            // fetch(url).then(response=>response.json()).then(result=>{
+            //     console.log(result)
+            // })
         }
     },
     computed: {
