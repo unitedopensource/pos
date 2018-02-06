@@ -35,19 +35,17 @@ export default {
       this.setDevice({ online: navigator.onLine });
       ipcRenderer.send("Loading", this.$t("initial.findHost"));
     },
-    setEnvironment(data) {
-      const {
-        config,
-        menu,
-        submenu,
-        request,
-        orders,
-        table,
-        template,
-        reservations,
-        sync
-      } = data;
-
+    setEnvironment({
+      config,
+      menu,
+      submenu,
+      request,
+      orders,
+      table,
+      template,
+      reservations,
+      sync
+    }) {
       try {
         this.setConfig(config);
         this.setMenu(menu);
@@ -78,12 +76,11 @@ export default {
         Mac.getMac((error, mac) => {
           if (error || !mac) {
             ipcRenderer.send("Loading", this.$t("initial.hardwareIssue"));
-            this.$socket.emit("[SYS] LOG", {
+
+            this.$log({
               eventID: 9001,
               type: "failure",
-              source: this.$options.name,
-              cause: error,
-              note: `Station registration failed. Most likely hardware issue.`
+              event: `Station profile not found.\n\nError Message:\n${error.toString()}`
             });
           } else {
             const { username } = os.userInfo();

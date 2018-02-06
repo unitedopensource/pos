@@ -63,6 +63,7 @@ export default {
     ...mapGetters([
       "op",
       "app",
+      "tax",
       "menu",
       "item",
       "submenu",
@@ -127,7 +128,7 @@ export default {
   },
   methods: {
     initialData() {
-      console.time("Preformance");
+      console.time("performance");
       this.menuInstance = clone(this.menu);
       this.flatten(this.menuInstance[0].item);
       this.setSides(this.fillOption([]));
@@ -147,15 +148,17 @@ export default {
           station: this.station.alias,
           type: this.ticket.type,
           date: today(),
-          customer: this.customer
+          customer: this.customer,
+          taxFree:typeof(this.tax.defaultTaxFree) === 'boolean' ? this.tax.defaultTaxFree : false
         });
+        console.log(this.order.taxFree)
       } else {
         const order = JSON.parse(JSON.stringify(this.order));
         this.saveForDiffs(order.content);
         this.setOrder(order);
       }
 
-      console.timeEnd("Preformance");
+      console.timeEnd("performance");
     },
     entry(e) {
       const disable = document.querySelector("div.popupMask");

@@ -51,7 +51,7 @@ import { mapActions, mapGetters } from "vuex";
 export default {
   props: ["init"],
   mounted() {
-    let dom = document.querySelector(".order.showCategory");
+    const dom = document.querySelector(".order.showCategory");
     if (dom) this.viewCategory = true;
 
     const { top, height } = document.querySelector(".middle").getBoundingClientRect();

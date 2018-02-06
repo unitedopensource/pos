@@ -183,7 +183,8 @@ export default {
     openConfig() {
       if (this.component === "config" || this.$route.name !== "Menu") return;
 
-      const taxFree = this.order.taxFree || false;
+      const taxFree =
+        typeof this.order.taxFree === "boolean" ? this.order.taxFree : false;
       const deliveryFree = this.order.deliveryFree || false;
       const gratuityFree = this.order.gratuityFree || false;
       const { menuID } = this.config.display;

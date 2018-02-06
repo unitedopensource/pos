@@ -1,14 +1,14 @@
 <template>
-    <div class="popupMask center dark">
-        <div class="capture">
-            <i class="fa info loader"></i>
-            <h3>{{message}}</h3>
-            <footer>
-                <button class="btn" @click="init.reject('manual')">{{$t('text.manualInput')}}</button>
-                <button class="btn" @click="init.reject(false)">{{$t('button.cancel')}}</button>
-            </footer>
-        </div>
+  <div class="popupMask center dark">
+    <div class="capture">
+      <i class="fa info loader"></i>
+      <h3>{{message}}</h3>
+      <footer>
+        <button class="btn" @click="init.reject('manual')">{{$t('text.manualInput')}}</button>
+        <button class="btn" @click="init.reject(false)">{{$t('button.cancel')}}</button>
+      </footer>
     </div>
+  </div>
 </template>
 
 <script>
@@ -16,11 +16,45 @@ export default {
   props: ["init"],
   data() {
     return {
-      message: this.$t("card.swipeGiftCard")
+      message: this.$t("card.swipeGiftCard"),
+      timeout: null,
+      buffer: ""
     };
   },
+  created() {
+    window.addEventListener("keydown", this.reader, false);
+  },
+  beforeDestroy() {
+    window.removeEventListener("keydown", this.reader, false);
+  },
   methods: {
+    reader(e) {
+      e.preventDefault();
+      clearTimeout(this.timeout);
 
+      this.timeout = setTimeout(()=>{
+        this.buffer = "";
+      },300);
+
+      e.key.length === 1 && (this.buffer += e.key);
+      e.key === 'Enter' && this.parser(this.buffer);
+    },
+    parser(buffer){
+      if(buffer.includes("%E") || data.includes(";E?")){
+        this.message = this.$t("card.readTrackFailed");
+        this.buffer = "";
+      }else{
+        try{
+          const number = buffer.match(/\d{16,16}/)[0];
+          
+          setTimeout (()=>{
+            this.$socket.emit("[GIFTCARD] QUERY",number,result=>this.init.resolve())
+          })
+        }catch(e){
+
+        }
+      }
+    }
   }
 };
 </script>

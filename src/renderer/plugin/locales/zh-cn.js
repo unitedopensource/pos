@@ -1485,6 +1485,7 @@ export default {
         deliveryCharge: '设定送餐费用',
         deliveryTax: '是否对送餐费进行征税',
         tax: '编辑税率',
+        taxApply:'是否默认征税',
         tipSuggestion: '在预付单收据下面打印小费建议',
         terminal: '半集成刷卡机设置',
         poleDisplay: '配置价格显示器',

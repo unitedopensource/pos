@@ -1489,6 +1489,7 @@ export default {
         deliveryCharge: 'Default fee for delivery',
         deliveryTax: 'Tax on delivery charge',
         tax: 'Store tax setting',
+        taxApply: 'Setup default apply tax',
         tipSuggestion: 'Print tip suggestion on pre-payment ticket',
         terminal: 'SEMI-Integrated terminal setup',
         poleDisplay: 'Setup display text',

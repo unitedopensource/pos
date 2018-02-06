@@ -11,6 +11,7 @@
     </header>
     <toggle title="setting.taxBeforeDiscount" v-model="tax.beforeDiscount" @update="updateTaxDiscount"></toggle>
     <toggle title="setting.taxBeforeCredit" v-model="tax.beforeCredit" @update="updateTaxCredit"></toggle>
+    <toggle title="text.taxFree" v-model="tax.defaultTaxFree" tooltip="tip.taxApply" @update="updateTaxApply"></toggle>
     <table class="setting">
       <thead>
         <tr>
@@ -109,6 +110,12 @@ export default {
         key: "tax.beforeCredit",
         value
       });
+    },
+    updateTaxApply(value){
+      this.update({
+        key:'tax.defaultTaxFree',
+        value
+      })
     },
     save() {
       this.$socket.emit("[CONFIG] UPDATE", {

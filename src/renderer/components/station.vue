@@ -7,7 +7,7 @@
         <p class="intro">Thank you for choosing United POS.</p>
         <p class="intro">If you experiencing any difficult moment, please do not hesitate to contact us.</p>
         <input type="text" v-model="station.alias" placeholder="Please Enter Station Name">
-        <p class="copyleft">Copyright © 2017 United POS Inc.</p>
+        <p class="copyleft">2017-2018 United POS Inc.</p>
       </div>
       <footer>
         <button class="btn" @click="confirm" :disabled="!station.alias">{{$t('button.done')}}</button>
@@ -27,7 +27,7 @@ export default {
     };
   },
   created() {
-    let { mac, username } = this.reg;
+    const { mac, username } = this.reg;
     this.station = preset.station(mac, username);
   },
   methods: {
@@ -50,7 +50,7 @@ export default {
 .banner {
   background: url("../assets/image/welcome.png");
   background-size: cover;
-  height: 175px;
+  height: 150px;
   width: 550px;
 }
 
