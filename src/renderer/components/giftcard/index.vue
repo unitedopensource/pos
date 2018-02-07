@@ -51,7 +51,11 @@
               <switches title="card.vip" v-model="giftcard.vip" :disabled="true"></switches>
             </div>
             <footer>
+              <div class="opt">
+                <span class="del" @click="deactivation">{{$t('card.deactivation')}}</span>
+              </div>
               <button class="btn" @click="updateInfo">{{$t('button.update')}}</button>
+              <button class="btn" @click="printInfo">{{$t('button.print')}}</button>
             </footer>
           </div>
         </template>
@@ -336,6 +340,8 @@ export default {
         this.component = "creditCard";
       })
         .then(data => {
+          this.$q();
+
           const date = today();
           const time = +new Date();
           const { cashCtrl, name } = this.op;
@@ -390,8 +396,8 @@ export default {
       Object.assign(this.giftcard, {
         number: this.giftcard.number.replace(/\D/g, ""),
         phone: this.giftcard.phone
-          ? this.giftcard.phone
-          : this.giftcard.phone.replace(/\D/g, ""),
+          ? this.giftcard.phone.replace(/\D/g, "")
+          : "",
         balance: parseFloat(this.amount),
         transaction: 1,
         activation: +new Date()
@@ -424,19 +430,39 @@ export default {
       const { giftcard = null } = this.$store.getters.store;
 
       if (giftcard && giftcard.bonus) {
-        try {
-          const { amount, bonus, initial } = giftcard.rules
-            .sort((a, b) => a.amount < b.amount)
-            .find(rule => this.amount >= rule.amount);
+        const matched = giftcard.rules
+          .sort((a, b) => a.amount < b.amount)
+          .find(rule => this.amount >= rule.amount);
 
-          console.log(amount, bonus, initial);
-        } catch (e) { }
+        if (matched) {
+          const { amount, bonus, initial } = matched;
+
+          const reload = {
+            date: today(),
+            time: +new Date(),
+            type: "Bonus",
+            cashier: this.op.name,
+            number: this.giftcard.number.replace(/\D/g, ""),
+            change: parseFloat(bonus),
+            balance: this.giftcard.balance + parseFloat(bonus)
+          };
+
+          this.$socket.emit("[GIFTCARD] RELOAD", reload, card => {
+            this.giftcard = card;
+          });
+        }
       }
-
       this.refreshData();
     },
-    updateInfo() { },
+    updateInfo() {
+      this.$socket.emit("[GIFTCARD] UPDATE", this.giftcard);
+    },
+    printInfo() {
+      Printer.printGiftCard("Balance", this.giftcard);
+    },
     refreshData() {
+      this.amount = "";
+
       const number = this.giftcard.number.replace(/\D/g, "");
 
       this.$socket.emit("[GIFTCARD] QUERY", number, card => {
@@ -445,6 +471,62 @@ export default {
       this.$socket.emit("[GIFTCARD] HISTORY", number, logs => {
         this.logs = logs;
       });
+    },
+    deactivation() {
+      const prompt = {
+        type: "question",
+        title: "dialog.cardDeactivation",
+        msg: ["dialog.cardDeactivationConfirm", this.giftcard.number]
+      };
+
+      this.$dialog(prompt)
+        .then(() => {
+          const { cashCtrl, name } = this.op;
+          const cashDrawer =
+            cashCtrl === "staffBank" ? name : this.station.cashDrawer.name;
+
+          const transaction = {
+            _id: ObjectId(),
+            date: today(),
+            time: +new Date(),
+            order: null,
+            paid: -parseFloat(this.giftcard.balance),
+            change: 0,
+            actual: -parseFloat(this.giftcard.balance),
+            tip: 0,
+            cashier: this.op.name,
+            cashDrawer,
+            station: this.station.alias,
+            terminal: this.station.terminal,
+            type: "CASH",
+            for: "Refund",
+            subType: null,
+            credential: null,
+            lfd: null
+          };
+
+          const activity = {
+            type: "REFUND",
+            inflow: 0,
+            outflow: this.giftcard.balance,
+            time: +new Date(),
+            ticket: {},
+            operator: this.op.name
+          };
+
+          this.$socket.emit("[TRANSACTION] SAVE", transaction);
+          this.$socket.emit("[CASHFLOW] ACTIVITY", { cashDrawer, activity });
+
+          this.$socket.emit("[GIFTCARD] DEACTIVATION", this.giftcard, () => {
+            const prompt = {
+              title: "dialog.cardDeactivated",
+              msg: "dialog.cardDataRemoved",
+              buttons: [{ text: "button.confirm", fn: "resolve" }]
+            };
+            this.$dialog(prompt).then(() => this.init.resolve());
+          });
+        })
+        .catch(() => this.$q());
     }
   }
 };

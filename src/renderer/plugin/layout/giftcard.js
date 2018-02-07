@@ -1,4 +1,4 @@
-const giftcard = function (title, card) {
+const giftcard = function (title, card, bonus = 0) {
     const { name, address, city, state, zipCode, contact } = this.config;
 
     this.plugin.PRINT_INIT('Gift Card');
@@ -57,12 +57,25 @@ const giftcard = function (title, card) {
     this.plugin.SET_PRINT_STYLEA(0, "FontName", "Agency FB");
     this.plugin.SET_PRINT_STYLEA(0, "FontSize", 14);
     this.plugin.SET_PRINT_STYLEA(0, "Alignment", 2);
-    this.plugin.ADD_PRINT_TEXT(178, 2, 262, 20, 'BALANCE: $ ' + card.balance.toFixed(2));
+    this.plugin.ADD_PRINT_TEXT(178, 2, 262, 20, 'Value: $ ' + card.balance.toFixed(2));
     this.plugin.SET_PRINT_STYLEA(0, "FontName", "Agency FB");
     this.plugin.SET_PRINT_STYLEA(0, "FontSize", 14);
     this.plugin.SET_PRINT_STYLEA(0, "Alignment", 2);
     this.plugin.SET_PRINT_STYLEA(0, "LetterSpacing", 1);
-    this.plugin.ADD_PRINT_BARCODE(250, 30, 266, 70, "Code39", card.number);
+    this.plugin.ADD_PRINT_TEXT(204, 2, 262, 20, bonus > 0 ? `Bonus: $${bonus.toFixed(2)}` : '');
+    this.plugin.SET_PRINT_STYLEA(0, "FontName", "Agency FB");
+    this.plugin.SET_PRINT_STYLEA(0, "FontSize", 14);
+    this.plugin.SET_PRINT_STYLEA(0, "Alignment", 2);
+    this.plugin.SET_PRINT_STYLEA(0, "LetterSpacing", 1);
+    this.plugin.ADD_PRINT_TEXT(230, 2, 262, 20, 'BALANCE: $ ' + card.balance.toFixed(2));
+    this.plugin.SET_PRINT_STYLEA(0, "FontName", "Agency FB");
+    this.plugin.SET_PRINT_STYLEA(0, "FontSize", 14);
+    this.plugin.SET_PRINT_STYLEA(0, "Alignment", 2);
+    this.plugin.SET_PRINT_STYLEA(0, "LetterSpacing", 1);
+    this.plugin.ADD_PRINT_BARCODE(302, 30, 266, 70, "Code39", card.number);
+    break;
+
+
     this.plugin.SET_PRINTER_INDEX(this.station.receipt || 'cashier');
     this.plugin.PRINT();
 }
