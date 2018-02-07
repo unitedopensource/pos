@@ -3,7 +3,7 @@
     <toggle title="setting.giftcard.expire" v-model="giftcard.expire">
       <transition name="dropdown">
         <div v-if="giftcard.expire" class="opt">
-          <selector title="setting.giftcard.period" v-model="giftcard.period" :opt="periodOpts"></selector>
+          <selector title="setting.giftcard.period" v-model="giftcard.period" :opts="periodOpts"></selector>
         </div>
       </transition>
     </toggle>

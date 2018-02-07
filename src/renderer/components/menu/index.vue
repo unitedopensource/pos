@@ -151,7 +151,6 @@ export default {
           customer: this.customer,
           taxFree:typeof(this.tax.defaultTaxFree) === 'boolean' ? this.tax.defaultTaxFree : false
         });
-        console.log(this.order.taxFree)
       } else {
         const order = JSON.parse(JSON.stringify(this.order));
         this.saveForDiffs(order.content);

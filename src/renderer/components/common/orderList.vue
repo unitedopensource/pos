@@ -185,8 +185,7 @@ export default {
 
       const taxFree =
         typeof this.order.taxFree === "boolean" ? this.order.taxFree : false;
-      const deliveryFree = this.order.deliveryFree || false;
-      const gratuityFree = this.order.gratuityFree || false;
+      const { deliveryFree = false, gratuityFree = false } = this.order;
       const { menuID } = this.config.display;
       const { seatOrder } = this.dinein;
 
@@ -200,6 +199,7 @@ export default {
     },
     addToSpooler(item) {
       if (item.print) return;
+
       for (let i = 0; i < this.spooler.length; i++) {
         if (this.spooler[i].unique === item.unique) {
           item.pending = false;
@@ -207,6 +207,7 @@ export default {
           return;
         }
       }
+      
       item.pending = true;
       this.spooler.push(item);
     },

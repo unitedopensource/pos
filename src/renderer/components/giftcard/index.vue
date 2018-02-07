@@ -1,15 +1,19 @@
 <template>
-  <div class="popupMask dark center">
+  <div class="popupMask dark center" @click.self="init.reject(false)">
     <div class="editor" v-show="!component">
       <header class="tab">
         <div>
-          <h5>{{giftcard.number | card}}</h5>
+          <h5></h5>
           <h3>{{$t('card.giftCard')}}</h3>
         </div>
         <nav class="tabs">
-          <div>
+          <div v-if="activation">
             <input type="radio" v-model="tab" value="activation" name="tab" id="activation">
             <label for="activation">{{$t('card.activation')}}</label>
+          </div>
+          <div v-else>
+            <input type="radio" v-model="tab" value="info" name="tab" id="info">
+            <label for="info">{{$t('card.info')}}</label>
           </div>
           <div>
             <input type="radio" v-model="tab" value="reload" name="tab" id="reload">
@@ -22,13 +26,43 @@
         </nav>
       </header>
       <template v-if="tab === 'activation'">
-        <div class="wrap"></div>
+        <div class="wrap">
+          <inputer title="card.number" v-model="giftcard.number" :disabled="true" mask="#### #### #### ####"></inputer>
+          <inputer title="card.holder" v-model="giftcard.name"></inputer>
+          <inputer title="card.phone" v-model="giftcard.phone" mask="### ### ####"></inputer>
+          <inputer title="card.expirationDate" v-model="giftcard.expiration" mask="####-##-##"></inputer>
+          <switches title="card.vip" v-model="giftcard.vip"></switches>
+        </div>
+        <footer>
+          <button class="btn" @click="tab = 'reload'">{{$t('button.activation')}}</button>
+        </footer>
       </template>
-      <template v-else-if="tab === 'deactivation'">
-        <div class="wrap"></div>
+      <template v-else-if="tab === 'info'">
+        <div class="wrap">
+          <inputer title="card.number" v-model="giftcard.number" :disabled="true" mask="#### #### #### ####"></inputer>
+          <inputer title="card.holder" v-model="giftcard.name"></inputer>
+          <inputer title="card.phone" v-model="giftcard.phone" mask="### ### ####"></inputer>
+          <inputer title="card.expirationDate" v-model="giftcard.expiration" mask="####-##-##" :disabled="true"></inputer>
+          <inputer title="card.balance" v-model="giftcard.balance" :disabled="true"></inputer>
+          <switches title="card.vip" v-model="giftcard.vip" :disabled="true"></switches>
+        </div>
+        <footer>
+          <button class="btn" @click="updateInfo">{{$t('button.update')}}</button>
+        </footer>
       </template>
       <template v-else-if="tab === 'reload'">
-        <div class="wrap"></div>
+        <div class="wrap column">
+          <div class="display">
+            <input type="text" v-model="amount">
+            <span class="unit" v-if="payment === 'CASH'" @click="payment = 'CREDIT'">CASH</span>
+            <span class="unit" v-else @click="payment = 'CASH'">CREDIT</span>
+            <span class="due">
+              <span class="symbol">$</span>
+              <span class="balance">{{giftcard.balance | decimal}}</span>
+            </span>
+          </div>
+          <num-pad v-model="amount" type="number" @enter="reload"></num-pad>
+        </div>
       </template>
       <template v-else>
         <div class="wrap table">
@@ -66,30 +100,46 @@
           <pagination :of="logs" @page="setPage" :max="10" :contain="15"></pagination>
         </div>
       </template>
-      <footer>
-        <button class="btn" @click="init.resolve">{{$t('button.done')}}</button>
-      </footer>
     </div>
     <div :is="component" :init="componentData"></div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import search from "./search";
 import capture from "./capture";
 import ticket from "../common/ticket";
+import numPad from "../common/numpad";
+import dialoger from "../common/dialoger";
 import pagination from "../common/pagination";
+import creditCard from "../payment/creditCard";
+import inputer from "../setting/common/inputer";
+import switches from "../setting/common/switches";
 
 export default {
   props: ["init"],
-  components: { search, capture, ticket, pagination },
+  components: {
+    search,
+    capture,
+    ticket,
+    inputer,
+    switches,
+    dialoger,
+    numPad,
+    pagination,
+    creditCard
+  },
   data() {
     return {
       activated: false,
       tab: "activation",
       component: null,
       componentData: null,
+      activation: false,
+      payment: "CASH",
       giftcard: {},
+      amount: 0,
       page: 0,
       logs: []
     };
@@ -105,7 +155,8 @@ export default {
       const max = min + 15;
 
       return this.logs.slice(min, max);
-    }
+    },
+    ...mapGetters(["op", "station"])
   },
   methods: {
     swipeCard() {
@@ -122,56 +173,322 @@ export default {
     },
     initialData(card) {
       this.giftcard = card;
+      this.tab = "info";
       this.$socket.emit("[GIFTCARD] HISTORY", card.number, logs => {
         this.logs = logs;
         this.$q();
       });
     },
     initialFailed(exception) {
-      if (typeof exception === "boolean") this.$q();
-
-      switch (exception) {
-        case "manual":
-          this.inputCard()
-            .then(this.initialData)
-            .catch(this.initialFailed);
-          break;
-        case "":
-          break;
+      if (typeof exception === "boolean") {
+        this.init.reject();
+      } else {
+        switch (exception) {
+          case "manual":
+            this.inputCard()
+              .then(this.initialData)
+              .catch(this.initialFailed);
+            break;
+          default:
+            this.activatePrompt(exception);
+        }
       }
     },
+    activatePrompt(card) {
+      const number = card.replace(
+        /^\D?(\d{4})\D?(\d{4})\D?(\d{4})\D?(\d{4})/,
+        "$1 $2 $3 $4"
+      );
+      const prompt = {
+        title: "dialog.cardActivation",
+        msg: ["dialog.cardActivationConfirm", number]
+      };
+      const cashier = this.$store.getters.op.name;
+      this.$dialog(prompt)
+        .then(() => {
+          this.giftcard = {
+            number: card,
+            date: today(),
+            time: +new Date(),
+            phone: "",
+            name: "",
+            cashier,
+            balance: 0,
+            activation: +new Date(),
+            transaction: 0,
+            vip: false,
+            expiration: null
+          };
+          this.activation = true;
+          this.$q();
+        })
+        .catch(() => this.init.reject());
+    },
     viewReceipt(id) {
-      this.$socket.emit("[VIEW] INVOICE", id, ticket => {
-        this.$open("ticket", { ticket, exit: true });
-      });
+      this.$socket.emit("[VIEW] INVOICE", id, ticket =>
+        this.$open("ticket", { ticket, exit: true })
+      );
     },
     setPage(page) {
       this.page = page;
+    },
+    reload() {
+      this.verifyEntry()
+        .then(this.confirmPrompt)
+        .then(this.charge)
+        .catch(this.reloadFailed);
+    },
+    verifyEntry() {
+      return new Promise((resolve, reject) => {
+        const noCashDrawerError = {
+          title: "dialog.cashDrawerUnavailable",
+          msg: "dialog.cashDrawerUnavailableTip",
+          timeout: { duration: 5000, fn: "resolve" },
+          buttons: [{ text: "button.confirm", fn: "resolve" }]
+        };
+        const invalidEntry = {
+          title: "dialog.entryInvalid",
+          msg: "dialog.entryMustBeNumber",
+          buttons: [{ text: "button.confirm", fn: "resolve" }]
+        };
+
+        if (this.payment === "CASH" && !this.station.cashDrawer.enable)
+          throw noCashDrawerError;
+
+        isNumber(this.amount) ? resolve() : reject(invalidEntry);
+      });
+    },
+    confirmPrompt() {
+      return new Promise((next, stop) => {
+        let prompt = {
+          title: "dialog.giftCardReload",
+          msg: ["dialog.confirmReloadAmount", this.amount.toFixed(2)]
+        };
+
+        this.$dialog(prompt)
+          .then(() => next())
+          .catch(() => this.$q());
+      });
+    },
+    charge() {
+      this.$q();
+
+      this.payment === "CASH" ? this.chargeCash() : this.chargeCreditCard();
+    },
+    chargeCash() {
+      const { cashCtrl, name } = this.op;
+      const cashDrawer =
+        cashCtrl === "staffBank" ? name : this.station.cashDrawer.name;
+      const date = today();
+      const time = +new Date();
+
+      const activity = {
+        type: "CASHFLOW",
+        inflow: parseFloat(this.amount),
+        outflow: 0,
+        time,
+        ticket: {},
+        operator: name
+      };
+
+      const transaction = {
+        _id: ObjectId(),
+        date,
+        time,
+        order: null,
+        ticket: null,
+        paid: parseFloat(this.amount),
+        change: 0,
+        actual: parseFloat(this.amount),
+        tip: 0,
+        cashier: name,
+        cashDrawer,
+        station: this.station.alias,
+        type: "CASH",
+        for: "Reload",
+        subType: null,
+        credential: null,
+        lfd: null
+      };
+
+      cashCtrl === "enable" && Printer.openCashDrawer();
+
+      this.$socket.emit("[TRANSACTION] SAVE", transaction);
+      this.$socket.emit("[CASHFLOW] ACTIVITY", { cashDrawer, activity });
+
+      this.activation ? this.activateCard() : this.reloadBalance();
+    },
+    chargeCreditCard() {
+      const card = {
+        creditCard: { number: "", date: "" },
+        amount: this.amount,
+        tip: 0
+      };
+
+      new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject, card };
+        this.component = "creditCard";
+      })
+        .then(data => {
+          const date = today();
+          const time = +new Date();
+          const { cashCtrl, name } = this.op;
+          const cashDrawer =
+            cashCtrl === "staffBank" ? name : this.station.cashDrawer.name;
+
+          Object.assign(data, {
+            order: null,
+            for: "Reload",
+            date: today(),
+            _id: ObjectId()
+          });
+
+          Printer.printCreditCard(data);
+
+          const transaction = {
+            _id: ObjectId(),
+            date,
+            time,
+            order: null,
+            paid: parseFloat(data.amount.approve),
+            change: 0,
+            actual: parseFloat(data.amount.approve),
+            tip: 0,
+            cashier: name,
+            cashDrawer,
+            station: this.station.alias,
+            terminal: this.station.terminal,
+            type: "CREDIT",
+            for: "Reload",
+            subType: data.account.type,
+            credential: data._id,
+            lfd: data.account.number
+          };
+
+          this.$socket.emit("[TERMINAL] SAVE", data);
+          this.$socket.emit("[TRANSACTION] SAVE", transaction);
+
+          this.activation ? this.activateCard() : this.reloadBalance();
+        })
+        .catch(error => {
+          console.log(error);
+          this.$q();
+        });
+    },
+    reloadFailed(error) {
+      typeof error === "object"
+        ? this.$dialog(error).then(() => this.$q())
+        : this.$q();
+    },
+    activateCard() {
+      Object.assign(this.giftcard, {
+        number: this.giftcard.number.replace(/\D/g, ""),
+        phone: this.giftcard.phone
+          ? this.giftcard.phone
+          : this.giftcard.phone.replace(/\D/g, ""),
+        balance: parseFloat(this.amount),
+        transaction: 1,
+        activation: +new Date()
+      });
+
+      this.$socket.emit("[GIFTCARD] ACTIVATION", this.giftcard, card => {
+        Printer.printGiftCard("Activation", card);
+        this.activation = false;
+        this.tab = "info";
+        this.reloadBonus();
+      });
+    },
+    reloadBalance() {
+      const reload = {
+        date: today(),
+        time: +new Date(),
+        type: "Reload",
+        cashier: this.op.name,
+        number: this.giftcard.number.replace(/\D/g, ""),
+        change: parseFloat(this.amount),
+        balance: parseFloat(this.giftcard.balance) + parseFloat(this.amount)
+      };
+
+      this.$socket.emit("[GIFTCARD] RELOAD", reload, card => {
+        Printer.printGiftCard("Reload", card);
+        this.tab = "info";
+        this.reloadBonus();
+      });
+    },
+    reloadBonus() {
+      const { giftcard = null } = this.$store.getters.store;
+
+      if (giftcard && giftcard.bonus) {
+        try {
+          const { amount, bonus, initial } = giftcard.rules
+            .sort((a, b) => a.amount < b.amount)
+            .find(rule => this.amount >= rule.amount);
+
+          console.log(amount, bonus, initial);
+        } catch (e) {}
+      }
+
+      this.refreshData();
+    },
+    updateInfo() {},
+    refreshData() {
+      const number = this.giftcard.number.replace(/\D/g, "");
+
+      this.$socket.emit("[GIFTCARD] QUERY", number, card => {
+        this.card = card;
+      });
+      this.$socket.emit("[GIFTCARD] HISTORY", number, logs => {
+        this.logs = logs;
+      });
     }
   }
 };
 </script>
 
 <style scoped>
-.popupMask{
+.popupMask {
   padding: inherit;
 }
+
 .editor {
-  width: 575px;
+  max-width: 600px;
 }
-.table.wrap{
-  padding:initial;
+
+.table.wrap {
+  padding: initial;
 }
-.tab > div {
+
+.tab > div,
+.column {
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
+
 .positive {
   color: green;
 }
 
+.column {
+  padding: initial;
+}
+
 .negative {
   color: #ff5722;
+}
+
+.balance {
+  width: 100px;
+  display: inline-block;
+  text-align: left;
+}
+
+.due {
+  position: absolute;
+  left: 110px;
+  font-size: 2em;
+  font-weight: bold;
+  font-family: "Agency FB";
+  color: #9e9e9e;
 }
 </style>

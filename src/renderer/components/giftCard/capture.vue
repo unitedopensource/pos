@@ -32,26 +32,26 @@ export default {
       e.preventDefault();
       clearTimeout(this.timeout);
 
-      this.timeout = setTimeout(()=>{
+      this.timeout = setTimeout(() => {
         this.buffer = "";
-      },300);
+      }, 300);
 
       e.key.length === 1 && (this.buffer += e.key);
-      e.key === 'Enter' && this.parser(this.buffer);
+      e.key === "Enter" && this.parser(this.buffer);
     },
-    parser(buffer){
-      if(buffer.includes("%E") || data.includes(";E?")){
+    parser(buffer) {
+      if (buffer.includes("%E") || buffer.includes(";E?")) {
         this.message = this.$t("card.readTrackFailed");
         this.buffer = "";
-      }else{
-        try{
+      } else {
+        try {
           const number = buffer.match(/\d{16,16}/)[0];
-          
-          setTimeout (()=>{
-            this.$socket.emit("[GIFTCARD] QUERY",number,result=>this.init.resolve())
-          })
-        }catch(e){
-
+          this.$socket.emit("[GIFTCARD] QUERY", number, card => {
+            card ? this.init.resolve(card) : this.init.reject(number);
+          });
+        } catch (e) {
+          this.message = this.$t("card.readTrackFailed");
+          this.read = "";
         }
       }
     }
