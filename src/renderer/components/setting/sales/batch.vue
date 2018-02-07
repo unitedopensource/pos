@@ -19,7 +19,7 @@
                 <tbody>
                     <tr v-for="(report,index) in reports" :key="index">
                         <td class="icon">
-                            <i class="fa fa-check-circle" v-if="report.status === 'CLOSE'"></i>
+                            <i class="fa fa-check-circle" v-if="checkStatus(report.status)"></i>
                             <i class="fa fa-check-circle-o" v-else></i>
                         </td>
                         <td class="date">{{report.date}}</td>
@@ -107,15 +107,18 @@ export default {
     },
     printReport(record) {
       Printer.printBatchReport(record);
+    },
+    checkStatus(status){
+      return status.includes('SUCCESS') || status.includes('CLOSE')
     }
   },
   computed: {
     batchCount() {
-      return this.reports.filter(log => log.status === "CLOSE").length;
+      return this.reports.filter(log => this.checkStatus(log.status)).length;
     },
     batchTotal() {
       return "$ " + this.reports
-        .filter(log => log.status === "CLOSE")
+        .filter(log => this.checkStatus(log.status))
         .reduce((a, c) => a + parseFloat(c.amount.credit), 0)
         .toFixed(2);
     },

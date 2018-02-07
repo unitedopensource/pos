@@ -523,6 +523,8 @@ export default {
               msg: "dialog.cardDataRemoved",
               buttons: [{ text: "button.confirm", fn: "resolve" }]
             };
+
+            cashCtrl === "enable" && Printer.openCashDrawer();
             this.$dialog(prompt).then(() => this.init.resolve());
           });
         })

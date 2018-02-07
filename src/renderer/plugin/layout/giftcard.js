@@ -73,9 +73,6 @@ const giftcard = function (title, card, bonus = 0) {
     this.plugin.SET_PRINT_STYLEA(0, "Alignment", 2);
     this.plugin.SET_PRINT_STYLEA(0, "LetterSpacing", 1);
     this.plugin.ADD_PRINT_BARCODE(302, 30, 266, 70, "Code39", card.number);
-    break;
-
-
     this.plugin.SET_PRINTER_INDEX(this.station.receipt || 'cashier');
     this.plugin.PRINT();
 }
