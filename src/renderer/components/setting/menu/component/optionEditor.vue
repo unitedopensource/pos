@@ -49,7 +49,7 @@ export default {
       groups: Object.keys(this.$store.getters.submenu) || [],
       templates: this.$store.getters.templates.map(t => ({
         label: t.name,
-        tooltip: t.note || this.$t("text.queueItem", t.contain.length),
+        tooltip: t.note || this.$t("text.items", t.contain.length),
         plainText: true,
         value: t.name
       })),
@@ -73,7 +73,6 @@ export default {
   },
   methods: {
     toggleIgnore(boolean) {
-      console.log(boolean)
       this.option.ignore = boolean;
     },
     confirm() {

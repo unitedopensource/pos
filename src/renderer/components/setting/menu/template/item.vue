@@ -2,10 +2,14 @@
     <div class="template">
         <ul>
             <div class="header">{{$t('text.template')}}</div>
-            <li v-for="(page,i) in template.contain" :key="i" @click="index = i">
-                <span>{{page.name}}</span>
-                <i class="fa fa-caret-right"></i>
-            </li>
+            <draggable v-model="template.contain" :options="{animation: 300,group: 'page',ghostClass: 'ghost'}">
+                <transition-group>
+                    <li v-for="(page,i) in template.contain" :key="i" @click="index = i">
+                        <span>{{page.name}}</span>
+                        <i class="fa fa-caret-right"></i>
+                    </li>
+                </transition-group>
+            </draggable>
             <li @click="newPage">
                 <span>{{$t('button.new')}}</span>
                 <i class="fa fa-plus"></i>
@@ -21,11 +25,15 @@
                     <span @click="setOption">{{$t('button.option')}}</span>
                 </nav>
             </header>
-            <div class="items">
-                <div v-for="(item,i) in template.contain[index].contain" :key="i" @contextmenu="edit(item,i)">{{item[language]}}</div>
-                <div @click="create">
-                    <i class="fa fa-plus"></i>
-                </div>
+            <div>
+                <draggable v-model="template.contain[index].contain" :options="{animation: 300,group: 'item',ghostClass: 'ghost',draggable:'.draggable'}">
+                    <transition-group tag="div" class="items">
+                        <div v-for="(item,i) in template.contain[index].contain" :key="i" @contextmenu="edit(item,i)" class="draggable">{{item[language]}}</div>
+                        <div @click="create" :key="-1">
+                            <i class="fa fa-plus"></i>
+                        </div>
+                    </transition-group>
+                </draggable>
             </div>
         </section>
         <div :is="component" :init="componentData"></div>
@@ -33,87 +41,99 @@
 </template>
 
 <script>
-import editor from "./editor";
 import opt from "./option";
+import editor from "./editor";
+import draggable from "vuedraggable";
+
 export default {
-    props: ["template"],
-    components: { editor, opt },
-    data() {
-        return {
-            printers: Object.keys(this.$store.getters.config.printers),
-            language: this.$store.getters.language,
-            componentData: null,
-            component: null,
-            index: 0
-        }
+  props: ["template"],
+  components: { opt, editor, draggable },
+  data() {
+    return {
+      printers: Object.keys(this.$store.getters.config.printers),
+      language: this.$store.getters.language,
+      componentData: null,
+      component: null,
+      index: 0
+    };
+  },
+  beforeRouteLeave(to, from, next) {
+    this.$socket.emit("[TEMPLATE] SAVE", this.template, callback => next());
+  },
+  mounted() {
+    setTimeout(() => {
+      !this.template.contain[0].name && this.setOption();
+    }, 500);
+  },
+  methods: {
+    create() {
+      const item = {
+        zhCN: "",
+        usEN: "",
+        price: 0,
+        print: this.printers.slice(),
+        key: String().random(4)
+      };
+      new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject, item, printers: this.printers };
+        this.component = "editor";
+      })
+        .then(_item => {
+          this.template.contain[this.index].contain.push(_item);
+          this.$q();
+        })
+        .catch(() => this.$q());
     },
-    beforeRouteLeave(to, from, next) {
-        this.$socket.emit("[TEMPLATE] SAVE", this.template, callback => next());
+    edit(item, index) {
+      new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject, item, printers: this.printers };
+        this.component = "editor";
+      })
+        .then(_item => {
+          this.template.contain[this.index].contain.splice(index, 1, _item);
+          this.$q();
+        })
+        .catch(() => this.$q());
     },
-    mounted() {
-        setTimeout(() => {
-            !this.template.contain[0].name && this.setOption();
-        }, 500)
-    },
-    methods: {
-        create() {
-            let item = {
-                zhCN: "",
-                usEN: "",
-                price: 0,
-                print: this.printers.slice(),
-                key: Math.random().toString(36).substr(2, 6)
-            }
-            new Promise((resolve, reject) => {
-                this.componentData = { resolve, reject, item, printers: this.printers };
-                this.component = "editor"
-            }).then(_item => {
-                this.template.contain[this.index].contain.push(_item);
-                this.$q();
-            }).catch(() => this.$q())
-        },
-        edit(item, index) {
-            new Promise((resolve, reject) => {
-                this.componentData = { resolve, reject, item, printers: this.printers };
-                this.component = "editor"
-            }).then(_item => {
-                this.template.contain[this.index].contain.splice(index, 1, _item);
-                this.$q();
-            }).catch(() => this.$q())
-        },
-        setOption() {
-            const { addition, startAt, max, name } = this.template.contain[this.index];
-            const option = { addition, startAt, max, name };
+    setOption() {
+      const { addition, startAt, max, name } = this.template.contain[
+        this.index
+      ];
+      const option = { addition, startAt, max, name };
 
-            new Promise((resolve, reject) => {
-                this.componentData = { resolve, reject, option, edit: true };
-                this.component = "opt"
-            }).then(_option => {
-                Object.assign(this.template.contain[this.index], _option);
-                this.$q();
-            }).catch(del => {
-                if (del) {
-                    const index = this.index;
-                    this.index = 0;
-                    this.template.contain.splice(index, 1);
-                }
-                this.$q()
-            })
-        },
-        newPage() {
-            let option = { addition: 0, startAt: 0, max: 0, name: "" };
+      new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject, option, edit: true };
+        this.component = "opt";
+      })
+        .then(_option => {
+          Object.assign(this.template.contain[this.index], _option);
+          this.$q();
+        })
+        .catch(del => {
+          if (del) {
+            const index = this.index;
+            this.index = 0;
+            this.template.contain.splice(index, 1);
+          }
+          this.$q();
+        });
+    },
+    newPage() {
+      const option = { addition: 0, startAt: 0, max: 0, name: "" };
 
-            new Promise((resolve, reject) => {
-                this.componentData = { resolve, reject, option, edit: false };
-                this.component = "opt"
-            }).then(_option => {
-                Object.assign(_option, { contain: [] });
-                this.template.contain.push(_option);
-                this.$q();
-            }).catch(() => this.$q())
-        }
+      new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject, option, edit: false };
+        this.component = "opt";
+      })
+        .then(_option => {
+          Object.assign(_option, { contain: [] });
+          this.template.contain.push(_option);
+          this.$q();
+        })
+        .catch(() => this.$q());
     }
-}
+  }
+};
 </script>
 
 <style scoped>

@@ -202,7 +202,6 @@ export default {
         note: 'Note',
         inputPrice: 'Input Price',
         remove: 'Remove',
-        sort: 'Sort',
         printAll: 'Print All',
         extend: 'Delay',
         printDetail: 'Detail Report',
