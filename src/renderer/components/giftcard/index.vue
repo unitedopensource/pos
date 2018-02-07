@@ -25,81 +25,87 @@
           </div>
         </nav>
       </header>
-      <template v-if="tab === 'activation'">
-        <div class="wrap">
-          <inputer title="card.number" v-model="giftcard.number" :disabled="true" mask="#### #### #### ####"></inputer>
-          <inputer title="card.holder" v-model="giftcard.name"></inputer>
-          <inputer title="card.phone" v-model="giftcard.phone" mask="### ### ####"></inputer>
-          <inputer title="card.expirationDate" v-model="giftcard.expiration" mask="####-##-##"></inputer>
-          <switches title="card.vip" v-model="giftcard.vip"></switches>
-        </div>
-        <footer>
-          <button class="btn" @click="tab = 'reload'">{{$t('button.activation')}}</button>
-        </footer>
-      </template>
-      <template v-else-if="tab === 'info'">
-        <div class="wrap">
-          <inputer title="card.number" v-model="giftcard.number" :disabled="true" mask="#### #### #### ####"></inputer>
-          <inputer title="card.holder" v-model="giftcard.name"></inputer>
-          <inputer title="card.phone" v-model="giftcard.phone" mask="### ### ####"></inputer>
-          <inputer title="card.expirationDate" v-model="giftcard.expiration" mask="####-##-##" :disabled="true"></inputer>
-          <inputer title="card.balance" v-model="giftcard.balance" :disabled="true"></inputer>
-          <switches title="card.vip" v-model="giftcard.vip" :disabled="true"></switches>
-        </div>
-        <footer>
-          <button class="btn" @click="updateInfo">{{$t('button.update')}}</button>
-        </footer>
-      </template>
-      <template v-else-if="tab === 'reload'">
-        <div class="wrap column">
-          <div class="display">
-            <input type="text" v-model="amount">
-            <span class="unit" v-if="payment === 'CASH'" @click="payment = 'CREDIT'">CASH</span>
-            <span class="unit" v-else @click="payment = 'CASH'">CREDIT</span>
-            <span class="due">
-              <span class="symbol">$</span>
-              <span class="balance">{{giftcard.balance | decimal}}</span>
-            </span>
+      <transition mode="out-in">
+        <template v-if="tab === 'activation'">
+          <div>
+            <div class="wrap">
+              <inputer title="card.number" v-model="giftcard.number" :disabled="true" mask="#### #### #### ####"></inputer>
+              <inputer title="card.holder" v-model="giftcard.name"></inputer>
+              <inputer title="card.phone" v-model="giftcard.phone" mask="### ### ####"></inputer>
+              <inputer title="card.expirationDate" v-model="giftcard.expiration" mask="####-##-##"></inputer>
+              <switches title="card.vip" v-model="giftcard.vip"></switches>
+            </div>
+            <footer>
+              <button class="btn" @click="tab = 'reload'">{{$t('button.activation')}}</button>
+            </footer>
           </div>
-          <num-pad v-model="amount" type="number" @enter="reload"></num-pad>
-        </div>
-      </template>
-      <template v-else>
-        <div class="wrap table">
-          <table class="event">
-            <thead>
-              <tr>
-                <th>{{$t('thead.date')}}</th>
-                <th>{{$t('thead.type')}}</th>
-                <th>{{$t('thead.cashier')}}</th>
-                <th>{{$t('thead.change')}}</th>
-                <th>{{$t('thead.balance')}}</th>
-                <th>{{$t('thead.ticket')}}</th>
-                <th>{{$t('thead.view')}}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(log,index) in records" :key="index">
-                <td>{{log.date}}</td>
-                <td>{{$t('type.'+log.type)}}</td>
-                <td>{{log.cashier}}</td>
-                <td v-if="log.change > 0" class="positive">{{log.change | decimal}}</td>
-                <td v-else class="negative">{{log.change | decimal}}</td>
-                <td>{{log.balance | decimal}}</td>
-                <td v-if="log.order">
-                  <span>#{{log.order.number}}</span>
-                  <span>{{$t('type.'+log.order.type)}}</span>
-                </td>
-                <td v-else></td>
-                <td>
-                  <i class="fa fa-file-text-o" @click="viewReceipt(log.order._id)" v-show="log.order && log.order._id"></i>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <pagination :of="logs" @page="setPage" :max="10" :contain="15"></pagination>
-        </div>
-      </template>
+        </template>
+        <template v-else-if="tab === 'info'">
+          <div>
+            <div class="wrap">
+              <inputer title="card.number" v-model="giftcard.number" :disabled="true" mask="#### #### #### ####"></inputer>
+              <inputer title="card.holder" v-model="giftcard.name"></inputer>
+              <inputer title="card.phone" v-model="giftcard.phone" mask="### ### ####"></inputer>
+              <inputer title="card.expirationDate" v-model="giftcard.expiration" mask="####-##-##" :disabled="true"></inputer>
+              <inputer title="card.balance" v-model="giftcard.balance" :disabled="true"></inputer>
+              <switches title="card.vip" v-model="giftcard.vip" :disabled="true"></switches>
+            </div>
+            <footer>
+              <button class="btn" @click="updateInfo">{{$t('button.update')}}</button>
+            </footer>
+          </div>
+        </template>
+        <template v-else-if="tab === 'reload'">
+          <div class="wrap column">
+            <div class="display">
+              <input type="text" v-model="amount">
+              <span class="unit" v-if="payment === 'CASH'" @click="payment = 'CREDIT'">CASH</span>
+              <span class="unit" v-else @click="payment = 'CASH'">CREDIT</span>
+              <span class="due">
+                <span class="symbol">$</span>
+                <span class="balance">{{giftcard.balance | decimal}}</span>
+              </span>
+            </div>
+            <num-pad v-model="amount" type="number" @enter="reload"></num-pad>
+          </div>
+        </template>
+        <template v-else>
+          <div class="wrap table">
+            <table class="event">
+              <thead>
+                <tr>
+                  <th>{{$t('thead.date')}}</th>
+                  <th>{{$t('thead.type')}}</th>
+                  <th>{{$t('thead.cashier')}}</th>
+                  <th>{{$t('thead.change')}}</th>
+                  <th>{{$t('thead.balance')}}</th>
+                  <th>{{$t('thead.ticket')}}</th>
+                  <th>{{$t('thead.view')}}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(log,index) in records" :key="index">
+                  <td>{{log.date}}</td>
+                  <td>{{$t('type.'+log.type)}}</td>
+                  <td>{{log.cashier}}</td>
+                  <td v-if="log.change > 0" class="positive">{{log.change | decimal}}</td>
+                  <td v-else class="negative">{{log.change | decimal}}</td>
+                  <td>{{log.balance | decimal}}</td>
+                  <td v-if="log.order">
+                    <span>#{{log.order.number}}</span>
+                    <span>{{$t('type.'+log.order.type)}}</span>
+                  </td>
+                  <td v-else></td>
+                  <td>
+                    <i class="fa fa-file-text-o" @click="viewReceipt(log.order._id)" v-show="log.order && log.order._id"></i>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <pagination :of="logs" @page="setPage" :max="10" :contain="15"></pagination>
+          </div>
+        </template>
+      </transition>
     </div>
     <div :is="component" :init="componentData"></div>
   </div>
@@ -390,11 +396,10 @@ export default {
         transaction: 1,
         activation: +new Date()
       });
-
+      this.tab = "info";
       this.$socket.emit("[GIFTCARD] ACTIVATION", this.giftcard, card => {
         Printer.printGiftCard("Activation", card);
         this.activation = false;
-        this.tab = "info";
         this.reloadBonus();
       });
     },
@@ -425,12 +430,12 @@ export default {
             .find(rule => this.amount >= rule.amount);
 
           console.log(amount, bonus, initial);
-        } catch (e) {}
+        } catch (e) { }
       }
 
       this.refreshData();
     },
-    updateInfo() {},
+    updateInfo() { },
     refreshData() {
       const number = this.giftcard.number.replace(/\D/g, "");
 

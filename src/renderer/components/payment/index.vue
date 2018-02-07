@@ -703,10 +703,7 @@ export default {
             : { resolve, reject };
           this.component = "capture";
         } else {
-          resolve({
-            number: this.giftCard.number,
-            result: this.giftCard
-          });
+          resolve(this.giftCard);
         }
       });
     },
@@ -715,11 +712,11 @@ export default {
         .then(this.checkGiftCard)
         .catch(() => this.$q());
     },
-    checkGiftCard({ number, result }) {
+    checkGiftCard(card) {
       this.$q();
       return new Promise((resolve, reject) => {
-        if (result) {
-          this.giftCard = result;
+        if (typeof card === 'object') {
+          this.giftCard = card;
           this.setAnchor("paid");
           this.$forceUpdate();
           resolve();
@@ -727,7 +724,7 @@ export default {
           const prompt = {
             type: "error",
             title: "dialog.giftCardActivation",
-            msg: ["dialog.giftCardNotActivated", number],
+            msg: ["dialog.giftCardNotActivated", card],
             buttons: [{ text: "button.confirm", fn: "resolve" }]
           };
 
