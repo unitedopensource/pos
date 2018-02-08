@@ -1,4 +1,4 @@
-const giftcard = function (title, card, bonus = 0) {
+const giftcard = function (title, card, bonus) {
     const { name, address, city, state, zipCode, contact } = this.config;
 
     this.plugin.PRINT_INIT('Gift Card');
@@ -62,7 +62,7 @@ const giftcard = function (title, card, bonus = 0) {
     this.plugin.SET_PRINT_STYLEA(0, "FontSize", 14);
     this.plugin.SET_PRINT_STYLEA(0, "Alignment", 2);
     this.plugin.SET_PRINT_STYLEA(0, "LetterSpacing", 1);
-    this.plugin.ADD_PRINT_TEXT(204, 2, 262, 20, bonus > 0 ? `Bonus: $${bonus.toFixed(2)}` : '');
+    this.plugin.ADD_PRINT_TEXT(204, 2, 262, 20, bonus ? `Bonus: $${bonus.toFixed(2)}` : '');
     this.plugin.SET_PRINT_STYLEA(0, "FontName", "Agency FB");
     this.plugin.SET_PRINT_STYLEA(0, "FontSize", 14);
     this.plugin.SET_PRINT_STYLEA(0, "Alignment", 2);

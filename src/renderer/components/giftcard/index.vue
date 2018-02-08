@@ -410,6 +410,9 @@ export default {
       });
     },
     reloadBalance() {
+      this.giftcard.balance =
+        parseFloat(this.giftcard.balance) + parseFloat(this.amount);
+
       const reload = {
         date: today(),
         time: +new Date(),
@@ -417,11 +420,11 @@ export default {
         cashier: this.op.name,
         number: this.giftcard.number.replace(/\D/g, ""),
         change: parseFloat(this.amount),
-        balance: parseFloat(this.giftcard.balance) + parseFloat(this.amount)
+        balance: this.giftcard.balance
       };
 
       this.$socket.emit("[GIFTCARD] RELOAD", reload, card => {
-        Printer.printGiftCard("Reload", card);
+        this.giftcard = card;
         this.tab = "info";
         this.reloadBonus();
       });
@@ -449,8 +452,13 @@ export default {
 
           this.$socket.emit("[GIFTCARD] RELOAD", reload, card => {
             this.giftcard = card;
+            Printer.printGiftCard("Reload", card, bonus);
           });
+        } else {
+          Printer.printGiftCard("Reload", card);
         }
+      } else {
+        Printer.printGiftCard("Reload", card);
       }
       this.refreshData();
     },
