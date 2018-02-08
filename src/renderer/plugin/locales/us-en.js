@@ -1570,5 +1570,13 @@ export default {
             disable: 'Cash drawer restricted use',
             staffBank: 'Employee as a cash drawer'
         }
+    },
+    spec: {
+        version: 'Version',
+        core: 'Core',
+        render: 'Render',
+        shell: 'Shell',
+        platform: 'Platform',
+        servo: 'Servo'
     }
 }

@@ -1,12 +1,12 @@
 import Vue from 'vue'
-import Electron from 'vue-electron'
-import Router from 'vue-router'
-import VueSocketio from 'vue-socket.io'
-import VueTouch from 'vue-touch'
-import { VueMaskDirective } from 'v-mask'
-import moment from 'moment'
-import Net from 'net'
 import Ip from 'ip'
+import Net from 'net'
+import moment from 'moment'
+import Router from 'vue-router'
+import VueTouch from 'vue-touch'
+import Electron from 'vue-electron'
+import VueSocketio from 'vue-socket.io'
+import { VueMaskDirective } from 'v-mask'
 import App from './App'
 import routes from './routes'
 import i18n from './plugin/dict'
@@ -14,7 +14,6 @@ import util from "./plugin/util"
 import VueBus from './plugin/bus'
 import Trend from "vuetrend"
 import Bars from 'vuebars'
-
 
 Vue.use(Electron)
 Vue.use(VueBus)
@@ -124,12 +123,11 @@ new Promise((resolve, reject) => {
   let head = document.head || document.getElementsByTagName("head")[0] || document.documentElement;
   head.insertBefore(printScript, head.firstChild);
 
-  Vue.filter('moment', (time, regEx) => {
-    return time ? moment(Number(time)).format(regEx) : "";
-  });
-  Vue.filter('decimal', (value) => {
-    return parseFloat(value).toFixed(2);
-  });
+  Vue.filter('moment', (time, regEx) => time ? moment(Number(time)).format(regEx) : "");
+  Vue.filter('decimal', (value) => parseFloat(value).toFixed(2));
+  Vue.filter('phone', number => (number && number.length === 10) ? number.replace(/^\D?(\d{3})\D?\D?(\d{3})\D?(\d{4})/, "($1) $2-$3") : number);
+  Vue.filter('card', number => number ? number.replace(/^\D?(\d{4})\D?(\d{4})\D?(\d{4})\D?(\d{4})/, "$1 $2 $3 $4") : number);
+  Vue.filter('fromNow', (time, pass) => time ? moment(Number(time)).fromNow(pass) : "");
   Vue.filter('tel', phone => {
     if (!phone) return "";
 
@@ -142,25 +140,8 @@ new Promise((resolve, reject) => {
         return phone;
     }
   });
-  Vue.filter('phone', number => {
-    return (number && number.length === 10) ? number.replace(/^\D?(\d{3})\D?\D?(\d{3})\D?(\d{4})/, "($1) $2-$3") : number;
-  });
-  Vue.filter('card', number => {
-    return number ? number.replace(/^\D?(\d{4})\D?(\d{4})\D?(\d{4})\D?(\d{4})/, "$1 $2 $3 $4") : number;
-  });
-  Vue.filter('fromNow', (time, pass) => {
-    return time ? moment(Number(time)).fromNow(pass) : "";
-  });
 
-  const router = new Router({
-    scrollBehavior: () => ({
-      y: 0
-    }),
-    routes
-  })
+  const router = new Router({ scrollBehavior: () => ({ y: 0 }), routes });
 
-  new Vue({
-    router,
-    ...App
-  }).$mount('#app');
+  new Vue({ router, ...App }).$mount('#app');
 })

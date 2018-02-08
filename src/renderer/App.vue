@@ -7,6 +7,7 @@
 <script>
 import { mapGetters, mapActions } from "vuex";
 import store from "./vuex/store";
+
 export default {
   store,
   computed: {
@@ -31,9 +32,9 @@ export default {
   },
   watch: {
     op(n) {
-      n.role === "Admin"
-        ? document.getElementById("app").classList.add("admin")
-        : document.getElementById("app").classList.remove("admin");
+      n.role === "Developer"
+        ? document.getElementById("app").classList.add("developer")
+        : document.getElementById("app").classList.remove("developer");
     }
   }
 };

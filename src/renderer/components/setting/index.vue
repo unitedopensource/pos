@@ -48,28 +48,24 @@
         <p>{{$t('setting.exitTip')}}</p>
       </router-link>
     </section>
+    <system-information class="spec"></system-information>
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
-import Electron from "electron";
+import systemInformation from "./component/systemInformation";
 
 export default {
+  components: { systemInformation },
   data() {
     return {
       componentData: null,
-      component: null,
-      about: {},
-      app: null
+      component: null
     };
   },
   computed: {
     ...mapGetters(["op"])
-  },
-  created() {
-    this.app = Electron.remote.app.getVersion();
-    this.$socket.emit("ABOUT", us => (this.about = us));
   },
   methods: {
     go(name) {
@@ -85,14 +81,14 @@ export default {
   justify-content: center;
   align-items: center;
   display: flex;
-  margin: 2em 0;
   position: relative;
 }
 
 h3 {
-  font-size: 2em;
   font-family: "Microsoft YaHei";
+  font-size: 2em;
   color: #666;
+  margin: 30px 0 10px;
 }
 
 .grids {
@@ -137,5 +133,9 @@ figcaption {
 p {
   color: gray;
   text-align: center;
+}
+
+.spec {
+  width: 97%;
 }
 </style>

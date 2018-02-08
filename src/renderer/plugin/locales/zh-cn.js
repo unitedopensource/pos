@@ -1560,5 +1560,13 @@ export default {
             disable: '不可以结算订单',
             staffBank: '员工私场'
         }
+    },
+    spec: {
+        version: '版本号',
+        core: '内核',
+        render: '渲染器',
+        shell: '程序壳',
+        platform: '构架',
+        servo: '伺服器'
     }
 }
