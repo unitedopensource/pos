@@ -88,7 +88,7 @@ function createWindow() {
   })
 }
 
-let singleInstance = app.makeSingleInstance((command, working) => {
+const singleInstance = app.makeSingleInstance((command, working) => {
   if (mainWindow) {
     mainWindow.isMinimized() && mainWindow.restore();
     mainWindow.focus();
@@ -109,13 +109,9 @@ app.on('activate', () => {
   mainWindow === null && createWindow()
 })
 
-ipcMain.on("Exit", () => {
-  app.quit(0)
-});
+ipcMain.on("Exit", () => app.quit(0));
 
-ipcMain.on("Loading", (e, txt) => {
-  splashWindow.webContents.send("Processing", txt);
-});
+ipcMain.on("Loading", (e, txt) => splashWindow.webContents.send("Processing", txt));
 
 ipcMain.on("Initialized", () => {
   process.argv.slice(1).some(arg => arg.includes("fullscreen")) && mainWindow.setFullScreen(true);
@@ -123,10 +119,6 @@ ipcMain.on("Initialized", () => {
   mainWindow.show();
   mainWindow.center();
 });
-
-ipcMain.on("Exit", () => {
-  app.quit(0)
-})
 
 ipcMain.on("Relaunch", () => {
   app.relaunch({ args: process.argv.slice(1).concat(['--relaunch']) });

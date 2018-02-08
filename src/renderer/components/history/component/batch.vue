@@ -51,7 +51,6 @@ export default {
   components: { dialoger, checkbox },
   data() {
     return {
-      unifiedBatch: this.$store.getters.store.unifiedBatch,
       stationAlias: this.$store.getters.station.alias,
       componentData: null,
       component: null,
