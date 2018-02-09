@@ -54,11 +54,11 @@ export default {
       const startDay = this.date
         .clone()
         .startOf("month")
-        .startOf("week");
+        .startOf("isoweek");
       const endDay = this.date
         .clone()
         .endOf("month")
-        .endOf("week");
+        .endOf("isoweek");
 
       let date = startDay.clone().subtract(1, "day");
 
@@ -78,7 +78,7 @@ export default {
               date
                 .clone()
                 .add(1, "week")
-                .startOf("week")
+                .startOf("isoweek")
                 .add(n + i, "day")
             )
         });

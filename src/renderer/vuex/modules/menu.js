@@ -133,11 +133,11 @@ const mutations = {
         item.total = (++item.qty * item.single).toFixed(2);
       } else {
 
-        if (price > 0) {
+        if (isNumber(price)) {
           item.single = parseFloat(price);
-        } else if (item.price[data.index] > 0) {
+        } else if (isNumber(item.price[data.index])) {
           item.single = parseFloat(item.price[data.index]);
-        } else if (extra > 0) {
+        } else if (isNumber(extra)) {
           item.single = parseFloat(item.price[0]) + parseFloat(extra);
         }
 
