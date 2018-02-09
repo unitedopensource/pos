@@ -333,7 +333,8 @@ export default {
         ledger: '轧账',
         table: '桌位',
         departments: '部门分类',
-        hibachiTable: '铁板座位'
+        hibachiTable: '铁板座位',
+        customerProfile: '客户信息'
     },
     dialog: {
         maintenance: '维护',

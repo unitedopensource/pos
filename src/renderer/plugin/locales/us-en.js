@@ -425,7 +425,8 @@ export default {
         sideOption: 'Side Option',
         ledger: 'Sales Ledger',
         department: 'Department',
-        hibachiTable: 'Hibachi Table'
+        hibachiTable: 'Hibachi Table',
+        customerProfile: 'Customer Info'
     },
     dialog: {
         maintenance: 'Maintenance',

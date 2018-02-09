@@ -120,7 +120,7 @@ h1 {
 import { mapActions, mapGetters } from "vuex";
 import collector from "./component/collector";
 import dialoger from "./common/dialoger";
-import toast from "./dashboard/toast";
+import toast from "./component/toast";
 import unlock from "./common/unlock";
 
 export default {
@@ -351,12 +351,12 @@ export default {
         case "pickup":
           this.setTicket({ type: "PICK_UP" });
           this.ring && this.setCustomer(this.callLog[0]);
-          this.$router.push({ path: "/main/info" });
+          this.$router.push({ path: "/main/customer" });
           break;
         case "delivery":
           this.setTicket({ type: "DELIVERY" });
           this.ring && this.setCustomer(this.callLog[0]);
-          this.$router.push({ path: "/main/info" });
+          this.$router.push({ path: "/main/customer" });
           break;
         case "table":
           if (this.dinein.table) {

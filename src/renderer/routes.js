@@ -23,26 +23,39 @@ export default [{
     component: require('./components/dashboard')
   },
   {
-    path: 'info',
-    component: require('./components/dashboard/info'),
+    path: 'customer',
+    component: require('./components/form/index'),
     children: [{
       path: '/',
-      name: 'Information',
-      component: require('./components/dashboard/form')
+      name: 'information',
+      component: require('./components/form/info')
     }, {
       path: 'profile',
-      name: 'Profile',
-      component: require('./components/dashboard/profile')
-    }, {
-      path: 'history',
-      name: 'OrderHistory',
-      component: require('./components/dashboard/history')
-    }, {
-      path: 'giftCard',
-      name: 'customerGiftCard',
-      component: require('./components/dashboard/giftCard')
+      name: 'profile',
+      component: require('./components/form/profile')
     }]
   },
+  // {
+  //   path: 'info',
+  //   component: require('./components/dashboard/info'),
+  //   children: [{
+  //     path: '/',
+  //     name: 'Information',
+  //     component: require('./components/dashboard/form')
+  //   }, {
+  //     path: 'profile',
+  //     name: 'Profile',
+  //     component: require('./components/dashboard/profile')
+  //   }, {
+  //     path: 'history',
+  //     name: 'OrderHistory',
+  //     component: require('./components/dashboard/history')
+  //   }, {
+  //     path: 'giftCard',
+  //     name: 'customerGiftCard',
+  //     component: require('./components/dashboard/giftCard')
+  //   }]
+  // },
   {
     path: 'table',
     name: "Table",

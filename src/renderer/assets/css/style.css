@@ -888,7 +888,6 @@ section.cart {
 .keyboard .numeric {
   display: inline-flex;
   vertical-align: top;
-  flex-wrap: wrap;
 }
 
 .keyboard .alphabetic div,
@@ -930,20 +929,12 @@ section.cart {
   text-shadow: 0 1px 1px white;
 }
 
-.keyboard .alphabetic {
-  flex: 10;
-}
-
-.keyboard .numeric {
-  flex: 3;
-}
-
 .keyboard div.space {
   width: 307px;
 }
 
-.keyboard .double {
-  width: 149.4px!important;
+.keyboard div.double,.keyboard i.double {
+  width: 149.4px;
 }
 
 .keyboard div.created {
