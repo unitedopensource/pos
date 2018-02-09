@@ -1,15 +1,15 @@
 <template>
-    <main>
-        <switch-type :type.sync="type" @change="setType"></switch-type>
-        <header>
-            <i class="fa fa-user-circle avatar"></i>
-            <div>
-                <h3>{{$t('title.customerProfile')}}</h3>
-            </div>
-        </header>
-        <router-view></router-view>
-        <keyboard :display="keyboard" @input="input" @cancel="cancel"></keyboard>
-    </main>
+  <main :class="{form:keyboard}">
+    <switch-type :type.sync="type" @change="setType"></switch-type>
+    <header>
+      <i class="fa fa-user-circle avatar"></i>
+      <div>
+        <span>{{$t('title.customerProfile')}}</span>
+      </div>
+    </header>
+    <router-view></router-view>
+    <keyboard :display="keyboard" @input="input" @cancel="cancel"></keyboard>
+  </main>
 </template>
 
 <script>
@@ -20,7 +20,7 @@ import switchType from "./component/switchType";
 export default {
   components: { switchType, keyboard },
   computed: {
-    ...mapGetters(["app", "order", "ticket"])
+    ...mapGetters(["app", "order", "ticket", "customer"])
   },
   data() {
     return {
@@ -36,7 +36,10 @@ export default {
       this.type = type;
       this.setTicket({ type });
     },
-    input() {},
+    input(char) {
+      console.log(char);
+      this.customer.phone += char;
+    },
     cancel() {
       this.resetMenu();
       this.resetDashboard();
@@ -51,9 +54,13 @@ export default {
 main {
   position: relative;
   background: #fff;
-  width: 700px;
+  width: 668px;
   z-index: 1;
   box-shadow: var(--shadow);
+}
+
+main.form {
+  margin-bottom: 200px;
 }
 
 header {
@@ -63,6 +70,8 @@ header {
   align-items: center;
   padding-left: 85px;
   border-bottom: 1px solid #eee;
+  background: #607d8b;
+  color: #fff;
 }
 
 i.avatar {

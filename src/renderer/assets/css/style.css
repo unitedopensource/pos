@@ -1008,3 +1008,44 @@ section.cart {
 .accessor section div:nth-child(3n+3) {
   margin-right: 0;
 }
+
+.field-entry {
+  display: inline-flex;
+  flex-direction: column;
+  position: relative;
+  padding: 5px;
+}
+
+.field-entry > h4{
+  margin-bottom: 2px;
+}
+
+.field-entry .wrap {
+  display: flex;
+  align-items: center;
+  border: 2px solid #eee;
+  background: #fff;
+}
+
+.field-entry .wrap i {
+  color: #6f6f6f;
+  font-size: 22px;
+  width: 32px;
+  text-align: center;
+}
+
+.field-entry input {
+  border: none;
+  background: transparent;
+  font-size: 24px;
+  outline: none;
+  width: 170px;
+}
+
+input#address {
+  width: 386px;
+}
+
+input#note {
+  width: 602px;
+}
