@@ -13,7 +13,7 @@
       </nav>
     </header>
     <div class="items">
-      <div v-for="(item,index) in items" @contextmenu="edit(item)">{{item[language]}}</div>
+      <div v-for="(item,index) in items" @contextmenu="edit(item)" :key="index">{{item[language]}}</div>
     </div>
     <div :is="component" :init="componentData"></div>
   </div>
@@ -61,13 +61,12 @@ export default {
         this.component = "editor";
       })
         .then(_item => {
+          this.$socket.emit("[SUBMENU] UPDATE", _item);
           this.$q();
         })
         .catch(() => this.$q());
     },
-    option(){
-      
-    }
+    option() {}
   }
 };
 </script>

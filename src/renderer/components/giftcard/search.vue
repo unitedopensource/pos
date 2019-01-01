@@ -29,7 +29,7 @@
         <div class="banner"></div>
         <div class="wrap">
           <ul>
-            <li v-for="(card,index) in results" @click="pick(card)">
+            <li v-for="(card,index) in results" @click="pick(card)" :key="index">
               <div class="f1">
                 <h5>{{card.name}}</h5>
                 <h3>{{card.number | card}}</h3>
@@ -134,6 +134,14 @@ li {
   display: flex;
   align-items: center;
   cursor: pointer;
+  min-height: 36px;
+  padding: 0 10px;
+  background: #f9f9f9;
+}
+
+li:nth-child(even) {
+  background: #eee;
+  border-radius: 4px;
 }
 
 li h5 {

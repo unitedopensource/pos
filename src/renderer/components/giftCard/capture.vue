@@ -16,7 +16,9 @@ export default {
   props: ["init"],
   data() {
     return {
-      message: this.$t("card.swipeGiftCard"),
+      message: this.init.vip
+        ? this.$t("card.swipeVipCard")
+        : this.$t("card.swipeGiftCard"),
       timeout: null,
       buffer: ""
     };

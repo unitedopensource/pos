@@ -1,21 +1,23 @@
 <template>
   <div class="field-entry f1">
     <h4>{{$t('text.phone')}}</h4>
-    <div class="wrap">
+    <div class="wrap" id="phone">
       <i class="fa fa-phone icon"></i>
-      <input type="text" :value="value" @click="focus" v-mask="'### ### ####'" @input="$emit('input',$event.target.value)">
+      <input type="text" :value="value" @click="focus" @input="$emit('input',$event.target.value)">
     </div>
     <template v-if="dropdown === 'list'">
-      <ul class="history" v-outer-click="close">
-        <li v-for="(log,index) in logs" :class="{new:log.new}" @click="get(log)">
+      <transition name="menu" appear>
+      <ul class="preset" v-outer-click="close">
+        <li v-for="(log,index) in logs" :class="{new:log.new}" @click="get(log)" :key="index">
           <h4>{{log.phone | phone}}
-            <!-- <span class="time">{{log.time | fromNow}}</span> -->
+            <span class="time">{{log.time | fromNow(true)}}</span>
           </h4>
-          <div class="customer" v-if="log.customer">
+          <div class="address" v-if="log.customer">
             <span>{{log.customer.address}}</span>
           </div>
         </li>
       </ul>
+      </transition>
     </template>
     <template v-else>
 
@@ -37,7 +39,6 @@ export default {
   created() {
     this.$socket.emit("[CALL] LAST", logs => {
       this.logs = logs;
-      console.log(logs);
     });
   },
   methods: {
@@ -53,41 +54,33 @@ export default {
       if (log.customer) {
         this.setCustomer(log.customer);
         this.dropdown = null;
+      } else {
       }
     },
     ...mapActions(["setCustomer"])
+  },
+  watch: {
+    value(n) {
+      const phone = n.replace(/\D/g, "");
+
+      if (phone.length === 10) {
+        this.$socket.emit("[CUSTOMER] FROM_PHONE", phone, profile => {
+          console.log(profile);
+          this.setCustomer(profile);
+          this.$emit("focus", "address");
+        });
+      }
+    }
   }
 };
 </script>
 
 <style scoped>
-ul.history {
-  position: absolute;
-  background: #fff;
-  width: 100%;
-  box-shadow: var(--shadow);
-  z-index: 1;
-}
-
-ul.history li {
-  padding: 5px;
-  height: 40px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  cursor: pointer;
-  position: relative;
-}
-
-ul.history li:nth-child(even) {
-  background: #fafafa;
-}
-
-li h4 {
-  color: #3c3c3c;
-}
-
-li .customer {
+.address {
   color: #a23900;
+}
+.time {
+  float: right;
+  color: rgba(0, 0, 0, 0.5);
 }
 </style>

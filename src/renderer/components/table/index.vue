@@ -94,7 +94,7 @@ export default {
       this.view = index;
     },
     switchTable(data) {
-      if (typeof data === 'boolean') {
+      if (typeof data === "boolean") {
         this.transfer = false;
         this.buffer = [];
       } else {
@@ -118,23 +118,23 @@ export default {
 
       table.status === 1
         ? this.checkReservation(table)
-          .then(this.checkIfSwitch)
-          .then(this.checkAccessPin)
-          .then(this.countGuest.bind(null, table))
-          .then(this.checkTableType)
-          .then(this.createTable)
-          .catch(this.createTableFailed)
+            .then(this.checkIfSwitch)
+            .then(this.checkAccessPin)
+            .then(this.countGuest.bind(null, table))
+            .then(this.checkTableType)
+            .then(this.createTable)
+            .catch(this.createTableFailed)
         : this.checkPermission(table)
-          .then(this.viewTicket)
-          .catch(this.exceptionHandler);
+            .then(this.viewTicket)
+            .catch(this.exceptionHandler);
     },
     checkPermission(table) {
       return new Promise((next, stop) => {
         table.server === this.op.name
           ? next(table)
           : this.$checkPermission("view", "tables")
-            .then(() => next(table))
-            .catch(() => stop("UNABLE_VIEW_OTHER_TABLE"));
+              .then(() => next(table))
+              .catch(() => stop("UNABLE_VIEW_OTHER_TABLE"));
       });
     },
     checkTableType(table) {
@@ -194,6 +194,7 @@ export default {
           this.$socket.emit("[TABLE] SWAP", this.buffer);
           this.buffer = [];
           this.transfer = false;
+          this.resetTable();
           stop();
         } else {
           next();
@@ -244,11 +245,11 @@ export default {
       return new Promise((next, stop) => {
         this.dinein.guestCount
           ? new Promise((resolve, reject) => {
-            this.componentData = { resolve, reject };
-            this.component = "counter";
-          })
-            .then(guest => next(Object.assign(table, { guest })))
-            .catch(() => stop())
+              this.componentData = { resolve, reject };
+              this.component = "counter";
+            })
+              .then(guest => next(Object.assign(table, { guest })))
+              .catch(() => stop())
           : next(Object.assign(table, { guest: 1 }));
       });
     },
@@ -266,14 +267,14 @@ export default {
       invoice
         ? this.setViewOrder(invoice)
         : this.$dialog(prompt)
-          .then(() => {
-            this.$socket.emit("[SYNC] ORDER_LIST");
-            this.$q();
-          })
-          .catch(() => {
-            this.$socket.emit("[TABLE] RESET", { _id: table._id });
-            this.$q();
-          });
+            .then(() => {
+              this.$socket.emit("[SYNC] ORDER_LIST");
+              this.$q();
+            })
+            .catch(() => {
+              this.$socket.emit("[TABLE] RESET", { _id: table._id });
+              this.$q();
+            });
     },
     selectHibachiTable(table) {
       return new Promise((resolve, reject) => {
@@ -444,14 +445,15 @@ export default {
           break;
       }
     },
-    openReservation() { },
-    viewDineInList() { },
+    openReservation() {},
+    viewDineInList() {},
     ...mapActions([
       "setOp",
       "setApp",
       "setOrder",
       "resetMenu",
       "setTicket",
+      "resetTable",
       "setViewOrder",
       "setCurrentTable"
     ])

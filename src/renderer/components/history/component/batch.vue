@@ -11,6 +11,7 @@
             <th>{{$t('thead.terminal')}}</th>
             <th>{{$t('thead.count')}}</th>
             <th>{{$t('thead.total')}}</th>
+            <th>{{$t('thead.tip')}}</th>
             <th>{{$t('thead.status')}}</th>
             <th>{{$t('thead.action')}}</th>
           </tr>
@@ -22,12 +23,13 @@
             </td>
             <td>{{$t('text.records',task.count)}}</td>
             <td>{{task.total | decimal}}</td>
+            <td>({{task.tip | decimal}})</td>
             <td class="status">{{status(task.status)}}</td>
             <td v-if="task.status === 5" class="action">
               <span class="print" @click="reprint(index)">{{$t('button.print')}}</span>
             </td>
             <td v-else class="action">
-              <span class="batch" @click="batchAlone(task,index)">{{$t('button.batch')}}</span>
+              <span class="batch" @click="beforeBatch(task,index)">{{$t('button.batch')}}</span>
             </td>
           </tr>
         </tbody>
@@ -141,13 +143,24 @@ export default {
     finalizing() { },
 
     next() { },
-    batchAlone(device, index) {
+    beforeBatch(device, index) {
+      if (device.tip === 0) {
+        const prompt = {
+          title: "dialog.NoTip",
+          msg: "dialog.transactionNoTip"
+        }
+        this.$dialog(prompt).then(() => this.startBatch(device, index)).catch(() => this.$q());
+      } else {
+        this.startBatch(device, index);
+      }
+    },
+    startBatch(device, index) {
       this.batch(device).then(response => {
         const result = device.terminal.explainBatch(response.data);
         if (result.code === "000000") {
           device.status = 5;
-          this.print(result);
-
+          console.log(this.tasks[index]);
+          this.print(result, index);
 
           this.tasks[index].report = result;
           this.$socket.emit("[TERMINAL] CLOSED", result, done =>
@@ -166,9 +179,11 @@ export default {
       const { report } = this.tasks[index];
       this.print(report);
     },
-    print(report) {
+    print(report, index) {
       if (this.detail) {
-        const detail = "";
+        console.log(this.init.transactions);
+        const transactions = this.init.transaction.filter(t => !t.close)
+        let detail = false;
         Printer.printBatchReport(report, detail);
       } else {
         Printer.printBatchReport(report, false);

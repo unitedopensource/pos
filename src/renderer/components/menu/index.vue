@@ -54,8 +54,9 @@ export default {
   computed: {
     page() {
       if (this.items.length > 33) {
-        let min = this.itemPage * 30;
-        let max = min + 30;
+        const min = this.itemPage * 30;
+        const max = min + 30;
+
         return this.items.slice(min, max);
       }
       return this.items;
@@ -66,16 +67,17 @@ export default {
       "tax",
       "menu",
       "item",
-      "submenu",
       "device",
       "config",
       "order",
-      "station",
       "ticket",
       "sides",
       "dinein",
-      "customer",
+      "submenu",
+      "station",
       "language",
+      "customer",
+      "favorites",
       "currentTable"
     ])
   },
@@ -99,6 +101,7 @@ export default {
     this.initialData();
 
     this.$socket.emit("[INQUIRY] TICKET_NUMBER", number => {
+      ``;
       if (this.app.newTicket) {
         this.setTicket({ number });
         this.$log({
@@ -124,7 +127,6 @@ export default {
   },
   beforeDestroy() {
     window.removeEventListener("keydown", this.entry, false);
-    this.setApp({ newTicket: true });
   },
   methods: {
     initialData() {
@@ -147,9 +149,13 @@ export default {
           server: this.op.name,
           station: this.station.alias,
           type: this.ticket.type,
+          number: this.ticket.number,
           date: today(),
           customer: this.customer,
-          taxFree:typeof(this.tax.defaultTaxFree) === 'boolean' ? this.tax.defaultTaxFree : false
+          taxFree:
+            typeof this.tax.defaultTaxFree === "boolean"
+              ? this.tax.defaultTaxFree
+              : false
         });
       } else {
         const order = JSON.parse(JSON.stringify(this.order));
@@ -210,11 +216,16 @@ export default {
       items = [].concat.apply([], items);
 
       const { favorite } = this.config.display;
+
       if (favorite) {
-        const target = this.customer.favorite || [];
-        target.length > 0 &&
-          items.forEach(item => {
-            item.like = target.includes(item._id);
+        const food = this.favorites;
+        if (food.length)
+          items = items.map(item => {
+            if (food.includes(item._id)) {
+              item = clone(item);
+              item.like = true;
+            }
+            return item;
           });
       }
 
@@ -482,10 +493,11 @@ export default {
       }
     },
     ...mapActions([
-      "setApp",
       "setOrder",
       "setTicket",
       "setSides",
+      "lessQty",
+      "moreQty",
       "addToOrder",
       "resetPointer",
       "setChoiceSet",

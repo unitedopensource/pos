@@ -39,11 +39,7 @@ export default {
   },
   created() {
     this.operators = this.init.operators.filter(
-      o =>
-        (o.role === "Cashier" ||
-          o.role === "Waitstaff" ||
-          o.role === "Manager") &&
-        o.name !== this.order.server
+      o => o.role !== "Owner" && o.name !== this.order.server
     );
   },
   methods: {

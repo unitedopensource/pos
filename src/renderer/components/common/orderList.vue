@@ -207,7 +207,7 @@ export default {
           return;
         }
       }
-      
+
       item.pending = true;
       this.spooler.push(item);
     },
@@ -852,6 +852,7 @@ header.info {
 .phone .name {
   margin-left: 10px;
   font-size: 14px;
+  color: #009688;
 }
 
 .content .value {

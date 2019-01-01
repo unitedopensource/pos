@@ -43,6 +43,12 @@
           <span></span>
         </label>
       </div>
+      <div class="option">
+        <span class="f1">{{$t('text.deliveryFee')}}</span>
+        <label class="external">
+          <i class="fa fa-caret-right"></i>
+        </label>
+      </div>
     </div>
   </div>
 </template>
@@ -54,7 +60,9 @@ export default {
     const dom = document.querySelector(".order.showCategory");
     if (dom) this.viewCategory = true;
 
-    const { top, height } = document.querySelector(".middle").getBoundingClientRect();
+    const { top, height } = document
+      .querySelector(".middle")
+      .getBoundingClientRect();
 
     this.offsetTop = {
       bottom: top + 26 + "px"
@@ -83,13 +91,13 @@ export default {
       });
     },
     toggleMenuID() {
-      let display = Object.assign({}, this.config.display, {
+      const display = Object.assign({}, this.config.display, {
         menuID: this.init.menuID
       });
       this.setConfig({ display });
     },
     toggleViewCategory() {
-      let dom = document.querySelector(".order");
+      const dom = document.querySelector(".order");
       this.viewCategory
         ? dom.classList.add("showCategory")
         : dom.classList.remove("showCategory");
@@ -128,5 +136,15 @@ export default {
 
 .option:last-child {
   border-bottom: none;
+}
+
+.external {
+  width: 40px;
+  text-align: center;
+  padding: 5px;
+  cursor: pointer;
+  background: #f5f5f5;
+  border-radius: 4px;
+  color: #616161;
 }
 </style>

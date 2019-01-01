@@ -46,6 +46,7 @@
                   <th>{{$t('type.DELIVERY')}}</th>
                   <th>{{$t('type.DINE_IN')}}</th>
                   <th>{{$t('type.HIBACHI')}}</th>
+                  <th>{{$t('text.commission')}}</th>
                   <th>{{$t('text.subtotal')}}</th>
                   <th>{{$t('text.tax')}}</th>
                   <th>{{$t('text.total')}}</th>
@@ -59,6 +60,7 @@
                   <td>{{department.DELIVERY.subtotal | decimal}}</td>
                   <td>{{department.DINE_IN.subtotal | decimal}}</td>
                   <td>{{department.HIBACHI.subtotal | decimal}}</td>
+                  <td>{{department.commission | decimal}}</td>
                   <td>{{department.subtotal | decimal}}</td>
                   <td>{{department.tax | decimal}}</td>
                   <td>{{department.total | decimal}}</td>
@@ -187,7 +189,11 @@ export default {
   },
   methods: {
     initialDepartment() {
-      const departments = this.$store.getters.config.departments.slice() || [];
+      const departments = this.$store.getters.config.hasOwnProperty(
+        "departments"
+      )
+        ? JSON.parse(JSON.stringify(this.$store.getters.config.departments))
+        : [];
       return new Promise(next => {
         this.departments = departments.map(department => {
           Object.assign(department, {
@@ -424,6 +430,8 @@ export default {
         Object.assign(department, { subtotal, tax, total });
       });
 
+      this.calculateCommission();
+
       this.departments.push({
         zhCN: this.$t("report.overallTotal"),
         usEN: "Overall",
@@ -557,6 +565,26 @@ export default {
       };
       payments.push(total);
       this.payments = payments;
+    },
+    calculateCommission() {
+      const departments = this.$store.getters.config.hasOwnProperty(
+        "departments"
+      )
+        ? JSON.parse(JSON.stringify(this.$store.getters.config.departments))
+        : [];
+
+      departments.forEach(dep => {
+        if (isNumber(dep.commission)) {
+          const index = this.departments.findIndex(
+            each => each.usEN === dep.usEN && each.zhCN === dep.zhCN
+          );
+
+          if (index !== -1) {
+            this.departments[index].commission =
+              this.departments[index].subtotal * dep.commission / 100;
+          }
+        }
+      });
     },
     confirm() {}
   }

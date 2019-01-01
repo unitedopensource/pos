@@ -5,7 +5,7 @@
     </span>
     <span class="type" v-else>{{$t('type.'+invoice.type)}}</span>
     <div class="info customer" v-if="invoice.type ==='DELIVERY'">
-      <span>{{invoice.customer.address}}</span>
+      <span class="address">{{invoice.customer.address}}</span>
       <span>{{invoice.customer.phone | phone}}</span>
     </div>
     <span class="info" v-else-if="invoice.type === 'DINE_IN' || invoice.type === 'HIBACHI'">{{invoice.table}}</span>
@@ -15,6 +15,7 @@
     </div>
     <span class="note" v-if="invoice.status === 0">{{$t('reason.'+invoice.void.note)}}</span>
     <span class="price">$ {{invoice.payment.due | decimal}}</span>
+    <span class="modifed" v-if="invoice.modify" :title="$t('text.invoiceEdit',invoice.editor)"></span>
   </div>
 </template>
 
@@ -82,6 +83,13 @@ export default {
   display: flex;
   flex-direction: column;
   line-height: 14px;
+}
+
+.address {
+  white-space: nowrap;
+  overflow: hidden;
+  width: 110px;
+  text-overflow: ellipsis;
 }
 
 .price {
@@ -160,5 +168,17 @@ export default {
   font-weight: bold;
   float: right;
   padding: 0 5px;
+}
+
+.modifed {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  bottom: 5px;
+  left: 5px;
+  background: linear-gradient(#ffcc80, #f57c00);
+  border-radius: 50%;
+  background-clip: padding-box;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.39);
 }
 </style>

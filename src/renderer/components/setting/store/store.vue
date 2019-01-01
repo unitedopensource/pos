@@ -10,7 +10,6 @@
         <text-input title="text.state" v-model="store.state" @update="updateState"></text-input>
         <text-input title="text.zipCode" v-model="store.zipCode" @update="updateZipCode"></text-input>
         <text-input title="text.contactInfo" v-model="store.contact" @update="updateContact"></text-input>
-        <toggle title="text.timecard" tooltip="tip.timecard" v-model="store.timecard" @update="updateTimecard"></toggle>
         <text-list title="text.timezone" v-model="store.timeZone" :opts="timeZones" @update="updateTimeZone"></text-list>
         <text-list title="text.storeType" v-model="store.type" :opts="types" @update="updateStoreType"></text-list>
         <external title="text.openHour" @open="editHour"></external>
@@ -147,12 +146,6 @@ export default {
     updateStoreType(value) {
       this.update({
         key: "store.type",
-        value
-      });
-    },
-    updateTimecard(value) {
-      this.update({
-        key: "store.timecard",
         value
       });
     }

@@ -85,6 +85,7 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
+import inputer from "../component/inputer";
 import terminal from "../history/terminal";
 import dialoger from "../common/dialoger";
 import giftcard from "../giftcard/index";
@@ -93,7 +94,7 @@ import payout from "./payout";
 
 export default {
   props: ["init"],
-  components: { dialoger, terminal, giftcard, payout, unlock },
+  components: { dialoger, terminal, giftcard, payout, unlock, inputer },
   data() {
     return {
       componentData: null,
@@ -101,7 +102,15 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["op", "app", "config", "time", "station","authorized"])
+    ...mapGetters([
+      "op",
+      "app",
+      "config",
+      "time",
+      "store",
+      "station",
+      "authorized"
+    ])
   },
   methods: {
     askClockIn() {
@@ -135,12 +144,34 @@ export default {
 
       this.$dialog(prompt)
         .then(() => {
-          this.$socket.emit("[TIMECARD] CLOCK_OUT", this.op);
-          this.setOp({ clockIn: null, session: null });
-          this.$router.push({ path: "/main/lock" });
-          this.init.resolve();
+          this.store.tipReport ? this.reportTip() : this.clockOut();
         })
         .catch(() => this.$q());
+    },
+    reportTip() {
+      new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject, title: "title.reportTip" };
+        this.component = "inputer";
+      })
+        .then(tip => {
+          const prompt = {
+            type: "question",
+            title: "dialog.tipReport",
+            msg: ["dialog.tipReportConfirm", tip.toFixed(2)]
+          };
+
+          this.$dialog(prompt)
+            .then(() => this.clockOut(tip))
+            .catch(this.reportTip);
+        })
+        .catch(() => this.$q());
+    },
+    clockOut(tip = 0) {
+      this.$q();
+      this.$socket.emit("[TIMECARD] CLOCK_OUT", { op: this.op, tip });
+      this.setOp({ clockIn: null, session: null });
+      this.$router.push({ path: "/main/lock" });
+      this.init.resolve();
     },
     logout() {
       switch (this.op.cashCtrl) {

@@ -17,14 +17,14 @@
             </header>
             <ul>
                 <li v-for="(invoice,index) in spooler" :key="index">
-                    <span class="timer" v-if="index === 0">{{invoice.delay | countDown(time)}}</span>
-                    <span class="timer" v-else>{{invoice.delay | moment('HH:mm')}}</span>
+                    <span class="timer" v-if="index === 0">{{invoice.schedule | countDown(time)}}</span>
+                    <span class="timer" v-else>{{invoice.schedule | moment('HH:mm')}}</span>
                     <div class="f1">
                         <span class="invoice">{{invoice.number}}</span>
                         <span>{{$t('type.'+invoice.type)}}</span>
                         <span v-if="invoice.course">{{$t('type.'+invoice.course)}}</span>
                     </div>
-                    <span class="items" :title="invoice.content | tooltip(language)">{{$t('text.queueItem',invoice.content.length)}}</span>
+                    <span class="items" :title="invoice.content | tooltip(language)">{{$t('text.items',invoice.content.length)}}</span>
                     <i class="fa fa-print print" @click="printConfirm(index)"></i>
                     <i class="fa fa-times" @click="remove(index)"></i>
                 </li>
@@ -53,7 +53,7 @@ export default {
     },
     methods: {
         printConfirm(i) {
-            const time = this.spooler[i].delay;
+            const time = this.spooler[i].schedule;
             const schedule = moment(time).format("hh:mm");
             const toNow = moment(time).toNow(true);
             const prompt = {
@@ -109,12 +109,11 @@ export default {
             return data.map(item => (item.qty + ' ' + item[lang])).join("\n")
         },
         countDown(schedule, current) {
-            let duration = schedule - current;
-            let hh = ('00' + Math.floor((duration % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).slice(-2);
-            let mm = ('00' + Math.floor((duration % (1000 * 60 * 60)) / (1000 * 60))).slice(-2);
-            let ss = ('00' + Math.floor((duration % (1000 * 60)) / 1000)).slice(-2);
-            duration = hh > 0 ? `${hh}:${mm}:${ss}` : `${mm}:${ss}`;
-            return duration
+            const duration = schedule - current;
+            const hh = ('00' + Math.floor((duration % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).slice(-2);
+            const mm = ('00' + Math.floor((duration % (1000 * 60 * 60)) / (1000 * 60))).slice(-2);
+            const ss = ('00' + Math.floor((duration % (1000 * 60)) / 1000)).slice(-2);
+            return hh > 0 ? `${hh}:${mm}:${ss}` : `${mm}:${ss}`;
         }
     },
     computed: {
@@ -129,7 +128,7 @@ export default {
   font-size: 16px;
   position: absolute;
   right: 10px;
-  top: 10px;
+  top: 40px;
   overflow: hidden;
   background: rgba(250, 250, 250, 0.43);
   max-height: 705px;

@@ -23,7 +23,7 @@
           </v-touch>
         </section>
         <ul class="letters">
-          <li v-for="(letter,index) in letters" :key="letter" @click="setDriver(letter,$event)" :class="letter" :data-letter="letter">{{letter}}</li>
+          <li v-for="letter in letters" :key="letter" @click="setDriver(letter,$event)" :class="letter" :data-letter="letter">{{letter}}</li>
           <li class="clear" @click="clear">{{$t('button.clear')}}</li>
         </ul>
       </div>
@@ -42,7 +42,8 @@
 <script>
 import { mapActions, mapGetters } from "vuex";
 import checkbox from "../../setting/common/checkbox";
-import tipper from "../../payment/tiper";
+import tipper from "./tipper";
+
 export default {
   props: ["init"],
   components: { tipper, checkbox },
@@ -160,7 +161,7 @@ export default {
     setTip() {
       new Promise((resolve, reject) => {
         this.componentData = { resolve, reject, payment: this.order.payment };
-        this.component = "tiper";
+        this.component = "tipper";
       })
         .then(value => {
           const { tip } = value;

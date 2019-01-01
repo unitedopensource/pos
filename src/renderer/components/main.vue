@@ -1,5 +1,5 @@
 <template>
-  <div class="container" @click.self="toggleKeyboard(false)">
+  <div class="container">
     <dock></dock>
     <router-view></router-view>
     <div :is="component" :init="componentData"></div>
@@ -7,7 +7,6 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
 import dock from "./dock/dock";
 import discount from "./payment/discount";
 import coupon from "./menu/component/coupon";
@@ -51,8 +50,7 @@ export default {
             }).catch(() => this.$q())
           });
       }
-    },
-    ...mapActions(["toggleKeyboard"])
+    }
   }
 };
 </script>

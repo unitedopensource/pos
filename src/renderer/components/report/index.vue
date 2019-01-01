@@ -46,7 +46,6 @@
               <transition-group name="fadeDown" tag="div" class="options">
                 <template v-if="reportDetail === 'customize'">
                   <checkbox v-model="detailPayment" title="report.detailPayment" :key="1"></checkbox>
-                  <checkbox v-model="giftCard" title="report.giftCardSales" :key="2"></checkbox>
                   <checkbox v-model="managerWaive" title="report.redemptionReport" :key="3"></checkbox>
                   <checkbox v-model="itemSales" title="report.itemSales" :key="4"></checkbox>
                   <checkbox v-model="categorySales" title="report.categorySales" :key="5"></checkbox>
@@ -102,7 +101,6 @@ export default {
       report: {},
       daily: false,
       hourly: false,
-      giftCard: false,
       itemSales: false,
       categorySales: false,
       managerWaive: false
@@ -193,9 +191,9 @@ export default {
       this.daily
         ? this.printDailyReport()
         : this.fetchData()
-          .then(this.dataAnalysis.bind(null, this.reportRange))
-          .then(this.printReport.bind(null, true))
-          .catch(this.reportError);
+            .then(this.dataAnalysis.bind(null, this.reportRange))
+            .then(this.printReport.bind(null, true))
+            .catch(this.reportError);
     },
     printDailyReport() {
       let { from, to } = this.reportRange;
@@ -263,9 +261,9 @@ export default {
         next();
       });
     },
-    salesAnalysis(range, data) {
+    salesAnalysis(range, { invoices, transactions, giftcards }) {
       let report = [];
-      const { invoices, transactions, giftcards } = data;
+
       const validInvoices = invoices.filter(invoice => invoice.status === 1);
       const sum = (a, b) => a + b;
 
@@ -289,9 +287,10 @@ export default {
         });
       }
 
-      const foodSales = validInvoices
-        .map(invoice => parseFloat(invoice.payment.subtotal))
-        .reduce(sum, 0);
+      const foodSales = validInvoices.reduce(
+        (a, c) => a + parseFloat(c.payment.subtotal),
+        0
+      );
 
       report.push({
         text: this.$t("report.itemSales"),
@@ -299,9 +298,10 @@ export default {
         value: foodSales.toFixed(2)
       });
 
-      const tax = validInvoices
-        .map(invoice => parseFloat(invoice.payment.tax))
-        .reduce(sum, 0);
+      const tax = validInvoices.reduce(
+        (a, c) => a + parseFloat(c.payment.tax),
+        0
+      );
 
       report.push({
         text: this.$t("report.tax"),
@@ -309,16 +309,17 @@ export default {
         value: tax.toFixed(2)
       });
 
-      const discount = validInvoices
-        .map(invoice => parseFloat(invoice.payment.discount))
-        .reduce(sum, 0);
+      const discount = validInvoices.reduce(
+        (a, c) => parseFloat(c.payment.discount),
+        0
+      );
 
-      report.push({
-        text: this.$t("report.discount"),
-        style: "",
-        value: "- " + discount.toFixed(2)
-      });
-      //add discount detail here
+      discount &&
+        report.push({
+          text: this.$t("report.discount"),
+          style: "",
+          value: "- " + discount.toFixed(2)
+        });
 
       const salesTotal = foodSales + tax - discount;
 
@@ -328,15 +329,13 @@ export default {
         value: salesTotal.toFixed(2)
       });
 
-      const deliveryFee = validInvoices
-        .map(i => i.payment.delivery)
-        .reduce(sum, 0);
-
-      const gratuity = validInvoices.map(t => t.payment.gratuity).reduce(sum, 0);
-
       if (this.reportDetail === "simple") return report;
+      //--------- End of Sales Total ---------
 
-      let orderPayment = transactions.filter(t => t.for === "Order");
+      const deliveryFee = validInvoices.reduce(
+        (a, c) => a + c.payment.delivery,
+        0
+      );
 
       report.push({
         text: this.$t("report.deliveryFee"),
@@ -344,46 +343,90 @@ export default {
         value: `${deliveryFee.toFixed(2)}`
       });
 
+      const gratuity = validInvoices.reduce(
+        (a, c) => a + c.payment.gratuity,
+        0
+      );
+
       report.push({
         text: this.$t("report.gratuity"),
         style: "space",
         value: `${gratuity.toFixed(2)}`
       });
 
+      const rounding = validInvoices.reduce(
+        (a, c) => a + c.payment.rounding,
+        0
+      );
+
+      rounding &&
+        report.push({
+          text: this.$t("report.rounding"),
+          style: "space",
+          value: `${rounding.toFixed(2)}`
+        });
+
+      const activation = giftcards
+        .filter(t => t.type === "Activation")
+        .reduce((a, c) => a + c.change, 0);
+
+      activation &&
+        report.push({
+          text:
+            this.$t("report.giftcard.activation") +
+            ` ( ${giftcards.filter(t => t.type === "Activation").length} )`,
+          style: "",
+          value: `${activation.toFixed(2)}`
+        });
+
+      const reload = giftcards
+        .filter(t => t.type === "Reload")
+        .reduce((a, c) => a + c.change, 0);
+
+      reload &&
+        report.push({
+          text:
+            this.$t("report.giftcard.reload") +
+            ` ( ${giftcards.filter(t => t.type === "Reload").length} )`,
+          style: "",
+          value: `${reload.toFixed(2)}`
+        });
+
+      const bonus = giftcards
+        .filter(t => t.type === "Bonus")
+        .reduce((a, c) => a + c.change, 0);
+
+      bonus &&
+        report.push({
+          text:
+            this.$t("report.giftcard.bonus") +
+            ` ( ${giftcards.filter(t => t.type === "Bonus").length} )`,
+          style: "",
+          value: `( ${bonus.toFixed(2)} )`
+        });
+
+      const overallTotal = (
+        salesTotal +
+        deliveryFee +
+        gratuity +
+        rounding +
+        activation +
+        reload
+      ).toFixed(2);
+
       report.push({
         text: this.$t("report.overallTotal"),
-        style: "space bold",
-        value: `$ ${(salesTotal + deliveryFee + gratuity).toFixed(2)}`
+        style: "space total bold",
+        value: `$ ${overallTotal}`
       });
 
-      report.push({
-        text: this.$t("report.refund"),
-        style: "space",
-        value:
-          "- " +
-          transactions
-            .filter(t => t.for === "Refund")
-            .map(t => Math.abs(t.actual))
-            .reduce(sum, 0)
-            .toFixed(2)
-      });
+      //-----End of overall total -----
 
-      report.push({
-        text: this.$t("report.payout"),
-        style: "space breakline",
-        value:
-          "- " +
-          transactions
-            .filter(t => t.for === "Payout")
-            .map(t => t.actual)
-            .reduce(sum, 0)
-            .toFixed(2)
-      });
+      const orderPayments = transactions.filter(t => t.for === "Order");
 
-      const cashTotal = orderPayment
+      const cashTotal = orderPayments
         .filter(t => t.type === "CASH")
-        .map(t => t.actual - t.tip)
-        .reduce(sum, 0);
+        .reduce((a, c) => a + c.actual, 0);
 
       report.push({
         text: this.$t("report.cashTotal"),
@@ -391,8 +434,8 @@ export default {
         value: cashTotal.toFixed(2)
       });
 
-      const creditTransactions = orderPayment.filter(t => t.type === "CREDIT");
-      const creditTotal = creditTransactions.map(t => t.actual).reduce(sum, 0);
+      const creditTransactions = orderPayments.filter(t => t.type === "CREDIT");
+      const creditTotal = creditTransactions.reduce((a, c) => a + c.actual, 0);
 
       if (this.detailPayment) {
         let creditType = new Set();
@@ -407,7 +450,7 @@ export default {
 
         Array.from(creditType).forEach(type => {
           const tmp = creditTransactions.filter(t => t.subType === type);
-          const total = tmp.map(t => t.actual).reduce(sum, 0);
+          const total = tmp.reduce((a, c) => a + c.actual, 0);
 
           report.push({
             text: type + ` ( ${tmp.length} )`,
@@ -422,17 +465,21 @@ export default {
           value: ""
         });
       } else {
-        report.push({
-          text: this.$t("report.creditTotal"),
-          style: "",
-          value: creditTotal.toFixed(2)
-        });
+        creditTotal &&
+          report.push({
+            text: this.$t("report.creditTotal"),
+            style: "",
+            value: creditTotal.toFixed(2)
+          });
       }
 
-      const thirdPartyTransactions = orderPayment.filter(t => t.type === "THIRD");
-      const thirdPartyTotal = thirdPartyTransactions
-        .map(t => t.actual)
-        .reduce(sum, 0);
+      const thirdPartyTransactions = orderPayments.filter(
+        t => t.type === "THIRD"
+      );
+      const thirdPartyTotal = thirdPartyTransactions.reduce(
+        (a, c) => a + c.actual,
+        0
+      );
 
       if (this.detailPayment) {
         let thirdType = new Set();
@@ -447,16 +494,16 @@ export default {
         });
 
         Array.from(thirdType).forEach(type => {
-          let total = thirdPartyTransactions
+          const total = thirdPartyTransactions
             .filter(t => t.subType === type)
-            .map(t => t.actual)
-            .reduce(sum, 0);
+            .reduce((a, c) => a + c.actual, 0);
 
-          report.push({
-            text: type,
-            style: "indent",
-            value: `( ${total.toFixed(2)} )`
-          });
+          total &&
+            report.push({
+              text: type,
+              style: "indent",
+              value: `( ${total.toFixed(2)} )`
+            });
         });
 
         report.push({
@@ -465,21 +512,41 @@ export default {
           value: ""
         });
       } else {
-        report.push({
-          text: this.$t("report.thirdPartyTotal"),
-          style: "space",
-          value: thirdPartyTotal.toFixed(2)
-        });
+        thirdPartyTotal &&
+          report.push({
+            text: this.$t("report.thirdPartyTotal"),
+            style: "space",
+            value: thirdPartyTotal.toFixed(2)
+          });
       }
 
-      const settledTotal = orderPayment
-        .map(transaction => transaction.actual)
-        .reduce(sum, 0);
+      const giftcardSales = activation + reload;
+      giftcardSales &&
+        report.push({
+          text: this.$t("report.giftcard.purchase"),
+          style: "",
+          value: giftcardSales.toFixed(2)
+        });
+
+      const giftcardSpends = giftcards
+        .filter(t => t.type === "Purchase")
+        .reduce((a, c) => a + c.change, 0);
+      giftcardSpends &&
+        report.push({
+          text:
+            this.$t("report.giftcard.spends") +
+            `( ${giftcards.filter(t => t.type === "Purchase").length} )`,
+          style: "space",
+          value: Math.abs(giftcardSpends).toFixed(2)
+        });
+
+      const settledTotal = orderPayments.reduce((a, c) => a + c.actual, 0);
+      const allSettledTotal = settledTotal + giftcardSales;
 
       report.push({
         text: this.$t("report.settled"),
         style: "",
-        value: settledTotal.toFixed(2)
+        value: allSettledTotal.toFixed(2)
       });
 
       const unsettled = validInvoices.filter(invoice => !invoice.settled);
@@ -487,17 +554,14 @@ export default {
       report.push({
         text: this.$t("report.unsettled") + ` ( ${unsettled.length} )`,
         style: "space breakline",
-        value: unsettled
-          .map(i => i.payment.due)
-          .reduce(sum, 0)
-          .toFixed(2)
+        value: unsettled.reduce((a, c) => a + c.payment.due, 0).toFixed(2)
       });
 
-      const tipTotal = orderPayment.map(t => t.tip).reduce(sum, 0);
+      const tipTotal = orderPayments.reduce((a, c) => c.tip, 0);
 
       if (this.detailPayment) {
         let tipFrom = new Set();
-        let tipTrans = orderPayment.filter(t => t.tip > 0);
+        let tipTrans = orderPayments.filter(t => t.tip > 0);
         tipTrans.forEach(t => tipFrom.add(t.subType || t.type));
 
         if (tipTotal === 0) {
@@ -514,10 +578,9 @@ export default {
           });
 
           Array.from(tipFrom).forEach(type => {
-            let total = tipTrans
+            const total = tipTrans
               .filter(t => (t.subType ? t.subType === type : t.type === type))
-              .map(t => t.tip)
-              .reduce(sum, 0);
+              .reduce((a, c) => a + c.tip, 0);
 
             report.push({
               text: this.$t("report.from", type),
@@ -537,38 +600,6 @@ export default {
           text: this.$t("report.tipTotal"),
           style: "space",
           value: tipTotal.toFixed(2)
-        });
-      }
-
-      if (this.giftCard) {
-        report.push({
-          text: this.$t("report.activation"),
-          style: "",
-          value: giftcards
-            .filter(t => t.type === "Activation")
-            .map(t => t.change)
-            .reduce(sum, 0)
-            .toFixed(2)
-        });
-
-        report.push({
-          text: this.$t("card.giftCardCredit"),
-          style: "",
-          value: giftcards
-            .filter(t => t.type === "Reload")
-            .map(t => t.change)
-            .reduce(sum, 0)
-            .toFixed(2)
-        });
-
-        report.push({
-          text: this.$t("card.giftCardDebit"),
-          style: "",
-          value: giftcards
-            .filter(t => t.type === "Purchase")
-            .map(t => Math.abs(t.change))
-            .reduce(sum, 0)
-            .toFixed(2)
         });
       }
 
@@ -1062,7 +1093,7 @@ export default {
         }
       });
     },
-    getTransactionsFromInvoices() { },
+    getTransactionsFromInvoices() {},
     reportError(error) {
       console.log(error);
       this.$q();

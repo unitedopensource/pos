@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button class="btn" @click="editOrder" :disabled="order.content.length === 0">
+    <button class="btn" @click="editOrder" :disabled="(!currentTable || order.content.length === 0)">
       <i class="fa fa-list-alt"></i>
       <span class="text">{{$t('button.edit')}}</span>
     </button>
@@ -8,7 +8,7 @@
       <i class="fa fa-ban"></i>
       <span class="text">{{$t("button.cancel")}}</span>
     </button>
-    <button class="btn" @click="switchTable" v-else>
+    <button class="btn" @click="switchTable" v-else :disabled="!currentTable">
       <i class="fa fa-exchange"></i>
       <span class="text">{{$t('button.switchTable')}}</span>
     </button>

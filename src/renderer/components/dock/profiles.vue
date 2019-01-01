@@ -46,7 +46,7 @@ export default {
         })
       );
 
-      this.$router.push({ path: "/main/info" });
+      this.$router.push({ name: "Information" });
       this.init.resolve();
     },
     edit(index) {
@@ -59,9 +59,9 @@ export default {
     },
     remove(index) {
       this.init.customer.profiles.splice(index, 1);
-      this.$socket.emit("[CUSTOMER] UPDATE", this.init.customer, data => {
-        this.setCustomer(data);
-      });
+      this.$socket.emit("[CUSTOMER] UPDATE", this.init.customer, data =>
+        this.setCustomer(data)
+      );
     },
     ...mapActions(["setCustomer", "emptyCustomerInfo"])
   }

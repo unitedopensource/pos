@@ -125,7 +125,7 @@ export default {
         this.station.pole.enable &&
           this.initPoleDisplay(this.station.pole.port);
         this.station.scale.enable && this.initScale(this.station.scale.port);
-        this.station.terminal.enable && this.setDevice({ terminal: true });
+        this.station.terminal && this.setDevice({ terminal: true });
       } catch (error) {
         this.$log({
           eventID: 9002,
@@ -153,7 +153,7 @@ export default {
         const raw = data.toString().split("\n");
         switch (raw.length) {
           case 3:
-            let type = raw[1].replace(/[^a-zA-Z ]/g, "");
+            const type = raw[1].replace(/\W/g, "");
             switch (type) {
               case "RING":
                 clearTimeout(this.timeout);
@@ -171,10 +171,11 @@ export default {
                 this.setDevice({ callid: false });
             }
             break;
-          case 6:
-          case 9:
-            const name = raw.find(i => i.indexOf("NAME") !== -1).split("=")[1];
-            const phone = raw
+          default:
+            let name = raw.find(i => i.indexOf("NAME") !== -1);
+            name = name ? name.split("=")[1].replace(/[\W_]+/g, "") : "";
+
+            let phone = raw
               .find(i => i.indexOf("NMBR") !== -1)
               .split("=")[1]
               .replace(/\D/g, "");

@@ -43,7 +43,7 @@
                 <div class="space" @mousedown.prevent="input(' ')"></div>
                 <i class="fa fa-keyboard-o" @mousedown.prevent="$emit('hide')"></i>
                 <div class="" @mousedown.prevent="$emit('cancel')">{{$t('button.cancel')}}</div>
-                <div class="double">{{$t('button.create')}}</div>
+                <div class="double" @mousedown.prevent="$emit('create')">{{$t('button.create')}}</div>
             </section>
         </div>
         <div>
@@ -74,11 +74,6 @@
 <script>
 export default {
   props: ["display"],
-  data() {
-    return {
-        
-    };
-  },
   methods: {
     input(char) {
       this.$emit("input", char);

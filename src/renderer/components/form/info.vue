@@ -1,16 +1,16 @@
 <template>
   <div class="outer">
     <section>
-      <phone v-model="customer.phone"></phone>
-      <extension v-model="customer.extension"></extension>
-      <name v-model="customer.name"></name>
+      <phone v-model="customer.phone" @focus="setFocus"></phone>
+      <extension v-model="customer.extension" @focus="setFocus"></extension>
+      <name v-model="customer.name" @focus="setFocus"></name>
     </section>
     <section>
-      <street v-model="customer.address"></street>
-      <city v-model="customer.city"></city>
+      <street v-model="customer.address" :direction="customer.direction" :distance="customer.distance" :duration="customer.duration" @focus="setFocus" @query="$emit('query')"></street>
+      <city v-model="customer.city" @focus="setFocus"></city>
     </section>
     <section>
-      <note v-model="customer.note"></note>
+      <note v-model="customer.note" @focus="setFocus"></note>
     </section>
   </div>
 </template>
@@ -29,8 +29,20 @@ export default {
   computed: {
     ...mapGetters(["customer"])
   },
-  data() {
-    return {};
+  mounted() {
+    this.customer.phone.length === 10
+      ? this.setFocus("address")
+      : this.setFocus("phone");
+  },
+  methods: {
+    setFocus(target) {
+      this.$emit("focus", target);
+
+      const dom = document.querySelector(".wrap.active");
+      dom && dom.classList.remove("active");
+
+      document.querySelector(`#${target}`).classList.add("active");
+    }
   }
 };
 </script>
@@ -41,7 +53,7 @@ export default {
   background: #fafafa;
 }
 
-section{
-  display:flex;
+section {
+  display: flex;
 }
 </style>

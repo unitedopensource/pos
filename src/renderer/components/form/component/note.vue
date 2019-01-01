@@ -1,9 +1,9 @@
 <template>
     <div class="field-entry f1">
         <h4>{{$t('text.note')}}</h4>
-        <div class="wrap">
+        <div class="wrap" id="note">
             <i class="fa fa-commenting icon"></i>
-            <input :value="value" @click="$emit('focus','note')" id="note">
+            <input :value="value" @click="$emit('focus','note')" @input="$emit('input',$event.target.value)">
         </div>
     </div>
 </template>

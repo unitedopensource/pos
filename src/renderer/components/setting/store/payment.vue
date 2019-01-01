@@ -1,7 +1,7 @@
 <template>
   <div>
     <external title="setting.tax" tooltip="tip.tax" @open="editTax"></external>
-    <external title="setting.deliveryCharge" tooltip="tip.deliveryCharge" @open="editDelivery"></external>
+    <external title="setting.delivery.config" tooltip="tip.delivery.setting" @open="editDelivery"></external>
     <text-list title="setting.rounding" tooltip="tip.rounding.tooltip" :opts="roundingOption" v-model="store.rounding" @update="updateRounding"></text-list>
     <text-list title="setting.defaultPaymentType" :opts="paymentTypes" v-model="store.defaultPaymentType" @update="updatePaymentType"></text-list>
     <toggle title="setting.tipSuggestion" tooltip="tip.tipSuggestion" v-model="store.tipSuggestion.enable" @update="updateTipSuggestion">
@@ -55,15 +55,15 @@ export default {
         label: "text.noRounding",
         tooltip: "tip.rounding.disable",
         value: "disable"
-      },{
-        label:'text.autoSelect',
-        tooltip:'tip.rounding.auto',
-        value:'auto'
+      }, {
+        label: 'text.autoSelect',
+        tooltip: 'tip.rounding.auto',
+        value: 'auto'
       }, {
         label: "text.roundToQuarter",
         tooltip: "tip.rounding.quarter",
         value: "quarter"
-      },{
+      }, {
         label: "text.alwaysRoundUp",
         tooltip: "tip.rounding.up",
         value: "roundUp"
@@ -72,14 +72,14 @@ export default {
         tooltip: "tip.rounding.down",
         value: "roundDown"
       }],
-      paymentTypes:[{
-        label:'text.cash',
-        tooltip:'',
-        value:'CASH'
-      },{
-        label:'text.creditCard',
-        tooltip:'',
-        value:'CREDIT'
+      paymentTypes: [{
+        label: 'text.cash',
+        tooltip: '',
+        value: 'CASH'
+      }, {
+        label: 'text.creditCard',
+        tooltip: '',
+        value: 'CREDIT'
       }]
     };
   },
@@ -118,23 +118,23 @@ export default {
         value
       });
     },
-    updateRounding(value){
+    updateRounding(value) {
       this.update({
-        key:'store.rounding',
+        key: 'store.rounding',
         value
       })
     },
-    updatePaymentType(value){
+    updatePaymentType(value) {
       this.update({
-        key:'store.defaultPaymentType',
+        key: 'store.defaultPaymentType',
         value
       })
     },
     editTax() {
       this.$router.push({ name: "Setting.store.tax" });
     },
-    editDelivery(){
-      this.$router.push({ name: 'Setting.store.delivery'});
+    editDelivery() {
+      this.$router.push({ name: 'Setting.store.delivery' });
     }
   }
 };

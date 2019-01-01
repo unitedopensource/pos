@@ -105,7 +105,8 @@ ul {
   position: absolute;
   background: #fff;
   width: 154px;
-  border: 1px solid #eee;
+  border: 1px solid #fff;
+  box-shadow: 0 2px 3px -1px rgba(0, 0, 0, 0.5);
 }
 
 ul.down {

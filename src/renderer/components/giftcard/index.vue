@@ -4,7 +4,8 @@
       <header class="tab">
         <div>
           <h5></h5>
-          <h3>{{$t('card.giftCard')}}</h3>
+          <h3 v-if="giftcard.vip">{{$t('card.vipCard')}}</h3>
+          <h3 v-else>{{$t('card.giftCard')}}</h3>
         </div>
         <nav class="tabs">
           <div v-if="activation">
@@ -30,7 +31,7 @@
           <div>
             <div class="wrap">
               <inputer title="card.number" v-model="giftcard.number" :disabled="true" mask="#### #### #### ####"></inputer>
-              <inputer title="card.holder" v-model="giftcard.name"></inputer>
+              <inputer title="card.holder" v-model="giftcard.holder"></inputer>
               <inputer title="card.phone" v-model="giftcard.phone" mask="### ### ####"></inputer>
               <inputer title="card.expirationDate" v-model="giftcard.expiration" mask="####-##-##"></inputer>
               <switches title="card.vip" v-model="giftcard.vip"></switches>
@@ -44,11 +45,11 @@
           <div>
             <div class="wrap">
               <inputer title="card.number" v-model="giftcard.number" :disabled="true" mask="#### #### #### ####"></inputer>
-              <inputer title="card.holder" v-model="giftcard.name"></inputer>
+              <inputer title="card.holder" v-model="giftcard.holder"></inputer>
               <inputer title="card.phone" v-model="giftcard.phone" mask="### ### ####"></inputer>
-              <inputer title="card.expirationDate" v-model="giftcard.expiration" mask="####-##-##" :disabled="true"></inputer>
+              <inputer title="card.expirationDate" v-model="giftcard.expiration" mask="####-##-##"></inputer>
               <inputer title="card.balance" v-model="giftcard.balance" :disabled="true"></inputer>
-              <switches title="card.vip" v-model="giftcard.vip" :disabled="true"></switches>
+              <switches title="card.vip" v-model="giftcard.vip"></switches>
             </div>
             <footer>
               <div class="opt">
@@ -56,6 +57,7 @@
               </div>
               <button class="btn" @click="updateInfo">{{$t('button.update')}}</button>
               <button class="btn" @click="printInfo">{{$t('button.print')}}</button>
+              <button class="btn" v-show="init.callback" @click="applyCard">{{$t('button.confirm')}}</button>
             </footer>
           </div>
         </template>
@@ -131,22 +133,22 @@ export default {
   props: ["init"],
   components: {
     search,
-    capture,
     ticket,
+    numPad,
     inputer,
+    capture,
     switches,
     dialoger,
-    numPad,
     pagination,
     creditCard
   },
   data() {
     return {
+      componentData: null,
+      activation: false,
       activated: false,
       tab: "activation",
       component: null,
-      componentData: null,
-      activation: false,
       payment: "CASH",
       giftcard: {},
       amount: 0,
@@ -155,7 +157,7 @@ export default {
     };
   },
   mounted() {
-    this.swipeCard()
+    this.swipeCard(this.init.vip)
       .then(this.initialData)
       .catch(this.initialFailed);
   },
@@ -169,9 +171,9 @@ export default {
     ...mapGetters(["op", "station"])
   },
   methods: {
-    swipeCard() {
+    swipeCard(vip) {
       return new Promise((resolve, reject) => {
-        this.componentData = { resolve, reject };
+        this.componentData = { resolve, reject, vip };
         this.component = "capture";
       });
     },
@@ -249,7 +251,7 @@ export default {
         .catch(this.reloadFailed);
     },
     verifyEntry() {
-      return new Promise((resolve, reject) => {
+      return new Promise((next, stop) => {
         const noCashDrawerError = {
           title: "dialog.cashDrawerUnavailable",
           msg: "dialog.cashDrawerUnavailableTip",
@@ -265,7 +267,7 @@ export default {
         if (this.payment === "CASH" && !this.station.cashDrawer.enable)
           throw noCashDrawerError;
 
-        isNumber(this.amount) ? resolve() : reject(invalidEntry);
+        isNumber(this.amount) ? next() : stop(invalidEntry);
       });
     },
     confirmPrompt() {
@@ -322,7 +324,7 @@ export default {
       };
 
       cashCtrl === "enable" && Printer.openCashDrawer();
-
+      console.log(transaction);
       this.$socket.emit("[TRANSACTION] SAVE", transaction);
       this.$socket.emit("[CASHFLOW] ACTIVITY", { cashDrawer, activity });
 
@@ -404,7 +406,7 @@ export default {
       });
       this.tab = "info";
       this.$socket.emit("[GIFTCARD] ACTIVATION", this.giftcard, card => {
-        Printer.printGiftCard("Activation", card);
+        Printer.printGiftCard("Activation", card, {});
         this.activation = false;
         this.reloadBonus();
       });
@@ -426,10 +428,10 @@ export default {
       this.$socket.emit("[GIFTCARD] RELOAD", reload, card => {
         this.giftcard = card;
         this.tab = "info";
-        this.reloadBonus();
+        this.reloadBonus(card);
       });
     },
-    reloadBonus() {
+    reloadBonus(card) {
       const { giftcard = null } = this.$store.getters.store;
 
       if (giftcard && giftcard.bonus) {
@@ -452,21 +454,24 @@ export default {
 
           this.$socket.emit("[GIFTCARD] RELOAD", reload, card => {
             this.giftcard = card;
-            Printer.printGiftCard("Reload", card, bonus);
+            Printer.printGiftCard("Reload", card, {
+              bonus,
+              reload: this.amount
+            });
           });
         } else {
-          Printer.printGiftCard("Reload", card);
+          Printer.printGiftCard("Reload", card, { reload: this.amount });
         }
       } else {
-        Printer.printGiftCard("Reload", card);
+        Printer.printGiftCard("Reload", card, { reload: this.amount });
       }
       this.refreshData();
     },
     updateInfo() {
-      this.$socket.emit("[GIFTCARD] UPDATE", this.giftcard);
+      this.$socket.emit("[GIFTCARD] UPDATE", this.giftcard, {});
     },
     printInfo() {
-      Printer.printGiftCard("Balance", this.giftcard);
+      Printer.printGiftCard("Balance", this.giftcard, {});
     },
     refreshData() {
       this.amount = "";
@@ -537,6 +542,9 @@ export default {
           });
         })
         .catch(() => this.$q());
+    },
+    applyCard(){
+      this.init.resolve(this.giftcard);
     }
   }
 };

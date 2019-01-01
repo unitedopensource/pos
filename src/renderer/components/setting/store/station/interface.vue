@@ -25,6 +25,13 @@ export default {
       component: null
     };
   },
+  beforeDestroy() {
+    this.$socket.emit("[STATION] UPDATE", {
+      _id: this.station._id,
+      key: "interface",
+      value: this.station.interface
+    });
+  },
   methods: {
     edit(grid, index) {
       new Promise((resolve, reject) => {
@@ -33,11 +40,6 @@ export default {
       })
         .then(_grid => {
           this.station.interface.splice(index, 1, _grid);
-          this.$socket.emit("[STATION] UPDATE", {
-            _id: this.station._id,
-            key: "interface",
-            value: this.station.interface
-          });
           this.$q();
         })
         .catch(() => this.$q());

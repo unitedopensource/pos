@@ -11,45 +11,45 @@
                 <span>{{$t('button.restore')}}</span>
             </nav>
         </header>
-        <div class="status">
+        <div class="data-status">
             <h3>{{$t('database.dataSize')}}</h3>
             <h5>{{space | mb}} / {{database.dataSize | mb}}</h5>
         </div>
-        <div class="status">
+        <div class="data-status">
             <h3>{{$t('database.storageSize')}}</h3>
             <h5>{{database.storageSize | mb}}</h5>
         </div>
-        <div class="status">
+        <div class="data-status">
             <h3>{{$t('database.collection')}}</h3>
             <h5>{{database.collections}}</h5>
         </div>
-        <div class="status">
+        <div class="data-status">
             <h3>{{$t('database.objects')}}</h3>
             <h5>{{database.objects}}</h5>
         </div>
-        <div class="status">
+        <div class="data-status">
             <h3>{{$t('database.averageSize')}}</h3>
             <h5>{{database.avgObjSize | kb}}</h5>
         </div>
-        <div class="status">
+        <div class="data-status">
             <h3>{{$t('database.index')}}</h3>
             <h5>{{database.indexes}}</h5>
         </div>
-        <div class="status">
+        <div class="data-status">
             <h3>{{$t('database.indexSize')}}</h3>
             <h5>{{database.indexSize | kb}}</h5>
         </div>
-        <div class="status">
+        <div class="data-status">
             <h3>{{$t('database.version')}}</h3>
             <h5>{{server.version}}
                 <span> ({{$t("text.bit",server.mem.bits)}})</span>
             </h5>
         </div>
-        <div class="status">
+        <div class="data-status">
             <h3>{{$t('database.uptime')}}</h3>
             <h5>{{uptime(server.uptime)}}</h5>
         </div>
-        <div class="status">
+        <div class="data-status">
             <h3>{{$t('database.memoryUsage')}}</h3>
             <h5>{{server.mem.resident}} MB</h5>
         </div>
@@ -100,24 +100,3 @@ export default {
     }
 }
 </script>
-
-<style scoped>
-.status {
-  padding: 6px 25px 4px;
-  height: 40px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  border-bottom: 1px solid #eee;
-}
-
-h3 {
-  font-size: 18px;
-  color: #3c3c3c;
-}
-
-h5 {
-  font-weight: normal;
-  color: #656565;
-}
-</style>

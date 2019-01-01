@@ -30,9 +30,13 @@
               <input type="radio" v-model="paymentType" name="paymentType" value="THIRD" id="THIRD" @change="setPaymentType('THIRD')">
               <label for="THIRD">{{$t('type.THIRD')}}</label>
             </div>
-            <div class="type">
-              <input type="radio" v-model="paymentType" name="paymentType" value="GIFT" id="GIFT" @change="setPaymentType('GIFT')">
+            <div class="type" v-if="!order.hasOwnProperty('__vip__')">
+              <input type="radio" v-model="paymentType" name="paymentType" value="GIFT" id="GIFT" @change="setPaymentType('GIFT',false)">
               <label for="GIFT">{{$t('type.GIFT')}}</label>
+            </div>
+            <div class="type" v-else>
+              <input type="radio" v-model="paymentType" name="paymentType" value="GIFT" id="GIFT" @change="setPaymentType('GIFT',true)">
+              <label for="GIFT">{{$t('type.VIP')}}</label>
             </div>
           </div>
           <div class="balanceDue" @dblclick="roundUp">
@@ -113,7 +117,10 @@
                   <span class="value">{{tip}}</span>
                 </div>
                 <div class="input" @click="setAnchor($event)" data-anchor="creditCard" data-format="number">
-                  <span class="text">{{$t('card.number')}}</span>
+                  <div class="text">
+                    <span class="f1">{{$t('card.number')}}</span>
+                    <checkbox title="button.save" v-model="saveCard" v-if="(customer._id && !order.__creditPayment__)"></checkbox>
+                  </div>
                   <input v-model="creditCard" v-mask="'#### #### #### ####'">
                 </div>
                 <div class="input" @click="setAnchor($event)" data-anchor="expiration" data-format="number">
@@ -219,12 +226,14 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
+import checkbox from "../setting/common/checkbox";
 import dialoger from "../common/dialoger";
 import capture from "../giftcard/capture";
 import ticket from "../common/ticket";
 import creditCard from "./creditCard";
 import discount from "./discount";
 import thirdParty from "./mark";
+import { parse } from "path";
 
 export default {
   props: ["init"],
@@ -233,6 +242,7 @@ export default {
     capture,
     dialoger,
     discount,
+    checkbox,
     creditCard,
     thirdParty
   },
@@ -270,6 +280,7 @@ export default {
       expiration: "",
       giftCard: "",
       anchor: "paid",
+      saveCard: false,
       splits: [],
       tipped: 0,
       evenly: 1,
@@ -289,9 +300,9 @@ export default {
   },
   mounted() {
     this.order.source === "POS"
-      ? this.setPaymentType(this.store.defaultPaymentType || 'CASH')
+      ? this.setPaymentType(this.store.defaultPaymentType || "CASH")
       : this.init.hasOwnProperty("regular")
-        ? this.setPaymentType(this.store.defaultPaymentType || 'CASH')
+        ? this.setPaymentType(this.store.defaultPaymentType || "CASH")
         : this.setPaymentType("THIRD");
   },
   beforeDestroy() {
@@ -323,19 +334,19 @@ export default {
           this.expiration = date;
         }
 
-        this.$socket.emit(
-          "[PAYMENT] CHECK",
-          this.order._id,
-          paid => {
-            this.payment.remain = Math.max(0, this.payment.balance - paid)
-              .toPrecision(12)
-              .toFloat();
+        if (this.order.hasOwnProperty("__vip__")) {
+          this.giftCard = this.order.__vip__;
+        }
 
-            this.tip = "0.00";
+        this.$socket.emit("[PAYMENT] CHECK", this.order._id, paid => {
+          this.payment.remain = Math.max(0, this.payment.balance - paid)
+            .toPrecision(12)
+            .toFloat();
 
-            next();
-          }
-        );
+          this.tip = "0.00";
+
+          next();
+        });
       });
     },
     checkComponentOccupy() {
@@ -566,7 +577,7 @@ export default {
         ? this.$dialog(error).then(() => this.$q())
         : this.$q();
     },
-    setPaymentType(type) {
+    setPaymentType(type, vip) {
       this.paymentType = type;
 
       switch (type) {
@@ -578,11 +589,13 @@ export default {
           this.paid = this.payment.remain.toFixed(2);
           break;
         case "GIFT":
-          this.giftCard = "";
+          if (!vip) {
+            this.giftCard = "";
+            this.swipeGiftCard()
+              .then(this.checkGiftCard)
+              .catch(() => this.$q());
+          }
           this.paid = this.payment.remain.toFixed(2);
-          this.swipeGiftCard()
-            .then(this.checkGiftCard)
-            .catch(() => this.$q());
           break;
       }
 
@@ -715,7 +728,7 @@ export default {
     checkGiftCard(card) {
       this.$q();
       return new Promise((resolve, reject) => {
-        if (typeof card === 'object') {
+        if (typeof card === "object") {
           this.giftCard = card;
           this.setAnchor("paid");
           this.$forceUpdate();
@@ -861,9 +874,9 @@ export default {
               split,
               ticket,
               paid,
-              change: 0,
               tip,
               actual,
+              change: 0,
               cashier: this.op.name,
               server: this.order.server || this.op.name,
               cashDrawer,
@@ -887,6 +900,33 @@ export default {
             );
 
             delete this.order.__creditPayment__;
+
+            //save credit card
+            if (this.saveCard) {
+              const { _id } = this.customer;
+              const card = [
+                this.creditCard.replace(" ", ""),
+                this.expiration,
+                ""
+              ];
+              const key = this.creditCard.split(" ").last();
+              this.encrypt(card, key).then(cipher => {
+                this.$socket.emit(
+                  "[CUSTOMER] SAVE_CREDIT_CARD",
+                  _id,
+                  {
+                    card: [
+                      this.creditCard.replace(" ", "").slice(0, 8),
+                      this.expiration,
+                      ""
+                    ],
+                    cipher,
+                    lastUse: +new Date()
+                  },
+                  () => {}
+                );
+              });
+            }
             break;
           case "THIRD":
             transaction = {
@@ -1083,26 +1123,24 @@ export default {
     checkBalance() {
       this.$q();
       if (this.payInFull) {
-        this.$socket.emit(
-          "[PAYMENT] CHECK",
-          this.order._id,
-          paid => {
-            const remain = Math.max(0, this.payment.balance - paid).toPrecision(12).toFloat();
+        this.$socket.emit("[PAYMENT] CHECK", this.order._id, paid => {
+          const remain = Math.max(0, this.payment.balance - paid)
+            .toPrecision(12)
+            .toFloat();
 
-            if (remain > 0) {
-              this.$q();
-              this.setPaymentType("CASH");
-              this.poleDisplay("Balance Due:", `$ ${remain.toFixed(2)}`);
-            } else {
-              this.poleDisplay("Thank You", "Please Come Again!");
-              if (this.isNewTicket) {
-                Printer.setTarget("Order").print(this.order);
-                this.$socket.emit("[UPDATE] INVOICE", this.order, true);
-              }
-              this.exitPayment();
+          if (remain > 0) {
+            this.$q();
+            this.setPaymentType("CASH");
+            this.poleDisplay("Balance Due:", `$ ${remain.toFixed(2)}`);
+          } else {
+            this.poleDisplay("Thank You", "Please Come Again!");
+            if (this.isNewTicket) {
+              Printer.setTarget("Order").print(this.order);
+              this.$socket.emit("[UPDATE] INVOICE", this.order, true);
             }
+            this.exitPayment();
           }
-        );
+        });
       } else {
         this.switchInvoice();
       }
@@ -1189,7 +1227,9 @@ export default {
 
           Object.assign(this.payment, { discount });
 
-          let coupons = this.order.coupons.filter(coupon => coupon.code !== 'UnitedPOS Inc');
+          let coupons = this.order.coupons.filter(
+            coupon => coupon.code !== "UnitedPOS Inc"
+          );
 
           discount > 0 && coupons.push(coupon);
           this.order.coupons = coupons;
@@ -1336,6 +1376,13 @@ export default {
       poleDisplay.write("\f");
       poleDisplay.write(line(line1, line2));
     },
+    encrypt(plaintext, key) {
+      return new Promise(next =>
+        this.$socket.emit("[CRYPT] ENCRYPT", { plaintext, key }, result =>
+          next(result)
+        )
+      );
+    },
     settled() {
       this.$socket.emit("[UPDATE] INVOICE", this.order, false);
       this.exitPayment();
@@ -1357,7 +1404,7 @@ export default {
     exitPayment() {
       switch (this.$route.name) {
         case "Menu":
-          let { done } = this.station.autoLock;
+          const { done } = this.station.autoLock;
           if (this.ticket.type === "BUFFET") {
             this.resetMenu();
             this.exit();

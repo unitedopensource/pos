@@ -1,5 +1,7 @@
 <template>
   <div>
+    <toggle title="text.timecard" tooltip="tip.timecard" v-model="store.timecard" @update="updateTimecard"></toggle>
+        <toggle title="text.tipReport" tooltip="tip.tipReport" v-model="store.tipReport" @update="updateTipReport" :disabled="!store.timecard"></toggle>
     <toggle title="setting.googleMatrix" true-tooltip="tip.matrixService" false-tooltip="tip.disableMatrix" v-model="store.matrix.enable" :conditionalTooltip="true" @update="updateMatrix">
       <transition name="dropdown">
         <div v-if="store.matrix.enable" class="opt">
@@ -100,11 +102,23 @@ export default {
         value
       });
     },
-    updateStoreCoordinate(value){
+    updateStoreCoordinate(value) {
       this.update({
-        key:'store.matrix.coordinate',
+        key: "store.matrix.coordinate",
         value
-      })
+      });
+    },
+    updateTimecard(value) {
+      this.update({
+        key: "store.timecard",
+        value
+      });
+    },
+    updateTipReport(value) {
+      this.update({
+        key: "store.tipReport",
+        value
+      });
     }
   }
 };

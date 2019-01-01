@@ -165,9 +165,11 @@ export default {
       });
     },
     edit() {
-      this.setTicket({ type: this.order.type, number: this.order.number });
+      const { type, number } = this.order;
+
       this.setApp({ newTicket: false });
       this.setCustomer(this.order.customer);
+      this.setTicket({ type, number });
 
       this.$router.push({ path: "/main/menu" });
     },
@@ -291,19 +293,19 @@ export default {
     print() {
       if (this.isEmptyTicket) return;
 
-      let order = JSON.parse(JSON.stringify(this.order));
+      const order = JSON.parse(JSON.stringify(this.order));
       order.split ? this.askSplitPrint(order) : this.printTicket(order);
     },
     receipt() {
       if (this.isEmptyTicket) return;
 
-      let order = JSON.parse(JSON.stringify(this.order));
+      const order = JSON.parse(JSON.stringify(this.order));
       order.split
         ? this.askSplitPrintReceipt(order)
         : this.printTicket(order, true);
     },
     askSplitPrint(order) {
-      this.$dialog({
+      const prompt = {
         type: "question",
         title: "dialog.printSplitTicket",
         msg: "dialog.printSplitTicketTip",
@@ -311,13 +313,11 @@ export default {
           { text: "button.combinePrint", fn: "reject" },
           { text: "button.splitPrint", fn: "resolve" }
         ]
-      })
-        .then(() => {
-          this.$q(), this.splitPrint(order);
-        })
-        .catch(() => {
-          this.$q(), this.printTicket(order);
-        });
+      };
+
+      this.$dialog(prompt)
+        .then(() => this.splitPrint(order))
+        .catch(() => this.printTicket(order));
     },
     askSplitPrintReceipt(order) {
       const prompt = {
@@ -372,7 +372,7 @@ export default {
     accessFailedLog(component) {
       this.$log({
         eventID: 9101,
-        note: `Permission Denied.Failed to access ${component}.`
+        note: `Permission Denied. Failed to access ${component}.`
       });
     },
     updateInvoice(ticket) {
@@ -381,10 +381,10 @@ export default {
     getTransaction() {
       const date = document.querySelector("#calendar .text").innerText;
 
-      this.$socket.emit("[PAYMENT] VIEW_TRANSACTIONS", date, data => {
+      this.$socket.emit("[PAYMENT] VIEW_TRANSACTIONS", date, transactions => {
         this.$open("transaction", {
-          data: data.filter(t => t.for === "Order").sort((a, b) =>
-            String(b.ticket.number).localeCompare(a.ticket.number, undefined, {
+          data: transactions.sort((a, b) =>
+            String(b.ticket ? b.ticket.number : -1).localeCompare((a.ticket ? a.ticket.number : -1), undefined, {
               numeric: true,
               sensitivity: "base"
             })

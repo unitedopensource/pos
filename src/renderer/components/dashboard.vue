@@ -362,8 +362,8 @@ export default {
           if (this.dinein.table) {
             this.$router.push({ path: "/main/table" });
           } else {
-            this.setTicket({type:"DINE_IN"});
-            this.$router.push({path:'/main/menu'});
+            this.setTicket({ type: "DINE_IN" });
+            this.$router.push({ path: "/main/menu" });
           }
           break;
         case "pickupList":
@@ -399,7 +399,7 @@ export default {
             : this.cashDrawerUnavailable();
           break;
         case "lock":
-          this.resetDashboard();
+          this.resetAll();
           this.setOp(null);
           this.$router.push({ path: "/main/lock" });
           break;
@@ -535,10 +535,10 @@ export default {
       "setApp",
       "setTicket",
       "setOrder",
+      "resetAll",
       "setCustomer",
       "setStation",
       "setStations",
-      "resetDashboard",
       "emptyCustomerInfo"
     ])
   }

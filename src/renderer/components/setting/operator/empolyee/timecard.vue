@@ -9,6 +9,7 @@
           <th>{{$t('thead.end')}}</th>
           <th class="hours">{{$t('thead.workHour')}}</th>
           <th>{{$t('thead.breakTime')}}</th>
+          <th>{{$t('text.tip')}}</th>
           <th>{{$t('thead.wage')}}</th>
           <th>{{$t('thead.salary')}}</th>
           <th class="padding">{{$t('thead.edit')}}</th>
@@ -27,6 +28,7 @@
           <td>{{log.clockOut | moment('HH:mm:ss')}}</td>
           <td class="hours">{{calculate(log.clockIn,log.clockOut)}}</td>
           <td class="break">{{log.break && log.break.length}}</td>
+          <td>{{log.tip | decimal}}</td>
           <td v-if="log.valid" :title="log.note" class="wage decimal">$ {{log.wage | decimal}}
             <i class="fa fa-exclamation-circle" v-if="log.note"></i>
           </td>

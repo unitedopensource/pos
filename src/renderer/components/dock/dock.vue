@@ -3,12 +3,10 @@
     <header class="dock">
       <span class="number">{{ticket.number}}</span>
       <span class="type" v-show="ticket.type" @click="changeType">{{type}}</span>
-      <span class="provider" v-show="$route.name === 'Menu' && order.source !== 'POS'">{{order.source}}</span>
+      <span class="waterMark" v-show="$route.name === 'Menu' && order.source !== 'POS'">{{order.source}}</span>
+      <span class="waterMark" v-show="$route.name === 'Menu' && order.hasOwnProperty('__vip__')">VIP</span>
       <div class="reward" v-if="config.store.reward"></div>
       <div class="info">
-        <div class="reward">
-
-        </div>
         <div class="customer" v-if="$route.name === 'Menu'" @click="editProfile">
           <span v-show="customer.phone">{{customer.phone | phone}}</span>
           <span v-show="customer.address">{{customer.address}}</span>

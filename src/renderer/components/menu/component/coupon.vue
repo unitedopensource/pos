@@ -13,22 +13,30 @@
         <div class="opt">
 
         </div>
-        <button class="btn" :disabled="true">{{$t('button.scan')}}</button>
+        <button class="btn" @click="swipe">{{$t('card.vip')}}</button>
         <button class="btn" @click="confirm">{{$t('button.confirm')}}</button>
       </footer>
     </div>
+    <div :is="component" :init="componentData"></div>
   </div>
 </template>
 
 <script>
 import offer from "./offer";
 import { mapActions } from "vuex";
+import giftcard from "../../giftcard/index";
+import dialoger from "../../common/dialoger";
+
 export default {
   props: ["init"],
-  components: { offer },
+  components: { offer, giftcard, dialoger },
   data() {
     return {
-      order: this.init.hasOwnProperty("order") ? this.init.order : this.$store.getters.order,
+      componentData: null,
+      component: null,
+      order: this.init.hasOwnProperty("order")
+        ? this.init.order
+        : this.$store.getters.order,
       callback: this.init.hasOwnProperty("order"),
       coupons: [],
       stack: false
@@ -74,9 +82,32 @@ export default {
         }
       }
     },
+    swipe() {
+      new Promise((resolve, reject) => {
+        this.componentData = { resolve, reject, callback: true, vip: true };
+        this.component = "giftcard";
+      })
+        .then(card => {
+          this.$q();
+          if (card.vip) {
+            this.setOrder({ __vip__: card });
+            card.holder && this.setCustomer({})
+          } else {
+            const prompt = {
+              title: "dialog.cantExecute",
+              msg: "card.notVipCard",
+              buttons: [{ text: "button.confirm", fn: "resolve" }]
+            };
+            this.$dialog(prompt).then(() => this.$q());
+          }
+        })
+        .catch(() => this.$q());
+    },
     confirm() {
       const coupons = this.coupons.filter(coupon => coupon.redeem);
-      const discount = this.order.coupons.filter(coupon => coupon.code === "UnitedPOS Inc");
+      const discount = this.order.coupons.filter(
+        coupon => coupon.code === "UnitedPOS Inc"
+      );
       coupons.push(...discount);
 
       this.callback ? this.init.resolve(coupons) : this.applyCoupon(coupons);
@@ -91,7 +122,7 @@ export default {
       this.setOrder({ coupons });
       this.init.resolve();
     },
-    ...mapActions(["setOrder", "addToOrder", "resetPointer"])
+    ...mapActions(["setOrder", "setCustomer", "addToOrder", "resetPointer"])
   }
 };
 </script>

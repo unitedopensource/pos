@@ -6,7 +6,7 @@
     <toggle title="text.autoAwake" v-model="station.wol" @update="updateAwake"></toggle>
     <external title="setting.cashDrawer" @open="$router.push({ name: 'Setting.station.cashdrawer'})"></external>
     <text-list title="setting.receiptPrinter" v-model="station.receipt" :opts="printers" @update="updateReceipt"></text-list>
-    <external title="setting.printerGroup" @open="$router.push({name:'Setting.station.printers'})"></external>
+    <external title="setting.printerGroup" @open="$router.push({name:'Setting.station.printers'})" :tooltip="$t('text.stationPrinters',station.printers.length)"></external>
     <text-list title="setting.terminal" v-model="station.terminal" :opts="terminals" @update="updateTerminal"></text-list>
     <external title="setting.callerId" @open="$router.push({name:'Setting.station.callid'})"></external>
     <external title="setting.poleDisplay" tooltip="tip.poleDisplay" @open="$router.push({name:'Setting.station.poleDisplay'})"></external>

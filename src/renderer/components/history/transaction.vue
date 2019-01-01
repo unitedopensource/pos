@@ -30,8 +30,14 @@
         </thead>
         <tbody>
           <tr v-for="(record,index) in records" :key="index">
-            <td class="num">{{record.ticket.number}}</td>
-            <td class="type">{{$t('type.'+record.ticket.type)}}</td>
+            <template v-if="record.for === 'Order'">
+              <td class="num">{{record.ticket.number}}</td>
+              <td class="type">{{$t('type.'+record.ticket.type)}}</td>
+            </template>
+            <template v-else>
+              <td class="num"></td>
+              <td class="type">({{$t('type.'+record.for)}})</td>
+            </template>
             <td>{{record.time | moment("HH:mm:ss")}}</td>
             <td>{{record.cashier}}</td>
             <td>{{record.server}}</td>
@@ -77,6 +83,7 @@ import { mapGetters } from "vuex";
 import tip from "./component/tipper";
 import dropdown from "./component/dropdown";
 import pagination from "../common/pagination";
+
 export default {
   props: ["init"],
   components: { tip, pagination, dropdown },
@@ -132,7 +139,7 @@ export default {
   created() {
     this.checkPermission()
       .then(this.initialData)
-      .catch(this.initialFailed);
+      //.catch(this.initialFailed);
 
     this.$bus.on("filter", this.applyFilter);
   },
@@ -156,9 +163,9 @@ export default {
 
       this.transactions.forEach(transaction => {
         cashiers.add(transaction.cashier);
-        servers.add(transaction.server);
+        transaction.server && servers.add(transaction.server);
         payments.add(transaction.subType || transaction.type);
-        types.add(transaction.ticket.type);
+        transaction.ticket && types.add(transaction.ticket.type);
       });
 
       this.cashiers = Array.from(cashiers).map(cashier => {
@@ -194,7 +201,7 @@ export default {
 
       this.$nextTick(() => this.$bus.emit("applied"));
     },
-    initialFailed() { },
+    initialFailed() {},
     setTip(record) {
       new Promise((resolve, reject) => {
         this.componentData = { resolve, reject, approve: record.tip };
